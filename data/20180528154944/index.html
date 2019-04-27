@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    <meta charset="UTF-8">
+    <link rel="canonical" href="https://blog.csdn.net/foruok/article/details/69525039"> 
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="referrer" content="always">
+    <meta name="description" content="最近实验了下如何让WebRTC支持H264编码，记录下，供有需要的人参考。">
+    <meta name="keywords" content="webrtc,h264">
+    <meta http-equiv="Cache-Control" content="no-siteapp"><link rel="alternate" media="handheld" href="https://blog.csdn.net/foruok/article/details/69525039#">
+    <meta name="shenma-site-verification" content="5a59773ab8077d4a62bf469ab966a63b_1497598848">
+    
+
+    <link href="favicon.ico" rel="SHORTCUT ICON">
+    <title>让WebRTC支持H264编解码 - CSDN博客</title>
+    
+            
+        
+
+    
+    
+    
+    
+        
+         
+    
+
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body><div id="BAIDU_DUP_fp_wrapper" style="position: absolute; left: -1px; bottom: -1px; z-index: 0; width: 0px; height: 0px; overflow: hidden; visibility: hidden; display: none;"><iframe id="BAIDU_DUP_fp_iframe" src="index_1.html" style="width: 0px; height: 0px; visibility: hidden; display: none;"></iframe></div><div id="MathJax_Message" style="display: none;"></div>    
+    
+    
+    
+
+
+
+<header>
+	<div class="container d-flex clearfix">
+		<div class="title-box">
+			<h6 class="title-blog">
+				<a href="https://blog.csdn.net/foruok">程序视界——聚焦程序员的职业规划与成长</a>
+			</h6>
+			<p class="description">欢迎关注我的订阅号“程序视界”</p>
+		</div>
+		<div class="opt-box d-flex justify-content-end">
+			<a class="btn btn-sm" href="https://blog.csdn.net/foruok/rss/list">
+					<svg class="icon" aria-hidden="true">
+						<use xlink:href="#csdnc-rss"></use>
+					</svg>RSS订阅</a>
+					</div>
+	</div>
+</header>
+<div class="container clearfix pt0" id="mainBox">
+    <main>
+        <div class="blog-content-box">
+	<div class="article-title-box">
+			<span class="article-type type-1 float-left">原</span>		<h6 class="title-article">让WebRTC支持H264编解码</h6>
+	</div>
+	<div class="article-info-box">
+		<div class="article-bar-top d-flex">
+												<span class="time">2017年04月07日 11:21:51</span>
+			<div class="float-right">
+				<span class="read-count">阅读数：5966</span>
+											</div>
+		</div>
+	</div>
+	<article>
+		<div id="article_content" class="article_content clearfix csdn-tracking-statistics" data-pid="blog" data-mod="popu_307" data-dsm="post">
+                    <div class="markdown_views">
+                <p>最近实验了下如何让WebRTC支持H264编码，记录下，供有需要的人参考。</p>
+
+<p>说明一下，我是在 Ubuntu Server 14.04 下编译的 WebRTC ，使用 native（C++） api 开发 WebRTC 应用。所以我的调整都是基于 native 代码。</p>
+
+<p>最终的效果是浏览器可以用H264发送视频，也可以接收H264视频。</p>
+
+<p>注意，WebRTC 使用 OpenH264 来做 encoder （见 h264_encoder_impl.cc），使用 ffmpeg 来做 decoder （见 h264_decoder_impl.cc ）。</p>
+
+
+
+<h1 id="代码版本">代码版本</h1>
+
+<p>本文对应的代码是2017年2月8号的，可以使用 <code>gclient revinfo -a</code>来查看具体版本，如下：</p>
+
+<p><img src="20170407095031530" alt="" title=""></p>
+
+
+
+<h1 id="编译选项调整">编译选项调整</h1>
+
+<p>WebRTC可以支持H264，但在Linux下编译时，默认没有打开。</p>
+
+<p>rtc_use_h264，这个开关控制了是否使用 H264 （对应C++代码中的宏 WEBRTC_USE_H264），在 webrtc/webrtc.gni 文件中定义：</p>
+
+<pre><code>rtc_use_h264 = proprietary_codecs &amp;&amp; !is_android &amp;&amp; !is_ios
+</code></pre>
+
+<p>proprietary_codecs 在 build/config/features.gni 中定义：</p>
+
+<pre><code>proprietary_codecs = is_chrome_branded || is_chromecast
+</code></pre>
+
+<p>我在 Linux 下编译，branded 默认是 Chromium ，所以，proprietary_codecs 默认就是 false 。</p>
+
+<p>想来想去，只好通过 gn gen 时传入 args 来调整比较方便，使用下面的命令来生成 ninja 构建文件：</p>
+
+<pre><code>gn gen out/h264Debug --args="proprietary_codecs=true"
+</code></pre>
+
+<p>执行完毕后，可以使用下列命令验证一下：</p>
+
+<pre><code>gn args out/h264Debug --list=proprietary_codecs
+gn args out/h264Debug --list=rtc_use_h264
+</code></pre>
+
+<p>看到 Current Value 为 true，就说明这个选项已经生效了。</p>
+
+<p>打开 rtc_use_h264 ，OpenH264 的编码支持就使能了。 </p>
+
+<p>WebRTC内部会使用 ffmpeg 来解码 H264 （见 h264_decoder_impl.cc ），与 ffmpeg 相关的还有一个选项——rtc_initialize_ffmpeg，这个也得为 true ，否则 ffmpeg 的 avcodec 不会初始化，用不成。</p>
+
+<p>rtc_initialize_ffmpeg 定义在 webrtc/webrtc.gni 中定义：</p>
+
+<pre><code>rtc_initialize_ffmpeg = !build_with_crhome
+</code></pre>
+
+<p>因为我们为 native 开发而编译，build_with_chrome 默认为 false ，所以 rtc_initialize_ffmpeg 默认为 true ，不用调整。</p>
+
+<p>rtc_initialize_ffmpeg 开关对应一个 C++ 代码中的宏 WEBRTC_INITIALIZE_FFMPEG 。</p>
+
+<p>要使用 ffmpeg 的 h264 decoder 功能，还需要修改一个宏： FFMPEG_H264_DECODER。在 config.h 文件中，路径是 <code>third_party/chromium/config/chromium/linux/x64</code>。原来定义如下：</p>
+
+<pre><code>#define CONFIG_H264_DECODER 0
+</code></pre>
+
+<p>修改为 1 即可。这样 <code>avcodec_register_all()</code> 方法才会把 H264 decoder 注册到系统中。</p>
+
+<p>等下，实际上还有一部分非常重要的工作要做。因为 linux 下编译 WebRtc ，默认生成的 ninja 构建文件中，没有 ffmpeg 的 h264 decoder 对应的源码，所以即便你打开 FFMPEG_H264_DECODER 也不管用，必须得修改 third_party/ffmpeg/ffmpeg_generated.gni 文件，找到包含 h264的那些条件，打开即可。</p>
+
+<blockquote>
+  <p>注：因为我一开始编译时没有打开 H264 支持，所以在修改了ffmpeg_generated.gni 文件后，使用 gn gen 生成 ninja 构建文件时，指定了一个新的目录，然后把 ffmpeg 相关的 ninja 文件（三个），拷贝到了原来的构建目录中，然后使用 ninja ffmpeg 命令来编译出 so 文件。</p>
+</blockquote>
+
+
+
+<h1 id="codec-的顺序调整">codec 的顺序调整</h1>
+
+<p>网页使用 WebRTC 发送 SDP ，进行协商时，默认的 codec 顺序是：</p>
+
+<ol>
+<li>VP8</li>
+<li>VP9</li>
+<li>H264</li>
+</ol>
+
+<p>在 C++ 代码里，会默认选择第一个来匹配（从<code>PeerConnection::CreateAnswer/SetRemoteDescription</code>两个方法跟进去，可以看到）。所以，我们要修改 C++ 代码，来改变这个选择逻辑。</p>
+
+<p>WebRtcVideoChannel2（webrtcvideoengine2.cc）使用的 codec ，来自 InternalEncoderFactory类（internalencoderfactory.cc），不管是作为发送端还是接收端，编码格式都来自这里。</p>
+
+<p>在InternalEncoderFactory的构造函数里，可以调整 codec 的顺序，默认代码如下：</p>
+
+<pre><code>supported_codecs_.push_back(cricket::VideoCodec(kVp8CodecName));
+if (webrtc::VP9Encoder::IsSupported())
+  supported_codecs_.push_back(cricket::VideoCodec(kVp9CodecName));
+if (webrtc::H264Encoder::IsSupported()) {
+  cricket::VideoCodec codec(kH264CodecName);
+  // TODO(magjed): Move setting these parameters into webrtc::H264Encoder
+  // instead.
+  codec.SetParam(kH264FmtpProfileLevelId,
+                 kH264ProfileLevelConstrainedBaseline);
+  codec.SetParam(kH264FmtpLevelAsymmetryAllowed, "1");
+  supported_codecs_.push_back(std::move(codec));
+}
+
+supported_codecs_.push_back(cricket::VideoCodec(kRedCodecName));
+supported_codecs_.push_back(cricket::VideoCodec(kUlpfecCodecName));
+....
+</code></pre>
+
+<p>只要把 H264 那个 codec 调整到前面即可。</p>
+
+<p>做了这个调整，Native app 作为发送视频的一端，在 SDP 协商时， H264 的支持就会放在前面，另外一端如果支持 H264 解码，就会优先选择 H264 格式，两边就能以 H264 来交互视频流了。</p>
+
+<p>浏览器作为发送视频的一端时，它发过来的视频格式顺序是 VP8、VP9、H264，Native C++代码中会根据这个顺序来调整本地的 codec 的顺序，代码在 mediasession.cc 中：</p>
+
+<pre><code>template &lt;class C&gt;
+static void NegotiateCodecs(const std::vector&lt;C&gt;&amp; local_codecs,
+                            const std::vector&lt;C&gt;&amp; offered_codecs,
+                            std::vector&lt;C&gt;* negotiated_codecs) {
+  for (const C&amp; ours : local_codecs) {
+    C theirs;
+    // Note that we intentionally only find one matching codec for each of our
+    // local codecs, in case the remote offer contains duplicate codecs.
+    if (FindMatchingCodec(local_codecs, offered_codecs, ours, &amp;theirs)) {
+      C negotiated = ours;
+      negotiated.IntersectFeedbackParams(theirs);
+      if (IsRtxCodec(negotiated)) {
+        const auto apt_it =
+            theirs.params.find(kCodecParamAssociatedPayloadType);
+        // FindMatchingCodec shouldn't return something with no apt value.
+        RTC_DCHECK(apt_it != theirs.params.end());
+        negotiated.SetParam(kCodecParamAssociatedPayloadType, apt_it-&gt;second);
+      }
+      if (CodecNamesEq(ours.name.c_str(), kH264CodecName)) {
+        webrtc::H264::GenerateProfileLevelIdForAnswer(
+            ours.params, theirs.params, &amp;negotiated.params);
+      }
+      negotiated.id = theirs.id;
+      negotiated.name = theirs.name;
+      negotiated_codecs-&gt;push_back(std::move(negotiated));
+    }
+  }
+  // RFC3264: Although the answerer MAY list the formats in their desired
+  // order of preference, it is RECOMMENDED that unless there is a
+  // specific reason, the answerer list formats in the same relative order
+  // they were present in the offer.
+  std::unordered_map&lt;int, int&gt; payload_type_preferences;
+  int preference = static_cast&lt;int&gt;(offered_codecs.size() + 1);
+  for (const C&amp; codec : offered_codecs) {
+    payload_type_preferences[codec.id] = preference--;
+  }
+  std::sort(negotiated_codecs-&gt;begin(), negotiated_codecs-&gt;end(),
+            [&amp;payload_type_preferences](const C&amp; a, const C&amp; b) {
+              return payload_type_preferences[a.id] &gt;
+                     payload_type_preferences[b.id];
+            });
+}
+</code></pre>
+
+<p>最后那个 sort 调用，根据发送端的 codec 顺序重新调整了我们支持的解码格式的顺序。所以，我们在这里也需要修改一下，把排序的部分去掉，或者针对 H264 去掉。</p>
+
+
+
+<h1 id="重新编译">重新编译</h1>
+
+<p>使用下列命令，可以编译特定模块：</p>
+
+<pre><code>ninja pc （针对 mediasession.cc ）
+ninja media （针对 internalencoderfactory.cc 和 webrtcvideoengine2.cc ）
+ninja ffmpeg （针对 ffmpeg ）
+</code></pre>
+
+<p>然后再编译你自己的 native app 。</p>
+
+<hr>
+
+<p>相关阅读：</p>
+
+<ul>
+<li><a href="http://blog.csdn.net/foruok/article/details/53005728">WebRTC学习资料大全</a></li>
+<li><a href="http://blog.csdn.net/foruok/article/details/54944427">Ubuntu 14.04下编译WebRTC</a></li>
+<li><a href="http://blog.csdn.net/foruok/article/details/60769621">WebRTC源码中turnserver的使用方法</a></li>
+<li><a href="http://blog.csdn.net/foruok/article/details/68945119">打开 WebRTC 的日志（native api）</a></li>
+</ul>            </div>
+            
+                </div>
+				<div class="hide-article-box text-center csdn-tracking-statistics tracking-click" data-mod="popu_376">
+			<a class="btn btn-red-hollow" id="btn-readmore">阅读更多</a>
+		</div>
+        	</article>
+	
+		<div class="article-bar-bottom">
+				<div class="article-copyright">
+			版权声明：本文为foruok原创文章，转载请通过订阅号“程序视界”联系foruok获取授权。			https://blog.csdn.net/foruok/article/details/69525039		</div>
+						<div class="tags-box artic-tag-box">
+			<span class="label">文章标签：</span>
+						<a class="tag-link" href="http://so.csdn.net/so/search/s.do?q=webrtc&amp;t=blog" target="_top">webrtc						</a><a class="tag-link" href="http://so.csdn.net/so/search/s.do?q=h264&amp;t=blog" target="_top">h264						</a><a class="tag-link" href="http://so.csdn.net/so/search/s.do?q=ubuntu&amp;t=blog" target="_top">ubuntu						</a><a class="tag-link" href="http://so.csdn.net/so/search/s.do?q=%E8%A7%86%E9%A2%91%E5%BC%80%E5%8F%91&amp;t=blog" target="_top">视频开发						</a><a class="tag-link" href="http://so.csdn.net/so/search/s.do?q=git&amp;t=blog" target="_top">git						</a>
+		</div>
+						<div class="tags-box">
+			<span class="label">个人分类：</span>
+						<a class="tag-link" href="https://blog.csdn.net/foruok/article/category/1421206" target="_top">网络编程						</a><a class="tag-link" href="https://blog.csdn.net/foruok/article/category/869110" target="_top">多媒体						</a>
+		</div>
+					</div>
+	
+	<!-- !empty($pre_next_article[0]) -->
+		</div>
+
+
+
+
+        <div class="edu-promotion"></div>
+        <a id="commentBox"></a>
+<div class="comment-box">
+	  	<div class="unlogin-box text-center">
+		想对作者说点什么？
+		<!-- $curl 当前地址 -->
+		<a href="https://passport.csdn.net/account/login?from=https://blog.csdn.net/foruok/article/details/69525039#commentBox" class="btn btn-sm btn-red">我来说一句</a>
+	</div>
+			<div class="comment-list-container">
+		<a id="comments"></a>
+		<div class="comment-list-box">
+		</div>
+		<div id="commentPage" class="pagination-box d-none"></div>
+		<div class="opt-box text-center">
+			<button class="btn btn-sm btn-link-blue" id="btnMoreComment"></button>
+		</div>
+	</div>
+</div>        <div class="recommend-box">
+            		<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/volvet/article/details/53700049" target="_top" strategy="BlogCommendFromBaidu_0">
+				<em>H264</em> in <em>WebRTC</em>的那些坑			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/volvet/article/details/53700049" target="_top">
+				<em>WebRTC</em> 自诞生之日起,   就代表了实时通信领域的最好的技术. 不过很长时间里, 它所<em>支持</em>的视频编码器只有VP8, 后来随着H265/VP9为代表的下一代视频编码器的诞生,  <em>WebRTC</em>里出现...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/volvet" title="volvet" target="_blank">
+					<img src="3_volvet.jpg" alt="volvet" class="avatar-pic">
+					<span class="name">volvet</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2016-12-16 22:24:28</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：5698</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/doitsjz/article/details/51787567" target="_top" strategy="BlogCommendFromBaidu_1">
+				<em>WEBRTC</em> <em>支持</em><em>H264</em><em>编解码</em>			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/doitsjz/article/details/51787567" target="_top">
+				<em>WEBRTC</em>视频<em>编解码</em><em>支持</em><em>H264</em> VP8 VP9 但是默认是VP8 ，根据SDP描述协商
+<em>WEBRTC</em> <em>H264</em>编码采用OPEN<em>H264</em> 解码采用FFMPEG
+一 让<em>WEBRTC</em><em>支持</em><em>H264</em>编码
+1...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/doitsjz" title="doitsjz" target="_blank">
+					<img src="3_doitsjz.jpg" alt="doitsjz" class="avatar-pic">
+					<span class="name">doitsjz</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2016-06-30 09:46:35</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：7285</span>
+			</p>
+		</div>
+	</div>
+								<div class="recommend-item-box recommend-ad-box" id="ad1"></div>
+				
+
+			
+				<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/wangruihit/article/details/46004311" target="_top" strategy="BlogCommendFromBaidu_2">
+				<em>webrtc</em> (5) 在<em>Webrtc</em>中集成<em>H264</em> Codec			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/wangruihit/article/details/46004311" target="_top">
+				<em>Webrtc</em>原生<em>支持</em>VP8和VP9，但是并不<em>支持</em><em>H264</em>，这个在上一篇<em>Webrtc</em>和Open<em>Webrtc</em>的对比中已经讲过。
+
+
+那么如果我们想要使用<em>H264</em>怎么办呢？
+可供选择的方案有两种，一种是x2...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/wangruihit" title="wangruihit" target="_blank">
+					<img src="3_wangruihit.jpg" alt="wangruihit" class="avatar-pic">
+					<span class="name">wangruihit</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2015-05-26 10:05:39</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：6582</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/foruok/article/details/71447853" target="_top" strategy="BlogCommendFromBaidu_3">
+				确认Chrome <em>WebRTC</em>使用的<em>编解码</em>格式			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/foruok/article/details/71447853" target="_top">
+				使用 <em>webrtc</em>-internals 确认<em>webrtc</em>的<em>编解码</em>格式			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/foruok" title="foruok" target="_blank">
+					<img src="3_foruok.jpg" alt="foruok" class="avatar-pic">
+					<span class="name">foruok</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2017-05-09 13:07:14</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：2446</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/dj0379/article/details/52454906" target="_top" strategy="BlogCommendFromBaidu_4">
+				Chrome 52版本增强了<em>WebRTC</em> H.264和DTLS			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/dj0379/article/details/52454906" target="_top">
+				已有 228人 阅读此文 -&nbsp;2016.07.25&nbsp;-&nbsp;<em>WebRTC</em>&nbsp;-&nbsp;刘通
+
+
+
+
+Amir Zmora
+
+加快了H.264和DTLS的认证速度
+
+Chrome 52 beta的...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/dj0379" title="dj0379" target="_blank">
+					<img src="3_dj0379.jpg" alt="dj0379" class="avatar-pic">
+					<span class="name">dj0379</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2016-09-06 23:51:14</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：1554</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/liuhongxiangm/article/details/48523939" target="_top" strategy="BlogCommendFromBaidu_5">
+				<em>WebRTC</em> VideoEngine超详细教程（二）——集成OPEN<em>H264</em><em>编解码</em>器			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/liuhongxiangm/article/details/48523939" target="_top">
+				http://blog.csdn.net/nonmarking/article/details/47910043
+
+
+
+
+本系列目前共三篇文章，后续还会更新
+
+<em>WebRTC</em> VideoE...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/liuhongxiangm" title="liuhongxiangm" target="_blank">
+					<img src="3_liuhongxiangm.jpg" alt="liuhongxiangm" class="avatar-pic">
+					<span class="name">liuhongxiangm</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2015-09-17 16:48:58</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：5508</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box recommend-ad-box" id="a_d_feed_0"></div>
+			
+			<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/freewebsys/article/details/47174209" target="_top" strategy="BlogCommendFromBaidu_6">
+				<em>webrtc</em> <em>支持</em><em>h264</em> 思路			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/freewebsys/article/details/47174209" target="_top">
+				1，遇到问题首先<em>webrtc</em>是非常好的开源项目，本身就是专门搞这个的公司，被google收购然后开源的项目。 
+可以快速搭建一个视频聊天项目，而且也可以自己进行编译。 
+https://github....			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/freewebsys" title="freewebsys" target="_blank">
+					<img src="3_freewebsys.jpg" alt="freewebsys" class="avatar-pic">
+					<span class="name">freewebsys</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2015-07-31 19:11:56</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：3653</span>
+			</p>
+		</div>
+	</div>
+						<div class="recommend-item-box recommend-download-box csdn-tracking-statistics clearfix" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<div class="content float-left">
+				<h4 class="text-truncate">
+					<a href="https://download.csdn.net/download/yinhezhanshen/9797191" target="_top" strategy="BlogCommendFromBaidu_7">
+						windows版本<em>webrtc</em>打开<em>h264</em>选项					</a>
+				</h4>
+				<p>
+					<span class="data">2017年03月29日 </span>
+					<span class="size">758B</span>
+					<span class="type">下载</span>
+				</p>
+			</div>
+			<div class="img-box float-right">
+				<a href="https://download.csdn.net/download/yinhezhanshen/9797191" target="_top" strategy="BlogCommendFromBaidu_7">
+					<img src="txt.svg" alt="">
+				</a>
+			</div>
+		</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/chinabinlang/article/details/78125574" target="_top" strategy="BlogCommendFromBaidu_8">
+				<em>webrtc</em>中的<em>h264</em>解析			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/chinabinlang/article/details/78125574" target="_top">
+				<em>H264</em>的码流解析，网上有很多开源文件；一般的解析有： 获取NALU，sps，pps，NALU type，slice type，获取Qp等；可以通过C++的位运算实现获取计算，但是一般可以定义结构体直...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/chinabinlang" title="chinabinlang" target="_blank">
+					<img src="3_chinabinlang.jpg" alt="chinabinlang" class="avatar-pic">
+					<span class="name">chinabinlang</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2017-09-28 16:54:53</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：339</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/chinabinlang/article/details/73800536" target="_top" strategy="BlogCommendFromBaidu_9">
+				<em>webrtc</em>添加<em>H264</em><em>支持</em>编译			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/chinabinlang/article/details/73800536" target="_top">
+				默认编译的<em>webrtc</em>视频<em>编解码</em>没有<em>H264</em>的<em>支持</em>，可以通过设置添加<em>支持</em>；一般情况下，编码器用OPEN<em>h264</em>，解码器用FFmpeg；还有的人自己实现将<em>编解码</em>器重新实现添加到<em>webrtc</em>源码中，虽然可...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/chinabinlang" title="chinabinlang" target="_blank">
+					<img src="3_chinabinlang.jpg" alt="chinabinlang" class="avatar-pic">
+					<span class="name">chinabinlang</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2017-06-27 15:59:16</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：1241</span>
+			</p>
+		</div>
+	</div>
+			            <div class="recommend-loading-box">
+                <img src="feedloading.gif">
+            </div>
+            <div class="recommend-end-box">
+                <p class="text-center">没有更多推荐了，<a href="https://blog.csdn.net/" class="c-blue c-blue-hover c-blue-focus">返回首页</a></p>
+            </div>
+        </div>
+    </main>
+    <aside>
+		    <div id="asideProfile" class="aside-box">
+    <h3 class="aside-title">个人资料</h3>
+    <div class="profile-intro d-flex">
+        <div class="avatar-box d-flex justify-content-center flex-column">
+            <a href="https://blog.csdn.net/foruok">
+                <img src="3_foruok.jpg" class="avatar_pic">
+            </a>
+        </div>
+        <div class="user-info d-flex justify-content-center flex-column">
+            <p class="name csdn-tracking-statistics tracking-click" data-mod="popu_379">
+                <a href="https://blog.csdn.net/foruok" target="_top" class="text-truncate" id="uid">foruok</a>
+            </p>
+                        <p class="flag">
+                <svg class="icon" aria-hidden="true">
+                    <use xlink:href="#csdnc-blogexpert"></use>
+                </svg>
+                博客专家
+            </p>
+                    </div>
+                <div class="opt-box d-flex justify-content-center flex-column">
+            <span class="csdn-tracking-statistics tracking-click" data-mod="popu_379">
+                                <a class="btn btn-sm btn-red-hollow" href="https://passport.csdn.net/account/login?from=https://blog.csdn.net/foruok/article/details/69525039" target="_self">关注</a>
+                            </span>
+            
+        </div>
+            </div>
+    <div class="data-info d-flex item-tiling">
+        <dl class="text-center" title="502">
+            <dt>原创</dt>
+            <dd><span class="count">502</span></dd>
+        </dl>
+        <dl class="text-center" title="16331">
+            <dt>粉丝</dt>
+            <dd><span class="count" id="fan">1万+</span></dd>
+        </dl>
+        <dl class="text-center" title="5960">
+            <dt>喜欢</dt>
+            <dd><span class="count">5960</span></dd>
+        </dl>
+        <dl class="text-center" title="5779">
+            <dt>评论</dt>
+            <dd><span class="count">5779</span></dd>
+        </dl>
+    </div>
+    <div class="grade-box clearfix">
+        <dl>
+            <dt>等级：</dt>
+            <dd>
+                <a href="https://blog.csdn.net/home/help.html#level" title="9级,点击查看等级说明" target="_top">
+                    <svg class="icon icon-level" aria-hidden="true">
+                        <use xlink:href="#csdnc-bloglevel-9"></use>
+                    </svg>
+                </a>
+            </dd>
+        </dl>
+        <dl>
+            <dt>访问：</dt>
+            <dd title="5908576">
+                590万+            </dd>
+        </dl>
+        <dl>
+            <dt>积分：</dt>
+            <dd title="50692">
+                5万+            </dd>
+        </dl>
+        <dl title="69">
+            <dt>排名：</dt>
+            <dd>69</dd>
+        </dl>
+    </div>
+        <div class="badge-box d-flex">
+        <span>勋章：</span>
+                <a class="icon-badge" title="专栏达人">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#csdnc-m-columns"></use>
+            </svg>
+            <div class="icon-arrow"></div>
+            <div class="grade-detail-box item1">
+                <div class="pos-box">
+                    <div class="left-box d-flex justify-content-center align-items-center flex-column">
+                        <svg class="icon" aria-hidden="true">
+                            <use xlink:href="#csdnc-m-columns"></use>
+                        </svg>
+                        <p>专栏达人</p>
+                    </div>
+                    <div class="right-box d-flex justify-content-center align-items-center">
+                        授予成功创建个人博客专栏的用户。专栏中添加五篇以上博文即可点亮！撰写博客专栏浓缩技术精华，专栏达人就是你！
+                    </div>
+                </div>
+            </div> 
+        </a>  
+                        <a class="icon-badge" title="持之以恒">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#csdnc-m-lasting"></use>
+            </svg>
+            <div class="icon-arrow"></div>
+            <div class="grade-detail-box item2">
+                <div class="pos-box">
+                    <div class="left-box d-flex justify-content-center align-items-center flex-column">
+                        <svg class="icon" aria-hidden="true">
+                            <use xlink:href="#csdnc-m-lasting"></use>
+                        </svg>
+                        <p>持之以恒</p>
+                    </div>
+                    <div class="right-box d-flex justify-content-center align-items-center">
+                        授予每个自然月内发布4篇或4篇以上原创或翻译IT博文的用户。不积跬步无以至千里，不积小流无以成江海，程序人生的精彩需要坚持不懈地积累！
+                    </div>
+                </div>
+            </div>
+        </a>
+                                <a class="icon-badge" title="博客之星">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#csdnc-m-blogstar-l"></use>
+            </svg>
+            <div class="icon-arrow"></div>
+            <div class="grade-detail-box item4">
+                <div class="pos-box">
+                    <div class="left-box d-flex justify-content-center align-items-center flex-column">
+                        <svg class="icon" aria-hidden="true">
+                            <use xlink:href="#csdnc-m-blogstar-l"></use>
+                        </svg>
+                        <p>博客之星</p>
+                    </div>
+                    <div class="right-box d-flex justify-content-center align-items-center">
+                        授予通过"CSDN博客之星评选"中脱颖而出的十大博客之星称号的用户。
+                    </div>
+                </div>
+            </div>
+        </a>   
+            </div>
+    </div>		    <div class="csdn-tracking-statistics mb8 box-shadow" data-pid="blog" data-mod="popu_4" style="height: 250px;">
+    <div class="aside-content text-center" id="cpro_u2734133">
+        <!-- 投放代码 -->
+        <div id="_ig4lvdu0cqe" style="width: 100%;"><iframe scrolling="no" src="index_2.html" width="300" height="250" frameborder="0"></iframe></div>
+    </div>
+</div>
+		    <!--自定义模块-->
+<div id="asideCustom36733263" class="aside-box custom-box">
+    <h3 class="aside-title">我的书与课</h3>
+    <div class="aside-content clearfix">
+        <p><a href="http://gitbook.cn/gitchat/column/5aeab69b4eb5f845a07695e8" target="_top"><font size="+2">- 程序员职场进阶32讲</font></a>
+</p>
+<p><font size="+1"><a href="https://item.jd.com/12243573.html" target="_top">- 《程序员的成长课》</a></font></p>
+<p><font size="+1"><a href="https://item.jd.com/12206577.html" target="_top">- 《解忧程序员》</a></font></p>
+<p><font size="+1"><a href="http://item.jd.com/11904166.html" target="_top">- 《你好哇，程序员》</a></font></p><p>
+<font size="+1"><a href="http://item.jd.com/11587406.html" target="_top">- 《Qt Quick核心编程》</a></font>
+</p>    </div>
+</div>
+		    <div id="asideNewArticle" class="aside-box">
+    <h3 class="aside-title">最新文章</h3>
+    <div class="aside-content">
+        <ul class="inf_list clearfix csdn-tracking-statistics tracking-click" data-mod="popu_382">
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/foruok/article/details/80389273" target="_top">如何选择值得深入学习的技术方向</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/foruok/article/details/80248981" target="_top">面试攻略：何为技术和年龄不匹配</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/foruok/article/details/80226740" target="_top">15类一面试就知道不靠谱的公司</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/foruok/article/details/79372914" target="_top">坏的跳槽，好的跳槽</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/foruok/article/details/79157306" target="_top">别让铁轨式思维扼杀了你的未来</a>
+            </li>
+                    </ul>
+    </div>
+</div>
+		    <div id="asideColumn" class="aside-box flexible-box">
+    <h3 class="aside-title">博主专栏</h3>
+    <div class="aside-content">
+        <ul class="column-box csdn-tracking-statistics tracking-click" data-mod="popu_520">
+                            <li class="clearfix">
+                    <div class="img-box float-left">
+                        <a class="d-flex align-items-center" href="https://blog.csdn.net/column/details/object-orient-c.html">
+                            <img src="column" alt="">
+                        </a>
+                    </div>
+                    <div class="info">
+                        <p class="title"><a href="https://blog.csdn.net/column/details/object-orient-c.html">C语言面向对象编程</a></p>
+                        <div class="data">阅读量：<span>101290</span><span class="count">6 篇</span></div>
+                    </div>
+                </li>
+                            <li class="clearfix">
+                    <div class="img-box float-left">
+                        <a class="d-flex align-items-center" href="https://blog.csdn.net/column/details/qt-on-android.html">
+                            <img src="20151123175809849" alt="">
+                        </a>
+                    </div>
+                    <div class="info">
+                        <p class="title"><a href="https://blog.csdn.net/column/details/qt-on-android.html">Qt on Android</a></p>
+                        <div class="data">阅读量：<span>527966</span><span class="count">38 篇</span></div>
+                    </div>
+                </li>
+                            <li class="clearfix">
+                    <div class="img-box float-left">
+                        <a class="d-flex align-items-center" href="https://blog.csdn.net/column/details/qtquick.html">
+                            <img src="20151123175921349" alt="">
+                        </a>
+                    </div>
+                    <div class="info">
+                        <p class="title"><a href="https://blog.csdn.net/column/details/qtquick.html">Qt Quick简明教程</a></p>
+                        <div class="data">阅读量：<span>584151</span><span class="count">30 篇</span></div>
+                    </div>
+                </li>
+                            <li class="clearfix">
+                    <div class="img-box float-left">
+                        <a class="d-flex align-items-center" href="https://blog.csdn.net/column/details/aboutprogrammer.html">
+                            <img src="20160825061530834" alt="">
+                        </a>
+                    </div>
+                    <div class="info">
+                        <p class="title"><a href="https://blog.csdn.net/column/details/aboutprogrammer.html">漫谈程序员</a></p>
+                        <div class="data">阅读量：<span>2745478</span><span class="count">165 篇</span></div>
+                    </div>
+                </li>
+                            <li class="clearfix">
+                    <div class="img-box float-left">
+                        <a class="d-flex align-items-center" href="https://blog.csdn.net/column/details/nodejs-tutorial.html">
+                            <img src="20151123180430505" alt="">
+                        </a>
+                    </div>
+                    <div class="info">
+                        <p class="title"><a href="https://blog.csdn.net/column/details/nodejs-tutorial.html">Node.js开发入门</a></p>
+                        <div class="data">阅读量：<span>310399</span><span class="count">21 篇</span></div>
+                    </div>
+                </li>
+                            <li class="clearfix">
+                    <div class="img-box float-left">
+                        <a class="d-flex align-items-center" href="https://blog.csdn.net/column/details/cef-ppapi.html">
+                            <img src="20160121131053816" alt="">
+                        </a>
+                    </div>
+                    <div class="info">
+                        <p class="title"><a href="https://blog.csdn.net/column/details/cef-ppapi.html">CEF与PPAPI开发</a></p>
+                        <div class="data">阅读量：<span>286447</span><span class="count">38 篇</span></div>
+                    </div>
+                </li>
+                    </ul>
+    </div>
+        <p class="text-center">
+        <a class="btn btn-link-blue flexible-btn" data-fbox="aside-archive">展开</a>
+    </p>
+    </div>
+		    <div id="asideArchive" class="aside-box flexible-box">
+    <h3 class="aside-title">归档</h3>
+    <div class="aside-content">
+        <ul class="archive-list">
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2018/05">
+                    2018年5月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2018/02">
+                    2018年2月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2018/01">
+                    2018年1月                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2017/12">
+                    2017年12月                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2017/11">
+                    2017年11月                    <span class="count float-right">8篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2017/10">
+                    2017年10月                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2017/09">
+                    2017年9月                    <span class="count float-right">8篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2017/08">
+                    2017年8月                    <span class="count float-right">8篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2017/07">
+                    2017年7月                    <span class="count float-right">12篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2017/06">
+                    2017年6月                    <span class="count float-right">10篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2017/05">
+                    2017年5月                    <span class="count float-right">9篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2017/04">
+                    2017年4月                    <span class="count float-right">11篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2017/03">
+                    2017年3月                    <span class="count float-right">13篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2017/02">
+                    2017年2月                    <span class="count float-right">10篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2017/01">
+                    2017年1月                    <span class="count float-right">9篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2016/12">
+                    2016年12月                    <span class="count float-right">8篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2016/11">
+                    2016年11月                    <span class="count float-right">9篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2016/10">
+                    2016年10月                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2016/09">
+                    2016年9月                    <span class="count float-right">10篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2016/08">
+                    2016年8月                    <span class="count float-right">10篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2016/07">
+                    2016年7月                    <span class="count float-right">11篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2016/06">
+                    2016年6月                    <span class="count float-right">13篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2016/05">
+                    2016年5月                    <span class="count float-right">8篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2016/04">
+                    2016年4月                    <span class="count float-right">12篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2016/03">
+                    2016年3月                    <span class="count float-right">13篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2016/02">
+                    2016年2月                    <span class="count float-right">15篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2016/01">
+                    2016年1月                    <span class="count float-right">22篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2015/12">
+                    2015年12月                    <span class="count float-right">12篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2015/11">
+                    2015年11月                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2015/10">
+                    2015年10月                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2015/09">
+                    2015年9月                    <span class="count float-right">11篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2015/08">
+                    2015年8月                    <span class="count float-right">14篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2015/07">
+                    2015年7月                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2015/06">
+                    2015年6月                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2015/05">
+                    2015年5月                    <span class="count float-right">8篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2015/04">
+                    2015年4月                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2015/03">
+                    2015年3月                    <span class="count float-right">9篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2015/02">
+                    2015年2月                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2015/01">
+                    2015年1月                    <span class="count float-right">13篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2014/12">
+                    2014年12月                    <span class="count float-right">13篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2014/11">
+                    2014年11月                    <span class="count float-right">13篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2014/10">
+                    2014年10月                    <span class="count float-right">12篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2014/09">
+                    2014年9月                    <span class="count float-right">9篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2014/08">
+                    2014年8月                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2014/07">
+                    2014年7月                    <span class="count float-right">8篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2014/06">
+                    2014年6月                    <span class="count float-right">9篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2014/05">
+                    2014年5月                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2014/04">
+                    2014年4月                    <span class="count float-right">8篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2014/03">
+                    2014年3月                    <span class="count float-right">10篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2014/02">
+                    2014年2月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2014/01">
+                    2014年1月                    <span class="count float-right">20篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2013/12">
+                    2013年12月                    <span class="count float-right">8篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2013/05">
+                    2013年5月                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2013/04">
+                    2013年4月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2011/08">
+                    2011年8月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2008/07">
+                    2008年7月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2008/06">
+                    2008年6月                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2008/05">
+                    2008年5月                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/foruok/article/month/2008/04">
+                    2008年4月                    <span class="count float-right">15篇</span>
+                </a>
+            </li>
+                    </ul>
+    </div>
+        <p class="text-center">
+        <a class="btn btn-link-blue flexible-btn" data-fbox="aside-archive">展开</a>
+    </p>
+    </div>
+		    <div id="asideHotArticle" class="aside-box">
+	<h3 class="aside-title">热门文章</h3>
+	<div class="aside-content">
+		<ul class="hotArticle-list csdn-tracking-statistics tracking-click" data-mod="popu_521">
+							<li>
+					<a href="https://blog.csdn.net/foruok/article/details/50323093">大龄程序员的未来在何方</a>
+					<p class="read">阅读量：<span>345206</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/foruok/article/details/42293119">漫谈程序员系列：咦，你也在混日子啊</a>
+					<p class="read">阅读量：<span>184829</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/foruok/article/details/32698603">Qt Quick 之 QML 与 C++ 混合编程详解</a>
+					<p class="read">阅读量：<span>113556</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/foruok/article/details/76950020">就 3 点，提升工作效率</a>
+					<p class="read">阅读量：<span>105116</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/foruok/article/details/17305697">Windows下Qt 5.2 for Android开发入门</a>
+					<p class="read">阅读量：<span>104356</span></p>
+				</li>
+					</ul>
+	</div>
+</div>
+		<div id="asideFooter">
+			
+		<div class="aside-box">
+						<div><iframe scrolling="no" src="index_3.html" width="300" height="250" frameborder="0"></iframe></div>
+					</div>
+				<div class="aside-box">
+			<div class="persion_article">
+			</div>
+		</div>
+	</div>
+</aside>
+
+
+</div>
+<div class="mask-dark"></div>
+<div class="report-box">
+    <div class="pos-box">
+        <h2 class="title">不良信息举报</h2>
+        <a class="btn-close">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#csdnc-times"></use>
+            </svg>
+        </a>
+        <form id="frmReport" action="https://blog.csdn.net/foruok/article/details/69525039">
+            <div class="form-box">
+                <div class="txt-row-box">
+                    <label class="title" id="reptTit">举报内容：</label>
+                    <p class="rpt-title text-truncate">让WebRTC支持H264编解码</p>
+                </div>
+                <div class="txt-row-box">
+                    <label class="title">举报原因：</label>
+                    <div class="rdo-box">
+                        <label><input class="rdo-chk report-type" id="report_sex" name="report_type" value="1" type="radio">色情</label>
+                        <label><input class="rdo-chk report-type" id="report_Politics" name="report_type" value="2" type="radio">政治</label>
+                        <label><input class="rdo-chk report-type" id="report_copy" name="report_type" value="3" type="radio">抄袭</label>
+                        <label><input class="rdo-chk report-type" id="report_ad" name="report_type" value="4" type="radio">广告</label>
+                        <label><input class="rdo-chk report-type" id="report_want" name="report_type" value="5" type="radio">招聘</label>
+                        <label><input class="rdo-chk report-type" id="report_call" name="report_type" value="6" type="radio">骂人</label>
+                        <label><input class="rdo-chk report-type" id="report_other" name="report_type" value="7" type="radio">其他</label>
+                    </div>
+                </div>
+                <div class="txt-row-box" id="rptOriginalurl">
+                    <label class="title">原文地址：</label>
+                    <div class="txt-box">
+                        <input class="ipt" id="originalurl" name="originalurl" value="" type="text">
+                    </div>
+                </div>
+                <div class="txt-row-box">
+                    <label class="title">原因补充：</label>
+                    <div class="txt-box">
+                        <textarea class="ipt ipt-textarea" name="description" maxlength="30"></textarea>
+                        <p class="remark">最多只允许输入30个字</p>
+                    </div>
+                </div>
+            </div>
+            <div class="opt-box text-right">
+                <input class="btn btn-link-gray btn-close" value="取消" type="reset">
+                <input class="btn btn-red btn-submit" value="提交" type="submit">
+            </div>
+        </form>
+    </div>
+</div>
+<div class="pulllog-box" style="display: block;">
+	<div class="pulllog clearfix">
+		<span class="text float-left">加入CSDN，享受更精准的内容推荐，与500万程序员共同成长！</span>
+		<div class="pulllog-btn float-right clearfix">
+            <button class="pulllog-login float-left csdn-tracking-statistics tracking-click" data-mod="popu_557">
+                登录
+            </button>
+            <div class="pulllog-sigin float-left csdn-tracking-statistics tracking-click" data-mod="popu_558">
+                <a href="https://passport.csdn.net/account/mobileregister" target="_top">注册</a>
+            </div>
+            <button class="btn-close">
+                <svg class="icon" aria-hidden="true">
+                    <use xlink:href="#csdnc-times"></use>
+                </svg>
+            </button>
+		</div>
+	</div>
+</div>
+<div id="loginWrap" style="display: none;"></div>
+<div class="tool-box">
+	<ul class="meau-list">
+		<li>
+			<button class="btn-like " title="点赞">
+				<svg class="icon active" aria-hidden="true">
+					<use xlink:href="#csdnc-thumbsup-ok"></use>
+				</svg><svg class="icon no-active" aria-hidden="true">
+					<use xlink:href="#csdnc-thumbsup"></use>
+				</svg>
+				<p>7</p>
+			</button>
+		</li>
+		<li class="toc-container-box" id="liTocBox">
+			<button class="btn-toc" title="目录">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-contents"></use>
+				</svg><br>目录
+			</button>
+			<div class="toc-container">
+				<div class="pos-box">
+					<div class="icon-arrow"></div>
+					<div class="scroll-box">
+						<div class="toc-box"></div>
+					</div>
+				</div>
+				<div class="opt-box">
+					<button class="btn-opt prev nomore" title="向上">
+						<svg class="icon" aria-hidden="true">
+							<use xlink:href="#csdnc-chevronup"></use>
+						</svg>
+					</button>
+					<button class="btn-opt next">
+						<svg class="icon" aria-hidden="true">
+							<use xlink:href="#csdnc-chevrondown"></use>
+						</svg>
+					</button>
+				</div>
+			</div>
+		</li>
+		<li>
+			<button class="btn-bookmark" title="收藏">
+				<svg class="icon active" aria-hidden="true">
+					<use xlink:href="#csdnc-bookmark-ok"></use>
+				</svg><svg class="icon no-active" aria-hidden="true">
+					<use xlink:href="#csdnc-bookmark"></use>
+				</svg><br>收藏
+			</button>
+		</li>
+		<li>
+			<a class="btn-comments" title="评论" href="#commentBox">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-comments"></use>
+				</svg><br>评论
+			</a>
+		</li>
+				<li class="bdsharebuttonbox">
+			<a class="btn-comments bds_weixin" data-cmd="weixin" title="微信分享">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-wechat"></use>
+				</svg><br>微信
+			</a>
+		</li>
+		<li class="bdsharebuttonbox">
+			<a class="btn-comments bds_tsina" data-cmd="tsina" title="微博分享">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-weibo"></use>
+				</svg><br>微博
+			</a>
+		</li>
+		<li class="bdsharebuttonbox">
+			<a class="btn-comments bds_qzone" data-cmd="qzone" title="QQ分享">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-qq"></use>
+				</svg><br>QQ
+			</a>
+		</li>
+	</ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="box-box-default">
+    <a class="btn-remove">
+        关闭
+    </a>
+    <div id="_gah20vvwqmp"><div id="bupmx" style="width: 0px; height: 0px;"></div><iframe scrolling="no" src="index_4.html" width="160" height="600" frameborder="0"></iframe></div>
+</div>
+<div class="box-box-large">
+    <a class="btn-remove">
+        关闭
+    </a>
+    <div id="_wwe0trtao0c"><iframe scrolling="no" src="index_5.html" width="250" height="250" frameborder="0"></iframe></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,369 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    <title>
+      Yocto/gstreamer/compositing – Gateworks
+    </title>
+      
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--[if IE]><script type="text/javascript">
+      if (/^#__msie303:/.test(window.location.hash))
+        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
+    </script><![endif]-->
+          <link rel="search" href="http://trac.gateworks.com/search">
+          <link rel="help" href="http://trac.gateworks.com/wiki/TracGuide">
+          <link rel="alternate" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/compositing?format=txt" type="text/x-trac-wiki" title="Plain Text">
+          <link rel="up" href="http://trac.gateworks.com/wiki/Yocto/gstreamer" title="View parent page">
+          <link rel="start" href="http://trac.gateworks.com/wiki">
+          
+          
+          <link rel="icon" href="trac.ico" type="image/x-icon">
+    
+      <link type="application/opensearchdescription+xml" rel="search" href="http://trac.gateworks.com/search/opensearch" title="Search Gateworks">
+      
+      
+      
+      
+      
+    
+    
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+
+		
+	
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+    <div id="banner">
+      <div id="header">
+        <a id="logo" href="http://trac.gateworks.com/wiki"><img src="g2998.png" alt="Gateworks Wiki"></a>
+      </div>
+      <form id="search" action="http://trac.gateworks.com/search" method="get">
+        <div>
+          <label for="proj-search">Search:</label>
+          <input id="proj-search" name="q" size="18" value="" type="text">
+          <input value="Search" type="submit">
+        </div>
+      </form>
+      <div id="metanav" class="nav">
+    <ul>
+      <li class="first"><a href="http://trac.gateworks.com/login">Login</a></li><li><a href="http://trac.gateworks.com/prefs">Preferences</a></li><li><a href="http://trac.gateworks.com/wiki/TracGuide">Help/Guide</a></li><li><a href="http://trac.gateworks.com/about">About Trac</a></li><li class="last"><a href="http://trac.gateworks.com/reset_password">Forgot your password?</a></li>
+    </ul>
+  </div>
+    </div>
+    <div id="mainnav" class="nav">
+    <ul>
+      <li class="first active"><a href="http://trac.gateworks.com/wiki">Wiki</a></li><li><a href="http://trac.gateworks.com/timeline">Timeline</a></li><li><a href="http://trac.gateworks.com/browser">Browse Source</a></li><li class="last"><a href="http://trac.gateworks.com/search">Search</a></li>
+    </ul>
+  </div>
+    <div id="main">
+      <div id="pagepath" class="noprint">
+  <a class="pathentry first" title="View WikiStart" href="http://trac.gateworks.com/wiki">wiki:</a><a class="pathentry" href="http://trac.gateworks.com/wiki/Yocto" title="View Yocto">Yocto</a><span class="pathentry sep">/</span><a class="pathentry" href="http://trac.gateworks.com/wiki/Yocto/gstreamer" title="View Yocto/gstreamer">gstreamer</a><span class="pathentry sep">/</span><a class="pathentry" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/compositing" title="View Yocto/gstreamer/compositing">compositing</a>
+</div>
+      <div id="ctxtnav" class="nav">
+        <h2>Context Navigation</h2>
+        <ul>
+          <li class="first"><a href="http://trac.gateworks.com/wiki/Yocto/gstreamer">Up</a></li><li><a href="http://trac.gateworks.com/wiki/WikiStart">Start Page</a></li><li><a href="http://trac.gateworks.com/wiki/TitleIndex">Index</a></li><li class="last"><a href="http://trac.gateworks.com/wiki/Yocto/gstreamer/compositing?action=history">History</a></li>
+        </ul>
+        <hr>
+      </div>
+    <div id="content" class="wiki">
+      <div class="wikipage searchable">
+        
+          <div id="wikipage" class="trac-content"><p>
+</p><div class="wiki-toc">
+<ol>
+  <li>
+    <a href="#Compositing">Compositing</a>
+    <ol>
+      <li>
+        <a href="#PseudoCompositingtoLocalVideoOut">Pseudo Compositing to Local Video Out</a>
+        <ol>
+          <li>
+            <a href="#Displaying8camerainputsontoanHDMImonitorusingAVC8000nano">Displaying 8 camera inputs onto an HDMI monitor using AVC8000nano</a>
+          </li>
+        </ol>
+      </li>
+      <li>
+        <a href="#CompositorElementforStreaming">Compositor Element for Streaming</a>
+        <ol>
+          <li>
+            <a href="#gstreamer-imximxg2dcompositorHardwareAcceleratedSingleFrameCompositingforStreaming">gstreamer-imx imxg2dcompositor Hardware Accelerated Single Frame …</a>
+          </li>
+          <li>
+            <a href="#CompositorExamplewith8VideoCameras">Compositor Example with 8 Video Cameras</a>
+          </li>
+          <li>
+            <a href="#CompositingwithlimitedCPUlowmemorybandwidth">Compositing with limited CPU, low memory bandwidth</a>
+          </li>
+          <li>
+            <a href="#CompositorSoftwareAccelerated-Notrecommended">Compositor Software Accelerated - Not recommended</a>
+          </li>
+        </ol>
+      </li>
+    </ol>
+  </li>
+</ol>
+</div><p>
+</p>
+<p>
+<span class="wikianchor" id="compositing"><a class="anchor" href="#compositing" title="Link to #compositing"> ¶</a></span>
+</p>
+<h1 id="Compositing">Compositing<a class="anchor" href="#Compositing" title="Link to this section"> ¶</a></h1>
+<p>
+Compositing is the term used when combining two or more images/video streams into a single frame. This is useful when you want to apply the same effect over several videos from a single stream. There are a few ways of accomplishing this with GStreamer: Either through a 'compositor' element, or by using individualized sinks to transform video streams for you. However, using a compositor element is preferred as it truly combines video streams into a single frame which ideal for streaming over the network.
+</p>
+<p>
+In the past, a software based compositor was available, but was extremely burdensome on the CPU, which led to very choppy video. However, in the latest <code>gstreamer-imx</code>, a hardware accelerated compositor was added for imx6 based products. For some documentation, please see <a class="ext-link" href="https://github.com/Freescale/gstreamer-imx#compositing"><span class="icon">​</span>this page</a>. Please see below for examples on the two ways you can composite video together.
+</p>
+<h2 id="PseudoCompositingtoLocalVideoOut">Pseudo Compositing to Local Video Out<a class="anchor" href="#PseudoCompositingtoLocalVideoOut" title="Link to this section"> ¶</a></h2>
+<p>
+When there is a system with multiple video inputs that are then directly displayed on an attached video output, it is best to simply create the composition through coordinates with the hardware sinks.
+</p>
+<p>
+Instead of using a compositor software element, you can pseudo composite by running multiple video input pipelines together.
+</p>
+<p>
+Please see the following for an example of taking 2 camera inputs and displaying on one HDMI monitor side by side:
+This example uses two separate pipelines from source to sink, relying on the <code>imxg2dvideosink</code> element to draw video frames where instructed.
+</p>
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 <span class="se">\
+</span>    imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video3 ! imxg2dvideosink window-width<span class="o">=</span><span class="m">960</span> window-height<span class="o">=</span><span class="m">544</span> window-x-coord<span class="o">=</span><span class="m">0</span> window-y-coord<span class="o">=</span><span class="m">0</span> <span class="se">\
+</span>    imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video5 ! imxg2dvideosink window-width<span class="o">=</span><span class="m">960</span> window-height<span class="o">=</span><span class="m">544</span> window-x-coord<span class="o">=</span><span class="m">960</span> window-y-coord<span class="o">=</span><span class="m">0</span>
+</pre></div></div><h3 id="Displaying8camerainputsontoanHDMImonitorusingAVC8000nano">Displaying 8 camera inputs onto an HDMI monitor using AVC8000nano<a class="anchor" href="#Displaying8camerainputsontoanHDMImonitorusingAVC8000nano" title="Link to this section"> ¶</a></h3>
+<p>
+This assumes a 1920x1080 HDMI monitor is connected to the HDMI output on the SBC.
+</p>
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 <span class="se">\
+</span>    imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video2 ! imxg2dvideosink window-width<span class="o">=</span><span class="m">490</span> window-height<span class="o">=</span><span class="m">490</span> window-x-coord<span class="o">=</span><span class="m">0</span> window-y-coord<span class="o">=</span><span class="m">0</span> <span class="se">\
+</span>    imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video3 ! imxg2dvideosink window-width<span class="o">=</span><span class="m">490</span> window-height<span class="o">=</span><span class="m">490</span> window-x-coord<span class="o">=</span><span class="m">490</span> window-y-coord<span class="o">=</span><span class="m">0</span> <span class="se">\
+</span>    imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video4 ! imxg2dvideosink window-width<span class="o">=</span><span class="m">490</span> window-height<span class="o">=</span><span class="m">490</span> window-x-coord<span class="o">=</span><span class="m">980</span> window-y-coord<span class="o">=</span><span class="m">0</span> <span class="se">\
+</span>    imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video5 ! imxg2dvideosink window-width<span class="o">=</span><span class="m">490</span> window-height<span class="o">=</span><span class="m">490</span> window-x-coord<span class="o">=</span><span class="m">1470</span> window-y-coord<span class="o">=</span><span class="m">0</span> <span class="se">\
+</span>    imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video6 ! imxg2dvideosink window-width<span class="o">=</span><span class="m">490</span> window-height<span class="o">=</span><span class="m">490</span> window-x-coord<span class="o">=</span><span class="m">0</span> window-y-coord<span class="o">=</span><span class="m">540</span> <span class="se">\
+</span>    imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video7 ! imxg2dvideosink window-width<span class="o">=</span><span class="m">490</span> window-height<span class="o">=</span><span class="m">490</span> window-x-coord<span class="o">=</span><span class="m">490</span> window-y-coord<span class="o">=</span><span class="m">540</span> <span class="se">\
+</span>    imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video8 ! imxg2dvideosink window-width<span class="o">=</span><span class="m">490</span> window-height<span class="o">=</span><span class="m">490</span> window-x-coord<span class="o">=</span><span class="m">980</span> window-y-coord<span class="o">=</span><span class="m">540</span> <span class="se">\
+</span>    imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video9 ! imxg2dvideosink window-width<span class="o">=</span><span class="m">490</span> window-height<span class="o">=</span><span class="m">490</span> window-x-coord<span class="o">=</span><span class="m">1470</span> window-y-coord<span class="o">=</span><span class="m">540</span>
+</pre></div></div><h2 id="CompositorElementforStreaming">Compositor Element for Streaming<a class="anchor" href="#CompositorElementforStreaming" title="Link to this section"> ¶</a></h2>
+<p>
+Using a compositor element has the benefit of allowing affecting the frame wholly (after frames are combined) instead of working on individual pipelines. For example, video streaming where you want to compress the stream to mpeg4 would benefit. Instead of creating four separate video streams, each doing an encoding, you now stream a single frame with only a single encoding.
+</p>
+<h3 id="gstreamer-imximxg2dcompositorHardwareAcceleratedSingleFrameCompositingforStreaming">gstreamer-imx imxg2dcompositor Hardware Accelerated Single Frame Compositing for Streaming<a class="anchor" href="#gstreamer-imximxg2dcompositorHardwareAcceleratedSingleFrameCompositingforStreaming" title="Link to this section"> ¶</a></h3>
+<p>
+This new gstreamer-imx compositor uses the same notation the software-based compositor used on this page. However, this is now hardware accelerated by either the GPU or IPU.
+</p>
+<p>
+A simple example using the <code>videotestsrc</code> plugin is shown below:
+</p>
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 <span class="se">\
+</span>  imxg2dcompositor <span class="nv">name</span><span class="o">=</span>comp <span class="se">\
+</span>    sink_0::alpha<span class="o">=</span><span class="m">1</span> sink_0::xpos<span class="o">=</span><span class="m">0</span> sink_0::ypos<span class="o">=</span><span class="m">0</span> <span class="se">\
+</span>    sink_1::alpha<span class="o">=</span><span class="m">0</span>.5 sink_1::xpos<span class="o">=</span><span class="m">320</span> sink_1::ypos<span class="o">=</span><span class="m">240</span> ! <span class="se">\
+</span>   queue2 ! video/x-raw, <span class="nv">width</span><span class="o">=</span><span class="m">800</span>, <span class="nv">height</span><span class="o">=</span><span class="m">600</span> ! imxipuvideotransform ! imxg2dvideosink <span class="se">\
+</span>  videotestsrc ! <span class="s2">"video/x-raw"</span> ! comp.sink_0 <span class="se">\
+</span>  videotestsrc ! <span class="s2">"video/x-raw"</span> ! comp.sink_1
+</pre></div></div><p>
+You can combine live video streaming via the following:
+</p>
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 <span class="se">\
+</span> imxg2dcompositor <span class="nv">name</span><span class="o">=</span>c background-color<span class="o">=</span>0x223344 <span class="se">\
+</span>   sink_0::xpos<span class="o">=</span><span class="m">0</span> sink_0::ypos<span class="o">=</span><span class="m">0</span> sink_0::width<span class="o">=</span><span class="m">400</span> sink_0::height<span class="o">=</span><span class="m">300</span> sink_0::fill_color<span class="o">=</span>0x00000000 <span class="se">\
+</span>   sink_1::xpos<span class="o">=</span><span class="m">400</span> sink_1::ypos<span class="o">=</span><span class="m">0</span> sink_1::width<span class="o">=</span><span class="m">400</span> sink_1::height<span class="o">=</span><span class="m">300</span> sink_1::fill_color<span class="o">=</span>0x11111111 <span class="se">\
+</span>   sink_2::xpos<span class="o">=</span><span class="m">0</span> sink_2::ypos<span class="o">=</span><span class="m">300</span> sink_2::width<span class="o">=</span><span class="m">400</span> sink_2::height<span class="o">=</span><span class="m">300</span> sink_2::fill_color<span class="o">=</span>0x22222222 <span class="se">\
+</span>   sink_3::xpos<span class="o">=</span><span class="m">400</span> sink_3::ypos<span class="o">=</span><span class="m">300</span> sink_3::width<span class="o">=</span><span class="m">400</span> sink_3::height<span class="o">=</span><span class="m">300</span> sink_3::fill_color<span class="o">=</span>0x33333333 <span class="se">\
+</span>   sink_4::xpos<span class="o">=</span><span class="m">200</span> sink_4::ypos<span class="o">=</span><span class="m">150</span> sink_4::width<span class="o">=</span><span class="m">400</span> sink_4::height<span class="o">=</span><span class="m">300</span> sink_4::fill_color<span class="o">=</span>0x44444444 sink_4::alpha<span class="o">=</span><span class="m">0</span>.5 ! <span class="se">\
+</span>  queue2 ! video/x-raw, <span class="nv">width</span><span class="o">=</span><span class="m">800</span>, <span class="nv">height</span><span class="o">=</span><span class="m">600</span> ! imxg2dvideosink <span class="se">\
+</span> imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video3 ! queue2 ! c.sink_0 <span class="se">\
+</span> imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video5 ! queue2 ! c.sink_1 <span class="se">\
+</span> videotestsrc <span class="nv">pattern</span><span class="o">=</span><span class="m">0</span>  ! queue2 ! c.sink_2 <span class="se">\
+</span> videotestsrc <span class="nv">pattern</span><span class="o">=</span><span class="m">18</span> ! queue2 ! c.sink_3 <span class="se">\
+</span> videotestsrc <span class="nv">pattern</span><span class="o">=</span><span class="m">1</span>  ! queue2 ! c.sink_4
+</pre></div></div><p>
+An alternate way of writing the above:
+</p>
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 <span class="se">\
+</span>  imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video3 ! queue2 ! c.sink_0 <span class="se">\
+</span>  imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video5 ! queue2 ! c.sink_1 <span class="se">\
+</span>  videotestsrc <span class="nv">pattern</span><span class="o">=</span><span class="m">0</span>  ! queue2 ! c.sink_2 <span class="se">\
+</span>  videotestsrc <span class="nv">pattern</span><span class="o">=</span><span class="m">18</span> ! queue2 ! c.sink_3 <span class="se">\
+</span>  videotestsrc <span class="nv">pattern</span><span class="o">=</span><span class="m">1</span>  ! queue2 ! c.sink_4 <span class="se">\
+</span>  imxg2dcompositor <span class="nv">name</span><span class="o">=</span>c background-color<span class="o">=</span>0x223344 <span class="se">\
+</span>   sink_0::xpos<span class="o">=</span><span class="m">0</span> sink_0::ypos<span class="o">=</span><span class="m">0</span> sink_0::width<span class="o">=</span><span class="m">400</span> sink_0::height<span class="o">=</span><span class="m">300</span> sink_0::fill_color<span class="o">=</span>0x00000000 <span class="se">\
+</span>   sink_1::xpos<span class="o">=</span><span class="m">400</span> sink_1::ypos<span class="o">=</span><span class="m">0</span> sink_1::width<span class="o">=</span><span class="m">400</span> sink_1::height<span class="o">=</span><span class="m">300</span> sink_1::fill_color<span class="o">=</span>0x11111111 <span class="se">\
+</span>   sink_2::xpos<span class="o">=</span><span class="m">0</span> sink_2::ypos<span class="o">=</span><span class="m">300</span> sink_2::width<span class="o">=</span><span class="m">400</span> sink_2::height<span class="o">=</span><span class="m">300</span> sink_2::fill_color<span class="o">=</span>0x22222222 <span class="se">\
+</span>   sink_3::xpos<span class="o">=</span><span class="m">400</span> sink_3::ypos<span class="o">=</span><span class="m">300</span> sink_3::width<span class="o">=</span><span class="m">400</span> sink_3::height<span class="o">=</span><span class="m">300</span> sink_3::fill_color<span class="o">=</span>0x33333333 <span class="se">\
+</span>   sink_4::xpos<span class="o">=</span><span class="m">200</span> sink_4::ypos<span class="o">=</span><span class="m">150</span> sink_4::width<span class="o">=</span><span class="m">400</span> sink_4::height<span class="o">=</span><span class="m">300</span> sink_4::fill_color<span class="o">=</span>0x44444444 sink_4::alpha<span class="o">=</span><span class="m">0</span>.5 ! <span class="se">\
+</span>  queue2 ! video/x-raw, <span class="nv">width</span><span class="o">=</span><span class="m">800</span>, <span class="nv">height</span><span class="o">=</span><span class="m">600</span> ! imxg2dvideosink
+</pre></div></div><p>
+This above examples showcases several ideas: resizing video, filling background color if video doesn't fit the full parameters, combines a total of five (5) pipelines, and places one of them in the middle of the screen with half it's transparency. Please note that you can use the <code>imxipucompositor</code>, but because the IPU is very pick with it's input type (width and height), it is generally not recommended for video composition.
+</p>
+<p>
+The below image (annotated) is how the above pipeline would look:
+</p>
+<p>
+<a style="padding: 0px; border: medium none;" href="http://trac.gateworks.com/attachment/wiki/Yocto/gstreamer/compositing/composite_example.png"><img src="composite_example.png"></a>
+</p>
+<p>
+Notes:
+</p>
+<ul><li>The colors <code>0x00000000</code> and <code>0x11111111</code> are used as background fill colors for that frame. Note that the <code>sink_n::fill_color</code> property is a 32bit ABGR value
+</li><li>The total size is 800x600, with each of the five frames being 400x300 (outlined in <span style="color: rgb(255, 0, 0);">Red</span>)
+</li><li>The top-left corner is coordinate <code>0, 0</code>
+</li><li>You can rotate a single inner video frame by adding <code>sink_n::rotation=1</code>, the video stream will be fit for the new aspect ratio and background will be colored with the <code>sink_n::fill_color</code> property
+</li><li>Borders can be added to frames via the <code>sink_n::left-margin</code>, <code>sink_n::right-margin</code>, <code>sink_n::top-margin</code>, and <code>sink_n::bottom-margin</code> properties
+</li><li>For a complete list of properties to the compositor, please see <a class="ext-link" href="https://github.com/Freescale/gstreamer-imx#compositing"><span class="icon">​</span>this section</a> of the <code>gstreamer-imx</code> README.
+</li></ul><p>
+If you want to stream this via rtsp, you can either use the <code>gst-variable-rtsp-server</code> application, which is provided by default on our Yocto 1.8 BSP or use the <code>udpsink/src</code> elements. The following is an example of using the <code>gst-variable-rtsp-server</code> application.
+</p>
+<div class="wiki-code"><div class="code"><pre><span class="c1"># Streaming at birate of 10mbit/s
+</span>gst-variable-rtsp-server -u <span class="se">\
+</span> <span class="s2">"imxv4l2videosrc device=/dev/video3 ! queue2 ! c.sink_0 \
+  imxv4l2videosrc device=/dev/video5 ! queue2 ! c.sink_1 \
+  videotestsrc pattern=0  ! queue2 ! c.sink_2 \
+  videotestsrc pattern=18 ! queue2 ! c.sink_3 \
+  videotestsrc pattern=1  ! queue2 ! c.sink_4 \
+  imxg2dcompositor name=c background-color=0x223344 \
+   sink_0::xpos=0 sink_0::ypos=0 sink_0::width=400 sink_0::height=300 sink_0::fill_color=0x00000000 \
+   sink_1::xpos=400 sink_1::ypos=0 sink_1::width=400 sink_1::height=300 sink_1::fill_color=0x11111111 \
+   sink_2::xpos=0 sink_2::ypos=300 sink_2::width=400 sink_2::height=300 sink_2::fill_color=0x22222222 \
+   sink_3::xpos=400 sink_3::ypos=300 sink_3::width=400 sink_3::height=300 sink_3::fill_color=0x33333333 \
+   sink_4::xpos=200 sink_4::ypos=150 sink_4::width=400 sink_4::height=300 sink_4::fill_color=0x44444444 sink_4::alpha=0.5 ! \
+  queue2 ! video/x-raw, width=800, height=600 ! imxipuvideotransform ! imxvpuenc_h264 bitrate=10000 ! rtph264pay name=pay0 pt=96"</span>
+</pre></div></div><p>
+An example of the pipeline on the receiving side that then displays to an HDMI monitor:
+</p>
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 rtspsrc <span class="nv">location</span><span class="o">=</span>rtsp://172.24.10.210:9099/stream <span class="nv">latency</span><span class="o">=</span><span class="m">10</span> ! decodebin ! autovideosink
+</pre></div></div><p>
+For other methods of network streaming, please view our <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/streaming">streaming</a> page.
+</p>
+<h3 id="CompositorExamplewith8VideoCameras">Compositor Example with 8 Video Cameras<a class="anchor" href="#CompositorExamplewith8VideoCameras" title="Link to this section"> ¶</a></h3>
+<p>
+<a style="padding: 0px; border: medium none;" href="http://trac.gateworks.com/raw-attachment/wiki/minipciexpressmodules/avc8000nano/final_screen_cameras.jpg"><img src="final_screen_cameras.jpg" alt="http://trac.gateworks.com/raw-attachment/wiki/minipciexpressmodules/avc8000nano/final_screen_cameras.jpg" title="http://trac.gateworks.com/raw-attachment/wiki/minipciexpressmodules/avc8000nano/final_screen_cameras.jpg"></a>
+</p>
+<ol><li>First, start the server side code on the SBC with the cameras connected
+<div class="wiki-code"><div class="code"><pre>gst-variable-rtsp-server -u <span class="se">\
+</span> <span class="s2">"imxv4l2videosrc device=/dev/video2 queue-size=55 ! queue2 ! c.sink_0 \
+ imxv4l2videosrc device=/dev/video3 queue-size=55 ! queue2 ! c.sink_1 \
+ imxv4l2videosrc device=/dev/video4 queue-size=55 ! queue2 ! c.sink_2 \
+ imxv4l2videosrc device=/dev/video5 queue-size=55 ! queue2 ! c.sink_3 \
+ imxv4l2videosrc device=/dev/video6 queue-size=55 ! queue2 ! c.sink_4 \
+ imxv4l2videosrc device=/dev/video7 queue-size=55 ! queue2 ! c.sink_5 \
+ imxv4l2videosrc device=/dev/video8 queue-size=55 ! queue2 ! c.sink_6 \
+ imxv4l2videosrc device=/dev/video9 queue-size=55 ! queue2 ! c.sink_7 \
+ imxg2dcompositor name=c background-color=0xffffff \
+  sink_0::xpos=0 sink_0::ypos=0 sink_0::width=320 sink_0::height=360 sink_0::fill_color=0x00000000 \
+  sink_1::xpos=320 sink_1::ypos=0 sink_1::width=320 sink_1::height=360 sink_1::fill_color=0x00000000 \
+  sink_2::xpos=640 sink_2::ypos=0 sink_2::width=320 sink_2::height=360 sink_2::fill_color=0x00000000 \
+  sink_3::xpos=960 sink_3::ypos=0 sink_3::width=320 sink_3::height=360 sink_3::fill_color=0x00000000 \
+  sink_4::xpos=0 sink_4::ypos=360 sink_4::width=320 sink_4::height=360 sink_4::fill_color=0x00000000 \
+  sink_5::xpos=320 sink_5::ypos=360 sink_5::width=320 sink_5::height=360 sink_5::fill_color=0x00000000 \
+  sink_6::xpos=640 sink_6::ypos=360 sink_6::width=320 sink_6::height=360 sink_6::fill_color=0x00000000 \
+  sink_7::xpos=960 sink_7::ypos=360 sink_7::width=320 sink_7::height=360 sink_7::fill_color=0x00000000 \
+ ! queue2 ! video/x-raw, width=1280, height=720 ! imxipuvideotransform \
+ ! imxvpuenc_h264 bitrate=20000 ! rtph264pay name=pay0 pt=96"</span>
+</pre></div></div></li></ol><ol start="2"><li>Then, start the receiving code on the other SBC, pointing to the IP of the server
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 --gst-debug<span class="o">=</span><span class="m">3</span> rtspsrc <span class="nv">location</span><span class="o">=</span>rtsp://172.24.10.210:9099/stream <span class="nv">latency</span><span class="o">=</span><span class="m">100</span> ! queue2 ! decodebin ! autovideosink
+</pre></div></div></li></ol><h3 id="CompositingwithlimitedCPUlowmemorybandwidth">Compositing with limited CPU, low memory bandwidth<a class="anchor" href="#CompositingwithlimitedCPUlowmemorybandwidth" title="Link to this section"> ¶</a></h3>
+<p>
+Board performance can be measured with: 
+</p>
+<pre class="wiki">/unit_tests/mmdc2 
+</pre><p>
+This is included in our Yocto pre-built image. 
+</p>
+<p>
+Boards with less processing power or lower memory bandwidth may only function using lower FPS:
+</p>
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 <span class="se">\
+</span>    imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video2 fps-n<span class="o">=</span><span class="m">15</span> ! imxg2dvideosink window-width<span class="o">=</span><span class="m">490</span> window-height<span class="o">=</span><span class="m">490</span> window-x-coord<span class="o">=</span><span class="m">0</span> window-y-coord<span class="o">=</span><span class="m">0</span> <span class="se">\
+</span>    imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video3 fps-n<span class="o">=</span><span class="m">15</span> ! imxg2dvideosink window-width<span class="o">=</span><span class="m">490</span> window-height<span class="o">=</span><span class="m">490</span> window-x-coord<span class="o">=</span><span class="m">490</span> window-y-coord<span class="o">=</span><span class="m">0</span> <span class="se">\
+</span>    imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video4 fps-n<span class="o">=</span><span class="m">15</span> ! imxg2dvideosink window-width<span class="o">=</span><span class="m">490</span> window-height<span class="o">=</span><span class="m">490</span> window-x-coord<span class="o">=</span><span class="m">980</span> window-y-coord<span class="o">=</span><span class="m">0</span> <span class="se">\
+</span>    imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video5 fps-n<span class="o">=</span><span class="m">15</span> ! imxg2dvideosink window-width<span class="o">=</span><span class="m">490</span> window-height<span class="o">=</span><span class="m">490</span> window-x-coord<span class="o">=</span><span class="m">1470</span> window-y-coord<span class="o">=</span><span class="m">0</span> <span class="se">\
+</span>    imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video6 fps-n<span class="o">=</span><span class="m">15</span> ! imxg2dvideosink window-width<span class="o">=</span><span class="m">490</span> window-height<span class="o">=</span><span class="m">490</span> window-x-coord<span class="o">=</span><span class="m">0</span> window-y-coord<span class="o">=</span><span class="m">540</span> <span class="se">\
+</span>    imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video7 fps-n<span class="o">=</span><span class="m">15</span> ! imxg2dvideosink window-width<span class="o">=</span><span class="m">490</span> window-height<span class="o">=</span><span class="m">490</span> window-x-coord<span class="o">=</span><span class="m">490</span> window-y-coord<span class="o">=</span><span class="m">540</span> <span class="se">\
+</span>    imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video8 fps-n<span class="o">=</span><span class="m">15</span> ! imxg2dvideosink window-width<span class="o">=</span><span class="m">490</span> window-height<span class="o">=</span><span class="m">490</span> window-x-coord<span class="o">=</span><span class="m">980</span> window-y-coord<span class="o">=</span><span class="m">540</span> <span class="se">\
+</span>    imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video1 fps-n<span class="o">=</span><span class="m">15</span> ! imxg2dvideosink window-width<span class="o">=</span><span class="m">490</span> window-height<span class="o">=</span><span class="m">490</span> window-x-coord<span class="o">=</span><span class="m">1470</span> window-y-coord<span class="o">=</span><span class="m">540</span> 
+</pre></div></div><p>
+You may also reduce bus load by reducing the output resolution:
+</p>
+<div class="wiki-code"><div class="code"><pre>     gst-launch-1.0 -e -vv <span class="se">\
+</span>       imxg2dcompositor <span class="nv">name</span><span class="o">=</span>comp <span class="se">\
+</span>         sink_1::xpos<span class="o">=</span><span class="m">0</span>   sink_1::ypos<span class="o">=</span><span class="m">0</span> <span class="se">\
+</span>         sink_2::xpos<span class="o">=</span><span class="m">490</span> sink_2::ypos<span class="o">=</span><span class="m">0</span> <span class="se">\
+</span>         sink_3::xpos<span class="o">=</span><span class="m">980</span> sink_3::ypos<span class="o">=</span><span class="m">0</span> <span class="se">\
+</span>         sink_4::xpos<span class="o">=</span><span class="m">1470</span>   sink_4::ypos<span class="o">=</span><span class="m">0</span> <span class="se">\
+</span>         sink_5::xpos<span class="o">=</span><span class="m">0</span> sink_5::ypos<span class="o">=</span><span class="m">540</span> <span class="se">\
+</span>         sink_6::xpos<span class="o">=</span><span class="m">490</span> sink_6::ypos<span class="o">=</span><span class="m">540</span> <span class="se">\
+</span>         sink_7::xpos<span class="o">=</span><span class="m">980</span>   sink_7::ypos<span class="o">=</span><span class="m">540</span> <span class="se">\
+</span>         sink_8::xpos<span class="o">=</span><span class="m">1470</span> sink_8::ypos<span class="o">=</span><span class="m">540</span> ! <span class="se">\
+</span>       queue2 ! video/x-raw, <span class="nv">width</span><span class="o">=</span><span class="m">1940</span>, <span class="nv">height</span><span class="o">=</span><span class="m">1080</span> ! imxipuvideotransform ! imxipuvideosink <span class="se">\
+</span>       imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video1 fps-n<span class="o">=</span><span class="m">12</span> ! queue2 ! imxipuvideotransform <span class="nv">qos</span><span class="o">=</span><span class="nb">false</span> ! video/x-raw, <span class="nv">width</span><span class="o">=</span><span class="m">340</span>, <span class="nv">height</span><span class="o">=</span><span class="m">240</span> ! comp.sink_1 <span class="se">\
+</span>       imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video2 fps-n<span class="o">=</span><span class="m">12</span> ! queue2 ! imxipuvideotransform <span class="nv">qos</span><span class="o">=</span><span class="nb">false</span> ! video/x-raw, <span class="nv">width</span><span class="o">=</span><span class="m">340</span>, <span class="nv">height</span><span class="o">=</span><span class="m">240</span> ! comp.sink_2 <span class="se">\
+</span>       imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video3 fps-n<span class="o">=</span><span class="m">12</span> ! queue2 ! imxipuvideotransform <span class="nv">qos</span><span class="o">=</span><span class="nb">false</span> ! video/x-raw, <span class="nv">width</span><span class="o">=</span><span class="m">340</span>, <span class="nv">height</span><span class="o">=</span><span class="m">240</span> ! comp.sink_3 <span class="se">\
+</span>       imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video4 fps-n<span class="o">=</span><span class="m">12</span> ! queue2 ! imxipuvideotransform <span class="nv">qos</span><span class="o">=</span><span class="nb">false</span> ! video/x-raw, <span class="nv">width</span><span class="o">=</span><span class="m">340</span>, <span class="nv">height</span><span class="o">=</span><span class="m">240</span> ! comp.sink_4 <span class="se">\
+</span>       imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video5 fps-n<span class="o">=</span><span class="m">12</span> ! queue2 ! imxipuvideotransform <span class="nv">qos</span><span class="o">=</span><span class="nb">false</span> ! video/x-raw, <span class="nv">width</span><span class="o">=</span><span class="m">340</span>, <span class="nv">height</span><span class="o">=</span><span class="m">240</span> ! comp.sink_5 <span class="se">\
+</span>       imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video6 fps-n<span class="o">=</span><span class="m">12</span> ! queue2 ! imxipuvideotransform <span class="nv">qos</span><span class="o">=</span><span class="nb">false</span> ! video/x-raw, <span class="nv">width</span><span class="o">=</span><span class="m">340</span>, <span class="nv">height</span><span class="o">=</span><span class="m">240</span> ! comp.sink_6 <span class="se">\
+</span>       imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video7 fps-n<span class="o">=</span><span class="m">12</span> ! queue2 ! imxipuvideotransform <span class="nv">qos</span><span class="o">=</span><span class="nb">false</span> ! video/x-raw, <span class="nv">width</span><span class="o">=</span><span class="m">340</span>, <span class="nv">height</span><span class="o">=</span><span class="m">240</span> ! comp.sink_7 <span class="se">\
+</span>       imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video8 fps-n<span class="o">=</span><span class="m">12</span> ! queue2 ! imxipuvideotransform <span class="nv">qos</span><span class="o">=</span><span class="nb">false</span> ! video/x-raw, <span class="nv">width</span><span class="o">=</span><span class="m">340</span>, <span class="nv">height</span><span class="o">=</span><span class="m">240</span> ! comp.sink_8
+</pre></div></div><p>
+These command strings were verified using GW5100 and Yocto 2.3.
+</p>
+<h3 id="CompositorSoftwareAccelerated-Notrecommended">Compositor Software Accelerated - Not recommended<a class="anchor" href="#CompositorSoftwareAccelerated-Notrecommended" title="Link to this section"> ¶</a></h3>
+<p>
+This compositor element is a software based compositor and is extremely painful to use. It is very slow at copying buffers around and thus causes quite a bit of latency and causes video stuttering. Please consider using <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/compositing#gstreamer-imx">the gstreamer-imx</a> compositor instead. However, as an example, here is a possible pipeline to use it:
+</p>
+<p>
+<strong>(Not recommended, use gstreamer-imx)</strong>
+</p>
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 <span class="se">\
+</span>  compositor <span class="nv">name</span><span class="o">=</span>comp <span class="se">\
+</span>    sink_0::alpha<span class="o">=</span><span class="m">1</span> sink_0::xpos<span class="o">=</span><span class="m">0</span> sink_0::ypos<span class="o">=</span><span class="m">0</span> <span class="se">\
+</span>    sink_1::alpha<span class="o">=</span><span class="m">0</span>.5 sink_1::xpos<span class="o">=</span><span class="m">320</span> sink_1::ypos<span class="o">=</span><span class="m">240</span> ! <span class="se">\
+</span>      videoconvert ! imxg2dvideosink <span class="se">\
+</span>  videotestsrc ! <span class="s2">"video/x-raw,format=AYUV,width=320,height=240,framerate=(fraction)30/1"</span> ! queue2 ! comp.sink_0 <span class="se">\
+</span>  videotestsrc ! <span class="s2">"video/x-raw,format=AYUV,width=320,height=240,framerate=(fraction)30/1"</span> ! queue2 ! comp.sink_1
+</pre></div></div></div>
+          
+          <div class="trac-modifiedby">
+            <span><a href="http://trac.gateworks.com/wiki/Yocto/gstreamer/compositing?action=diff&amp;version=2" title="Version 2 by Cale Collins: added Compositing with limited CPU, low memory bandwidth section ">Last modified</a> <a class="timeline" href="http://trac.gateworks.com/timeline?from=2018-06-27T15%3A15%3A04-07%3A00&amp;precision=second" title="See timeline at 06/27/2018 03:15:04 PM">3 months ago</a></span>
+            <span class="trac-print">Last modified on 06/27/2018 03:15:04 PM</span>
+          </div>
+        
+        
+      </div>
+      
+    <div id="attachments" class="collapsed">
+        <h3 class="foldable"><a id="no1" href="#no1">Attachments <span class="trac-count">(1)</span></a></h3>
+        <div>
+          <ul>
+            <li>
+    <a href="http://trac.gateworks.com/attachment/wiki/Yocto/gstreamer/compositing/composite_example.png" title="View attachment">composite_example.png</a><a href="http://trac.gateworks.com/raw-attachment/wiki/Yocto/gstreamer/compositing/composite_example.png" class="trac-rawlink" title="Download">​</a> (<span title="429658 bytes">419.6 KB</span>) - added by <span class="trac-author">trac</span> <a class="timeline" href="http://trac.gateworks.com/timeline?from=2017-10-21T22%3A30%3A08-07%3A00&amp;precision=second" title="See timeline at 10/21/2017 10:30:08 PM">11 months ago</a>.
+            </li>
+          </ul>
+          <p>
+            Download all attachments as: <a rel="nofollow" href="http://trac.gateworks.com/zip-attachment/wiki/Yocto/gstreamer/compositing/">.zip</a>
+          </p>
+        </div>
+    </div>
+
+    </div>
+    
+    <div id="altlinks">
+      <h3>Download in other formats:</h3>
+      <ul>
+        <li class="last first">
+          <a rel="nofollow" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/compositing?format=txt">Plain Text</a>
+        </li>
+      </ul>
+    </div>
+    </div>
+    <div id="footer" xml:lang="en" lang="en"><hr>
+      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="trac_logo_mini.png" alt="Trac Powered" width="107" height="30"></a>
+      <p class="left">Powered by <a href="http://trac.gateworks.com/about"><strong>Trac 1.2.2</strong></a><br>
+        By <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
+      <p class="right">Visit the Trac open source project at<br><a href="http://trac.edgewall.org/">http://trac.edgewall.org/</a></p>
+    </div>
+	
+</body>
+</html>

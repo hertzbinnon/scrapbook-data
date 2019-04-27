@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="origin">
+    <title>Python多进程编程 - jihite - 博客园</title>
+<meta property="og:description" content="序. multiprocessingpython中的多线程其实并不是真正的多线程，如果想要充分地使用多核CPU的资源，在python中大部分情况需要使用多进程。Python提供了非常好用的多进程包mu">
+    
+
+
+    <link title="RSS" type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/kaituorensheng/rss">
+    <link title="RSD" type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/kaituorensheng/rsd.xml">
+<link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/kaituorensheng/wlwmanifest.xml">
+    
+    
+    
+
+<link rel="preload" href="https://adservice.google.com/adsid/integrator.js?domain=www.cnblogs.com" as="script"><link rel="prefetch" href="https://tpc.googlesyndication.com/safeframe/1-0-32/html/container.html">
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body><div id="MathJax_Message" style="display: none;"></div>
+<a name="top"></a>
+
+
+<div id="home">
+<div id="header">
+	<div id="blogTitle">
+		
+<!--done-->
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle" href="https://www.cnblogs.com/kaituorensheng/">jihite</a></div>
+<div class="subtitle">deep</div>
+
+
+
+		
+	</div><!--end: blogTitle 博客的标题和副标题 -->
+	<div id="navigator">
+		
+<ul id="navList">
+<li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">博客园</a></li>
+<li id="nav_myhome"></li>
+<li id="nav_newpost"><a id="blog_nav_newpost" class="menu" rel="nofollow" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">新随笔</a></li>
+<li id="nav_contact"><a id="blog_nav_contact" class="menu" rel="nofollow" href="https://msg.cnblogs.com/send/jihite">联系</a></li>
+<li id="nav_rss"><a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/kaituorensheng/rss">订阅</a>
+<!--<a id="blog_nav_rss_image" class="aHeaderXML" href="https://www.cnblogs.com/kaituorensheng/rss"><img src="//www.cnblogs.com/images/xml.gif" alt="订阅" /></a>--></li>
+<li id="nav_admin"><a id="blog_nav_admin" class="menu" rel="nofollow" href="https://i.cnblogs.com/">管理</a></li>
+</ul>
+
+		<div class="blogStats">
+			
+			<div id="blog_stats">
+<!--done-->
+随笔-593&nbsp;
+文章-0&nbsp;
+评论-477&nbsp;
+</div>
+			
+		</div><!--end: blogStats -->
+	</div><!--end: navigator 博客导航栏 -->
+</div><!--end: header 头部 -->
+<div id="main">
+	<div id="mainContent">
+	<div class="forFlow">
+		
+        <div id="post_detail">
+<!--done-->
+<div id="topics">
+	<div class="post">
+		<h1 class="postTitle">
+			<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/kaituorensheng/p/4445418.html">Python多进程编程</a>
+		</h1>
+		<div class="clear"></div>
+		<div class="postBody">
+			<div id="cnblogs_post_body" class="blogpost-body"><a name="_labelTop"></a><div id="navCategory"><p style="font-size: 18px;"><b>阅读目录</b></p><ul><li><a href="#_label0">1. Process</a></li><li><a href="#_label1">2. Lock</a></li><li><a href="#_label2">3. Semaphore</a></li><li><a href="#_label3">4. Event</a></li><li><a href="#_label4">5. Queue</a></li><li><a href="#_label5">6. Pipe</a></li><li><a href="#_label6">7. Pool</a></li></ul></div><p><span style="font-size: 18pt;"><strong>序. multiprocessing</strong></span><br>python中的多线程其实并不是真正的多线程，如果想要充分地使用多核CPU的资源，在python中大部分情况需要使用多进程。Python提供了非常好用的多进程包multiprocessing，只需要定义一个函数，Python会完成其他所有事情。借助这个包，可以轻松完成从单进程到<strong>并发执行</strong>的转换。multiprocessing支持子进程、通信和共享数据、执行不同形式的同步，提供了Process、Queue、Pipe、Lock等组件。</p>
+<p>&nbsp;</p>
+<div style="text-align: right;"><a href="#_labelTop">回到顶部</a><a name="_label0"></a></div><h3><span style="font-size: 18pt;"><strong>1. Process</strong></span></h3>
+<p><strong>创建进程的类</strong>：Process([group [, target [, name [, args [, kwargs]]]]])，target表示调用对象，args表示调用对象的位置参数元组。kwargs表示调用对象的字典。name为别名。group实质上不使用。<br><strong>方法</strong>：is_alive()、join([timeout])、run()、start()、terminate()。其中，Process以start()启动某个进程。</p>
+<p><strong>属性</strong>：authkey、daemon（要通过start()设置）、exitcode(进程在运行时为None、如果为–N，表示被信号N结束）、name、pid。其中daemon是父进程终止后自动终止，且自己不能产生新进程，必须在start()之前设置。</p>
+<p>&nbsp;</p>
+<p><strong>例1.1：创建函数并将其作为单个进程</strong></p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="color: rgb(0, 0, 255);">import</span><span style="color: rgb(0, 0, 0);"> multiprocessing
+</span><span style="color: rgb(0, 0, 255);">import</span><span style="color: rgb(0, 0, 0);"> time
+
+</span><span style="color: rgb(0, 0, 255);">def</span><span style="color: rgb(0, 0, 0);"> worker(interval):
+    n </span>= 5
+    <span style="color: rgb(0, 0, 255);">while</span> n &gt;<span style="color: rgb(0, 0, 0);"> 0:
+        </span><span style="color: rgb(0, 0, 255);">print</span>(<span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">The time is {0}</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">.format(time.ctime()))
+        time.sleep(interval)
+        n </span>-= 1
+
+<span style="color: rgb(0, 0, 255);">if</span> <span style="color: rgb(128, 0, 128);">__name__</span> == <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">__main__</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">:
+    p </span>= multiprocessing.Process(target = worker, args = (3<span style="color: rgb(0, 0, 0);">,))
+    p.start()
+    </span><span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">p.pid:</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">, p.pid
+    </span><span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">p.name:</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">, p.name
+    </span><span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">p.is_alive:</span><span style="color: rgb(128, 0, 0);">"</span>, p.is_alive()</pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div></div>
+<p><span style="line-height: 1.5;">结果</span></p>
+<div class="cnblogs_Highlighter sh-gutter">
+<div><div id="highlighter_694474" class="syntaxhighlighter  css"><div class="toolbar"><span><a href="#" class="toolbar_item command_help help">?</a></span></div><table cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="gutter"><div class="line number1 index0 alt2">1</div><div class="line number2 index1 alt1">2</div><div class="line number3 index2 alt2">3</div><div class="line number4 index3 alt1">4</div><div class="line number5 index4 alt2">5</div><div class="line number6 index5 alt1">6</div><div class="line number7 index6 alt2">7</div><div class="line number8 index7 alt1">8</div></td><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="css plain">p.pid: </code><code class="css value">8736</code></div><div class="line number2 index1 alt1"><code class="css plain">p.name: Process</code><code class="css value">-1</code></div><div class="line number3 index2 alt2"><code class="css plain">p.is_alive: True</code></div><div class="line number4 index3 alt1"><code class="css plain">The time is Tue Apr </code><code class="css value">21</code> <code class="css value">20:</code><code class="css value">55:</code><code class="css value">12</code> <code class="css value">2015</code></div><div class="line number5 index4 alt2"><code class="css plain">The time is Tue Apr </code><code class="css value">21</code> <code class="css value">20:</code><code class="css value">55:</code><code class="css value">15</code> <code class="css value">2015</code></div><div class="line number6 index5 alt1"><code class="css plain">The time is Tue Apr </code><code class="css value">21</code> <code class="css value">20:</code><code class="css value">55:</code><code class="css value">18</code> <code class="css value">2015</code></div><div class="line number7 index6 alt2"><code class="css plain">The time is Tue Apr </code><code class="css value">21</code> <code class="css value">20:</code><code class="css value">55:</code><code class="css value">21</code> <code class="css value">2015</code></div><div class="line number8 index7 alt1"><code class="css plain">The time is Tue Apr </code><code class="css value">21</code> <code class="css value">20:</code><code class="css value">55:</code><code class="css value">24</code> <code class="css value">2015</code></div></div></td></tr></tbody></table></div></div>
+</div>
+<p>&nbsp;</p>
+<p><strong>例1.2：创建函数并将其作为多个进程</strong></p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="color: rgb(0, 0, 255);">import</span><span style="color: rgb(0, 0, 0);"> multiprocessing
+</span><span style="color: rgb(0, 0, 255);">import</span><span style="color: rgb(0, 0, 0);"> time
+
+</span><span style="color: rgb(0, 0, 255);">def</span><span style="color: rgb(0, 0, 0);"> worker_1(interval):
+    </span><span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">worker_1</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">
+    time.sleep(interval)
+    </span><span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">end worker_1</span><span style="color: rgb(128, 0, 0);">"</span>
+
+<span style="color: rgb(0, 0, 255);">def</span><span style="color: rgb(0, 0, 0);"> worker_2(interval):
+    </span><span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">worker_2</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">
+    time.sleep(interval)
+    </span><span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">end worker_2</span><span style="color: rgb(128, 0, 0);">"</span>
+
+<span style="color: rgb(0, 0, 255);">def</span><span style="color: rgb(0, 0, 0);"> worker_3(interval):
+    </span><span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">worker_3</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">
+    time.sleep(interval)
+    </span><span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">end worker_3</span><span style="color: rgb(128, 0, 0);">"</span>
+
+<span style="color: rgb(0, 0, 255);">if</span> <span style="color: rgb(128, 0, 128);">__name__</span> == <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">__main__</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">:
+    p1 </span>= multiprocessing.Process(target = worker_1, args = (2<span style="color: rgb(0, 0, 0);">,))
+    p2 </span>= multiprocessing.Process(target = worker_2, args = (3<span style="color: rgb(0, 0, 0);">,))
+    p3 </span>= multiprocessing.Process(target = worker_3, args = (4<span style="color: rgb(0, 0, 0);">,))
+
+    p1.start()
+    p2.start()
+    p3.start()
+
+    </span><span style="color: rgb(0, 0, 255);">print</span>(<span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">The number of CPU is:</span><span style="color: rgb(128, 0, 0);">"</span> +<span style="color: rgb(0, 0, 0);"> str(multiprocessing.cpu_count()))
+    </span><span style="color: rgb(0, 0, 255);">for</span> p <span style="color: rgb(0, 0, 255);">in</span><span style="color: rgb(0, 0, 0);"> multiprocessing.active_children():
+        </span><span style="color: rgb(0, 0, 255);">print</span>(<span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">child   p.name:</span><span style="color: rgb(128, 0, 0);">"</span> + p.name + <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">\tp.id</span><span style="color: rgb(128, 0, 0);">"</span> +<span style="color: rgb(0, 0, 0);"> str(p.pid))
+    </span><span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">END!!!!!!!!!!!!!!!!!</span><span style="color: rgb(128, 0, 0);">"</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div></div>
+<p>结果</p>
+<div class="cnblogs_Highlighter sh-gutter">
+<div><div id="highlighter_806211" class="syntaxhighlighter  css"><div class="toolbar"><span><a href="#" class="toolbar_item command_help help">?</a></span></div><table cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="gutter"><div class="line number1 index0 alt2">1</div><div class="line number2 index1 alt1">2</div><div class="line number3 index2 alt2">3</div><div class="line number4 index3 alt1">4</div><div class="line number5 index4 alt2">5</div><div class="line number6 index5 alt1">6</div><div class="line number7 index6 alt2">7</div><div class="line number8 index7 alt1">8</div><div class="line number9 index8 alt2">9</div><div class="line number10 index9 alt1">10</div><div class="line number11 index10 alt2">11</div></td><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="css plain">The number of CPU is:</code><code class="css value">4</code></div><div class="line number2 index1 alt1"><code class="css plain">child&nbsp;&nbsp; p.name:Process</code><code class="css value">-3</code>&nbsp;&nbsp;&nbsp; <code class="css plain">p.id</code><code class="css value">7992</code></div><div class="line number3 index2 alt2"><code class="css plain">child&nbsp;&nbsp; p.name:Process</code><code class="css value">-2</code>&nbsp;&nbsp;&nbsp; <code class="css plain">p.id</code><code class="css value">4204</code></div><div class="line number4 index3 alt1"><code class="css plain">child&nbsp;&nbsp; p.name:Process</code><code class="css value">-1</code>&nbsp;&nbsp;&nbsp; <code class="css plain">p.id</code><code class="css value">6380</code></div><div class="line number5 index4 alt2"><code class="css plain">END!!!!!!!!!!!!!!!!!</code></div><div class="line number6 index5 alt1"><code class="css plain">worker_</code><code class="css value">1</code></div><div class="line number7 index6 alt2"><code class="css plain">worker_</code><code class="css value">3</code></div><div class="line number8 index7 alt1"><code class="css plain">worker_</code><code class="css value">2</code></div><div class="line number9 index8 alt2"><code class="css plain">end worker_</code><code class="css value">1</code></div><div class="line number10 index9 alt1"><code class="css plain">end worker_</code><code class="css value">2</code></div><div class="line number11 index10 alt2"><code class="css plain">end worker_</code><code class="css value">3</code></div></div></td></tr></tbody></table></div></div>
+</div>
+<p>&nbsp;</p>
+<p><strong>例1.3：将进程定义为类</strong></p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="color: rgb(0, 0, 255);">import</span><span style="color: rgb(0, 0, 0);"> multiprocessing
+</span><span style="color: rgb(0, 0, 255);">import</span><span style="color: rgb(0, 0, 0);"> time
+
+</span><span style="color: rgb(0, 0, 255);">class</span><span style="color: rgb(0, 0, 0);"> ClockProcess(<strong><span style="color: rgb(255, 0, 0);">multiprocessing.Process</span></strong>):
+    </span><span style="color: rgb(0, 0, 255);">def</span> <span style="color: rgb(128, 0, 128);">__init__</span><span style="color: rgb(0, 0, 0);">(self, interval):
+       <span style="color: rgb(255, 0, 0);"><strong> multiprocessing.Process.</strong></span></span><span style="color: rgb(255, 0, 0);"><strong>__init__</strong></span><span style="color: rgb(0, 0, 0);"><span style="color: rgb(255, 0, 0);"><strong>(self)</strong></span>
+        self.interval </span>=<span style="color: rgb(0, 0, 0);"> interval
+
+    </span><span style="color: rgb(0, 0, 255);">def</span><span style="color: rgb(0, 0, 0);"> run(self):
+        n </span>= 5
+        <span style="color: rgb(0, 0, 255);">while</span> n &gt;<span style="color: rgb(0, 0, 0);"> 0:
+            </span><span style="color: rgb(0, 0, 255);">print</span>(<span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">the time is {0}</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">.format(time.ctime()))
+            time.sleep(self.interval)
+            n </span>-= 1
+
+<span style="color: rgb(0, 0, 255);">if</span> <span style="color: rgb(128, 0, 128);">__name__</span> == <span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(128, 0, 0);">__main__</span><span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(0, 0, 0);">:
+    p </span>= ClockProcess(3<span style="color: rgb(0, 0, 0);">)
+    p.start()      </span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div></div>
+<p><span style="color: rgb(255, 0, 0);"><strong>注</strong></span>：进程p调用start()时，自动调用run()</p>
+<p>结果</p>
+<div class="cnblogs_Highlighter sh-gutter">
+<div><div id="highlighter_896838" class="syntaxhighlighter  css"><div class="toolbar"><span><a href="#" class="toolbar_item command_help help">?</a></span></div><table cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="gutter"><div class="line number1 index0 alt2">1</div><div class="line number2 index1 alt1">2</div><div class="line number3 index2 alt2">3</div><div class="line number4 index3 alt1">4</div><div class="line number5 index4 alt2">5</div></td><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="css plain">the time is Tue Apr </code><code class="css value">21</code> <code class="css value">20:</code><code class="css value">31:</code><code class="css value">30</code> <code class="css value">2015</code></div><div class="line number2 index1 alt1"><code class="css plain">the time is Tue Apr </code><code class="css value">21</code> <code class="css value">20:</code><code class="css value">31:</code><code class="css value">33</code> <code class="css value">2015</code></div><div class="line number3 index2 alt2"><code class="css plain">the time is Tue Apr </code><code class="css value">21</code> <code class="css value">20:</code><code class="css value">31:</code><code class="css value">36</code> <code class="css value">2015</code></div><div class="line number4 index3 alt1"><code class="css plain">the time is Tue Apr </code><code class="css value">21</code> <code class="css value">20:</code><code class="css value">31:</code><code class="css value">39</code> <code class="css value">2015</code></div><div class="line number5 index4 alt2"><code class="css plain">the time is Tue Apr </code><code class="css value">21</code> <code class="css value">20:</code><code class="css value">31:</code><code class="css value">42</code> <code class="css value">2015</code></div></div></td></tr></tbody></table></div></div>
+</div>
+<p>&nbsp;</p>
+<p><strong>例1.4：daemon程序对比<span style="line-height: 1.5;">结果</span></strong></p>
+<p><span style="line-height: 1.5;"><strong>#1.4-1</strong> 不加daemon属性</span></p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="color: rgb(0, 0, 255);">import</span><span style="color: rgb(0, 0, 0);"> multiprocessing
+</span><span style="color: rgb(0, 0, 255);">import</span><span style="color: rgb(0, 0, 0);"> time
+
+</span><span style="color: rgb(0, 0, 255);">def</span><span style="color: rgb(0, 0, 0);"> worker(interval):
+    </span><span style="color: rgb(0, 0, 255);">print</span>(<span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">work start:{0}</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">.format(time.ctime()));
+    time.sleep(interval)
+    </span><span style="color: rgb(0, 0, 255);">print</span>(<span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">work end:{0}</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">.format(time.ctime()));
+
+</span><span style="color: rgb(0, 0, 255);">if</span> <span style="color: rgb(128, 0, 128);">__name__</span> == <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">__main__</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">:
+    p </span>= multiprocessing.Process(target = worker, args = (3<span style="color: rgb(0, 0, 0);">,))
+    p.start()
+    </span><span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">end!</span><span style="color: rgb(128, 0, 0);">"</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div></div>
+<p>结果</p>
+<div class="cnblogs_Highlighter sh-gutter">
+<div><div id="highlighter_99649" class="syntaxhighlighter  css"><div class="toolbar"><span><a href="#" class="toolbar_item command_help help">?</a></span></div><table cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="gutter"><div class="line number1 index0 alt2">1</div><div class="line number2 index1 alt1">2</div><div class="line number3 index2 alt2">3</div></td><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="css plain">end!</code></div><div class="line number2 index1 alt1"><code class="css plain">work start:Tue Apr </code><code class="css value">21</code> <code class="css value">21:</code><code class="css value">29:</code><code class="css value">10</code> <code class="css value">2015</code></div><div class="line number3 index2 alt2"><code class="css plain">work end:Tue Apr </code><code class="css value">21</code> <code class="css value">21:</code><code class="css value">29:</code><code class="css value">13</code> <code class="css value">2015</code></div></div></td></tr></tbody></table></div></div>
+</div>
+<p><strong>#1.4-2</strong> 加上daemon属性</p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="color: rgb(0, 0, 255);">import</span><span style="color: rgb(0, 0, 0);"> multiprocessing
+</span><span style="color: rgb(0, 0, 255);">import</span><span style="color: rgb(0, 0, 0);"> time
+
+</span><span style="color: rgb(0, 0, 255);">def</span><span style="color: rgb(0, 0, 0);"> worker(interval):
+    </span><span style="color: rgb(0, 0, 255);">print</span>(<span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">work start:{0}</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">.format(time.ctime()));
+    time.sleep(interval)
+    </span><span style="color: rgb(0, 0, 255);">print</span>(<span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">work end:{0}</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">.format(time.ctime()));
+
+</span><span style="color: rgb(0, 0, 255);">if</span> <span style="color: rgb(128, 0, 128);">__name__</span> == <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">__main__</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">:
+    p </span>= multiprocessing.Process(target = worker, args = (3<span style="color: rgb(0, 0, 0);">,))
+    p.daemon </span>=<span style="color: rgb(0, 0, 0);"> True
+    p.start()
+    </span><span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">end!</span><span style="color: rgb(128, 0, 0);">"</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div></div>
+<p>结果</p>
+<div class="cnblogs_Highlighter sh-gutter">
+<div><div id="highlighter_623647" class="syntaxhighlighter  css"><div class="toolbar"><span><a href="#" class="toolbar_item command_help help">?</a></span></div><table cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="gutter"><div class="line number1 index0 alt2">1</div></td><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="css plain">end!</code></div></div></td></tr></tbody></table></div></div>
+</div>
+<p><span style="color: rgb(255, 0, 0);"><strong>注</strong></span>：因子进程设置了daemon属性，主进程结束，它们就随着结束了。</p>
+<p><strong>#1.4-3</strong> 设置daemon执行完结束的方法</p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="color: rgb(0, 0, 255);">import</span><span style="color: rgb(0, 0, 0);"> multiprocessing
+</span><span style="color: rgb(0, 0, 255);">import</span><span style="color: rgb(0, 0, 0);"> time
+
+</span><span style="color: rgb(0, 0, 255);">def</span><span style="color: rgb(0, 0, 0);"> worker(interval):
+    </span><span style="color: rgb(0, 0, 255);">print</span>(<span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">work start:{0}</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">.format(time.ctime()));
+    time.sleep(interval)
+    </span><span style="color: rgb(0, 0, 255);">print</span>(<span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">work end:{0}</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">.format(time.ctime()));
+
+</span><span style="color: rgb(0, 0, 255);">if</span> <span style="color: rgb(128, 0, 128);">__name__</span> == <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">__main__</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">:
+    p </span>= multiprocessing.Process(target = worker, args = (3<span style="color: rgb(0, 0, 0);">,))
+    p.daemon </span>=<span style="color: rgb(0, 0, 0);"> True
+    p.start()
+    p.join()
+    </span><span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">end!</span><span style="color: rgb(128, 0, 0);">"</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div></div>
+<p>结果</p>
+<div class="cnblogs_Highlighter sh-gutter">
+<div><div id="highlighter_441550" class="syntaxhighlighter  css"><div class="toolbar"><span><a href="#" class="toolbar_item command_help help">?</a></span></div><table cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="gutter"><div class="line number1 index0 alt2">1</div><div class="line number2 index1 alt1">2</div><div class="line number3 index2 alt2">3</div></td><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="css plain">work start:Tue Apr </code><code class="css value">21</code> <code class="css value">22:</code><code class="css value">16:</code><code class="css value">32</code> <code class="css value">2015</code></div><div class="line number2 index1 alt1"><code class="css plain">work end:Tue Apr </code><code class="css value">21</code> <code class="css value">22:</code><code class="css value">16:</code><code class="css value">35</code> <code class="css value">2015</code></div><div class="line number3 index2 alt2"><code class="css plain">end!</code></div></div></td></tr></tbody></table></div></div>
+</div>
+<p>&nbsp;</p>
+<div style="text-align: right;"><a href="#_labelTop">回到顶部</a><a name="_label1"></a></div><h3><span style="font-size: 18pt;"><strong>2. Lock</strong></span></h3>
+<p>当多个进程需要访问共享资源的时候，Lock可以用来避免访问的冲突。</p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="color: rgb(0, 0, 255);">import</span><span style="color: rgb(0, 0, 0);"> multiprocessing
+</span><span style="color: rgb(0, 0, 255);">import</span><span style="color: rgb(0, 0, 0);"> sys
+
+</span><span style="color: rgb(0, 0, 255);">def</span><span style="color: rgb(0, 0, 0);"> worker_with(lock, f):
+    with lock:
+        fs </span>= open(f, <span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(128, 0, 0);">a+</span><span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(0, 0, 0);">)
+        n </span>= 10
+        <span style="color: rgb(0, 0, 255);">while</span> n &gt; 1<span style="color: rgb(0, 0, 0);">:
+            fs.write(</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">Lockd acquired via with\n</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">)
+            n </span>-= 1<span style="color: rgb(0, 0, 0);">
+        fs.close()
+        
+</span><span style="color: rgb(0, 0, 255);">def</span><span style="color: rgb(0, 0, 0);"> worker_no_with(lock, f):
+    lock.acquire()
+    </span><span style="color: rgb(0, 0, 255);">try</span><span style="color: rgb(0, 0, 0);">:
+        fs </span>= open(f, <span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(128, 0, 0);">a+</span><span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(0, 0, 0);">)
+        n </span>= 10
+        <span style="color: rgb(0, 0, 255);">while</span> n &gt; 1<span style="color: rgb(0, 0, 0);">:
+            fs.write(</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">Lock acquired directly\n</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">)
+            n </span>-= 1<span style="color: rgb(0, 0, 0);">
+        fs.close()
+    </span><span style="color: rgb(0, 0, 255);">finally</span><span style="color: rgb(0, 0, 0);">:
+        lock.release()
+    
+</span><span style="color: rgb(0, 0, 255);">if</span> <span style="color: rgb(128, 0, 128);">__name__</span> == <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">__main__</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">:
+    lock </span>=<span style="color: rgb(0, 0, 0);"> multiprocessing.Lock()
+    f </span>= <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">file.txt</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">
+    w </span>= multiprocessing.Process(target = worker_with, args=<span style="color: rgb(0, 0, 0);">(lock, f))
+    nw </span>= multiprocessing.Process(target = worker_no_with, args=<span style="color: rgb(0, 0, 0);">(lock, f))
+    w.start()
+    nw.start()
+    </span><span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">end</span><span style="color: rgb(128, 0, 0);">"</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div></div>
+<p>结果（输出文件）</p>
+<div class="cnblogs_Highlighter sh-gutter">
+<div><div id="highlighter_468610" class="syntaxhighlighter  css"><div class="toolbar"><span><a href="#" class="toolbar_item command_help help">?</a></span></div><table cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="gutter"><div class="line number1 index0 alt2">1</div><div class="line number2 index1 alt1">2</div><div class="line number3 index2 alt2">3</div><div class="line number4 index3 alt1">4</div><div class="line number5 index4 alt2">5</div><div class="line number6 index5 alt1">6</div><div class="line number7 index6 alt2">7</div><div class="line number8 index7 alt1">8</div><div class="line number9 index8 alt2">9</div><div class="line number10 index9 alt1">10</div><div class="line number11 index10 alt2">11</div><div class="line number12 index11 alt1">12</div><div class="line number13 index12 alt2">13</div><div class="line number14 index13 alt1">14</div><div class="line number15 index14 alt2">15</div><div class="line number16 index15 alt1">16</div><div class="line number17 index16 alt2">17</div><div class="line number18 index17 alt1">18</div></td><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="css plain">Lockd acquired via with</code></div><div class="line number2 index1 alt1"><code class="css plain">Lockd acquired via with</code></div><div class="line number3 index2 alt2"><code class="css plain">Lockd acquired via with</code></div><div class="line number4 index3 alt1"><code class="css plain">Lockd acquired via with</code></div><div class="line number5 index4 alt2"><code class="css plain">Lockd acquired via with</code></div><div class="line number6 index5 alt1"><code class="css plain">Lockd acquired via with</code></div><div class="line number7 index6 alt2"><code class="css plain">Lockd acquired via with</code></div><div class="line number8 index7 alt1"><code class="css plain">Lockd acquired via with</code></div><div class="line number9 index8 alt2"><code class="css plain">Lockd acquired via with</code></div><div class="line number10 index9 alt1"><code class="css plain">Lock acquired directly</code></div><div class="line number11 index10 alt2"><code class="css plain">Lock acquired directly</code></div><div class="line number12 index11 alt1"><code class="css plain">Lock acquired directly</code></div><div class="line number13 index12 alt2"><code class="css plain">Lock acquired directly</code></div><div class="line number14 index13 alt1"><code class="css plain">Lock acquired directly</code></div><div class="line number15 index14 alt2"><code class="css plain">Lock acquired directly</code></div><div class="line number16 index15 alt1"><code class="css plain">Lock acquired directly</code></div><div class="line number17 index16 alt2"><code class="css plain">Lock acquired directly</code></div><div class="line number18 index17 alt1"><code class="css plain">Lock acquired directly</code></div></div></td></tr></tbody></table></div></div>
+</div>
+<p><span style="line-height: 1.5;">&nbsp;</span></p>
+<div style="text-align: right;"><a href="#_labelTop">回到顶部</a><a name="_label2"></a></div><h3><span style="font-size: 18pt;"><strong>3. Semaphore</strong></span></h3>
+<p>Semaphore用来控制对共享资源的访问数量，例如池的最大连接数。</p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="color: rgb(0, 0, 255);">import</span><span style="color: rgb(0, 0, 0);"> multiprocessing
+</span><span style="color: rgb(0, 0, 255);">import</span><span style="color: rgb(0, 0, 0);"> time
+
+</span><span style="color: rgb(0, 0, 255);">def</span><span style="color: rgb(0, 0, 0);"> worker(s, i):
+    s.acquire()
+    </span><span style="color: rgb(0, 0, 255);">print</span>(multiprocessing.current_process().name + <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">acquire</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">);
+    time.sleep(i)
+    </span><span style="color: rgb(0, 0, 255);">print</span>(multiprocessing.current_process().name + <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">release\n</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">);
+    s.release()
+
+</span><span style="color: rgb(0, 0, 255);">if</span> <span style="color: rgb(128, 0, 128);">__name__</span> == <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">__main__</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">:
+    s </span>= multiprocessing.Semaphore(2<span style="color: rgb(0, 0, 0);">)
+    </span><span style="color: rgb(0, 0, 255);">for</span> i <span style="color: rgb(0, 0, 255);">in</span> range(5<span style="color: rgb(0, 0, 0);">):
+        p </span>= multiprocessing.Process(target = worker, args=(s, i*2<span style="color: rgb(0, 0, 0);">))
+        p.start()</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div></div>
+<p>结果</p>
+<div class="cnblogs_Highlighter sh-gutter">
+<div><div id="highlighter_510459" class="syntaxhighlighter  css"><div class="toolbar"><span><a href="#" class="toolbar_item command_help help">?</a></span></div><table cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="gutter"><div class="line number1 index0 alt2">1</div><div class="line number2 index1 alt1">2</div><div class="line number3 index2 alt2">3</div><div class="line number4 index3 alt1">4</div><div class="line number5 index4 alt2">5</div><div class="line number6 index5 alt1">6</div><div class="line number7 index6 alt2">7</div><div class="line number8 index7 alt1">8</div><div class="line number9 index8 alt2">9</div><div class="line number10 index9 alt1">10</div><div class="line number11 index10 alt2">11</div><div class="line number12 index11 alt1">12</div><div class="line number13 index12 alt2">13</div><div class="line number14 index13 alt1">14</div></td><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="css plain">Process</code><code class="css value">-1</code><code class="css plain">acquire</code></div><div class="line number2 index1 alt1"><code class="css plain">Process</code><code class="css value">-1</code><code class="css plain">release</code></div><div class="line number3 index2 alt2">&nbsp;</div><div class="line number4 index3 alt1"><code class="css plain">Process</code><code class="css value">-2</code><code class="css plain">acquire</code></div><div class="line number5 index4 alt2"><code class="css plain">Process</code><code class="css value">-3</code><code class="css plain">acquire</code></div><div class="line number6 index5 alt1"><code class="css plain">Process</code><code class="css value">-2</code><code class="css plain">release</code></div><div class="line number7 index6 alt2">&nbsp;</div><div class="line number8 index7 alt1"><code class="css plain">Process</code><code class="css value">-5</code><code class="css plain">acquire</code></div><div class="line number9 index8 alt2"><code class="css plain">Process</code><code class="css value">-3</code><code class="css plain">release</code></div><div class="line number10 index9 alt1">&nbsp;</div><div class="line number11 index10 alt2"><code class="css plain">Process</code><code class="css value">-4</code><code class="css plain">acquire</code></div><div class="line number12 index11 alt1"><code class="css plain">Process</code><code class="css value">-5</code><code class="css plain">release</code></div><div class="line number13 index12 alt2">&nbsp;</div><div class="line number14 index13 alt1"><code class="css plain">Process</code><code class="css value">-4</code><code class="css plain">release</code></div></div></td></tr></tbody></table></div></div>
+</div>
+<p>&nbsp;</p>
+<div style="text-align: right;"><a href="#_labelTop">回到顶部</a><a name="_label3"></a></div><h3><span style="font-size: 18pt;"><strong>4. Event</strong></span></h3>
+<p>Event用来实现进程间同步通信。</p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="color: rgb(0, 0, 255);">import</span><span style="color: rgb(0, 0, 0);"> multiprocessing
+</span><span style="color: rgb(0, 0, 255);">import</span><span style="color: rgb(0, 0, 0);"> time
+
+</span><span style="color: rgb(0, 0, 255);">def</span><span style="color: rgb(0, 0, 0);"> wait_for_event(e):
+    </span><span style="color: rgb(0, 0, 255);">print</span>(<span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">wait_for_event: starting</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">)
+    e.wait()
+    </span><span style="color: rgb(0, 0, 255);">print</span>(<span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">wairt_for_event: e.is_set()-&gt;</span><span style="color: rgb(128, 0, 0);">"</span> +<span style="color: rgb(0, 0, 0);"> str(e.is_set()))
+
+</span><span style="color: rgb(0, 0, 255);">def</span><span style="color: rgb(0, 0, 0);"> wait_for_event_timeout(e, t):
+    </span><span style="color: rgb(0, 0, 255);">print</span>(<span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">wait_for_event_timeout:starting</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">)
+    e.wait(t)
+    </span><span style="color: rgb(0, 0, 255);">print</span>(<span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">wait_for_event_timeout:e.is_set-&gt;</span><span style="color: rgb(128, 0, 0);">"</span> +<span style="color: rgb(0, 0, 0);"> str(e.is_set()))
+
+</span><span style="color: rgb(0, 0, 255);">if</span> <span style="color: rgb(128, 0, 128);">__name__</span> == <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">__main__</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">:
+    e </span>=<span style="color: rgb(0, 0, 0);"> multiprocessing.Event()
+    w1 </span>= multiprocessing.Process(name = <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">block</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">,
+            target </span>=<span style="color: rgb(0, 0, 0);"> wait_for_event,
+            args </span>=<span style="color: rgb(0, 0, 0);"> (e,))
+
+    w2 </span>= multiprocessing.Process(name = <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">non-block</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">,
+            target </span>=<span style="color: rgb(0, 0, 0);"> wait_for_event_timeout,
+            args </span>= (e, 2<span style="color: rgb(0, 0, 0);">))
+    w1.start()
+    w2.start()
+
+    time.sleep(</span>3<span style="color: rgb(0, 0, 0);">)
+
+    e.set()
+    </span><span style="color: rgb(0, 0, 255);">print</span>(<span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">main: event is set</span><span style="color: rgb(128, 0, 0);">"</span>)</pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div></div>
+<p>结果</p>
+<div class="cnblogs_Highlighter sh-gutter">
+<div><div id="highlighter_124890" class="syntaxhighlighter  css"><div class="toolbar"><span><a href="#" class="toolbar_item command_help help">?</a></span></div><table cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="gutter"><div class="line number1 index0 alt2">1</div><div class="line number2 index1 alt1">2</div><div class="line number3 index2 alt2">3</div><div class="line number4 index3 alt1">4</div><div class="line number5 index4 alt2">5</div></td><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="css plain">wait_for_event: starting</code></div><div class="line number2 index1 alt1"><code class="css plain">wait_for_event_timeout:starting</code></div><div class="line number3 index2 alt2"><code class="css plain">wait_for_event_timeout:e.is_set-&gt;False</code></div><div class="line number4 index3 alt1"><code class="css plain">main: event is set</code></div><div class="line number5 index4 alt2"><code class="css plain">wairt_for_event: e.is_set()-&gt;True</code></div></div></td></tr></tbody></table></div></div>
+</div>
+<p>&nbsp;</p>
+<div style="text-align: right;"><a href="#_labelTop">回到顶部</a><a name="_label4"></a></div><h3><span style="font-size: 18pt;"><strong>5. Queue</strong></span></h3>
+<div>Queue是多进程安全的队列，可以使用Queue实现多进程之间的数据传递。put方法用以插入数据到队列中，put方法还有两个可选参数：blocked和timeout。如果blocked为True（默认值），并且timeout为正值，该方法会阻塞timeout指定的时间，直到该队列有剩余的空间。如果超时，会抛出Queue.Full异常。如果blocked为False，但该Queue已满，会立即抛出Queue.Full异常。</div>
+<div>&nbsp;</div>
+<div>get方法可以从队列读取并且删除一个元素。同样，get方法有两个可选参数：blocked和timeout。如果blocked为True（默认值），并且timeout为正值，那么在等待时间内没有取到任何元素，会抛出Queue.Empty异常。如果blocked为False，有两种情况存在，如果Queue有一个值可用，则立即返回该值，否则，如果队列为空，则立即抛出Queue.Empty异常。Queue的一段示例代码：</div>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="color: rgb(0, 0, 255);">import</span><span style="color: rgb(0, 0, 0);"> multiprocessing
+
+</span><span style="color: rgb(0, 0, 255);">def</span><span style="color: rgb(0, 0, 0);"> writer_proc(q):      
+    </span><span style="color: rgb(0, 0, 255);">try</span><span style="color: rgb(0, 0, 0);">:         
+        q.put(</span>1, block =<span style="color: rgb(0, 0, 0);"> False) 
+    </span><span style="color: rgb(0, 0, 255);">except</span><span style="color: rgb(0, 0, 0);">:         
+        </span><span style="color: rgb(0, 0, 255);">pass</span>   
+
+<span style="color: rgb(0, 0, 255);">def</span><span style="color: rgb(0, 0, 0);"> reader_proc(q):      
+    </span><span style="color: rgb(0, 0, 255);">try</span><span style="color: rgb(0, 0, 0);">:         
+        </span><span style="color: rgb(0, 0, 255);">print</span> q.get(block =<span style="color: rgb(0, 0, 0);"> False) 
+    </span><span style="color: rgb(0, 0, 255);">except</span><span style="color: rgb(0, 0, 0);">:         
+        </span><span style="color: rgb(0, 0, 255);">pass</span>
+
+<span style="color: rgb(0, 0, 255);">if</span> <span style="color: rgb(128, 0, 128);">__name__</span> == <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">__main__</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">:
+    q </span>=<span style="color: rgb(0, 0, 0);"> multiprocessing.Queue()
+    writer </span>= multiprocessing.Process(target=writer_proc, args=<span style="color: rgb(0, 0, 0);">(q,))  
+    writer.start()   
+
+    reader </span>= multiprocessing.Process(target=reader_proc, args=<span style="color: rgb(0, 0, 0);">(q,))  
+    reader.start()  
+
+    reader.join()  
+    writer.join()</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div></div>
+<p>结果</p>
+<div class="cnblogs_Highlighter sh-gutter">
+<div><div id="highlighter_35009" class="syntaxhighlighter  css"><div class="toolbar"><span><a href="#" class="toolbar_item command_help help">?</a></span></div><table cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="gutter"><div class="line number1 index0 alt2">1</div></td><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="css value">1</code></div></div></td></tr></tbody></table></div></div>
+</div>
+<p>&nbsp;</p>
+<div style="text-align: right;"><a href="#_labelTop">回到顶部</a><a name="_label5"></a></div><h3><strong><span style="font-size: 18pt;">6. Pipe</span></strong></h3>
+<div>Pipe方法返回(conn1, conn2)代表一个管道的两个端。Pipe方法有duplex参数，如果duplex参数为True(默认值)，那么这个管道是全双工模式，也就是说conn1和conn2均可收发。duplex为False，conn1只负责接受消息，conn2只负责发送消息。</div>
+<div>&nbsp;</div>
+<div>send和recv方法分别是发送和接受消息的方法。例如，在全双工模式下，可以调用conn1.send发送消息，conn1.recv接收消息。如果没有消息可接收，recv方法会一直阻塞。如果管道已经被关闭，那么recv方法会抛出EOFError。</div>
+<div>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="color: rgb(0, 0, 255);">import</span><span style="color: rgb(0, 0, 0);"> multiprocessing
+</span><span style="color: rgb(0, 0, 255);">import</span><span style="color: rgb(0, 0, 0);"> time
+
+</span><span style="color: rgb(0, 0, 255);">def</span><span style="color: rgb(0, 0, 0);"> proc1(pipe):
+    </span><span style="color: rgb(0, 0, 255);">while</span><span style="color: rgb(0, 0, 0);"> True:
+        </span><span style="color: rgb(0, 0, 255);">for</span> i <span style="color: rgb(0, 0, 255);">in</span> xrange(10000<span style="color: rgb(0, 0, 0);">):
+            </span><span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">send: %s</span><span style="color: rgb(128, 0, 0);">"</span> %<span style="color: rgb(0, 0, 0);">(i)
+            pipe.send(i)
+            time.sleep(</span>1<span style="color: rgb(0, 0, 0);">)
+
+</span><span style="color: rgb(0, 0, 255);">def</span><span style="color: rgb(0, 0, 0);"> proc2(pipe):
+    </span><span style="color: rgb(0, 0, 255);">while</span><span style="color: rgb(0, 0, 0);"> True:
+        </span><span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">proc2 rev:</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">, pipe.recv()
+        time.sleep(</span>1<span style="color: rgb(0, 0, 0);">)
+
+</span><span style="color: rgb(0, 0, 255);">def</span><span style="color: rgb(0, 0, 0);"> proc3(pipe):
+    </span><span style="color: rgb(0, 0, 255);">while</span><span style="color: rgb(0, 0, 0);"> True:
+        </span><span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">PROC3 rev:</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">, pipe.recv()
+        time.sleep(</span>1<span style="color: rgb(0, 0, 0);">)
+
+</span><span style="color: rgb(0, 0, 255);">if</span> <span style="color: rgb(128, 0, 128);">__name__</span> == <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">__main__</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">:
+    pipe </span>=<span style="color: rgb(0, 0, 0);"> multiprocessing.Pipe()
+    p1 </span>= multiprocessing.Process(target=proc1, args=<span style="color: rgb(0, 0, 0);">(pipe[0],))
+    p2 </span>= multiprocessing.Process(target=proc2, args=(pipe[1<span style="color: rgb(0, 0, 0);">],))
+    </span><span style="color: rgb(0, 128, 0);">#</span><span style="color: rgb(0, 128, 0);">p3 = multiprocessing.Process(target=proc3, args=(pipe[1],))</span>
+<span style="color: rgb(0, 0, 0);">
+    p1.start()
+    p2.start()
+    </span><span style="color: rgb(0, 128, 0);">#</span><span style="color: rgb(0, 128, 0);">p3.start()</span>
+<span style="color: rgb(0, 0, 0);">
+    p1.join()
+    p2.join()
+    </span><span style="color: rgb(0, 128, 0);">#</span><span style="color: rgb(0, 128, 0);">p3.join()</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div></div>
+<p>结果</p>
+<p><img src="301445185683314.png" alt=""></p>
+</div>
+<p>&nbsp;</p>
+<div style="text-align: right;"><a href="#_labelTop">回到顶部</a><a name="_label6"></a></div><h3><span style="font-size: 18pt;"><strong>7. Pool</strong></span></h3>
+<p>在利用Python进行系统管理的时候，特别是同时操作多个文件目录，或者远程控制多台主机，并行操作可以节约大量的时间。当被操作对象数目不大时，可以直接利用multiprocessing中的Process动态成生多个进程，十几个还好，但如果是上百个，上千个目标，手动的去限制进程数量却又太过繁琐，此时可以发挥进程池的功效。<br>Pool可以提供指定数量的进程，供用户调用，当有新的请求提交到pool中时，如果池还没有满，那么就会创建一个新的进程用来执行该请求；但如果池中的进程数已经达到规定最大值，那么该请求就会等待，直到池中有进程结束，才会创建新的进程来它。</p>
+<p>&nbsp;</p>
+<p><strong>例7.1：使用进程池（非阻塞）</strong></p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="color: rgb(0, 128, 0);">#</span><span style="color: rgb(0, 128, 0);">coding: utf-8</span>
+<span style="color: rgb(0, 0, 255);">import</span><span style="color: rgb(0, 0, 0);"> multiprocessing
+</span><span style="color: rgb(0, 0, 255);">import</span><span style="color: rgb(0, 0, 0);"> time
+
+</span><span style="color: rgb(0, 0, 255);">def</span><span style="color: rgb(0, 0, 0);"> func(msg):
+    </span><span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">msg:</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">, msg
+    time.sleep(</span>3<span style="color: rgb(0, 0, 0);">)
+    </span><span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">end</span><span style="color: rgb(128, 0, 0);">"</span>
+
+<span style="color: rgb(0, 0, 255);">if</span> <span style="color: rgb(128, 0, 128);">__name__</span> == <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">__main__</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">:
+    pool </span>= multiprocessing.Pool(processes = 3<span style="color: rgb(0, 0, 0);">)
+    </span><span style="color: rgb(0, 0, 255);">for</span> i <span style="color: rgb(0, 0, 255);">in</span> xrange(4<span style="color: rgb(0, 0, 0);">):
+        msg </span>= <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">hello %d</span><span style="color: rgb(128, 0, 0);">"</span> %<span style="color: rgb(0, 0, 0);">(i)
+        pool.apply_async(func, (msg, ))   </span><span style="color: rgb(0, 128, 0);">#</span><span style="color: rgb(0, 128, 0);">维持执行的进程总数为processes，当一个进程执行完毕后会添加新的进程进去</span>
+
+    <span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">Mark~ Mark~ Mark~~~~~~~~~~~~~~~~~~~~~~</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">
+    pool.close()
+    pool.join()   </span><span style="color: rgb(0, 128, 0);">#</span><span style="color: rgb(0, 128, 0);">调用join之前，先调用close函数，否则会出错。执行完close后不会有新的进程加入到pool,join函数等待所有子进程结束</span>
+    <span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">Sub-process(es) done.</span><span style="color: rgb(128, 0, 0);">"</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div></div>
+<p>一次执行结果</p>
+<div class="cnblogs_Highlighter sh-gutter">
+<div><div id="highlighter_10028" class="syntaxhighlighter  css"><div class="toolbar"><span><a href="#" class="toolbar_item command_help help">?</a></span></div><table cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="gutter"><div class="line number1 index0 alt2">1</div><div class="line number2 index1 alt1">2</div><div class="line number3 index2 alt2">3</div><div class="line number4 index3 alt1">4</div><div class="line number5 index4 alt2">5</div><div class="line number6 index5 alt1">6</div><div class="line number7 index6 alt2">7</div><div class="line number8 index7 alt1">8</div><div class="line number9 index8 alt2">9</div><div class="line number10 index9 alt1">10</div></td><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="css plain">mMsg: hark~ Mark~ Mark~~~~~~~~~~~~~~~~~~~~~~ello </code><code class="css value">0</code></div><div class="line number2 index1 alt1">&nbsp;</div><div class="line number3 index2 alt2"><code class="css plain">msg: hello </code><code class="css value">1</code></div><div class="line number4 index3 alt1"><code class="css plain">msg: hello </code><code class="css value">2</code></div><div class="line number5 index4 alt2"><code class="css plain">end</code></div><div class="line number6 index5 alt1"><code class="css plain">msg: hello </code><code class="css value">3</code></div><div class="line number7 index6 alt2"><code class="css plain">end</code></div><div class="line number8 index7 alt1"><code class="css plain">end</code></div><div class="line number9 index8 alt2"><code class="css plain">end</code></div><div class="line number10 index9 alt1"><code class="css plain">Sub-process(es) done.</code></div></div></td></tr></tbody></table></div></div>
+</div>
+<p>函数解释：</p>
+<ul>
+<li>apply_async(func[, args[, kwds[, callback]]]) 它是<strong>非阻塞</strong>，apply(func[, args[, kwds]])是<strong>阻塞</strong>的（理解区别，看例1例2结果区别）</li>
+<li>close() &nbsp; &nbsp;关闭pool，使其不在接受新的任务。</li>
+<li>terminate() &nbsp; &nbsp;结束工作进程，不在处理未完成的任务。</li>
+<li>join() &nbsp; &nbsp;主进程阻塞，等待子进程的退出， join方法要在close或terminate之后使用。</li>
+</ul>
+<p>执行说明：创建一个进程池pool，并设定进程的数量为3，xrange(4)会相继产生四个对象[0, 1, 2, 4]，四个对象被提交到pool中，因pool指定进程数为3，所以0、1、2会直接送到进程中执行，当其中一个执行完事后才空出一个进程处理对象3，所以会出现输出“msg: hello 3”出现在"end"后。因为为非阻塞，主函数会自己执行自个的，不搭理进程的执行，所以运行完for循环后直接输出“mMsg: hark~ Mark~ Mark~~~~~~~~~~~~~~~~~~~~~~”，主程序在pool.join（）处等待各个进程的结束。</p>
+<p>&nbsp;</p>
+<p><strong>例7.2：使用进程池（阻塞）</strong></p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="color: rgb(0, 128, 0);">#</span><span style="color: rgb(0, 128, 0);">coding: utf-8</span>
+<span style="color: rgb(0, 0, 255);">import</span><span style="color: rgb(0, 0, 0);"> multiprocessing
+</span><span style="color: rgb(0, 0, 255);">import</span><span style="color: rgb(0, 0, 0);"> time
+
+</span><span style="color: rgb(0, 0, 255);">def</span><span style="color: rgb(0, 0, 0);"> func(msg):
+    </span><span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">msg:</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">, msg
+    time.sleep(</span>3<span style="color: rgb(0, 0, 0);">)
+    </span><span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">end</span><span style="color: rgb(128, 0, 0);">"</span>
+
+<span style="color: rgb(0, 0, 255);">if</span> <span style="color: rgb(128, 0, 128);">__name__</span> == <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">__main__</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">:
+    pool </span>= multiprocessing.Pool(processes = 3<span style="color: rgb(0, 0, 0);">)
+    </span><span style="color: rgb(0, 0, 255);">for</span> i <span style="color: rgb(0, 0, 255);">in</span> xrange(4<span style="color: rgb(0, 0, 0);">):
+        msg </span>= <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">hello %d</span><span style="color: rgb(128, 0, 0);">"</span> %<span style="color: rgb(0, 0, 0);">(i)
+        pool.apply(func, (msg, ))   </span><span style="color: rgb(0, 128, 0);">#</span><span style="color: rgb(0, 128, 0);">维持执行的进程总数为processes，当一个进程执行完毕后会添加新的进程进去</span>
+
+    <span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">Mark~ Mark~ Mark~~~~~~~~~~~~~~~~~~~~~~</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">
+    pool.close()
+    pool.join()   </span><span style="color: rgb(0, 128, 0);">#</span><span style="color: rgb(0, 128, 0);">调用join之前，先调用close函数，否则会出错。执行完close后不会有新的进程加入到pool,join函数等待所有子进程结束</span>
+    <span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">Sub-process(es) done.</span><span style="color: rgb(128, 0, 0);">"</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div></div>
+<p>一次执行的结果</p>
+<div class="cnblogs_Highlighter sh-gutter">
+<div><div id="highlighter_418888" class="syntaxhighlighter  css"><div class="toolbar"><span><a href="#" class="toolbar_item command_help help">?</a></span></div><table cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="gutter"><div class="line number1 index0 alt2">1</div><div class="line number2 index1 alt1">2</div><div class="line number3 index2 alt2">3</div><div class="line number4 index3 alt1">4</div><div class="line number5 index4 alt2">5</div><div class="line number6 index5 alt1">6</div><div class="line number7 index6 alt2">7</div><div class="line number8 index7 alt1">8</div><div class="line number9 index8 alt2">9</div><div class="line number10 index9 alt1">10</div></td><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="css plain">msg: hello </code><code class="css value">0</code></div><div class="line number2 index1 alt1"><code class="css plain">end</code></div><div class="line number3 index2 alt2"><code class="css plain">msg: hello </code><code class="css value">1</code></div><div class="line number4 index3 alt1"><code class="css plain">end</code></div><div class="line number5 index4 alt2"><code class="css plain">msg: hello </code><code class="css value">2</code></div><div class="line number6 index5 alt1"><code class="css plain">end</code></div><div class="line number7 index6 alt2"><code class="css plain">msg: hello </code><code class="css value">3</code></div><div class="line number8 index7 alt1"><code class="css plain">end</code></div><div class="line number9 index8 alt2"><code class="css plain">Mark~ Mark~ Mark~~~~~~~~~~~~~~~~~~~~~~</code></div><div class="line number10 index9 alt1"><code class="css plain">Sub-process(es) done.</code></div></div></td></tr></tbody></table></div></div>
+</div>
+<p>　　</p>
+<p><strong>例7.3：使用进程池，并关注结果</strong></p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="color: rgb(0, 0, 255);">import</span><span style="color: rgb(0, 0, 0);"> multiprocessing
+</span><span style="color: rgb(0, 0, 255);">import</span><span style="color: rgb(0, 0, 0);"> time
+
+</span><span style="color: rgb(0, 0, 255);">def</span><span style="color: rgb(0, 0, 0);"> func(msg):
+    </span><span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">msg:</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">, msg
+    time.sleep(</span>3<span style="color: rgb(0, 0, 0);">)
+    </span><span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">end</span><span style="color: rgb(128, 0, 0);">"</span>
+    <span style="color: rgb(0, 0, 255);">return</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">done</span><span style="color: rgb(128, 0, 0);">"</span> +<span style="color: rgb(0, 0, 0);"> msg
+
+</span><span style="color: rgb(0, 0, 255);">if</span> <span style="color: rgb(128, 0, 128);">__name__</span> == <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">__main__</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">:
+    pool </span>= multiprocessing.Pool(processes=4<span style="color: rgb(0, 0, 0);">)
+    result </span>=<span style="color: rgb(0, 0, 0);"> []
+    </span><span style="color: rgb(0, 0, 255);">for</span> i <span style="color: rgb(0, 0, 255);">in</span> xrange(3<span style="color: rgb(0, 0, 0);">):
+        msg </span>= <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">hello %d</span><span style="color: rgb(128, 0, 0);">"</span> %<span style="color: rgb(0, 0, 0);">(i)
+        result.append(pool.apply_async(func, (msg, )))
+    pool.close()
+    pool.join()
+    </span><span style="color: rgb(0, 0, 255);">for</span> res <span style="color: rgb(0, 0, 255);">in</span><span style="color: rgb(0, 0, 0);"> result:
+        </span><span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">:::</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">, res.get()
+    </span><span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">Sub-process(es) done.</span><span style="color: rgb(128, 0, 0);">"</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div></div>
+<p>一次执行结果</p>
+<div class="cnblogs_Highlighter sh-gutter">
+<div><div id="highlighter_118325" class="syntaxhighlighter  css"><div class="toolbar"><span><a href="#" class="toolbar_item command_help help">?</a></span></div><table cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="gutter"><div class="line number1 index0 alt2">1</div><div class="line number2 index1 alt1">2</div><div class="line number3 index2 alt2">3</div><div class="line number4 index3 alt1">4</div><div class="line number5 index4 alt2">5</div><div class="line number6 index5 alt1">6</div><div class="line number7 index6 alt2">7</div><div class="line number8 index7 alt1">8</div><div class="line number9 index8 alt2">9</div><div class="line number10 index9 alt1">10</div></td><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="css plain">msg: hello </code><code class="css value">0</code></div><div class="line number2 index1 alt1"><code class="css plain">msg: hello </code><code class="css value">1</code></div><div class="line number3 index2 alt2"><code class="css plain">msg: hello </code><code class="css value">2</code></div><div class="line number4 index3 alt1"><code class="css plain">end</code></div><div class="line number5 index4 alt2"><code class="css plain">end</code></div><div class="line number6 index5 alt1"><code class="css plain">end</code></div><div class="line number7 index6 alt2"><code class="css plain">::: donehello </code><code class="css value">0</code></div><div class="line number8 index7 alt1"><code class="css plain">::: donehello </code><code class="css value">1</code></div><div class="line number9 index8 alt2"><code class="css plain">::: donehello </code><code class="css value">2</code></div><div class="line number10 index9 alt1"><code class="css plain">Sub-process(es) done.</code></div></div></td></tr></tbody></table></div></div>
+</div>
+<p>&nbsp;</p>
+<p><strong>例7.4：使用多个进程池</strong></p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="color: rgb(0, 128, 0);">#</span><span style="color: rgb(0, 128, 0);">coding: utf-8</span>
+<span style="color: rgb(0, 0, 255);">import</span><span style="color: rgb(0, 0, 0);"> multiprocessing
+</span><span style="color: rgb(0, 0, 255);">import</span><span style="color: rgb(0, 0, 0);"> os, time, random
+
+</span><span style="color: rgb(0, 0, 255);">def</span><span style="color: rgb(0, 0, 0);"> Lee():
+    </span><span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">\nRun task Lee-%s</span><span style="color: rgb(128, 0, 0);">"</span> %(os.getpid()) <span style="color: rgb(0, 128, 0);">#</span><span style="color: rgb(0, 128, 0);">os.getpid()获取当前的进程的ID</span>
+    start =<span style="color: rgb(0, 0, 0);"> time.time()
+    time.sleep(random.random() </span>* 10) <span style="color: rgb(0, 128, 0);">#</span><span style="color: rgb(0, 128, 0);">random.random()随机生成0-1之间的小数</span>
+    end =<span style="color: rgb(0, 0, 0);"> time.time()
+    </span><span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(128, 0, 0);">Task Lee, runs %0.2f seconds.</span><span style="color: rgb(128, 0, 0);">'</span> %(end -<span style="color: rgb(0, 0, 0);"> start)
+
+</span><span style="color: rgb(0, 0, 255);">def</span><span style="color: rgb(0, 0, 0);"> Marlon():
+    </span><span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">\nRun task Marlon-%s</span><span style="color: rgb(128, 0, 0);">"</span> %<span style="color: rgb(0, 0, 0);">(os.getpid())
+    start </span>=<span style="color: rgb(0, 0, 0);"> time.time()
+    time.sleep(random.random() </span>* 40<span style="color: rgb(0, 0, 0);">)
+    end</span>=<span style="color: rgb(0, 0, 0);">time.time()
+    </span><span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(128, 0, 0);">Task Marlon runs %0.2f seconds.</span><span style="color: rgb(128, 0, 0);">'</span> %(end -<span style="color: rgb(0, 0, 0);"> start)
+
+</span><span style="color: rgb(0, 0, 255);">def</span><span style="color: rgb(0, 0, 0);"> Allen():
+    </span><span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">\nRun task Allen-%s</span><span style="color: rgb(128, 0, 0);">"</span> %<span style="color: rgb(0, 0, 0);">(os.getpid())
+    start </span>=<span style="color: rgb(0, 0, 0);"> time.time()
+    time.sleep(random.random() </span>* 30<span style="color: rgb(0, 0, 0);">)
+    end </span>=<span style="color: rgb(0, 0, 0);"> time.time()
+    </span><span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(128, 0, 0);">Task Allen runs %0.2f seconds.</span><span style="color: rgb(128, 0, 0);">'</span> %(end -<span style="color: rgb(0, 0, 0);"> start)
+
+</span><span style="color: rgb(0, 0, 255);">def</span><span style="color: rgb(0, 0, 0);"> Frank():
+    </span><span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">\nRun task Frank-%s</span><span style="color: rgb(128, 0, 0);">"</span> %<span style="color: rgb(0, 0, 0);">(os.getpid())
+    start </span>=<span style="color: rgb(0, 0, 0);"> time.time()
+    time.sleep(random.random() </span>* 20<span style="color: rgb(0, 0, 0);">)
+    end </span>=<span style="color: rgb(0, 0, 0);"> time.time()
+    </span><span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(128, 0, 0);">Task Frank runs %0.2f seconds.</span><span style="color: rgb(128, 0, 0);">'</span> %(end -<span style="color: rgb(0, 0, 0);"> start)
+        
+</span><span style="color: rgb(0, 0, 255);">if</span> <span style="color: rgb(128, 0, 128);">__name__</span>==<span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(128, 0, 0);">__main__</span><span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(0, 0, 0);">:
+    function_list</span>=<span style="color: rgb(0, 0, 0);">  [Lee, Marlon, Allen, Frank] 
+    </span><span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">parent process %s</span><span style="color: rgb(128, 0, 0);">"</span> %<span style="color: rgb(0, 0, 0);">(os.getpid())
+
+    pool</span>=multiprocessing.Pool(4<span style="color: rgb(0, 0, 0);">)
+    </span><span style="color: rgb(0, 0, 255);">for</span> func <span style="color: rgb(0, 0, 255);">in</span><span style="color: rgb(0, 0, 0);"> function_list:
+        pool.apply_async(func)     </span><span style="color: rgb(0, 128, 0);">#</span><span style="color: rgb(0, 128, 0);">Pool执行函数，apply执行函数,当有一个进程执行完毕后，会添加一个新的进程到pool中</span>
+
+    <span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(128, 0, 0);">Waiting for all subprocesses done...</span><span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(0, 0, 0);">
+    pool.close()
+    pool.join()    </span><span style="color: rgb(0, 128, 0);">#</span><span style="color: rgb(0, 128, 0);">调用join之前，一定要先调用close() 函数，否则会出错, close()执行后不会有新的进程加入到pool,join函数等待素有子进程结束</span>
+    <span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(128, 0, 0);">All subprocesses done.</span><span style="color: rgb(128, 0, 0);">'</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div></div>
+<p>一次执行结果</p>
+<div class="cnblogs_Highlighter sh-gutter">
+<div><div id="highlighter_767213" class="syntaxhighlighter  css"><div class="toolbar"><span><a href="#" class="toolbar_item command_help help">?</a></span></div><table cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="gutter"><div class="line number1 index0 alt2">1</div><div class="line number2 index1 alt1">2</div><div class="line number3 index2 alt2">3</div><div class="line number4 index3 alt1">4</div><div class="line number5 index4 alt2">5</div><div class="line number6 index5 alt1">6</div><div class="line number7 index6 alt2">7</div><div class="line number8 index7 alt1">8</div><div class="line number9 index8 alt2">9</div><div class="line number10 index9 alt1">10</div><div class="line number11 index10 alt2">11</div><div class="line number12 index11 alt1">12</div><div class="line number13 index12 alt2">13</div><div class="line number14 index13 alt1">14</div><div class="line number15 index14 alt2">15</div></td><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="css plain">parent process </code><code class="css value">7704</code></div><div class="line number2 index1 alt1">&nbsp;</div><div class="line number3 index2 alt2"><code class="css plain">Waiting for </code><code class="css value">all</code> <code class="css plain">subprocesses done...</code></div><div class="line number4 index3 alt1"><code class="css plain">Run task Lee</code><code class="css value">-6948</code></div><div class="line number5 index4 alt2">&nbsp;</div><div class="line number6 index5 alt1"><code class="css plain">Run task Marlon</code><code class="css value">-2896</code></div><div class="line number7 index6 alt2">&nbsp;</div><div class="line number8 index7 alt1"><code class="css plain">Run task Allen</code><code class="css value">-7304</code></div><div class="line number9 index8 alt2">&nbsp;</div><div class="line number10 index9 alt1"><code class="css plain">Run task Frank</code><code class="css value">-3052</code></div><div class="line number11 index10 alt2"><code class="css plain">Task Lee, runs </code><code class="css value">1.59</code> <code class="css plain">seconds.</code></div><div class="line number12 index11 alt1"><code class="css plain">Task Marlon runs </code><code class="css value">8.48</code> <code class="css plain">seconds.</code></div><div class="line number13 index12 alt2"><code class="css plain">Task Frank runs </code><code class="css value">15.68</code> <code class="css plain">seconds.</code></div><div class="line number14 index13 alt1"><code class="css plain">Task Allen runs </code><code class="css value">18.08</code> <code class="css plain">seconds.</code></div><div class="line number15 index14 alt2"><code class="css plain">All subprocesses done.</code></div></div></td></tr></tbody></table></div></div>
+</div></div><div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+<div id="BlogPostCategory">分类: <a href="https://www.cnblogs.com/kaituorensheng/category/386335.html" target="_top">Python每日小灶</a></div>
+<div id="EntryTag"></div>
+<div id="blog_post_info"><div id="green_channel">
+        <a href="javascript:void(0);" id="green_channel_digg" onclick="DiggIt(4445418,cb_blogId,1);green_channel_success(this,'谢谢推荐！');">好文要顶</a>
+            <a id="green_channel_follow" onclick="follow('e10d37de-a69d-e111-aa3f-842b2b196315');" href="javascript:void(0);">关注我</a>
+    <a id="green_channel_favorite" onclick="AddToWz(cb_entryId);return false;" href="javascript:void(0);">收藏该文</a>
+    <a id="green_channel_weibo" href="javascript:void(0);" title="分享至新浪微博" onclick="ShareToTsina()"><img src="icon_weibo_24.png" alt=""></a>
+    <a id="green_channel_wechat" href="javascript:void(0);" title="分享至微信" onclick="shareOnWechat()"><img src="wechat.png" alt=""></a>
+</div>
+<div id="author_profile">
+    <div id="author_profile_info" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/kaituorensheng/" target="_top"><img src="u408927.jpg" class="author_avatar" alt=""></a>
+        <div id="author_profile_detail" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/kaituorensheng/">jihite</a><br>
+            <a href="http://home.cnblogs.com/u/kaituorensheng/followees">关注 - 49</a><br>
+            <a href="http://home.cnblogs.com/u/kaituorensheng/followers">粉丝 - 1401</a>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div id="author_profile_honor"></div>
+    <div id="author_profile_follow">
+                <a href="javascript:void(0);" onclick="follow('e10d37de-a69d-e111-aa3f-842b2b196315');return false;">+加关注</a>
+    </div>
+</div>
+<div id="div_digg">
+    <div class="diggit" onclick="votePost(4445418,'Digg')">
+        <span class="diggnum" id="digg_count">30</span>
+    </div>
+    <div class="buryit" onclick="votePost(4445418,'Bury')">
+        <span class="burynum" id="bury_count">0</span>
+    </div>
+    <div class="clear"></div>
+    <div class="diggword" id="digg_tips">
+    </div>
+</div>
+</div>
+<div class="clear"></div>
+<div id="post_next_prev"><a href="https://www.cnblogs.com/kaituorensheng/p/4452881.html" class="p_n_p_prefix">« </a> 上一篇：<a href="https://www.cnblogs.com/kaituorensheng/p/4452881.html" title="发布于2015-04-26 20:52">Cython学习</a><br><a href="https://www.cnblogs.com/kaituorensheng/p/4447307.html" class="p_n_p_prefix">» </a> 下一篇：<a href="https://www.cnblogs.com/kaituorensheng/p/4447307.html" title="发布于2015-04-30 15:10">python 单元测试 unittest</a><br></div>
+</div>
+
+
+		</div>
+		<div class="postDesc">posted @ <span id="post-date">2015-04-30 14:46</span> <a href="https://www.cnblogs.com/kaituorensheng/">jihite</a> 阅读(<span id="post_view_count">157967</span>) 评论(<span id="post_comment_count">15</span>)  <a href="https://i.cnblogs.com/EditPosts.aspx?postid=4445418" rel="nofollow">编辑</a> <a href="#" onclick="AddToWz(4445418);return false;">收藏</a></div>
+	</div>
+	
+	
+</div><!--end: topics 文章、评论容器-->
+</div><a name="!comments"></a><div id="blog-comments-placeholder"><div id="comments_pager_top"></div>
+<!--done-->
+<div class="feedback_area_title">评论列表</div>
+<div class="feedbackNoItems"></div>
+	
+
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="#3203956" class="layer">#1楼</a><a name="3203956" id="comment_anchor_3203956"></a>  <span class="comment_date">2015-06-08 17:59</span> <a id="a_comment_author_3203956" href="https://www.cnblogs.com/lang1437/" target="_top">瘸腿狼</a> <a href="http://msg.cnblogs.com/send/%E7%98%B8%E8%85%BF%E7%8B%BC" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3203956" class="blog_comment_body">这文章不错啊！学习了！</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3203956,'Digg',this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3203956,'Bury',this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="#3237681" class="layer">#2楼</a><a name="3237681" id="comment_anchor_3237681"></a>  <span class="comment_date">2015-07-29 17:53</span> <a id="a_comment_author_3237681" href="http://home.cnblogs.com/u/791818/" target="_top">BetterThinker</a> <a href="http://msg.cnblogs.com/send/BetterThinker" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3237681" class="blog_comment_body">您好，请问为什么我在执行您的例子1.1的时候只输出了一条记录：<br><br>p.pid: 12812<br>p.name: Process-1<br>p.is_alive: True<br><br>是我用IDE问题吗？我用的是wing ide，希望指教一下。</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3237681,'Digg',this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3237681,'Bury',this)">反对(2)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="#3237824" class="layer">#3楼</a><a name="3237824" id="comment_anchor_3237824"></a>[<span class="louzhu">楼主</span>]  <span class="comment_date">2015-07-29 23:10</span> <a id="a_comment_author_3237824" href="https://www.cnblogs.com/kaituorensheng/" target="_top">jihite</a> <a href="http://msg.cnblogs.com/send/jihite" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3237824" class="blog_comment_body"><a href="#3237681" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,3237681);">@</a>
+BetterThinker<br>在windows下的话用命令打开：<br>D:\Python27&gt;D:\Python27\python del.py<br>输出<br><br>Mark~ Mark~ Mark~~~~~~~~~~~~~~~~~~~~~~<br>msg: hello 0<br>msg: hello 1<br>msg: hello 2<br>end<br>msg: hello 3<br>end<br>end<br>end<br>Sub-process(es) done.</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3237824,'Digg',this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3237824,'Bury',this)">反对(0)</a></div><span id="comment_3237824_avatar" style="display: none;">http://pic.cnblogs.com/face/u408927.jpg?id=16165421</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="#3286524" class="layer">#4楼</a><a name="3286524" id="comment_anchor_3286524"></a>  <span class="comment_date">2015-10-17 11:19</span> <a id="a_comment_author_3286524" href="http://home.cnblogs.com/u/560329/" target="_top">jianviper</a> <a href="http://msg.cnblogs.com/send/jianviper" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3286524" class="blog_comment_body">mark 慢慢看</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3286524,'Digg',this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3286524,'Bury',this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="#3555163" class="layer">#5楼</a><a name="3555163" id="comment_anchor_3555163"></a>  <span class="comment_date">2016-11-14 11:21</span> <a id="a_comment_author_3555163" href="https://www.cnblogs.com/dsdr/" target="_top">德克斯特的实验室</a> <a href="http://msg.cnblogs.com/send/%E5%BE%B7%E5%85%8B%E6%96%AF%E7%89%B9%E7%9A%84%E5%AE%9E%E9%AA%8C%E5%AE%A4" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3555163" class="blog_comment_body">简明扼要，转了，多谢博主.</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3555163,'Digg',this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3555163,'Bury',this)">反对(0)</a></div><span id="comment_3555163_avatar" style="display: none;">http://pic.cnblogs.com/face/736417/20161111204458.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="#3561424" class="layer">#6楼</a><a name="3561424" id="comment_anchor_3561424"></a>  <span class="comment_date">2016-11-21 17:33</span> <a id="a_comment_author_3561424" href="https://www.cnblogs.com/nxld/" target="_top">Little_Rookie</a> <a href="http://msg.cnblogs.com/send/Little_Rookie" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3561424" class="blog_comment_body">必须转啊！👍</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3561424,'Digg',this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3561424,'Bury',this)">反对(0)</a></div><span id="comment_3561424_avatar" style="display: none;">http://pic.cnblogs.com/face/1062315/20161112155140.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="#3563165" class="layer">#7楼</a><a name="3563165" id="comment_anchor_3563165"></a>  <span class="comment_date">2016-11-23 16:07</span> <a id="a_comment_author_3563165" href="http://home.cnblogs.com/u/740533/" target="_top">_xiaocainiao</a> <a href="http://msg.cnblogs.com/send/_xiaocainiao" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3563165" class="blog_comment_body">用进程池pool发现一个奇怪的现象<br><br>当注释掉time.sleep所打印的进程pid是一样的，而使用time.sleep进程pid不一样，请问下这是为什么？<div class="cnblogs_Highlighter sh-gutter"><div><div id="highlighter_977681" class="syntaxhighlighter  python"><div class="toolbar"><span><a href="#" class="toolbar_item command_help help">?</a></span></div><table cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="gutter"><div class="line number1 index0 alt2">1</div><div class="line number2 index1 alt1">2</div><div class="line number3 index2 alt2">3</div><div class="line number4 index3 alt1">4</div><div class="line number5 index4 alt2">5</div><div class="line number6 index5 alt1">6</div><div class="line number7 index6 alt2">7</div><div class="line number8 index7 alt1">8</div><div class="line number9 index8 alt2">9</div><div class="line number10 index9 alt1">10</div><div class="line number11 index10 alt2">11</div><div class="line number12 index11 alt1">12</div><div class="line number13 index12 alt2">13</div></td><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="python keyword">import</code> <code class="python plain">multiprocessing</code></div><div class="line number2 index1 alt1"><code class="python keyword">import</code> <code class="python plain">os</code></div><div class="line number3 index2 alt2"><code class="python keyword">import</code> <code class="python plain">time</code></div><div class="line number4 index3 alt1"><code class="python keyword">def</code> <code class="python plain">func():</code></div><div class="line number5 index4 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python functions">print</code> <code class="python plain">os.getpid()</code></div><div class="line number6 index5 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;</code><code class="python comments"># time.sleep(1)</code></div><div class="line number7 index6 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python functions">print</code> <code class="python string">'end'</code></div><div class="line number8 index7 alt1"><code class="python keyword">if</code> <code class="python plain">__name__ </code><code class="python keyword">=</code><code class="python keyword">=</code> <code class="python string">'__main__'</code><code class="python plain">:</code></div><div class="line number9 index8 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">pool </code><code class="python keyword">=</code> <code class="python plain">multiprocessing.Pool(processes</code><code class="python keyword">=</code><code class="python value">2</code><code class="python plain">)</code></div><div class="line number10 index9 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python keyword">for</code> <code class="python plain">i </code><code class="python keyword">in</code> <code class="python functions">xrange</code><code class="python plain">(</code><code class="python value">2</code><code class="python plain">):</code></div><div class="line number11 index10 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">pool.apply_async(func)</code></div><div class="line number12 index11 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">pool.close()</code></div><div class="line number13 index12 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">pool.join()</code></div></div></td></tr></tbody></table></div></div></div></div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3563165,'Digg',this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3563165,'Bury',this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="#3567467" class="layer">#8楼</a><a name="3567467" id="comment_anchor_3567467"></a>[<span class="louzhu">楼主</span>]  <span class="comment_date">2016-11-28 23:56</span> <a id="a_comment_author_3567467" href="https://www.cnblogs.com/kaituorensheng/" target="_top">jihite</a> <a href="http://msg.cnblogs.com/send/jihite" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3567467" class="blog_comment_body"><a href="#3563165" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,3563165);">@</a>
+_xiaocainiao<br>多次执行（屏蔽sleep的），会发现有时一样，有时不一样。<br>而如果把sleep换成更复杂的执行过程，如，那么执行结果pid都不是一样的，说明屏蔽了sleep以后，执行完了，另外一个进程才刚开始执行，正好用刚才那个进程释放掉的进程号<br><br><div class="cnblogs_Highlighter sh-gutter"><div><div id="highlighter_204082" class="syntaxhighlighter  python"><div class="toolbar"><span><a href="#" class="toolbar_item command_help help">?</a></span></div><table cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="gutter"><div class="line number1 index0 alt2">1</div><div class="line number2 index1 alt1">2</div><div class="line number3 index2 alt2">3</div><div class="line number4 index3 alt1">4</div><div class="line number5 index4 alt2">5</div><div class="line number6 index5 alt1">6</div><div class="line number7 index6 alt2">7</div><div class="line number8 index7 alt1">8</div><div class="line number9 index8 alt2">9</div><div class="line number10 index9 alt1">10</div><div class="line number11 index10 alt2">11</div><div class="line number12 index11 alt1">12</div><div class="line number13 index12 alt2">13</div><div class="line number14 index13 alt1">14</div><div class="line number15 index14 alt2">15</div></td><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="python keyword">import</code> <code class="python plain">multiprocessing</code></div><div class="line number2 index1 alt1"><code class="python keyword">import</code> <code class="python plain">os</code></div><div class="line number3 index2 alt2"><code class="python keyword">import</code> <code class="python plain">time</code></div><div class="line number4 index3 alt1"><code class="python keyword">def</code> <code class="python plain">func():</code></div><div class="line number5 index4 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python functions">print</code> <code class="python plain">os.getpid()</code></div><div class="line number6 index5 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;</code><code class="python comments"># time.sleep(1)</code></div><div class="line number7 index6 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python keyword">for</code> <code class="python plain">i </code><code class="python keyword">in</code> <code class="python functions">range</code><code class="python plain">(</code><code class="python value">300</code><code class="python plain">):</code></div><div class="line number8 index7 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python keyword">pass</code></div><div class="line number9 index8 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python functions">print</code> <code class="python string">'end'</code></div><div class="line number10 index9 alt1"><code class="python keyword">if</code> <code class="python plain">__name__ </code><code class="python keyword">=</code><code class="python keyword">=</code> <code class="python string">'__main__'</code><code class="python plain">:</code></div><div class="line number11 index10 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">pool </code><code class="python keyword">=</code> <code class="python plain">multiprocessing.Pool(processes</code><code class="python keyword">=</code><code class="python value">2</code><code class="python plain">)</code></div><div class="line number12 index11 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python keyword">for</code> <code class="python plain">i </code><code class="python keyword">in</code> <code class="python functions">xrange</code><code class="python plain">(</code><code class="python value">2</code><code class="python plain">):</code></div><div class="line number13 index12 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">pool.apply_async(func)</code></div><div class="line number14 index13 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">pool.close()</code></div><div class="line number15 index14 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">pool.join()</code></div></div></td></tr></tbody></table></div></div></div></div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3567467,'Digg',this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3567467,'Bury',this)">反对(0)</a></div><span id="comment_3567467_avatar" style="display: none;">http://pic.cnblogs.com/face/u408927.jpg?id=16165421</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="#3847574" class="layer">#9楼</a><a name="3847574" id="comment_anchor_3847574"></a>  <span class="comment_date">2017-11-22 16:33</span> <a id="a_comment_author_3847574" href="http://home.cnblogs.com/u/786717/" target="_top">kooler</a> <a href="http://msg.cnblogs.com/send/kooler" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3847574" class="blog_comment_body">你这里的pipe是不是写颠倒了  count1在一开始的时候写的是接受方  但是在函数中写的pipe写的却是send发送方？小白不明白这里</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3847574,'Digg',this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3847574,'Bury',this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="#3871168" class="layer">#10楼</a><a name="3871168" id="comment_anchor_3871168"></a>  <span class="comment_date">2017-12-21 17:17</span> <a id="a_comment_author_3871168" href="http://home.cnblogs.com/u/1303917/" target="_top">C_iven</a> <a href="http://msg.cnblogs.com/send/C_iven" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3871168" class="blog_comment_body">其实学这个来说linux 是很不错的一个选择，个人不推荐windows</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3871168,'Digg',this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3871168,'Bury',this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="#3924712" class="layer">#11楼</a><a name="3924712" id="comment_anchor_3924712"></a>  <span class="comment_date">2018-03-16 10:52</span> <a id="a_comment_author_3924712" href="http://home.cnblogs.com/u/1314145/" target="_top">心好大呀</a> <a href="http://msg.cnblogs.com/send/%E5%BF%83%E5%A5%BD%E5%A4%A7%E5%91%80" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3924712" class="blog_comment_body">mark<br>python3-cookbook <a href="http://www.jqhtml.com/12406.html" target="_top">http://www.jqhtml.com/12406.html</a></div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3924712,'Digg',this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3924712,'Bury',this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="#4116427" class="layer">#12楼</a><a name="4116427" id="comment_anchor_4116427"></a>  <span class="comment_date">2018-11-17 09:25</span> <a id="a_comment_author_4116427" href="http://home.cnblogs.com/u/1533520/" target="_top">会喷火的大娃</a> <a href="http://msg.cnblogs.com/send/%E4%BC%9A%E5%96%B7%E7%81%AB%E7%9A%84%E5%A4%A7%E5%A8%83" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_4116427" class="blog_comment_body">简明扼要，收藏了</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(4116427,'Digg',this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(4116427,'Bury',this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="#4237304" class="layer">#13楼</a><a name="4237304" id="comment_anchor_4237304"></a>  <span class="comment_date">2019-04-22 14:29</span> <a id="a_comment_author_4237304" href="http://home.cnblogs.com/u/1307667/" target="_top">狮子森林</a> <a href="http://msg.cnblogs.com/send/%E7%8B%AE%E5%AD%90%E6%A3%AE%E6%9E%97" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_4237304" class="blog_comment_body">楼主，处理并发量请求（同一个接口上处理多请求），用process好还是用pool好？如果有500个同时请求过来，能适应吗？是根据pool.cpu_count()自动选择开几个线程？？望解答</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(4237304,'Digg',this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(4237304,'Bury',this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="#4237372" class="layer">#14楼</a><a name="4237372" id="comment_anchor_4237372"></a>[<span class="louzhu">楼主</span>]  <span class="comment_date">2019-04-22 15:42</span> <a id="a_comment_author_4237372" href="https://www.cnblogs.com/kaituorensheng/" target="_top">jihite</a> <a href="http://msg.cnblogs.com/send/jihite" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_4237372" class="blog_comment_body"><a href="#4237304" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,4237304);">@</a>
+狮子森林<br>pool好,可以设定进程的数量（可以设定为cpu的个数）。<br>而使用Process手动去限制进程数量就显得特别的繁琐</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(4237372,'Digg',this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(4237372,'Bury',this)">反对(0)</a></div><span id="comment_4237372_avatar" style="display: none;">http://pic.cnblogs.com/face/u408927.jpg?id=16165421</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="#4237398" class="layer">#15楼</a><a name="4237398" id="comment_anchor_4237398"></a><span id="comment-maxId" style="display: none;">4237398</span><span id="comment-maxDate" style="display: none;">2019/4/22 16:11:43</span>  <span class="comment_date">2019-04-22 16:11</span> <a id="a_comment_author_4237398" href="http://home.cnblogs.com/u/1307667/" target="_top">狮子森林</a> <a href="http://msg.cnblogs.com/send/%E7%8B%AE%E5%AD%90%E6%A3%AE%E6%9E%97" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_4237398" class="blog_comment_body">谢谢博主的回答。例如在socket下，应该使用pool吗？还有multiprocessing有两个pool，分别是multiprocessing.pool.Pool和multiprocessing.Pool两者有区别吗？</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(4237398,'Digg',this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(4237398,'Bury',this)">反对(0)</a></div>
+			</div>
+		</div>
+	<div id="comments_pager_bottom"></div></div>
+<div id="comment_form" class="commentform">
+<a name="commentform"></a>
+<div id="divCommentShow"></div>
+<div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+<div id="comment_form_container"><div class="login_tips">注册用户登录后才能发表评论，请 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return login('commentform');">登录</a> 或 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return register();">注册</a>，<a href="http://www.cnblogs.com/">访问</a>网站首页。</div></div>
+<div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+<div id="ad_t2"><a href="http://www.ucancode.com/index.htm" target="_top" onclick="ga('send', 'event', 'Link', 'click', 'T2-工控')">【推荐】超50万C++/C#源码: 大型实时仿真组态图形源码</a><br><a href="https://ke.qq.com/adActivity.html?name=xiangxueketang2" target="_top" onclick="ga('send', 'event', 'Link', 'click', 'T2-享学')">【培训】IT职业生涯指南，Java程序员薪资翻3倍的秘密</a><br><a href="https://group.cnblogs.com/topic/81213.html" target="_top" onclick="ga('send', 'event', 'Link', 'click', 'T2-咕泡')">【推荐】工作996，生病ICU，程序员不加班就没前途吗？</a><br><a href="https://gitee.com/enterprises?from=bky-2" target="_top" onclick="ga('send', 'event', 'Link', 'click', 'T2-gitee')">【推荐】专业便捷的企业级代码托管服务 - Gitee 码云</a><br></div>
+<div id="opt_under_post"></div>
+
+
+
+<div id="cnblogs_c1" class="c_ad_block">
+    <div id="div-gpt-ad-1546353474406-0" style="height: 250px; width: 300px;" data-google-query-id="COi3jffl5-ECFZQGKgod3FcESQ"><div id="google_ads_iframe_/1090369/C1_0__container__" style="border: 0pt none;"><iframe id="google_ads_iframe_/1090369/C1_0" title="3rd party ad content" name="google_ads_iframe_/1090369/C1_0" scrolling="no" marginwidth="0" marginheight="0" style="border: 0px none; vertical-align: bottom;" srcdoc="" data-google-container-id="1" data-load-complete="true" src="index_1.html" width="300" height="250" frameborder="0"></iframe></div></div>
+</div>
+<div id="under_post_news"><div class="itnews c_ad_block"><b>相关博文：</b><br>·  <a href="https://www.cnblogs.com/yunxizhujing/p/9446056.html" target="_top" onclick="clickRecomItmem(9446056)">Python多进程编程</a><br>·  <a href="https://www.cnblogs.com/wxzhe/p/9101890.html" target="_top" onclick="clickRecomItmem(9101890)">python进程编程</a><br>·  <a href="https://www.cnblogs.com/zxc-Weblog/p/8400678.html" target="_top" onclick="clickRecomItmem(8400678)">python编程之进程</a><br>·  <a href="https://www.cnblogs.com/zhaijihai/p/9592587.html" target="_top" onclick="clickRecomItmem(9592587)">Python(并发编程进程)</a><br>·  <a href="https://www.cnblogs.com/xiaoqshuo/p/9814961.html" target="_top" onclick="clickRecomItmem(9814961)">Python--并发编程--进程</a><br></div></div>
+<div id="cnblogs_c2" class="c_ad_block">
+    <div id="div-gpt-ad-1539008685004-0" style="height: 60px; width: 468px;" data-google-query-id="COm3jffl5-ECFZQGKgod3FcESQ"><div id="google_ads_iframe_/1090369/C2_0__container__" style="border: 0pt none;"><iframe id="google_ads_iframe_/1090369/C2_0" title="3rd party ad content" name="google_ads_iframe_/1090369/C2_0" scrolling="no" marginwidth="0" marginheight="0" style="border: 0px none; vertical-align: bottom;" srcdoc="" data-google-container-id="2" data-load-complete="true" src="index_2.html" width="468" height="60" frameborder="0"></iframe></div></div>
+</div>
+<div id="under_post_kb"><div class="itnews c_ad_block"><b>最新新闻</b>：<br> ·  <a href="https://news.cnblogs.com/n/624281/" target="_top">为了京东，刘强东应该辞去CEO</a><br> ·  <a href="https://news.cnblogs.com/n/624280/" target="_top">华为内部员工大流动，2万人或将“投奔”余承东</a><br> ·  <a href="https://news.cnblogs.com/n/624279/" target="_top">苹果新专利：Apple Pencil可换笔刷 触觉反馈以假乱真</a><br> ·  <a href="https://news.cnblogs.com/n/624278/" target="_top">一线 | OPPO旗下主打印度的手机品牌Realme进军国内</a><br> ·  <a href="https://news.cnblogs.com/n/624277/" target="_top">太空里没有水，航天器也会“生锈”？</a><br>» <a href="http://news.cnblogs.com/" title="IT新闻" target="_top">更多新闻...</a></div></div>
+<div id="HistoryToday" class="c_ad_block"></div>
+
+</div>
+
+    
+	</div><!--end: forFlow -->
+	</div><!--end: mainContent 主体内容容器-->
+
+	<div id="sideBar">
+		<div id="sideBarMain">
+			
+<!--done-->
+<div class="newsItem">
+<h3 class="catListTitle">公告</h3>
+	<div id="blog-news"><div id="clustrmaps-widget"></div><div id="profile_block">昵称：<a href="https://home.cnblogs.com/u/kaituorensheng/">jihite</a><br>园龄：<a href="https://home.cnblogs.com/u/kaituorensheng/" title="入园时间：2012-05-14">6年10个月</a><br>粉丝：<a href="https://home.cnblogs.com/u/kaituorensheng/followers/">1392</a><br>关注：<a href="https://home.cnblogs.com/u/kaituorensheng/followees/">48</a><div id="p_b_follow"><a href="javascript:void(0);" onclick="follow('e10d37de-a69d-e111-aa3f-842b2b196315')">+加关注</a></div></div></div>
+</div>
+
+			<div id="calendar"><div id="blog-calendar" style="display: none;"></div></div>
+			
+			<div id="leftcontentcontainer">
+				<div id="blog-sidecolumn"><div id="sidebar_search" class="sidebar-block"></div><div id="sidebar_categories">
+<div class="catListPostCategory">
+<h3 class="catListTitle">随笔分类</h3>
+
+<ul>
+
+<li><a id="CatList_LinkList_0_Link_0" href="https://www.cnblogs.com/kaituorensheng/category/465181.html">c++/c(67)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_1" href="https://www.cnblogs.com/kaituorensheng/category/788331.html">celery(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_2" href="https://www.cnblogs.com/kaituorensheng/category/588221.html">Django(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_3" href="https://www.cnblogs.com/kaituorensheng/category/1437038.html">Effective Java(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_4" href="https://www.cnblogs.com/kaituorensheng/category/1392076.html">elasticsearch(2)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_5" href="https://www.cnblogs.com/kaituorensheng/category/774435.html">Flask(3)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_6" href="https://www.cnblogs.com/kaituorensheng/category/694257.html">gis(4)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_7" href="https://www.cnblogs.com/kaituorensheng/category/835024.html">Git(6)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_8" href="https://www.cnblogs.com/kaituorensheng/category/956730.html">Go语言(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_9" href="https://www.cnblogs.com/kaituorensheng/category/1397795.html">Guava(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_10" href="https://www.cnblogs.com/kaituorensheng/category/548132.html">Hadoop(9)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_11" href="https://www.cnblogs.com/kaituorensheng/category/586157.html">java(55)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_12" href="https://www.cnblogs.com/kaituorensheng/category/693663.html">JavaScript/Html(15)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_13" href="https://www.cnblogs.com/kaituorensheng/category/959418.html">kafka(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_14" href="https://www.cnblogs.com/kaituorensheng/category/571749.html">LeetCode(13)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_15" href="https://www.cnblogs.com/kaituorensheng/category/398604.html">linux(52)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_16" href="https://www.cnblogs.com/kaituorensheng/category/1023013.html">maven(3)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_17" href="https://www.cnblogs.com/kaituorensheng/category/787904.html">MongoDB(10)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_18" href="https://www.cnblogs.com/kaituorensheng/category/1224074.html">mysql(2)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_19" href="https://www.cnblogs.com/kaituorensheng/category/613525.html">Postgresql(12)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_20" href="https://www.cnblogs.com/kaituorensheng/category/386335.html">Python每日小灶(93)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_21" href="https://www.cnblogs.com/kaituorensheng/category/795238.html">Redis(6)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_22" href="https://www.cnblogs.com/kaituorensheng/category/1013453.html">Spring(11)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_23" href="https://www.cnblogs.com/kaituorensheng/category/1241941.html">SpringBoot(4)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_24" href="https://www.cnblogs.com/kaituorensheng/category/545970.html">STL(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_25" href="https://www.cnblogs.com/kaituorensheng/category/482211.html">tools(31)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_26" href="https://www.cnblogs.com/kaituorensheng/category/512789.html">产品(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_27" href="https://www.cnblogs.com/kaituorensheng/category/386337.html">成长经历(15)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_28" href="https://www.cnblogs.com/kaituorensheng/category/404673.html">读书(7)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_29" href="https://www.cnblogs.com/kaituorensheng/category/783834.html">服务(2)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_30" href="https://www.cnblogs.com/kaituorensheng/category/1298905.html">规范</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_31" href="https://www.cnblogs.com/kaituorensheng/category/600422.html">互联网(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_32" href="https://www.cnblogs.com/kaituorensheng/category/484221.html">机器学习(3)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_33" href="https://www.cnblogs.com/kaituorensheng/category/611937.html">计算机网络(3)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_34" href="https://www.cnblogs.com/kaituorensheng/category/560927.html">计算机原理(8)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_35" href="https://www.cnblogs.com/kaituorensheng/category/758599.html">开源(2)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_36" href="https://www.cnblogs.com/kaituorensheng/category/956545.html">设计模式(8)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_37" href="https://www.cnblogs.com/kaituorensheng/category/566787.html">数学之美(3)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_38" href="https://www.cnblogs.com/kaituorensheng/category/445233.html">算法&amp;&amp;数据结构(72)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_39" href="https://www.cnblogs.com/kaituorensheng/category/526037.html">统计学习方法(7)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_40" href="https://www.cnblogs.com/kaituorensheng/category/576792.html">网络爬虫(6)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_41" href="https://www.cnblogs.com/kaituorensheng/category/622147.html">文学艺术(2)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_42" href="https://www.cnblogs.com/kaituorensheng/category/868025.html">消息队列(3)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_43" href="https://www.cnblogs.com/kaituorensheng/category/404670.html">学术创新</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_44" href="https://www.cnblogs.com/kaituorensheng/category/517963.html">英语(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_45" href="https://www.cnblogs.com/kaituorensheng/category/914576.html">源码之美</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_46" href="https://www.cnblogs.com/kaituorensheng/category/713922.html">运维(10)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_47" href="https://www.cnblogs.com/kaituorensheng/category/386336.html">自然语言处理(26)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_48" href="https://www.cnblogs.com/kaituorensheng/category/1198153.html">自省录</a> </li>
+
+</ul>
+
+</div>
+
+<div class="catListPostArchive">
+<h3 class="catListTitle">随笔档案</h3>
+
+<ul>
+
+<li><a id="CatList_LinkList_1_Link_0" href="https://www.cnblogs.com/kaituorensheng/archive/2019/04.html">2019年4月 (4)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_1" href="https://www.cnblogs.com/kaituorensheng/archive/2019/03.html">2019年3月 (6)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_2" href="https://www.cnblogs.com/kaituorensheng/archive/2019/02.html">2019年2月 (4)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_3" href="https://www.cnblogs.com/kaituorensheng/archive/2019/01.html">2019年1月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_4" href="https://www.cnblogs.com/kaituorensheng/archive/2018/12.html">2018年12月 (4)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_5" href="https://www.cnblogs.com/kaituorensheng/archive/2018/11.html">2018年11月 (3)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_6" href="https://www.cnblogs.com/kaituorensheng/archive/2018/10.html">2018年10月 (9)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_7" href="https://www.cnblogs.com/kaituorensheng/archive/2018/09.html">2018年9月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_8" href="https://www.cnblogs.com/kaituorensheng/archive/2018/08.html">2018年8月 (3)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_9" href="https://www.cnblogs.com/kaituorensheng/archive/2018/07.html">2018年7月 (3)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_10" href="https://www.cnblogs.com/kaituorensheng/archive/2018/06.html">2018年6月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_11" href="https://www.cnblogs.com/kaituorensheng/archive/2018/05.html">2018年5月 (6)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_12" href="https://www.cnblogs.com/kaituorensheng/archive/2018/04.html">2018年4月 (4)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_13" href="https://www.cnblogs.com/kaituorensheng/archive/2018/03.html">2018年3月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_14" href="https://www.cnblogs.com/kaituorensheng/archive/2018/01.html">2018年1月 (4)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_15" href="https://www.cnblogs.com/kaituorensheng/archive/2017/12.html">2017年12月 (10)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_16" href="https://www.cnblogs.com/kaituorensheng/archive/2017/10.html">2017年10月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_17" href="https://www.cnblogs.com/kaituorensheng/archive/2017/09.html">2017年9月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_18" href="https://www.cnblogs.com/kaituorensheng/archive/2017/08.html">2017年8月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_19" href="https://www.cnblogs.com/kaituorensheng/archive/2017/07.html">2017年7月 (4)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_20" href="https://www.cnblogs.com/kaituorensheng/archive/2017/06.html">2017年6月 (5)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_21" href="https://www.cnblogs.com/kaituorensheng/archive/2017/05.html">2017年5月 (3)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_22" href="https://www.cnblogs.com/kaituorensheng/archive/2017/03.html">2017年3月 (15)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_23" href="https://www.cnblogs.com/kaituorensheng/archive/2017/02.html">2017年2月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_24" href="https://www.cnblogs.com/kaituorensheng/archive/2016/12.html">2016年12月 (4)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_25" href="https://www.cnblogs.com/kaituorensheng/archive/2016/11.html">2016年11月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_26" href="https://www.cnblogs.com/kaituorensheng/archive/2016/10.html">2016年10月 (4)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_27" href="https://www.cnblogs.com/kaituorensheng/archive/2016/09.html">2016年9月 (5)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_28" href="https://www.cnblogs.com/kaituorensheng/archive/2016/08.html">2016年8月 (9)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_29" href="https://www.cnblogs.com/kaituorensheng/archive/2016/07.html">2016年7月 (9)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_30" href="https://www.cnblogs.com/kaituorensheng/archive/2016/06.html">2016年6月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_31" href="https://www.cnblogs.com/kaituorensheng/archive/2016/05.html">2016年5月 (6)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_32" href="https://www.cnblogs.com/kaituorensheng/archive/2016/04.html">2016年4月 (12)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_33" href="https://www.cnblogs.com/kaituorensheng/archive/2016/03.html">2016年3月 (5)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_34" href="https://www.cnblogs.com/kaituorensheng/archive/2016/02.html">2016年2月 (13)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_35" href="https://www.cnblogs.com/kaituorensheng/archive/2016/01.html">2016年1月 (8)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_36" href="https://www.cnblogs.com/kaituorensheng/archive/2015/12.html">2015年12月 (4)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_37" href="https://www.cnblogs.com/kaituorensheng/archive/2015/11.html">2015年11月 (5)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_38" href="https://www.cnblogs.com/kaituorensheng/archive/2015/10.html">2015年10月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_39" href="https://www.cnblogs.com/kaituorensheng/archive/2015/09.html">2015年9月 (6)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_40" href="https://www.cnblogs.com/kaituorensheng/archive/2015/08.html">2015年8月 (15)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_41" href="https://www.cnblogs.com/kaituorensheng/archive/2015/07.html">2015年7月 (15)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_42" href="https://www.cnblogs.com/kaituorensheng/archive/2015/06.html">2015年6月 (12)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_43" href="https://www.cnblogs.com/kaituorensheng/archive/2015/05.html">2015年5月 (14)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_44" href="https://www.cnblogs.com/kaituorensheng/archive/2015/04.html">2015年4月 (9)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_45" href="https://www.cnblogs.com/kaituorensheng/archive/2015/03.html">2015年3月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_46" href="https://www.cnblogs.com/kaituorensheng/archive/2015/01.html">2015年1月 (13)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_47" href="https://www.cnblogs.com/kaituorensheng/archive/2014/12.html">2014年12月 (4)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_48" href="https://www.cnblogs.com/kaituorensheng/archive/2014/11.html">2014年11月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_49" href="https://www.cnblogs.com/kaituorensheng/archive/2014/10.html">2014年10月 (6)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_50" href="https://www.cnblogs.com/kaituorensheng/archive/2014/09.html">2014年9月 (20)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_51" href="https://www.cnblogs.com/kaituorensheng/archive/2014/08.html">2014年8月 (14)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_52" href="https://www.cnblogs.com/kaituorensheng/archive/2014/07.html">2014年7月 (6)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_53" href="https://www.cnblogs.com/kaituorensheng/archive/2014/06.html">2014年6月 (17)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_54" href="https://www.cnblogs.com/kaituorensheng/archive/2014/05.html">2014年5月 (12)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_55" href="https://www.cnblogs.com/kaituorensheng/archive/2014/04.html">2014年4月 (18)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_56" href="https://www.cnblogs.com/kaituorensheng/archive/2014/03.html">2014年3月 (45)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_57" href="https://www.cnblogs.com/kaituorensheng/archive/2014/02.html">2014年2月 (13)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_58" href="https://www.cnblogs.com/kaituorensheng/archive/2014/01.html">2014年1月 (12)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_59" href="https://www.cnblogs.com/kaituorensheng/archive/2013/12.html">2013年12月 (11)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_60" href="https://www.cnblogs.com/kaituorensheng/archive/2013/11.html">2013年11月 (11)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_61" href="https://www.cnblogs.com/kaituorensheng/archive/2013/10.html">2013年10月 (12)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_62" href="https://www.cnblogs.com/kaituorensheng/archive/2013/09.html">2013年9月 (5)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_63" href="https://www.cnblogs.com/kaituorensheng/archive/2013/08.html">2013年8月 (18)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_64" href="https://www.cnblogs.com/kaituorensheng/archive/2013/07.html">2013年7月 (4)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_65" href="https://www.cnblogs.com/kaituorensheng/archive/2013/06.html">2013年6月 (7)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_66" href="https://www.cnblogs.com/kaituorensheng/archive/2013/05.html">2013年5月 (11)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_67" href="https://www.cnblogs.com/kaituorensheng/archive/2013/04.html">2013年4月 (8)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_68" href="https://www.cnblogs.com/kaituorensheng/archive/2013/03.html">2013年3月 (16)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_69" href="https://www.cnblogs.com/kaituorensheng/archive/2013/02.html">2013年2月 (7)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_70" href="https://www.cnblogs.com/kaituorensheng/archive/2013/01.html">2013年1月 (8)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_71" href="https://www.cnblogs.com/kaituorensheng/archive/2012/12.html">2012年12月 (7)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_72" href="https://www.cnblogs.com/kaituorensheng/archive/2012/11.html">2012年11月 (5)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_73" href="https://www.cnblogs.com/kaituorensheng/archive/2012/10.html">2012年10月 (6)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_74" href="https://www.cnblogs.com/kaituorensheng/archive/2012/09.html">2012年9月 (3)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_75" href="https://www.cnblogs.com/kaituorensheng/archive/2012/08.html">2012年8月 (6)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_76" href="https://www.cnblogs.com/kaituorensheng/archive/2012/07.html">2012年7月 (4)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_77" href="https://www.cnblogs.com/kaituorensheng/archive/2012/06.html">2012年6月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_78" href="https://www.cnblogs.com/kaituorensheng/archive/2012/05.html">2012年5月 (1)</a> </li>
+
+</ul>
+
+</div>
+
+</div><div id="sidebar_scorerank" class="sidebar-block">
+<div class="catListBlogRank">
+<h3 class="catListTitle">积分与排名</h3>
+<ul>
+	<li class="liScore">
+		积分 -	877394
+	</li>
+	<li class="liRank">
+		排名 -	120
+	</li>
+</ul>
+</div>
+
+
+</div><div id="sidebar_recentcomments" class="sidebar-block"><div id="recent_comments_wrap">
+<div class="catListComment">
+<h3 class="catListTitle">最新评论</h3>
+	<div id="RecentCommentsBlock"><ul>
+        <li class="recent_comment_title"><a href="https://www.cnblogs.com/kaituorensheng/archive/2013/01/11/2856750.html#4216108">1. Re:算法&amp;&amp;程序设计版块启动</a></li>
+        <li class="recent_comment_body">好</li>
+        <li class="recent_comment_author">--wpgraceii</li>
+        <li class="recent_comment_title"><a href="https://www.cnblogs.com/kaituorensheng/archive/2012/10/26/2741594.html#4215988">2. Re:未分配内存的指针导致段错误</a></li>
+        <li class="recent_comment_body">没有释放内存</li>
+        <li class="recent_comment_author">--wpgraceii</li>
+        <li class="recent_comment_title"><a href="https://www.cnblogs.com/kaituorensheng/p/4480512.html#4198520">3. Re:python ftplib模块</a></li>
+        <li class="recent_comment_body">赞</li>
+        <li class="recent_comment_author">--人之初-柳</li>
+        <li class="recent_comment_title"><a href="https://www.cnblogs.com/kaituorensheng/p/4667160.html#4198253">4. Re:postgreSql 常用操作总结</a></li>
+        <li class="recent_comment_body">------------------------------</li>
+        <li class="recent_comment_author">--规格严格-功夫到家</li>
+        <li class="recent_comment_title"><a href="https://www.cnblogs.com/kaituorensheng/p/4480512.html#4182092">5. Re:python ftplib模块</a></li>
+        <li class="recent_comment_body">open时候建议用with</li>
+        <li class="recent_comment_author">--铅笔木有由</li>
+</ul>
+</div>
+</div>
+</div></div><div id="sidebar_topviewedposts" class="sidebar-block"><div id="topview_posts_wrap">
+<div class="catListView">
+<h3 class="catListTitle">阅读排行榜</h3>
+	<div id="TopViewPostsBlock"><ul><li><a href="https://www.cnblogs.com/kaituorensheng/p/3980334.html">1. linux后台运行和关闭、查看后台任务(210055)</a></li><li><a href="https://www.cnblogs.com/kaituorensheng/p/4445418.html">2. Python多进程编程(157962)</a></li><li><a href="https://www.cnblogs.com/kaituorensheng/p/3776527.html">3. URL中“#” “？” &amp;“”号的作用(157217)</a></li><li><a href="https://www.cnblogs.com/kaituorensheng/p/3877382.html">4. python解析json(144017)</a></li><li><a href="https://www.cnblogs.com/kaituorensheng/archive/2012/08/07/2627386.html">5. python 字典排序(140963)</a></li></ul></div>
+</div>
+</div></div><div id="sidebar_topdiggedposts" class="sidebar-block"><div id="topdigg_posts_wrap">
+<div class="catListView">
+<h3 class="catListTitle">推荐排行榜</h3>
+<div id="TopDiggPostsBlock"><ul><li><a href="https://www.cnblogs.com/kaituorensheng/p/4445418.html">1. Python多进程编程(30)</a></li><li><a href="https://www.cnblogs.com/kaituorensheng/p/3776527.html">2. URL中“#” “？” &amp;“”号的作用(20)</a></li><li><a href="https://www.cnblogs.com/kaituorensheng/p/3287652.html">3. pyhon之Tkinter实例化学习(16)</a></li><li><a href="https://www.cnblogs.com/kaituorensheng/archive/2013/03/02/2939690.html">4. 两个栈实现队列        两个队列实现栈(14)</a></li><li><a href="https://www.cnblogs.com/kaituorensheng/archive/2012/10/23/2736069.html">5. char *a 与char a[] 的区别(13)</a></li></ul></div>
+</div></div></div></div>
+			</div>
+			
+		</div><!--end: sideBarMain -->
+	</div><!--end: sideBar 侧边栏容器 -->
+	<div class="clear"></div>
+	</div><!--end: main -->
+	<div class="clear"></div>
+	<div id="footer">
+		
+<!--done-->
+Copyright ©2019 jihite
+	</div><!--end: footer -->
+</div><!--end: home 自定义的最大容器 -->
+
+<!--PageEndHtml Block Begin-->
+
+<!--PageEndHtml Block End-->
+
+
+</body>
+</html>

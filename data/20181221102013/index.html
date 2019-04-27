@@ -1,0 +1,585 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="zh-CN">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+	<meta name="Content-Type" content="text/html;charset=utf-8">
+    <meta name="Referrer" content="unsafe-url">
+	<meta content="True" name="HandheldFriendly">
+    <meta name="theme-color" content="#333344">
+	
+    <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="detectify-verification" content="d0264f228155c7a1f72c3d91c17ce8fb">
+<meta name="p:domain_verify" content="b87e3b55b409494aab88c1610b05a5f0">
+<meta name="alexaVerifyID" content="OFc8dmwZo7ttU4UCnDh1rKDtLlY">
+<meta name="baidu-site-verification" content="D00WizvYyr">
+<meta name="msvalidate.01" content="D9B08FEA08E3DA402BF07ABAB61D77DE">
+<meta property="wb:webmaster" content="f2f4cb229bda06a4">
+<meta name="google-site-verification" content="LM_cJR94XJIqcYJeOCscGVMWdaRUvmyz6cVOqkFplaU">
+    
+    <title>Cgroup － 从 CPU 资源隔离说起（三） - V2EX</title>
+    <link rel="dns-prefetch" href="https://static.v2ex.com/">
+    <link rel="dns-prefetch" href="https://cdn.v2ex.com/">
+    <link rel="dns-prefetch" href="https://cdn.v2ex.co/">
+    <link rel="dns-prefetch" href="https://i.v2ex.co/">
+    <link rel="dns-prefetch" href="https://v2ex.assets.uxengine.net/">
+    
+	   
+    
+    
+    
+    
+    
+    
+    <link rel="icon" sizes="192x192" href="v2ex_192.png">
+    <link rel="shortcut icon" href="icon_rayps_64.png" type="image/png">
+    
+	
+	
+	
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <meta name="description" content="Linux - @jerry017cn - ###权重 CPU 资源隔离这里的权重其实是 shares 。我把它叫做权重是因为这个值可以理解为对资源占用的权重。这种资源隔离方式事实上也是对 cpu 时间的进行分配。区别是作用在 cfs">
+    
+    
+    <link rel="canonical" href="https://www.v2ex.com/t/246793">
+    
+    
+    
+    <meta property="og:locale" content="zh_CN">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Cgroup － 从 CPU 资源隔离说起（三） - V2EX">
+<meta property="og:description" content="Linux - @jerry017cn - ###权重 CPU 资源隔离这里的权重其实是 shares 。我把它叫做权重是因为这个值可以理解为对资源占用的权重。这种资源隔离方式事实上也是对 cpu 时间的进行分配。区别是作用在 cfs">
+<meta property="og:url" content="https://www.v2ex.com/t/246793">
+<meta property="og:site_name" content="V2EX">
+
+<meta property="article:tag" content="linux">
+<meta property="article:section" content="Linux">
+<meta property="article:published_time" content="2015-12-28T14:42:21Z">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:description" content="Linux - @jerry017cn - ###权重 CPU 资源隔离这里的权重其实是 shares 。我把它叫做权重是因为这个值可以理解为对资源占用的权重。这种资源隔离方式事实上也是对 cpu 时间的进行分配。区别是作用在 cfs">
+<meta name="twitter:title" content="Cgroup － 从 CPU 资源隔离说起（三） - V2EX">
+<meta name="twitter:image" content="https://cdn.v2ex.com/avatar/277d/4b34/136983_large.png?m=1441503103">
+<meta name="twitter:site" content="@V2EX">
+<meta name="twitter:creator" content="@V2EX">
+    <link rel="top" title="回到顶部" href="https://www.v2ex.com/t/246793#">
+    
+    
+    <link rel="amphtml" href="https://www.v2ex.com/amp/t/246793">
+	
+    
+
+
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+    <div id="Top">
+        <div class="content">
+            <div style="padding-top: 6px;">
+            <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tbody><tr>
+                    <td width="110" align="left"><a href="https://www.v2ex.com/" name="top" title="way to explore"><div id="Logo"></div></a></td>
+                    <td width="auto" align="left">
+                        <div id="Search"><form action="https://www.google.com/" onsubmit="return dispatch()" target="_blank"><div id="qbar"><input maxlength="40" name="q" id="q" value="" onfocus="$('#qbar').addClass('qbar_focus')" onblur="$('#qbar').removeClass('qbar_focus')" type="text"></div></form></div>
+                    </td>
+                    <td style="padding-top: 2px;" width="570" align="right"><a href="https://www.v2ex.com/" class="top">首页</a>&nbsp;&nbsp;&nbsp;<a href="https://www.v2ex.com/signup" class="top">注册</a>&nbsp;&nbsp;&nbsp;<a href="https://www.v2ex.com/signin" class="top">登录</a></td>
+                </tr>
+            </tbody></table>
+            </div>
+        </div>
+    </div>
+    <div id="Wrapper">
+        <div class="content">
+            
+            <div id="Leftbar"></div>
+            <div id="Rightbar">
+                <div class="sep20"></div>
+                
+                    
+                    <div class="box">
+                        <div class="cell">
+                            <strong>V2EX = way to explore</strong>
+                            <div class="sep5"></div>
+                            <span class="fade">V2EX 是一个关于分享和探索的地方</span>
+                        </div>
+                        <div class="inner">
+                            <div class="sep5"></div>
+                            <div align="center"><a href="https://www.v2ex.com/signup" class="super normal button">现在注册</a>
+                            <div class="sep5"></div>
+                            <div class="sep10"></div>
+                            已注册用户请 &nbsp;<a href="https://www.v2ex.com/signin">登录</a></div>
+                        </div>
+                    </div>
+                    
+                    
+
+
+    
+    <div class="sep20"></div>
+    <div class="box">
+        <div class="inner">
+            <div class="sidebar_units">
+  <a href="http://www.oray.com/jump/45599" target="_top"><img src="huashengke_20181219.gif" alt="花生壳" width="100%" border="0"></a>
+  <div class="sep10"></div>
+  <a href="http://csvc.qiniu.com/?hmsr=v2exbanner&amp;hmpl=csvc&amp;hmcu=csvc_v2exbanner&amp;hmkw=&amp;hmci=" target="_top"><img src="qiniu_20181213.png" alt="七牛云" width="100%" border="0"></a>
+  <div class="sep10"></div>
+  <a href="https://datapacket.com/?utm_source=v2ex&amp;utm_medium=cpc&amp;utm_campaign=linux&amp;utm_content=static1" target="_top"><img src="datapacket_20181010.png" alt="DataPacket" width="100%" border="0"></a>
+  <div class="sep10"></div>
+  <a href="https://www.cdn77.com/cn?utm_source=v2ex&amp;utm_medium=cpc&amp;utm_campaign=linux&amp;utm_content=static2" target="_top"><img src="cdn77_20180806.jpg" alt="CDN77" width="100%" border="0"></a>
+  <div class="sep10"></div>
+</div>
+<strong class="green">Distributions</strong>
+<div class="sep5"></div>
+<span class="chevron">›</span> <a href="http://www.ubuntu.com/" target="_top">Ubuntu</a>
+<div class="sep5"></div>
+<span class="chevron">›</span> <a href="http://fedoraproject.org/" target="_top">Fedora</a>
+<div class="sep5"></div>
+<span class="chevron">›</span> <a href="http://www.centos.org/" target="_top">CentOS</a>
+<div class="sep10"></div>
+<strong class="fade">中文资源站</strong>
+<div class="sep5"></div>
+<span class="chevron">›</span> <a href="http://mirrors.163.com/" target="_top">网易开源镜像站</a>
+            
+        </div>
+        <div class="sidebar_compliance"><a href="https://www.v2ex.com/advertise" target="_top">广告</a></div>
+    </div>
+    
+
+
+                    
+                    <div class="sep20"></div>
+                    <div class="box">
+    <div class="inner" align="center">
+        <a href="https://www.lagou.com/lp/html/common.html?utm_source=m_bd_ff_gghz_jixiejing" target="_top"><img src="lagou_20181217.jpg" alt="拉勾" width="250" height="250" border="0"></a>
+    </div>
+</div>
+<!-- Update: 20181201 -->
+                    <div class="sep20"></div>
+                    
+                    
+                    
+                
+            </div>
+            <div id="Main">
+                <div class="sep20"></div>
+                
+<div class="box" style="border-bottom: 0px none;">
+    
+    <div class="header"><div class="fr"><a href="https://www.v2ex.com/member/jerry017cn"><img src="136983_large.png" class="avatar" border="0" align="default"></a></div>
+    <a href="https://www.v2ex.com/">V2EX</a> <span class="chevron">&nbsp;›&nbsp;</span> <a href="https://www.v2ex.com/go/linux">Linux</a>
+    <div class="sep10"></div>
+    <h1>Cgroup － 从 CPU 资源隔离说起（三）</h1>
+    <div id="topic_246793_votes" class="votes">
+<a href="javascript:" onclick="upVoteTopic(246793);" class="vote"><li class="fa fa-chevron-up"></li></a> &nbsp;<a href="javascript:" onclick="downVoteTopic(246793);" class="vote"><li class="fa fa-chevron-down"></li></a></div> &nbsp; <small class="gray"><a href="https://www.v2ex.com/member/jerry017cn">jerry017cn</a> · 2015-12-28 22:42:21 +08:00 · 3041 次点击</small>
+    </div>
+    
+    
+    <div class="outdated">这是一个创建于 1088 天前的主题，其中的信息可能已经有所发展或是发生改变。</div>
+    
+    
+    <div class="cell">
+        
+        <div class="topic_content"><div class="markdown_body"><h3>权重 CPU 资源隔离</h3>
+
+<p>这里的权重其实是 shares 。我把它叫做权重是因为这个值可以理解为对资源占用的权重。这种资源隔离方式事实上也是对 cpu 时间的进行分配。区别是作用在 cfs 调度器的权重值上。从用户的角度看，无非就是给每个 cgroup 配置一个 share 值， cpu 在进行时间分配的时候，按照 share 的大小比率来确定 cpu 时间的百分比。它对比 cpuquota 的优势是，当进程不在 cfs 可执行调度队列中的时候，这个权重是不起作用的。就是说，一旦其他 cgroup 的进程释放 cpu 的时候，正在占用 cpu 的进程可以全占所有计算资源。而当有多个 cgroup 进程都要占用 cpu 的时候，大家按比例分配。</p>
+
+<p>我们照例通过实验来说明这个情况，配置方法也很简单，修改 cgconfig.conf ，添加字段，并重启服务：</p>
+<div class="highlight"><pre>group zorro {
+    cpu {
+            cpu.shares = 1000;
+    }
+}
+
+[root@zorrozou-pc ~]# service cgconfig restart
+</pre></div>
+
+<p>配置完之后，我们就给 zorro 组配置了一个 shares 值为 1000 ，但是实际上如果系统中只有这一个组的话， cpu 看起来对他是没有限制的。现在的执行效果是这样：</p>
+<div class="highlight"><pre>[root@zorrozou-pc ~]# mpstat -P ALL 1
+
+17:17:29     CPU    %usr   %nice    %sys %iowait    %irq   %soft  %steal  %guest  %gnice   %idle
+17:17:30     all   99.88    0.00    0.12    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:17:30       0  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:17:30       1  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:17:30       2  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:17:30       3   99.01    0.00    0.99    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:17:30       4   99.00    0.00    1.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:17:30       5  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:17:30       6  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:17:30       7  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:17:30       8  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:17:30       9  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:17:30      10  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:17:30      11  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:17:30      12  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:17:30      13  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:17:30      14  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:17:30      15  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:17:30      16  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:17:30      17   99.00    0.00    1.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:17:30      18  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:17:30      19  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:17:30      20  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:17:30      21  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:17:30      22  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:17:30      23  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+
+[zorro@zorrozou-pc ~/test]$ time ./prime_thread_zorro &amp;&gt; /dev/null
+
+real    0m8.937s
+user    3m32.190s
+sys 0m0.225s
+</pre></div>
+
+<p>如显示， cpu 我们是独占的。那么什么时候有隔离效果呢？是系统中有别的 cgroup 也要占用 cpu 的时候，就能看出效果了。比如此时我们再添加一个 jerry ， shares 值也配置为 1000 ，并且让 jerry 组一直有占用 cpu 的进程在运行。</p>
+<div class="highlight"><pre>group jerry {
+    cpu {
+            cpu.shares = "1000";
+    }
+}
+
+
+top - 17:24:26 up 1 day, 5 min,  2 users,  load average: 41.34, 16.17, 8.17
+Tasks: 350 total,   2 running, 348 sleeping,   0 stopped,   0 zombie
+Cpu0  :100.0%us,  0.0%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu1  : 99.7%us,  0.3%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu2  :100.0%us,  0.0%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu3  : 99.7%us,  0.3%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu4  : 99.7%us,  0.3%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu5  :100.0%us,  0.0%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu6  : 99.7%us,  0.3%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu7  :100.0%us,  0.0%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu8  :100.0%us,  0.0%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu9  : 99.7%us,  0.0%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.3%hi,  0.0%si,  0.0%st
+Cpu10 :100.0%us,  0.0%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu11 : 99.7%us,  0.3%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu12 :100.0%us,  0.0%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu13 : 99.7%us,  0.3%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu14 :100.0%us,  0.0%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu15 :100.0%us,  0.0%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu16 :100.0%us,  0.0%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu17 :100.0%us,  0.0%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu18 : 99.3%us,  0.7%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu19 :100.0%us,  0.0%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu20 :100.0%us,  0.0%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu21 : 99.7%us,  0.3%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu22 :100.0%us,  0.0%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu23 :100.0%us,  0.0%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Mem:  131904480k total,  4938020k used, 126966460k free,   136140k buffers
+Swap:  2088956k total,        0k used,  2088956k free,  3700480k cached
+
+  PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND                                                                                                                                               
+13945 jerry     20   0  390m  872  392 S 2397.2  0.0  48:42.54 jerry
+</pre></div>
+
+<p>我们以 jerry 用户身份执行了一个进程一直 100%占用 cpu ，从上面的显示可以看到，这个进程占用了 2400%的 cpu ，是因为每个 cpu 核心算 100%， 24 个核心就是 2400%。此时我们再以 zorro 身份执行筛质数的程序，并察看这个程序占用 cpu 的百分比：</p>
+<div class="highlight"><pre>top - 19:44:11 up 1 day,  2:25,  3 users,  load average: 60.91, 50.92, 48.85
+Tasks: 336 total,   3 running, 333 sleeping,   0 stopped,   0 zombie
+Cpu0  : 99.7%us,  0.3%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu1  :100.0%us,  0.0%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu2  : 99.7%us,  0.3%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu3  :100.0%us,  0.0%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu4  :100.0%us,  0.0%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu5  :100.0%us,  0.0%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu6  :100.0%us,  0.0%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu7  :100.0%us,  0.0%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu8  :100.0%us,  0.0%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu9  :100.0%us,  0.0%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu10 :100.0%us,  0.0%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu11 : 99.7%us,  0.3%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu12 : 99.7%us,  0.3%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu13 :100.0%us,  0.0%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu14 : 99.7%us,  0.0%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.3%hi,  0.0%si,  0.0%st
+Cpu15 : 99.7%us,  0.3%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu16 :100.0%us,  0.0%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu17 : 99.7%us,  0.3%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu18 :100.0%us,  0.0%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu19 :100.0%us,  0.0%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu20 :100.0%us,  0.0%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu21 :100.0%us,  0.0%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu22 : 99.7%us,  0.3%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu23 :100.0%us,  0.0%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Mem:  131904480k total,  1471772k used, 130432708k free,   144216k buffers
+Swap:  2088956k total,        0k used,  2088956k free,   322404k cached
+
+  PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND                                                                                                                                               
+13945 jerry     20   0  390m  872  392 S 1200.3  0.0   3383:04 jerry                                                                                                                                               
+ 9311 zorro     20   0  390m  872  392 R 1197.0  0.0   0:51.56 prime_thread_zo
+</pre></div>
+
+<p>通过 top 我们可以看到，以 zorro 用户身份执行的进程和 jerry 进程平分了 cpu ，每人 50%。 zorro 筛质数执行的时间为：</p>
+<div class="highlight"><pre>[zorro@zorrozou-pc ~/test]$ time ./prime_thread_zorro &amp;&gt; /dev/null
+
+real    0m15.152s
+user    2m58.637s
+sys 0m0.220s
+[zorro@zorrozou-pc ~/test]$ time ./prime_thread_zorro &amp;&gt; /dev/null
+
+real    0m15.465s
+user    3m0.706s
+sys 0m0.221s
+</pre></div>
+
+<p>根据这个时间看起来，基本与通过 cpuquota 方式分配 50%的 cpu 时间以及通过 cpuset 方式分配 12 个核心的情况相当，而且效率还稍微高一些。当然我要说明的是，这里几乎两秒左右的效率的提高并不具备很大的参考性，它与 jerry 进程执行的运算是有很大相关性的。此时 jerry 进程执行的是一个多线程的 while 死循环，占满所有 cpu 跑。当我们把 jerry 进程执行的内容同样变成筛质数的时候， zorro 用户的进程执行效率的参考值就比较标准了：</p>
+<div class="highlight"><pre>[zorro@zorrozou-pc ~/test]$ time ./prime_thread_zorro &amp;&gt; /dev/null
+
+real    0m17.521s
+user    3m32.684s
+sys 0m0.254s
+[zorro@zorrozou-pc ~/test]$ time ./prime_thread_zorro &amp;&gt; /dev/null
+
+real    0m17.597s
+user    3m32.682s
+sys 0m0.253s
+</pre></div>
+
+<p>如程序执行显示，执行效率基本与 cpuset 和 cpuquota 相当。</p>
+
+<blockquote>
+<p>这又引发了另一个问题请大家思考：为什么 jerry 用户执行的运算的逻辑不同会影响 zorro 用户的运算效率？</p>
+</blockquote>
+
+<p>我们可以将刚才 cpuset 和 cpuquota 的对比列表加入 cpushare 一列来一起对比了，为了方便参考，我们都以 cpuset 为基准进行比较：</p>
+
+<table><thead>
+<tr>
+<th>shares zorro/shares jerry （核心数）</th>
+<th>cpuset realtime</th>
+<th><strong>cpushare realtime</strong></th>
+<th>cpuquota realtime</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>2000/22000(2)</td>
+<td>1m46.557s</td>
+<td><strong>1m41.691s</strong></td>
+<td>1m36.786s</td>
+</tr>
+<tr>
+<td>4000/20000(4)</td>
+<td>0m53.271s</td>
+<td><strong>0m51.801s</strong></td>
+<td>0m51.067s</td>
+</tr>
+<tr>
+<td>6000/18000(6)</td>
+<td>0m35.528s</td>
+<td><strong>0m35.152s</strong></td>
+<td>0m34.539s</td>
+</tr>
+<tr>
+<td>8000/16000(8)</td>
+<td>0m26.643s</td>
+<td><strong>0m26.372s</strong></td>
+<td>0m25.923s</td>
+</tr>
+<tr>
+<td>12000/12000(12)</td>
+<td>0m17.839s</td>
+<td><strong>0m17.694s</strong></td>
+<td>0m17.347s</td>
+</tr>
+<tr>
+<td>16000/8000(16)</td>
+<td>0m13.384s</td>
+<td><strong>0m13.388s</strong></td>
+<td>0m13.015s</td>
+</tr>
+<tr>
+<td>24000/0(24)</td>
+<td>0m8.972s</td>
+<td><strong>0m8.943s</strong></td>
+<td>0m8.932s</td>
+</tr>
+</tbody></table>
+
+<p>请注意一个问题，由于 cpushares 无法像 cpuquota 或者 cpuset 那样只执行 zorro 用户的进程，所以在进行 cpushares 测试的时候，必须让 jerry 用户同时执行相同的筛质数程序，才能使两个用户分别分到相应比例的 cpu 时间。这样可能造成本轮测试结果的不准确。通过对比看到，当比率分别都配置了相当于两个核心的计算能力的情况下，本轮测试是 cpuquota 方式消耗了 1m36.786s 稍快一些。为了保证相对公平的环境作为参照，我们将重新对这轮测试进行数据采集，这次在 cpuset 和 cpuquota 的压测时，都用 jerry 用户执行一个干扰程序作为参照，重新分析数据。当然， cpushares 的测试数据就不必重新测试了：</p>
+
+<table><thead>
+<tr>
+<th>shares zorro/shares jerry （核心数）</th>
+<th>cpuset realtime</th>
+<th>cpushare realtime</th>
+<th>cpuquota realtime</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>2000/22000(2)</td>
+<td>1m46.758s</td>
+<td>1m41.691s</td>
+<td>1m42.341s</td>
+</tr>
+<tr>
+<td>4000/20000(4)</td>
+<td>0m53.340s</td>
+<td>0m51.801s</td>
+<td>0m51.512s</td>
+</tr>
+<tr>
+<td>6000/18000(6)</td>
+<td>0m35.525s</td>
+<td>0m35.152s</td>
+<td>0m34.392s</td>
+</tr>
+<tr>
+<td>8000/16000(8)</td>
+<td>0m26.738s</td>
+<td>0m26.372s</td>
+<td>0m25.772s</td>
+</tr>
+<tr>
+<td>12000/12000(12)</td>
+<td>0m17.793s</td>
+<td>0m17.694s</td>
+<td>0m17.256s</td>
+</tr>
+<tr>
+<td>16000/8000(16)</td>
+<td>0m13.366s</td>
+<td>0m13.388s</td>
+<td>0m13.155s</td>
+</tr>
+<tr>
+<td>24000/0(24)</td>
+<td>0m8.930s</td>
+<td>0m8.943s</td>
+<td>0m8.939s</td>
+</tr>
+</tbody></table>
+
+<p>至此， cgroup 中针对 cpu 的三种资源隔离都介绍完了，分析我们的测试数据可以得出一些结论：</p>
+
+<ol>
+<li>三种 cpu 资源隔离的效果基本相同，在资源分配比率相同的情况下，它们都提供了差不多相同的计算能力。</li>
+<li>cpuset 隔离方式是以分配核心的方式进行资源隔离，可以提供的资源分配最小粒度是核心，不能提供更细粒度的资源隔离，但是隔离之后运算的相互影响最低。需要注意的是在服务器开启了超线程的情况下，要小心选择分配的核心，否则不同 cgroup 间的性能差距会比较大。</li>
+<li>cpuquota 给我们提供了一种比 cpuset 可以更细粒度的分配资源的方式，并且保证了 cgroup 使用 cpu 比率的上限，相当于对 cpu 资源的硬限制。</li>
+<li>cpushares 给我们提供了一种可以按权重比率弹性分配 cpu 时间资源的手段：当 cpu 空闲的时候，某一个要占用 cpu 的 cgroup 可以完全占用剩余 cpu 时间，充分利用资源。而当其他 cgroup 需要占用的时候，每个 cgroup 都能保证其最低占用时间比率，达到资源隔离的效果。</li>
+</ol>
+
+<p>大家可以根据这三种不同隔离手段特点，针对自己的环境来选择不同的方式进行 cpu 资源的隔离。当然，这些手段也可以混合使用，以达到更好的 QOS 效果。</p>
+
+<p>但是可是 but ，这就完了么？<br>
+显然并没有。。。。。。</p>
+
+<p>以上测试只针对了一种计算场景，这种场景在如此的简单的情况下，影响测试结果的条件已经很复杂了。如果是其他情况呢？我们线上真正跑业务的环境会这么单纯么？显然不会。我们不可能针对所有场景得出结论，想要找到适用于自己场景的隔离方式，还是需要在自己的环境中进行充分测试。在此只能介绍方法，以及针对一个场景的参考数据，仅此而已。单就这一个测试来说，它仍然不够全面，无法体现出内核 cpu 资源隔离的真正面目。众所周知， cpu 使用主要分两个部分， user 和 sys 。上面这个测试，由于测试用例的选择，只关注了 user 的使用。那么如果我们的 sys 占用较多会变成什么样呢？</p>
+</div></div>
+        
+        
+    </div>
+    
+    
+    
+</div>
+
+<div class="sep20"></div>
+
+
+<div class="box">
+    <div class="cell"><div class="fr" style="margin: -3px -5px 0px 0px;"><a href="https://www.v2ex.com/tag/17:17:30" class="tag"><li class="fa fa-tag"></li> 17:17:30</a><a href="https://www.v2ex.com/tag/CPU" class="tag"><li class="fa fa-tag"></li> CPU</a><a href="https://www.v2ex.com/tag/Jerry" class="tag"><li class="fa fa-tag"></li> Jerry</a><a href="https://www.v2ex.com/tag/zorro" class="tag"><li class="fa fa-tag"></li> zorro</a></div><span class="gray">2 回复 &nbsp;<strong class="snow">|</strong> &nbsp;直到 2015-12-31 20:35:25 +08:00</span>
+    </div>
+    
+
+    
+        
+        
+        <div id="r_2767243" class="cell">
+        
+        <table width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tbody><tr>
+                <td valign="top" width="48" align="center"><img src="63937_normal.png" class="avatar" border="0" align="default"></td>
+                <td valign="top" width="10"></td>
+                <td valign="top" width="auto" align="left"><div class="fr"> &nbsp; &nbsp; <span class="no">1</span></div>
+                    <div class="sep3"></div>
+                    <strong><a href="https://www.v2ex.com/member/virusdefender" class="dark">virusdefender</a></strong>&nbsp; &nbsp;<span class="ago">2015-12-29 00:42:23 +08:00</span> 
+                    <div class="sep5"></div>
+                    <div class="reply_content">三篇大致的看完了，很棒~~</div>
+                </td>
+            </tr>
+        </tbody></table>
+        </div>
+    
+
+    
+        
+        
+        <div id="r_2777014" class="cell">
+        
+        <table width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tbody><tr>
+                <td valign="top" width="48" align="center"><img src="148173_normal.png" class="avatar" border="0" align="default"></td>
+                <td valign="top" width="10"></td>
+                <td valign="top" width="auto" align="left"><div class="fr"> &nbsp; &nbsp; <span class="no">2</span></div>
+                    <div class="sep3"></div>
+                    <strong><a href="https://www.v2ex.com/member/Aydon0" class="dark">Aydon0</a></strong>&nbsp; &nbsp;<span class="ago">2015-12-31 20:35:25 +08:00 via Android</span> 
+                    <div class="sep5"></div>
+                    <div class="reply_content">写的非常好，赞！</div>
+                </td>
+            </tr>
+        </tbody></table>
+        </div>
+    
+
+
+</div>
+<div class="sep20"></div>
+
+
+
+
+
+
+            </div>
+            
+            
+        </div>
+        <div class="c"></div>
+        <div class="sep20"></div>
+    </div>
+    <div id="Bottom">
+        <div class="content">
+            <div class="inner">
+                <div class="sep10"></div>
+                    <div class="fr">
+                        <a href="https://www.digitalocean.com/?refcode=1b51f1a7651d" target="_top"><div id="DigitalOcean"></div></a>
+                    </div>
+                    <strong><a href="https://www.v2ex.com/about" class="dark" target="_self">关于</a> &nbsp; <span class="snow">·</span> &nbsp; <a href="https://www.v2ex.com/faq" class="dark" target="_self">FAQ</a> &nbsp; <span class="snow">·</span> &nbsp; <a href="https://www.v2ex.com/p/7v9TEc53" class="dark" target="_self">API</a> &nbsp; <span class="snow">·</span> &nbsp; <a href="https://www.v2ex.com/mission" class="dark" target="_self">我们的愿景</a> &nbsp; <span class="snow">·</span> &nbsp; <a href="https://www.v2ex.com/advertise" class="dark" target="_self">广告投放</a> &nbsp; <span class="snow">·</span> &nbsp; <a href="https://www.v2ex.com/advertise/2017.html" class="dark" target="_self">感谢</a> &nbsp; <span class="snow">·</span> &nbsp; <a href="https://www.v2ex.com/tools" class="dark" target="_self">实用小工具</a> &nbsp; <span class="snow">·</span> &nbsp; 3785 人在线</strong> &nbsp; <span class="fade">最高记录 4019</span> &nbsp; <span class="snow">·</span> &nbsp; <a href="https://www.v2ex.com/select/language"><img src="lang_zhcn_32.png" alt="" width="20" border="0" align="absmiddle"></a>
+                    <div class="sep20"></div>
+                    创意工作者们的社区
+                    <div class="sep5"></div>
+                    World is powered by solitude
+                    <div class="sep20"></div>
+                    <span class="small fade">VERSION: 3.9.8.1 · 18ms · UTC 02:20 · PVG 10:20 · LAX 18:20 · JFK 21:20<br>♥ Do have faith in what you're doing.</span>
+                    <div class="sep20"></div>
+                    <table width="100%" cellspacing="0" cellpadding="0" border="0"><tbody><tr><td style="background-color: transparent;" valign="middle" width="140" align="left"><span class="f12 gray"><a href="http://www.miibeian.gov.cn/" target="_top" rel="nofollow">沪ICP备16043287号-1</a></span></td><td style="background-color: transparent;" valign="middle" width="auto" align="left"></td></tr></tbody></table>
+                <div class="sep10"></div>
+            </div>
+        </div>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+    
+
+    
+	
+    
+
+    
+    
+
+</body>
+</html>

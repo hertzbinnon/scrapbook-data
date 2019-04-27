@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    <link rel="canonical" href="http://blog.csdn.net/luochenhuan123/article/details/18666075"> 
+    
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    <meta name="description" content="1. 原文档内容格式：
+词组 拼音 
+次序
+阿爸 a1'ba4 
+18137
+阿昌族 a1'chang1'zu2
+50849
+阿斗 a1'dou3 
+42632
+阿飞 a1'fei1 
+48603
+阿富汗 a1'fu4'han4
+3461
+阿訇 a1'hong1 
+34432
+阿拉伯数字 a1'la1'bo2'shu4'zi4
+35937
+阿拉伯语 a1'la1'">
+    <meta name="keywords" content="">
+    <meta http-equiv="Cache-Control" content="no-siteapp"><link rel="alternate" media="handheld" href="http://blog.csdn.net/luochenhuan123/article/details/18666075#">
+    <meta name="shenma-site-verification" content="5a59773ab8077d4a62bf469ab966a63b_1497598848">
+    <title>linux shell命令awk 提取文档第一列内容 - CSDN博客</title>
+    <link href="favicon.ico" rel="SHORTCUT ICON">
+
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body><div id="BAIDU_DUP_fp_wrapper" style="position: absolute; left: -1px; bottom: -1px; z-index: 0; width: 0px; height: 0px; overflow: hidden; visibility: hidden; display: none;"><iframe id="BAIDU_DUP_fp_iframe" src="index_1.html" style="width: 0px; height: 0px; visibility: hidden; display: none;"></iframe></div>
+
+<div class="container clearfix">
+  <main>
+    <article>
+        <h1 class="csdn_top">linux shell命令awk 提取文档第一列内容</h1>
+        <div class="article_bar clearfix">
+            <div class="artical_tag">
+                <span class="original">
+                原创                </span>
+                <span class="time">2014年01月22日 16:49:47</span>
+            </div>
+
+            <ul class="article_tags clearfix csdn-tracking-statistics" data-mod="popu_377">
+                <li class="tit">标签：</li>
+
+<!--          [startarticletags]-->
+                <!--          [endarticletags]-->
+            </ul>
+            <ul class="right_bar">
+                <li><button class="btn-noborder"><i class="icon iconfont icon-read"></i><span class="txt">12727</span></button></li>
+                <li class="edit">
+                    <a class="btn-noborder" href="http://blog.csdn.net/luochenhuan123/article/details/18666075">
+                        <i class="icon iconfont icon-bianji"></i><span class="txt">编辑</span>
+                    </a>
+                </li>
+                <li class="del">
+                    <a class="btn-noborder" onclick="javascript:deleteArticle(fileName);return false;">
+                        <i class="icon iconfont icon-shanchu"></i><span class="txt">删除</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div id="article_content" class="article_content csdn-tracking-statistics" data-mod="popu_519" data-dsm="post">
+                        
+<p>1. 原文档内容格式：</p>
+<p>词组<span style="white-space: pre;"> </span>拼音<span style="white-space: pre;"> </span>
+次序<br>
+阿爸<span style="white-space: pre;"> </span>a1'ba4<span style="white-space: pre;"> </span>
+18137<br>
+阿昌族<span style="white-space: pre;"> </span>a1'chang1'zu2<span style="white-space: pre;"></span>50849<br>
+阿斗<span style="white-space: pre;"> </span>a1'dou3<span style="white-space: pre;"> </span>
+42632<br>
+阿飞<span style="white-space: pre;"> </span>a1'fei1<span style="white-space: pre;"> </span>
+48603<br>
+阿富汗<span style="white-space: pre;"> </span>a1'fu4'han4<span style="white-space: pre;"></span>3461<br>
+阿訇<span style="white-space: pre;"> </span>a1'hong1<span style="white-space: pre;"> </span>
+34432<br>
+阿拉伯数字<span style="white-space: pre;"> </span>a1'la1'bo2'shu4'zi4<span style="white-space: pre;"></span>35937<br>
+阿拉伯语<span style="white-space: pre;"> </span>a1'la1'bo2'yu3<span style="white-space: pre;"></span>30476<br>
+阿妈<span style="white-space: pre;"> </span>a1'ma1<span style="white-space: pre;"> </span>
+16220<br>
+阿门<span style="white-space: pre;"> </span>a1'men2<span style="white-space: pre;"> </span>
+47913<br>
+阿Ｑ<span style="white-space: pre;"> </span>a1'qiu1<span style="white-space: pre;"> </span>
+20845<br>
+阿司匹林<span style="white-space: pre;"> </span>a1'si1'pi3'lin2<span style="white-space: pre;"></span>40294<br>
+阿嚏<span style="white-space: pre;"> </span>a1'ti4<span style="white-space: pre;"> </span>
+54643<br>
+</p>
+<p><br>
+</p>
+<p>2. 共3列内容，现在只提取第一列词表，并存入另一文件：</p>
+<pre code_snippet_id="167027" snippet_file_name="blog_20140122_1_6586278" name="code" class="html">awk '{print $1}' ./CH_word_ls.txt <strong>&gt;</strong> ./out.txt</pre>其中&nbsp;./CH_word_ls.txt是输入文件名&nbsp;
+<p></p>
+<p><br>
+</p>
+<p>3. 如果想提取前两列，只需</p>
+<p></p>
+<pre code_snippet_id="167027" snippet_file_name="blog_20140122_2_9126770" name="code" class="html">awk '{print $1,$2}' ./CH_word_ls.txt <strong>&gt;</strong> ./out.txt</pre><br>
+<p></p>
+<p>4. 然后对文本进行去重并输出到文件CH_words：</p>
+<p>sort out.txt | uniq &gt; CH_words<br>
+</p>
+<h3><br>
+<br>
+</h3>
+<p><br>
+</p>
+                    </div>
+    </article>
+      <div class="readall_box csdn-tracking-statistics" data-mod="popu_376">
+          <div class="read_more_mask"></div>
+          <a class="btn btn-large btn-gray-fred read_more_btn" target="_self">阅读全文</a>
+      </div>
+      <div class="article_copyright">
+              </div>
+      <ul class="article_collect clearfix csdn-tracking-statistics" data-mod="popu_378">
+          <li class="tit">本文已收录于以下专栏：</li>
+<!--          [startarticlecolumns]-->
+                                <!--          [endarticlecolumns]-->
+      </ul>
+      <div class="comment_box clearfix">
+          <div id="comment_form">
+              <div id="commentsbmitarear">
+                              </div>
+          </div>
+      </div>
+      <div class="comment_li_outbox">
+          <div id="comment_list"></div>
+      </div>
+
+      <div class="more_comment">
+          <div id="comment_bar" class="trackgin-ad" data-mod="popu_385"></div>
+      </div>
+
+      <h3 class="recommend_tit" id="related">相关文章推荐</h3>
+      <div class="recommend_list clearfix" id="rasss">
+                                                                                      <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/silentwolfyh/article/details/50966593" target="_top" strategy="BlogCommendFromBaidu_0">Linux：使用awk命令获取文本的某一行，某一列</a></h2>
+                          <div class="summary">
+                              1、打印文件的第一列(域) ： awk '{print $1}' filename
+2、打印文件的前两列(域) ： awk '{print $1,$2}' filename
+3、打印完第一列，然后打印...                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/silentwolfyh" target="_top" strategy="BlogCommendFromBaidu_0"><img src="3_silentwolfyh.jpg" alt="silentwolfyh" title="silentwolfyh"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/silentwolfyh">silentwolfyh</a></li>
+                              <li class="time">2016年03月23日 21:04</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>15184</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                                                                    <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/u010043538/article/details/73277086" target="_top" strategy="BlogCommendFromBaidu_1">Linux：使用awk命令获取文本的某一行，某一列</a></h2>
+                          <div class="summary">
+                              1、打印文件的第一列(域)                 awk '{print $1}' filename2、打印文件的前两列(域)                 awk '{print $1,...                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/u010043538" target="_top" strategy="BlogCommendFromBaidu_1"><img src="3_u010043538.jpg" alt="u010043538" title="u010043538"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/u010043538">u010043538</a></li>
+                              <li class="time">2017年06月15日 10:59</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>1531</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                                                      <div id="_othhqbevcc"></div><a href="http://www.baidu.com/cb.php?c=IgF_pyfqnHmknjnvPjn0IZ0qnfK9ujYzP1ndPWb10Aw-5Hc3rHnYnHb0TAq15HfLPWRznjb0T1YvPvDsuH-BmHTdmH63nHbs0AwY5HDdnHnznWDYPHf0IgF_5y9YIZ0lQzq-uZR8mLPbUB48ugfEIAqspynEmybz5LNYUNq1ULNzmvRqmhkEu1Ds0ZFb5HD0mhYqn0KsTWYs0ZNGujYkPHTYn1mk0AqGujYknWb3rjDY0APGujYLnWm4n1c0ULI85H00TZbqnW0v0APzm1Y1nWR3r0" target="_top">
+	<dl class="clearfix csdn-tracking-statistics" data-mod="popu_393">
+		<dt><img class="maxwidth" src="0f000at2wrub9u9afmw9vs.jpg" alt="" title=""></dt>
+		<dd>
+			<div class="summary">
+				<h2>AI 专业人才缺口上百万，年薪 80 万远超同行？？</h2>  <div class="summary">就目前来看，国内 AI 人才缺乏且经验不足，为争抢优秀人才，企业背后的暗战早已打响。作为正在谋求一份好工作我，又该如何抉择....</div> 
+			</div>
+		</dd>
+	</dl>
+</a>
+                                                                <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/Hu_wen/article/details/56676596" target="_top" strategy="BlogCommendFromBaidu_2">shell 获取结果中的第n列，第n行</a></h2>
+                          <div class="summary">
+                              [root@192.168.10.11 zabbix]# ls -l
+total 24
+-rw-r--r-- 1 root root 2485 Dec&nbsp; 2 15:42 zabbix_agent.co...                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/Hu_wen" target="_top" strategy="BlogCommendFromBaidu_2"><img src="3_hu_wen.jpg" alt="Hu_wen" title="Hu_wen"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/Hu_wen">Hu_wen</a></li>
+                              <li class="time">2017年02月23日 17:23</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>2450</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                                                                    <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/wengyupeng/article/details/51821995" target="_top" strategy="BlogCommendFromBaidu_3">shell  读取文件第几行  第几列的值</a></h2>
+                          <div class="summary">
+                              shell  读取文件第几行  第几列的值                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/wengyupeng" target="_top" strategy="BlogCommendFromBaidu_3"><img src="3_wengyupeng.jpg" alt="wengyupeng" title="wengyupeng"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/wengyupeng">wengyupeng</a></li>
+                              <li class="time">2016年07月04日 17:07</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>5171</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                                                                    <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/misskissC/article/details/8217877" target="_top" strategy="BlogCommendFromBaidu_4">shell awk读取文件中的指定行的指定字段 [大三TJB_708]</a></h2>
+                          <div class="summary">
+                              1.awk功能和实用形式
+awk指定读取文件中的某一行的某个字段
+awk&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 可以设置条件来输出文件中m行到n行中每行的指定的k字段，使用格式如下
+awk&nbsp;&nbsp;&nbsp; ‘NR==m，NR==n {pr...                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/misskissC" target="_top" strategy="BlogCommendFromBaidu_4"><img src="3_misskissc.jpg" alt="misskissC" title="misskissC"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/misskissC">misskissC</a></li>
+                              <li class="time">2012年11月23日 19:36</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>44991</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                                        <!-- 广告位：PC端-博客详情通栏7（feed流）-808*120 -->
+                  <div id="_jiy52iw31x"></div><a href="http://www.baidu.com/cb.php?c=IgF_pyfqnHmknjfzrj00IZ0qnfK9ujYzP1f4Pjnd0Aw-5Hc4nj6vPjm0TAq15Hf4rjn1n1b0T1dbmHn1rHfvPW-WmvnLnWwh0AwY5HDdnHnznWDYPHf0IgF_5y9YIZ0lQzqMpgwBUvqoQhP8QvIGIAPCmgfEmvq_Iyd8Q1R4uhF-rA7Wuj0YmhP9PARvujmYmH0vm1qdIAdxTvqdThP-5HDknWF9mhkEusKzujYk0AFV5H00TZcqn0KdpyfqnHRLPjnvnfKEpyfqnHnsnj0YnsKWpyfqP1cvrHnz0AqLUWYs0ZK45HcsP6KWThnqPWnYPH6" target="_top">
+	<dl class="clearfix csdn-tracking-statistics" data-mod="popu_393">
+		<dt><img class="maxwidth" src="0f000khjsepavza1u8i3qs.jpg" alt="" title=""></dt>
+		<dd>
+			<div class="summary">
+				<h2>AI 工程师职业指南</h2>  <div class="summary">我们请来商汤、杜邦、声智、希为、58同城、爱因互动、中科视拓、鲁朗软件等公司 AI 技术一线的专家，请他们从实践的角度来解析 AI 领域各技术岗位的合格工程师都是怎样炼成的。</div> 
+			</div>
+		</dd>
+	</dl>
+</a>
+                                                                              <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/ture_dream/article/details/71242856" target="_top" strategy="BlogCommendFromBaidu_5">linux 取文本的指定行的内容</a></h2>
+                          <div class="summary">
+                              转载▼
+
+
+
+
+
+
+标签：&nbsp;
+
+linux
+&nbsp;
+
+grep
+&nbsp;
+
+sed
+&nbsp;
+
+查找指定内容
+&nbsp;
+
+it
+
+
+分类：&nbsp;想想专业
+
+
+
+
+
+
+...                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/ture_dream" target="_top" strategy="BlogCommendFromBaidu_5"><img src="3_ture_dream.jpg" alt="ture_dream" title="ture_dream"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/ture_dream">ture_dream</a></li>
+                              <li class="time">2017年05月05日 20:38</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>1878</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                                                                    <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/yychenxie21/article/details/72778545" target="_top" strategy="BlogCommendFromBaidu_6">取文件的第一列内容 Linux</a></h2>
+                          <div class="summary">
+                              命令：cat file | awk '{print $1}'                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/yychenxie21" target="_top" strategy="BlogCommendFromBaidu_6"><img src="3_yychenxie21.jpg" alt="yychenxie21" title="yychenxie21"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/yychenxie21">yychenxie21</a></li>
+                              <li class="time">2017年05月27日 09:38</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>1065</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                                                                    <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/lk07828/article/details/46324807" target="_top" strategy="BlogCommendFromBaidu_7">使用awk命令获取文本的某一行，某一列</a></h2>
+                          <div class="summary">
+                              1、打印文件的第一列(域)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; ： awk '{print $1}' filename
+2、打印文件的前两列(域)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; ： awk '{pri...                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/lk07828" target="_top" strategy="BlogCommendFromBaidu_7"><img src="3_lk07828.jpg" alt="lk07828" title="lk07828"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/lk07828">lk07828</a></li>
+                              <li class="time">2015年06月02日 10:17</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>3022</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                                                                    <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/github_34457546/article/details/78496597" target="_top" strategy="BlogCommendFromBaidu_8">shell 取出第一列相同但第二列不同的行</a></h2>
+                          <div class="summary">
+                              需求
+处理前：
+&nbsp;&nbsp;小明&nbsp; &nbsp;234
+&nbsp;&nbsp;小方&nbsp; &nbsp;235
+&nbsp;&nbsp;小明&nbsp; &nbsp;234
+&nbsp;&nbsp;小明&nbsp; &nbsp;345
+
+处理后
+小明&nbsp; &nbsp;234
+小明&nbsp; &nbsp;345
+解决方案1：
+awk
+ '...                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/github_34457546" target="_top" strategy="BlogCommendFromBaidu_8"><img src="3_github_34457546.jpg" alt="github_34457546" title="github_34457546"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/github_34457546">github_34457546</a></li>
+                              <li class="time">2017年11月10日 10:01</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>37</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                                                                    <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/ma_junli123/article/details/42013113" target="_top" strategy="BlogCommendFromBaidu_9">Shell命令--使用awk取某一列数据</a></h2>
+                          <div class="summary">
+                              比如我想从啊a.txt中取第一列并输出到b.txt中：
+
+
+正确的命令：awk '{print $2}' a.txt &gt;b.txt
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;其中$2表示第二列...                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/ma_junli123" target="_top" strategy="BlogCommendFromBaidu_9"><img src="3_ma_junli123.jpg" alt="ma_junli123" title="ma_junli123"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/ma_junli123">ma_junli123</a></li>
+                              <li class="time">2014年12月18日 22:07</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>11428</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                    </div>
+  </main>
+<aside>
+  <div class="right_box user_info">
+      <dl class="inf_bar clearfix">
+          <dt class="csdn-tracking-statistics" data-mod="popu_381">
+              <a href="http://blog.csdn.net/luochenhuan123" target="_top">
+                  <img src="3_luochenhuan123.jpg" class="avatar_pic">
+              </a>
+              <span class="medals" title="">
+                  </span>
+          </dt>
+          <dd>
+              <h3 class="csdn-tracking-statistics" data-mod="popu_380"><a href="http://blog.csdn.net/luochenhuan123" target="_top" id="uid">luochenhuan123</a></h3>
+              <span class="csdn-tracking-statistics" data-mod="popu_379"><a class="btn btn-redborder-small " id="span_add_follow" target="_self">＋关注</a></span>
+          </dd>
+      </dl>
+      <div class="inf_number_box clearfix">
+          <dl>
+              <dt>原创</dt>
+              <dd>11</dd>
+          </dl>
+          <dl>
+              <dt>粉丝</dt>
+              <dd id="fan">2</dd>
+          </dl>
+          <dl>
+              <dt>喜欢</dt>
+              <dd>0</dd>
+          </dl>
+          <dl>
+        <dt>码云</dt>
+        <dd>&nbsp;</dd>
+      </dl>
+
+      </div>
+  <div class="writings">
+        <div class="public_signal clearfix">
+          <h3>他的最新文章</h3>
+          <a href="http://blog.csdn.net/luochenhuan123" target="_top" class="more"><span>更多文章</span></a>
+        </div>
+          <ul class="inf_list clearfix csdn-tracking-statistics" data-mod="popu_382">
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/luochenhuan123/article/details/20396159" target="_top">Eclipse如何导入jar包（referenced libraries）</a>
+              </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/luochenhuan123/article/details/19989921" target="_top">语言识别开源项目langid.py的原理简简简述</a>
+              </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/luochenhuan123/article/details/18708041" target="_top">linux terminator 解决Unable to open /home/xxx/.config/terminator/config</a>
+              </li>
+                        </ul>
+      </div>
+  </div>
+    <div class="user-hotArticle">
+        <h3><a href="#related">相关推荐</a></h3>
+        <ul class="hotArticle-list csdn-tracking-statistics" data-mod="popu_563">
+<!--           [StartRelatedArticles]-->
+                                                <li>
+                        <a href="http://blog.csdn.net/silentwolfyh/article/details/50966593" data-mod="popu_559">Linux：使用awk命令获取文本的某一行，某一列</a>
+                                            </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/u010043538/article/details/73277086" data-mod="popu_560">Linux：使用awk命令获取文本的某一行，某一列</a>
+                                            </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/Hu_wen/article/details/56676596" data-mod="popu_561">shell 获取结果中的第n列，第n行</a>
+                                            </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/wengyupeng/article/details/51821995" data-mod="popu_562">shell  读取文件第几行  第几列的值</a>
+                                            </li>
+                            <!--            [EndRelatedArticles]-->
+        </ul>
+    </div>
+  <div class="extension_other csdn-tracking-statistics" data-mod="popu_389">
+     <!--u3032528-->
+    <div class="flashrecommend">
+        <div id="_njo05twhuks"><iframe scrolling="no" src="index_3.html" width="300" height="250" frameborder="0"></iframe></div>
+    </div>
+  </div>
+
+<!--    [StartShowSelfColumn]-->
+    <!--    [EndShowSelfColumn]-->
+    <div class="fixRight">
+        <div class="right_box padb0 csdn-tracking-statistics" data-mod="popu_391">
+            <h3 class="tit"><span><em>在线课程</em></span></h3>
+            <ul class="edu_li clearfix">
+<!--            [starteducourses]-->
+                                                            <li>
+                            <div>
+                                <a href="http://edu.csdn.net/course/detail/6134?utm_source=blog7" target="_top">
+                                    <img src="201712051123224037.jpg" alt="JDK9新特性" title="JDK9新特性">
+                                </a>
+                            </div>
+                            <div>
+                                <p><a href="http://edu.csdn.net/course/detail/6134?utm_source=blog7" target="_top">JDK9新特性</a></p>
+                                <p>讲师：Array</p>
+                            </div>
+                        </li>
+                                            <li>
+                            <div>
+                                <a href="http://edu.csdn.net/huiyiCourse/series_detail/73?utm_source=blog7" target="_top">
+                                    <img src="201712051121584041.jpg" alt="Kubernetes容器云平台实践" title="Kubernetes容器云平台实践">
+                                </a>
+                            </div>
+                            <div>
+                                <p><a href="http://edu.csdn.net/huiyiCourse/series_detail/73?utm_source=blog7" target="_top">Kubernetes容器云平台实践</a></p>
+                                <p>讲师：李志伟</p>
+                            </div>
+                        </li>
+                                    <!--            [endeducourses]-->
+            </ul>
+            </div>
+        <div class="extension_other csdn-tracking-statistics bottomRcom" data-mod="popu_389" style="position: absolute; z-index: -5; opacity: 0; pointer-events: none;">
+            <!--u3032528-->
+            <div class="flashrecommend">
+                <!-- 请置于所有广告位代码之前 -->
+                
+
+                <!-- 广告位：PC端-博客详情页右侧视窗1（feed流）-300*250 -->
+                <div id="_cqkvllu9os"></div><div id="_dwm5tut7xow"><em style="display: none; cursor: auto;"></em><iframe scrolling="no" src="index_4.html" width="300" height="250" frameborder="0"></iframe></div>
+            </div>
+        </div>
+
+    </div>
+    <div class="user-hotArticle">
+        <h3>他的热门文章</h3>
+        <ul class="hotArticle-list csdn-tracking-statistics" data-mod="popu_521">
+<!--            [StartHotArticles]-->
+                                                <li>
+                        <a href="http://blog.csdn.net/luochenhuan123/article/details/18666075">linux shell命令awk 提取文档第一列内容</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>12704</span></div>
+                    </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/luochenhuan123/article/details/17409849">菜鸟 ubuntu下安装scipy全过程 （主要是安装atlas）</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>10086</span></div>
+                    </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/luochenhuan123/article/details/17352525">Ubuntu 12.04安装gcc/g++ 4.8.1(解决install gcc-4.8时error: gnutls_handshake() failed: A TLS packet...)</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>8475</span></div>
+                    </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/luochenhuan123/article/details/9009609">Matlab中控制图像显示边界，subplot间距等</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>5009</span></div>
+                    </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/luochenhuan123/article/details/20396159">Eclipse如何导入jar包（referenced libraries）</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>4423</span></div>
+                    </li>
+                            <!--            [EndHotArticles]-->
+        </ul>
+    </div>
+<!--    [startcustom]-->
+    <!--    [endcustom]-->
+</aside></div>
+
+<div class="left_fixed">
+    <div class="left_show_button">
+        <span>
+          <i class="icon iconfont icon-youjiantou"></i>
+        </span>
+    </div>
+    <ul class="left_menu">
+        <li>
+            <button class="left-fixed-btn btn-like csdn-tracking-statistics" data-mod="popu_373" target="_self">
+                <a href="javascript:void(0);" class="iconbox border_red"><i class="icon iconfont icon-dianzan"></i></a>
+                <a class="txt" href="javascript:void(0);">0</a>
+            </button>
+        </li>
+        <li id="blog_artical_directory">
+            <button class="left-fixed-btn left_menu_btn csdn-tracking-statistics" data-mod="popu_372" target="_self">
+                <a href="javascript:void(0);" class="iconbox border_black"><i class="icon iconfont icon-mulu"></i></a>
+            </button>
+        </li>
+        <li class="menu_con">
+            <div class="list_father">
+                <div class="arr_box">
+                    <button class="btn-noborder arr-btn scroll-down  left_scroll_down"><i class="icon iconfont icon-xiajiantou"></i></button>
+                    <button class="btn-noborder arr-btn scroll-up left_scroll_top"><i class="icon iconfont icon-shangjiantou"></i></button>
+                </div>
+                <div class="arr"></div>
+                <div id="csdnBlogDir"></div>
+            </div>
+        </li>
+        <!--        <li>-->
+        <!--            <button class="left-fixed-btn btn-like tracking-ad" data-mod="popu_373" target="_self">-->
+        <!--                <span class="iconbox border_red"><i class="icon iconfont icon-xihuan-"></i></span>-->
+        <!--                <span class="txt">喜欢</span>-->
+        <!--                <span class="untxt">取消喜欢</span>-->
+        <!--            </button>-->
+        <!--        </li>-->
+        <li>
+            <button class="left-fixed-btn csdn-tracking-statistics" data-mod="popu_374" id="com-quick-collect" target="_self">
+                <a href="javascript:void(0);" class="iconbox border_purple"><i class="icon iconfont icon-shoucang"></i></a>
+            </button>
+        </li>
+        <li>
+            <button class="left-fixed-btn btn-pinglun csdn-tracking-statistics" data-mod="popu_544">
+                <a href="javascript:void(0);" class="iconbox border_purple"><i class="icon iconfont icon-pinglun"></i></a>
+            </button>
+        </li>
+        <li id="share_box">
+            <button class="left-fixed-btn  csdn-tracking-statistics" data-mod="popu_375" target="_self">
+                <a href="javascript:void(0);" class="iconbox border_orange"><i class="icon iconfont icon-fenxiang"></i></a>
+            </button>
+            <div class="bdsharebuttonbox csdn-tracking-statistics bdshare-button-style0-16" data-mod="popu_172" data-bd-bind="1513221458461">
+                <div class="outside">
+                    <span class="iconbox border_red2"><i class="icon iconfont icon-xinlang"></i></span>
+                    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"> </a>
+                </div>
+                <div class="outside">
+                    <span class="iconbox border_green"><i class="icon iconfont icon-weixin"></i></span>
+                    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"> </a>
+                </div>
+                <div class="outside">
+                    <span class="iconbox border_blue"><i class="icon iconfont icon-QQ"></i></span>
+                    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"> </a>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>
+<div class="right_fixed">
+    <div class="r_ico">
+        <i class="icon iconfont icon-jubao"></i>
+        <span class="txt" id="reportBtn">内容举报</span>
+    </div>
+    <div class="returnTop">
+        <i class="icon iconfont icon-fanhuidingbu"></i>
+        <span>返回顶部</span>
+    </div>
+</div>
+<div id="pop_win"></div>
+<div id="popup_mask"></div>
+<div class="pop_CA_cover"></div>
+<div class="pop pop_CA">
+    <div class="CA_header">
+        收藏助手
+        <span class="cancel_icon" id="fapancle"></span>
+    </div>
+    <iframe src="index_6.html" id="collectIframe" scrolling="no" width="100%" height="360" frameborder="0"></iframe>
+</div>
+<!--举报-->
+<div id="report_dialog" style="top: 250px; left: 343.5px;"><div id="panel_report">
+    <div class="panel_head">不良信息举报</div>
+    <form method="post" id="frmReport" class="panel_body" action="http://blog.csdn.net/luochenhuan123/article/details/18666075">
+        <table class="pop_table" cellspacing="4" cellpadding="0" border="0">
+            <tbody><tr><td colspan="2">您举报文章：<a href="http://blog.csdn.net/luochenhuan123/article/details/18666075" target="_top">linux shell命令awk 提取文档第一列内容</a></td></tr>
+            <tr>
+                <th style="width: 60px;">举报原因：</th>
+                <td id="panel_reporttype">
+                    <label><input class="report_type" id="report_sex" name="report_type" value="1" type="radio">色情</label>
+                    <label><input class="report_type" id="report_Politics" name="report_type" value="2" type="radio">政治</label>
+                    <label><input class="report_type" id="report_copy" name="report_type" value="3" type="radio">抄袭</label>
+                    <label><input class="report_type" id="report_ad" name="report_type" value="4" type="radio">广告</label>
+                    <label><input class="report_type" id="report_want" name="report_type" value="5" type="radio">招聘</label>
+                    <label><input class="report_type" id="report_call" name="report_type" value="6" type="radio">骂人</label>
+                    <br>
+                    <label><input class="report_type" id="report_other" name="report_type" value="7" type="radio">其他</label>
+                    <input name="report_other_content" id="report_other_content" maxlength="30" style="display: none;" value="" type="text">
+                </td>
+            </tr>
+            <tr id="panel_originalurl" style="display: none;">
+                <th>原文地址：</th>
+                <td>
+                    <input id="originalurl" value="http://" name="originalurl" style="width: 90%;" type="text">
+                </td>
+            </tr>
+            <tr>
+                <th id="sp_reason">原因补充：</th>
+                <td>
+                    <textarea id="report_description" style="width: 300px;" rows="3" name="report_description"></textarea>
+                    <p id="sp_n" style="color: rgb(153, 153, 153); margin: 0px; padding: 0px;">(最多只允许输入30个字)</p>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input id="btnSubmitReport" name="submit" class="btn_1" src="btn_submit.jpg" type="image" align="middle">
+                    <span style="padding-left: 20px;"></span>
+                    <img id="btnCloseReportDialog" src="btn_cancel.jpg" align="middle">
+                    <div id="error" style="color: red;">
+                    </div>
+                </td>
+            </tr>
+            </tbody></table>
+    </form>
+</div>
+    
+</div>
+<!--  fixme 后期清理掉  -->
+<div id="a52b5334d" style="width: 1px; height: 1px; display: none;">
+    
+    
+<div><iframe style="width: 1px; height: 1px; position: absolute; visibility: hidden;" src="index_7.html"></iframe></div></div>
+
+
+<!-- <script type="text/javascript" src="http://passport.csdn.net/content/loginbox/login.js"></script> -->
+
+
+
+
+<div class="" id="loginWrap"></div>
+<div class="" id="dlMask"></div>
+
+</body>
+</html>

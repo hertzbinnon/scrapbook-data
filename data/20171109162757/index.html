@@ -1,0 +1,1235 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+
+
+
+
+
+
+
+<title>WireShark 过滤语法 - Linux安全网 - Linux操作系统_Linux 命令_Linux教程_Linux黑客</title>
+
+
+
+<meta name="keywords" content="WireShark,过滤语法">
+
+
+
+<meta name="description" content="WireShark 过滤语法 hcorecore 的 WireShark 过滤语法 /* WireShark 过滤语法 */ 1. 过滤IP，如来源IP或者目标IP等于某个IP 例子: ip.src eq 192.168.1.107 or ip.dst eq 192.168.1.107 或者 ip.addr eq 192.168.1.107 // 都能显示来源IP和目标IP 2. 过滤端">
+
+
+
+
+
+
+
+
+
+
+
+<link rel="shortcut icon" type="image/ico" href="favicon.ico">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 请置于所有广告位代码之前 -->
+
+
+
+
+<link rel="stylesheet" type="text/css" id="SL_Style" href="chrome://imtranslator/content/css/translator.css">
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+
+
+
+<div class="container">
+
+
+
+<div class="toolbar">
+
+
+
+    <div class="clearfix toolbar-inner">
+
+
+
+        <div class="quicklink">
+
+
+
+            <ul id="chinaz_website_links" class="accesslink">
+
+
+
+                <li>Linux安全网 --- 专注Linux操作系统安全运维。</li>
+
+                
+
+            </ul>
+
+       
+
+        </div>
+
+
+
+        <div class="userbar" id="chinaz_topbar">
+
+        	<div class="userbar">
+
+            	
+
+            <a href="mailto:admin@linuxso.com">我要投稿</a></div>
+
+        </div>
+
+    </div>
+
+
+
+</div><div class="header">
+
+
+
+    <h1 class="logo"><a href="http://www.linuxso.com/" rel="home"><img src="logo.png" alt="Linux安全网 - Linux操作系统_Linux 命令_Linux教程_Linux黑客"></a></h1>
+
+
+
+    <div class="ad ad-b-head">
+
+<!-- 广告位：全站最上方468*60 -->
+
+    </div>
+
+
+
+    <div class="ad ad-t-head">
+
+	
+
+   绿色网站无广告
+
+
+
+    </div>
+
+
+
+</div>
+
+
+
+<div class="nav">
+
+
+
+    <ul>
+
+
+
+        <li><a href="http://www.linuxso.com/"><span>首页</span></a></li>
+
+		
+
+        
+
+      	<li><a href="http://www.linuxso.com/linuxrumen/"><span>Linux入门</span></a></li>
+
+      	
+
+      	<li><a href="http://www.linuxso.com/video/" rel="dropmenu48"><span>Linux教程</span></a></li>
+
+      	
+
+      	<li><a href="http://www.linuxso.com/jiaobenruqin/"><span>Linux安全</span></a></li>
+
+      	
+
+      	<li><a href="http://www.linuxso.com/command/" rel="dropmenu16"><span>Linux命令</span></a></li>
+
+      	
+
+      	<li><a href="http://www.linuxso.com/linuxxitongguanli/"><span>Linux系统</span></a></li>
+
+      	
+
+      	<li><a href="http://www.linuxso.com/linuxbiancheng/" rel="dropmenu31"><span>Linux编程</span></a></li>
+
+      	
+
+      	<li><a href="http://www.linuxso.com/linuxdownload/" rel="dropmenu51"><span>Linux下载</span></a></li>
+
+      	
+
+      	<li><a href="http://www.linuxso.com/linuxjiqun/" rel="dropmenu66"><span>Linux集群</span></a></li>
+
+      	
+
+      	<li><a href="http://www.linuxso.com/linuxpeixun/"><span>Linux培训</span></a></li>
+
+      	
+
+      	<li><a href="http://www.linuxso.com/linuxjiankong/" rel="dropmenu67"><span>Linux监控</span></a></li>
+
+      	
+
+
+
+    </ul>
+
+
+
+</div>
+
+
+
+<div class="note">
+
+
+
+    <span>
+
+
+
+        <a href="#" target="_top"><img src="cust_icon.gif" align="absbottom"> 会员投稿</a>
+
+
+
+        <a href="#"><img src="tg_icon.gif" align="absbottom"> 投稿指南</a>
+
+
+
+    </span>
+
+
+
+    <b>本期推荐:</b>
+
+    <a href="http://www.linuxso.com/linuxrumen/365.html" title="<strong>强烈推荐:Ylmf OS 3.0 正式版发布附迅雷高</strong>"><strong>强烈推荐:Ylmf OS 3.0 正式版发布附迅雷高</strong></a>
+<a href="http://www.linuxso.com/linuxrumen/658.html" title="<strong>XP系统下硬盘安装Fedora 14图文教程</strong>"><strong>XP系统下硬盘安装Fedora 14图文教程</strong></a>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+<div class="weizhi">
+
+
+
+	<form name="formsearch" action="http://www.linuxso.com/plus/search.php">
+
+
+
+<span>
+
+
+
+    <b>搜索:</b>
+
+
+
+    <input name="kwtype" value="0" type="hidden">
+
+            
+
+	<input name="searchtype" value="titlekeyword" type="hidden">
+
+
+
+    <input onfocus="this.value=(this.value=='全文检索')?'':this.value" onblur="this.value=(this.value=='')?'全文检索':this.value" name="q" value="全文检索" class="searchtxt" type="input">
+
+
+
+    <input src="topsearch_submit.gif" value="检索" type="image">
+
+
+
+</span>
+
+
+
+</form>
+
+
+
+    <b>您的位置</b>: <a href="http://www.linuxso.com/">Linux安全网</a> &gt; <a href="http://www.linuxso.com/linuxrumen/">Linux入门</a> &gt;  »  正文
+
+
+
+</div>
+
+
+
+
+<!--<div class="ad ad-b-leaderboard">
+
+
+
+<script type="text/javascript">(function(){document.write(unescape('%3Cdiv id="bdcs"%3E%3C/div%3E'));var bdcs = document.createElement('script');bdcs.type = 'text/javascript';bdcs.async = true;bdcs.src = 'http://znsv.baidu.com/customer_search/api/js?sid=9722538065881950795' + '&plate_url=' + encodeURIComponent(window.location.href) + '&t=' + Math.ceil(new Date()/3600000);var s = document.getElementsByTagName('script')[0];s.parentNode.insertBefore(bdcs, s);})();</script>
+
+
+
+</div>-->
+
+
+
+
+
+
+
+<div class="clearfix wrap layout-cols2">
+
+
+
+    <div class="col1">
+
+
+
+<div id="news">
+
+
+
+        
+
+
+
+            <h1 class="article-heading">WireShark 过滤语法</h1>
+
+
+
+           <div class="times">
+
+
+
+                <span class="article-published">日期:2010-06-07</span>
+
+                <span class="article-published">点击:859</span>
+
+
+
+                <span class="article-source">来源: 未知</span>
+
+                <span class="jiathiswidget" id="ckepop">
+
+                <span class="label">分享至:</span>
+
+                <a class="jiathis_button_tsina"></a>
+
+                <a class="jiathis_button_tqq"></a>
+
+                <a class="jiathis_button_qzone"></a>
+
+                <a class="jiathis_button_baidu"></a>
+
+                <a class="jiathis_button_renren"></a>
+
+                <a class="jiathis_button_kaixin001"></a>
+
+                <a class="jiathis_button_douban"></a>
+
+                <a class="jiathis_button_xiaoyou"></a>
+
+                <a href="http://www.jiathis.com/share?uid=1536270" class="jiathis jiathis_txt jtico jtico_jiathis" target="_top"></a>
+
+            </span>
+
+                
+
+            </div>
+
+
+
+
+
+
+
+            <div class="content cont-detail fs-small" id="ctrlfscont">
+
+  <span class="contentad" style="width: 650px; height: 202px; text-align: center; padding-left: 25px;"> </span>
+
+
+				<h3 class="title pre fs1"><font size="5"><font face="黑体"><span class="tcnt">WireShark 过滤语法</span></font></font></h3>
+<p class="tdep clearfix nbw-act fc06">&nbsp;</p>
+<div class="bct fc05 fc11 nbw-blog ztag js-fs2">
+<p>&nbsp;<font color="#ad8674">hcorecore</font> 的 <font color="#ad8674">WireShark 过滤语法</font><br>
+<br>
+/* WireShark 过滤语法 */<br>
+<br>
+1.<br>
+过滤IP，如来源IP或者目标IP等于某个IP<br>
+例子:<br>
+ip.src eq 192.168.1.107 or ip.dst eq 192.168.1.107<br>
+或者<br>
+ip.addr eq 192.168.1.107 // 都能显示来源IP和目标IP<br>
+<br>
+2.<br>
+过滤端口<br>
+例子:<br>
+tcp.port eq 80 // 不管端口是来源的还是目标的都显示<br>
+tcp.port == 80<br>
+tcp.port eq 2722<br>
+tcp.port eq 80 or udp.port eq 80<br>
+tcp.dstport == 80 // 只显tcp协议的目标端口80<br>
+tcp.srcport == 80 // 只显tcp协议的来源端口80<br>
+<br>
+udp.port eq 15000<br>
+<br>
+过滤端口范围<br>
+tcp.port &gt;= 1 and tcp.port &lt;= 80<br>
+<br>
+3.<br>
+过滤协议<br>
+例子:<br>
+tcp<br>
+udp<br>
+arp<br>
+icmp<br>
+http<br>
+smtp<br>
+ftp<br>
+dns<br>
+msnms<br>
+ip<br>
+ssl<br>
+oicq<br>
+bootp<br>
+等等<br>
+<br>
+排除arp包，如!arp&nbsp; 或者&nbsp; not arp<br>
+<br>
+4.<br>
+过滤MAC<br>
+太以网头过滤<br>
+eth.dst == A0:00:00:04:C5:84 // 过滤目标mac<br>
+eth.src eq A0:00:00:04:C5:84 // 过滤来源mac<br>
+eth.dst==A0:00:00:04:C5:84<br>
+eth.dst==A0-00-00-04-C5-84<br>
+eth.addr eq A0:00:00:04:C5:84 // 过滤来源MAC和目标MAC都等于A0:00:00:04:C5:84的<br>
+<br>
+less than 小于 &lt; lt <br>
+小于等于 le<br>
+<br>
+等于 eq<br>
+<br>
+大于 gt<br>
+大于等于 ge<br>
+<br>
+不等 ne<br>
+<br>
+<br>
+5.<br>
+包长度过滤<br>
+例子:<br>
+udp.length == 26 这个长度是指udp本身固定长度8加上udp下面那块数据包之和<br>
+tcp.len &gt;= 7&nbsp; 指的是ip数据包(tcp下面那块数据),不包括tcp本身<br>
+ip.len == 94 除了以太网头固定长度14,其它都算是ip.len,即从ip本身到最后<br>
+frame.len == 119 整个数据包长度,从eth开始到最后<br>
+<br>
+eth ---&gt; ip or arp ---&gt; tcp or udp ---&gt; da<wbr>ta<br>
+<br>
+6.<br>
+http模式过滤<br>
+例子:<br>
+http.request.method == GET<br>
+http.request.method == POST<br>
+http.request.uri == /img/logo-edu.gif<br>
+http contains GET<br>
+http contains HTTP/1.<br>
+<br>
+// GET包<br>
+http.request.method == GET &amp;&amp; http contains Host: <br>
+http.request.method == GET &amp;&amp; http contains User-Agent: <br>
+// POST包<br>
+http.request.method == POST &amp;&amp; http contains Host: <br>
+http.request.method == POST &amp;&amp; http contains User-Agent: <br>
+// 响应包<br>
+http contains HTTP/1.1 200 OK &amp;&amp; http contains Content-Type: <br>
+http contains HTTP/1.0 200 OK &amp;&amp; http contains Content-Type: <br>
+一定包含如下<br>
+Content-Type:<br>
+<br>
+<br>
+7.<br>
+TCP参数过滤<br>
+tcp.flags 显示包含TCP标志的封包。<br>
+tcp.flags.syn == 0x02&nbsp;&nbsp; &nbsp;显示包含TCP SYN标志的封包。<br>
+tcp.window_size == 0 &amp;&amp; tcp.flags.reset != 1<br>
+<br>
+8.<br>
+过滤内容<br>
+<br>
+tcp[20]表示从20开始，取1个字符<br>
+tcp[20:]表示从20开始，取1个字符以上<br>
+tcp[20:8]表示从20开始，取8个字符<br>
+tcp[offset,n]<br>
+<br>
+udp[8:3]==81:60:03 // 偏移8个bytes,再取3个数，是否与==后面的数据相等？<br>
+udp[8:1]==32&nbsp; 如果我猜的没有错的话，应该是udp[offset:截取个数]=nValue<br>
+eth.addr[0:3]==00:06:5B<br>
+<br>
+例子:<br>
+判断upd下面那块数据包前三个是否等于0x20 0x21 0x22<br>
+我们都知道udp固定长度为8<br>
+udp[8:3]==20:21:22<br>
+<br>
+判断tcp那块数据包前三个是否等于0x20 0x21 0x22<br>
+tcp一般情况下，长度为20,但也有不是20的时候<br>
+tcp[8:3]==20:21:22<br>
+如果想得到最准确的，应该先知道tcp长度<br>
+<br>
+matches(匹配)和contains(包含某字符串)语法<br>
+ip.src==192.168.1.107 and udp[8:5] matches x02x12x21x00x22<br>
+ip.src==192.168.1.107 and udp contains 02:12:21:00:22<br>
+ip.src==192.168.1.107 and tcp contains GET<br>
+udp contains 7c:7c:7d:7d 匹配payload中含有0x7c7c7d7d的UDP数据包，不一定是从第一字节匹配。<br>
+<br>
+例子:<br>
+得到本地qq登陆数据包(判断条件是第一个包==0x02,第四和第五个包等于0x00x22,最后一个包等于0x03)<br>
+0x02 xx xx 0x00 0x22 ... 0x03<br>
+正确<br>
+oicq and udp[8:] matches ^x02[x00-xff][x00-xff]x00x22[x00-xff]+x03$<br>
+oicq and udp[8:] matches ^x02[x00-xff]{2}x00x22[x00-xff]+x03$ // 登陆包<br>
+oicq and (udp[8:] matches ^x02[x00-xff]{2}x03$ or tcp[8:] matches ^x02[x00-xff]{2}x03$)<br>
+oicq and (udp[8:] matches ^x02[x00-xff]{2}x00x22[x00-xff]+x03$ or tcp[20:] matches ^x02[x00-xff]{2}x00x22[x00-xff]+x03$)<br>
+<br>
+不单单是00:22才有QQ号码,其它的包也有,要满足下面条件(tcp也有，但没有做):<br>
+oicq and udp[8:] matches ^x02[x00-xff]+x03$ and !(udp[11:2]==00:00) and !(udp[11:2]==00:80)<br>
+oicq and udp[8:] matches ^x02[x00-xff]+x03$ and !(udp[11:2]==00:00) and !(udp[15:4]==00:00:00:00)<br>
+说明:<br>
+udp[15:4]==00:00:00:00 表示QQ号码为空<br>
+udp[11:2]==00:00 表示命令编号为00:00<br>
+udp[11:2]==00:80 表示命令编号为00:80<br>
+当命令编号为00:80时，QQ号码为00:00:00:00<br>
+<br>
+得到msn登陆成功账号(判断条件是USR 7 OK ,即前三个等于USR，再通过两个0x20，就到OK,OK后面是一个字符0x20,后面就是mail了)<br>
+USR xx OK mail@hotmail.com<br>
+正确<br>
+msnms and tcp and ip.addr==192.168.1.107 and tcp[20:] matches ^USRx20[x30-x39]+x20OKx20[x00-xff]+<br>
+<br>
+9.<br>
+dns模式过滤<br>
+<br>
+10.<br>
+DHCP<br>
+以寻找伪造DHCP服务器为例，介绍Wireshark的用法。在显示过滤器中加入过滤规则，<br>
+显示所有非来自DHCP服务器并且bootp.type==0x02（Offer/Ack）的信息：<br>
+bootp.type==0x02 and not ip.src==192.168.1.1<br>
+<br>
+11.<br>
+msn<br>
+msnms &amp;&amp; tcp[23:1] == 20 // 第四个是0x20的msn数据包<br>
+msnms &amp;&amp; tcp[20:1] &gt;= 41 &amp;&amp; tcp[20:1] &lt;= 5A &amp;&amp; tcp[21:1] &gt;= 41 &amp;&amp; tcp[21:1] &lt;= 5A &amp;&amp; tcp[22:1] &gt;= 41 &amp;&amp; tcp[22:1] &lt;= 5A<br>
+msnms &amp;&amp; tcp[20:3]==USR // 找到命令编码是USR的数据包<br>
+msnms &amp;&amp; tcp[20:3]==MSG // 找到命令编码是MSG的数据包<br>
+tcp.port == 1863 || tcp.port == 80<br>
+<br>
+如何判断数据包是含有命令编码的MSN数据包?<br>
+1)端口为1863或者80,如:tcp.port == 1863 || tcp.port == 80<br>
+2)数据这段前三个是大写字母,如:<br>
+tcp[20:1] &gt;= 41 &amp;&amp; tcp[20:1] &lt;= 5A &amp;&amp; tcp[21:1] &gt;= 41 &amp;&amp; tcp[21:1] &lt;= 5A &amp;&amp; tcp[22:1] &gt;= 41 &amp;&amp; tcp[22:1] &lt;= 5A<br>
+3)第四个为0x20,如:tcp[23:1] == 20<br>
+4)msn是属于TCP协议的,如tcp<br>
+<br>
+MSN Messenger 协议分析<br>
+http://blog.csdn.net/Hopping/archive/2008/11/13/3292257.aspx<br>
+<br>
+MSN 协议分析<br>
+http://blog.csdn.net/lzyzuixin/archive/2009/03/13/3986597.aspx<br>
+<br>
+更详细的说明<br>
+&lt;&lt;wireshark过滤表达式实例介绍&gt;&gt;<br>
+http://www.csna.cn/viewthread.php?tid=14614<br>
+<br>
+Wireshark 主界面的操作菜单中英对比<br>
+http://www.csna.cn/viewthread.php?tid=9645&amp;extra=page%3D1<br>
+<br>
+又一款好的网络分析软件<br>
+科来网络分析系统<br>
+<br>
+学习Ethereal/Wireshark网站<br>
+http://www.csna.cn/index.php<br>
+<br>
+&nbsp;</p>
+</div>
+                
+               <span class="contenttop" style="width: 682px; float: left; text-align: center;">
+
+
+
+  </span>             
+
+            </div>
+
+            
+
+            <div class="dede_pages">
+
+				<ul class="pagelist">
+
+          
+
+				</ul>
+            
+			</div> <br>
+
+
+
+            <div class="text_tag">
+
+
+
+                        <h5>Tags：
+
+                                        <a href="http://www.linuxso.com/tags.php?/WireShark/">WireShark</a>
+
+                                        
+
+                                        <a href="http://www.linuxso.com/tags.php?/%B9%FD%C2%CB%D3%EF%B7%A8/">过滤语法</a>
+
+                                         </h5>
+
+
+
+<span class="jiathiswidget" id="ckepop">
+
+                <span class="label">分享至:</span>
+
+                <a class="jiathis_button_tsina"></a>
+
+                <a class="jiathis_button_tqq"></a>
+
+                <a class="jiathis_button_qzone"></a>
+
+                <a class="jiathis_button_baidu"></a>
+
+                <a class="jiathis_button_renren"></a>
+
+                <a class="jiathis_button_kaixin001"></a>
+
+                <a class="jiathis_button_douban"></a>
+
+                <a class="jiathis_button_xiaoyou"></a>
+
+                <a href="http://www.jiathis.com/share?uid=1536270" class="jiathis jiathis_txt jtico jtico_jiathis" target="_top"></a>
+
+            </span>
+
+
+
+            </div>
+
+
+
+            
+
+
+
+<div class="box_xgimg"> 
+
+
+
+
+
+
+
+<div class="title_xg">
+
+
+
+    <div style="float: left; text-align: left;"><b>最新图文资讯</b></div>
+
+
+
+    <span style="float: right; padding-right: 10px; font-size: 12px; font-weight: normal;">
+
+
+
+        <a href="javascript://" class="" id="picA1" onclick="selectSwitch(1)">1</a>
+
+
+
+        <a href="javascript://" id="picA2" onclick="selectSwitch(2)" class="">2</a>
+
+
+
+        <a href="javascript://" id="picA3" onclick="selectSwitch(3)" class="">3</a>
+
+
+
+        <a href="javascript://" id="picA4" onclick="selectSwitch(4)" class="currON">4</a>
+
+
+
+        <a href="javascript://" id="picA5" onclick="selectSwitch(5)" class="">5</a>
+
+
+
+        <a href="javascript://" id="picA6" onclick="selectSwitch(6)" class="">6</a>
+
+
+
+    </span>
+
+
+
+</div>
+
+
+
+<div class="roll" id="roll" style="margin-left: 0px; padding-left: 0px;">
+
+
+
+    <ul id="picUL1" style="display: none;">
+
+		<li>
+
+			<div><a href="http://www.linuxso.com/linuxrumen/13460.html"><img src="09105ut8-0-lp.gif" alt="Nginx+Tomcat+Session 高性能群集搭建（测试通过）" width="121" border="0" height="91"></a></div>
+
+			<p><a href="http://www.linuxso.com/linuxrumen/13460.html">Nginx+Tomcat+Session 高性能群集搭建（测试通过）</a></p>
+
+			</li>
+<li>
+
+			<div><a href="http://www.linuxso.com/linuxrumen/13457.html"><img src="0910502l4-0-lp.gif" alt="《Cisco/H3C交换机配置与管理完全手册（第2版）》终稿封面和目录" width="121" border="0" height="91"></a></div>
+
+			<p><a href="http://www.linuxso.com/linuxrumen/13457.html">《Cisco/H3C交换机配置与管理完全手册（第2版）》终稿封面和目录</a></p>
+
+			</li>
+<li>
+
+			<div><a href="http://www.linuxso.com/linuxrumen/13455.html"><img src="091043km-0-lp.jpg" alt="取消Windows服务器非正常启动后的原因选择" width="121" border="0" height="91"></a></div>
+
+			<p><a href="http://www.linuxso.com/linuxrumen/13455.html">取消Windows服务器非正常启动后的原因选择</a></p>
+
+			</li>
+<li>
+
+			<div><a href="http://www.linuxso.com/linuxrumen/13437.html"><img src="0z942b18-0-lp.jpg" alt="企业生产环境利用ATIES对服务器进行远程备份" width="121" border="0" height="91"></a></div>
+
+			<p><a href="http://www.linuxso.com/linuxrumen/13437.html">企业生产环境利用ATIES对服务器进行远程备份</a></p>
+
+			</li>
+
+
+	</ul>
+
+
+
+    <ul id="picUL2" style="display: none;">
+
+		<li>
+
+			<div><a href="http://www.linuxso.com/linuxrumen/13428.html"><img src="0z9231c8-0-lp.jpg" alt="SSH远程会话管理工具 - screen使用教程" width="121" border="0" height="91"></a></div>
+
+			<p><a href="http://www.linuxso.com/linuxrumen/13428.html">SSH远程会话管理工具 - screen使用教程</a></p>
+
+			</li>
+<li>
+
+			<div><a href="http://www.linuxso.com/linuxrumen/13391.html"><img src="1114243423-0-lp.png" alt="IT小妙招：一键关闭所有程序" width="121" border="0" height="91"></a></div>
+
+			<p><a href="http://www.linuxso.com/linuxrumen/13391.html">IT小妙招：一键关闭所有程序</a></p>
+
+			</li>
+<li>
+
+			<div><a href="http://www.linuxso.com/linuxrumen/13390.html"><img src="111419ca-0-lp.jpg" alt="Exchange Server 2010 POP3&amp;amp;IMAP设置详解" width="121" border="0" height="91"></a></div>
+
+			<p><a href="http://www.linuxso.com/linuxrumen/13390.html">Exchange Server 2010 POP3&amp;amp;IMAP设置详解</a></p>
+
+			</li>
+<li>
+
+			<div><a href="http://www.linuxso.com/linuxrumen/13389.html"><img src="11141m4v-0-lp.jpg" alt="shell脚本应用之服务启动脚本" width="121" border="0" height="91"></a></div>
+
+			<p><a href="http://www.linuxso.com/linuxrumen/13389.html">shell脚本应用之服务启动脚本</a></p>
+
+			</li>
+
+
+    </ul>
+
+
+
+    <ul id="picUL3" style="display: none;">
+
+		<li>
+
+			<div><a href="http://www.linuxso.com/linuxrumen/13385.html"><img src="11140j634-0-lp.png" alt="正则表达式基础" width="121" border="0" height="91"></a></div>
+
+			<p><a href="http://www.linuxso.com/linuxrumen/13385.html">正则表达式基础</a></p>
+
+			</li>
+<li>
+
+			<div><a href="http://www.linuxso.com/linuxrumen/13384.html"><img src="1114035c8-0-lp.jpg" alt="Event ID 10016 DCOM" width="121" border="0" height="91"></a></div>
+
+			<p><a href="http://www.linuxso.com/linuxrumen/13384.html">Event ID 10016 DCOM</a></p>
+
+			</li>
+<li>
+
+			<div><a href="http://www.linuxso.com/linuxrumen/13381.html"><img src="1113555z9-0-lp.png" alt="相对路径和绝对路径错误造成的漏洞" width="121" border="0" height="91"></a></div>
+
+			<p><a href="http://www.linuxso.com/linuxrumen/13381.html">相对路径和绝对路径错误造成的漏洞</a></p>
+
+			</li>
+<li>
+
+			<div><a href="http://www.linuxso.com/linuxrumen/13378.html"><img src="111341l42-0-lp.jpg" alt="linux批量远程管理主机命令_pssh用法详解" width="121" border="0" height="91"></a></div>
+
+			<p><a href="http://www.linuxso.com/linuxrumen/13378.html">linux批量远程管理主机命令_pssh用法详解</a></p>
+
+			</li>
+
+
+    </ul>
+
+
+
+    <ul id="picUL4" style="">
+
+		<li>
+
+			<div><a href="http://www.linuxso.com/linuxrumen/13364.html"><img src="1113045219-0-lp.jpg" alt="某图书馆架设NFS服务器案例详解" width="121" border="0" height="91"></a></div>
+
+			<p><a href="http://www.linuxso.com/linuxrumen/13364.html">某图书馆架设NFS服务器案例详解</a></p>
+
+			</li>
+<li>
+
+			<div><a href="http://www.linuxso.com/linuxrumen/13363.html"><img src="11125gc2-0-lp.png" alt="Centos下samba服务的搭建" width="121" border="0" height="91"></a></div>
+
+			<p><a href="http://www.linuxso.com/linuxrumen/13363.html">Centos下samba服务的搭建</a></p>
+
+			</li>
+<li>
+
+			<div><a href="http://www.linuxso.com/linuxrumen/13362.html"><img src="1112512w8-0-lp.jpg" alt="vnc指定用户屏幕号登录（oracle安装时使用）" width="121" border="0" height="91"></a></div>
+
+			<p><a href="http://www.linuxso.com/linuxrumen/13362.html">vnc指定用户屏幕号登录（oracle安装时使用）</a></p>
+
+			</li>
+<li>
+
+			<div><a href="http://www.linuxso.com/linuxrumen/13320.html"><img src="11091u956-0-lp.gif" alt="IIS WEB服务扩展里没有ASP.NET v2.0导致无法正常浏览.ASPX文件" width="121" border="0" height="91"></a></div>
+
+			<p><a href="http://www.linuxso.com/linuxrumen/13320.html">IIS WEB服务扩展里没有ASP.NET v2.0导致无法正常浏览.ASPX文件</a></p>
+
+			</li>
+
+
+    </ul>
+
+
+
+    <ul id="picUL5" style="display: none;">
+
+		<li>
+
+			<div><a href="http://www.linuxso.com/linuxrumen/13269.html"><img src="1152043f6-0-lp.jpg" alt="Windows server 2008 R2 活动目录的安装" width="121" border="0" height="91"></a></div>
+
+			<p><a href="http://www.linuxso.com/linuxrumen/13269.html">Windows server 2008 R2 活动目录的安装</a></p>
+
+			</li>
+<li>
+
+			<div><a href="http://www.linuxso.com/linuxrumen/13261.html"><img src="1151402454-0-lp.png" alt="IT小妙招之：通过&amp;ldquo;创建日期&amp;rdquo;进行搜索" width="121" border="0" height="91"></a></div>
+
+			<p><a href="http://www.linuxso.com/linuxrumen/13261.html">IT小妙招之：通过&amp;ldquo;创建日期&amp;rdquo;进行搜索</a></p>
+
+			</li>
+<li>
+
+			<div><a href="http://www.linuxso.com/linuxrumen/13260.html"><img src="1151361064-0-lp.png" alt="IT小妙招之：快马加鞭，Windows 7启动大提速" width="121" border="0" height="91"></a></div>
+
+			<p><a href="http://www.linuxso.com/linuxrumen/13260.html">IT小妙招之：快马加鞭，Windows 7启动大提速</a></p>
+
+			</li>
+<li>
+
+			<div><a href="http://www.linuxso.com/linuxrumen/13259.html"><img src="115132er-0-lp.png" alt="EXE应用程序无法打开的解决方案" width="121" border="0" height="91"></a></div>
+
+			<p><a href="http://www.linuxso.com/linuxrumen/13259.html">EXE应用程序无法打开的解决方案</a></p>
+
+			</li>
+
+
+    </ul>
+
+
+
+    <ul id="picUL6" style="display: none;">
+
+		<li>
+
+			<div><a href="http://www.linuxso.com/linuxrumen/13258.html"><img src="1151305509-0-lp.png" alt="边栏小工具无法使用的解决方案" width="121" border="0" height="91"></a></div>
+
+			<p><a href="http://www.linuxso.com/linuxrumen/13258.html">边栏小工具无法使用的解决方案</a></p>
+
+			</li>
+<li>
+
+			<div><a href="http://www.linuxso.com/linuxrumen/13257.html"><img src="1151244j0-0-lp.jpg" alt="Vmware  vsphere知识中易混淆和忽略的多个概念" width="121" border="0" height="91"></a></div>
+
+			<p><a href="http://www.linuxso.com/linuxrumen/13257.html">Vmware  vsphere知识中易混淆和忽略的多个概念</a></p>
+
+			</li>
+<li>
+
+			<div><a href="http://www.linuxso.com/linuxrumen/13256.html"><img src="1151215m8-0-lp.png" alt="Windows 7删除用户配置文件后使用临时配置文件" width="121" border="0" height="91"></a></div>
+
+			<p><a href="http://www.linuxso.com/linuxrumen/13256.html">Windows 7删除用户配置文件后使用临时配置文件</a></p>
+
+			</li>
+<li>
+
+			<div><a href="http://www.linuxso.com/linuxrumen/13254.html"><img src="115115l61-0-lp.png" alt="办公小贴士之：Excel快速输入重复性数据" width="121" border="0" height="91"></a></div>
+
+			<p><a href="http://www.linuxso.com/linuxrumen/13254.html">办公小贴士之：Excel快速输入重复性数据</a></p>
+
+			</li>
+
+
+    </ul>
+
+
+
+    
+
+
+
+</div>
+
+
+
+</div>   
+
+
+
+
+
+
+
+                        <div class="box_xg">
+
+
+
+                <div class="title_xg">相关文章列表:</div>
+
+
+
+                <ul>
+
+					<li><a href="http://www.linuxso.com/linuxrumen/2230.html">Wireshark的过滤器</a></li>
+<li><a href="http://www.linuxso.com/linuxxitongguanli/753.html">Fedora 14安装Wireshark linux系统下wireshark抓包工</a></li>
+
+
+				</ul>
+
+
+
+            </div>
+
+
+
+
+
+<!-- //评论内容区 -->
+
+
+
+
+
+
+
+<div id="pllshow">
+
+          <form action="http://www.linuxso.com/linuxrumen/436.html#" method="post" name="feedback">
+
+          <input name="dopost" value="send" type="hidden">
+
+          <input name="comtype" value="comments" type="hidden">
+
+          <input name="aid" value="3023" type="hidden">
+
+          <input name="fid" id="feedbackfid" value="0" type="hidden">
+
+
+
+验证码:<input name="validate" size="4" value="" type="text"><img src="vdimgck.php" alt="点击我更换图片" id="validateimg" style="height: 15px;" title="点击我更换图片" onclick="this.src=this.src+'?'">
+
+
+
+
+
+<span class="float_right">理智评论文明上网，拒绝恶意谩骂</span>
+
+<span id="userinfo">
+
+用户名：<b id="nickname"></b>
+
+<span id="anonymous"><label><input name="notuser" checked="checked" type="checkbox"> 匿名发表</label></span>
+
+<input onclick="PostComment()" value="发表评论" class="btn" type="button">				
+
+</span> 
+
+<!--<span style="display:none;" id="fastLoginDiv" value="0">
+
+	<label class="cor-ccc">用户名：</label>
+
+	<input type="text" class="input-text bor-gray"  name="username" id="loginUsername" value="" />
+
+	<label>密码：</label>
+
+	<input type="password" class="input-text bor-gray" name="password" id="loginPassword" />
+
+	<input type="button" class="btn" onclick="login(); return false;" value="登录" />
+
+</span>	 -->
+
+<div class="bor">
+
+<textarea name="msg" rows="6" cols="94" class="rev_textarea"></textarea>    
+
+</div>			
+
+</form>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+	<a name="commettop"></a>
+
+	<div class="mt1">
+
+			<dl class="tbox">
+
+
+				<!-- //这两个ID的区块必须存在，否则JS会出错 -->
+
+				<dd id="commetcontentNew"></dd>
+
+				<dd id="commetcontent"></dd>
+
+			</dl>
+
+	</div>
+
+<!--
+
+//由于评论载入时使用异步传输，因此必须在最后一步加载（DIGG和评论框须放在评论内容前面）
+
+//如果一定需要提前的把myajax.SendGet改为myajax.SendGet2，但可能会引起页面阻滞
+
+-->
+
+<!-- //评论内容区结束 -->
+
+
+
+
+
+
+</div>
+
+
+
+    </div>
+
+
+
+    <div class="col2">
+
+
+
+        <div class="ad right_bot">
+
+			<div style="border: 1px solid rgb(150, 189, 222); height: 250px; width: 268px; background-color: rgb(255, 255, 255); text-align: center; line-height: 250px;">
+
+            </div>
+
+		</div>
+
+
+
+<div class="right_box right_bot">
+
+
+
+    <div class="right_title">推荐内容</div>
+
+
+
+    <ul class="articlelist"> 
+
+    	<li><a href="http://www.linuxso.com/linuxrumen/13513.html" target="_top">linux iptables 保存 删除规则命令</a></li>
+<li><a href="http://www.linuxso.com/linuxrumen/13515.html" target="_top">CentOS 升级python2.6 到最新的python3.3</a></li>
+<li><a href="http://www.linuxso.com/linuxrumen/13512.html" target="_top">阿里云ECS iptables 端口映射转发实现共享IP 访问内网</a></li>
+
+
+    </ul>
+
+
+
+</div>
+
+
+
+<div class="ad" style="margin-bottom: 10px;">
+
+
+
+
+
+</div>
+
+
+
+<div class="ad right_bot">
+
+
+
+<!--<div style="border: 1px solid #96bdde;height: 322px;width: 268px;background-color: #FFF;text-align: center;line-height: 322px;">
+</div>-->
+
+
+
+</div>
+
+
+
+<div class="right_box right_bot">
+
+
+
+    <div class="right_title">最新文章</div>
+
+
+
+    <ul class="forumrecomlist">
+
+    	<li><a href="http://www.linuxso.com/linuxrumen/13515.html" target="_top">CentOS 升级python2.6 到最新的python3.3</a></li>
+<li><a href="http://www.linuxso.com/linuxrumen/13513.html" target="_top">linux iptables 保存 删除规则命令</a></li>
+<li><a href="http://www.linuxso.com/linuxrumen/13512.html" target="_top">阿里云ECS iptables 端口映射转发实现共享IP 访问内网</a></li>
+<li><a href="http://www.linuxso.com/linuxrumen/13510.html" target="_top">rsync本地同步目录镜像</a></li>
+<li><a href="http://www.linuxso.com/linuxrumen/13460.html" target="_top">Nginx+Tomcat+Session 高性能群集搭建（测试通过）</a></li>
+<li><a href="http://www.linuxso.com/linuxrumen/13457.html" target="_top">《Cisco/H3C交换机配置与管理完全手册（第2版）》终稿</a></li>
+<li><a href="http://www.linuxso.com/linuxrumen/13456.html" target="_top">Linux用户、用户组和文件权限控制的学习</a></li>
+<li><a href="http://www.linuxso.com/linuxrumen/13455.html" target="_top">取消Windows服务器非正常启动后的原因选择</a></li>
+<li><a href="http://www.linuxso.com/linuxrumen/13447.html" target="_top">CentOS5.5下DNS配置（初级篇）</a></li>
+<li><a href="http://www.linuxso.com/linuxrumen/13446.html" target="_top">linux配置时间服务器（ntp)</a></li>
+<li><a href="http://www.linuxso.com/linuxrumen/13445.html" target="_top">在Windows Server 2008中创建密码重设盘 刘道军</a></li>
+<li><a href="http://www.linuxso.com/linuxrumen/13444.html" target="_top">使用密码重设盘重设密码</a></li>
+<li><a href="http://www.linuxso.com/linuxrumen/13442.html" target="_top">Linux常用实际命令（个人整理）</a></li>
+<li><a href="http://www.linuxso.com/linuxrumen/13440.html" target="_top">check client group policies</a></li>
+<li><a href="http://www.linuxso.com/linuxrumen/13437.html" target="_top">企业生产环境利用ATIES对服务器进行远程备份</a></li>
+
+
+    </ul>
+
+
+
+</div>
+
+        <div class="ad right_bot">
+
+			<div style="border: 1px solid rgb(150, 189, 222); height: 600px; width: 268px; background-color: rgb(255, 255, 255); text-align: center; line-height: 600px;">
+            <!-- 广告位：右侧摩天楼160*600 -->
+            
+            </div>
+
+		</div>
+
+
+
+
+
+
+
+    </div>
+
+
+
+</div>
+
+
+
+<div id="sitemap" class="sitemap">
+
+
+
+
+
+关于我们 - 联系我们 - 广告服务 - 友情链接 - 网站地图 - 版权声明  -  发展历史
+
+
+
+</div>
+
+<div class="tongji" style="display: none;">
+
+</div>
+
+<div class="footer">   <p>Copyright © 2010-2015  <a href="http://www.linuxso.com/">Linux安全网</a> LinuxSo.Com, All Rights Reserved. 豫ICP备12027123号-1</p>
+
+
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div id="SL_balloon_obj" style="display: none;"><div id="SL_button" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 24px; height: 24px; position: absolute; cursor: pointer;"></div><div id="SL_shadow_translation_result2" style="display: none;"></div><div id="SL_shadow_translator"><div id="SL_providers"><div class="SL_BL_LABLE_ON" title="Google" id="SL_P0">G</div><div class="SL_BL_LABLE_ON" title="Microsoft" id="SL_P1">M</div><div class="SL_BL_LABLE_ON" title="Translator" id="SL_P2">T</div></div><div id="SL_planshet" style="background: rgb(244, 245, 245) url('undefined') repeat scroll 0% 0%;"><div id="SL_arrow_up"></div><div id="SL_TB"><div id="bubblelogo" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 24px; height: 24px; position: absolute;"></div><table id="SL_tables"><tr><td width="10%" align="right"><input id="SLloc" title="鎖定語言" type="checkbox"></td><td width="20%" align="left"><select id="SL_lng_from"><option value="auto">檢測語言</option><option value="sq">阿尔巴尼亚语</option><option value="ar">阿拉伯语</option><option value="az">阿塞拜疆语</option><option value="ga">爱尔兰语</option><option value="et">爱沙尼亚语</option><option value="eu">巴斯克语</option><option value="be">白俄罗斯语</option><option value="bg">保加利亚语</option><option value="is">冰岛语</option><option value="pl">波兰语</option><option value="bs">波斯尼亚语</option><option value="fa">波斯语</option><option value="af">布尔语(南非荷兰语)</option><option value="da">丹麦语</option><option value="de">德语</option><option value="ru">俄语</option><option value="fr">法语</option><option value="tl">菲律宾语</option><option value="fi">芬兰语</option><option value="km">高棉语</option><option value="ka">格鲁吉亚语</option><option value="gu">古吉拉特语</option><option value="kk">哈萨克语</option><option value="ht">海地克里奥尔语</option><option value="ko">韩语</option><option value="ha">豪萨语</option><option value="nl">荷兰语</option><option value="gl">加利西亚语</option><option value="ca">加泰罗尼亚语</option><option value="cs">捷克语</option><option value="kn">卡纳达语</option><option value="hr">克罗地亚语</option><option value="la">拉丁语</option><option value="lv">拉脱维亚语</option><option value="lo">老挝语</option><option value="lt">立陶宛语</option><option value="ro">罗马尼亚语</option><option value="mg">马尔加什语</option><option value="mt">马耳他语</option><option value="mr">马拉地语</option><option value="ml">马拉雅拉姆语</option><option value="ms">马来语</option><option value="mk">马其顿语</option><option value="mi">毛利语</option><option value="mn">蒙古语</option><option value="bn">孟加拉语</option><option value="my">缅甸语</option><option value="hmn">苗语</option><option value="zu">南非祖鲁语</option><option value="ne">尼泊尔语</option><option value="no">挪威语</option><option value="pa">旁遮普语</option><option value="pt">葡萄牙语</option><option value="ny">齐切瓦语</option><option value="ja">日语</option><option value="sv">瑞典语</option><option value="sr">塞尔维亚语</option><option value="st">塞索托语</option><option value="si">僧伽罗语</option><option value="eo">世界语</option><option value="sk">斯洛伐克语</option><option value="sl">斯洛文尼亚语</option><option value="sw">斯瓦希里语</option><option value="ceb">宿务语</option><option value="so">索马里语</option><option value="tg">塔吉克语</option><option value="te">泰卢固语</option><option value="ta">泰米尔语</option><option value="th">泰语</option><option value="tr">土耳其语</option><option value="cy">威尔士语</option><option value="ur">乌尔都语</option><option value="uk">乌克兰语</option><option value="uz">乌兹别克语</option><option value="iw">希伯来语</option><option value="el">希腊语</option><option value="es">西班牙语</option><option value="hu">匈牙利语</option><option value="hy">亚美尼亚语</option><option value="ig">伊博语</option><option value="it">意大利语</option><option value="yi">意第绪语</option><option value="hi">印地语</option><option value="su">印尼巽他语</option><option value="id">印尼语</option><option value="jw">印尼爪哇语</option><option value="en">英语</option><option value="yo">约鲁巴语</option><option value="vi">越南语</option><option value="zh-CN">中文简体</option><option value="zh-TW">中文繁体</option></select></td><td width="5%" align="center"><div id="SL_switch_b" title="切換語言" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 10px; height: 10px; cursor: pointer;" align="center"></div></td><td width="20%" align="left"><select id="SL_lng_to"><option value="sq">阿尔巴尼亚语</option><option value="ar">阿拉伯语</option><option value="az">阿塞拜疆语</option><option value="ga">爱尔兰语</option><option value="et">爱沙尼亚语</option><option value="eu">巴斯克语</option><option value="be">白俄罗斯语</option><option value="bg">保加利亚语</option><option value="is">冰岛语</option><option value="pl">波兰语</option><option value="bs">波斯尼亚语</option><option value="fa">波斯语</option><option value="af">布尔语(南非荷兰语)</option><option value="da">丹麦语</option><option value="de">德语</option><option value="ru">俄语</option><option value="fr">法语</option><option value="tl">菲律宾语</option><option value="fi">芬兰语</option><option value="km">高棉语</option><option value="ka">格鲁吉亚语</option><option value="gu">古吉拉特语</option><option value="kk">哈萨克语</option><option value="ht">海地克里奥尔语</option><option value="ko">韩语</option><option value="ha">豪萨语</option><option value="nl">荷兰语</option><option value="gl">加利西亚语</option><option value="ca">加泰罗尼亚语</option><option value="cs">捷克语</option><option value="kn">卡纳达语</option><option value="hr">克罗地亚语</option><option value="la">拉丁语</option><option value="lv">拉脱维亚语</option><option value="lo">老挝语</option><option value="lt">立陶宛语</option><option value="ro">罗马尼亚语</option><option value="mg">马尔加什语</option><option value="mt">马耳他语</option><option value="mr">马拉地语</option><option value="ml">马拉雅拉姆语</option><option value="ms">马来语</option><option value="mk">马其顿语</option><option value="mi">毛利语</option><option value="mn">蒙古语</option><option value="bn">孟加拉语</option><option value="my">缅甸语</option><option value="hmn">苗语</option><option value="zu">南非祖鲁语</option><option value="ne">尼泊尔语</option><option value="no">挪威语</option><option value="pa">旁遮普语</option><option value="pt">葡萄牙语</option><option value="ny">齐切瓦语</option><option value="ja">日语</option><option value="sv">瑞典语</option><option value="sr">塞尔维亚语</option><option value="st">塞索托语</option><option value="si">僧伽罗语</option><option value="eo">世界语</option><option value="sk">斯洛伐克语</option><option value="sl">斯洛文尼亚语</option><option value="sw">斯瓦希里语</option><option value="ceb">宿务语</option><option value="so">索马里语</option><option value="tg">塔吉克语</option><option value="te">泰卢固语</option><option value="ta">泰米尔语</option><option value="th">泰语</option><option value="tr">土耳其语</option><option value="cy">威尔士语</option><option value="ur">乌尔都语</option><option value="uk">乌克兰语</option><option value="uz">乌兹别克语</option><option value="iw">希伯来语</option><option value="el">希腊语</option><option value="es">西班牙语</option><option value="hu">匈牙利语</option><option value="hy">亚美尼亚语</option><option value="ig">伊博语</option><option value="it">意大利语</option><option value="yi">意第绪语</option><option value="hi">印地语</option><option value="su">印尼巽他语</option><option value="id">印尼语</option><option value="jw">印尼爪哇语</option><option value="en">英语</option><option value="yo">约鲁巴语</option><option value="vi">越南语</option><option value="zh-CN">中文简体</option><option value="zh-TW">中文繁体</option></select></td><td width="5%" align="center"> </td><td width="6%" align="center"><div id="SL_TTS_voice" title="聆聽" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="6%" align="center"><div id="SL_copy" title="複製譯文" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="6%" align="center"><div id="SL_bbl_font_patch" title="此功能在字典中禁用"></div><div id="SL_bbl_font" title="字體大小" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="6%" align="center"><div id="SL_TH" title="翻譯歷史" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="10%"></td><td width="6%" align="right"><div id="SL_pin" title="固定彈出窗口" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 16px; height: 16px; cursor: pointer;"></div></td></tr></table></div><div id="SL_alert_bbl"><div id="SLHKclose"></div><div id="SL_alert_cont"></div></div></div><div id="SL_shadow_translation_result" style="background: rgb(255, 255, 255) url('undefined') repeat scroll 0% 0%;"></div><div id="SL_loading" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; position: absolute; width: 35px; margin-left: 180px; margin-top: -40px; height: 35px;"></div><div id="SL_player2"></div><div id="SL_alert100">語言功能限200個字符</div><div id="SL_Balloon_options" style="background: rgb(255, 255, 255) none repeat scroll 0% 0%;"><div id="SL_arrow_down"></div><table width="100%"><tr><td width="18%" align="left" height="16"><div id="SL_bbl_donate" title="進行一點捐款" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="68%" align="center"><a href="#" id="OPlnk" title="顯示選項">選項</a> : <a href="#" id="HISTlnk" title="翻譯歷史">歷史</a> : <a href="http://about.imtranslator.net/tutorials/presentations/imtranslator-translator-for-firefox/popup-bubble-application/" target="_top" id="HELPlnk" title="幫助">幫助</a> : <a href="#" id="FBlnk" title="反饋">反饋</a></td><td width="15%" align="right"><a id="SL_Balloon_Close" href="#" title="關閉">關閉</a></td></tr></table></div></div></div></body>
+</html>

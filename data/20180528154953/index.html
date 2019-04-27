@@ -1,0 +1,2603 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    <meta charset="UTF-8">
+    <link rel="canonical" href="https://blog.csdn.net/chinabinlang/article/details/78294464"> 
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="referrer" content="always">
+    <meta name="description" content="名词解释：
+
+
+GCC谷歌提出的拥塞控制算法(Google Congestion
+ Control，简称GCC[1])来控制发送端码率
+
+
+
+RTT： 往返延时
+
+
+TransportCC：
+REMB：&nbsp;Receiver Estimated Maximum Bitrate, &nbsp;接收端最大接收码率估测，接收端会估计本地接收的最大带宽能力，并通过rtcp remb 消息返回给对">
+    <meta name="keywords" content="">
+    <meta http-equiv="Cache-Control" content="no-siteapp"><link rel="alternate" media="handheld" href="https://blog.csdn.net/chinabinlang/article/details/78294464?locationNum=7&amp;fps=1#">
+    <meta name="shenma-site-verification" content="5a59773ab8077d4a62bf469ab966a63b_1497598848">
+    
+
+    <link href="favicon.ico" rel="SHORTCUT ICON">
+    <title>webrtc中的码率控制 - CSDN博客</title>
+    
+            
+        
+
+    
+    
+    
+    
+        
+         
+    
+
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body><div id="BAIDU_DUP_fp_wrapper" style="position: absolute; left: -1px; bottom: -1px; z-index: 0; width: 0px; height: 0px; overflow: hidden; visibility: hidden; display: none;"><iframe id="BAIDU_DUP_fp_iframe" src="index_1.html" style="width: 0px; height: 0px; visibility: hidden; display: none;"></iframe></div><div id="MathJax_Message" style="display: none;"></div>    
+    
+    
+    
+
+
+
+<header>
+	<div class="container d-flex clearfix">
+		<div class="title-box">
+			<h6 class="title-blog">
+				<a href="https://blog.csdn.net/chinabinlang">chinabinlang的专栏</a>
+			</h6>
+			<p class="description">感谢上帝</p>
+		</div>
+		<div class="opt-box d-flex justify-content-end">
+			<a class="btn btn-sm" href="https://blog.csdn.net/chinabinlang/rss/list">
+					<svg class="icon" aria-hidden="true">
+						<use xlink:href="#csdnc-rss"></use>
+					</svg>RSS订阅</a>
+					</div>
+	</div>
+</header>
+<div class="container clearfix pt0" id="mainBox">
+    <main>
+        <div class="blog-content-box">
+	<div class="article-title-box">
+			<span class="article-type type-1 float-left">原</span>		<h6 class="title-article">webrtc中的码率控制</h6>
+	</div>
+	<div class="article-info-box">
+		<div class="article-bar-top d-flex">
+												<span class="time">2017年10月20日 13:35:10</span>
+			<div class="float-right">
+				<span class="read-count">阅读数：2031</span>
+											</div>
+		</div>
+	</div>
+	<article>
+		<div id="article_content" class="article_content clearfix csdn-tracking-statistics" data-pid="blog" data-mod="popu_307" data-dsm="post">
+                    
+            <div class="htmledit_views">
+                
+<p>本来想要自己写一篇文章，但是网上已经有很好的文章了，所以这里直接综合转载；</p>
+<p>文章前面的部分是简单总结，后面是转载的文章；</p>
+<p><br>
+</p>
+<p>名词解释：</p>
+<p><br>
+</p>
+<p><span style="color: rgb(47, 47, 47); font-family: &quot;microsoft yahei&quot;; font-size: 16px; line-height: 35px;"><span style="color: rgb(47, 47, 47); font-family: &quot;microsoft yahei&quot;; font-size: 16px; line-height: 35px;"><strong>GCC</strong></span>谷歌提出的拥塞控制算法(Google Congestion
+ Control，简称GCC[1])来控制发送端码率</span></p>
+<p><br>
+</p>
+<p><strong>TransportCC</strong>：</p>
+<p><strong>REMB</strong>：&nbsp;<span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">Receiver Estimated Maximum Bitrate, &nbsp;接收端最大接收码率估测，接收端会估计本地接收的最大带宽能力，并通过rtcp remb 消息返回给对端，这样对端可以调整自己的发送端码率，达到动态调整带宽得目的</span></p>
+<p>丢包率：</p>
+<p><span style="font-family: Arial; font-size: 14px; line-height: 26px;">goog-remb：<span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">google实现了自己版本的remb；</span></span><br>
+</p>
+<p><br>
+</p>
+<p><span style="font-family: Arial; font-size: 14px; line-height: 26px;"><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">协议文档：https://tools.ietf.org/html/draft-alvestrand-rmcat-remb-03</span></span></p>
+<p><br>
+</p>
+<p><strong>NACK</strong>：丢包重传</p>
+<p><br>
+</p>
+<p>delay_based： &nbsp;基于延时； recv端根据延时计算bitrate，remb返回到send端；<br>
+</p>
+<p>loss_base &nbsp; &nbsp;： 基于丢包； send端接根据rtcp计算丢包率，计算bitrate；<br>
+</p>
+<p><br>
+</p>
+<p><strong>接收延时</strong>：<span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">&nbsp; &nbsp;</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><strong>RTT</strong>： 往返延时<br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">RTX：</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">RED：</span></p>
+<p><br>
+</p>
+<p>FEC：</p>
+<p>UPL</p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">FLEX</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"></span></p>
+<div style="margin: 0px; padding: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; white-space: pre-wrap; line-height: 1.75; font-size: 14px;">
+<span style="margin: 0px; padding: 0px; color: rgb(34, 34, 34);"><span style="">开启DTX</span></span></div>
+<div style="margin: 0px; padding: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; white-space: pre-wrap; line-height: 1.75; font-size: 14px;">
+DTX 是 <span style="margin: 0px; padding: 0px; color: rgb(63, 63, 63);">Discontinuous Transmission</span>的简称，这个特性是在用户不说话时不传输语音，这样可以节省点带宽。默认WebRTC是不开启这个特性的，要开启DTX，只需要在a=ftmp这一行中加入usedtx=1就行</div>
+<br>
+<p></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">//从这里看webrtc中的Fec类型；</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">//主要模块：VCMNackFecMethod</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">//主要参数通过rtt判断当前FEC模式；</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">enum class FecMechanism {<br>
+&nbsp; RED,<br>
+&nbsp; RED_AND_ULPFEC,<br>
+&nbsp; FLEXFEC,<br>
+};<br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">//从这看Rtcp中的<span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">Feedback类型；</span></span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">// Used in RtcpFeedback struct.<br>
+enum class RtcpFeedbackType {<br>
+&nbsp; CCM,<br>
+&nbsp; NACK,<br>
+&nbsp; REMB, &nbsp;// "goog-remb"<br>
+&nbsp; TRANSPORT_CC,<br>
+};<br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><br>
+</p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">关于发送端的码率具体参数在：<span style="color: rgb(85, 85, 85); font-family: &quot;microsoft yahei&quot;; font-size: 24px; line-height: 35px;"><strong>VideoSendStream::OnBitrateUpdated</strong></span></span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">webrtc58中的相关代码：</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">1：</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">class<strong>SendSideBandwidthEstimation</strong>；<br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">webrtc58\src\webrtc\modules\bitrate_controller\send_side_bandwidth_estimation.h<br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">SendSideBandwidthEstimation具体实现了码率计算的算法；</span><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">CurrentEstimate(int* bitrate, uint8_t* loss, int64_t* rtt) &nbsp;获取码率，丢包率，往返延时；</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">uint32_t CapBitrateToThresholds(int64_t now_ms, uint32_t bitrate); 主要修真码率范围在最小和最大范围之间，和参考incoming bandwidth；<br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; line-height: 21px;"><span style="font-size: 14px;">&nbsp; // Call periodically to update estimate.</span><br>
+<span style="font-size: 14px;">&nbsp; void UpdateEstimate(int64_t now_ms);</span><br>
+<br>
+<br>
+<span style="font-size: 14px;">&nbsp; // Call when we receive a RTCP message with TMMBR or REMB.</span><br>
+<span style="font-size: 14px;">&nbsp; void UpdateReceiverEstimate(int64_t now_ms, uint32_t bandwidth);</span><br>
+<span style="color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; line-height: 24px;"><strong><span style="font-size: 12px;">&nbsp;</span><span style="font-size: 10px;">TMMBR</span></strong><span style="font-size: 10px;">用于流控，请求发送端按指定的最大比特率传输数据流，通常用于网络抖动情况下保证VOIP通信的流畅性（临时降低质量）</span></span><span style="color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; line-height: 24px;"><span style="font-size: 10px;">。</span></span><br>
+<span style="color: rgb(69, 69, 69); font-family: Trebuchet,arial,sans-serif; line-height: 21px;"><span style="font-size: 10px;">&nbsp;</span><span style="font-weight: bold;"><span style="font-size: 12px;"><span style="color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; line-height: 24px;"><span style="font-size: 10px;">REMB</span></span></span></span><span style="font-size: 10px;">接收端最大接收码率估测，接收端会估计本地接收的最大带宽能力，并通过rtcp
+ remb 消息返回给对端，这样对端可以调整自己的发送端码率，达到动态调整带宽得目的</span></span><br>
+&nbsp; &nbsp;这里可以看得出上述两个RTCP的反馈都是用同一个接收算法处理；<br>
+<br>
+<span style="font-size: 14px;">&nbsp; // Call when a new delay-based estimate is available.</span><br>
+<span style="font-size: 14px;">&nbsp; void UpdateDelayBasedEstimate(int64_t now_ms, uint32_t bitrate_bps);</span><br>
+<br>
+<br>
+<span style="font-size: 14px;">&nbsp; // Call when we receive a RTCP message with a ReceiveBlock. //其实就是基于丢包和rtt;</span><br>
+<span style="font-size: 14px;">&nbsp; void UpdateReceiverBlock(uint8_t fraction_loss,</span><br>
+<span style="font-size: 14px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;int64_t rtt,</span><br>
+<span style="font-size: 14px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;int number_of_packets,</span><br>
+<span style="font-size: 14px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;int64_t now_ms);</span><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">2.</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">class<strong>BitrateControllerImpl</strong>: public BitrateController&nbsp;<br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">BitrateControllerImpl具体调声明和调用了SendSideBandwidthEstimation相关函数，通过process实现执行UpdateEstimate；<br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">BitrateControllerImpl中 通过&nbsp;RtcpBandwidthObserverImpl获取网络 延时 和 丢包 等状态被调用响应；</span><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">3.</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif;"><span style="font-size: 14px; line-height: 21px;">//这个类的这个函数实现了网站状态变化的计算；</span></span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">void BitrateControllerImpl::<strong>MaybeTriggerOnNetworkChanged</strong>() {<br>
+&nbsp; if (!observer_)<br>
+&nbsp; &nbsp; return;<br>
+<br>
+<br>
+&nbsp; uint32_t bitrate_bps;<br>
+&nbsp; uint8_t fraction_loss;<br>
+&nbsp; int64_t rtt;<br>
+<br>
+<br>
+&nbsp; if (GetNetworkParameters(&amp;bitrate_bps, &amp;fraction_loss, &amp;rtt))<br>
+&nbsp; &nbsp; observer_-&gt;<strong>OnNetworkChanged</strong>(bitrate_bps, fraction_loss, rtt);<br>
+}<br>
+</span></p>
+<p><br>
+</p>
+<p><br>
+</p>
+<p><span style="font-family: Trebuchet,arial,sans-serif;"><span style="font-size: 14px; line-height: 21px;">通过</span></span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif;"><span style="font-size: 14px; line-height: 21px;">RtcpBandwidthObserver* BitrateControllerImpl::CreateRtcpBandwidthObserver() {<br>
+&nbsp; return new <strong>RtcpBandwidthObserverImpl</strong>(<strong>this</strong>);<br>
+}<br>
+创建实例；</span></span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif;"><span style="font-size: 14px; line-height: 21px;"><br>
+</span></span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">4.</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif;"><span style="font-size: 14px; line-height: 21px;">//具体就是实现了REMB 和 &nbsp;丢包 两个bitrate获取，然后 通过<span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">BitrateControllerImpl里的相关设定参数，估算当前的码率；</span></span></span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif;"><span style="font-size: 14px; line-height: 21px;"><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">//但是这个类，仅仅是<span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">Observer，所以会在别的地方调用；</span></span></span></span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">class BitrateControllerImpl::<strong>RtcpBandwidthObserverImpl</strong><br>
+&nbsp; &nbsp; : public RtcpBandwidthObserver{<br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">&nbsp;public:<br>
+&nbsp; explicit RtcpBandwidthObserverImpl(BitrateControllerImpl* owner)<br>
+&nbsp; &nbsp; &nbsp; : owner_(owner) {<br>
+&nbsp; }<br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">&nbsp; &nbsp; 。。。</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">}</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">5.</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">接下来，RTCP接收：</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; line-height: 21px;"><span style="font-size: 14px;">class</span><span style="font-size: 18px;"><strong>RTCPReceiver</strong>&nbsp;</span></span><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">;
+ 很重要；<br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">这个类实现了RTCP的原始packet 解析；</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">也就是说所有rtcp packe，先到这里解析；然后，在通过<span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">Observer分发到各个相关原始模块；</span></span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">//获取接收rtcp pack，然后在里面解析，然后出发相关回调函数<span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">Observer；</span></span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">RTCPReceiver::<strong>IncomingPacket</strong>(const uint8_t* packet, size_t packet_size)<br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">&nbsp; //解析RTCP packet的函数；</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">.bool RTCPReceiver::<strong>ParseCompoundPacket</strong>(const uint8_t* packet_begin,<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;const uint8_t* packet_end,<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;PacketInformation* packet_information)&nbsp;<br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">{。。。</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">&nbsp; &nbsp;switch (rtcp_block.type()) {<br>
+&nbsp; &nbsp; &nbsp; case rtcp::SenderReport::kPacketType:<br>
+&nbsp; &nbsp; &nbsp; &nbsp; HandleSenderReport(rtcp_block, packet_information);<br>
+&nbsp; &nbsp; &nbsp; &nbsp; break;<br>
+&nbsp; &nbsp; &nbsp; case rtcp::ReceiverReport::kPacketType:<br>
+&nbsp; &nbsp; &nbsp; &nbsp; HandleReceiverReport(rtcp_block, packet_information);<br>
+&nbsp; &nbsp; &nbsp; &nbsp; break;<br>
+&nbsp; &nbsp; &nbsp; case rtcp::Sdes::kPacketType:<br>
+&nbsp; &nbsp; &nbsp; &nbsp; HandleSdes(rtcp_block, packet_information);<br>
+&nbsp; &nbsp; &nbsp; &nbsp; break;<br>
+&nbsp; &nbsp; &nbsp; case rtcp::ExtendedReports::kPacketType:<br>
+&nbsp; &nbsp; &nbsp; &nbsp; HandleXr(rtcp_block, packet_information);<br>
+&nbsp; &nbsp; &nbsp; &nbsp; break;<br>
+&nbsp; &nbsp; &nbsp; case rtcp::Bye::kPacketType:<br>
+&nbsp; &nbsp; &nbsp; &nbsp; HandleBye(rtcp_block);<br>
+&nbsp; &nbsp; &nbsp; &nbsp; break;<br>
+&nbsp; &nbsp; &nbsp; case rtcp::Rtpfb::kPacketType:<br>
+&nbsp; &nbsp; &nbsp; &nbsp; switch (rtcp_block.fmt()) {<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; case rtcp::Nack::kFeedbackMessageType:<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; HandleNack(rtcp_block, packet_information);<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; break;<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; case rtcp::Tmmbr::kFeedbackMessageType:<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; HandleTmmbr(rtcp_block, packet_information);<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; break;<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; case rtcp::Tmmbn::kFeedbackMessageType:<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; HandleTmmbn(rtcp_block, packet_information);<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; break;<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; case rtcp::RapidResyncRequest::kFeedbackMessageType:<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; HandleSrReq(rtcp_block, packet_information);<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; break;<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; case rtcp::TransportFeedback::kFeedbackMessageType:<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; HandleTransportFeedback(rtcp_block, packet_information);<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; break;<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; default:<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ++num_skipped_packets_;<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; break;<br>
+&nbsp; &nbsp; &nbsp; &nbsp; }<br>
+&nbsp; &nbsp; &nbsp; &nbsp; break;<br>
+&nbsp; &nbsp; &nbsp; case rtcp::Psfb::kPacketType:<br>
+&nbsp; &nbsp; &nbsp; &nbsp; switch (rtcp_block.fmt()) {<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; case rtcp::Pli::kFeedbackMessageType:<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; HandlePli(rtcp_block, packet_information);<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; break;<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; case rtcp::Sli::kFeedbackMessageType:<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; HandleSli(rtcp_block, packet_information);<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; break;<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; case rtcp::Rpsi::kFeedbackMessageType:<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; HandleRpsi(rtcp_block, packet_information);<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; break;<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; case rtcp::Fir::kFeedbackMessageType:<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; HandleFir(rtcp_block, packet_information);<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; break;<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; case rtcp::Remb::kFeedbackMessageType:<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; HandlePsfbApp(rtcp_block, packet_information);<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; break;<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; default:<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ++num_skipped_packets_;<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; break;<br>
+&nbsp; &nbsp; &nbsp; &nbsp; }<br>
+&nbsp; &nbsp; &nbsp; &nbsp; break;<br>
+&nbsp; &nbsp; &nbsp; default:<br>
+&nbsp; &nbsp; &nbsp; &nbsp; ++num_skipped_packets_;<br>
+&nbsp; &nbsp; &nbsp; &nbsp; break;<br>
+&nbsp; &nbsp; }<br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">。。。</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">}</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">webrtc中的RTCP类型：</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">enum RTCPPacketType : uint32_t {<br>
+&nbsp; kRtcpReport = 0x0001,<br>
+&nbsp; kRtcpSr = 0x0002,<br>
+&nbsp; kRtcpRr = 0x0004,<br>
+&nbsp; kRtcpSdes = 0x0008,<br>
+&nbsp; kRtcpBye = 0x0010,<br>
+&nbsp; kRtcpPli = 0x0020,<br>
+&nbsp; kRtcpNack = 0x0040,<br>
+&nbsp; kRtcpFir = 0x0080,<br>
+&nbsp; kRtcpTmmbr = 0x0100,<br>
+&nbsp; kRtcpTmmbn = 0x0200,<br>
+&nbsp; kRtcpSrReq = 0x0400,<br>
+&nbsp; kRtcpXrVoipMetric = 0x0800,<br>
+&nbsp; kRtcpApp = 0x1000,<br>
+&nbsp; kRtcpSli = 0x4000,<br>
+&nbsp; kRtcpRpsi = 0x8000,<br>
+&nbsp; kRtcpRemb = 0x10000,<br>
+&nbsp; kRtcpTransmissionTimeOffset = 0x20000,<br>
+&nbsp; kRtcpXrReceiverReferenceTime = 0x40000,<br>
+&nbsp; kRtcpXrDlrrReportBlock = 0x80000,<br>
+&nbsp; kRtcpTransportFeedback = 0x100000,<br>
+&nbsp; kRtcpXrTargetBitrate = 0x200000<br>
+};<br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif;"><span style="font-size: 14px; line-height: 21px;">//通过上述rtcp pack分析，然后回调函数相关observe；</span></span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">void RTCPReceiver::<strong>TriggerCallbacksFromRtcpPacket</strong>(const PacketInformation&amp; packet_information)&nbsp;<br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif;"><span style="font-size: 14px; line-height: 21px;">通过上述分析，可以清楚的看到了RTCP的接收流程到网络码率计算的过程；简单画图：</span></span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif;"><span style="font-size: 14px; line-height: 21px;"><br>
+</span></span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><strong>RTCPReceiver &nbsp; -----&gt; &nbsp; &nbsp;&nbsp;</strong><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><strong>RtcpBandwidthObserverImpl
+ &nbsp; &nbsp; -----&gt; &nbsp; &nbsp;&nbsp;</strong><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><strong>BitrateControllerImpl &nbsp; &nbsp; -----&gt; &nbsp; &nbsp;&nbsp;<span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">SendSideBandwidthEstimation</span></strong></span></span></span><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><br>
+</p>
+<p>具体流程:</p>
+<p>webrtc::SendSideBandwidthEstimation::UpdateDelayBasedEstimate<br>
+webrtc::BitrateControllerImpl::OnDelayBasedBweResult<br>
+webrtc::TransportFeedbackAdapter::OnTransportFeedback<br>
+webrtc::RTCPReceiver::<strong>TriggerCallbacksFromRtcpPacket</strong><br>
+webrtc::<strong>RTCPReceiver::IncomingPacket</strong><br>
+webrtc::ModuleRtpRtcpImpl::IncomingRtcpPacket<br>
+webrtc::internal::VideoSendStreamImpl::DeliverRtcp<br>
+webrtc::internal::VideoSendStream::DeliverRtcp<br>
+webrtc::internal::Call::DeliverRtcp<br>
+webrtc::internal::Call::DeliverPacket<br>
+cricket::WebRtcVideoChannel2::OnRtcpReceived<br>
+cricket::BaseChannel::OnPacketReceived<br>
+</p>
+<p><br>
+</p>
+<p><br>
+</p>
+<p><br>
+</p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">webrtc中已经建议将</span><span style="font-family: microsoft yahei; color: rgb(63, 63, 63);"><span style="font-size: 16px; line-height: 27.2px;">REMB的方式，修改为：&nbsp;<span style="color: rgb(63, 63, 63); font-family: &quot;microsoft yahei&quot;; font-size: 16px; line-height: 27.2px;">2.
+ Transport Feedback &nbsp;+&nbsp;</span><span style="color: rgb(63, 63, 63); font-family: &quot;microsoft yahei&quot;; font-size: 16px; line-height: 27.2px;">a=rtcp-fb:100 transport-cc;</span></span></span><br>
+</p>
+<p><span style="font-family: microsoft yahei; color: rgb(63, 63, 63);"><span style="font-size: 16px; line-height: 27.2px;"><span style="color: rgb(63, 63, 63); font-family: &quot;microsoft yahei&quot;; font-size: 16px; line-height: 27.2px;">REMB：只将 接收端 根据丢包延时计算的码率返回到发送端，这样发送码率的计算逻辑在接收端实现；</span></span></span></p>
+<p><span style="font-family: microsoft yahei; color: rgb(63, 63, 63);"><span style="font-size: 16px; line-height: 27.2px;"><span style="color: rgb(63, 63, 63); font-family: &quot;microsoft yahei&quot;; font-size: 16px; line-height: 27.2px;"><br>
+</span></span></span></p>
+<p><span style="font-family: microsoft yahei; color: rgb(63, 63, 63);"><span style="font-size: 16px; line-height: 27.2px;"><span style="color: rgb(63, 63, 63); font-family: &quot;microsoft yahei&quot;; font-size: 16px; line-height: 27.2px;"><span style="color: rgb(63, 63, 63); font-family: &quot;microsoft yahei&quot;; font-size: 16px; line-height: 27.2px;">Transport
+ Feedback &nbsp;+&nbsp;</span><span style="color: rgb(63, 63, 63); font-family: &quot;microsoft yahei&quot;; font-size: 16px; line-height: 27.2px;">transport-cc；&nbsp;</span><br>
+</span></span></span></p>
+<p><span style="font-family: microsoft yahei; color: rgb(63, 63, 63);"><span style="font-size: 16px; line-height: 27.2px;"><span style="color: rgb(63, 63, 63); font-family: &quot;microsoft yahei&quot;; font-size: 16px; line-height: 27.2px;"><span style="color: rgb(63, 63, 63); font-family: &quot;microsoft yahei&quot;; font-size: 16px; line-height: 27.2px;"><span style="color: rgb(63, 63, 63); font-family: &quot;microsoft yahei&quot;; font-size: 16px; line-height: 27.2px;">RTCP
+ Feedback： 包含接收端延时；</span><br>
+</span></span></span></span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><span style="color: rgb(63, 63, 63); font-family: &quot;microsoft yahei&quot;; font-size: 16px; line-height: 27.2px;">transport-cc &nbsp; &nbsp; ： 根据返回的延时计算码率；</span></span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><span style="color: rgb(63, 63, 63); font-family: &quot;microsoft yahei&quot;; font-size: 16px; line-height: 27.2px;">将接收端的根据延时获取码率算法，放到发送端实现；</span><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p>转载如下文章：</p>
+<p><br>
+</p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"></span></p>
+<h1 class="title" style="font-size: 34px; margin: 20px 0px 0px; line-height: 1.3; color: rgb(51, 51, 51);">
+WebRTC基于GCC的拥塞控制(上) - 算法分析</h1>
+<p></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">from：http://www.jianshu.com/p/0f7ee0e0b3be</span></p>
+<p><span style="color: rgb(51, 51, 51); font-size: 34px; line-height: 1.3;"><br>
+</span></p>
+<p><span style="color: rgb(51, 51, 51); font-size: 34px; line-height: 1.3;">WebRTC基于GCC的拥塞控制(下) - 实现分析</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">http://www.jianshu.com/p/5259a8659112<br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"></span></p>
+<h1 class="title" style="font-size: 34px; margin: 20px 0px 0px; line-height: 1.3; background-color: rgb(204, 232, 207);">
+WebRTC的拥塞控制技术（Congestion Control）</h1>
+<p></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">http://www.jianshu.com/p/9061b6d0a901<br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;"><a target="_top" href="http://blog.csdn.net/doitsjz/article/details/73412056" style="text-decoration: none; color: rgb(0, 0, 0); font-family: &quot;microsoft yahei&quot;; font-size: 18px; font-weight: bold;">WEBRTC
+ 发送端拥塞控制</a><br>
+</span></p>
+<p><span style="font-family: Trebuchet,arial,sans-serif; font-size: 14px; line-height: 21px;">http://blog.csdn.net/doitsjz/article/details/73412056</span></p>
+<p></p>
+<h3 style="margin: 0px; font-size: 24px; font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; line-height: 38px; color: rgb(44, 48, 51); padding: 0px 29px;">
+<br>
+</h3>
+<h1 class="csdn_top" style="margin: 0px; font-size: 24px; line-height: 38px; color: rgb(44, 48, 51); padding: 0px 29px; font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun;">
+webrtc中的带宽自适应算法</h1>
+http://blog.csdn.net/chenyefei/article/details/51896237<br>
+<p></p>
+<p><br>
+</p>
+<p><br>
+</p>
+<p><br>
+</p>
+<p><br>
+</p>
+<p></p>
+<h1 id="webrtc中rtcp反馈与码率控制模块分析" style="margin: 0.8em 0px; font-size: 2.6em; font-family: &quot;microsoft yahei&quot;; font-weight: 100; line-height: 1.1; color: rgb(63, 63, 63); padding: 0px;">
+webrtc中rtcp反馈与码率控制模块分析</h1>
+http://blog.csdn.net/mercy_pm/article/details/71474264<br>
+<p></p>
+<p><br>
+</p>
+<p><br>
+</p>
+<p><br>
+</p>
+<p><br>
+</p>
+<p></p>
+<h1 class="csdn_top" style="margin: 0px; font-size: 24px; font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; line-height: 38px; color: rgb(44, 48, 51); padding: 0px 29px;">
+WebRTC的带宽评估的新变化</h1>
+<br>
+<p></p>
+<p>http://blog.csdn.net/volvet/article/details/62237375<br>
+</p>
+<p><br>
+</p>
+<p><br>
+</p>
+<p><br>
+</p>
+<p><br>
+</p>
+<p><br>
+</p>
+<p><br>
+</p>
+<p><br>
+<span style="color: rgb(51, 51, 51); font-size: 34px; line-height: 1.3;">WebRTC基于GCC的拥塞控制(上) - 算法分析</span></p>
+<br>
+<p></p>
+<p></p>
+<pre><div><p>实时流媒体应用的最大特点是实时性，而延迟是实时性的最大敌人。从媒体收发端来讲，媒体数据的处理速度是造成延迟的重要原因；而从传输角度来讲，网络拥塞则是造成延迟的最主要原因。网络拥塞可能造成数据包丢失，也可能造成数据传输时间变长，延迟增大。</p>
+<p>拥塞控制是实时流媒体应用质量保证(QoS)的重要手段之一，它在缓解网络拥堵、减小网络延迟、平滑数据传输等质量保证方面发挥重要作用。WebRTC通控制发送端数据发送码率来达到控制网络拥塞的目的，其采用谷歌提出的拥塞控制算法(Google Congestion Control，简称GCC[1])来控制发送端码率。</p>
+<p>本文是关于WebRTC拥塞控制算法GCC的上半部分，主要集中于对算法的理论分析，力图对WebRTC的QoS有一个全面直观的认识。在下半部分，将深入WebRTC源代码内部，仔细分析GCC的实现细节。</p>
+<h3>1 GCC算法综述</h3>
+<p>
+Google关于GCC的RFC文档在文献[1]，该RFC目前处于草案状态，还没有成为IETF的正式RFC。此外，Google陆续发布了一系列论文[2][3][4]来论述该算法的实现细节，以及其在Google Hangouts、WebRTC等产品中的应用。本文主要根据这些文档资料，从理论上学习GCC算法。</p>
+<p>GCC算法分两部分：发送端基于丢包率的码率控制和接收端基于延迟的码率控制。如图1所示。</p>
+<div class="image-package">
+<img src="2844879-2664f62d1240ba6b.png" alt="" style="">
+<div class="image-caption">图1 GCC算法整体结构</div>
+</div>
+<p>基于丢包率的码率控制运行在发送端，依靠RTCP RR报文进行工作。WebRTC在发送端收到来自接收端的RTCP RR报文，根据其Report Block中携带的丢包率信息，动态调整发送端码率As。基于延迟的码率控制运行在接收端，WebRTC根据数据包到达的时间延迟，通过到达时间滤波器，估算出网络延迟m(t)，然后经过过载检测器判断当前网络的拥塞状况，最后在码率控制器根据规则计算出远端估计最大码率Ar。得到Ar之后，通过RTCP REMB报文返回发送端。发送端综合As、Ar和预配置的上下限，计算出最终的目标码率A，该码率会作用到Encoder、RTP和PacedSender等模块，控制发送端的码率。</p>
+<h3>2 发送端基于丢包率的码率控制</h3>
+<p>
+GCC算法在发送端基于丢包率控制发送码率，其基本思想是：丢包率反映网络拥塞状况。如果丢包率很小或者为0，说明网络状况良好，在不超过预设最大码率的情况下，可以增大发送端码率；反之如果丢包率变大，说明网络状况变差，此时应减少发送端码率。在其它情况下，发送端码率保持不变。</p>
+<p>GCC使用的丢包率根据接收端RTP接收统计信息计算得到，通过RTCP RR报文中返回给发送端。RTCP RR报文统计接收端RTP接收信息，如Packet Loss，Jitter，DLSR等等，如图2所示：</p>
+<div class="image-package">
+<img src="2844879-82d8b6af7a89de7d.png" alt="" style="">
+<div class="image-caption">图2 RTCP RR报文结构[5]</div>
+</div>
+<p>发送端收到RTCP RR报文并解析得到丢包率后，根据图3公式计算发送端码率：当丢包率大于0.1时，说明网络发生拥塞，此时降低发送端码率；当丢包率小于0.02时，说明网络状况良好，此时增大发送端码率；其他情况下，发送端码率保持不变。</p>
+<div class="image-package">
+<img src="2844879-05bf5ae56c467e0c.png" alt="" style="">
+<div class="image-caption">图3 GCC基于丢包率的码率计算公式[4]</div>
+</div>
+<p>最终码率会作用于Encoder、RTP和PacedSender模块，用以在编码器内部调整码率和平滑发送端发送速率。</p>
+<h3>3 接收端基于延迟的码率控制</h3>
+<p>
+GCC算法在接收端基于数据包到达延迟估计发送码率Ar，然后通过RTCP REMB报文反馈到发送端，发送端把Ar作为最终目标码率的上限值。其基本思想是： RTP数据包的到达时间延迟m(i)反映网络拥塞状况。当延迟很小时，说明网络拥塞不严重，可以适当增大目标码率；当延迟变大时，说明网络拥塞变严重，需要减小目标码率；当延迟维持在一个低水平时，目标码率维持不变。</p>
+<p>基于延时的拥塞控制由三个主要模块组成：到达时间滤波器，过载检查器和速率控制器；除此之外还有过载阈值自适应模块和REMB报文生成模块，如图1所示。下面分别论述其工作过程。</p>
+<h4>3.1 到达时间滤波器(Arrival-time Filter)</h4>
+<p>
+该模块用以计算相邻相邻两个数据包组的网络排队延迟m(i)。数据包组定义为一段时间内连续发送的数据包的集合。一系列数据包短时间里连续发送，这段时间称为突发时间，建议突发时间为5ms。不建议在突发时间内的包间隔时间做度量，而是把它们做为一组来测量。通过相邻两个数据包组的发送时间和到达时间，计算得到组间延迟d (i)。组间延迟示意图及计算公式如图4所示：</p>
+<div class="image-package">
+<img src="2844879-74f483fc3481fb95.png" alt="" style="">
+<div class="image-caption">图4 组间延迟示意图</div>
+</div>
+<p>T(i)是第i个数据包组中第一个数据包的发送时间，t(i)是第i个数据包组中最后一个数据包的到达时间。帧间延迟通过如下公式计算得到：</p>
+<pre class="hljs undefined"><code>d(i) = t(i) – t(i-1) – (T(i) – T(i-1))    (3.1.1)</code></pre><p>公式1.3.1是d(i)的观测方程。另一方面，d(i)也可由如下状态方程得到：</p><pre class="hljs undefined"><code>d(i) = dL(i)/C(i) + w(i)                  (3.1.2)
+d(i) = dL(i)/C(i) + m(i) + v(i)           (3.1.3)</code></pre><p>其中dL(i)表示相邻两帧的长度差，C(i)表示网络信道容量，m(i)表示网络排队延迟，v(i)表示零均值噪声。m(i)即是我们要求得的网络排队延迟。通过Kalman Filter可以求得该值。具体计算过程请参考文献[1][4][6]。</p><h4>3.2 过载检测器(Over-use Detector)</h4><p><br>该模块以到达时间滤波器计算得到的网络排队延迟m(i)为输入，结合当前阈值gamma_1，判断当前网络是否过载。判断算法如图5所示[2]。</p><div class="image-package"><img src="2844879-8d67071eec9fc027.png" alt="" style=""><br><div class="image-caption">图5 过载检测器伪代码</div></div><p>算法基于当前网络排队延迟m(i)和当前阈值gamma_1判断当前网络拥塞状况[2]：当m(i) &gt; gamma_1时，算法计算处于当前状态的持续时间t(ou) = t(ou) + delta(t)，如果t(ou)大于设定阈值gamma_2(实际计算中设置为10ms)，并且m(i) &gt; m(i-1)，则发出网络过载信号Overuse，同时重置t(ou)。如果m(i)小于m(i-1)，即使高于阀值gamma_1也不需要发出过载信号。当m(i) &lt; -gamma_1时，算法认为当前网络处于空闲状态，发出网络低载信号Underuse。当 – gamma_1 &lt;= m(i) &lt;= gamma_1是，算法认为当前网络使用率适中，发出保持信号Hold。算法随着时间轴的计算过程可从图6中看到。</p><div class="image-package"><img src="2844879-fde99d49aefe833a.png" alt="" style=""><br><div class="image-caption">图6 时间轴上的过载检测过程</div></div><p>需要注意的是，阀值gamma_1对算法的影响很大，并且阈值gamma_1是自适应性的。如果其是静态值，会带来一系列问题，详见文献[4]。所以gamma_1需要动态调整来达到良好的表现。这就是图1中的Adaptive threshould模块。阈值gamma_1动态更新的公式如下：</p><pre class="hljs undefined"><code>gamma_1(i) = gamma_1(i-1) + (t(i)-t(i-1)) * K(i) * (|m(i)|-gamma_1(i-1))    (3.2.4)</code></pre><p>当|m(i)|&gt;gamma_1(i-1)时增加gamma_1(i)，反之减小gamma_1(i)，而当|m(i)|– gamma_1(i) &gt;15，建议gamma_1(i)不更新。K(i)为更新系数，当|m(i)|&lt;gamma_1(i-1)时K(i) = K_d，否则K(i) = K_u。同时建议gamma_1(i)控制在[6,600]区间。太小的值会导致探测器过于敏感。建议增加系数要大于减少系数K_u &gt; K_d。文献[1]给出的建议值如下：</p><pre class="hljs undefined"><code>gamma_1(0) = 12.5 ms
+gamma_2  = 10 ms
+K_u = 0.01
+K_d = 0.00018</code></pre><h4>3.3 速率控制器(Remote Rate Controller)</h4><p><br>该模块以过载检测器给出的当前网络状态s为输入，首先根据图7所示的有限状态机判断当前码率的变化趋势，然后根据图8所示的公式计算目标码率Ar。</p><div class="image-package"><img src="2844879-889691f6c7d2a9c6.png" alt="" style=""><br><div class="image-caption">图7 目标码率Ar变化趋势有限状态机</div></div><p>当前网络过载时，目标码率处于Decrease状态；当前网络低载时，目标码率处于Hold状态；当网络正常时，处于Decrease状态时迁移到Hold状态，处于Hold/Increase状态时都迁移到Increase状态。当判断出码率变化趋势后，根据图8所示公式进行计算目标码率。</p><div class="image-package"><img src="2844879-49211330b7637e93.png" alt="" style=""><br><div class="image-caption">图8 目标码率Ar计算公式</div></div><p>当码率变化趋势为Increase时，当前码率为上次码率乘上系数1.05；当码率变化趋势为Decrease，当前码率为过去500ms内的最大接收码率乘上系数0.85。当码率变化趋势为Hold时，当前码率保持不变。目标码率Ar计算得到之后，下一步把Ar封装到REMB报文中发送回发送端。在REMB报文中，Ar被表示为Ar = M * 2^Exp，其中M封装在BR Mantissa域，占18位；Exp封装在BR Exp域，占6位。REMB报文是Payload为206的RTCP报文[7]，格式如图9所示。</p><div class="image-package"><img src="2844879-1e9383db4f497809.png" alt="" style=""><br><div class="image-caption">图9 REMB报文格式</div></div><p>REMB报文每秒发送一次，当Ar(i) &lt; 0.97 * Ar(i-1)时则立即发送。</p><h4>3.4 发送端目标码率的确定</h4><p><br>发送端最终目标码率的确定结合了基于丢包率计算得到的码率As和基于延迟计算得到的码率Ar。此外，在实际实现中还会配置目标码率的上限值和下限值。综合以上因素，最终目标码率确定如下：</p><pre class="hljs undefined"><code>    target_bitrate = max( min( min(As, Ar), Amax), Amin)        (3.4.1)</code></pre><p>目标码率确定之后，分别设置到Encoder模块和PacedSender模块。</p><h3>4 总结</h3><p><br>本文在广泛调研WebRTC GCC算法的相关RFC和论文的基础上，全面深入学习GCC算法的理论分析，以此为契机力图对WebRTC的QoS有一个全面直观的认识。为将来深入WebRTC源代码内部分析GCC的实现细节奠定基础。<br><br></p><h3>参考文献</h3><p><br>[1] A Google Congestion Control Algorithm for Real-Time Communication.<br>   draft-alvestrand-rmcat-congestion-03<br>[2] Understanding the Dynamic Behaviour of the Google Congestion Control for RTCWeb.<br>[3] Experimental Investigation of the Google Congestion Control for Real-Time Flows.<br>[4] Analysis and Design of the Google Congestion Control for Web Real-time  Communication (WebRTC). MMSys’16, May 10-13, 2016, Klagenfurt, Austria<br>[5] RFC3550: RTP - A Transport Protocol for Real-Time Applications<br>[6] WebRTC视频接收缓冲区基于KalmanFilter的延迟模型.<br>   <a target="_top" href="http://www.jianshu.com/p/bb34995c549a">http://www.jianshu.com/p/bb34995c549a</a><br>[7] RTCP message for Receiver Estimated Maximum Bitrate. draft-alvestrand-rmcat-remb-03</p></div><br><br>作者：weizhenwei<br>链接：http://www.jianshu.com/p/0f7ee0e0b3be<br>來源：简书<br>著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。</pre>
+<br>
+<p></p>
+<p><br>
+</p>
+<p><br>
+</p>
+<p><br>
+</p>
+<p><br>
+</p>
+<p></p>
+<h1 class="title" style="font-size: 34px; margin: 20px 0px 0px; line-height: 1.3; color: rgb(51, 51, 51);">
+WebRTC基于GCC的拥塞控制(下) - 实现分析</h1>
+<br>
+<p></p>
+<p></p>
+<pre><div><p>本文在文章[1]的基础上，从源代码实现角度对WebRTC的GCC算法进行分析。主要内容包括： RTCP RR的数据源、报文构造和接收，接收端基于数据包到达延迟的码率估计，发送端码率的计算以及生效于目标模块。</p>
+<p>拥塞控制是实时流媒体应用的重要服务质量保证。通过本文和文章[1][2]，从数学基础、算法步骤到实现细节，对WebRTC的拥塞控制GCC算法有一个全面深入的理解，为进一步学习WebRTC奠定良好基础。</p>
+<h3>1 GCC算法框架再学习</h3>
+<p>
+本节内容基本上是文章[1]第1节的复习，目的是再次复习GCC算法的主要框架，梳理其算法流程中的数据流和控制流，以此作为后续章节的行文提纲。GCC算法的数据流和控制流如图1所示。</p>
+<div class="image-package">
+<img src="2844879-91005d8cd84ba66e.png" alt="" style="">
+<div class="image-caption">图1 GCC算法数据流和控制流</div>
+</div>
+<p>对发送端来讲，GCC算法主要负责两件事：1)接收来自接收端的数据包信息反馈，包括来自RTCP RR报文的丢包率和来自RTCP REMB报文的接收端估计码率，综合本地的码率配置信息，计算得到目标码率A。2)把目标码率A生效于目标模块，包括PacedSender模块，RTPSender模块和ViEEncoder模块等。</p>
+<p>对于接收端来讲，GCC算法主要负责两件事：1）统计RTP数据包的接收信息，包括丢包数、接收RTP数据包的最高序列号等，构造RTCP RR报文，发送回发送端。2）针对每一个到达的RTP数据包，执行基于到达时间延迟的码率估计算法，得到接收端估计码率，构造RTCP REMB报文，发送回发送端。</p>
+<p>由此可见，GCC算法由发送端和接收端配合共同实现，接收端负责码率反馈数据的生成，发送端负责根据码率反馈数据计算目标码率，并生效于目标模块。本文接下来基于本节所述的GCC算法的四项子任务，分别详细分析之。</p>
+<h3>2 RTCP RR报文构造及收发</h3>
+<p>
+关于WebRTC上的RTP/RTCP协议的具体实现细节，可参考文章[3]。本节主要从RR报文的数据流角度，对其数据源、报文构造和收发进行分析。其数据源和报文构造如图2所示，报文接收和作用于码率控制模块如图3所示。</p>
+<p>在数据接收端，RTP数据包从Network线程到达Worker线程，经过Call对象，VideoReceiveStream对象到达RtpStreamReceiver对象。在该对象中，主要执行三项任务：1)接收端码率估计；2) 转发RTP数据包到VCM模块；3)接收端数据统计。其中1)是下一节的重点，2)是RTP数据包进一步组帧和解码的地方；3)是统计RTP数据包接收信息，作为RTCP RR报文和其他数据统计模块的数据来源，是我们本节重点分析的部分。</p>
+<p>在RtpStreamReceiver对象中，RTP数据包经过解析得到头部信息，作为输入参数调用ReceiveStatistianImpl::IncomingPacket()。该函数中分别调用UpdateCounters()和NotifyRtpCallback()，前者用来更新对象内部的统计信息，如接收数据包计数等，后者用来更新RTP回调对象的统计信息，该信息用来作为getStats调用的数据源。</p>
+<div class="image-package">
+<img src="2844879-ed098a4958b2ee2c.png" alt="" style="">
+<div class="image-caption">图2 RTCP RR报文数据源及报文构造</div>
+</div>
+<p>RTCP发送模块在ModuleProcess线程中工作，RTCP报文周期性发送。当线程判断需要发送RTCP报文时，调用SendRTCP()进行发送。接下来调用PrepareReport()准备各类型RTCP报文的数据。对于我们关心的RR报文，会调用AddReportBlock()获取数据源并构造ReportBlock对象:该函数首先通过ReceiveStatistianImpl::GetStatistics()拿到类型为RtcpStatistics的数据源，然后以此填充ReportBlock对象。GetStatistics()会调用CalculateRtcpStatistics()计算ReportBlock的每一项数据，包括丢包数、接收数据包最高序列号等。ReportBlock对象会在接下来的报文构造环节通过BuildRR()进行序列化。RTCP报文进行序列化之后，交给Network线程进行网络层发送。</p>
+<div class="image-package">
+<img src="2844879-ae80527d779c3402.png" alt="" style="">
+<div class="image-caption">图3 RTCP RR报文接收及反馈</div>
+</div>
+<p>在发送端(即RTCP报文接收端)，RTCP报文经过Network线程到达Worker线程，最后到达ModuleRtpRtcpImpl模块调用IncomingRtcpPacket()进行报文解析工作。解析完成以后，调用TriggerCallbacksFromRTCPPackets()反馈到回调模块。在码率估计方面，会反馈到BitrateController模块。ReportBlock消息最终会到达BitrateControllerImpl对象，进行下一步的目标码率确定。</p>
+<p>至此，关于RTCP RR报文在拥塞控制中的执行流程分析完毕。</p>
+<h3>3 接收端基于延迟的码率估计</h3>
+<p>
+接收端基于数据包到达延迟的码率估计是整个GCC算法最复杂的部分，本节在分析WebRTC代码的基础上，阐述该部分的实现细节。</p>
+<p>接收端基于延迟码率估计的基本思想是：RTP数据包的到达时间延迟m(i)反映网络拥塞状况。当延迟很小时，说明网络拥塞不严重，可以适当增大目标码率；当延迟变大时，说明网络拥塞变严重，需要减小目标码率；当延迟维持在一个低水平时，目标码率维持不变。其主要由三个模块组成：到达时间滤波器，过载检查器和速率控制器。</p>
+<p>在实现上，WebRTC定义该模块为远端码率估计模块RemoteBitrateEstimator，整个模块的工作流程如图4所示。需要注意的是，该模块需要RTP报文扩展头部abs-send-time的支持，用以记录RTP数据包在发送端的绝对发送时间，详细请参考文献[4]。</p>
+<div class="image-package">
+<img src="2844879-71027dc71720dd9c.png" alt="" style="">
+<div class="image-caption">图4 GCC算法基于延迟的码率估计</div>
+</div>
+<p>接收端收到RTP数据包后，经过一系列调用到RtpStreamReceiver对象，由该对象调用远端码率估计模块的总控对象RemoteBitrateEstimatorAbsSendTime，由该对象的总控函数IncomingPacketInfo()负责整个码率估计流程，如图4所示，算法从左到右依次调用子对象的功能函数。</p>
+<p>总控函数首先调用InterArrival::ComputeDeltas()函数，用以计算相邻数据包组的到达时间相对延迟，该部分对应文章[1]的3.1节内容。在计算到达时间相对延迟时，用到了RTP报文头部扩展abs-send-time。另外，实现细节上要注意数据包组的划分，以及对乱序和突发时间的处理。</p>
+<p>接下来算法调用OveruseEstimator::Update()函数，用以估计数据包的网络延迟，该部分对应文章[1]的3.2节内容。对网络延迟的估计用到了Kalman滤波，算法的具体细节请参考文章[2]。Kalman滤波的结果为网络延迟m(i)，作为下一阶段网络状态检测的输入参数。</p>
+<p>算法接着调用OveruseDetector::Detect()，用来检测当前网络的拥塞状况，该部分对应文章[1]的3.2节内容。网络状态检测用当前网络延迟m(i)和阈值gamma_1进行比较，判断出overuse，underuse和normal三种网络状态之一。在算法细节上，要注意overuse的判定相对复杂一些：当m(i) &gt; gamma_1时，计算处于当前状态的持续时间t(ou)，如果t(ou) &gt; gamma_2，并且m(i) &gt; m(i-1)，则发出网络过载信号Overuse。如果m(i)小于m(i-1)，即使高于阀值gamma_1也不需要发出过载信号。在判定网络拥塞状态之后，还要调用UpdateThreshold()更新阈值gamma_1。</p>
+<p>算法接着调用AimdRateControl::Update()和UpdateBandwidthEstimate()函数，用以估计当前网络状态下的目标码率Ar，该部分对应文章[1]的3.3节。算法基于当前网络状态和码率变化趋势有限状态机，采用AIMD(Additive Increase Multiplicative Decrease)方法计算目标码率，具体计算公式请参考文章[1]。需要注意的是，当算法处于开始阶段时，会采用Multiplicative Increase方法快速增加码率，以加快码率估计速度。</p>
+<p>此时，我们已经拿到接收端估计的目标码率Ar。接下来以Ar为参数调用VieRemb对象的OnReceiveBitrateChange()函数，发送REMB报文到发送端。REMB报文会推送到RTCP模块，并设置REMB报文发送时间为立即发送。关于REMB报文接下来的发送和接收流程，和第1节描述的RTCP报文一般处理流程是一样的，即经过序列化发送到网络，然后发送端收到以后，反序列化出描述结构，最后通过回调函数到达发送端码率控制模块BitrateControllerImpl。</p>
+<p>至此，接收端基于延迟的码率估计过程描述完毕。</p>
+<h3>4 发送端码率计算及生效</h3>
+<p>
+在发送端，目标码率计算和生效是异步进行的，即Worker线程从RTCP接收模块经回调函数拿到丢包率和REMB码率之后，计算得到目标码率A；然后ModuleProcess线程异步把目标码率A生效到目标模块如PacedSender和ViEEncoder等。下面分别描述码率计算和生效过程。</p>
+<div class="image-package">
+<img src="2844879-82ffb13fcc2f2472.png" alt="" style="">
+<div class="image-caption">图5 发送端码率计算过程</div>
+</div>
+<p>码率计算过程如图5所示：Worker线程从RTCPReceiver模块经过回调函数拿到RTCP RR报文和REMB报文的数据，到达BitrateController模块。</p><p>RR报文中的丢包率会进入Update()函数中计算码率，码率计算公式如文章[1]第2节所述。</p><p>然后算法流程进入CapBitrateToThreshold()函数，和配置的最大最小码率和远端估计码率进行比较后，确定最终目标码率。</p><p>而REMB报文的接收端估计码率Ar则直接进入CapBitrateToThreshold()函数参与目标码率的确定。目标码率由文章[1]的3.4节所示公式进行确定。</p><p>需要注意的是，RR报文和REMB报文一般不在同一个RTCP报文里。</p>
+<div class="image-package">
+<img src="2844879-e1cf463b7991e8f1.png" alt="" style="">
+<div class="image-caption">图6 发送端码率生效过程</div>
+</div>
+<p>发送端码率生效过程如图6所示：ModuleProcess线程调用拥塞控制总控对象CongestionController周期性从码率控制模块BitrateControllerImpl中获取当前最新目标码率A，然后判断目标码率是否有变化。若是，则把最新目标码率设置到相关模块中，主要包括PacedSender模块，RTPSender模块和ViEEncoder模块。</p>
+<p>对于PacedSender模块，设置码率主要是为了平滑RTP数据包的发送速率，尽量避免数据包Burst造成码率波动。对于RTPSender模块，设置码率是为了给NACK模块预留码率，如果预留码率过小，则在某些情况下对于NACK报文请求选择不响应。对于ViEEncoder模块，设置码率有两个用途：1)控制发送端丢帧策略，根据设定码率和漏桶算法决定是否丢弃当前帧。2)控制编码器内部码率控制，设定码率作为参数传输到编码器内部，参与内部码率控制过程。</p>
+<p>至此，发送端码率计算和生效过程分析完毕。</p>
+<h3>5 总结</h3>
+<p>本文结合文章[1]，深入WebRTC代码内部，详细分析了WebRTC的GCC算法的实现细节。通过本文，对WebRTC的代码结构和拥塞控制实现细节有了更深层次的理解，为进一步学习WebRTC奠定良好基础。
+
+
+</p>
+<h3>参考文献</h3>
+<p>[1] WebRTC基于GCC的拥塞控制(上) – 算法分析
+   <a target="_top" href="http://www.jianshu.com/p/0f7ee0e0b3be">http://www.jianshu.com/p/0f7ee0e0b3be</a>
+[2] WebRTC视频接收缓冲区基于KalmanFilter的延迟模型.
+   <a target="_top" href="http://www.jianshu.com/p/bb34995c549a">http://www.jianshu.com/p/bb34995c549a</a>
+[3] WebRTC中RTP/RTCP协议实现分析
+   <a target="_top" href="http://www.jianshu.com/p/c84be6f3ddf3">http://www.jianshu.com/p/c84be6f3ddf3</a>
+[4] abs-send-time. <a target="_top" href="https://webrtc.org/experiments/rtp-hdrext/abs-send-time/">https://webrtc.org/experiments/rtp-hdrext/abs-send-time/</a></p></div>
+
+作者：weizhenwei
+链接：http://www.jianshu.com/p/5259a8659112
+來源：简书
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。</pre>
+<br>
+<p></p>
+<p><br>
+</p>
+<p><br>
+</p>
+<p><a target="_top" href="http://blog.csdn.net/doitsjz/article/details/73412056" style="text-decoration: none; color: rgb(0, 0, 0); font-family: &quot;microsoft yahei&quot;; font-size: 18px; font-weight: bold;">WEBRTC 发送端拥塞控制</a><br>
+</p>
+<p><br>
+</p>
+<p></p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(85, 85, 85); font-family: &quot;microsoft yahei&quot;; font-size: 15px; line-height: 35px;">
+<span style="font-size: 24px;">音视频传输核心主要是通过发送端来控制服务质量，但服务质量的决策可根据发送端丢包率算法和接收端数据包延迟算法来计算实际的目标码率，进而反馈给源端，即编码端和RTP发送端，如下类图：</span></p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(85, 85, 85); font-family: &quot;microsoft yahei&quot;; font-size: 15px; line-height: 35px;">
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;<img src="20170618111033084" alt="" style="border: medium none; max-width: 602px; height: auto;"><br>
+</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(85, 85, 85); font-family: &quot;microsoft yahei&quot;; font-size: 15px; line-height: 35px;">
+数据流图</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(85, 85, 85); font-family: &quot;microsoft yahei&quot;; font-size: 15px; line-height: 35px;">
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<img src="20170618111018032" alt="" style="border: medium none; max-width: 602px; height: auto;"><br>
+</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(85, 85, 85); font-family: &quot;microsoft yahei&quot;; font-size: 15px; line-height: 35px;">
+<span style="font-size: 24px;">函数主要调用次顺：</span></p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(85, 85, 85); font-family: &quot;microsoft yahei&quot;; font-size: 15px; line-height: 35px;">
+</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(85, 85, 85); font-family: &quot;microsoft yahei&quot;; font-size: 15px; line-height: 35px;" align="center">
+<span style="font-size: 24px;">拥塞算法得到的码率如何作用于编码模块和发送模块</span></p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(85, 85, 85); font-family: &quot;microsoft yahei&quot;; font-size: 15px; line-height: 35px;">
+<span style="font-size: 24px;">CongestionController::Process-&gt;</span></p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(85, 85, 85); font-family: &quot;microsoft yahei&quot;; font-size: 15px; line-height: 35px;">
+<span style="font-size: 24px;">BitrateControllerImpl::Process-&gt; WrappingBitrateEstimator::Process-&gt;</span></p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(85, 85, 85); font-family: &quot;microsoft yahei&quot;; font-size: 15px; line-height: 35px;">
+<span style="font-size: 24px;">CongestionController::MaybeTriggerOnNetworkChanged()-&gt;</span></p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(85, 85, 85); font-family: &quot;microsoft yahei&quot;; font-size: 15px; line-height: 35px;">
+<span style="font-size: 24px;">BitrateControllerImpl::GetNetworkParameters-&gt;CongestionController:Observer::OnNetworkChanged-&gt;Call::OnNetworkChanged(uint32_ttarget_bitrate_bps, uint8_t fraction_loss,int64_t rtt_ms)-&gt;BitrateAllocator::OnNetworkChanged[改变编码码率]|CongestionController::SetAllocatedSendBitrate[改变发送码率]-&gt;
+ VideoSendStream::OnBitrateUpdated-&gt;PayloadRouter::SetTargetSendBitrate[ModuleRtpRtcpImpl::SetTargetSendBitrate进入RTP模块]-&gt;ViEEncoder::OnBitrateUpdated[进入编码模块]-&gt; VideoSender::SetChannelParameters[encoder_params_为新的编码参数]-&gt; VideoSender::SetEncoderParameters-&gt;VCMGenericEncoder::SetEncoderParameters-&gt;H264EncoderImpl::SetRates-&gt;</span></p>
+<div><span style="font-size: 24px;"><br>
+</span></div>
+<br>
+<p><br>
+</p>
+<p><br>
+</p>
+<p><br>
+</p>
+<p><br>
+</p>
+<p></p>
+<h1 class="csdn_top" style="margin: 0px; font-size: 24px; font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; line-height: 38px; color: rgb(44, 48, 51); padding: 0px 29px;">
+WebRTC之带宽控制部分学习(1)&nbsp;</h1>
+<div>from:&nbsp;http://blog.csdn.net/u013160228/article/details/46392037</div>
+<p></p>
+<p></p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+可以看到WebRTCd代码分成了4个部分，目前为止只看了talk里的一些东西。</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+&nbsp; &nbsp; &nbsp; 1、 talk中的项目文件大多数都是以libjingle开头的，可以看出libjingle是WebRTC中非常核心的一个东西啦。</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+&nbsp; &nbsp; &nbsp; &nbsp;libjingle中开辟了两个通道，分别为会话通道和数据通道，一个用来会话建立管理等，一个用来传输数据。</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+&nbsp; &nbsp; &nbsp; &nbsp;libjingle_media是用来渲染获取视频，libjingle_p2p和libjingle_peerconnection是不同的会话方式用到的库吧，现在还没有细看</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+&nbsp; &nbsp; &nbsp; &nbsp;peerconnection_client和peerconnection_server则是可以直接运行的demo，设为启动项目就可以测试了，先运行server。</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+&nbsp; &nbsp; &nbsp;2、由于项目研究的是关于带宽估计的东西，所以我们看的文件主要有两个，一个是上行带宽的估计和控制，一个是下行带宽的估计和控制</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 上行带宽的文件在webrtc/modules/bitrate_controller，下行带宽的文件是remote_bitrate_estimator</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;下面讲一讲Goolge的WebRTC中自带的码率控制：</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+发送端发送RTP包，同时接收来自于接收端的RTCP反馈报告，整个拥塞控制算法分成了接收端和发送端两个部分。接收端的控制算法是基于时延的算法，其目的是减小时延；发送端的控制算法是基于丢包率的算法，其目的是减少丢包。接收端的算法计算出一个速率<a target="_blank" name="OLE_LINK10" style="color:rgb(79,161,219); margin:0px; padding:0px; outline:none; background:transparent"></a><a target="_blank" name="OLE_LINK9" style="color:rgb(79,161,219); margin:0px; padding:0px; outline:none; background:transparent">A<span style="position: relative; font-size: 12px; line-height: 0; vertical-align: baseline; bottom: -0.25em;">r</span></a>，然后将这个码率反馈给发送端，用来限制发送端基于丢包率算法计算出来的发送速率。</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+<br style="">
+</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+发送端基于丢包率的控制方法在每一个t<span style="position: relative; font-size: 12px; line-height: 0; vertical-align: baseline; bottom: -0.25em;">k</span>时刻或者t<span style="position: relative; font-size: 12px; line-height: 0; vertical-align: baseline; bottom: -0.25em;">r</span>时刻启动。t<span style="position: relative; font-size: 12px; line-height: 0; vertical-align: baseline; bottom: -0.25em;">k</span>表示第k个RTCP反馈报告的到达时间，t<span style="position: relative; font-size: 12px; line-height: 0; vertical-align: baseline; bottom: -0.25em;">r</span>表示第r个REMB信息到达发送端的时间，其中REMB信息中包含接收端反馈的<a target="_blank" name="OLE_LINK18" style="color:rgb(79,161,219); margin:0px; padding:0px; outline:none; background:transparent"></a><a target="_blank" name="OLE_LINK17" style="color:rgb(79,161,219); margin:0px; padding:0px; outline:none; background:transparent">A<span style="position: relative; font-size: 12px; line-height: 0; vertical-align: baseline; bottom: -0.25em;">r</span></a>信息。RTCP包内包含丢包率f<span style="position: relative; font-size: 12px; line-height: 0; vertical-align: baseline; bottom: -0.25em;">l</span>(t<span style="position: relative; font-size: 12px; line-height: 0; vertical-align: baseline; bottom: -0.25em;">k</span>)，发送端根据丢包率计算接下来的发送速率，具体计算方式图公式1所示：</p>
+<br style="color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+<br style="">
+</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+<img src="20150606225033090" alt="" style="border: 0px none; vertical-align: middle; outline: medium none; max-width: 100%;"></p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+<br style="">
+</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+<br style="">
+</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+<br style="">
+</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+&nbsp; 接收端速率控制：</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+&nbsp; &nbsp;</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 接收端算法的目的就是计算出能保证低时延情况下的接收速率A<span style="position: relative; font-size: 12px; line-height: 0; vertical-align: baseline; bottom: -0.25em;">r</span>，A<span style="position: relative; font-size: 12px; line-height: 0; vertical-align: baseline; bottom: -0.25em;">r</span>的计算过程如图2所示：</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+<br style="">
+</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+&nbsp; &nbsp; &nbsp;&nbsp;<img src="20150606225200575" alt="" style="border: 0px none; vertical-align: middle; outline: medium none; max-width: 100%;"></p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+&nbsp;下面介绍接收端也就是remote_bitrate_estimator中的几个模块算法</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+&nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+<span style=""><span style="">1) The arrival-time filter</span></span></p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+该模块的目的是为了计算排队时延m(ti),单向时延（one way delay variation）计算方式如下：d<span style="position: relative; font-size: 12px; line-height: 0; vertical-align: baseline; bottom: -0.25em;">m</span>(t<span style="position: relative; font-size: 12px; line-height: 0; vertical-align: baseline; bottom: -0.25em;">i</span>)=&nbsp;<a target="_blank" name="OLE_LINK4" style="color:rgb(79,161,219); margin:0px; padding:0px; outline:none"></a><a target="_blank" name="OLE_LINK3" style="color:rgb(79,161,219); margin:0px; padding:0px; outline:none">t<span style="position: relative; font-size: 12px; line-height: 0; vertical-align: baseline; bottom: -0.25em;">i</span>–</a>t<span style="position: relative; font-size: 12px; line-height: 0; vertical-align: baseline; bottom: -0.25em;">i-1</span>–(T<span style="position: relative; font-size: 12px; line-height: 0; vertical-align: baseline; bottom: -0.25em;">i</span>&nbsp;–T<span style="position: relative; font-size: 12px; line-height: 0; vertical-align: baseline; bottom: -0.25em;">i-1</span>&nbsp;)&nbsp;&nbsp;&nbsp;
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; （3）</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 式中，T<span style="position: relative; font-size: 12px; line-height: 0; vertical-align: baseline; bottom: -0.25em;">i</span>表示第i帧视频发送的时间戳，ti 表示第i个视频帧接收到的时间戳。单向时延是三个部分的总和，包括传输时间、排队时延m(ti)、网络抖动n(ti)。GCC算法中提出了下面这个公式：</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+<img src="20150606225359822" alt="" style="border: 0px none; vertical-align: middle; outline: medium none; max-width: 100%;"><br style="">
+</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+&nbsp;&nbsp;</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+式中，∆<span style="">L</span>(<span style="">t<span style="position: relative; font-size: 12px; line-height: 0; vertical-align: baseline; bottom: -0.25em;">i</span></span>) =&nbsp;<span style="">L</span>(<span style="">t<span style="position: relative; font-size: 12px; line-height: 0; vertical-align: baseline; bottom: -0.25em;">i</span></span>)&nbsp;<span style="">−L</span>(<span style="">t<span style="position: relative; font-size: 12px; line-height: 0; vertical-align: baseline; bottom: -0.25em;">i−</span></span><span style="position: relative; font-size: 12px; line-height: 0; vertical-align: baseline; bottom: -0.25em;">1</span>)，<span style="">L</span>(<span style="">t<span style="position: relative; font-size: 12px; line-height: 0; vertical-align: baseline; bottom: -0.25em;">i</span></span>)是第i个视频帧的长度，C(ti)是瓶颈链路容量估计，n(ti)是网络抖动（高斯噪声模型）。为了将<span style="">dm</span>(<span style="">ti</span>)&nbsp;<span style="">−
+ d</span>(<span style="">ti</span>)的差值缩小到趋于零，用卡尔曼滤波器提取出状态向量，具体工作方式如图3所示：</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+<br style="">
+</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+<img src="20150606225445951" alt="" style="border: 0px none; vertical-align: middle; outline: medium none; max-width: 100%;"><br style="">
+</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+<br style="">
+</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+<span style=""><span style=""><span style="margin: 0px; padding: 0px; font-weight: normal; background: yellow none repeat scroll 0% 0%;">The over-use detector</span></span></span></p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 每帧视频收到的时刻，即ti时刻，该模块都会产生一个s信号以驱动下一个码率控制模块。<a target="_blank" name="OLE_LINK6" style="color:rgb(79,161,219); margin:0px; padding:0px; outline:none; background:transparent">当</a>m(ti)大于阀值<a target="_blank" name="OLE_LINK30" style="color:rgb(79,161,219); margin:0px; padding:0px; outline:none; background:transparent"></a><a target="_blank" name="OLE_LINK29" style="color:rgb(79,161,219); margin:0px; padding:0px; outline:none; background:transparent">γ</a>，信号为overuse；当m(ti)小于阀值γ，信号为underuse。</p>
+<br style="color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+<span style="margin: 0px; padding: 0px; white-space: pre;"></span></p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+<span style=""><span style=""><span style="margin: 0px; padding: 0px; font-weight: normal; background: yellow none repeat scroll 0% 0%;">Remote rate controller</span></span></span></p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 该模块的目的是为了估算数接收速率Ar，其算法流程如图2所示，由信号s决定码率的调整，<span style="">η&nbsp;</span>∈[1<span style="">.</span>005<span style="">,</span>1<span style="">.</span>3],<span style="">α</span>∈[0<span style="">.</span>8<span style="">,</span>0<span style="">.</span>95]分别为增性系数和碱性系数。</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+上调：Ar(t<span style="position: relative; font-size: 12px; line-height: 0; vertical-align: baseline; bottom: -0.25em;">i</span>)=&nbsp;<span style="">η</span>Ar(t<span style="position: relative; font-size: 12px; line-height: 0; vertical-align: baseline; bottom: -0.25em;">i−1</span>)</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+下调：Ar(t<span style="position: relative; font-size: 12px; line-height: 0; vertical-align: baseline; bottom: -0.25em;">i</span>)=&nbsp;<span style="">α</span>R(t<span style="position: relative; font-size: 12px; line-height: 0; vertical-align: baseline; bottom: -0.25em;">i</span>)，其中R(t<span style="position: relative; font-size: 12px; line-height: 0; vertical-align: baseline; bottom: -0.25em;">i</span>)是最近500ms内的平均接收速率。</p>
+<br style="color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+<br style="">
+</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+<span style=""><span style=""><span style="margin: 0px; padding: 0px; font-weight: normal; background: yellow none repeat scroll 0% 0%;">REMB Processing</span></span></span></p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(69, 69, 69); font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; font-size: 16px; line-height: 24px;">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 该模块的功能是将上一个模块计算出的速率<a target="_blank" name="OLE_LINK20" style="color:rgb(79,161,219); margin:0px; padding:0px; outline:none; background:transparent"></a><a target="_blank" name="OLE_LINK19" style="color:rgb(79,161,219); margin:0px; padding:0px; outline:none; background:transparent">Ar</a>通过REMB信息发给客户端。REMB信息发送间隔为1s，但当Ar下降了3%，即Ar(t<span style="position: relative; font-size: 12px; line-height: 0; vertical-align: baseline; bottom: -0.25em;">i</span>)
+ &lt; 0.97Ar(t<span style="position: relative; font-size: 12px; line-height: 0; vertical-align: baseline; bottom: -0.25em;">i−1</span>)时，则立即发送REMB信息以调整码率。</p>
+<div><br>
+</div>
+<br>
+<p><br>
+</p>
+<p><br>
+</p>
+<p><br>
+</p>
+<p></p>
+<h1 class="csdn_top" style="margin: 0px; font-size: 24px; font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; line-height: 38px; color: rgb(44, 48, 51); padding: 0px 29px;">
+webrtc中的带宽自适应算法</h1>
+from: http://blog.csdn.net/chenyefei/article/details/51896237<br>
+<p></p>
+<p></p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px;">
+webrtc中的带宽自适应算法分为两种：</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px;">
+１，　发端带宽控制，　原理是由rtcp中的丢包统计来动态的增加或减少带宽，在减少带宽时使用TFRC算法来增加平滑度。</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px;">
+２，　收端带宽估算，　原理是并由收到rtp数据，估出带宽；　用卡尔曼滤波，对每一帧的发送时间和接收时间进行分析，　从而得出网络带宽利用情况，修正估出的带宽。</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px;">
+<br style="">
+</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px;">
+两种算法相辅相成，　收端将估算的带宽发送给发端，　发端结合收到的带宽以及丢包率，调整发送的带宽。</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px;">
+<br style="">
+</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px;">
+下面具体分析两种算法：</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px;">
+<img src="20160713110908456" alt="" style="border: 0px none; vertical-align: middle; outline: medium none; max-width: 100%;"></p>
+<br>
+<p><br>
+</p>
+<p><br>
+</p>
+<p><br>
+</p>
+<p><br>
+</p>
+<p><br>
+</p>
+<p><br>
+</p>
+<p><br>
+</p>
+<p><br>
+</p>
+<p><br>
+</p>
+<p><br>
+</p>
+<p><br>
+</p>
+<p><br>
+</p>
+<p></p>
+<h1 id="webrtc中rtcp反馈与码率控制模块分析" style="margin: 0.8em 0px; font-size: 2.6em; font-family: &quot;microsoft yahei&quot;; font-weight: 100; line-height: 1.1; color: rgb(63, 63, 63); padding: 0px;">
+webrtc中rtcp反馈与码率控制模块分析</h1>
+http://blog.csdn.net/mercy_pm/article/details/71474264<br>
+<p></p>
+<p><br>
+</p>
+<p></p>
+<h1 id="0-参考文档" style="margin: 0.8em 0px; font-size: 2.6em; font-family: &quot;microsoft yahei&quot;; font-weight: 100; line-height: 1.1; color: rgb(63, 63, 63); padding: 0px;">
+0. 参考文档</h1>
+<p></p>
+<p style="margin-top: 0px; margin-bottom: 1.1em; padding-top: 0px; padding-bottom: 0px; color: rgb(63, 63, 63); font-family: &quot;microsoft yahei&quot;; font-size: 15px; line-height: 24px;">
+<a target="_top" href="http://blog.csdn.net/mercy_pm/article/details/%5bhttp://c3lab.poliba.it/images/6/65/Gcc-analysis.pdf%5d" style="color: rgb(202, 12, 22); text-decoration: none; margin: 0px; padding: 0px; outline: medium none; background: transparent none repeat scroll 0% 0%;">1</a>&nbsp;<a target="_top" href="http://c3lab.poliba.it/images/6/65/Gcc-analysis.pdf" style="color: rgb(202, 12, 22); text-decoration: none; margin: 0px; padding: 0px; outline: medium none; background: transparent none repeat scroll 0% 0%;">google
+ congestion control</a></p>
+<h1 id="1-简介" style="margin: 0.8em 0px; font-size: 2.6em; font-family: &quot;microsoft yahei&quot;; font-weight: 100; line-height: 1.1; color: rgb(63, 63, 63); padding: 0px;">
+<a target="_blank" name="t2" style="color:rgb(79,161,219); margin:0px; padding:0px; outline:none; background:transparent"></a>1. 简介</h1>
+<p style="margin-top: 0px; margin-bottom: 1.1em; padding-top: 0px; padding-bottom: 0px; color: rgb(63, 63, 63); font-family: &quot;microsoft yahei&quot;; font-size: 15px; line-height: 24px;">
+webrtc的带宽估计分为两部分，一部分为发送端根据rtcp反馈信息进行反馈，另一部分为接收端根据收到的rtp数据进行相应的码率估计[<a target="_top" href="http://blog.csdn.net/mercy_pm/article/details/%5bhttp://c3lab.poliba.it/images/6/65/Gcc-analysis.pdf%5d" style="color: rgb(202, 12, 22); text-decoration: none; margin: 0px; padding: 0px; outline: medium none; background: transparent none repeat scroll 0% 0%;">1</a>]。&nbsp;<br style="">
+本文先分析发送端根据rtcp反馈信息进行码率调整的部分代码。</p>
+<p style="margin-top: 0px; margin-bottom: 1.1em; padding-top: 0px; padding-bottom: 0px; color: rgb(63, 63, 63); font-family: &quot;microsoft yahei&quot;; font-size: 15px; line-height: 24px;">
+<img src="google_congestion_control_architecture.png" alt="" title="" style="border: 0px none; vertical-align: middle; outline: medium none; max-width: 100%;"></p>
+<p style="margin-top: 0px; margin-bottom: 1.1em; padding-top: 0px; padding-bottom: 0px; color: rgb(63, 63, 63); font-family: &quot;microsoft yahei&quot;; font-size: 15px; line-height: 24px;">
+具体计算公式:&nbsp;<br style="">
+<img src="rtcp_feedback.png" alt="" title="" style="border: 0px none; vertical-align: middle; outline: medium none; max-width: 100%;"></p>
+<h1 id="2-代码结构" style="margin: 0.8em 0px; font-size: 2.6em; font-family: &quot;microsoft yahei&quot;; font-weight: 100; line-height: 1.1; color: rgb(63, 63, 63); padding: 0px;">
+<a target="_blank" name="t3" style="color:rgb(79,161,219); margin:0px; padding:0px; outline:none; background:transparent"></a>2. 代码结构</h1>
+<h2 id="21-类关系" style="font-family: &quot;microsoft yahei&quot;; font-weight: 100; line-height: 1.1; color: rgb(63, 63, 63); margin: 0.8em 0px; font-size: 2.15em; padding: 0px;">
+<a target="_blank" name="t4" style="color:rgb(79,161,219); margin:0px; padding:0px; outline:none; background:transparent"></a>2.1 类关系</h2>
+<p style="margin-top: 0px; margin-bottom: 1.1em; padding-top: 0px; padding-bottom: 0px; color: rgb(63, 63, 63); font-family: &quot;microsoft yahei&quot;; font-size: 15px; line-height: 24px;">
+<img src="rtcp_feedback_class.png" alt="" title="" style="border: 0px none; vertical-align: middle; outline: medium none; max-width: 100%;"></p>
+<p style="margin-top: 0px; margin-bottom: 1.1em; padding-top: 0px; padding-bottom: 0px; color: rgb(63, 63, 63); font-family: &quot;microsoft yahei&quot;; font-size: 15px; line-height: 24px;">
+rtp_stream_receiver中有一个继承自抽象类RtpRtcp的ModuleRtpRtcpImpl，ModuleRtpRtcpImpl中有一个rtcp_receiver。当有RTCP包到来时，逐层处理至rtcp_receiver，当包是rtcp receiver report包，则会将包解析，然后在ModuleRtpRtcpImpl中再次调用rtcp_receiver中的TriggerCallbacksFromRTCPPacket函数，触发对应rtcp的一些事件，反馈触发的主要是_cbRtcpBandwidthObserver的观察者(RtcpBandwidthObserverImpl)，这个观察者收到对应的report
+ block之后会计算成带宽估计所需要的参数，并调用属主bitratecontrolImpl类对带宽进行估计，这里会调用SendSideBandwidthEstimation中的UpdateReceiverBlock进行实际的带宽评估。</p>
+<h2 id="22-调用关系图" style="font-family: &quot;microsoft yahei&quot;; font-weight: 100; line-height: 1.1; color: rgb(63, 63, 63); margin: 0.8em 0px; font-size: 2.15em; padding: 0px;">
+<a target="_blank" name="t5" style="color:rgb(79,161,219); margin:0px; padding:0px; outline:none; background:transparent"></a>2.2 调用关系图</h2>
+<p style="margin-top: 0px; margin-bottom: 1.1em; padding-top: 0px; padding-bottom: 0px; color: rgb(63, 63, 63); font-family: &quot;microsoft yahei&quot;; font-size: 15px; line-height: 24px;">
+<img src="rtcp_feedback_flow.png" alt="" title="" style="border: 0px none; vertical-align: middle; outline: medium none; max-width: 100%;"></p>
+<h1 id="3-代码分析" style="margin: 0.8em 0px; font-size: 2.6em; font-family: &quot;microsoft yahei&quot;; font-weight: 100; line-height: 1.1; color: rgb(63, 63, 63); padding: 0px;">
+<a target="_blank" name="t6" style="color:rgb(79,161,219); margin:0px; padding:0px; outline:none; background:transparent"></a>3. 代码分析</h1>
+<h2 id="31-handlereportblock" style="font-family: &quot;microsoft yahei&quot;; font-weight: 100; line-height: 1.1; color: rgb(63, 63, 63); margin: 0.8em 0px; font-size: 2.15em; padding: 0px;">
+<a target="_blank" name="t7" style="color:rgb(79,161,219); margin:0px; padding:0px; outline:none; background:transparent"></a>3.1 HandleReportBlock</h2>
+<p style="margin-top: 0px; margin-bottom: 1.1em; padding-top: 0px; padding-bottom: 0px; color: rgb(63, 63, 63); font-family: &quot;microsoft yahei&quot;; font-size: 15px; line-height: 24px;">
+这个函数中最主要的部分就是RTT的计算，webrtc中对于RTT平滑的因子是一个线性增长的因子。</p>
+<pre class="prettyprint" style="font-family: &quot;Source Code Pro&quot;,monospace; font-size: 14px; white-space: nowrap; padding: 5px 5px 5px 60px; margin-top: 0px; margin-bottom: 1.1em; line-height: 1.45; color: rgb(51, 51, 51); word-break: break-all; overflow-wrap: break-word; position: relative; overflow-y: hidden; overflow-x: auto;"><code class="language-cpp hljs  has-numbering" style="font-family: &quot;Source Code Pro&quot;,monospace; padding: 0px; color: inherit; white-space: pre; display: block; overflow-wrap: normal; background: transparent none repeat scroll 0% 0%;"><span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">/* 这个函数根据对应的report block生成了一个新的RTCPReportBlockInformation结构体，
+ * 并计算出对应的RTT，多report block在调用点处执行循环。  */</span>
+<span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">void</span> RTCPReceiver::HandleReportBlock(
+    <span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">const</span> RTCPUtility::RTCPPacket&amp; rtcpPacket,
+    RTCPPacketInformation&amp; rtcpPacketInformation,
+    uint32_t remoteSSRC)
+    EXCLUSIVE_LOCKS_REQUIRED(_criticalSectionRTCPReceiver) {
+  <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// This will be called once per report block in the RTCP packet.</span>
+  <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// We filter out all report blocks that are not for us.</span>
+  <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// Each packet has max 31 RR blocks.</span>
+  <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">//</span>
+  <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// We can calc RTT if we send a send report and get a report block back.</span>
+
+  <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// |rtcpPacket.ReportBlockItem.SSRC| is the SSRC identifier of the source to</span>
+  <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// which the information in this reception report block pertains.</span>
+
+  <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// Filter out all report blocks that are not for us.</span>
+  <span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">if</span> (registered_ssrcs_.find(rtcpPacket.ReportBlockItem.SSRC) ==
+      registered_ssrcs_.end()) {
+    <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// This block is not for us ignore it.</span>
+    <span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">return</span>;
+  }
+
+  RTCPReportBlockInformation* reportBlock =
+      CreateOrGetReportBlockInformation(remoteSSRC,
+                                        rtcpPacket.ReportBlockItem.SSRC);
+  <span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">if</span> (reportBlock == NULL) {
+    LOG(LS_WARNING) &lt;&lt; <span class="hljs-string" style="margin: 0px; padding: 0px; color: rgb(0, 136, 0);">"Failed to CreateReportBlockInformation("</span>
+                    &lt;&lt; remoteSSRC &lt;&lt; <span class="hljs-string" style="margin: 0px; padding: 0px; color: rgb(0, 136, 0);">")"</span>;
+    <span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">return</span>;
+  }
+
+  <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// 用于RTCP超时的计算。</span>
+  _lastReceivedRrMs = _clock-&gt;TimeInMilliseconds();
+  <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// 其他字段的拷贝。</span>
+  <span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">const</span> RTCPPacketReportBlockItem&amp; rb = rtcpPacket.ReportBlockItem;
+  reportBlock-&gt;remoteReceiveBlock.remoteSSRC = remoteSSRC;
+  reportBlock-&gt;remoteReceiveBlock.sourceSSRC = rb.SSRC;
+  reportBlock-&gt;remoteReceiveBlock.fractionLost = rb.FractionLost;
+  reportBlock-&gt;remoteReceiveBlock.cumulativeLost =
+      rb.CumulativeNumOfPacketsLost;
+  <span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">if</span> (rb.ExtendedHighestSequenceNumber &gt;
+      reportBlock-&gt;remoteReceiveBlock.extendedHighSeqNum) {
+    <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// We have successfully delivered new RTP packets to the remote side after</span>
+    <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// the last RR was sent from the remote side.</span>
+    _lastIncreasedSequenceNumberMs = _lastReceivedRrMs;
+  }
+  reportBlock-&gt;remoteReceiveBlock.extendedHighSeqNum =
+      rb.ExtendedHighestSequenceNumber;
+  reportBlock-&gt;remoteReceiveBlock.jitter = rb.Jitter;
+  reportBlock-&gt;remoteReceiveBlock.delaySinceLastSR = rb.DelayLastSR;
+  reportBlock-&gt;remoteReceiveBlock.lastSR = rb.LastSR;
+
+  <span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">if</span> (rtcpPacket.ReportBlockItem.Jitter &gt; reportBlock-&gt;remoteMaxJitter) {
+    reportBlock-&gt;remoteMaxJitter = rtcpPacket.ReportBlockItem.Jitter;
+  }
+
+  int64_t rtt = <span class="hljs-number" style="margin: 0px; padding: 0px; color: rgb(0, 102, 102);">0</span>;
+  uint32_t send_time = rtcpPacket.ReportBlockItem.LastSR;
+  <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// RFC3550, section 6.4.1, LSR field discription states:</span>
+  <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// If no SR has been received yet, the field is set to zero.</span>
+  <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// Receiver rtp_rtcp module is not expected to calculate rtt using</span>
+  <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// Sender Reports even if it accidentally can.</span>
+  <span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">if</span> (!receiver_only_ &amp;&amp; send_time != <span class="hljs-number" style="margin: 0px; padding: 0px; color: rgb(0, 102, 102);">0</span>) {
+    <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// 当RR在SR之前发送，send_time为0.</span>
+    <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// delay计算:</span>
+    <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// Send SR                                                       Receive RR</span>
+    <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">//  |                          delay in RR                           |</span>
+    <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">//  |                        |&lt;-----------&gt;|                         |</span>
+    <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">//  |&lt;----------------------&gt;|             |&lt;-----------------------&gt;|</span>
+    <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">//</span>
+    <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// RTT = total_time - delay_in_RR</span>
+    <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">//     = receiver_rr_time - send_sr_time - delay_in_RR</span>
+    <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// 即使中间几个SR丢包，但是如果RTT本身是平滑的，那么RTT不会受到这几个丢包的影响</span>
+    <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// 因为SR-&gt;RR之间的delay可以精确计算。</span>
+    uint32_t delay = rtcpPacket.ReportBlockItem.DelayLastSR;
+    <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// Local NTP time.</span>
+    uint32_t receive_time = CompactNtp(NtpTime(*_clock));
+
+    <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// RTT in 1/(2^16) seconds.</span>
+    uint32_t rtt_ntp = receive_time - delay - send_time;
+    <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// Convert to 1/1000 seconds (milliseconds).</span>
+    rtt = CompactNtpRttToMs(rtt_ntp);
+    <span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">if</span> (rtt &gt; reportBlock-&gt;maxRTT) {
+      <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// Store max RTT.</span>
+      reportBlock-&gt;maxRTT = rtt;
+    }
+    <span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">if</span> (reportBlock-&gt;minRTT == <span class="hljs-number" style="margin: 0px; padding: 0px; color: rgb(0, 102, 102);">0</span>) {
+      <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// First RTT.</span>
+      reportBlock-&gt;minRTT = rtt;
+    } <span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">else</span> <span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">if</span> (rtt &lt; reportBlock-&gt;minRTT) {
+      <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// Store min RTT.</span>
+      reportBlock-&gt;minRTT = rtt;
+    }
+    <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// Store last RTT.</span>
+    reportBlock-&gt;RTT = rtt;
+
+    <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// store average RTT</span>
+    <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// RTT的平滑计算。</span>
+    <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// 如果这个块是在CreateOrGetReportBlockInformation新生成的，</span>
+    <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// 则权重会从0开始随着受到的report逐渐递增。</span>
+    <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// srtt(i) = i/(i+1)*srtt(i-1) + 1/(i+1)*rtt + 0.5</span>
+    <span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">if</span> (reportBlock-&gt;numAverageCalcs != <span class="hljs-number" style="margin: 0px; padding: 0px; color: rgb(0, 102, 102);">0</span>) {
+      <span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">float</span> ac = <span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">static_cast</span>&lt;<span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">float</span>&gt;(reportBlock-&gt;numAverageCalcs);
+      <span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">float</span> newAverage =
+          ((ac / (ac + <span class="hljs-number" style="margin: 0px; padding: 0px; color: rgb(0, 102, 102);">1</span>)) * reportBlock-&gt;avgRTT) + ((<span class="hljs-number" style="margin: 0px; padding: 0px; color: rgb(0, 102, 102);">1</span> / (ac + <span class="hljs-number" style="margin: 0px; padding: 0px; color: rgb(0, 102, 102);">1</span>)) * rtt);
+      reportBlock-&gt;avgRTT = <span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">static_cast</span>&lt;int64_t&gt;(newAverage + <span class="hljs-number" style="margin: 0px; padding: 0px; color: rgb(0, 102, 102);">0.5f</span>);
+    } <span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">else</span> {
+      <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// First RTT.</span>
+      reportBlock-&gt;avgRTT = rtt;
+    }
+    reportBlock-&gt;numAverageCalcs++;
+  }
+
+  TRACE_COUNTER_ID1(TRACE_DISABLED_BY_DEFAULT(<span class="hljs-string" style="margin: 0px; padding: 0px; color: rgb(0, 136, 0);">"webrtc_rtp"</span>), <span class="hljs-string" style="margin: 0px; padding: 0px; color: rgb(0, 136, 0);">"RR_RTT"</span>, rb.SSRC,
+                    rtt);
+
+  <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// 添加回rtcpPacketInformation，在ModuleRtpRtcpImpl中会使用这个进行事件回调。</span>
+  rtcpPacketInformation.AddReportInfo(*reportBlock);
+}</code><ul class="pre-numbering" style="margin: 0px; padding: 6px 0px 40px; list-style: outside none none; position: absolute; width: 50px; top: 0px; left: 0px; border-right: 1px solid rgb(221, 221, 221); text-align: right; background-color: rgb(238, 238, 238);"><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">1</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">2</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">3</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">4</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">5</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">6</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">7</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">8</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">9</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">10</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">11</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">12</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">13</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">14</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">15</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">16</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">17</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">18</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">19</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">20</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">21</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">22</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">23</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">24</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">25</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">26</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">27</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">28</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">29</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">30</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">31</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">32</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">33</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">34</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">35</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">36</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">37</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">38</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">39</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">40</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">41</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">42</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">43</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">44</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">45</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">46</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">47</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">48</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">49</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">50</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">51</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">52</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">53</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">54</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">55</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">56</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">57</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">58</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">59</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">60</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">61</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">62</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">63</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">64</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">65</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">66</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">67</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">68</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">69</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">70</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">71</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">72</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">73</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">74</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">75</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">76</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">77</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">78</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">79</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">80</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">81</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">82</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">83</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">84</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">85</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">86</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">87</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">88</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">89</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">90</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">91</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">92</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">93</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">94</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">95</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">96</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">97</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">98</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">99</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">100</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">101</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">102</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">103</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">104</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">105</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">106</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">107</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">108</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">109</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">110</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">111</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">112</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">113</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">114</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">115</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">116</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">117</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">118</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">119</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">120</li></ul></pre>
+<h2 id="32-updateminhistory" style="font-family: &quot;microsoft yahei&quot;; font-weight: 100; line-height: 1.1; color: rgb(63, 63, 63); margin: 0.8em 0px; font-size: 2.15em; padding: 0px;">
+<a target="_blank" name="t8" style="color:rgb(79,161,219); margin:0px; padding:0px; outline:none; background:transparent"></a>3.2 UpdateMinHistory</h2>
+<p style="margin-top: 0px; margin-bottom: 1.1em; padding-top: 0px; padding-bottom: 0px; color: rgb(63, 63, 63); font-family: &quot;microsoft yahei&quot;; font-size: 15px; line-height: 24px;">
+这个函数主要用于更新变量min_bitrate_history_，这个变量将会作用于上升区间，用来作为基数，这里简单描述下。</p>
+<pre class="prettyprint" style="font-family: &quot;Source Code Pro&quot;,monospace; font-size: 14px; white-space: nowrap; padding: 5px 5px 5px 60px; margin-top: 0px; margin-bottom: 1.1em; line-height: 1.45; color: rgb(51, 51, 51); word-break: break-all; overflow-wrap: break-word; position: relative; overflow-y: hidden; overflow-x: auto;"><code class="language-cpp hljs  has-numbering" style="font-family: &quot;Source Code Pro&quot;,monospace; padding: 0px; color: inherit; white-space: pre; display: block; overflow-wrap: normal; background: transparent none repeat scroll 0% 0%;"><span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// Updates history of min bitrates.</span>
+<span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// After this method returns min_bitrate_history_.front().second contains the</span>
+<span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// min bitrate used during last kBweIncreaseIntervalMs.</span>
+<span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// 主要结合这个函数解释下变量min_bitrate_history_</span>
+<span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// 这个变量的两个维度，front记录的是离当前最远的时间，</span>
+<span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// 每个速率都是按照时间先后顺序逐渐push到尾部。</span>
+<span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// 因此更新的时候，需要先将超时的元素从列表头剔除。</span>
+<span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// 后一个维度是最小速率值，</span>
+<span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// 在相同的时间区间内，保留最小的速率值。</span>
+<span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// |-------Interval 1---------|----------Interval 2------|</span>
+<span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// |                          |                          |</span>
+<span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// |--t1 &lt; t2 &lt; t3 &lt; t4 &lt; t5--|--t1 &lt; t2 &lt; t3 &lt; t4 &lt; t5--|</span>
+<span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// 这样的操作较为简单，不用在每次插入元素时去判断对应的时间区域，再找到对应时间区间的最小值，用部分冗余的内存换取操作的快捷。</span>
+<span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">void</span> SendSideBandwidthEstimation::UpdateMinHistory(int64_t now_ms) {
+  <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// Remove old data points from history.</span>
+  <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// Since history precision is in ms, add one so it is able to increase</span>
+  <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// bitrate if it is off by as little as 0.5ms.</span>
+  <span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">while</span> (!min_bitrate_history_.empty() &amp;&amp;
+         now_ms - min_bitrate_history_.front().first + <span class="hljs-number" style="margin: 0px; padding: 0px; color: rgb(0, 102, 102);">1</span> &gt;
+             kBweIncreaseIntervalMs) {
+    min_bitrate_history_.pop_front();
+  }
+
+  <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// Typical minimum sliding-window algorithm: Pop values higher than current</span>
+  <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// bitrate before pushing it.</span>
+  <span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">while</span> (!min_bitrate_history_.empty() &amp;&amp;
+         bitrate_ &lt;= min_bitrate_history_.back().second) {
+    min_bitrate_history_.pop_back();
+  }
+
+  min_bitrate_history_.push_back(<span class="hljs-built_in" style="margin: 0px; padding: 0px; color: rgb(102, 0, 102);">std</span>::make_pair(now_ms, bitrate_));
+}</code><ul class="pre-numbering" style="margin: 0px; padding: 6px 0px 40px; list-style: outside none none; position: absolute; width: 50px; top: 0px; left: 0px; border-right: 1px solid rgb(221, 221, 221); text-align: right; background-color: rgb(238, 238, 238);"><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">1</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">2</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">3</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">4</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">5</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">6</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">7</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">8</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">9</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">10</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">11</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">12</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">13</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">14</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">15</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">16</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">17</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">18</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">19</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">20</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">21</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">22</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">23</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">24</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">25</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">26</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">27</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">28</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">29</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">30</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">31</li><li style="margin: 0px; padding: 0px 5px; list-style: outside none none; color: rgb(153, 153, 153);">32</li></ul></pre>
+<h2 id="33-updateestimate" style="font-family: &quot;microsoft yahei&quot;; font-weight: 100; line-height: 1.1; color: rgb(63, 63, 63); margin: 0.8em 0px; font-size: 2.15em; padding: 0px;">
+<a target="_blank" name="t9" style="color:rgb(79,161,219); margin:0px; padding:0px; outline:none; background:transparent"></a>3.3 UpdateEstimate</h2>
+<p style="margin-top: 0px; margin-bottom: 1.1em; padding-top: 0px; padding-bottom: 0px; color: rgb(63, 63, 63); font-family: &quot;microsoft yahei&quot;; font-size: 15px; line-height: 24px;">
+函数UpdateReceiverBlock会根据当前的report block对当前带宽估计的一些变量进行相应的赋值，此外，只有当传输包的数量达到一定数量才会再次触发带宽估计的调整。函数UpdateEstimate是主要用于带宽估计的函数。</p>
+<pre class="prettyprint" style="font-family: &quot;Source Code Pro&quot;,monospace; font-size: 14px; white-space: nowrap; padding: 5px 5px 5px 60px; margin-top: 0px; margin-bottom: 1.1em; line-height: 1.45; color: rgb(51, 51, 51); word-break: break-all; overflow-wrap: break-word; position: relative; overflow-y: hidden; overflow-x: auto;"><code class="language-cpp hljs  has-numbering" style="font-family: &quot;Source Code Pro&quot;,monospace; padding: 0px; color: inherit; white-space: pre; display: block; overflow-wrap: normal; background: transparent none repeat scroll 0% 0%;"><span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">void</span> SendSideBandwidthEstimation::UpdateEstimate(int64_t now_ms) {
+  <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// We trust the REMB and/or delay-based estimate during the first 2 seconds if</span>
+  <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// we haven't had any packet loss reported, to allow startup bitrate probing.</span>
+  <span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">if</span> (last_fraction_loss_ == <span class="hljs-number" style="margin: 0px; padding: 0px; color: rgb(0, 102, 102);">0</span> &amp;&amp; IsInStartPhase(now_ms)) {
+    uint32_t prev_bitrate = bitrate_;
+    <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// bwe_incoming_是remb更新的值，如果当前无丢包且在启动阶段，直接使用remb的值。</span>
+    <span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">if</span> (bwe_incoming_ &gt; bitrate_)
+      bitrate_ = CapBitrateToThresholds(now_ms, bwe_incoming_);
+      ...
+    }
+  }
+  UpdateMinHistory(now_ms);
+  <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// Only start updating bitrate when receiving receiver blocks.</span>
+  <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// TODO(pbos): Handle the case when no receiver report is received for a very</span>
+  <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// long time.</span>
+  <span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">if</span> (time_last_receiver_block_ms_ != -<span class="hljs-number" style="margin: 0px; padding: 0px; color: rgb(0, 102, 102);">1</span>) {
+    <span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">if</span> (last_fraction_loss_ &lt;= <span class="hljs-number" style="margin: 0px; padding: 0px; color: rgb(0, 102, 102);">5</span>) {
+      <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// Loss &lt; 2%: Increase rate by 8% of the min bitrate in the last</span>
+      <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// kBweIncreaseIntervalMs.</span>
+      <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// Note that by remembering the bitrate over the last second one can</span>
+      <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// rampup up one second faster than if only allowed to start ramping</span>
+      <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// at 8% per second rate now. E.g.:</span>
+      <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">//   If sending a constant 100kbps it can rampup immediatly to 108kbps</span>
+      <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">//   whenever a receiver report is received with lower packet loss.</span>
+      <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">//   If instead one would do: bitrate_ *= 1.08^(delta time), it would</span>
+      <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">//   take over one second since the lower packet loss to achieve 108kbps.</span>
+
+        <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">//TODO:tjl</span>
+      <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// 这里与公式有一定不同：</span>
+      <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// 1. 系数不同，且附带一定的修正值(向上取整加1kbps)</span>
+      <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// 2. 取的是上一个时间间隔之内最小值，比较平滑。</span>
+      bitrate_ = <span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">static_cast</span>&lt;uint32_t&gt;(
+          min_bitrate_history_.front().second * <span class="hljs-number" style="margin: 0px; padding: 0px; color: rgb(0, 102, 102);">1.08</span> + <span class="hljs-number" style="margin: 0px; padding: 0px; color: rgb(0, 102, 102);">0.5</span>);
+
+      <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// Add 1 kbps extra, just to make sure that we do not get stuck</span>
+      <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// (gives a little extra increase at low rates, negligible at higher</span>
+      <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// rates).</span>
+      bitrate_ += <span class="hljs-number" style="margin: 0px; padding: 0px; color: rgb(0, 102, 102);">1000</span>;
+
+      event_log_-&gt;LogBwePacketLossEvent(
+          bitrate_, last_fraction_loss_,
+          expected_packets_since_last_loss_update_);
+    } <span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">else</span> <span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">if</span> (last_fraction_loss_ &lt;= <span class="hljs-number" style="margin: 0px; padding: 0px; color: rgb(0, 102, 102);">26</span>) {
+      <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// Loss between 2% - 10%: Do nothing.</span>
+    } <span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">else</span> {
+      <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// Loss &gt; 10%: Limit the rate decreases to once a kBweDecreaseIntervalMs +</span>
+      <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// rtt.</span>
+      <span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">if</span> (!has_decreased_since_last_fraction_loss_ &amp;&amp;
+          (now_ms - time_last_decrease_ms_) &gt;=
+              (kBweDecreaseIntervalMs + last_round_trip_time_ms_)) {
+        time_last_decrease_ms_ = now_ms;
+
+        <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// Reduce rate:</span>
+        <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">//   newRate = rate * (1 - 0.5*lossRate);</span>
+        <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">//   where packetLoss = 256*lossRate;</span>
+
+          <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">//TODO:tjl</span>
+        <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// 当从未开始降低窗口值，且距离上一次衰减的时间差大于衰减周期加上rtt。</span>
+        <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// 其实当前貌似只有这个case下会对这两个变量赋值。</span>
+        <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// 这里的last_fraction_loss_是一次统计间隔(一定包数)之间的总丢包率。</span>
+        <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// 丢包率的单位是1/256，因此这里是(1 - 丢包率/2) * 当前速率</span>
+        <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// 与公式相同。</span>
+        bitrate_ = <span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">static_cast</span>&lt;uint32_t&gt;(
+            (bitrate_ * <span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">static_cast</span>&lt;<span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">double</span>&gt;(<span class="hljs-number" style="margin: 0px; padding: 0px; color: rgb(0, 102, 102);">512</span> - last_fraction_loss_)) /
+            <span class="hljs-number" style="margin: 0px; padding: 0px; color: rgb(0, 102, 102);">512.0</span>);
+        has_decreased_since_last_fraction_loss_ = <span class="hljs-keyword" style="margin: 0px; padding: 0px; color: rgb(0, 0, 136);">true</span>;
+      }
+      event_log_-&gt;LogBwePacketLossEvent(
+          bitrate_, last_fraction_loss_,
+          expected_packets_since_last_loss_update_);
+    }
+  }
+  <span class="hljs-comment" style="margin: 0px; padding: 0px; color: rgb(136, 0, 0);">// 在有效范围内修正。</span>
+  bitrate_ = CapBitrateToThresholds(now_ms, bitrate_);
+}</code></pre>
+<p><br>
+</p>
+<p><br>
+</p>
+<p><br>
+</p>
+<p><br>
+</p>
+<p><br>
+</p>
+<p></p>
+<p></p>
+<h1 class="csdn_top" style="margin: 0px; font-size: 24px; font-family: &quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,SimHei,Arial,SimSun; line-height: 38px; color: rgb(44, 48, 51); padding: 0px 29px;">
+WebRTC的带宽评估的新变化</h1>
+<br>
+<p></p>
+<p>http://blog.csdn.net/volvet/article/details/62237375</p>
+<br>
+<p></p>
+<p style="margin-top: 0px; margin-bottom: 1.7em; padding-top: 0px; padding-bottom: 0px; line-height: 27.2px; color: rgb(63, 63, 63); font-family: &quot;microsoft yahei&quot;; font-size: 16px;">
+带宽评估(BWE)也许是WebRTC的视频引擎中最关键的模块了, 它将决定视频通信中, 不引发网络拥塞时最多可以产生的视频数据量.</p>
+<p style="margin-top: 0px; margin-bottom: 1.7em; padding-top: 0px; padding-bottom: 0px; line-height: 27.2px; color: rgb(63, 63, 63); font-family: &quot;microsoft yahei&quot;; font-size: 16px;">
+早期的带宽评估算法比较简陋, 大多是基于丢包来估计, 基本的策略是逐步增加发送的数据量, 直到检测到丢包为止. 为了让发送端获悉网络上的丢包信息, 可以使用标准的RTCP的RR来发送周期性的报告.</p>
+<p style="margin-top: 0px; margin-bottom: 1.7em; padding-top: 0px; padding-bottom: 0px; line-height: 27.2px; color: rgb(63, 63, 63); font-family: &quot;microsoft yahei&quot;; font-size: 16px;">
+现代的带宽评估算法则可以在网络链路发生丢包以前就监测到网络拥塞, 它可以通过侦测数据包接收的时延来预测未来可能的拥塞. 它是基于链路上的路由器都有一定的缓存, 在数据包开始被丢弃之前, 先发生数据在缓存里堆积的事件, 所以时延相比于丢包, 对拥塞的反应更加灵敏. 现在几个典型的算法有: Google Congest Control(<a target="_top" href="https://tools.ietf.org/html/draft-ietf-rmcat-gcc-02" style="color: rgb(202, 12, 22); text-decoration: none; margin: 0px; padding: 0px; outline: medium none; background: transparent none repeat scroll 0% 0%;">https://tools.ietf.org/html/draft-ietf-rmcat-gcc-02</a>),
+ 爱立信的SCEAM(<a target="_top" href="https://github.com/EricssonResearch/scream" style="color: rgb(202, 12, 22); text-decoration: none; margin: 0px; padding: 0px; outline: medium none; background: transparent none repeat scroll 0% 0%;">https://github.com/EricssonResearch/scream</a>)
+ 和 MIT的SPROUT(<a target="_top" href="http://aim.nms.lcs.mit.edu/papers/nsdi13-sprout.pdf" style="color: rgb(202, 12, 22); text-decoration: none; margin: 0px; padding: 0px; outline: medium none; background: transparent none repeat scroll 0% 0%;">http://aim.nms.lcs.mit.edu/papers/nsdi13-sprout.pdf</a>).
+ Mozilla的这篇文章讲述了拥塞控制算法演变的历史(<a target="_top" href="https://blog.mozilla.org/webrtc/what-is-rmcat-congestion-control/" style="color: rgb(202, 12, 22); text-decoration: none; margin: 0px; padding: 0px; outline: medium none; background: transparent none repeat scroll 0% 0%;">https://blog.mozilla.org/webrtc/what-is-rmcat-congestion-control/</a>)</p>
+<p style="margin-top: 0px; margin-bottom: 1.7em; padding-top: 0px; padding-bottom: 0px; line-height: 27.2px; color: rgb(63, 63, 63); font-family: &quot;microsoft yahei&quot;; font-size: 16px;">
+WebRTC刚开始的时候是用接受端的带宽评估来决定发送端的码率的, 如上文, 接受端根据接受到的数据量和数据包时延的变化, 得到当前网络带宽的评估, 使用REMB 将评估的带宽汇报给发送端. 另一个细节是, WebRTC的发送端除了使用REMB之外, 还会根据丢包情况来决定当前的视频码率, 伪代码如下:</p>
+<pre class="prettyprint" style="font-family: &quot;Source Code Pro&quot;,monospace; font-size: 14px; white-space: nowrap; padding: 5px 5px 5px 60px; margin-top: 0px; margin-bottom: 1.7em; line-height: 23.8px; color: rgb(51, 51, 51); word-break: break-all; overflow-wrap: break-word; position: relative; overflow-y: hidden; overflow-x: auto;">Sender pseudocode (send_side_bandwidth_estimation.cc): onFeedbackFromReceiver(lossRate): if (lossRate &lt; 2%) video_bitrate *= 1.08 if (lossRate &gt; 10%) video_bitrate *= (1 - 0.5*lossRate) if (video_bitrate &gt; bwe) video_bitrate = bwe;</pre>
+<p style="margin-top: 0px; margin-bottom: 1.7em; padding-top: 0px; padding-bottom: 0px; line-height: 27.2px; color: rgb(63, 63, 63); font-family: &quot;microsoft yahei&quot;; font-size: 16px;">
+比较好的码率控制方法是, 检测到拥塞是,迅速下调码率, 当网络无拥塞是, 缓慢上调码率.</p>
+<p style="margin-top: 0px; margin-bottom: 1.7em; padding-top: 0px; padding-bottom: 0px; line-height: 27.2px; color: rgb(63, 63, 63); font-family: &quot;microsoft yahei&quot;; font-size: 16px;">
+最近的WebRTC已把带宽评估整个搬到了发送端. 不过评估机制跟之前并没有显著的变化, 接受端需要把时延信息汇报给发送端, 这一机制引入了2个新的协议.&nbsp;<br style="">
+1. Transport wide sequence number header extension.&nbsp;<br style="">
+a=extmap:5&nbsp;<a target="_top" href="http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01" style="color: rgb(202, 12, 22); text-decoration: none; margin: 0px; padding: 0px; outline: medium none; background: transparent none repeat scroll 0% 0%;">http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01</a>&nbsp;<br style="">
+2. Transport Feedback&nbsp;<br style="">
+a=rtcp-fb:100 transport-cc</p>
+<p style="margin-top: 0px; margin-bottom: 1.7em; padding-top: 0px; padding-bottom: 0px; line-height: 27.2px; color: rgb(63, 63, 63); font-family: &quot;microsoft yahei&quot;; font-size: 16px;">
+详细可以参看:&nbsp;<a target="_top" href="https://www.ietf.org/archive/id/draft-holmer-rmcat-transport-wide-cc-extensions-01.txt" style="color: rgb(202, 12, 22); text-decoration: none; margin: 0px; padding: 0px; outline: medium none; background: transparent none repeat scroll 0% 0%;">https://www.ietf.org/archive/id/draft-holmer-rmcat-transport-wide-cc-extensions-01.txt</a></p>
+<h3 id="the-original-post" style="font-family: &quot;microsoft yahei&quot;; font-weight: 100; line-height: 1.1; color: rgb(63, 63, 63); margin: 0.8em 0px; font-size: 1.7em; padding: 0px;">
+The Original Post</h3>
+<p style="margin-top: 0px; margin-bottom: 1.7em; padding-top: 0px; padding-bottom: 0px; line-height: 27.2px; color: rgb(63, 63, 63); font-family: &quot;microsoft yahei&quot;; font-size: 16px;">
+<a target="_top" href="http://www.rtcbits.com/2017/01/bandwidth-estimation-in-webrtc-and-new.html" style="color: rgb(202, 12, 22); text-decoration: none; margin: 0px; padding: 0px; outline: medium none; background: transparent none repeat scroll 0% 0%;">http://www.rtcbits.com/2017/01/bandwidth-estimation-in-webrtc-and-new.html</a></p>
+<br>
+<p><br>
+</p>
+            </div>
+                </div>
+				<div class="hide-article-box text-center csdn-tracking-statistics tracking-click" data-mod="popu_376">
+			<a class="btn btn-red-hollow" id="btn-readmore">阅读更多</a>
+		</div>
+        	</article>
+	
+		<div class="article-bar-bottom">
+				<div class="article-copyright">
+			版权声明：本文为博主原创文章，未经博主允许不得转载。 如果转载，需要获得作者授权。保留追究法律责任的权力。			https://blog.csdn.net/chinabinlang/article/details/78294464		</div>
+								<div class="tags-box">
+			<span class="label">个人分类：</span>
+						<a class="tag-link" href="https://blog.csdn.net/chinabinlang/article/category/2771045" target="_top">WebRTC						</a>
+		</div>
+					</div>
+	
+	<!-- !empty($pre_next_article[0]) -->
+		</div>
+
+
+
+
+        <div class="edu-promotion"></div>
+        <a id="commentBox"></a>
+<div class="comment-box">
+	  	<div class="unlogin-box text-center">
+		想对作者说点什么？
+		<!-- $curl 当前地址 -->
+		<a href="https://passport.csdn.net/account/login?from=https://blog.csdn.net/chinabinlang/article/details/78294464#commentBox" class="btn btn-sm btn-red">我来说一句</a>
+	</div>
+			<div class="comment-list-container">
+		<a id="comments"></a>
+		<div class="comment-list-box">
+		</div>
+		<div id="commentPage" class="pagination-box d-none"></div>
+		<div class="opt-box text-center">
+			<button class="btn btn-sm btn-link-blue" id="btnMoreComment"></button>
+		</div>
+	</div>
+</div>        <div class="recommend-box">
+            		<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_614" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/guowei19862006/article/details/46861093" target="_top" strategy="BlogCommendFromBaidu_0">
+				<em>webrtc</em>中的带宽自适应算法			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/guowei19862006/article/details/46861093" target="_top">
+				<em>webrtc</em>中的带宽自适应算法
+
+
+<em>webrtc</em>中的带宽自适应算法分为两种：
+
+１，　发端带宽控制，　原理是由rtcp中的丢包统计来动态的增加或减少带宽，在减少带宽时使用TFRC算法来增加平...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/guowei19862006" title="guowei19862006" target="_blank">
+					<img src="3_guowei19862006.jpg" alt="guowei19862006" class="avatar-pic">
+					<span class="name">guowei19862006</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2015-07-13 12:43:12</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：395</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_614" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/u013160228/article/details/46392037" target="_top" strategy="BlogCommendFromBaidu_1">
+				<em>WebRTC</em>之带宽控制部分学习(1)   ------基本demo的介绍			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/u013160228/article/details/46392037" target="_top">
+				<em>WebRTC</em>的代码真是非常之大啊，下载以及编译了我好几天才搞完。。。。。
+可以看到<em>WebRTC</em>d代码分成了4个部分，目前为止只看了talk里的一些东西。
+&nbsp; &nbsp; &nbsp; 1、 talk中的项目文件大多数都...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/u013160228" title="u013160228" target="_blank">
+					<img src="3_u013160228.jpg" alt="u013160228" class="avatar-pic">
+					<span class="name">u013160228</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2015-06-06 22:27:41</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：4430</span>
+			</p>
+		</div>
+	</div>
+								<div class="recommend-item-box recommend-ad-box" id="ad1"></div>
+				
+
+			
+				<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_614" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/haijianmingCSDN/article/details/78699395" target="_top" strategy="BlogCommendFromBaidu_2">
+				<em>webrtc</em> 码率设置			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/haijianmingCSDN/article/details/78699395" target="_top">
+				<em>WebRTC</em>原生就是为了p2p通话而设计的，视频的码流会尽量匹配你的带宽。你会发现，当两个客户端在局域网内 
+通话时，视频的码流会非常大，有时会达到两三兆。在有些业务场景下，你可能不希望要这么大的视频...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/haijianmingCSDN" title="haijianmingCSDN" target="_blank">
+					<img src="3_haijianmingcsdn.jpg" alt="haijianmingCSDN" class="avatar-pic">
+					<span class="name">haijianmingCSDN</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2017-12-03 00:00:37</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：853</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_614" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/u011552404/article/details/80002506" target="_top" strategy="BlogCommendFromBaidu_3">
+				<em>WebRTC</em>自适应控制算法			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/u011552404/article/details/80002506" target="_top">
+				该文章系总结性文章，主要参考一下文章： 
+1、<em>webrtc</em>视频jitterbuffer原理机制(描述版) - 简书 
+http://www.jianshu.com/p/bd10d60cebcd 
+2、...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/u011552404" title="u011552404" target="_blank">
+					<img src="3_u011552404.jpg" alt="u011552404" class="avatar-pic">
+					<span class="name">u011552404</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2018-04-19 11:31:25</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：38</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_614" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/liuhongxiangm/article/details/53490850" target="_top" strategy="BlogCommendFromBaidu_4">
+				<em>webrtc</em> 研究-带宽控制			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/liuhongxiangm/article/details/53490850" target="_top">
+				带宽控制上行带宽控制 
+        <em>webrtc</em>/modules/bitrate_controller 
+下行带宽估计 
+        remote_bitrate_estimator...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/liuhongxiangm" title="liuhongxiangm" target="_blank">
+					<img src="3_liuhongxiangm.jpg" alt="liuhongxiangm" class="avatar-pic">
+					<span class="name">liuhongxiangm</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2016-12-06 18:34:48</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：1317</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_614" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/volvet/article/details/54577776" target="_top" strategy="BlogCommendFromBaidu_5">
+				<em>WebRTC</em> 中的带宽侦测			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/volvet/article/details/54577776" target="_top">
+				<em>WebRTC</em> 中的带宽侦测<em>WebRTC</em>的带宽利用率相当高,    在测试中, 绝大多数时间都可以在可用带宽的95%以上,  而且在高利用率的同时, 还能保持音视频的高质量,   其带宽侦测机制在其中扮...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/volvet" title="volvet" target="_blank">
+					<img src="3_volvet.jpg" alt="volvet" class="avatar-pic">
+					<span class="name">volvet</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2017-01-16 22:47:54</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：1921</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box recommend-ad-box" id="a_d_feed_0"></div>
+			
+			<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_614" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/MeRcy_PM/article/details/71474264" target="_top" strategy="BlogCommendFromBaidu_6">
+				<em>webrtc</em>中rtcp反馈与<em>码率控制</em>模块分析			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/MeRcy_PM/article/details/71474264" target="_top">
+				<em>webrtc</em>中rtcp反馈与<em>码率控制</em>模块分析			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/MeRcy_PM" title="MeRcy_PM" target="_blank">
+					<img src="3_mercy_pm.jpg" alt="MeRcy_PM" class="avatar-pic">
+					<span class="name">MeRcy_PM</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2017-05-09 15:10:34</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：2153</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_614" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/doitsjz/article/details/73351176" target="_top" strategy="BlogCommendFromBaidu_7">
+				<em>WEBRTC</em> 实时视频传输中的RTCP协议<em>码率控制</em>报文			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/doitsjz/article/details/73351176" target="_top">
+				流媒体传输中常用的RTCP包主要有SR／RR／SDES／BYE／APP／XR，主要由RFC 3611和RFC 3550定义。
+
+而<em>WEBRTC</em>视频中常用的RTCP包比语音要多很多，语音的RTCP主...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/doitsjz" title="doitsjz" target="_blank">
+					<img src="3_doitsjz.jpg" alt="doitsjz" class="avatar-pic">
+					<span class="name">doitsjz</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2017-06-16 21:34:51</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：963</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_614" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/sonysuqin/article/details/79860179" target="_top" strategy="searchFromBaidu_8">
+				<em>WebRTC</em>的QP、分辨率自动调整			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/sonysuqin/article/details/79860179" target="_top">
+				摘要&nbsp; &nbsp; 描述<em>WebRTC</em>在编码端分辨率自动调整的原因，以及关闭分辨率自动调整策略的方法。版本&nbsp; &nbsp; 主要针对57版本，同时也查看了65版本的代码，代码结构有所改变，但是逻辑不变。问题&nbsp; &nbsp;&nbsp;最近把...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/sonysuqin" title="sonysuqin" target="_blank">
+					<img src="3_sonysuqin.jpg" alt="sonysuqin" class="avatar-pic">
+					<span class="name">sonysuqin</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2018-04-09 01:00:30</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：131</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_614" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/mandagod/article/details/59525635" target="_top" strategy="searchFromBaidu_9">
+				Android IOS <em>WebRTC</em> 音视频开发总结（五五）-- 音视频通讯中的抗丢包与带宽自适应原理			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/mandagod/article/details/59525635" target="_top">
+				本文主要分析<em>webrtc</em>中的抗丢包与带宽自适应原理，文章来自博客园RTC.Blacker，欢迎关注微信公众号blacker，更多详见www.rtc.help
+&nbsp;
+文章内容主要来自中国电信北京研究院丁博...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/mandagod" title="mandagod" target="_blank">
+					<img src="3_mandagod.jpg" alt="mandagod" class="avatar-pic">
+					<span class="name">mandagod</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2017-03-02 15:27:57</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：587</span>
+			</p>
+		</div>
+	</div>
+			            <div class="recommend-loading-box">
+                <img src="feedloading.gif">
+            </div>
+            <div class="recommend-end-box">
+                <p class="text-center">没有更多推荐了，<a href="https://blog.csdn.net/" class="c-blue c-blue-hover c-blue-focus">返回首页</a></p>
+            </div>
+        </div>
+    </main>
+    <aside>
+		    <div id="asideProfile" class="aside-box">
+    <h3 class="aside-title">个人资料</h3>
+    <div class="profile-intro d-flex">
+        <div class="avatar-box d-flex justify-content-center flex-column">
+            <a href="https://blog.csdn.net/chinabinlang">
+                <img src="3_chinabinlang.jpg" class="avatar_pic">
+            </a>
+        </div>
+        <div class="user-info d-flex justify-content-center flex-column">
+            <p class="name csdn-tracking-statistics tracking-click" data-mod="popu_379">
+                <a href="https://blog.csdn.net/chinabinlang" target="_top" class="text-truncate" id="uid">chinabinlang</a>
+            </p>
+                    </div>
+                <div class="opt-box d-flex justify-content-center flex-column">
+            <span class="csdn-tracking-statistics tracking-click" data-mod="popu_379">
+                                <a class="btn btn-sm btn-red-hollow" href="https://passport.csdn.net/account/login?from=https://blog.csdn.net/chinabinlang/article/details/78294464" target="_self">关注</a>
+                            </span>
+            
+        </div>
+            </div>
+    <div class="data-info d-flex item-tiling">
+        <dl class="text-center" title="367">
+            <dt>原创</dt>
+            <dd><span class="count">367</span></dd>
+        </dl>
+        <dl class="text-center" title="371">
+            <dt>粉丝</dt>
+            <dd><span class="count" id="fan">371</span></dd>
+        </dl>
+        <dl class="text-center" title="120">
+            <dt>喜欢</dt>
+            <dd><span class="count">120</span></dd>
+        </dl>
+        <dl class="text-center" title="177">
+            <dt>评论</dt>
+            <dd><span class="count">177</span></dd>
+        </dl>
+    </div>
+    <div class="grade-box clearfix">
+        <dl>
+            <dt>等级：</dt>
+            <dd>
+                <a href="https://blog.csdn.net/home/help.html#level" title="7级,点击查看等级说明" target="_top">
+                    <svg class="icon icon-level" aria-hidden="true">
+                        <use xlink:href="#csdnc-bloglevel-7"></use>
+                    </svg>
+                </a>
+            </dd>
+        </dl>
+        <dl>
+            <dt>访问：</dt>
+            <dd title="1924090">
+                192万+            </dd>
+        </dl>
+        <dl>
+            <dt>积分：</dt>
+            <dd title="20301">
+                2万+            </dd>
+        </dl>
+        <dl title="523">
+            <dt>排名：</dt>
+            <dd>523</dd>
+        </dl>
+    </div>
+        <div class="badge-box d-flex">
+        <span>勋章：</span>
+                        <a class="icon-badge" title="持之以恒">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#csdnc-m-lasting"></use>
+            </svg>
+            <div class="icon-arrow"></div>
+            <div class="grade-detail-box item2">
+                <div class="pos-box">
+                    <div class="left-box d-flex justify-content-center align-items-center flex-column">
+                        <svg class="icon" aria-hidden="true">
+                            <use xlink:href="#csdnc-m-lasting"></use>
+                        </svg>
+                        <p>持之以恒</p>
+                    </div>
+                    <div class="right-box d-flex justify-content-center align-items-center">
+                        授予每个自然月内发布4篇或4篇以上原创或翻译IT博文的用户。不积跬步无以至千里，不积小流无以成江海，程序人生的精彩需要坚持不懈地积累！
+                    </div>
+                </div>
+            </div>
+        </a>
+                            </div>
+    </div>		    <div class="csdn-tracking-statistics mb8 box-shadow" data-pid="blog" data-mod="popu_4" style="height: 250px;">
+    <div class="aside-content text-center" id="cpro_u2734133">
+        <!-- 投放代码 -->
+        <div id="_ubox2qavnq"><iframe scrolling="no" src="index_2.html" width="300" height="250" frameborder="0"></iframe></div>
+    </div>
+</div>
+		    <div id="asideNewArticle" class="aside-box">
+    <h3 class="aside-title">最新文章</h3>
+    <div class="aside-content">
+        <ul class="inf_list clearfix csdn-tracking-statistics tracking-click" data-mod="popu_382">
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/chinabinlang/article/details/80429932" target="_top">libcurl</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/chinabinlang/article/details/80321651" target="_top">Windows平台下Doxygen+GraphViz+HtmlHelp</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/chinabinlang/article/details/80240698" target="_top">webrtc中EncoderQueue线程 和 webrtc_video_capture线程</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/chinabinlang/article/details/80239913" target="_top">webrtc中PacerThread堆栈调用</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/chinabinlang/article/details/80239513" target="_top">webrtc中pc_network_thread堆栈调用</a>
+            </li>
+                    </ul>
+    </div>
+</div>
+		    		    <div id="asideCategory" class="aside-box flexible-box">
+    <h3 class="aside-title">个人分类</h3>
+    <div class="aside-content">
+        <ul>
+                        <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/category/1158968">
+                    C/C++                    <span class="count float-right">60篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/category/1158969">
+                    VC++                    <span class="count float-right">130篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/category/5848965">
+                    Java                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/category/2751065">
+                    Android                    <span class="count float-right">50篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/category/5767467">
+                    eclipse                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/category/1740747">
+                    QT                    <span class="count float-right">73篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/category/1789291">
+                    Qt Graphics View Framework                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/category/2771045">
+                    WebRTC                    <span class="count float-right">54篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/category/7354627">
+                    CLion                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/category/1125520">
+                    DirectShow                    <span class="count float-right">17篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/category/1125519">
+                    OpenCV                    <span class="count float-right">24篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/category/955472">
+                    编解码                    <span class="count float-right">81篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/category/6016569">
+                    x264                    <span class="count float-right">11篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/category/7354564">
+                    FFmpeg                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/category/1126308">
+                    MAC/IPhone/ios                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/category/1208165">
+                    多媒体常识                    <span class="count float-right">21篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/category/1254481">
+                    SDL                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/category/1276125">
+                    live555                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/category/1260204">
+                    speex                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/category/3113457">
+                    RTMP                    <span class="count float-right">10篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/category/6366658">
+                    HTTP Live Streaming (HLS)                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/category/1376822">
+                    Ribbon界面                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/category/1742939">
+                    VLC                    <span class="count float-right">8篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/category/1581565">
+                    PortAudio                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/category/1311612">
+                    网络                    <span class="count float-right">27篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/category/2375275">
+                    Linux（Ubuntu）                    <span class="count float-right">14篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/category/7562294">
+                    TensorFlow                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/category/1294882">
+                    开源项目（或开源工具）                    <span class="count float-right">10篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/category/7620262">
+                    HTTP，Web，JavaScript，PHP等相关                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/category/1208914">
+                    计算机常识                    <span class="count float-right">31篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/category/1255671">
+                    平常常识                    <span class="count float-right">19篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/category/2230475">
+                    软件调试                    <span class="count float-right">8篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/category/1704503">
+                    项目管理                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/category/7279382">
+                    发展体育运动，增强人民体质                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                    </ul>
+    </div>
+        <p class="text-center">
+        <a class="btn btn-link-blue flexible-btn" data-fbox="aside-archive">展开</a>
+    </p>
+    </div>
+		    <div id="asideArchive" class="aside-box flexible-box">
+    <h3 class="aside-title">归档</h3>
+    <div class="aside-content">
+        <ul class="archive-list">
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2018/05">
+                    2018年5月                    <span class="count float-right">10篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2018/04">
+                    2018年4月                    <span class="count float-right">13篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2018/03">
+                    2018年3月                    <span class="count float-right">8篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2018/02">
+                    2018年2月                    <span class="count float-right">9篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2018/01">
+                    2018年1月                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2017/12">
+                    2017年12月                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2017/11">
+                    2017年11月                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2017/10">
+                    2017年10月                    <span class="count float-right">8篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2017/09">
+                    2017年9月                    <span class="count float-right">13篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2017/08">
+                    2017年8月                    <span class="count float-right">9篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2017/07">
+                    2017年7月                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2017/06">
+                    2017年6月                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2017/05">
+                    2017年5月                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2017/04">
+                    2017年4月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2017/03">
+                    2017年3月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2016/08">
+                    2016年8月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2016/07">
+                    2016年7月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2016/06">
+                    2016年6月                    <span class="count float-right">10篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2016/05">
+                    2016年5月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2016/04">
+                    2016年4月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2016/03">
+                    2016年3月                    <span class="count float-right">12篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2016/02">
+                    2016年2月                    <span class="count float-right">8篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2016/01">
+                    2016年1月                    <span class="count float-right">12篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2015/12">
+                    2015年12月                    <span class="count float-right">13篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2015/11">
+                    2015年11月                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2015/10">
+                    2015年10月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2015/09">
+                    2015年9月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2015/08">
+                    2015年8月                    <span class="count float-right">11篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2015/07">
+                    2015年7月                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2015/06">
+                    2015年6月                    <span class="count float-right">9篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2015/05">
+                    2015年5月                    <span class="count float-right">12篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2015/04">
+                    2015年4月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2015/03">
+                    2015年3月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2015/02">
+                    2015年2月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2015/01">
+                    2015年1月                    <span class="count float-right">12篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2014/12">
+                    2014年12月                    <span class="count float-right">19篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2014/11">
+                    2014年11月                    <span class="count float-right">20篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2014/10">
+                    2014年10月                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2014/09">
+                    2014年9月                    <span class="count float-right">9篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2014/08">
+                    2014年8月                    <span class="count float-right">13篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2014/07">
+                    2014年7月                    <span class="count float-right">15篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2014/06">
+                    2014年6月                    <span class="count float-right">19篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2014/05">
+                    2014年5月                    <span class="count float-right">21篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2014/04">
+                    2014年4月                    <span class="count float-right">9篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2014/03">
+                    2014年3月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2014/02">
+                    2014年2月                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2014/01">
+                    2014年1月                    <span class="count float-right">16篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2013/12">
+                    2013年12月                    <span class="count float-right">23篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2013/11">
+                    2013年11月                    <span class="count float-right">17篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2013/10">
+                    2013年10月                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2013/09">
+                    2013年9月                    <span class="count float-right">11篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2013/08">
+                    2013年8月                    <span class="count float-right">12篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2013/07">
+                    2013年7月                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2013/06">
+                    2013年6月                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2013/05">
+                    2013年5月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2013/04">
+                    2013年4月                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2013/03">
+                    2013年3月                    <span class="count float-right">14篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2013/02">
+                    2013年2月                    <span class="count float-right">8篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2013/01">
+                    2013年1月                    <span class="count float-right">9篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2012/12">
+                    2012年12月                    <span class="count float-right">10篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2012/11">
+                    2012年11月                    <span class="count float-right">10篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2012/10">
+                    2012年10月                    <span class="count float-right">13篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2012/09">
+                    2012年9月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2012/08">
+                    2012年8月                    <span class="count float-right">13篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2012/07">
+                    2012年7月                    <span class="count float-right">9篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2012/06">
+                    2012年6月                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2012/05">
+                    2012年5月                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2012/04">
+                    2012年4月                    <span class="count float-right">10篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2012/03">
+                    2012年3月                    <span class="count float-right">9篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2012/02">
+                    2012年2月                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2012/01">
+                    2012年1月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2011/12">
+                    2011年12月                    <span class="count float-right">11篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2011/11">
+                    2011年11月                    <span class="count float-right">12篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2011/10">
+                    2011年10月                    <span class="count float-right">11篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2011/09">
+                    2011年9月                    <span class="count float-right">11篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2011/08">
+                    2011年8月                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2011/07">
+                    2011年7月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2011/06">
+                    2011年6月                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2011/05">
+                    2011年5月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2011/04">
+                    2011年4月                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2011/03">
+                    2011年3月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2011/01">
+                    2011年1月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2010/12">
+                    2010年12月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2010/11">
+                    2010年11月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/chinabinlang/article/month/2010/09">
+                    2010年9月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                    </ul>
+    </div>
+        <p class="text-center">
+        <a class="btn btn-link-blue flexible-btn" data-fbox="aside-archive">展开</a>
+    </p>
+    </div>
+		    <div id="asideHotArticle" class="aside-box">
+	<h3 class="aside-title">热门文章</h3>
+	<div class="aside-content">
+		<ul class="hotArticle-list csdn-tracking-statistics tracking-click" data-mod="popu_521">
+							<li>
+					<a href="https://blog.csdn.net/chinabinlang/article/details/45092297">可用的rtmp卫视直播地址</a>
+					<p class="read">阅读量：<span>132277</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/chinabinlang/article/details/6802686">atan函数与atan2函数的一点区别</a>
+					<p class="read">阅读量：<span>69459</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/chinabinlang/article/details/18360813">qt creator 调试器未设置</a>
+					<p class="read">阅读量：<span>35134</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/chinabinlang/article/details/16921531">关于QObject::connect中函数参数</a>
+					<p class="read">阅读量：<span>30389</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/chinabinlang/article/details/16965839">Qt创建子窗体</a>
+					<p class="read">阅读量：<span>22952</span></p>
+				</li>
+					</ul>
+	</div>
+</div>
+		    <div id="asideNewComments" class="aside-box">
+    <h3 class="aside-title">最新评论</h3>
+    <div class="aside-content">
+        <ul class="newcomment-list">
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/chinabinlang/article/details/45092297#comments">可用的rtmp卫视直播地址</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/renhui1112" class="user-name" target="_top">renhui1112</a>：大多不可用，可用的 我这边做了整理 https://blog.csdn.net/renhui111...                </p>
+            </li>
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/chinabinlang/article/details/49491813#comments">VS2010调试程序--Dump文...</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/zl_95520" class="user-name" target="_top">zl_95520</a>：请教一下，这个自动生成DUMP文件程序，我是在VS2015上运行的，生成不了DUMP文件是为什么啊                </p>
+            </li>
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/chinabinlang/article/details/45092297#comments">可用的rtmp卫视直播地址</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/z15732621582" class="user-name" target="_top">z15732621582</a>：可用的rtmp卫视直播地址                </p>
+            </li>
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/chinabinlang/article/details/45092297#comments">可用的rtmp卫视直播地址</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/z15732621582" class="user-name" target="_top">z15732621582</a>：谢谢分享，网络限制                </p>
+            </li>
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/chinabinlang/article/details/46608025#comments">Opencv—CvvImage的使...</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/qq_37172182" class="user-name" target="_top">qq_37172182</a>：请问编写CvvImage.h和CvvImage.cpp后依然报错是什么原因？                </p>
+            </li>
+                    </ul>
+    </div>
+</div>
+		<div id="asideFooter">
+			
+		<div class="aside-box">
+						<div style="width: 100%;"><iframe scrolling="no" src="index_3.html" width="300" height="250" frameborder="0"></iframe></div>
+					</div>
+				<div class="aside-box">
+			<div class="persion_article">
+			</div>
+		</div>
+	</div>
+</aside>
+
+
+</div>
+<div class="mask-dark"></div>
+<div class="report-box">
+    <div class="pos-box">
+        <h2 class="title">不良信息举报</h2>
+        <a class="btn-close">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#csdnc-times"></use>
+            </svg>
+        </a>
+        <form id="frmReport" action="https://blog.csdn.net/chinabinlang/article/details/78294464?locationNum=7&amp;fps=1">
+            <div class="form-box">
+                <div class="txt-row-box">
+                    <label class="title" id="reptTit">举报内容：</label>
+                    <p class="rpt-title text-truncate">webrtc中的码率控制</p>
+                </div>
+                <div class="txt-row-box">
+                    <label class="title">举报原因：</label>
+                    <div class="rdo-box">
+                        <label><input class="rdo-chk report-type" id="report_sex" name="report_type" value="1" type="radio">色情</label>
+                        <label><input class="rdo-chk report-type" id="report_Politics" name="report_type" value="2" type="radio">政治</label>
+                        <label><input class="rdo-chk report-type" id="report_copy" name="report_type" value="3" type="radio">抄袭</label>
+                        <label><input class="rdo-chk report-type" id="report_ad" name="report_type" value="4" type="radio">广告</label>
+                        <label><input class="rdo-chk report-type" id="report_want" name="report_type" value="5" type="radio">招聘</label>
+                        <label><input class="rdo-chk report-type" id="report_call" name="report_type" value="6" type="radio">骂人</label>
+                        <label><input class="rdo-chk report-type" id="report_other" name="report_type" value="7" type="radio">其他</label>
+                    </div>
+                </div>
+                <div class="txt-row-box" id="rptOriginalurl">
+                    <label class="title">原文地址：</label>
+                    <div class="txt-box">
+                        <input class="ipt" name="originalurl" value="" type="text">
+                    </div>
+                </div>
+                <div class="txt-row-box">
+                    <label class="title">原因补充：</label>
+                    <div class="txt-box">
+                        <textarea class="ipt ipt-textarea" name="description" maxlength="30"></textarea>
+                        <p class="remark">最多只允许输入30个字</p>
+                    </div>
+                </div>
+            </div>
+            <div class="opt-box text-right">
+                <input class="btn btn-link-gray btn-close" value="取消" type="reset">
+                <input class="btn btn-red btn-submit" value="提交" type="submit">
+            </div>
+        </form>
+    </div>
+</div>
+<div class="pulllog-box" style="display: block;">
+	<div class="pulllog clearfix">
+		<span class="text float-left">加入CSDN，享受更精准的内容推荐，与500万程序员共同成长！</span>
+		<div class="pulllog-btn float-right clearfix">
+            <button class="pulllog-login float-left csdn-tracking-statistics tracking-click" data-mod="popu_557">
+                登录
+            </button>
+            <div class="pulllog-sigin float-left csdn-tracking-statistics tracking-click" data-mod="popu_558">
+                <a href="https://passport.csdn.net/account/mobileregister" target="_top">注册</a>
+            </div>
+            <button class="btn-close">
+                <svg class="icon" aria-hidden="true">
+                    <use xlink:href="#csdnc-times"></use>
+                </svg>
+            </button>
+		</div>
+	</div>
+</div>
+<div id="loginWrap" style="display: none;"></div>
+<div class="tool-box">
+	<ul class="meau-list">
+		<li>
+			<button class="btn-like " title="点赞">
+				<svg class="icon active" aria-hidden="true">
+					<use xlink:href="#csdnc-thumbsup-ok"></use>
+				</svg><svg class="icon no-active" aria-hidden="true">
+					<use xlink:href="#csdnc-thumbsup"></use>
+				</svg>
+				<p>0</p>
+			</button>
+		</li>
+		<li class="toc-container-box" id="liTocBox">
+			<button class="btn-toc" title="目录">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-contents"></use>
+				</svg><br>目录
+			</button>
+			<div class="toc-container">
+				<div class="pos-box">
+					<div class="icon-arrow"></div>
+					<div class="scroll-box">
+						<div class="toc-box"></div>
+					</div>
+				</div>
+				<div class="opt-box">
+					<button class="btn-opt prev nomore" title="向上">
+						<svg class="icon" aria-hidden="true">
+							<use xlink:href="#csdnc-chevronup"></use>
+						</svg>
+					</button>
+					<button class="btn-opt next">
+						<svg class="icon" aria-hidden="true">
+							<use xlink:href="#csdnc-chevrondown"></use>
+						</svg>
+					</button>
+				</div>
+			</div>
+		</li>
+		<li>
+			<button class="btn-bookmark" title="收藏">
+				<svg class="icon active" aria-hidden="true">
+					<use xlink:href="#csdnc-bookmark-ok"></use>
+				</svg><svg class="icon no-active" aria-hidden="true">
+					<use xlink:href="#csdnc-bookmark"></use>
+				</svg><br>收藏
+			</button>
+		</li>
+		<li>
+			<a class="btn-comments" title="评论" href="#commentBox">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-comments"></use>
+				</svg><br>评论
+			</a>
+		</li>
+				<li class="bdsharebuttonbox">
+			<a class="btn-comments bds_weixin" data-cmd="weixin" title="微信分享">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-wechat"></use>
+				</svg><br>微信
+			</a>
+		</li>
+		<li class="bdsharebuttonbox">
+			<a class="btn-comments bds_tsina" data-cmd="tsina" title="微博分享">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-weibo"></use>
+				</svg><br>微博
+			</a>
+		</li>
+		<li class="bdsharebuttonbox">
+			<a class="btn-comments bds_qzone" data-cmd="qzone" title="QQ分享">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-qq"></use>
+				</svg><br>QQ
+			</a>
+		</li>
+	</ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="box-box-default">
+    <a class="btn-remove">
+        关闭
+    </a>
+    <div id="_shwftoml65f"><iframe scrolling="no" src="index_4.html" width="160" height="600" frameborder="0"></iframe></div>
+</div>
+<div class="box-box-large">
+    <a class="btn-remove">
+        关闭
+    </a>
+    <div id="_d129y7arbm"><div style="margin: 0px;"><div id="kswjhzjrd" style="margin-bottom: 0px;"><iframe scrolling="no" src="index_5.html" width="250" height="250" frameborder="0"></iframe></div></div></div>
+</div>
+</body>
+</html>

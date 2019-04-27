@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="origin">
+<title>centos7无故重启-内核升级 - 魏一鸣 - 博客园</title>
+<meta property="og:description" content="最近有一台物理服务器，centos7操作系统，无故重启，每天都会发生这种情况： 解决： 升级内核 CentOS 允许使用 ELRepo，这是一个第三方仓库，可以将内核升级到最新版本。 1、 没升级之前">
+
+
+
+<link title="RSS" type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/weiyiming007/rss">
+<link title="RSD" type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/weiyiming007/rsd.xml">
+<link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/weiyiming007/wlwmanifest.xml">
+
+
+
+<link rel="preload" href="https://adservice.google.com/adsid/integrator.js?domain=www.cnblogs.com" as="script">
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<a name="top"></a>
+
+<div id="top">
+
+<h1><a id="Header1_HeaderTitle" class="headermaintitle" href="https://www.cnblogs.com/weiyiming007/">听风...</a></h1>
+<p id="tagline"></p>
+</div>
+<div id="leftmenu">
+
+	
+<h3>导航</h3>
+<ul>
+	<li>
+		<a id="blog_nav_sitehome" href="https://www.cnblogs.com/">博客园</a>
+	</li><li><a id="blog_nav_myhome" href="https://www.cnblogs.com/weiyiming007/">首页</a></li>
+	<li><a id="blog_nav_newpost" rel="nofollow" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">新随笔</a></li>
+	<li>
+		<a id="blog_nav_contact" accesskey="9" rel="nofollow" href="https://msg.cnblogs.com/send/%E9%AD%8F%E4%B8%80%E9%B8%A3">联系</a>
+	</li><li>
+		<a id="blog_nav_rss" href="https://www.cnblogs.com/weiyiming007/rss">订阅</a><a id="blog_nav_rss_image" href="https://www.cnblogs.com/weiyiming007/rss"><img src="xml.gif" alt="订阅"></a>
+	</li><li>
+		<a id="blog_nav_admin" rel="nofollow" href="https://i.cnblogs.com/">管理</a></li>
+</ul>
+
+	<div id="blog-calendar" style=""><table id="blogCalendar" class="Cal" title="Calendar" cellspacing="0" cellpadding="0">
+	<tbody><tr><td colspan="7"><table class="CalTitle" cellspacing="0">
+		<tbody><tr><td class="CalNextPrev"><a href="http://www.cnblogs.com/weiyiming007/p/2018/10/01">&lt;</a></td><td align="center">2018年11月</td><td class="CalNextPrev" align="right"><a href="http://www.cnblogs.com/weiyiming007/p/2018/12/01">&gt;</a></td></tr>
+	</tbody></table></td></tr><tr><th class="CalDayHeader" abbr="日" scope="col" align="center">日</th><th class="CalDayHeader" abbr="一" scope="col" align="center">一</th><th class="CalDayHeader" abbr="二" scope="col" align="center">二</th><th class="CalDayHeader" abbr="三" scope="col" align="center">三</th><th class="CalDayHeader" abbr="四" scope="col" align="center">四</th><th class="CalDayHeader" abbr="五" scope="col" align="center">五</th><th class="CalDayHeader" abbr="六" scope="col" align="center">六</th></tr><tr><td class="CalOtherMonthDay" align="center">28</td><td class="CalOtherMonthDay" align="center">29</td><td class="CalOtherMonthDay" align="center">30</td><td class="CalOtherMonthDay" align="center">31</td><td align="center">1</td><td align="center">2</td><td class="CalWeekendDay" align="center">3</td></tr><tr><td class="CalWeekendDay" align="center">4</td><td align="center">5</td><td align="center"><a href="https://www.cnblogs.com/weiyiming007/archive/2018/11/06.html"><u>6</u></a></td><td align="center"><a href="https://www.cnblogs.com/weiyiming007/archive/2018/11/07.html"><u>7</u></a></td><td align="center">8</td><td align="center">9</td><td class="CalWeekendDay" align="center">10</td></tr><tr><td class="CalWeekendDay" align="center">11</td><td class="CalTodayDay" align="center">12</td><td align="center">13</td><td align="center">14</td><td align="center">15</td><td align="center">16</td><td class="CalWeekendDay" align="center">17</td></tr><tr><td class="CalWeekendDay" align="center">18</td><td align="center">19</td><td align="center">20</td><td align="center">21</td><td align="center">22</td><td align="center">23</td><td class="CalWeekendDay" align="center">24</td></tr><tr><td class="CalWeekendDay" align="center">25</td><td align="center">26</td><td align="center">27</td><td align="center">28</td><td align="center">29</td><td align="center">30</td><td class="CalOtherMonthDay" align="center">1</td></tr><tr><td class="CalOtherMonthDay" align="center">2</td><td class="CalOtherMonthDay" align="center">3</td><td class="CalOtherMonthDay" align="center">4</td><td class="CalOtherMonthDay" align="center">5</td><td class="CalOtherMonthDay" align="center">6</td><td class="CalOtherMonthDay" align="center">7</td><td class="CalOtherMonthDay" align="center">8</td></tr>
+</tbody></table></div>
+	<div id="blog_stats">
+<h3>统计</h3>
+<ul>
+	<li>
+		随笔 -
+		51
+	</li><li>
+		文章 -
+		0
+	</li><li>
+		评论 -
+		0
+	</li><li>
+		引用 -
+		0
+	</li>
+</ul>
+</div>
+	
+<h3>公告</h3>
+	<div id="blog-news"><div id="profile_block">昵称：<a href="https://home.cnblogs.com/u/weiyiming007/">魏一鸣</a><br>园龄：<a href="https://home.cnblogs.com/u/weiyiming007/" title="入园时间：2017-06-28">1年4个月</a><br>粉丝：<a href="https://home.cnblogs.com/u/weiyiming007/followers/">0</a><br>关注：<a href="https://home.cnblogs.com/u/weiyiming007/followees/">0</a><div id="p_b_follow"><a href="javascript:void(0);" onclick="follow('ff24c0c7-ab38-48f8-fab9-08d49c352df2')">+加关注</a></div></div></div>
+
+	<div id="blog-sidecolumn"><div id="sidebar_search" class="sidebar-block">
+<div id="sidebar_search" class="mySearch">
+<h3 class="catListTitle">搜索</h3>
+<div id="sidebar_search_box">
+<div id="widget_my_zzk" class="div_my_zzk"><input id="q" onkeydown="return zzk_go_enter(event);" class="input_my_zzk" value="" type="text">&nbsp;<input onclick="zzk_go()" value="找找看" id="btnZzk" class="btn_my_zzk" type="button"></div>
+<div id="widget_my_google" class="div_my_zzk"><input name="google_q" id="google_q" onkeydown="return google_go_enter(event)" class="input_my_zzk" value="" type="text">&nbsp;<input onclick="google_go()" value="谷歌搜索" class="btn_my_zzk" type="button"></div>
+</div>
+</div>
+
+</div><div id="sidebar_shortcut" class="sidebar-block">
+<h3 class="catListTitle">常用链接</h3>
+<ul>
+<li><a href="https://www.cnblogs.com/weiyiming007/p/" title="我的博客的随笔列表">我的随笔</a></li><li><a href="https://www.cnblogs.com/weiyiming007/MyComments.html" title="我发表过的评论列表">我的评论</a></li><li><a href="https://www.cnblogs.com/weiyiming007/OtherPosts.html" title="我评论过的随笔列表">我的参与</a></li><li><a href="https://www.cnblogs.com/weiyiming007/RecentComments.html" title="我的博客的评论列表">最新评论</a></li><li><a href="https://www.cnblogs.com/weiyiming007/tag/" title="我的博客的标签列表">我的标签</a></li>
+</ul>
+<div id="itemListLin_con" style="display: none;">
+
+</div></div><div id="sidebar_toptags" class="sidebar-block">
+<h3 class="catListTitle">我的标签</h3>
+<div id="MyTag">
+<ul>
+<li><a href="https://www.cnblogs.com/weiyiming007/tag/grep/">grep</a>(1)</li><li><a href="https://www.cnblogs.com/weiyiming007/tag/JVM/">JVM</a>(1)</li>
+</ul>
+</div></div><div id="sidebar_categories">
+		<h3>随笔分类</h3>
+		
+				<ul>
+			
+				<li><a id="CatList_LinkList_0_Link_0" href="https://www.cnblogs.com/weiyiming007/category/1235972.html">java(3)</a> </li>
+			
+				<li><a id="CatList_LinkList_0_Link_1" href="https://www.cnblogs.com/weiyiming007/category/1133472.html">linux(24)</a> </li>
+			
+				<li><a id="CatList_LinkList_0_Link_2" href="https://www.cnblogs.com/weiyiming007/category/1110616.html">python(13)</a> </li>
+			
+				<li><a id="CatList_LinkList_0_Link_3" href="https://www.cnblogs.com/weiyiming007/category/1182750.html">Windows(6)</a> </li>
+			
+				<li><a id="CatList_LinkList_0_Link_4" href="https://www.cnblogs.com/weiyiming007/category/1202516.html">其他(2)</a> </li>
+			
+				<li><a id="CatList_LinkList_0_Link_5" href="https://www.cnblogs.com/weiyiming007/category/1138105.html">数据库(2)</a> </li>
+			
+				</ul>
+			
+	
+		<h3>随笔档案</h3>
+		
+				<ul>
+			
+				<li><a id="CatList_LinkList_1_Link_0" href="https://www.cnblogs.com/weiyiming007/archive/2018/11.html">2018年11月 (2)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_1" href="https://www.cnblogs.com/weiyiming007/archive/2018/10.html">2018年10月 (2)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_2" href="https://www.cnblogs.com/weiyiming007/archive/2018/09.html">2018年9月 (5)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_3" href="https://www.cnblogs.com/weiyiming007/archive/2018/08.html">2018年8月 (10)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_4" href="https://www.cnblogs.com/weiyiming007/archive/2018/07.html">2018年7月 (1)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_5" href="https://www.cnblogs.com/weiyiming007/archive/2018/06.html">2018年6月 (1)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_6" href="https://www.cnblogs.com/weiyiming007/archive/2018/05.html">2018年5月 (4)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_7" href="https://www.cnblogs.com/weiyiming007/archive/2018/04.html">2018年4月 (6)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_8" href="https://www.cnblogs.com/weiyiming007/archive/2018/03.html">2018年3月 (8)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_9" href="https://www.cnblogs.com/weiyiming007/archive/2018/02.html">2018年2月 (1)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_10" href="https://www.cnblogs.com/weiyiming007/archive/2017/12.html">2017年12月 (4)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_11" href="https://www.cnblogs.com/weiyiming007/archive/2017/11.html">2017年11月 (1)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_12" href="https://www.cnblogs.com/weiyiming007/archive/2017/10.html">2017年10月 (2)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_13" href="https://www.cnblogs.com/weiyiming007/archive/2017/09.html">2017年9月 (4)</a> </li>
+			
+				</ul>
+			
+	
+		<h3>文章分类</h3>
+		
+				<ul>
+			
+				<li><a id="CatList_LinkList_2_Link_0" href="https://www.cnblogs.com/weiyiming007/category/1110615.html">python</a> </li>
+			
+				</ul>
+			
+	</div><div id="sidebar_recentcomments" class="sidebar-block"><div id="recent_comments_wrap" style="display: none;">
+<h3 class="catListTitle">最新评论</h3>
+<div class="RecentComment" id="RecentComments">
+	<div id="RecentCommentsBlock"></div>
+</div>
+</div></div><div id="sidebar_topviewedposts" class="sidebar-block"><div id="topview_posts_wrap">
+<h3 class="catListTitle">阅读排行榜</h3>
+<div class="RecentComment" id="TopViewPosts"> 
+	<div id="TopViewPostsBlock"><ul><li><a href="https://www.cnblogs.com/weiyiming007/p/8615518.html">1. thinkpad开机引导方式变成PCI LAN选项解决(2689)</a></li><li><a href="https://www.cnblogs.com/weiyiming007/p/8125432.html">2. mysql导入数据load data infile用法(1995)</a></li><li><a href="https://www.cnblogs.com/weiyiming007/p/8927140.html">3. 鼠标不能动，插上了但没反应(1513)</a></li><li><a href="https://www.cnblogs.com/weiyiming007/p/9075986.html">4. Ubuntu16.04安装Python3.6 和pip(1267)</a></li><li><a href="https://www.cnblogs.com/weiyiming007/p/8579235.html">5. ipython安装(606)</a></li></ul></div>
+</div>
+</div></div><div id="sidebar_topcommentedposts" class="sidebar-block"><div id="topfeedback_posts_wrap" style="display: none;">
+<h3 class="catListTitle">评论排行榜</h3>
+<div class="RecentComment" id="TopCommentsPosts">
+	<div id="TopFeedbackPostsBlock"></div>
+</div></div></div><div id="sidebar_topdiggedposts" class="sidebar-block"><div id="topdigg_posts_wrap" style="display: none;">
+<h3 class="catListTitle">推荐排行榜</h3>
+<div class="RecentComment">
+	<div id="TopDiggPostsBlock"></div>
+</div></div></div></div>
+
+</div>
+<div id="main">
+	
+<div id="post_detail">
+	<div class="post">
+		<h2>
+			<a id="cb_post_title_url" href="https://www.cnblogs.com/weiyiming007/p/9504962.html">centos7无故重启-内核升级</a>
+		</h2>
+		<div id="cnblogs_post_body" class="blogpost-body"><p>最近有一台物理服务器，centos7操作系统，无故重启，每天都会发生这种情况：</p>
+<p>解决：</p>
+<p>升级内核</p>
+<p>CentOS 允许使用 ELRepo，这是一个第三方仓库，可以将内核升级到最新版本。</p>
+<p>1、</p>
+<p>没升级之前先查看一下内核：uname -sr</p>
+<p><img src="1190780-20180820104501992-1921319713.png" alt="" width="353" height="42"></p>
+<p>要在 CentOS 7 上启用 ELRepo 仓库，请运行：<br>rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org　　 &nbsp;#导入key，可能会失败(没关系)，继续往下操作即可</p>
+<p><img src="1190780-20180820104545852-1776946732.png" alt="" width="783" height="37"></p>
+<p>rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-2.el7.elrepo.noarch.rpm　　　　#升级安装&nbsp;ELRepo</p>
+<p><img src="1190780-20180820104915324-724854749.png" alt="" width="963" height="116"></p>
+<p>2、</p>
+<p> yum --disablerepo="*" --enablerepo="elrepo-kernel" list available　　　　　　　　#查看</p>
+<p><img src="1190780-20180820105313791-392166801.png" alt="" width="1031" height="304"></p>
+<p>3、</p>
+<p>安装最新的主线稳定内核：<br>yum --enablerepo=elrepo-kernel install kernel-ml　　　　#中间会有提示都输入y即可</p>
+<p>4、</p>
+<p>编辑/etc/default/grub 并设置 GRUB_DEFAULT=0 &nbsp; &nbsp;意思是 GRUB 初始化页面的第一个内核将作为默认内核。</p>
+<p>&nbsp;<img src="1190780-20180820113518333-1368527378.png" alt="" width="959" height="154"></p>
+<p>查看系统当前可使用的内核；</p>
+<p>cat /boot/grub2/grub.cfg |grep menuentry</p>
+<p><img src="1190780-20180820114214685-390782991.png" alt="" width="979" height="137"></p>
+<p>图中4.18版本的就是刚才安装的内核，</p>
+<p>5、</p>
+<p>#修改开机时默认使用的内核，(此处应看清自己的内核版本，不要一味的复制)<br>grub2-set-default&nbsp;'CentOS Linux (4.18.3-1.el7.elrepo.x86_64) 7 (Core)'</p>
+<p><img src="1190780-20180820114404292-66751993.png" alt="" width="821" height="33"></p>
+<p>然后重启系统；</p>
+<p>6、</p>
+<p>查看当前使用的内核，发现已经升级完成了；</p>
+<p><img src="1190780-20180820114556139-2105540955.png" alt="" width="437" height="51"></p>
+<p>我的系统升级完内核，观察了一个多星期，没有出现过自动重启的现象；</p>
+<p>&nbsp;</p>
+<p>还有一些其他的解决办法，我没有测试，如下： &nbsp; (具体问题还要仔细去分析日志)</p>
+<p>如：</p>
+<p>解决方法：<br>	# vi /boot/grub/grub.conf<br>	在kernel一行最后加上添加 intremap=off 或者 intremap=no_x2apic_optout<br>	 <br>	然后重启服务器即可。<br>	 <br>	参数解释：<br>	intremap={on,off,nosid,no_x2apic_optout}<br>	 <br>	on：(默认值)开启中断重映射,BIOS中默认开启 <br>	off：关闭中断重映射<br>	nosid：重映射时不对SID(Source ID)做检查<br>	no_x2apic_optout：无视BIOS的设置，强制禁用x2APIC特性，主要用于解决某些对x2APIC支持有缺陷的BIOS导致的故障</p></div><div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+<div id="BlogPostCategory">分类: <a href="https://www.cnblogs.com/weiyiming007/category/1133472.html" target="_top">linux</a></div>
+<div id="EntryTag"></div>
+<div id="blog_post_info"><div id="green_channel">
+        <a href="javascript:void(0);" id="green_channel_digg" onclick="DiggIt(9504962,cb_blogId,1);green_channel_success(this,'谢谢推荐！');">好文要顶</a>
+            <a id="green_channel_follow" onclick="follow('ff24c0c7-ab38-48f8-fab9-08d49c352df2');" href="javascript:void(0);">关注我</a>
+    <a id="green_channel_favorite" onclick="AddToWz(cb_entryId);return false;" href="javascript:void(0);">收藏该文</a>
+    <a id="green_channel_weibo" href="javascript:void(0);" title="分享至新浪微博" onclick="ShareToTsina()"><img src="icon_weibo_24.png" alt=""></a>
+    <a id="green_channel_wechat" href="javascript:void(0);" title="分享至微信" onclick="shareOnWechat()"><img src="wechat.png" alt=""></a>
+</div>
+<div id="author_profile">
+    <div id="author_profile_info" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/weiyiming007/" target="_top"><img src="20170628234025.png" class="author_avatar" alt=""></a>
+        <div id="author_profile_detail" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/weiyiming007/">魏一鸣</a><br>
+            <a href="http://home.cnblogs.com/u/weiyiming007/followees">关注 - 0</a><br>
+            <a href="http://home.cnblogs.com/u/weiyiming007/followers">粉丝 - 0</a>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div id="author_profile_honor"></div>
+    <div id="author_profile_follow">
+                <a href="javascript:void(0);" onclick="follow('ff24c0c7-ab38-48f8-fab9-08d49c352df2');return false;">+加关注</a>
+    </div>
+</div>
+<div id="div_digg">
+    <div class="diggit" onclick="votePost(9504962,'Digg')">
+        <span class="diggnum" id="digg_count">0</span>
+    </div>
+    <div class="buryit" onclick="votePost(9504962,'Bury')">
+        <span class="burynum" id="bury_count">0</span>
+    </div>
+    <div class="clear"></div>
+    <div class="diggword" id="digg_tips">
+    </div>
+</div>
+</div>
+<div class="clear"></div>
+<div id="post_next_prev"><a href="https://www.cnblogs.com/weiyiming007/p/9493699.html" class="p_n_p_prefix">« </a> 上一篇：<a href="https://www.cnblogs.com/weiyiming007/p/9493699.html" title="发布于2018-08-17 15:49">ubuntu scp命令或者用root连接ssh提示：Permission denied, please try again.错误</a><br><a href="https://www.cnblogs.com/weiyiming007/p/9507034.html" class="p_n_p_prefix">» </a> 下一篇：<a href="https://www.cnblogs.com/weiyiming007/p/9507034.html" title="发布于2018-08-20 17:57">centos查看CPU的数量</a><br></div>
+</div>
+
+
+		<p class="postfoot">
+			posted on <span id="post-date">2018-08-20 12:43</span> <a href="https://www.cnblogs.com/weiyiming007/">魏一鸣</a> 阅读(<span id="post_view_count">403</span>) 评论(<span id="post_comment_count">0</span>)  <a href="https://i.cnblogs.com/EditPosts.aspx?postid=9504962" rel="nofollow">编辑</a> <a href="#" onclick="AddToWz(9504962);return false;">收藏</a>
+		</p>
+	</div>
+	
+	
+</div><a name="!comments"></a><div id="blog-comments-placeholder"></div>
+<div id="comment_form" class="commentform">
+<a name="commentform"></a>
+<div id="divCommentShow"></div>
+<div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+<div id="comment_form_container"><div class="login_tips">注册用户登录后才能发表评论，请 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return login('commentform');">登录</a> 或 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return register();">注册</a>，<a href="http://www.cnblogs.com/">访问</a>网站首页。</div></div>
+<div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+<div id="ad_t2"><a href="http://www.ucancode.com/index.htm" target="_top">【推荐】超50万VC++源码: 大型组态工控、电力仿真CAD与GIS源码库！</a><br><a href="http://clickc.admaster.com.cn/c/a116493,b2949399,c1705,i0,m101,8a1,8b3,h" target="_top" onclick="ga('send', 'event', 'Link', 'click', 'T2-华为云')">【推荐】华为云11.11普惠季 血拼风暴 一促即发</a><br><a href="https://www.grapecity.com.cn/developer/spreadjs?utm_source=cnblogs&amp;utm_medium=blogpage&amp;utm_term=bottom&amp;utm_content=SpreadJS&amp;utm_campaign=community" target="_top" onclick="ga('send', 'event', 'Link', 'click', 'T2-SpreadJS')">【工具】SpreadJS纯前端表格控件，可嵌入应用开发的在线Excel</a><br><a href="https://cloud.tencent.com/act/group/amd/index?fromSource=gwzcw.1608278.1608278.1608278" target="_top" onclick="ga('send', 'event', 'Link', 'click', 'T2-腾讯云')">【腾讯云】拼团福利，AMD云服务器8元/月</a><br></div>
+<div id="opt_under_post"></div>
+<div id="cnblogs_c1" class="c_ad_block"><a href="https://cloud.tencent.com/act/double11?fromSource=gwzcw.1608279.1608279.1608279" target="_top"><img src="24442-20181105150013344-185546354.jpg" alt="腾讯云1105" onclick="ga('send', 'event', 'Link', 'click', 'C1');" width="300" height="250"></a></div>
+<div id="under_post_news"><div class="itnews c_ad_block"><b>相关博文：</b><br>·  <a href="https://www.cnblogs.com/hh2737/p/7472982.html" target="_top" onclick="clickRecomItmem(7472982,'NttqGieOpDbZhG2HZidULrRpNGwQiXonsXlNGvmM4qXjG+h/+WhP/ZLA1OUG319LtEnp/+fs4R2UacscZlHp8D84GWZMMNT4xxWGYGpMRiwN+EWrS82FfVzbPkkkLg03jSqW5eeqcPNRmqXEiIrM')">Centos7升级新内核</a><br>·  <a href="https://www.cnblogs.com/zhangeamon/p/8057152.html" target="_top" onclick="clickRecomItmem(8057152,'OylqTAm6fqyDK+JenwbRmdXH6qZt9HUxWuQEoqnRK3LWdhRlWUOTV+/z0GOZBWKeP/K3YAWxsgrrJZvvij8X1iobGqTE/T4qQX4owhVi+sY1JnAfQH31xo7fprpbKWIesCt13/yG3LkR6Lpph6D8')">Centos 7升级内核</a><br>·  <a href="https://www.cnblogs.com/zengkefu/p/6579576.html" target="_top" onclick="clickRecomItmem(6579576,'Y2du/D8aek1jg33xbGgM+BWuR474ChuKs/snb5ZVPLQU1QC7SPCfTacM7zXWqydlRwjz+gIXBdgxLY2RjdUg5J1q8fmUPf4l5Eoh/Rach9vrrmFwupNt9Tl11lyu05EOglSo57hY1KyPu/WtpOL5')">如何在 CentOS 7 中安装或升级最新的内核</a><br>·  <a href="https://www.cnblogs.com/xiaoyaojinzhazhadehangcheng/articles/8556176.html" target="_top" onclick="clickRecomItmem(8556176,'KFgev9ajNR/14SD5gB8BhOIVoms22GGHzCzxWcmW2J/rRfJjENIt8ZONg6anUk5Yq/5nzIJM1XpJGO1mYpIUJFXEdlgOkZpQ6Pk5HBiyiX534fQOUP+RfDFrKIIh7mQdV2fF7+OAS2/GzIQxlRWn')">CentOS 7. × 系统及内核升级指南</a><br>·  <a href="https://www.cnblogs.com/gtarcoder/p/6016302.html" target="_top" onclick="clickRecomItmem(6016302,'L1BdMmClDFrgkW3kpjpzJ5g/Nszez3eZPS6v5cTel704sOUKkhAXHEAP5IjSAdha4KxDi9iT4VULXBcIplFVrgOFiYKNN0V9cu9ziRXnwOKHPNHuCE0TLfSIECxZywmmhz1J9QZleWG1N7Lz0YAA')">centos 更新linux内核</a><br></div></div>
+
+
+
+
+<div id="cnblogs_c2" class="c_ad_block">
+    <div id="div-gpt-ad-1539008685004-0" style="height: 60px; width: 468px;" data-google-query-id="CIve9aykzt4CFQt1vQodyWsHQQ">
+    
+    <div id="google_ads_iframe_/1090369/C2_0__container__" style="border: 0pt none;"><iframe id="google_ads_iframe_/1090369/C2_0" title="3rd party ad content" name="google_ads_iframe_/1090369/C2_0" scrolling="no" marginwidth="0" marginheight="0" style="border: 0px none; vertical-align: bottom;" srcdoc="" data-google-container-id="1" data-load-complete="true" src="index_1.html" width="468" height="60" frameborder="0"></iframe></div></div>
+</div>
+<div id="under_post_kb"><div class="itnews c_ad_block"><b>最新新闻</b>：<br> ·  <a href="https://news.cnblogs.com/n/611959/" target="_top">双十一打破记录背后，是一部中国零售的变迁史</a><br> ·  <a href="https://news.cnblogs.com/n/611958/" target="_top">拼多多9小时超去年双十一GMV 贫困县产生1200万个订单</a><br> ·  <a href="https://news.cnblogs.com/n/611957/" target="_top">我国“人造太阳”EAST装置 实现1亿摄氏度等离子体运行</a><br> ·  <a href="https://news.cnblogs.com/n/611956/" target="_top">纽约时报：阿里，造势之王</a><br> ·  <a href="https://news.cnblogs.com/n/611955/" target="_top">断电9小时，600万人受影响，什么天气这么可怕？</a><br>» <a href="http://news.cnblogs.com/" title="IT新闻" target="_top">更多新闻...</a></div></div>
+<div id="HistoryToday" class="c_ad_block"></div>
+
+</div>
+
+
+</div>
+
+<p id="footer">
+	Powered by: 
+	<br>
+	
+	<a id="Footer1_Hyperlink3" name="Hyperlink1" href="https://www.cnblogs.com/" style="font-family: Verdana; font-size: 12px;">博客园</a>
+	<br>
+	Copyright © 魏一鸣
+</p>
+
+
+<iframe id="google_osd_static_frame_6902698574440" name="google_osd_static_frame" style="display: none; width: 0px; height: 0px;" src="index_2.html"></iframe></body>
+</html>

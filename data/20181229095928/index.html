@@ -1,0 +1,817 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN">
+<head profile="http://gmpg.org/xfn/11">
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+	
+	<title>  推荐给初学者的机器学习算法（速查表）</title>
+	<link rel="alternate" type="application/rss+xml" title="服务器运维架构|Linux运维|云计算大数据 » 推荐给初学者的机器学习算法（速查表）评论Feed" href="http://www.ha97.com/5903.html/feed">
+		
+		
+
+
+
+<link rel="https://api.w.org/" href="http://www.ha97.com/wp-json/">
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://www.ha97.com/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://www.ha97.com/wp-includes/wlwmanifest.xml"> 
+<link rel="prev" title="GPU和CPU的区别特点" href="http://www.ha97.com/5986.html">
+<link rel="next" title="温铁军：中国为何每次逢大危机总能力挽狂澜？" href="http://www.ha97.com/5968.html">
+<meta name="generator" content="WordPress 4.5.14">
+<link rel="canonical" href="http://www.ha97.com/5903.html">
+<link rel="shortlink" href="http://www.ha97.com/?p=5903">
+<link rel="alternate" type="application/json+oembed" href="http://www.ha97.com/wp-json/oembed/1.0/embed?url=http%3A%2F%2Fwww.ha97.com%2F5903.html">
+<link rel="alternate" type="text/xml+oembed" href="http://www.ha97.com/wp-json/oembed/1.0/embed?url=http%3A%2F%2Fwww.ha97.com%2F5903.html&amp;format=xml">
+		
+			
+	<link rel="shortcut icon" type="image/ico" href="favicon.gif">
+	<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://www.ha97.com/feed">
+	<link rel="alternate" type="text/xml" title="RSS .92" href="http://www.ha97.com/feed/rss">
+	<link rel="alternate" type="application/atom+xml" title="Atom 0.3" href="http://www.ha97.com/feed/atom">
+	<link rel="pingback" href="http://www.ha97.com/xmlrpc.php">		
+	<link rel="shortcut icon" href="favicon.ico"> 
+   
+		<link rel="archives" title="2017年七月" href="http://www.ha97.com/date/2017/07">
+	<link rel="archives" title="2017年五月" href="http://www.ha97.com/date/2017/05">
+	<link rel="archives" title="2017年三月" href="http://www.ha97.com/date/2017/03">
+	<link rel="archives" title="2016年八月" href="http://www.ha97.com/date/2016/08">
+	<link rel="archives" title="2016年七月" href="http://www.ha97.com/date/2016/07">
+	<link rel="archives" title="2016年六月" href="http://www.ha97.com/date/2016/06">
+	<link rel="archives" title="2016年五月" href="http://www.ha97.com/date/2016/05">
+	<link rel="archives" title="2016年一月" href="http://www.ha97.com/date/2016/01">
+	<link rel="archives" title="2015年十一月" href="http://www.ha97.com/date/2015/11">
+	<link rel="archives" title="2015年十月" href="http://www.ha97.com/date/2015/10">
+	<link rel="archives" title="2015年八月" href="http://www.ha97.com/date/2015/08">
+	<link rel="archives" title="2015年七月" href="http://www.ha97.com/date/2015/07">
+	<link rel="archives" title="2015年六月" href="http://www.ha97.com/date/2015/06">
+	<link rel="archives" title="2015年二月" href="http://www.ha97.com/date/2015/02">
+	<link rel="archives" title="2014年九月" href="http://www.ha97.com/date/2014/09">
+	<link rel="archives" title="2014年八月" href="http://www.ha97.com/date/2014/08">
+	<link rel="archives" title="2014年七月" href="http://www.ha97.com/date/2014/07">
+	<link rel="archives" title="2014年六月" href="http://www.ha97.com/date/2014/06">
+	<link rel="archives" title="2014年五月" href="http://www.ha97.com/date/2014/05">
+	<link rel="archives" title="2014年四月" href="http://www.ha97.com/date/2014/04">
+	<link rel="archives" title="2013年十月" href="http://www.ha97.com/date/2013/10">
+	<link rel="archives" title="2013年九月" href="http://www.ha97.com/date/2013/09">
+	<link rel="archives" title="2013年七月" href="http://www.ha97.com/date/2013/07">
+	<link rel="archives" title="2013年六月" href="http://www.ha97.com/date/2013/06">
+	<link rel="archives" title="2013年三月" href="http://www.ha97.com/date/2013/03">
+	<link rel="archives" title="2013年二月" href="http://www.ha97.com/date/2013/02">
+	<link rel="archives" title="2013年一月" href="http://www.ha97.com/date/2013/01">
+	<link rel="archives" title="2012年十二月" href="http://www.ha97.com/date/2012/12">
+	<link rel="archives" title="2012年十一月" href="http://www.ha97.com/date/2012/11">
+	<link rel="archives" title="2012年十月" href="http://www.ha97.com/date/2012/10">
+	<link rel="archives" title="2012年九月" href="http://www.ha97.com/date/2012/09">
+	<link rel="archives" title="2012年八月" href="http://www.ha97.com/date/2012/08">
+	<link rel="archives" title="2012年七月" href="http://www.ha97.com/date/2012/07">
+	<link rel="archives" title="2012年六月" href="http://www.ha97.com/date/2012/06">
+	<link rel="archives" title="2012年五月" href="http://www.ha97.com/date/2012/05">
+	<link rel="archives" title="2012年四月" href="http://www.ha97.com/date/2012/04">
+	<link rel="archives" title="2012年三月" href="http://www.ha97.com/date/2012/03">
+	<link rel="archives" title="2012年二月" href="http://www.ha97.com/date/2012/02">
+	<link rel="archives" title="2012年一月" href="http://www.ha97.com/date/2012/01">
+	<link rel="archives" title="2011年十二月" href="http://www.ha97.com/date/2011/12">
+	<link rel="archives" title="2011年十一月" href="http://www.ha97.com/date/2011/11">
+	<link rel="archives" title="2011年十月" href="http://www.ha97.com/date/2011/10">
+	<link rel="archives" title="2011年八月" href="http://www.ha97.com/date/2011/08">
+	<link rel="archives" title="2011年七月" href="http://www.ha97.com/date/2011/07">
+	<link rel="archives" title="2011年六月" href="http://www.ha97.com/date/2011/06">
+	<link rel="archives" title="2011年五月" href="http://www.ha97.com/date/2011/05">
+	<link rel="archives" title="2011年四月" href="http://www.ha97.com/date/2011/04">
+	<link rel="archives" title="2011年三月" href="http://www.ha97.com/date/2011/03">
+	<link rel="archives" title="2011年二月" href="http://www.ha97.com/date/2011/02">
+	<link rel="archives" title="2011年一月" href="http://www.ha97.com/date/2011/01">
+	<link rel="archives" title="2010年十二月" href="http://www.ha97.com/date/2010/12">
+	<link rel="archives" title="2010年十一月" href="http://www.ha97.com/date/2010/11">
+	<link rel="archives" title="2010年十月" href="http://www.ha97.com/date/2010/10">
+	<link rel="archives" title="2010年九月" href="http://www.ha97.com/date/2010/09">
+	<link rel="archives" title="2010年八月" href="http://www.ha97.com/date/2010/08">
+	<link rel="archives" title="2010年七月" href="http://www.ha97.com/date/2010/07">
+	<link rel="archives" title="2010年六月" href="http://www.ha97.com/date/2010/06">
+	<link rel="archives" title="2010年五月" href="http://www.ha97.com/date/2010/05">
+	<link rel="archives" title="2010年四月" href="http://www.ha97.com/date/2010/04">
+
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+	<div id="tesloading">正在加载...</div> 
+	
+	<div id="header-aw">
+		<div id="headin-aw">
+			<div class="awblog aw-f"><a href="http://www.ha97.com/" title="服务器运维架构|Linux运维|云计算大数据">服务器运维架构|Linux运维|云计算大数据</a></div>
+			<div class="description aw-f"><a href="http://www.ha97.com/" title=""></a></div>
+			<ul id="tesnavlist" class="clearfix">
+			<li><a href="http://www.ha97.com/" title="www.ha97.com">首页</a></li>
+			<li><a href="http://www.ha97.com/category/linux" title="Linux">Linux</a></li>
+		      <li><a href="http://www.ha97.com/category/web-server/nginx" title="Nginx">Nginx</a></li>
+		      <li><a href="http://www.ha97.com/category/security" title="Security">Security</a></li>
+			<li><a href="http://www.ha97.com/category/shell" title="Shell">Shell</a></li>
+		      <li><a href="http://www.ha97.com/category/%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%9E%B6%E6%9E%84" title="服务器架构">服务器架构</a></li>
+		      <li><a href="http://www.ha97.com/category/%E4%BA%92%E8%81%94%E7%BD%91" title="互联网研究、网站运营、IT评论">互联网</a></li>
+			<li><a href="http://www.ha97.com/book/lfs-book-6.6" title="DIY定制你的Linux系统">LFS 6.6</a></li>
+		      <li><a href="http://www.ha97.com/book/vbird_linux" title="Linux经典基础教程">Linux基础</a></li>
+		      <li><a href="http://www.ha97.com/category/%E4%B8%AA%E4%BA%BA%E6%97%A5%E8%AE%B0" title="个人日记">个人日记</a></li>
+			<li class="fR"><a href="http://www.ha97.com/about" title="#">关于</a></li>
+		</ul>
+		</div>
+	</div>
+	<div id="wrapper" class="clearfix">
+		<div id="content">
+			<div id="content-aw">
+			<div class="nav clearfix">
+			<div class="prev-p">« <a href="http://www.ha97.com/5986.html" rel="prev">GPU和CPU的区别特点</a></div>
+			<div class="next-p"><a href="http://www.ha97.com/5968.html" rel="next">温铁军：中国为何每次逢大危机总能力挽狂澜？</a> »</div>
+		</div>
+		<div id="aw-page">
+			<div class="aw-tit clearfix"> 
+<div class="aw-cad">
+	<div class="aw-Y">2017-5</div>
+	<div class="aw-D">28</div>
+</div>
+<div class="aw-meta">	
+	<div><h2 class="aw-title" id="post-5903"><a href="http://www.ha97.com/5903.html" rel="bookmark" title="Permalink to 推荐给初学者的机器学习算法（速查表）">推荐给初学者的机器学习算法（速查表）</a></h2></div>
+		<div class="meta-small">发表于: <a href="http://www.ha97.com/category/linux" rel="category tag">Linux</a>, <a href="http://www.ha97.com/category/%e5%a4%a7%e6%95%b0%e6%8d%ae%e5%ba%94%e7%94%a8" rel="category tag">大数据应用</a>, <a href="http://www.ha97.com/category/%e5%bc%80%e6%ba%90%e4%b8%96%e7%95%8c" rel="category tag">开源世界</a>, <a href="http://www.ha97.com/category/%e6%9c%ba%e5%99%a8%e5%ad%a6%e4%b9%a0" rel="category tag">机器学习</a>  |  作者:  <a href="http://www.ha97.com/author/admin" title="由博客教主发布" rel="author">博客教主</a>	</div>
+		<div class="meta-small">标签: <a href="http://www.ha97.com/tag/%e5%88%9d%e5%ad%a6%e8%80%85" rel="tag">初学者</a>,<a href="http://www.ha97.com/tag/%e6%9c%ba%e5%99%a8%e5%ad%a6%e4%b9%a0" rel="tag">机器学习</a>,<a href="http://www.ha97.com/tag/%e7%ae%97%e6%b3%95" rel="tag">算法</a>,<a href="http://www.ha97.com/tag/%e9%80%9f%e6%9f%a5%e8%a1%a8" rel="tag">速查表</a></div>
+			
+		
+</div>
+</div>			<div class="post clearfix">
+				<section>
+<section>
+<section>
+<section data-id="85660" data-custom="rgb(117, 117, 118)" data-color="rgb(117, 117, 118)">
+<section>
+<section>
+<section>
+<section>
+<section>
+<section data-id="85660" data-custom="rgb(117, 117, 118)" data-color="rgb(117, 117, 118)">
+<section>选自sas，英文原文：http://blogs.sas.com/content/subconsciousmusings/2017/04/12/machine-learning-algorithm-use/<strong>机器之心编译</strong><p></p>
+<section data-style="white-space: normal; text-align: left;font-size: 14px;line-height: 1.5em; color: rgb(12, 12, 12);"><strong>参与：黄小天、蒋思源、吴攀</strong></section>
+</section>
+</section>
+</section>
+</section>
+</section>
+</section>
+</section>
+</section>
+</section>
+</section>
+</section>
+<p>本文主要的目标读者是机器学习爱好者或数据科学的初学者，以及对学习和应用机器学习算法解决实际问题抱有浓厚兴趣的读者。面对大量的机器学习算法，初学者通常会问自己一个典型的问题：「我该使用哪一种算法？」有很多因素会影响这一问题的答案，比如：</p>
+<ul class="list-paddingleft-2">
+<li>数据的大小、质量及性质</li>
+<li>可用计算时间</li>
+<li>任务的急迫性</li>
+<li>数据的使用用途</li>
+</ul>
+<p>在没有测试过不同算法之前，即使是经验丰富的数据科学家和机器学习算法开发者也都不能分辨出哪种算法性能最好。我们并不提倡一步到位，但是我们确实希望根据一些明确的因素为算法的选择提供一些参考意见。</p>
+<p><strong>机器学习算法速查表</strong></p>
+<p><img class="" src="132839ubq.jpg" data-s="300,640" data-type="png" data-src="http://mmbiz.qpic.cn/mmbiz_png/KmXPKA19gW8OIz81T54j1SKJDNjfe2Vc4AGaZqMib5BYicNYcTq0106njtSDkoSEibRpvLX3b2U2aW4icBRDnPrRibw/0?wx_fmt=png" data-ratio="0.5625" data-w="1152" data-fail="0"></p>
+<p>机器学习算法速查表可帮助你从大量算法之中筛选出解决你的特定问题的算法，同时本文也将介绍如何使用该速查表。</p>
+<p>由于该速查表专门针对数据科学和机器学习的初学者，所以在探讨这些算法之时，我们做了一些简化的假设。本文中所有推荐的算法均来自于程序编译反馈以及若干个数据科学家、机器学习专家和开发者的建议。对于没有达成一致意见的几个问题，我们会着重求同存异。</p>
+<p><span id="more-5903"></span></p>
+<p><strong>速查表的使用方法</strong></p>
+<p>将阅读速查表上的路径和算法标签读为「如果符合&lt;路径标签&gt;，那么使用&lt;算法&gt;。」例如：</p>
+<ul class="list-paddingleft-2">
+<li>如果你想要降维，那么使用主成分分析。</li>
+<li>如果你需要得到快速的数值型预测，那么使用决策树或 logistic 回归。</li>
+<li>如果你需要层级结果，那么使用层级聚类。</li>
+</ul>
+<p>有时会应用不止一个分支，而有时又找不到一个完美的匹配。重要的是这些路径是基于经验法则的推荐，因此其中一些并不精确。很多数据科学家说找到最佳算法的唯一确定方法就是尝试所有算法。</p>
+<p><strong>机器学习算法的分类</strong></p>
+<p>这一章节将对最流行的机器学习分类做一个概览，如果你对这些分类很熟悉，可直接跳至下文「什么时候使用具体算法」这一节。</p>
+<p><strong>监督学习</strong></p>
+<p>监督学习算法基于一组样本对作出预测。例如，以往销售业绩可以用来预测未来的价格走势。借助监督学习，我们会有一组由标注训练数据组成的输入变量和一组希望预测的输出变量。我们可以使用算法分析训练数据来学习一个将输入映射到输出的函数。算法推断的函数可通过概括训练数据预测未知情景中的结果进而预测未知的新实例。</p>
+<ul class="list-paddingleft-2">
+<li>分类：当数据被用于预测类别时，监督学习也可处理这类分类任务。给一张图片贴上猫或狗的标签就是这种情况。当分类标签只有两个时，这就是二元分类；超过两个则是多元分类。</li>
+<li>回归：当预测为连续数值型时，这就是一个回归问题。</li>
+<li>预测：这是一个基于过去和现在的数据预测未来的过程，其最大应用是趋势分析。一个典型实例是根据今年和前年的销售业绩以预测下一年的销售业绩。</li>
+</ul>
+<p><strong>半监督学习</strong></p>
+<p>监督学习的主要挑战是标注数据价格昂贵且非常耗时。如果标签有限，你可以使用非标注数据来提高监督学习。由于在这一情况中机器并非完全有监督，所以称之为半监督。通过半监督学习，你可以使用只包含少量标注数据的非标注实例提升学习精确度。</p>
+<p><strong>无监督学习</strong></p>
+<p>在无监督学习之中，机器完全采用非标注数据，其被要求发现隐藏在数据之下的内在模式，比如聚类结构、低维流形或者稀疏树和图。</p>
+<ul class="list-paddingleft-2">
+<li>聚类：把一组数据实例归为一类，从而一个类（一个集群）之中的实例与其他类之中的实例更相似（根据一些指标），其经常被用于把整个数据集分割为若干个类。这种分析可在每一分类之中进行，从而帮助用户需要内在模式。</li>
+<li>降维：减少考虑的变量数量。在很多应用中，原始数据有非常高的特征维度，并且一些特征是多余的且与任务不相关。降维将有助于发现真实、潜在的关系。</li>
+</ul>
+<p><strong>强化学习</strong></p>
+<p>基于来自环境的反馈，强化学习分析和优化智能体的行为。机器尝试不同的策略，从而发现哪种行为能产生最大的回报，因此智能体不是被告知应该采取哪种行为。试错和延迟的 reward 是将强化学习与其他技术区分的特点。</p>
+<p><strong>选择算法的注意事项</strong></p>
+<p>当选择一个算法的时候，你要时刻牢记如下方面：精确性、训练时间和易用性。很多用户将精确性置于首位，然而新手则倾向于选择他们最了解的算法。</p>
+<p>当你有一个数据集后，第一件需要考虑的事情就是如何获得结果，无论这些结果可能会多么奇怪。新手倾向于选择易于实现且能快速获得结果的算法。这种思路仅在整个训练的第一步过程中适用。一旦你获得了一些结果并且开始逐渐熟悉数据，你或许应该花更多时间，使用更加复杂的算法来强化你对数据的理解，这样方可改进结果。</p>
+<p>不过，即便到了这一步，达到最高精度的标准算法也可能不是最合适的算法，这是因为一个算法通常需要用户细致的调参以及大范围的训练才能获得其最佳性能。</p>
+<p><strong>选择具体算法的场景</strong></p>
+<p>对具体算法的深入研究可以帮助你理解它们的能力以及使用的方式。下面更多细节可为你选择具体算法提供进一步帮助，你可以配合前面速查表一起阅读。</p>
+<p><strong>线性回归和 Logistic 回归</strong></p>
+<p><img class="" src="132840w0x.jpg" data-s="300,640" data-type="png" data-src="http://mmbiz.qpic.cn/mmbiz_png/KmXPKA19gW8OIz81T54j1SKJDNjfe2Vcc1pdGUx3mIuVPTFmNichzqBOREDeBG7qaA5duVVUqkfxnNlNfNFbiang/0?wx_fmt=png" data-ratio="0.4149326805385557" data-w="817" data-fail="0"></p>
+<p>线性回归（linear regression）是一种对连续型因变量 y 与单个或多个特征 X 之间的关系进行建模的方法。y 和 X 之间的关系可被线性建模成 如下形式：当存在训练样本<img class="" src="132840pmt.jpg" data-s="300,640" data-type="png" data-src="http://mmbiz.qpic.cn/mmbiz_png/KmXPKA19gW8OIz81T54j1SKJDNjfe2VcCeZN4kMlliaY0SBEgx1r4Itzibp2mwpvKSDwTyepuGASNb1wTky1evmQ/0?wx_fmt=png" data-ratio="0.32142857142857145" data-w="84" data-fail="0">时，<img class="" src="132846f6s.jpg" data-s="300,640" data-type="png" data-src="http://mmbiz.qpic.cn/mmbiz_png/KmXPKA19gW8OIz81T54j1SKJDNjfe2VcmPUD43WSiaxtq4uDibZibnqqTa7JQkrSSP1XJtU7LtWRVKMXh24yNUUfQ/0?wx_fmt=png" data-ratio="0.2523364485981308" data-w="107" data-fail="0">，参数向量β可从训练样本中学到。</p>
+<p>如果因变量不连续且为类别，那么线性回归可以转为使用一个 Sigmoid 函数的 logistic 回归。logistic 回归是一种简便，快速而且强大的分类算法。这里讨论二值情况，即因变量 y 只有两个值 y∈(−1,1)（这可以很容易被扩展为多类分类问题）。</p>
+<p>在 logistic 回归中，我们使用不同的假设类别来尝试预测一个给定样例是属于「1」类还是「-1」类的概率。具体而言，我们将尝试学习如下形式的一个函数：<img class="" src="13284694q.jpg" data-s="300,640" data-type="png" data-src="http://mmbiz.qpic.cn/mmbiz_png/KmXPKA19gW8OIz81T54j1SKJDNjfe2VcDbchAYsMAnSHC8brA0M4tKWicKoOVq7cXcoU0R8Ff9ticAcM7H7L2E8A/0?wx_fmt=png" data-ratio="0.13089005235602094" data-w="191" data-fail="0">以及<img class="" src="132847y9x.jpg" data-s="300,640" data-type="png" data-src="http://mmbiz.qpic.cn/mmbiz_png/KmXPKA19gW8OIz81T54j1SKJDNjfe2VcjpKe8nwMKSEubYibbj85KkYUKSndJ2Eljk2z4N9XKl5QF6bawaBxHEg/0?wx_fmt=png" data-ratio="0.11715481171548117" data-w="239" data-fail="0">，其中</p>
+<p><img class="" src="132847yb3.jpg" data-s="300,640" data-type="png" data-src="http://mmbiz.qpic.cn/mmbiz_png/KmXPKA19gW8OIz81T54j1SKJDNjfe2VcbQDTCWpt9YCz9Ffj5K2BZbWmQ2bbaVI9mDeIjjEiaZZP7TJZPeE84Ow/0?wx_fmt=png" data-ratio="0.22962962962962963" data-w="135" data-fail="0">是一个 sigmoid 函数。当存在训练样本 {xi，yi} 时，参数向量β能在给定数据集下，最大化 β 对数似然值来学习。</p>
+<p><img class="" src="1328483zd.jpg" data-s="300,640" data-type="png" data-src="http://mmbiz.qpic.cn/mmbiz_png/KmXPKA19gW8OIz81T54j1SKJDNjfe2Vcwfe7IBh92KXJTbzr3vdibABCHwpaC7dibybZ0uvY9JiaibGT0m2QicKedxw/0?wx_fmt=png" data-ratio="0.29431072210065645" data-w="914" data-fail="0"></p>
+<p><strong>线性 SVM 和核 SVM</strong></p>
+<p>核（kernel）技巧可被用于将非线性可分函数映射成高维的线性可分函数。支持向量机（SVM）训练算法可以找到由超平面的法向量 w 和偏置项 b 表示的分类器。这个超平面（边界）可以按照最大间隔的方式来分开不同的类别。这个问题可以被转换一个条件优化问题：</p>
+<p><img class="" src="132848eyb.jpg" data-s="300,640" data-type="png" data-src="http://mmbiz.qpic.cn/mmbiz_png/KmXPKA19gW8OIz81T54j1SKJDNjfe2VcdibqhQYLichVOULD9ibS6VsY07tmSH01WRf4Amia0YSwZ1GXfAVblpicpgg/0?wx_fmt=png" data-ratio="0.18257956448911222" data-w="597" data-fail="0"></p>
+<p><img class="" src="132848pkb.jpg" data-s="300,640" data-type="png" data-src="http://mmbiz.qpic.cn/mmbiz_png/KmXPKA19gW8OIz81T54j1SKJDNjfe2VcSliabYFicMich7WPN62lpNvcCwX2FWCZwTNSIeJ4EBVEhzCLHjiawHg3gw/0?wx_fmt=png" data-ratio="0.453125" data-w="512" data-fail="0"></p>
+<p><em>Kernel 技巧被用于将非线性可分函数映射成高维的线性可分函数</em></p>
+<p>当类别不是线性可分的时候，核技巧可被用于将非线性可分空间映射到高维的线性可分空间。</p>
+<p>当因变量不是数值型时，logistic 回归和 SVM 应该被用作分类的首要尝试。这些模型可以轻松实现，它们的参数易于调节，而且其性能也相当好。所以这些模型非常适合初学者。</p>
+<p><strong>树和集成树</strong></p>
+<p><img class="" src="1328496gx.jpg" data-s="300,640" data-type="png" data-src="http://mmbiz.qpic.cn/mmbiz_png/KmXPKA19gW8OIz81T54j1SKJDNjfe2VcP8kOygNuicP3IuF4wDrU6VRxGtoda6Bup6wznNOic5E4ZZes62PYUWzQ/0?wx_fmt=png" data-ratio="1.181564245810056" data-w="358" data-fail="0"></p>
+<p><em>用于预测模型的决策树</em></p>
+<p>决策树、随机森林和梯度提升（gradient boosting）全都是基于决策树的算法。决策树有很多变体，但它们所做的事情都一样——将特征空间细分为基本具有相同标签的区域。决策树易于理解和实现。但是，它们往往会过拟合数据，并且在树上面走得非常深。随机森林和梯度提升是两种流行的使用树算法来实现良好准确度的集成方法，该两种集成方法同时还能克服过拟合的问题。</p>
+<p><strong>神经网络和深度学习</strong></p>
+<p><img class="" src="132849bjq.jpg" data-s="300,640" data-type="png" data-src="http://mmbiz.qpic.cn/mmbiz_png/KmXPKA19gW8OIz81T54j1SKJDNjfe2VcV1Y4fYFgROlnW2K1xMzWNKA7g6OhGzX8HAAowUQJITA0OkxRFjKkiag/0?wx_fmt=png" data-ratio="0.3076923076923077" data-w="1040" data-fail="0"></p>
+<p><em>一个卷积神经网络架构</em></p>
+<p>神经网络凭借其并行和分布式处理的能力而在 1980 年代中期兴起。但该领域的研究受到了反向传播训练算法的低效性的阻碍，而反向传播算法在神经网络参数的优化上得到了广泛的应用。支持向量机（SVM）和其它更简单的模型（可以通过解决凸优化问题而轻松训练）逐渐在机器学习领域替代的神经网络。</p>
+<p>在最近几年，无监督预训练和层次方式的贪婪训练等新的和改进过的训练技术导致了人们对神经网络的兴趣的复兴。逐渐增强的计算能力（比如 GPU 和大规模并行处理（MPP））也促进了神经网络的复兴。神经网络研究的复兴已经为我们带来了数千层的模型。</p>
+<p><img class="" src="132850rdj.jpg" data-s="300,640" data-type="png" data-src="http://mmbiz.qpic.cn/mmbiz_png/KmXPKA19gW8OIz81T54j1SKJDNjfe2VcX0amc2syLcBhhtkVtpMUPVUy3F9okS1X0K3uFNCMhtyWXWAvR19SicQ/0?wx_fmt=png" data-ratio="0.548828125" data-w="1024" data-fail="0"></p>
+<p><em>一种神经网络</em></p>
+<p>换句话说，浅层神经网络已经发展成了深度学习神经网络。深度神经网络已经在监督学习领域取得了巨大的成功。当被用于语音识别和图像识别，深度学习的水平已经达到甚至超过了人类水平。当被应用于无监督学习任务（比如特征提取）时，深度学习也可以从原始图像和语音中提取出特征，且仅需要非常少的人类干预。</p>
+<p>神经网络由 3 个部分组成：输入层、隐藏层和输出层。当输出层是一个分类变量时，那么该神经网络可以解决分类问题。当输出层是一个连续变量时，那么该网络可被用于执行回归。当输出层和输入层一样时，该网络可被用于提取内在的特征。隐藏层的数量定义了模型复杂度和建模能力。</p>
+<p><strong>k-均值/k-模式、高斯混合模型（GMM）聚类</strong></p>
+<p><img class="" src="132850qkx.jpg" data-s="300,640" data-type="png" data-src="http://mmbiz.qpic.cn/mmbiz_png/KmXPKA19gW8OIz81T54j1SKJDNjfe2VcRslv7fwVicuDNzH9yVEibkicxQdrnN11ybrBZJiaOGL1moXqImibeB87viaw/0?wx_fmt=png" data-ratio="0.75" data-w="640" data-fail="0"></p>
+<p><em>k-均值聚类</em></p>
+<p><img class="" src="132851kew.jpg" data-s="300,640" data-type="png" data-src="http://mmbiz.qpic.cn/mmbiz_png/KmXPKA19gW8OIz81T54j1SKJDNjfe2Vchf2v3wPHvTXprRyVF1qVB76PWLRxab5D64Fuic7q2VcopqXF7GdF91g/0?wx_fmt=png" data-ratio="0.7515625" data-w="640" data-fail="0"></p>
+<p><em>高斯混合模型</em></p>
+<p>k-均值/k-模式，GMM 聚类的目标是将 n 个观察分区成 k 个集群。k-均值聚类定义为硬分配标准：其样本会被而且仅可被分配给一个集群。然而，GMM 可以为每个样本定义一个软分配（soft assignment）。每个样本都有一个与每个集群相关的概率。当给定了集群的数量 k 时，这两个算法都很简单快速。</p>
+<p><strong>DBSCAN</strong></p>
+<p><img class="" src="132852kuc.jpg" data-s="300,640" data-type="png" data-src="http://mmbiz.qpic.cn/mmbiz_png/KmXPKA19gW8OIz81T54j1SKJDNjfe2Vcf8YPGIJR0VAGjMliblL7X6EI6gpGYu3YSk5WOoFicoBSuOEBuALbgicNQ/0?wx_fmt=png" data-ratio="0.7225130890052356" data-w="382" data-fail="0"></p>
+<p><em>DBSCAN 示意图</em></p>
+<p>当聚类的数量 k 给定时，可以通过密度扩散（density diffusion）来连接样本，从而使用 DBSCAN（基于密度的空间聚类（density-based spatial clustering））。</p>
+<p><strong>层次聚类</strong></p>
+<p><img class="" src="132852lkp.jpg" data-s="300,640" data-type="png" data-src="http://mmbiz.qpic.cn/mmbiz_png/KmXPKA19gW8OIz81T54j1SKJDNjfe2VcBcBlIicyATQCyZHMlu1NL14yOr83xmsMUjI0wSQn4lhtFxoS0t0EpbQ/0?wx_fmt=png" data-ratio="0.7966507177033493" data-w="418" data-fail="0"></p>
+<p>层次分区可以使用树结构（树形图）来进行可视化。其不需要集群的数量作为输入，且其分区可以使用不同的 K 而在不同的粒度水平下查看（即可以细化/粗化集群）。</p>
+<p><strong>PCA、SVD 和 LDA</strong></p>
+<p>我们通常并不想直接给机器学习算法送入大量特征，因为一些特征可能是无关的或者「固有的（intrinsic）」的维度可能少于特征的数量。主成分分析（PCA）、奇异值分解（Singular Value Decomposition）和隐狄利克雷分布（LDA）都可以被用于执行降维。</p>
+<p>PCA 是一种无监督聚类方法，其可以将原有的数据空间映射到一个更低维的空间，同时还能保留尽可能多的信息。PCA 基本上是在寻找一个保留了最大数据方差的子空间，且该子空间由数据的协方差矩阵的主要特征向量所定义。</p>
+<p>SVD 和 PCA 有某种程度的联系——中心数据矩阵的 SVD（特征 vs. 样本）能提供定义由 PCA 所找到的同样子空间的主左奇异向量（dominant left singular vectors）。但是，SVD 是一种更加通用的技术，因为其也能做一些 PCA 可能做不到的事情。比如，一个用户 vs. 电影矩阵的 SVD 可以提取用户资料和电影资料，然后将其用在推荐系统中。此外，SVD 也被广泛用作主题建模工具，在自然语言处理领域被称为潜在语义分析。</p>
+<p>自然语言处理领域的一个相关技术是隐狄利克雷分布（LDA）。LDA 是概率主题模型，其可以将文档分解为主题，分解方式就像高斯混合模型（GMM）将连续数据分解成高斯密度（Gaussian densities）。不同于 GMM，LDA 建模的是离散数据（文档中的词），并且会限制其主题以按狄利克雷分布而先验地分布。</p>
+<p><strong>结论</strong></p>
+<p>这是一个易于掌握的工作流程。当你在尝试一个新问题时，其中的关键信息是：</p>
+<ul class="list-paddingleft-2">
+<li>定义问题。你想要解决什么问题？</li>
+<li>从简单开始。熟悉你的数据和基准结果。</li>
+<li>然后尝试更加复杂的东西。</li>
+</ul>							</div>
+
+			<p class="postendmeta">
+			<a href="http://www.ha97.com/5903.html" rel="bookmark" title="推荐给初学者的机器学习算法（速查表）" class="permalink">永久链接</a> : http://www.ha97.com/5903.html			</p>
+		</div>
+	
+<!-- You can start editing here. -->
+
+
+	
+	
+	
+<!-- You can start editing here. -->
+<div class="commentbar clearfix">
+	<div class="fL">本文相关评论 -
+	1条评论都没有呢 
+	</div><div class="fR"><a href="http://www.ha97.com/5903.html/feed"><abbr title="Really Simple Syndication">RSS</abbr> for this comments</a> 
+| <a href="http://www.ha97.com/5903.html/trackback">Trackback <acronym title="Uniform Resource Identifier">URI</acronym></a>
+</div>
+</div>
+<div class="commhead">
+		<span class="comm-func"> <a href="#addcomment" onclick="return _$ff()" title="Leave a comment">Post a comment now »</a></span>
+	</div>
+	
+	
+	
+	
+
+ 
+
+
+<div class="commentlist">
+	<p>No comments yet.</p>
+</div>
+
+<div id="addcomment" class="comment clearfix">
+<a id="addcommentanchor" name="addcommentanchor"></a>
+	
+	
+	
+
+	
+	
+<form action="http://www.ha97.com/wp-comments-post.php" method="post" id="commentform">
+<div class="add">
+	<div id="reroot" style="display: none;">
+		<a href="#" onclick="reRoot(); return false;">评论原文</a>
+	</div>
+	
+		<div class="clearfix formr">
+	<label>
+		昵称 *
+	</label>
+	<div>
+		<input name="author" id="author" class="textarea" value="" size="28" tabindex="1" type="text">
+	</div>
+	</div>
+		
+	<div class="clearfix formr">	
+	<label>
+		电子邮件 *
+	</label>
+	<div>
+		<input name="email" id="email" value="" size="28" tabindex="2" type="text">
+	</div>
+	</div>		
+		
+	<div class="clearfix formr">
+	<label>
+		网站/博客
+	</label>
+	<div>
+		<input name="url" id="url" value="" size="28" tabindex="3" type="text">	
+	</div>
+	</div>
+		<textarea name="comment" id="comment" cols="60" rows="10" tabindex="4"></textarea>
+	<div>
+		<input name="comment_post_ID" value="5903" type="hidden">
+		<input name="redirect_to" value="/5903.html" type="hidden">
+		<input name="submit" id="submit" class="p" tabindex="5" value="发表" type="submit">
+	</div>
+</div>
+
+<p style="display: none;"><input id="akismet_comment_nonce" name="akismet_comment_nonce" value="d96f6e064f" type="hidden"></p><input id="comment_reply_ID" name="comment_reply_ID" value="0" type="hidden"><p style="display: none;"></p><input id="ak_js" name="ak_js" value="1546048508770" type="hidden"></form>
+</div>
+			<div class="nav clearfix">
+			<div class="prev-p">« <a href="http://www.ha97.com/5986.html" rel="prev">GPU和CPU的区别特点</a></div>
+			<div class="next-p"><a href="http://www.ha97.com/5968.html" rel="next">温铁军：中国为何每次逢大危机总能力挽狂澜？</a> »</div>
+		</div>
+		</div> <!-- /content-aw -->
+	</div> <!-- /content -->
+
+<div id="sidebar">
+<ul>
+	<li id="search-3" class="widget widget_search"><h2 class="widgettitle">站内搜索</h2>
+<form method="get" action="http://www.ha97.com/index.php">
+<input value="" size="16" name="s" id="s" type="text">
+<input class="p" value="Search" type="submit">
+</form></li>
+<li id="pages-4" class="widget widget_pages"><h2 class="widgettitle">页面</h2>
+		<ul>
+			<li class="page_item page-item-847"><a href="http://www.ha97.com/nginx_download">Nginx_download</a></li>
+<li class="page_item page-item-2"><a href="http://www.ha97.com/about">关于博主</a></li>
+<li class="page_item page-item-2057"><a href="http://www.ha97.com/tags">标签云</a></li>
+<li class="page_item page-item-1123"><a href="http://www.ha97.com/subscriptions">订阅本站</a></li>
+		</ul>
+		</li>
+		<li id="recent-posts-3" class="widget widget_recent_entries">		<h2 class="widgettitle">近期文章</h2>
+		<ul>
+					<li>
+				<a href="http://www.ha97.com/5925.html">机器学习速查表全集（从理论概念到Python库）</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5922.html">AI人工智能专业词汇集</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5968.html">温铁军：中国为何每次逢大危机总能力挽狂澜？</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5903.html">推荐给初学者的机器学习算法（速查表）</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5986.html">GPU和CPU的区别特点</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5857.html">（总结）Fedora 22跨版本升级到Fedora 24方法</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5803.html">（原创）机器学习开源框架Mahout配置与入门研究</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5734.html">大数据架构师技能图谱</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5702.html">主流大数据采集平台的架构图解</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5698.html">主流大数据厂商汇总分类</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5695.html">JDBC URL连接常用数据库格式</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5782.html">云计算十年：OpenStack如何成为开源IaaS的老大</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5943.html">GitHub最流行的机器学习开源项目28个：TensorFlow居首</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5747.html">2016年OpenStack &amp; Docker六大趋势预测</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5682.html">（总结）Hadoop 2.6报错解决：Could not find the main class: org.apache.hadoop.hdfs.server.namenode.NameNode.</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5875.html">odoo 8.0 VS odoo 9.0社区版&amp;企业版功能对比</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5885.html">（总结）CentOS 7.x里yum安装Odoo 8.0&amp;9.0（OpenERP）</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5896.html">（总结）CentOS 7 里使用自动化运维工具Ansible</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5824.html">（分享）GitHub上排名TOP100的Python项目</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5766.html">阿里蚂蚁金服的关系型数据库：OceanBase架构详解</a>
+						</li>
+				</ul>
+		</li>
+		<li id="recent-comments-4" class="widget widget_recent_comments"><h2 class="widgettitle">近期评论</h2>
+<ul id="recentcomments"><li class="recentcomments"><span class="comment-author-link"><a href="http://mxslly.com/" rel="external nofollow" class="url">q77190858</a></span>发表在《<a href="http://www.ha97.com/4009.html/comment-page-1#comment-748754">（总结）密码破解之王：Ophcrack彩虹表(Rainbow Tables)原理详解（附：120G彩虹表下载）</a>》</li><li class="recentcomments"><span class="comment-author-link">archlong</span>发表在《<a href="http://www.ha97.com/2987.html/comment-page-1#comment-747505">（原创）Linux下查看系统版本号信息的方法</a>》</li><li class="recentcomments"><span class="comment-author-link">yinuo</span>发表在《<a href="http://www.ha97.com/2584.html/comment-page-1#comment-747487">一些不错的网站入侵渗透教程</a>》</li><li class="recentcomments"><span class="comment-author-link">jerm</span>发表在《<a href="http://www.ha97.com/3989.html/comment-page-1#comment-745945">Sun被Oracle收购两年后</a>》</li><li class="recentcomments"><span class="comment-author-link">哇塞</span>发表在《<a href="http://www.ha97.com/3989.html/comment-page-1#comment-744229">Sun被Oracle收购两年后</a>》</li><li class="recentcomments"><span class="comment-author-link">fromar</span>发表在《<a href="http://www.ha97.com/3989.html/comment-page-1#comment-744091">Sun被Oracle收购两年后</a>》</li><li class="recentcomments"><span class="comment-author-link"><a href="http://www.kaijun.win/2016/05/%e5%87%a0%e4%b8%aa%e6%80%a7%e8%83%bd%e6%b5%8b%e8%af%95%e5%b7%a5%e5%85%b7/" rel="external nofollow" class="url">几个性能测试工具 - Kellen_劉</a></span>发表在《<a href="http://www.ha97.com/4623.html/comment-page-1#comment-743563">（总结）Web性能压力测试工具之WebBench详解</a>》</li><li class="recentcomments"><span class="comment-author-link"><a href="http://www.tianfuw.com/" rel="external nofollow" class="url">长风大侠</a></span>发表在《<a href="http://www.ha97.com/4030.html/comment-page-1#comment-743252">Google Chrome Source Code 浏览器源码（下载）</a>》</li><li class="recentcomments"><span class="comment-author-link">爱神的箭</span>发表在《<a href="http://www.ha97.com/5095.html/comment-page-1#comment-742661">系统吞吐量（TPS）、用户并发量、性能测试概念和公式</a>》</li><li class="recentcomments"><span class="comment-author-link">guang</span>发表在《<a href="http://www.ha97.com/2590.html/comment-page-1#comment-742203">《Linux命令详解词典》PDF电子版</a>》</li></ul></li>
+<li id="tag_cloud-3" class="widget widget_tag_cloud"><h2 class="widgettitle">标签</h2>
+<div class="tagcloud"><a href="http://www.ha97.com/tag/2010" class="tag-link-391 tag-link-position-1" title="20个话题" style="font-size: 10.6667pt;">2010</a>
+<a href="http://www.ha97.com/tag/apache" class="tag-link-1929 tag-link-position-2" title="27个话题" style="font-size: 12.1111pt;">Apache</a>
+<a href="http://www.ha97.com/tag/centos" class="tag-link-20 tag-link-position-3" title="47个话题" style="font-size: 14.6667pt;">centos</a>
+<a href="http://www.ha97.com/tag/chrome" class="tag-link-664 tag-link-position-4" title="13个话题" style="font-size: 8.77778pt;">Chrome</a>
+<a href="http://www.ha97.com/tag/debian" class="tag-link-220 tag-link-position-5" title="11个话题" style="font-size: 8pt;">Debian</a>
+<a href="http://www.ha97.com/tag/google" class="tag-link-1939 tag-link-position-6" title="40个话题" style="font-size: 13.8889pt;">Google</a>
+<a href="http://www.ha97.com/tag/linux" class="tag-link-1923 tag-link-position-7" title="220个话题" style="font-size: 22pt;">Linux</a>
+<a href="http://www.ha97.com/tag/mysql" class="tag-link-24 tag-link-position-8" title="45个话题" style="font-size: 14.4444pt;">mysql</a>
+<a href="http://www.ha97.com/tag/nginx" class="tag-link-1934 tag-link-position-9" title="54个话题" style="font-size: 15.3333pt;">Nginx</a>
+<a href="http://www.ha97.com/tag/oracle" class="tag-link-25 tag-link-position-10" title="19个话题" style="font-size: 10.4444pt;">oracle</a>
+<a href="http://www.ha97.com/tag/php" class="tag-link-1930 tag-link-position-11" title="33个话题" style="font-size: 13pt;">PHP</a>
+<a href="http://www.ha97.com/tag/redhat" class="tag-link-107 tag-link-position-12" title="11个话题" style="font-size: 8pt;">RedHat</a>
+<a href="http://www.ha97.com/tag/rhel" class="tag-link-106 tag-link-position-13" title="25个话题" style="font-size: 11.6667pt;">RHEL</a>
+<a href="http://www.ha97.com/tag/server" class="tag-link-16 tag-link-position-14" title="11个话题" style="font-size: 8pt;">server</a>
+<a href="http://www.ha97.com/tag/shell" class="tag-link-1932 tag-link-position-15" title="24个话题" style="font-size: 11.5556pt;">Shell</a>
+<a href="http://www.ha97.com/tag/web" class="tag-link-1933 tag-link-position-16" title="26个话题" style="font-size: 11.8889pt;">Web</a>
+<a href="http://www.ha97.com/tag/windows" class="tag-link-1925 tag-link-position-17" title="12个话题" style="font-size: 8.33333pt;">Windows</a>
+<a href="http://www.ha97.com/tag/wordpress" class="tag-link-1946 tag-link-position-18" title="28个话题" style="font-size: 12.2222pt;">WordPress</a>
+<a href="http://www.ha97.com/tag/xenserver" class="tag-link-1612 tag-link-position-19" title="17个话题" style="font-size: 10pt;">XenServer</a>
+<a href="http://www.ha97.com/tag/yum" class="tag-link-158 tag-link-position-20" title="14个话题" style="font-size: 9.11111pt;">yum</a>
+<a href="http://www.ha97.com/tag/%e4%b8%8b%e8%bd%bd" class="tag-link-188 tag-link-position-21" title="24个话题" style="font-size: 11.5556pt;">下载</a>
+<a href="http://www.ha97.com/tag/%e4%b8%ad%e5%9b%bd" class="tag-link-247 tag-link-position-22" title="11个话题" style="font-size: 8pt;">中国</a>
+<a href="http://www.ha97.com/tag/%e4%ba%92%e8%81%94%e7%bd%91" class="tag-link-1935 tag-link-position-23" title="14个话题" style="font-size: 9.11111pt;">互联网</a>
+<a href="http://www.ha97.com/tag/%e4%bc%98%e5%8c%96" class="tag-link-221 tag-link-position-24" title="16个话题" style="font-size: 9.66667pt;">优化</a>
+<a href="http://www.ha97.com/tag/%e5%85%a8%e7%90%83" class="tag-link-125 tag-link-position-25" title="16个话题" style="font-size: 9.66667pt;">全球</a>
+<a href="http://www.ha97.com/tag/%e5%8e%9f%e5%88%9b" class="tag-link-257 tag-link-position-26" title="20个话题" style="font-size: 10.6667pt;">原创</a>
+<a href="http://www.ha97.com/tag/%e5%8f%82%e6%95%b0" class="tag-link-213 tag-link-position-27" title="13个话题" style="font-size: 8.77778pt;">参数</a>
+<a href="http://www.ha97.com/tag/%e5%91%bd%e4%bb%a4" class="tag-link-31 tag-link-position-28" title="34个话题" style="font-size: 13.1111pt;">命令</a>
+<a href="http://www.ha97.com/tag/%e5%ae%89%e8%a3%85" class="tag-link-267 tag-link-position-29" title="17个话题" style="font-size: 10pt;">安装</a>
+<a href="http://www.ha97.com/tag/%e5%b7%a5%e5%85%b7" class="tag-link-113 tag-link-position-30" title="18个话题" style="font-size: 10.2222pt;">工具</a>
+<a href="http://www.ha97.com/tag/%e5%b8%b8%e7%94%a8" class="tag-link-884 tag-link-position-31" title="19个话题" style="font-size: 10.4444pt;">常用</a>
+<a href="http://www.ha97.com/tag/%e5%bc%80%e6%ba%90" class="tag-link-117 tag-link-position-32" title="13个话题" style="font-size: 8.77778pt;">开源</a>
+<a href="http://www.ha97.com/tag/%e6%80%bb%e7%bb%93" class="tag-link-431 tag-link-position-33" title="98个话题" style="font-size: 18.2222pt;">总结</a>
+<a href="http://www.ha97.com/tag/%e6%95%b0%e6%8d%ae%e5%ba%93" class="tag-link-308 tag-link-position-34" title="11个话题" style="font-size: 8pt;">数据库</a>
+<a href="http://www.ha97.com/tag/%e6%96%b9%e6%b3%95" class="tag-link-535 tag-link-position-35" title="22个话题" style="font-size: 11.1111pt;">方法</a>
+<a href="http://www.ha97.com/tag/%e6%9c%8d%e5%8a%a1%e5%99%a8" class="tag-link-17 tag-link-position-36" title="19个话题" style="font-size: 10.4444pt;">服务器</a>
+<a href="http://www.ha97.com/tag/%e6%9e%b6%e6%9e%84" class="tag-link-19 tag-link-position-37" title="31个话题" style="font-size: 12.7778pt;">架构</a>
+<a href="http://www.ha97.com/tag/%e7%ae%80%e4%bb%8b" class="tag-link-545 tag-link-position-38" title="12个话题" style="font-size: 8.33333pt;">简介</a>
+<a href="http://www.ha97.com/tag/%e7%b3%bb%e7%bb%9f" class="tag-link-30 tag-link-position-39" title="15个话题" style="font-size: 9.33333pt;">系统</a>
+<a href="http://www.ha97.com/tag/%e7%bb%8f%e5%85%b8" class="tag-link-86 tag-link-position-40" title="17个话题" style="font-size: 10pt;">经典</a>
+<a href="http://www.ha97.com/tag/%e8%84%9a%e6%9c%ac" class="tag-link-744 tag-link-position-41" title="20个话题" style="font-size: 10.6667pt;">脚本</a>
+<a href="http://www.ha97.com/tag/%e8%85%be%e8%ae%af" class="tag-link-471 tag-link-position-42" title="14个话题" style="font-size: 9.11111pt;">腾讯</a>
+<a href="http://www.ha97.com/tag/%e8%a7%a3%e5%86%b3%e6%96%b9%e6%b3%95" class="tag-link-284 tag-link-position-43" title="15个话题" style="font-size: 9.33333pt;">解决方法</a>
+<a href="http://www.ha97.com/tag/%e8%af%a6%e8%a7%a3" class="tag-link-176 tag-link-position-44" title="65个话题" style="font-size: 16.2222pt;">详解</a>
+<a href="http://www.ha97.com/tag/%e9%85%8d%e7%bd%ae" class="tag-link-184 tag-link-position-45" title="23个话题" style="font-size: 11.3333pt;">配置</a></div>
+</li>
+<li id="views-3" class="widget widget_views"><h2 class="widgettitle">博文浏览排名</h2>
+<ul>
+<li><a href="http://www.ha97.com/5095.html" title="系统吞吐量（TPS）、用户并发量、性能测试概念和公式">系统吞吐量（TPS）、用户并发量、性能测试概念和公式</a> - 469,166 views</li><li><a href="http://www.ha97.com/5194.html" title="（总结）Nginx配置文件nginx.conf中文详解">（总结）Nginx配置文件nginx.conf中文详解</a> - 328,627 views</li><li><a href="http://www.ha97.com/2987.html" title="（原创）Linux下查看系统版本号信息的方法">（原创）Linux下查看系统版本号信息的方法</a> - 171,582 views</li><li><a href="http://www.ha97.com/4634.html" title="（总结）CentOS Linux下VNC Server远程桌面配置详解">（总结）CentOS Linux下VNC Server远程桌面配置详解</a> - 148,355 views</li><li><a href="http://www.ha97.com/932.html" title="《新三国》高清版全95集迅雷下载">《新三国》高清版全95集迅雷下载</a> - 122,690 views</li><li><a href="http://www.ha97.com/5646.html" title="（总结）Nginx/LVS/HAProxy负载均衡软件的优缺点详解">（总结）Nginx/LVS/HAProxy负载均衡软件的优缺点详解</a> - 110,644 views</li><li><a href="http://www.ha97.com/4467.html" title="（总结）CentOS Linux搭建SVN Server配置详解">（总结）CentOS Linux搭建SVN Server配置详解</a> - 104,857 views</li><li><a href="http://www.ha97.com/4001.html" title="（总结）Linux下su与su -命令的本质区别">（总结）Linux下su与su -命令的本质区别</a> - 95,616 views</li><li><a href="http://www.ha97.com/5172.html" title="（总结）Linux的chattr与lsattr命令详解">（总结）Linux的chattr与lsattr命令详解</a> - 93,861 views</li><li><a href="http://www.ha97.com/4617.html" title="（总结）Web性能压力测试工具之ApacheBench（ab）详解">（总结）Web性能压力测试工具之ApacheBench（ab）详解</a> - 91,651 views</li><li><a href="http://www.ha97.com/4550.html" title="Linux抓包工具tcpdump详解">Linux抓包工具tcpdump详解</a> - 77,570 views</li><li><a href="http://www.ha97.com/2673.html" title="（原创）Oracle 9i所有版本的最新下载地址（已验证！）">（原创）Oracle 9i所有版本的最新下载地址（已验证！）</a> - 76,074 views</li><li><a href="http://www.ha97.com/4788.html" title="（总结）Oracle启动监听报错：The listener supports no services解决">（总结）Oracle启动监听报错：The listener supports no services解决</a> - 73,676 views</li><li><a href="http://www.ha97.com/5428.html" title="（原创）Linux文件系统只读Read-only file system的快速解决方法">（原创）Linux文件系统只读Read-only file system的快速解决方法</a> - 61,519 views</li><li><a href="http://www.ha97.com/4546.html" title="Linux的IO性能监控工具iostat详解">Linux的IO性能监控工具iostat详解</a> - 58,953 views</li><li><a href="http://www.ha97.com/4009.html" title="（总结）密码破解之王：Ophcrack彩虹表(Rainbow Tables)原理详解（附：120G彩虹表下载）">（总结）密码破解之王：Ophcrack彩虹表(Rainbow Tables)原理详解（附：120G彩虹表下载）</a> - 57,842 views</li><li><a href="http://www.ha97.com/3710.html" title="RedHat Enterprise Linux (RHEL) 6正式版发布下载（很快）">RedHat Enterprise Linux (RHEL) 6正式版发布下载（很快）</a> - 57,717 views</li><li><a href="http://www.ha97.com/3363.html" title="最流行最好玩的十大经典单机游戏排行榜">最流行最好玩的十大经典单机游戏排行榜</a> - 57,650 views</li><li><a href="http://www.ha97.com/4623.html" title="（总结）Web性能压力测试工具之WebBench详解">（总结）Web性能压力测试工具之WebBench详解</a> - 57,597 views</li><li><a href="http://www.ha97.com/5359.html" title="（原创）Linux下MySQL 5.5/5.6的修改字符集编码为UTF8（彻底解决中文乱码问题）">（原创）Linux下MySQL 5.5/5.6的修改字符集编码为UTF8（彻底解决中文乱码问题）</a> - 51,878 views</li></ul>
+</li>
+<li id="categories-3" class="widget widget_categories"><h2 class="widgettitle">分类目录</h2>
+		<ul>
+	<li class="cat-item cat-item-6"><a href="http://www.ha97.com/category/database">DataBase</a> (70)
+</li>
+	<li class="cat-item cat-item-2000"><a href="http://www.ha97.com/category/erp">ERP</a> (4)
+</li>
+	<li class="cat-item cat-item-60"><a href="http://www.ha97.com/category/google">Google</a> (55)
+</li>
+	<li class="cat-item cat-item-10"><a href="http://www.ha97.com/category/it%e7%b2%be%e8%8b%b1">IT精英</a> (32)
+</li>
+	<li class="cat-item cat-item-3"><a href="http://www.ha97.com/category/linux">Linux</a> (424)
+</li>
+	<li class="cat-item cat-item-12"><a href="http://www.ha97.com/category/security">Security</a> (112)
+</li>
+	<li class="cat-item cat-item-298"><a href="http://www.ha97.com/category/seo">SEO</a> (22)
+</li>
+	<li class="cat-item cat-item-58"><a href="http://www.ha97.com/category/tools">Tools</a> (74)
+</li>
+	<li class="cat-item cat-item-72"><a href="http://www.ha97.com/category/unix">UNIX</a> (147)
+</li>
+	<li class="cat-item cat-item-29"><a href="http://www.ha97.com/category/vps">VPS</a> (14)
+</li>
+	<li class="cat-item cat-item-36"><a href="http://www.ha97.com/category/web">Web</a> (155)
+</li>
+	<li class="cat-item cat-item-64"><a href="http://www.ha97.com/category/web-server">Web Server</a> (77)
+</li>
+	<li class="cat-item cat-item-91"><a href="http://www.ha97.com/category/wordpress">WordPress</a> (39)
+</li>
+	<li class="cat-item cat-item-15"><a href="http://www.ha97.com/category/%e4%b8%aa%e4%ba%ba%e6%97%a5%e8%ae%b0">个人日记</a> (323)
+</li>
+	<li class="cat-item cat-item-40"><a href="http://www.ha97.com/category/%e4%ba%92%e8%81%94%e7%bd%91">互联网</a> (221)
+</li>
+	<li class="cat-item cat-item-2009"><a href="http://www.ha97.com/category/%e4%ba%ba%e5%b7%a5%e6%99%ba%e8%83%bd">人工智能</a> (3)
+</li>
+	<li class="cat-item cat-item-14"><a href="http://www.ha97.com/category/%e4%ba%ba%e6%96%87%e5%8e%86%e5%8f%b2">人文历史</a> (57)
+</li>
+	<li class="cat-item cat-item-39"><a href="http://www.ha97.com/category/%e4%ba%ba%e7%94%9f%e7%99%be%e6%80%81">人生百态</a> (93)
+</li>
+	<li class="cat-item cat-item-13"><a href="http://www.ha97.com/category/%e5%88%9b%e4%b8%9a%e6%8a%95%e8%b5%84">创业投资</a> (76)
+</li>
+	<li class="cat-item cat-item-154"><a href="http://www.ha97.com/category/%e5%8e%9f%e5%88%9b%e6%80%bb%e7%bb%93">原创总结</a> (138)
+</li>
+	<li class="cat-item cat-item-564"><a href="http://www.ha97.com/category/%e5%a4%96%e6%96%87%e7%bf%bb%e8%af%91">外文翻译</a> (77)
+</li>
+	<li class="cat-item cat-item-1918"><a href="http://www.ha97.com/category/%e5%a4%a7%e6%95%b0%e6%8d%ae%e5%ba%94%e7%94%a8">大数据应用</a> (16)
+<ul class="children">
+	<li class="cat-item cat-item-1565"><a href="http://www.ha97.com/category/%e5%a4%a7%e6%95%b0%e6%8d%ae%e5%ba%94%e7%94%a8/hadoop">Hadoop</a> (15)
+</li>
+</ul>
+</li>
+	<li class="cat-item cat-item-921"><a href="http://www.ha97.com/category/%e5%bc%80%e6%ba%90%e4%b8%96%e7%95%8c">开源世界</a> (47)
+</li>
+	<li class="cat-item cat-item-8"><a href="http://www.ha97.com/category/%e6%97%a7%e6%96%87%e5%ad%98%e6%a1%a3">旧文存档</a> (199)
+</li>
+	<li class="cat-item cat-item-4"><a href="http://www.ha97.com/category/%e6%9c%8d%e5%8a%a1%e5%99%a8%e6%9e%b6%e6%9e%84">服务器架构</a> (84)
+</li>
+	<li class="cat-item cat-item-1"><a href="http://www.ha97.com/category/%e6%9c%aa%e5%88%86%e7%b1%bb">未分类</a> (24)
+</li>
+	<li class="cat-item cat-item-2008"><a href="http://www.ha97.com/category/%e6%9c%ba%e5%99%a8%e5%ad%a6%e4%b9%a0">机器学习</a> (6)
+</li>
+	<li class="cat-item cat-item-1053"><a href="http://www.ha97.com/category/%e6%b8%b8%e6%88%8f%e7%a0%94%e7%a9%b6">游戏研究</a> (45)
+</li>
+	<li class="cat-item cat-item-9"><a href="http://www.ha97.com/category/%e7%a7%91%e6%8a%80%e8%b5%84%e8%ae%af">科技资讯</a> (52)
+</li>
+	<li class="cat-item cat-item-59"><a href="http://www.ha97.com/category/%e7%bc%96%e7%a8%8b%e5%bc%80%e5%8f%91">编程开发</a> (131)
+<ul class="children">
+	<li class="cat-item cat-item-652"><a href="http://www.ha97.com/category/%e7%bc%96%e7%a8%8b%e5%bc%80%e5%8f%91/python">Python</a> (15)
+</li>
+	<li class="cat-item cat-item-35"><a href="http://www.ha97.com/category/%e7%bc%96%e7%a8%8b%e5%bc%80%e5%8f%91/shell">Shell</a> (64)
+</li>
+</ul>
+</li>
+	<li class="cat-item cat-item-47"><a href="http://www.ha97.com/category/%e8%99%9a%e6%8b%9f%e5%8c%96%e4%b8%8e%e4%ba%91%e8%ae%a1%e7%ae%97">虚拟化与云计算</a> (46)
+</li>
+	<li class="cat-item cat-item-127"><a href="http://www.ha97.com/category/%e8%b5%84%e6%ba%90%e5%88%86%e4%ba%ab">资源分享</a> (128)
+</li>
+	<li class="cat-item cat-item-748"><a href="http://www.ha97.com/category/%e8%bf%90%e7%bb%b4%e7%bb%8f%e9%aa%8c">运维经验</a> (39)
+</li>
+	<li class="cat-item cat-item-7"><a href="http://www.ha97.com/category/%e9%9b%86%e7%be%a4%e4%b8%8e%e8%b4%9f%e8%bd%bd%e5%9d%87%e8%a1%a1">集群与负载均衡</a> (18)
+</li>
+	<li class="cat-item cat-item-57"><a href="http://www.ha97.com/category/%e9%a1%b9%e7%9b%ae%e7%ae%a1%e7%90%86">项目管理</a> (9)
+</li>
+		</ul>
+</li>
+<li id="meta-3" class="widget widget_meta"><h2 class="widgettitle">功能</h2>
+			<ul>
+			<li><a href="http://www.ha97.com/wp-login.php?action=register">注册</a></li>			<li><a href="http://www.ha97.com/wp-login.php">登录</a></li>
+			<li><a href="http://www.ha97.com/feed">文章<abbr title="Really Simple Syndication">RSS</abbr></a></li>
+			<li><a href="http://www.ha97.com/comments/feed">评论<abbr title="Really Simple Syndication">RSS</abbr></a></li>
+			<li><a href="https://cn.wordpress.org/" title="基于WordPress，一个优美、先进的个人信息发布平台。">WordPress.org</a></li>			</ul>
+			</li>
+<li id="archives-3" class="widget widget_archive"><h2 class="widgettitle">文章归档</h2>
+		<ul>
+			<li><a href="http://www.ha97.com/date/2017/07">2017年七月</a>&nbsp;(3)</li>
+	<li><a href="http://www.ha97.com/date/2017/05">2017年五月</a>&nbsp;(1)</li>
+	<li><a href="http://www.ha97.com/date/2017/03">2017年三月</a>&nbsp;(1)</li>
+	<li><a href="http://www.ha97.com/date/2016/08">2016年八月</a>&nbsp;(1)</li>
+	<li><a href="http://www.ha97.com/date/2016/07">2016年七月</a>&nbsp;(1)</li>
+	<li><a href="http://www.ha97.com/date/2016/06">2016年六月</a>&nbsp;(1)</li>
+	<li><a href="http://www.ha97.com/date/2016/05">2016年五月</a>&nbsp;(5)</li>
+	<li><a href="http://www.ha97.com/date/2016/01">2016年一月</a>&nbsp;(1)</li>
+	<li><a href="http://www.ha97.com/date/2015/11">2015年十一月</a>&nbsp;(1)</li>
+	<li><a href="http://www.ha97.com/date/2015/10">2015年十月</a>&nbsp;(1)</li>
+	<li><a href="http://www.ha97.com/date/2015/08">2015年八月</a>&nbsp;(1)</li>
+	<li><a href="http://www.ha97.com/date/2015/07">2015年七月</a>&nbsp;(3)</li>
+	<li><a href="http://www.ha97.com/date/2015/06">2015年六月</a>&nbsp;(1)</li>
+	<li><a href="http://www.ha97.com/date/2015/02">2015年二月</a>&nbsp;(2)</li>
+	<li><a href="http://www.ha97.com/date/2014/09">2014年九月</a>&nbsp;(3)</li>
+	<li><a href="http://www.ha97.com/date/2014/08">2014年八月</a>&nbsp;(4)</li>
+	<li><a href="http://www.ha97.com/date/2014/07">2014年七月</a>&nbsp;(6)</li>
+	<li><a href="http://www.ha97.com/date/2014/06">2014年六月</a>&nbsp;(2)</li>
+	<li><a href="http://www.ha97.com/date/2014/05">2014年五月</a>&nbsp;(6)</li>
+	<li><a href="http://www.ha97.com/date/2014/04">2014年四月</a>&nbsp;(1)</li>
+	<li><a href="http://www.ha97.com/date/2013/10">2013年十月</a>&nbsp;(2)</li>
+	<li><a href="http://www.ha97.com/date/2013/09">2013年九月</a>&nbsp;(5)</li>
+	<li><a href="http://www.ha97.com/date/2013/07">2013年七月</a>&nbsp;(1)</li>
+	<li><a href="http://www.ha97.com/date/2013/06">2013年六月</a>&nbsp;(1)</li>
+	<li><a href="http://www.ha97.com/date/2013/03">2013年三月</a>&nbsp;(2)</li>
+	<li><a href="http://www.ha97.com/date/2013/02">2013年二月</a>&nbsp;(1)</li>
+	<li><a href="http://www.ha97.com/date/2013/01">2013年一月</a>&nbsp;(12)</li>
+	<li><a href="http://www.ha97.com/date/2012/12">2012年十二月</a>&nbsp;(5)</li>
+	<li><a href="http://www.ha97.com/date/2012/11">2012年十一月</a>&nbsp;(10)</li>
+	<li><a href="http://www.ha97.com/date/2012/10">2012年十月</a>&nbsp;(2)</li>
+	<li><a href="http://www.ha97.com/date/2012/09">2012年九月</a>&nbsp;(5)</li>
+	<li><a href="http://www.ha97.com/date/2012/08">2012年八月</a>&nbsp;(12)</li>
+	<li><a href="http://www.ha97.com/date/2012/07">2012年七月</a>&nbsp;(21)</li>
+	<li><a href="http://www.ha97.com/date/2012/06">2012年六月</a>&nbsp;(23)</li>
+	<li><a href="http://www.ha97.com/date/2012/05">2012年五月</a>&nbsp;(21)</li>
+	<li><a href="http://www.ha97.com/date/2012/04">2012年四月</a>&nbsp;(7)</li>
+	<li><a href="http://www.ha97.com/date/2012/03">2012年三月</a>&nbsp;(2)</li>
+	<li><a href="http://www.ha97.com/date/2012/02">2012年二月</a>&nbsp;(1)</li>
+	<li><a href="http://www.ha97.com/date/2012/01">2012年一月</a>&nbsp;(2)</li>
+	<li><a href="http://www.ha97.com/date/2011/12">2011年十二月</a>&nbsp;(7)</li>
+	<li><a href="http://www.ha97.com/date/2011/11">2011年十一月</a>&nbsp;(6)</li>
+	<li><a href="http://www.ha97.com/date/2011/10">2011年十月</a>&nbsp;(5)</li>
+	<li><a href="http://www.ha97.com/date/2011/08">2011年八月</a>&nbsp;(3)</li>
+	<li><a href="http://www.ha97.com/date/2011/07">2011年七月</a>&nbsp;(29)</li>
+	<li><a href="http://www.ha97.com/date/2011/06">2011年六月</a>&nbsp;(24)</li>
+	<li><a href="http://www.ha97.com/date/2011/05">2011年五月</a>&nbsp;(37)</li>
+	<li><a href="http://www.ha97.com/date/2011/04">2011年四月</a>&nbsp;(28)</li>
+	<li><a href="http://www.ha97.com/date/2011/03">2011年三月</a>&nbsp;(18)</li>
+	<li><a href="http://www.ha97.com/date/2011/02">2011年二月</a>&nbsp;(1)</li>
+	<li><a href="http://www.ha97.com/date/2011/01">2011年一月</a>&nbsp;(14)</li>
+	<li><a href="http://www.ha97.com/date/2010/12">2010年十二月</a>&nbsp;(3)</li>
+	<li><a href="http://www.ha97.com/date/2010/11">2010年十一月</a>&nbsp;(17)</li>
+	<li><a href="http://www.ha97.com/date/2010/10">2010年十月</a>&nbsp;(24)</li>
+	<li><a href="http://www.ha97.com/date/2010/09">2010年九月</a>&nbsp;(100)</li>
+	<li><a href="http://www.ha97.com/date/2010/08">2010年八月</a>&nbsp;(119)</li>
+	<li><a href="http://www.ha97.com/date/2010/07">2010年七月</a>&nbsp;(184)</li>
+	<li><a href="http://www.ha97.com/date/2010/06">2010年六月</a>&nbsp;(157)</li>
+	<li><a href="http://www.ha97.com/date/2010/05">2010年五月</a>&nbsp;(154)</li>
+	<li><a href="http://www.ha97.com/date/2010/04">2010年四月</a>&nbsp;(42)</li>
+		</ul>
+		</li>
+<li id="calendar-3" class="widget widget_calendar"><h2 class="widgettitle">日历</h2>
+<div id="calendar_wrap" class="calendar_wrap"><table id="wp-calendar">
+	<caption>2018年十二月</caption>
+	<thead>
+	<tr>
+		<th scope="col" title="星期一">一</th>
+		<th scope="col" title="星期二">二</th>
+		<th scope="col" title="星期三">三</th>
+		<th scope="col" title="星期四">四</th>
+		<th scope="col" title="星期五">五</th>
+		<th scope="col" title="星期六">六</th>
+		<th scope="col" title="星期日">日</th>
+	</tr>
+	</thead>
+
+	<tfoot>
+	<tr>
+		<td colspan="3" id="prev"><a href="http://www.ha97.com/date/2017/07">« 7月</a></td>
+		<td class="pad">&nbsp;</td>
+		<td colspan="3" id="next" class="pad">&nbsp;</td>
+	</tr>
+	</tfoot>
+
+	<tbody>
+	<tr>
+		<td colspan="5" class="pad">&nbsp;</td><td>1</td><td>2</td>
+	</tr>
+	<tr>
+		<td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td>
+	</tr>
+	<tr>
+		<td>10</td><td>11</td><td>12</td><td>13</td><td>14</td><td>15</td><td>16</td>
+	</tr>
+	<tr>
+		<td>17</td><td>18</td><td>19</td><td>20</td><td>21</td><td>22</td><td>23</td>
+	</tr>
+	<tr>
+		<td>24</td><td>25</td><td>26</td><td>27</td><td>28</td><td id="today">29</td><td>30</td>
+	</tr>
+	<tr>
+		<td>31</td>
+		<td class="pad" colspan="6">&nbsp;</td>
+	</tr>
+	</tbody>
+	</table></div></li>
+<li id="linkcat-376" class="widget widget_links"><h2 class="widgettitle">常用网站</h2>
+
+	<ul class="xoxo blogroll">
+<li><a href="http://www.centos.org/" target="_top">CentOS</a></li>
+<li><a href="http://www.chinaunix.net/" target="_top">ChinaUnix</a></li>
+<li><a href="http://www.freebuf.com/" target="_top">Freebuf</a></li>
+<li><a href="http://www.gentoo.org/" target="_top">Gentoo</a></li>
+<li><a href="https://github.com/" target="_top">Github</a></li>
+<li><a href="https://www.google.com/" target="_top">Google SSL</a></li>
+<li><a href="http://hadoop.apache.org/" target="_top">Hadoop</a></li>
+<li><a href="http://www.kernel.org/" target="_top">Linux Kernel</a></li>
+<li><a href="http://www.mysql.com/" target="_top">MySQL</a></li>
+<li><a href="http://sourceforge.net/" target="_top">SourceForge</a></li>
+<li><a href="https://stackoverflow.com/" target="_top">stackoverflow</a></li>
+<li><a href="https://github.com/tensorflow/tensorflow/" target="_top">Tensorflow</a></li>
+<li><a href="http://www.oschina.net/" target="_top">开源中国</a></li>
+<li><a href="http://www.nsfocus.net/">绿盟科技</a></li>
+<li><a href="http://www.douban.com/" target="_top">豆瓣</a></li>
+
+	</ul>
+</li>
+
+<li id="linkcat-215" class="widget widget_links"><h2 class="widgettitle">技术blog</h2>
+
+	<ul class="xoxo blogroll">
+<li><a href="http://www.dbanotes.net/" target="_top">DBA Notes</a></li>
+<li><a href="http://www.ha97.com/" target="_top">服务器运维与架构</a></li>
+
+	</ul>
+</li>
+
+<li id="linkcat-214" class="widget widget_links"><h2 class="widgettitle">技术手册</h2>
+
+	<ul class="xoxo blogroll">
+<li><a href="http://www.ha97.com/book/lfs-book-6.6/" target="_top">LFS 6.6中文手册</a></li>
+<li><a href="http://www.ha97.com/book/unixtoolbox_zh_CN.html" target="_top">Unix Toolbox中文版</a></li>
+<li><a href="http://www.ha97.com/book/OpenSource_Guide/" target="_top">开源世界旅行手册</a></li>
+<li><a href="http://www.ha97.com/book/vbird_linux/" target="_top">鸟哥的Linux私房菜（简体版）</a></li>
+
+	</ul>
+</li>
+
+</ul>
+</div>	</div><!--wrapper-->
+
+
+<div id="footer-aw" class="clearfix">
+	<div class="ft-s ss">
+		<h2>日志存档</h2>
+		<ul>
+			<li><a href="http://www.ha97.com/date/2017/07">2017年七月</a></li>
+	<li><a href="http://www.ha97.com/date/2017/05">2017年五月</a></li>
+	<li><a href="http://www.ha97.com/date/2017/03">2017年三月</a></li>
+	<li><a href="http://www.ha97.com/date/2016/08">2016年八月</a></li>
+	<li><a href="http://www.ha97.com/date/2016/07">2016年七月</a></li>
+	<li><a href="http://www.ha97.com/date/2016/06">2016年六月</a></li>
+	<li><a href="http://www.ha97.com/date/2016/05">2016年五月</a></li>
+	<li><a href="http://www.ha97.com/date/2016/01">2016年一月</a></li>
+	<li><a href="http://www.ha97.com/date/2015/11">2015年十一月</a></li>
+	<li><a href="http://www.ha97.com/date/2015/10">2015年十月</a></li>
+	<li><a href="http://www.ha97.com/date/2015/08">2015年八月</a></li>
+	<li><a href="http://www.ha97.com/date/2015/07">2015年七月</a></li>
+	<li><a href="http://www.ha97.com/date/2015/06">2015年六月</a></li>
+	<li><a href="http://www.ha97.com/date/2015/02">2015年二月</a></li>
+	<li><a href="http://www.ha97.com/date/2014/09">2014年九月</a></li>
+	<li><a href="http://www.ha97.com/date/2014/08">2014年八月</a></li>
+	<li><a href="http://www.ha97.com/date/2014/07">2014年七月</a></li>
+	<li><a href="http://www.ha97.com/date/2014/06">2014年六月</a></li>
+	<li><a href="http://www.ha97.com/date/2014/05">2014年五月</a></li>
+	<li><a href="http://www.ha97.com/date/2014/04">2014年四月</a></li>
+	<li><a href="http://www.ha97.com/date/2013/10">2013年十月</a></li>
+	<li><a href="http://www.ha97.com/date/2013/09">2013年九月</a></li>
+	<li><a href="http://www.ha97.com/date/2013/07">2013年七月</a></li>
+	<li><a href="http://www.ha97.com/date/2013/06">2013年六月</a></li>
+	<li><a href="http://www.ha97.com/date/2013/03">2013年三月</a></li>
+	<li><a href="http://www.ha97.com/date/2013/02">2013年二月</a></li>
+	<li><a href="http://www.ha97.com/date/2013/01">2013年一月</a></li>
+	<li><a href="http://www.ha97.com/date/2012/12">2012年十二月</a></li>
+	<li><a href="http://www.ha97.com/date/2012/11">2012年十一月</a></li>
+	<li><a href="http://www.ha97.com/date/2012/10">2012年十月</a></li>
+	<li><a href="http://www.ha97.com/date/2012/09">2012年九月</a></li>
+	<li><a href="http://www.ha97.com/date/2012/08">2012年八月</a></li>
+	<li><a href="http://www.ha97.com/date/2012/07">2012年七月</a></li>
+	<li><a href="http://www.ha97.com/date/2012/06">2012年六月</a></li>
+	<li><a href="http://www.ha97.com/date/2012/05">2012年五月</a></li>
+	<li><a href="http://www.ha97.com/date/2012/04">2012年四月</a></li>
+	<li><a href="http://www.ha97.com/date/2012/03">2012年三月</a></li>
+	<li><a href="http://www.ha97.com/date/2012/02">2012年二月</a></li>
+	<li><a href="http://www.ha97.com/date/2012/01">2012年一月</a></li>
+	<li><a href="http://www.ha97.com/date/2011/12">2011年十二月</a></li>
+	<li><a href="http://www.ha97.com/date/2011/11">2011年十一月</a></li>
+	<li><a href="http://www.ha97.com/date/2011/10">2011年十月</a></li>
+	<li><a href="http://www.ha97.com/date/2011/08">2011年八月</a></li>
+	<li><a href="http://www.ha97.com/date/2011/07">2011年七月</a></li>
+	<li><a href="http://www.ha97.com/date/2011/06">2011年六月</a></li>
+	<li><a href="http://www.ha97.com/date/2011/05">2011年五月</a></li>
+	<li><a href="http://www.ha97.com/date/2011/04">2011年四月</a></li>
+	<li><a href="http://www.ha97.com/date/2011/03">2011年三月</a></li>
+	<li><a href="http://www.ha97.com/date/2011/02">2011年二月</a></li>
+	<li><a href="http://www.ha97.com/date/2011/01">2011年一月</a></li>
+	<li><a href="http://www.ha97.com/date/2010/12">2010年十二月</a></li>
+	<li><a href="http://www.ha97.com/date/2010/11">2010年十一月</a></li>
+	<li><a href="http://www.ha97.com/date/2010/10">2010年十月</a></li>
+	<li><a href="http://www.ha97.com/date/2010/09">2010年九月</a></li>
+	<li><a href="http://www.ha97.com/date/2010/08">2010年八月</a></li>
+	<li><a href="http://www.ha97.com/date/2010/07">2010年七月</a></li>
+	<li><a href="http://www.ha97.com/date/2010/06">2010年六月</a></li>
+	<li><a href="http://www.ha97.com/date/2010/05">2010年五月</a></li>
+	<li><a href="http://www.ha97.com/date/2010/04">2010年四月</a></li>
+		</ul>
+	</div>
+		
+	<div class="ft-s">
+		<h2>博主站点</h2>
+		<ul>
+		<li><a href="http://www.ha97.com/" title="服务器运维与架构">服务器运维与架构</a></li>
+		</ul>
+	</div>
+		
+</div>
+
+<div class="copyright">
+	<a href="http://www.ha97.com/">Powered by ha97 4.5.14</a> - <a href="http://www.ha97.com/" title="服务器运维与架构|网站架构">服务器运维与架构</a> by <a href="http://www.ha97.com/about">博客教主</a> <a href="http://www.ha97.com/google-sitemap.xml">Google地图</a> <a href="http://www.ha97.com/sitemap.html">百度地图</a> 
+<a href="https://www.cnzz.com/stat/website.php?web_id=363854" target="_top" title="站长统计">站长统计</a>
+	- 2.15 seconds</div>
+	
+
+
+
+
+
+
+		
+
+
+</body>
+</html>

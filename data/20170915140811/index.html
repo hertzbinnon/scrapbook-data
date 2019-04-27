@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html class=" js flexbox canvas canvastext webgl no-touch geolocation postmessage no-websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients no-cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers applicationcache svg inlinesvg smil svgclippaths" style="" lang="en">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Java - Repository — Kurento 6.6.1 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="favicon.ico">
+  
+
+  
+  
+
+  
+  
+    
+
+  
+
+  
+  
+
+  
+    
+  
+    
+  
+        <link rel="index" title="Index" href="http://doc-kurento.readthedocs.io/en/stable/genindex.html">
+        <link rel="search" title="Search" href="http://doc-kurento.readthedocs.io/en/stable/search.html">
+    <link rel="top" title="Kurento 6.6.1 documentation" href="http://doc-kurento.readthedocs.io/en/stable/index.html">
+        <link rel="up" title="Kurento Tutorials" href="http://doc-kurento.readthedocs.io/en/stable/tutorials.html">
+        <link rel="next" title="JavaScript - Loopback stats" href="http://doc-kurento.readthedocs.io/en/stable/tutorials/js/tutorial-loopback-stats.html">
+        <link rel="prev" title="JavaScript - Recorder" href="http://doc-kurento.readthedocs.io/en/stable/tutorials/js/tutorial-recorder.html"> 
+
+  
+  
+
+
+<!-- RTD Extra Head -->
+
+<!-- 
+Always link to the latest version, as canonical.
+http://docs.readthedocs.org/en/latest/canonical.html
+-->
+<link rel="canonical" href="http://doc-kurento.readthedocs.io/en/stable/tutorials/java/tutorial-repository.html">
+
+
+
+
+
+<!-- Add page-specific data, which must exist in the page js, not global -->
+
+
+
+
+<!-- end RTD <extrahead> --><link rel="stylesheet" type="text/css" id="SL_Style" href="chrome://imtranslator/content/css/translator.css">
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side"><div class="wy-side-scroll"><div class="wy-side-nav-search">
+        <a href="http://doc-kurento.readthedocs.io/en/stable/index.html" class="fa fa-home"><img style="width: 159px; border-radius: 0px;" src="kurento-rect-logo2.png"><span style="font-size: 0.8em;">v6.6.1</span></a>
+        <div role="search">
+  <form id="rtd-search-form" class="wy-form" action="http://doc-kurento.readthedocs.io/en/stable/search.html" method="get">
+    <input name="q" placeholder="Search docs" value="" type="text">
+    <input name="check_keywords" value="yes" type="hidden">
+    <input name="area" value="default" type="hidden">
+  </form>
+</div>
+      </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/what_is_kurento.html">What’s Kurento?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/introducing_kurento.html"><span class="toctree-expand"></span>Introducing Kurento</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/introducing_kurento.html#webrtc-media-servers">WebRTC media servers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/introducing_kurento.html#kurento-media-server">Kurento Media Server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/introducing_kurento.html#kurento-api-clients-and-protocol">Kurento API, Clients, and Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/introducing_kurento.html#creating-applications-with-kurento">Creating applications with Kurento</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/installation_guide.html"><span class="toctree-expand"></span>Kurento Media Server Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/installation_guide.html#migrating-from-kms-v5-to-v6">Migrating from KMS v5 to v6</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/installation_guide.html#stun-and-turn-servers">STUN and TURN servers</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/tutorials.html"><span class="toctree-expand"></span>Kurento Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/tutorials.html#hello-world">Hello world</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/tutorials.html#webrtc-magic-mirror">WebRTC magic mirror</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/tutorials.html#webrtc-one-to-many-broadcast">WebRTC one-to-many broadcast</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/tutorials.html#webrtc-one-to-one-video-call">WebRTC one-to-one video call</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/tutorials.html#webrtc-one-to-one-video-call-with-recording-and-filtering">WebRTC one-to-one video call with recording and filtering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/tutorials.html#webrtc-many-to-many-video-call-group-call">WebRTC many-to-many video call (Group call)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/tutorials.html#media-elements-metadata">Media Elements metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/tutorials.html#play-media-to-webrtc">Play media to WebRTC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/tutorials.html#webrtc-outgoing-data-channels">WebRTC outgoing data channels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/tutorials.html#webrtc-incoming-data-channel">WebRTC incoming data channel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/tutorials.html#webrtc-recording">WebRTC recording</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/tutorials.html#webrtc-repository">WebRTC repository</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/tutorials.html#webrtc-statistics">WebRTC statistics</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/mastering_kurento.html"><span class="toctree-expand"></span>Mastering Kurento</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/mastering_kurento.html#kurento-architecture">Kurento Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/mastering_kurento.html#kurento-api-reference">Kurento API Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/mastering_kurento.html#kurento-protocol">Kurento Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/mastering_kurento.html#advanced-installation-guide">Advanced Installation Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/mastering_kurento.html#working-with-nightly-builds">Working with Nightly Builds</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/mastering_kurento.html#kurento-modules">Kurento Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/mastering_kurento.html#webrtc-statistics">WebRTC Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/mastering_kurento.html#kurento-utils-js">Kurento Utils JS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/mastering_kurento.html#kurento-java-client-javadoc">Kurento Java Client JavaDoc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/mastering_kurento.html#kurento-javascript-client-jsdoc">Kurento JavaScript Client JsDoc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/mastering_kurento.html#kurento-javascript-utils-jsdoc">Kurento JavaScript Utils JsDoc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/mastering_kurento.html#securing-kurento-applications">Securing Kurento Applications</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/faq.html"><span class="toctree-expand"></span>Kurento FAQ</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/faq.html#how-do-i">How do I...</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/faq.html#why-do-i-get-the-error">Why do I get the error...</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/glossary.html">Glossary</a></li>
+</ul>
+
+        
+      </div></div>
+      
+
+      
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="http://doc-kurento.readthedocs.io/en/stable/index.html">Kurento</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="http://doc-kurento.readthedocs.io/en/stable/index.html">Docs</a> »</li>
+      
+          <li><a href="http://doc-kurento.readthedocs.io/en/stable/tutorials.html">Kurento Tutorials</a> »</li>
+      
+    <li>Java - Repository</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="https://github.com/Kurento/doc-kurento-readthedocs/blob/3f3fcf1e9675c045d7edc2410f9d6d5f4690a228/source/tutorials/java/tutorial-repository.rst" class="fa fa-github"> Edit on GitHub</a>
+        
+      </li>
+  </ul>
+  <hr>
+</div>
+          <div role="main">
+            
+  <div class="section" id="java-repository">
+<h1>Java - Repository<a class="headerlink" href="#java-repository" title="Permalink to this headline">¶</a></h1>
+<p>This web application extends <a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/tutorials/java/tutorial-helloworld.html"><span class="doc">Hello World</span></a> adding
+recording capabilities by means of the
+<a class="reference external" href="http://doc-kurento-repository.readthedocs.org/">Kurento Repository</a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This tutorial has been configured to use https. Follow the <a class="reference external" href="http://doc-kurento.readthedocs.io/en/stable/mastering/securing-kurento-applications.html#configure-java-applications-to-use-https">instructions</a>
+to secure your application.</p>
+</div>
+<div class="section" id="for-the-impatient-running-this-example">
+<h2>For the impatient: running this example<a class="headerlink" href="#for-the-impatient-running-this-example" title="Permalink to this headline">¶</a></h2>
+<p>You need to have installed the Kurento Media Server before running this example.
+Read the <a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/installation_guide.html"><span class="doc">installation guide</span></a> for further
+information.</p>
+<p>In addition, you also need the <strong>kurento-repository-server</strong>. This component is
+in charge of the storage and retrieval of the media. Please visit the
+<a class="reference external" href="https://doc-kurento-repository.readthedocs.org/en/stable/repository_server.html">Kurento Repository Server installation guide</a>
+for further details.</p>
+<p>To launch the application, you need to clone the GitHub project where this demo
+is hosted, and then run the main class:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>git clone https://github.com/Kurento/kurento-tutorial-java.git
+<span class="nb">cd</span> kurento-tutorial-java/kurento-hello-world-repository/
+git checkout <span class="m">6</span>.6.2
+mvn compile exec:java
+</pre></div>
+</div>
+<p>Access the application connecting to the URL <a class="reference external" href="https://localhost:8443/">https://localhost:8443/</a> in a WebRTC
+capable browser (Chrome, Firefox).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>These instructions work only if Kurento Media Server is up and running in the same machine
+as the tutorial. However, it is possible to connect to a remote KMS in other machine, simply adding
+the flag <code class="docutils literal"><span class="pre">kms.url</span></code> to the JVM executing the demo. In addition, by default this demo is also
+suppossing that the Kurento Repository is up and running in the localhost. It can be changed by
+means of the property <code class="docutils literal"><span class="pre">repository.uri</span></code>. All in all, and due to the fact that we can use Maven
+to run the tutorial, you should execute the following command:</p>
+<div class="last highlight-bash"><div class="highlight"><pre><span></span>mvn compile exec:java -Dkms.url<span class="o">=</span>ws://kms_host:kms_port/kurento <span class="se">\</span>
+    -Drepository.uri<span class="o">=</span>http://repository_host:repository_url
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="understanding-this-example">
+<h2>Understanding this example<a class="headerlink" href="#understanding-this-example" title="Permalink to this headline">¶</a></h2>
+<p>On top of the recording capabilities from the base tutorial, this application
+creates a repository element to store media in that repository. Additionally,
+metadata about the recorded file can be also stored in the repository.</p>
+<p>This is a web application, and therefore it follows a client-server
+architecture. At the client-side, the logic is implemented in <strong>JavaScript</strong>.
+At the server-side, we use a Spring-Boot based server application consuming the
+<strong>Kurento Java Client</strong> API, to control <strong>Kurento Media Server</strong> capabilities.
+All in all, the high level architecture of this demo is three-tier. To
+communicate these entities, two WebSockets are used. First, a WebSocket is
+created between client and application server to implement a custom signaling
+protocol. Second, another WebSocket is used to perform the communication
+between the Kurento Java Client and the Kurento Media Server. This
+communication takes place using the <strong>Kurento Protocol</strong>. For further
+information on it, please see this
+<a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/mastering/kurento_protocol.html"><span class="doc">page</span></a> of the documentation.</p>
+<p>The following sections analyze in deep the server (Java) and client-side
+(JavaScript) code of this application. The complete source code can be found in
+<a class="reference external" href="https://github.com/Kurento/kurento-tutorial-java/tree/master/kurento-hello-world-repository">GitHub</a>.</p>
+</div>
+<div class="section" id="application-server-logic">
+<h2>Application Server Logic<a class="headerlink" href="#application-server-logic" title="Permalink to this headline">¶</a></h2>
+<p>This demo has been developed using <strong>Java</strong> in the server-side, based on the
+<a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/glossary.html#term-spring-boot"><span class="xref std std-term">Spring Boot</span></a> framework, which embeds a Tomcat web server within the
+generated maven artifact, and thus simplifies the development and deployment
+process.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You can use whatever Java server side technology you prefer to build web
+applications with Kurento. For example, a pure Java EE application, SIP
+Servlets, Play, Vert.x, etc. Here we chose Spring Boot for convenience.</p>
+</div>
+<p>The main class of this demo is
+<a class="reference external" href="https://github.com/Kurento/kurento-tutorial-java/blob/master/kurento-hello-world-repository/src/main/java/org/kurento/tutorial/helloworld/HelloWorldRecApp.java">HelloWorldRecApp</a>.
+As you can see, the <em>KurentoClient</em> is instantiated in this class as a Spring
+Bean. This bean is used to create <strong>Kurento Media Pipelines</strong>, which are used
+to add media capabilities to the application. In this instantiation we see that
+we need to specify to the client library the location of the Kurento Media
+Server. In this example, we assume it is located at <em>localhost</em> listening in
+port 8888. If you reproduce this example you’ll need to insert the specific
+location of your Kurento Media Server instance there.</p>
+<p>Once the <em>Kurento Client</em> has been instantiated, you are ready for communicating
+with Kurento Media Server and controlling its multimedia capabilities.</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="nd">@SpringBootApplication</span>
+<span class="nd">@EnableWebSocket</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloWorldRecApp</span> <span class="kd">implements</span> <span class="n">WebSocketConfigurer</span> <span class="o">{</span>
+
+  <span class="kd">protected</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">DEFAULT_REPOSITORY_SERVER_URI</span> <span class="o">=</span> <span class="s">"http://localhost:7676"</span><span class="o">;</span>
+
+  <span class="kd">protected</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">REPOSITORY_SERVER_URI</span> <span class="o">=</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">"repository.uri"</span><span class="o">,</span> <span class="n">DEFAULT_REPOSITORY_SERVER_URI</span><span class="o">);</span>
+
+  <span class="nd">@Bean</span>
+  <span class="kd">public</span> <span class="n">HelloWorldRecHandler</span> <span class="nf">handler</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">HelloWorldRecHandler</span><span class="o">();</span>
+  <span class="o">}</span>
+
+  <span class="nd">@Bean</span>
+  <span class="kd">public</span> <span class="n">KurentoClient</span> <span class="nf">kurentoClient</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">KurentoClient</span><span class="o">.</span><span class="na">create</span><span class="o">();</span>
+  <span class="o">}</span>
+
+  <span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">registerWebSocketHandlers</span><span class="o">(</span><span class="n">WebSocketHandlerRegistry</span> <span class="n">registry</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">registry</span><span class="o">.</span><span class="na">addHandler</span><span class="o">(</span><span class="n">handler</span><span class="o">(),</span> <span class="s">"/repository"</span><span class="o">);</span>
+  <span class="o">}</span>
+
+  <span class="nd">@Bean</span>
+  <span class="kd">public</span> <span class="n">RepositoryClient</span> <span class="nf">repositoryServiceProvider</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">REPOSITORY_SERVER_URI</span><span class="o">.</span><span class="na">startsWith</span><span class="o">(</span><span class="s">"file://"</span><span class="o">)</span> <span class="o">?</span> <span class="kc">null</span>
+      <span class="o">:</span> <span class="n">RepositoryClientProvider</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="n">REPOSITORY_SERVER_URI</span><span class="o">);</span>
+  <span class="o">}</span>
+
+  <span class="nd">@Bean</span>
+  <span class="kd">public</span> <span class="n">UserRegistry</span> <span class="nf">registry</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">UserRegistry</span><span class="o">();</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+    <span class="k">new</span> <span class="n">SpringApplication</span><span class="o">(</span><span class="n">HelloWorldRecApp</span><span class="o">.</span><span class="na">class</span><span class="o">).</span><span class="na">run</span><span class="o">(</span><span class="n">args</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>This web application follows a <em>Single Page Application</em> architecture
+(<a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/glossary.html#term-spa"><span class="xref std std-term">SPA</span></a>), and uses a <a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/glossary.html#term-websocket"><span class="xref std std-term">WebSocket</span></a> to communicate client with
+application server by means of requests and responses. Specifically, the main
+app class implements the interface <code class="docutils literal"><span class="pre">WebSocketConfigurer</span></code> to register a
+<code class="docutils literal"><span class="pre">WebSocketHanlder</span></code> to process WebSocket requests in the path <code class="docutils literal"><span class="pre">/repository</span></code>.</p>
+<p><a class="reference external" href="https://github.com/Kurento/kurento-tutorial-java/blob/master/kurento-hello-world-repository/src/main/java/org/kurento/tutorial/helloworld/HelloWorldRecHandler.java">HelloWorldRecHandler</a>
+class implements <code class="docutils literal"><span class="pre">TextWebSocketHandler</span></code> to handle text WebSocket requests.
+The central piece of this class is the method <code class="docutils literal"><span class="pre">handleTextMessage</span></code>. This
+method implements the actions for requests, returning responses through the
+WebSocket. In other words, it implements the server part of the signaling
+protocol depicted in the previous sequence diagram.</p>
+<p>In the designed protocol there are three different kinds of incoming messages to
+the <em>Server</em> : <code class="docutils literal"><span class="pre">start</span></code>, <code class="docutils literal"><span class="pre">stop</span></code>, <code class="docutils literal"><span class="pre">stopPlay</span></code>, <code class="docutils literal"><span class="pre">play</span></code> and
+<code class="docutils literal"><span class="pre">onIceCandidates</span></code>. These messages are treated in the <em>switch</em> clause, taking
+the proper steps in each case.</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloWorldRecHandler</span> <span class="kd">extends</span> <span class="n">TextWebSocketHandler</span> <span class="o">{</span>
+
+  <span class="c1">// slightly larger timeout</span>
+  <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">REPOSITORY_DISCONNECT_TIMEOUT</span> <span class="o">=</span> <span class="mi">5500</span><span class="o">;</span>
+
+  <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">RECORDING_EXT</span> <span class="o">=</span> <span class="s">".webm"</span><span class="o">;</span>
+
+  <span class="kd">private</span> <span class="kd">final</span> <span class="n">Logger</span> <span class="n">log</span> <span class="o">=</span> <span class="n">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="n">HelloWorldRecHandler</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+  <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">SimpleDateFormat</span> <span class="n">df</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SimpleDateFormat</span><span class="o">(</span><span class="s">"yyyy-MM-dd_HH-mm-ss-S"</span><span class="o">);</span>
+  <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Gson</span> <span class="n">gson</span> <span class="o">=</span> <span class="k">new</span> <span class="n">GsonBuilder</span><span class="o">().</span><span class="na">create</span><span class="o">();</span>
+
+  <span class="nd">@Autowired</span>
+  <span class="kd">private</span> <span class="n">UserRegistry</span> <span class="n">registry</span><span class="o">;</span>
+
+  <span class="nd">@Autowired</span>
+  <span class="kd">private</span> <span class="n">KurentoClient</span> <span class="n">kurento</span><span class="o">;</span>
+
+  <span class="nd">@Autowired</span>
+  <span class="kd">private</span> <span class="n">RepositoryClient</span> <span class="n">repositoryClient</span><span class="o">;</span>
+
+  <span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">handleTextMessage</span><span class="o">(</span><span class="n">WebSocketSession</span> <span class="n">session</span><span class="o">,</span> <span class="n">TextMessage</span> <span class="n">message</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+    <span class="n">JsonObject</span> <span class="n">jsonMessage</span> <span class="o">=</span> <span class="n">gson</span><span class="o">.</span><span class="na">fromJson</span><span class="o">(</span><span class="n">message</span><span class="o">.</span><span class="na">getPayload</span><span class="o">(),</span> <span class="n">JsonObject</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+
+    <span class="n">log</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">"Incoming message: {}"</span><span class="o">,</span> <span class="n">jsonMessage</span><span class="o">);</span>
+
+    <span class="n">UserSession</span> <span class="n">user</span> <span class="o">=</span> <span class="n">registry</span><span class="o">.</span><span class="na">getBySession</span><span class="o">(</span><span class="n">session</span><span class="o">);</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">user</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">log</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">"Incoming message from user '{}': {}"</span><span class="o">,</span> <span class="n">user</span><span class="o">.</span><span class="na">getId</span><span class="o">(),</span> <span class="n">jsonMessage</span><span class="o">);</span>
+    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+      <span class="n">log</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">"Incoming message from new user: {}"</span><span class="o">,</span> <span class="n">jsonMessage</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="k">switch</span> <span class="o">(</span><span class="n">jsonMessage</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"id"</span><span class="o">).</span><span class="na">getAsString</span><span class="o">())</span> <span class="o">{</span>
+      <span class="k">case</span> <span class="s">"start"</span><span class="o">:</span>
+        <span class="n">start</span><span class="o">(</span><span class="n">session</span><span class="o">,</span> <span class="n">jsonMessage</span><span class="o">);</span>
+        <span class="k">break</span><span class="o">;</span>
+      <span class="k">case</span> <span class="s">"stop"</span><span class="o">:</span>
+      <span class="k">case</span> <span class="s">"stopPlay"</span><span class="o">:</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">user</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+          <span class="n">user</span><span class="o">.</span><span class="na">release</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">break</span><span class="o">;</span>
+      <span class="k">case</span> <span class="s">"play"</span><span class="o">:</span>
+        <span class="n">play</span><span class="o">(</span><span class="n">user</span><span class="o">,</span> <span class="n">session</span><span class="o">,</span> <span class="n">jsonMessage</span><span class="o">);</span>
+        <span class="k">break</span><span class="o">;</span>
+      <span class="k">case</span> <span class="s">"onIceCandidate"</span><span class="o">:</span> <span class="o">{</span>
+        <span class="n">JsonObject</span> <span class="n">jsonCandidate</span> <span class="o">=</span> <span class="n">jsonMessage</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"candidate"</span><span class="o">).</span><span class="na">getAsJsonObject</span><span class="o">();</span>
+
+        <span class="k">if</span> <span class="o">(</span><span class="n">user</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+          <span class="n">IceCandidate</span> <span class="n">candidate</span> <span class="o">=</span> <span class="k">new</span> <span class="n">IceCandidate</span><span class="o">(</span><span class="n">jsonCandidate</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"candidate"</span><span class="o">).</span><span class="na">getAsString</span><span class="o">(),</span>
+              <span class="n">jsonCandidate</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"sdpMid"</span><span class="o">).</span><span class="na">getAsString</span><span class="o">(),</span>
+              <span class="n">jsonCandidate</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"sdpMLineIndex"</span><span class="o">).</span><span class="na">getAsInt</span><span class="o">());</span>
+          <span class="n">user</span><span class="o">.</span><span class="na">addCandidate</span><span class="o">(</span><span class="n">candidate</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">break</span><span class="o">;</span>
+      <span class="o">}</span>
+      <span class="k">default</span><span class="o">:</span>
+        <span class="n">sendError</span><span class="o">(</span><span class="n">session</span><span class="o">,</span> <span class="s">"Invalid message with id "</span> <span class="o">+</span> <span class="n">jsonMessage</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"id"</span><span class="o">).</span><span class="na">getAsString</span><span class="o">());</span>
+        <span class="k">break</span><span class="o">;</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+
+  <span class="kd">private</span> <span class="kt">void</span> <span class="nf">start</span><span class="o">(</span><span class="kd">final</span> <span class="n">WebSocketSession</span> <span class="n">session</span><span class="o">,</span> <span class="n">JsonObject</span> <span class="n">jsonMessage</span><span class="o">)</span> <span class="o">{</span>
+   <span class="o">...</span>
+  <span class="o">}</span>
+
+  <span class="kd">private</span> <span class="kt">void</span> <span class="nf">play</span><span class="o">(</span><span class="n">UserSession</span> <span class="n">user</span><span class="o">,</span> <span class="kd">final</span> <span class="n">WebSocketSession</span> <span class="n">session</span><span class="o">,</span> <span class="n">JsonObject</span> <span class="n">jsonMessage</span><span class="o">)</span> <span class="o">{</span>
+    <span class="o">...</span>
+  <span class="o">}</span>
+
+  <span class="kd">private</span> <span class="kt">void</span> <span class="nf">sendError</span><span class="o">(</span><span class="n">WebSocketSession</span> <span class="n">session</span><span class="o">,</span> <span class="n">String</span> <span class="n">message</span><span class="o">)</span> <span class="o">{</span>
+    <span class="o">...</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>In the following snippet, we can see the <code class="docutils literal"><span class="pre">start</span></code> method. If a repository REST
+client or interface has been created, it will obtain a RepositoryItem from the
+remote service. This item contains an ID and a recording URI that will be used
+by the Kurento Media Server. The ID will be used after the recording ends in
+order to manage the stored media. If the client doesn’t exist, the recording
+will be performed to a local URI, on the same machine as the KMS. This method
+also deals with the ICE candidates gathering, creates a Media Pipeline, creates
+the Media Elements (<code class="docutils literal"><span class="pre">WebRtcEndpoint</span></code> and <code class="docutils literal"><span class="pre">RecorderEndpoint</span></code>) and makes the
+connections between them. A <code class="docutils literal"><span class="pre">startResponse</span></code> message is sent back to the
+client with the SDP answer.</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kd">private</span> <span class="kt">void</span> <span class="nf">start</span><span class="o">(</span><span class="kd">final</span> <span class="n">WebSocketSession</span> <span class="n">session</span><span class="o">,</span> <span class="n">JsonObject</span> <span class="n">jsonMessage</span><span class="o">)</span> <span class="o">{</span>
+   <span class="k">try</span> <span class="o">{</span>
+      <span class="c1">// 0. Repository logic</span>
+      <span class="n">RepositoryItemRecorder</span> <span class="n">repoItem</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">repositoryClient</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+          <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">metadata</span> <span class="o">=</span> <span class="n">Collections</span><span class="o">.</span><span class="na">emptyMap</span><span class="o">();</span>
+          <span class="n">repoItem</span> <span class="o">=</span> <span class="n">repositoryClient</span><span class="o">.</span><span class="na">createRepositoryItem</span><span class="o">(</span><span class="n">metadata</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+          <span class="n">log</span><span class="o">.</span><span class="na">warn</span><span class="o">(</span><span class="s">"Unable to create kurento repository items"</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+        <span class="o">}</span>
+      <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+        <span class="n">String</span> <span class="n">now</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="k">new</span> <span class="n">Date</span><span class="o">());</span>
+        <span class="n">String</span> <span class="n">filePath</span> <span class="o">=</span> <span class="n">HelloWorldRecApp</span><span class="o">.</span><span class="na">REPOSITORY_SERVER_URI</span> <span class="o">+</span> <span class="n">now</span> <span class="o">+</span> <span class="n">RECORDING_EXT</span><span class="o">;</span>
+        <span class="n">repoItem</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RepositoryItemRecorder</span><span class="o">();</span>
+        <span class="n">repoItem</span><span class="o">.</span><span class="na">setId</span><span class="o">(</span><span class="n">now</span><span class="o">);</span>
+        <span class="n">repoItem</span><span class="o">.</span><span class="na">setUrl</span><span class="o">(</span><span class="n">filePath</span><span class="o">);</span>
+      <span class="o">}</span>
+      <span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"Media will be recorded {}by KMS: id={} , url={}"</span><span class="o">,</span>
+          <span class="o">(</span><span class="n">repositoryClient</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">?</span> <span class="s">"locally"</span> <span class="o">:</span> <span class="s">""</span><span class="o">),</span> <span class="n">repoItem</span><span class="o">.</span><span class="na">getId</span><span class="o">(),</span> <span class="n">repoItem</span><span class="o">.</span><span class="na">getUrl</span><span class="o">());</span>
+
+      <span class="c1">// 1. Media logic (webRtcEndpoint in loopback)</span>
+      <span class="n">MediaPipeline</span> <span class="n">pipeline</span> <span class="o">=</span> <span class="n">kurento</span><span class="o">.</span><span class="na">createMediaPipeline</span><span class="o">();</span>
+      <span class="n">WebRtcEndpoint</span> <span class="n">webRtcEndpoint</span> <span class="o">=</span> <span class="k">new</span> <span class="n">WebRtcEndpoint</span><span class="o">.</span><span class="na">Builder</span><span class="o">(</span><span class="n">pipeline</span><span class="o">).</span><span class="na">build</span><span class="o">();</span>
+      <span class="n">webRtcEndpoint</span><span class="o">.</span><span class="na">connect</span><span class="o">(</span><span class="n">webRtcEndpoint</span><span class="o">);</span>
+      <span class="n">RecorderEndpoint</span> <span class="n">recorder</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RecorderEndpoint</span><span class="o">.</span><span class="na">Builder</span><span class="o">(</span><span class="n">pipeline</span><span class="o">,</span> <span class="n">repoItem</span><span class="o">.</span><span class="na">getUrl</span><span class="o">())</span>
+          <span class="o">.</span><span class="na">withMediaProfile</span><span class="o">(</span><span class="n">MediaProfileSpecType</span><span class="o">.</span><span class="na">WEBM</span><span class="o">).</span><span class="na">build</span><span class="o">();</span>
+      <span class="n">webRtcEndpoint</span><span class="o">.</span><span class="na">connect</span><span class="o">(</span><span class="n">recorder</span><span class="o">);</span>
+
+      <span class="c1">// 2. Store user session</span>
+      <span class="n">UserSession</span> <span class="n">user</span> <span class="o">=</span> <span class="k">new</span> <span class="n">UserSession</span><span class="o">(</span><span class="n">session</span><span class="o">);</span>
+      <span class="n">user</span><span class="o">.</span><span class="na">setMediaPipeline</span><span class="o">(</span><span class="n">pipeline</span><span class="o">);</span>
+      <span class="n">user</span><span class="o">.</span><span class="na">setWebRtcEndpoint</span><span class="o">(</span><span class="n">webRtcEndpoint</span><span class="o">);</span>
+      <span class="n">user</span><span class="o">.</span><span class="na">setRepoItem</span><span class="o">(</span><span class="n">repoItem</span><span class="o">);</span>
+      <span class="n">registry</span><span class="o">.</span><span class="na">register</span><span class="o">(</span><span class="n">user</span><span class="o">);</span>
+
+      <span class="c1">// 3. SDP negotiation</span>
+      <span class="n">String</span> <span class="n">sdpOffer</span> <span class="o">=</span> <span class="n">jsonMessage</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"sdpOffer"</span><span class="o">).</span><span class="na">getAsString</span><span class="o">();</span>
+      <span class="n">String</span> <span class="n">sdpAnswer</span> <span class="o">=</span> <span class="n">webRtcEndpoint</span><span class="o">.</span><span class="na">processOffer</span><span class="o">(</span><span class="n">sdpOffer</span><span class="o">);</span>
+
+      <span class="c1">// 4. Gather ICE candidates</span>
+      <span class="n">webRtcEndpoint</span><span class="o">.</span><span class="na">addIceCandidateFoundListener</span><span class="o">(</span><span class="k">new</span> <span class="n">EventListener</span><span class="o">&lt;</span><span class="n">IceCandidateFoundEvent</span><span class="o">&gt;()</span> <span class="o">{</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onEvent</span><span class="o">(</span><span class="n">IceCandidateFoundEvent</span> <span class="n">event</span><span class="o">)</span> <span class="o">{</span>
+          <span class="n">JsonObject</span> <span class="n">response</span> <span class="o">=</span> <span class="k">new</span> <span class="n">JsonObject</span><span class="o">();</span>
+          <span class="n">response</span><span class="o">.</span><span class="na">addProperty</span><span class="o">(</span><span class="s">"id"</span><span class="o">,</span> <span class="s">"iceCandidate"</span><span class="o">);</span>
+          <span class="n">response</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"candidate"</span><span class="o">,</span> <span class="n">JsonUtils</span><span class="o">.</span><span class="na">toJsonObject</span><span class="o">(</span><span class="n">event</span><span class="o">.</span><span class="na">getCandidate</span><span class="o">()));</span>
+          <span class="k">try</span> <span class="o">{</span>
+            <span class="kd">synchronized</span> <span class="o">(</span><span class="n">session</span><span class="o">)</span> <span class="o">{</span>
+              <span class="n">session</span><span class="o">.</span><span class="na">sendMessage</span><span class="o">(</span><span class="k">new</span> <span class="n">TextMessage</span><span class="o">(</span><span class="n">response</span><span class="o">.</span><span class="na">toString</span><span class="o">()));</span>
+            <span class="o">}</span>
+          <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>
+          <span class="o">}</span>
+        <span class="o">}</span>
+  <span class="o">}</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal"><span class="pre">play</span></code> method, creates a Media Pipeline with the Media Elements
+(<code class="docutils literal"><span class="pre">WebRtcEndpoint</span></code> and <code class="docutils literal"><span class="pre">PlayerEndpoint</span></code>) and make the connections between
+them. It will then send the recorded media to the client. The media can be
+served from the repository or directly from the disk. If the repository
+interface exists, it will try to connect to the remote service in order to
+obtain an URI from which the KMS will read the media streams. The inner
+workings of the repository restrict reading an item before it has been closed
+(after the upload finished). This will happen only when a certain number of
+seconds elapse after the last byte of media is uploaded by the KMS (safe-guard
+for gaps in the network communications).</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kd">private</span> <span class="kt">void</span> <span class="nf">play</span><span class="o">(</span><span class="n">UserSession</span> <span class="n">user</span><span class="o">,</span> <span class="kd">final</span> <span class="n">WebSocketSession</span> <span class="n">session</span><span class="o">,</span> <span class="n">JsonObject</span> <span class="n">jsonMessage</span><span class="o">)</span> <span class="o">{</span>
+   <span class="k">try</span> <span class="o">{</span>
+      <span class="c1">// 0. Repository logic</span>
+      <span class="n">RepositoryItemPlayer</span> <span class="n">itemPlayer</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">repositoryClient</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+          <span class="n">Date</span> <span class="n">stopTimestamp</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="na">getStopTimestamp</span><span class="o">();</span>
+          <span class="k">if</span> <span class="o">(</span><span class="n">stopTimestamp</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">Date</span> <span class="n">now</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Date</span><span class="o">();</span>
+            <span class="kt">long</span> <span class="n">diff</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="na">getTime</span><span class="o">()</span> <span class="o">-</span> <span class="n">stopTimestamp</span><span class="o">.</span><span class="na">getTime</span><span class="o">();</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">diff</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">diff</span> <span class="o">&lt;</span> <span class="n">REPOSITORY_DISCONNECT_TIMEOUT</span><span class="o">)</span> <span class="o">{</span>
+              <span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="o">(</span>
+                  <span class="s">"Waiting for {}ms before requesting the repository read endpoint "</span>
+                      <span class="o">+</span> <span class="s">"(requires {}ms before upload is considered terminated "</span>
+                      <span class="o">+</span> <span class="s">"and only {}ms have passed)"</span><span class="o">,</span>
+                  <span class="n">REPOSITORY_DISCONNECT_TIMEOUT</span> <span class="o">-</span> <span class="n">diff</span><span class="o">,</span> <span class="n">REPOSITORY_DISCONNECT_TIMEOUT</span><span class="o">,</span> <span class="n">diff</span><span class="o">);</span>
+              <span class="n">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="n">REPOSITORY_DISCONNECT_TIMEOUT</span> <span class="o">-</span> <span class="n">diff</span><span class="o">);</span>
+            <span class="o">}</span>
+          <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">warn</span><span class="o">(</span><span class="s">"No stop timeout was found, repository endpoint might not be ready"</span><span class="o">);</span>
+          <span class="o">}</span>
+          <span class="n">itemPlayer</span> <span class="o">=</span> <span class="n">repositoryClient</span><span class="o">.</span><span class="na">getReadEndpoint</span><span class="o">(</span><span class="n">user</span><span class="o">.</span><span class="na">getRepoItem</span><span class="o">().</span><span class="na">getId</span><span class="o">());</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+          <span class="n">log</span><span class="o">.</span><span class="na">warn</span><span class="o">(</span><span class="s">"Unable to obtain kurento repository endpoint"</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+        <span class="o">}</span>
+      <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+        <span class="n">itemPlayer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RepositoryItemPlayer</span><span class="o">();</span>
+        <span class="n">itemPlayer</span><span class="o">.</span><span class="na">setId</span><span class="o">(</span><span class="n">user</span><span class="o">.</span><span class="na">getRepoItem</span><span class="o">().</span><span class="na">getId</span><span class="o">());</span>
+        <span class="n">itemPlayer</span><span class="o">.</span><span class="na">setUrl</span><span class="o">(</span><span class="n">user</span><span class="o">.</span><span class="na">getRepoItem</span><span class="o">().</span><span class="na">getUrl</span><span class="o">());</span>
+      <span class="o">}</span>
+      <span class="n">log</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">"Playing from {}: id={}, url={}"</span><span class="o">,</span>
+          <span class="o">(</span><span class="n">repositoryClient</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">?</span> <span class="s">"disk"</span> <span class="o">:</span> <span class="s">"repository"</span><span class="o">),</span> <span class="n">itemPlayer</span><span class="o">.</span><span class="na">getId</span><span class="o">(),</span>
+          <span class="n">itemPlayer</span><span class="o">.</span><span class="na">getUrl</span><span class="o">());</span>
+
+      <span class="c1">// 1. Media logic</span>
+      <span class="kd">final</span> <span class="n">MediaPipeline</span> <span class="n">pipeline</span> <span class="o">=</span> <span class="n">kurento</span><span class="o">.</span><span class="na">createMediaPipeline</span><span class="o">();</span>
+      <span class="n">WebRtcEndpoint</span> <span class="n">webRtcEndpoint</span> <span class="o">=</span> <span class="k">new</span> <span class="n">WebRtcEndpoint</span><span class="o">.</span><span class="na">Builder</span><span class="o">(</span><span class="n">pipeline</span><span class="o">).</span><span class="na">build</span><span class="o">();</span>
+      <span class="n">PlayerEndpoint</span> <span class="n">player</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PlayerEndpoint</span><span class="o">.</span><span class="na">Builder</span><span class="o">(</span><span class="n">pipeline</span><span class="o">,</span> <span class="n">itemPlayer</span><span class="o">.</span><span class="na">getUrl</span><span class="o">()).</span><span class="na">build</span><span class="o">();</span>
+      <span class="n">player</span><span class="o">.</span><span class="na">connect</span><span class="o">(</span><span class="n">webRtcEndpoint</span><span class="o">);</span>
+
+      <span class="c1">// Player listeners</span>
+      <span class="n">player</span><span class="o">.</span><span class="na">addErrorListener</span><span class="o">(</span><span class="k">new</span> <span class="n">EventListener</span><span class="o">&lt;</span><span class="n">ErrorEvent</span><span class="o">&gt;()</span> <span class="o">{</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onEvent</span><span class="o">(</span><span class="n">ErrorEvent</span> <span class="n">event</span><span class="o">)</span> <span class="o">{</span>
+          <span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"ErrorEvent for session '{}': {}"</span><span class="o">,</span> <span class="n">session</span><span class="o">.</span><span class="na">getId</span><span class="o">(),</span> <span class="n">event</span><span class="o">.</span><span class="na">getDescription</span><span class="o">());</span>
+          <span class="n">sendPlayEnd</span><span class="o">(</span><span class="n">session</span><span class="o">,</span> <span class="n">pipeline</span><span class="o">);</span>
+        <span class="o">}</span>
+      <span class="o">});</span>
+      <span class="n">player</span><span class="o">.</span><span class="na">addEndOfStreamListener</span><span class="o">(</span><span class="k">new</span> <span class="n">EventListener</span><span class="o">&lt;</span><span class="n">EndOfStreamEvent</span><span class="o">&gt;()</span> <span class="o">{</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onEvent</span><span class="o">(</span><span class="n">EndOfStreamEvent</span> <span class="n">event</span><span class="o">)</span> <span class="o">{</span>
+          <span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"EndOfStreamEvent for session '{}'"</span><span class="o">,</span> <span class="n">session</span><span class="o">.</span><span class="na">getId</span><span class="o">());</span>
+          <span class="n">sendPlayEnd</span><span class="o">(</span><span class="n">session</span><span class="o">,</span> <span class="n">pipeline</span><span class="o">);</span>
+        <span class="o">}</span>
+      <span class="o">});</span>
+
+      <span class="c1">// 2. Store user session</span>
+      <span class="n">user</span><span class="o">.</span><span class="na">setMediaPipeline</span><span class="o">(</span><span class="n">pipeline</span><span class="o">);</span>
+      <span class="n">user</span><span class="o">.</span><span class="na">setWebRtcEndpoint</span><span class="o">(</span><span class="n">webRtcEndpoint</span><span class="o">);</span>
+
+      <span class="c1">// 3. SDP negotiation</span>
+      <span class="n">String</span> <span class="n">sdpOffer</span> <span class="o">=</span> <span class="n">jsonMessage</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"sdpOffer"</span><span class="o">).</span><span class="na">getAsString</span><span class="o">();</span>
+      <span class="n">String</span> <span class="n">sdpAnswer</span> <span class="o">=</span> <span class="n">webRtcEndpoint</span><span class="o">.</span><span class="na">processOffer</span><span class="o">(</span><span class="n">sdpOffer</span><span class="o">);</span>
+
+      <span class="n">JsonObject</span> <span class="n">response</span> <span class="o">=</span> <span class="k">new</span> <span class="n">JsonObject</span><span class="o">();</span>
+      <span class="n">response</span><span class="o">.</span><span class="na">addProperty</span><span class="o">(</span><span class="s">"id"</span><span class="o">,</span> <span class="s">"playResponse"</span><span class="o">);</span>
+      <span class="n">response</span><span class="o">.</span><span class="na">addProperty</span><span class="o">(</span><span class="s">"sdpAnswer"</span><span class="o">,</span> <span class="n">sdpAnswer</span><span class="o">);</span>
+
+      <span class="c1">// 4. Gather ICE candidates</span>
+      <span class="n">webRtcEndpoint</span><span class="o">.</span><span class="na">addIceCandidateFoundListener</span><span class="o">(</span><span class="k">new</span> <span class="n">EventListener</span><span class="o">&lt;</span><span class="n">IceCandidateFoundEvent</span><span class="o">&gt;()</span> <span class="o">{</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onEvent</span><span class="o">(</span><span class="n">IceCandidateFoundEvent</span> <span class="n">event</span><span class="o">)</span> <span class="o">{</span>
+          <span class="n">JsonObject</span> <span class="n">response</span> <span class="o">=</span> <span class="k">new</span> <span class="n">JsonObject</span><span class="o">();</span>
+          <span class="n">response</span><span class="o">.</span><span class="na">addProperty</span><span class="o">(</span><span class="s">"id"</span><span class="o">,</span> <span class="s">"iceCandidate"</span><span class="o">);</span>
+          <span class="n">response</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"candidate"</span><span class="o">,</span> <span class="n">JsonUtils</span><span class="o">.</span><span class="na">toJsonObject</span><span class="o">(</span><span class="n">event</span><span class="o">.</span><span class="na">getCandidate</span><span class="o">()));</span>
+          <span class="k">try</span> <span class="o">{</span>
+            <span class="kd">synchronized</span> <span class="o">(</span><span class="n">session</span><span class="o">)</span> <span class="o">{</span>
+              <span class="n">session</span><span class="o">.</span><span class="na">sendMessage</span><span class="o">(</span><span class="k">new</span> <span class="n">TextMessage</span><span class="o">(</span><span class="n">response</span><span class="o">.</span><span class="na">toString</span><span class="o">()));</span>
+            <span class="o">}</span>
+          <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>
+          <span class="o">}</span>
+        <span class="o">}</span>
+  <span class="o">});</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal"><span class="pre">sendError</span></code> method is quite simple: it sends an <code class="docutils literal"><span class="pre">error</span></code> message to the
+client when an exception is caught in the server-side.</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kd">private</span> <span class="kt">void</span> <span class="nf">sendError</span><span class="o">(</span><span class="n">WebSocketSession</span> <span class="n">session</span><span class="o">,</span> <span class="n">String</span> <span class="n">message</span><span class="o">)</span> <span class="o">{</span>
+   <span class="k">try</span> <span class="o">{</span>
+      <span class="n">JsonObject</span> <span class="n">response</span> <span class="o">=</span> <span class="k">new</span> <span class="n">JsonObject</span><span class="o">();</span>
+      <span class="n">response</span><span class="o">.</span><span class="na">addProperty</span><span class="o">(</span><span class="s">"id"</span><span class="o">,</span> <span class="s">"error"</span><span class="o">);</span>
+      <span class="n">response</span><span class="o">.</span><span class="na">addProperty</span><span class="o">(</span><span class="s">"message"</span><span class="o">,</span> <span class="n">message</span><span class="o">);</span>
+      <span class="n">session</span><span class="o">.</span><span class="na">sendMessage</span><span class="o">(</span><span class="k">new</span> <span class="n">TextMessage</span><span class="o">(</span><span class="n">response</span><span class="o">.</span><span class="na">toString</span><span class="o">()));</span>
+   <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="s">"Exception sending message"</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+   <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="client-side-logic">
+<h2>Client-Side Logic<a class="headerlink" href="#client-side-logic" title="Permalink to this headline">¶</a></h2>
+<p>Let’s move now to the client-side of the application. To call the previously
+created WebSocket service in the server-side, we use the JavaScript class
+<code class="docutils literal"><span class="pre">WebSocket</span></code>. We use a specific Kurento JavaScript library called
+<strong>kurento-utils.js</strong> to simplify the WebRTC interaction with the server. This
+library depends on <strong>adapter.js</strong>, which is a JavaScript WebRTC utility
+maintained by Google that abstracts away browser differences. Finally
+<strong>jquery.js</strong> is also needed in this application.</p>
+<p>These libraries are linked in the
+<a class="reference external" href="https://github.com/Kurento/kurento-tutorial-java/blob/master/kurento-hello-world-repository/src/main/resources/static/index.html">index.html</a>
+web page, and are used in the
+<a class="reference external" href="https://github.com/Kurento/kurento-tutorial-java/blob/master/kurento-hello-world-repository/src/main/resources/static/js/index.js">index.js</a>.
+In the following snippet we can see the creation of the WebSocket (variable
+<code class="docutils literal"><span class="pre">ws</span></code>) in the path <code class="docutils literal"><span class="pre">/repository</span></code>. Then, the <code class="docutils literal"><span class="pre">onmessage</span></code> listener of the
+WebSocket is used to implement the JSON signaling protocol in the client-side.
+Notice that there are three incoming messages to client: <code class="docutils literal"><span class="pre">startResponse</span></code>,
+<code class="docutils literal"><span class="pre">playResponse</span></code>, <code class="docutils literal"><span class="pre">playEnd</span></code>,``error``, and <code class="docutils literal"><span class="pre">iceCandidate</span></code>. Convenient
+actions are taken to implement each step in the communication. For example, in
+functions <code class="docutils literal"><span class="pre">start</span></code> the function <code class="docutils literal"><span class="pre">WebRtcPeer.WebRtcPeerSendrecv</span></code> of
+<em>kurento-utils.js</em> is used to start a WebRTC communication.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">ws</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WebSocket</span><span class="p">(</span><span class="s1">'wss://'</span> <span class="o">+</span> <span class="nx">location</span><span class="p">.</span><span class="nx">host</span> <span class="o">+</span> <span class="s1">'/repository'</span><span class="p">);</span>
+
+<span class="nx">ws</span><span class="p">.</span><span class="nx">onmessage</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">message</span><span class="p">)</span> <span class="p">{</span>
+   <span class="kd">var</span> <span class="nx">parsedMessage</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">message</span><span class="p">.</span><span class="nx">data</span><span class="p">);</span>
+   <span class="nx">console</span><span class="p">.</span><span class="nx">info</span><span class="p">(</span><span class="s1">'Received message: '</span> <span class="o">+</span> <span class="nx">message</span><span class="p">.</span><span class="nx">data</span><span class="p">);</span>
+
+   <span class="k">switch</span> <span class="p">(</span><span class="nx">parsedMessage</span><span class="p">.</span><span class="nx">id</span><span class="p">)</span> <span class="p">{</span>
+   <span class="k">case</span> <span class="s1">'startResponse'</span><span class="o">:</span>
+      <span class="nx">startResponse</span><span class="p">(</span><span class="nx">parsedMessage</span><span class="p">);</span>
+      <span class="k">break</span><span class="p">;</span>
+   <span class="k">case</span> <span class="s1">'playResponse'</span><span class="o">:</span>
+      <span class="nx">playResponse</span><span class="p">(</span><span class="nx">parsedMessage</span><span class="p">);</span>
+      <span class="k">break</span><span class="p">;</span>
+   <span class="k">case</span> <span class="s1">'playEnd'</span><span class="o">:</span>
+      <span class="nx">playEnd</span><span class="p">();</span>
+      <span class="k">break</span><span class="p">;</span>
+   <span class="k">case</span> <span class="s1">'error'</span><span class="o">:</span>
+      <span class="nx">setState</span><span class="p">(</span><span class="nx">NO_CALL</span><span class="p">);</span>
+      <span class="nx">onError</span><span class="p">(</span><span class="s1">'Error message from server: '</span> <span class="o">+</span> <span class="nx">parsedMessage</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+      <span class="k">break</span><span class="p">;</span>
+   <span class="k">case</span> <span class="s1">'iceCandidate'</span><span class="o">:</span>
+      <span class="nx">webRtcPeer</span><span class="p">.</span><span class="nx">addIceCandidate</span><span class="p">(</span><span class="nx">parsedMessage</span><span class="p">.</span><span class="nx">candidate</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+         <span class="k">if</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">'Error adding candidate: '</span> <span class="o">+</span> <span class="nx">error</span><span class="p">);</span>
+      <span class="p">});</span>
+      <span class="k">break</span><span class="p">;</span>
+   <span class="k">default</span><span class="o">:</span>
+      <span class="nx">setState</span><span class="p">(</span><span class="nx">NO_CALL</span><span class="p">);</span>
+   <span class="nx">onError</span><span class="p">(</span><span class="s1">'Unrecognized message'</span><span class="p">,</span> <span class="nx">parsedMessage</span><span class="p">);</span>
+   <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">start</span><span class="p">()</span> <span class="p">{</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Starting video call ...'</span><span class="p">);</span>
+
+<span class="c1">// Disable start button</span>
+<span class="nx">setState</span><span class="p">(</span><span class="nx">DISABLED</span><span class="p">);</span>
+<span class="nx">showSpinner</span><span class="p">(</span><span class="nx">videoInput</span><span class="p">,</span> <span class="nx">videoOutput</span><span class="p">);</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Creating WebRtcPeer and generating local sdp offer ...'</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span>
+   <span class="nx">localVideo</span> <span class="o">:</span> <span class="nx">videoInput</span><span class="p">,</span>
+   <span class="nx">remoteVideo</span> <span class="o">:</span> <span class="nx">videoOutput</span><span class="p">,</span>
+   <span class="nx">onicecandidate</span> <span class="o">:</span> <span class="nx">onIceCandidate</span>
+<span class="p">}</span>
+<span class="nx">webRtcPeer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">kurentoUtils</span><span class="p">.</span><span class="nx">WebRtcPeer</span><span class="p">.</span><span class="nx">WebRtcPeerSendrecv</span><span class="p">(</span><span class="nx">options</span><span class="p">,</span>
+      <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+         <span class="k">if</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
+         <span class="nx">webRtcPeer</span><span class="p">.</span><span class="nx">generateOffer</span><span class="p">(</span><span class="nx">onOffer</span><span class="p">);</span>
+      <span class="p">});</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">onOffer</span><span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">offerSdp</span><span class="p">)</span> <span class="p">{</span>
+   <span class="k">if</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span>
+      <span class="k">return</span> <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">'Error generating the offer'</span><span class="p">);</span>
+   <span class="nx">console</span><span class="p">.</span><span class="nx">info</span><span class="p">(</span><span class="s1">'Invoking SDP offer callback function '</span> <span class="o">+</span> <span class="nx">location</span><span class="p">.</span><span class="nx">host</span><span class="p">);</span>
+   <span class="kd">var</span> <span class="nx">message</span> <span class="o">=</span> <span class="p">{</span>
+         <span class="nx">id</span> <span class="o">:</span> <span class="s1">'start'</span><span class="p">,</span>
+         <span class="nx">sdpOffer</span> <span class="o">:</span> <span class="nx">offerSdp</span><span class="p">,</span>
+         <span class="nx">mode</span> <span class="o">:</span>  <span class="nx">$</span><span class="p">(</span><span class="s1">'input[name="mode"]:checked'</span><span class="p">).</span><span class="nx">val</span><span class="p">()</span>
+   <span class="p">}</span>
+   <span class="nx">sendMessage</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">onError</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+   <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">onIceCandidate</span><span class="p">(</span><span class="nx">candidate</span><span class="p">)</span> <span class="p">{</span>
+   <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Local candidate'</span> <span class="o">+</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">candidate</span><span class="p">));</span>
+
+   <span class="kd">var</span> <span class="nx">message</span> <span class="o">=</span> <span class="p">{</span>
+         <span class="nx">id</span> <span class="o">:</span> <span class="s1">'onIceCandidate'</span><span class="p">,</span>
+         <span class="nx">candidate</span> <span class="o">:</span> <span class="nx">candidate</span>
+   <span class="p">};</span>
+   <span class="nx">sendMessage</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">startResponse</span><span class="p">(</span><span class="nx">message</span><span class="p">)</span> <span class="p">{</span>
+   <span class="nx">setState</span><span class="p">(</span><span class="nx">IN_CALL</span><span class="p">);</span>
+   <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'SDP answer received from server. Processing ...'</span><span class="p">);</span>
+
+   <span class="nx">webRtcPeer</span><span class="p">.</span><span class="nx">processAnswer</span><span class="p">(</span><span class="nx">message</span><span class="p">.</span><span class="nx">sdpAnswer</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span>
+         <span class="k">return</span> <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
+   <span class="p">});</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">stop</span><span class="p">()</span> <span class="p">{</span>
+   <span class="kd">var</span> <span class="nx">stopMessageId</span> <span class="o">=</span> <span class="p">(</span><span class="nx">state</span> <span class="o">==</span> <span class="nx">IN_CALL</span><span class="p">)</span> <span class="o">?</span> <span class="s1">'stop'</span> <span class="o">:</span> <span class="s1">'stopPlay'</span><span class="p">;</span>
+   <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Stopping video while in '</span> <span class="o">+</span> <span class="nx">state</span> <span class="o">+</span> <span class="s1">'...'</span><span class="p">);</span>
+   <span class="nx">setState</span><span class="p">(</span><span class="nx">POST_CALL</span><span class="p">);</span>
+   <span class="k">if</span> <span class="p">(</span><span class="nx">webRtcPeer</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">webRtcPeer</span><span class="p">.</span><span class="nx">dispose</span><span class="p">();</span>
+      <span class="nx">webRtcPeer</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+
+      <span class="kd">var</span> <span class="nx">message</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="nx">id</span> <span class="o">:</span> <span class="nx">stopMessageId</span>
+      <span class="p">}</span>
+      <span class="nx">sendMessage</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
+   <span class="p">}</span>
+   <span class="nx">hideSpinner</span><span class="p">(</span><span class="nx">videoInput</span><span class="p">,</span> <span class="nx">videoOutput</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">play</span><span class="p">()</span> <span class="p">{</span>
+   <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Starting to play recorded video..."</span><span class="p">);</span>
+
+   <span class="c1">// Disable start button</span>
+   <span class="nx">setState</span><span class="p">(</span><span class="nx">DISABLED</span><span class="p">);</span>
+   <span class="nx">showSpinner</span><span class="p">(</span><span class="nx">videoOutput</span><span class="p">);</span>
+
+   <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Creating WebRtcPeer and generating local sdp offer ...'</span><span class="p">);</span>
+
+   <span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="nx">remoteVideo</span> <span class="o">:</span> <span class="nx">videoOutput</span><span class="p">,</span>
+      <span class="nx">onicecandidate</span> <span class="o">:</span> <span class="nx">onIceCandidate</span>
+   <span class="p">}</span>
+   <span class="nx">webRtcPeer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">kurentoUtils</span><span class="p">.</span><span class="nx">WebRtcPeer</span><span class="p">.</span><span class="nx">WebRtcPeerRecvonly</span><span class="p">(</span><span class="nx">options</span><span class="p">,</span>
+         <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span>
+               <span class="k">return</span> <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
+            <span class="nx">webRtcPeer</span><span class="p">.</span><span class="nx">generateOffer</span><span class="p">(</span><span class="nx">onPlayOffer</span><span class="p">);</span>
+         <span class="p">});</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">onPlayOffer</span><span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">offerSdp</span><span class="p">)</span> <span class="p">{</span>
+   <span class="k">if</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span>
+      <span class="k">return</span> <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">'Error generating the offer'</span><span class="p">);</span>
+   <span class="nx">console</span><span class="p">.</span><span class="nx">info</span><span class="p">(</span><span class="s1">'Invoking SDP offer callback function '</span> <span class="o">+</span> <span class="nx">location</span><span class="p">.</span><span class="nx">host</span><span class="p">);</span>
+   <span class="kd">var</span> <span class="nx">message</span> <span class="o">=</span> <span class="p">{</span>
+         <span class="nx">id</span> <span class="o">:</span> <span class="s1">'play'</span><span class="p">,</span>
+         <span class="nx">sdpOffer</span> <span class="o">:</span> <span class="nx">offerSdp</span>
+   <span class="p">}</span>
+   <span class="nx">sendMessage</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">playResponse</span><span class="p">(</span><span class="nx">message</span><span class="p">)</span> <span class="p">{</span>
+   <span class="nx">setState</span><span class="p">(</span><span class="nx">IN_PLAY</span><span class="p">);</span>
+   <span class="nx">webRtcPeer</span><span class="p">.</span><span class="nx">processAnswer</span><span class="p">(</span><span class="nx">message</span><span class="p">.</span><span class="nx">sdpAnswer</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span>
+         <span class="k">return</span> <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
+   <span class="p">});</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">playEnd</span><span class="p">()</span> <span class="p">{</span>
+   <span class="nx">setState</span><span class="p">(</span><span class="nx">POST_CALL</span><span class="p">);</span>
+   <span class="nx">hideSpinner</span><span class="p">(</span><span class="nx">videoInput</span><span class="p">,</span> <span class="nx">videoOutput</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">sendMessage</span><span class="p">(</span><span class="nx">message</span><span class="p">)</span> <span class="p">{</span>
+   <span class="kd">var</span> <span class="nx">jsonMessage</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
+   <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Senging message: '</span> <span class="o">+</span> <span class="nx">jsonMessage</span><span class="p">);</span>
+   <span class="nx">ws</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">jsonMessage</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<p>This Java Spring application is implemented using <a class="reference internal" href="http://doc-kurento.readthedocs.io/en/stable/glossary.html#term-maven"><span class="xref std std-term">Maven</span></a>. The relevant
+part of the
+<a class="reference external" href="https://github.com/Kurento/kurento-tutorial-java/blob/master/kurento-show-data-channel/pom.xml">pom.xml</a>
+is where Kurento dependencies are declared. As the following snippet shows, we
+need two dependencies: the Kurento Client Java dependency (<em>kurento-client</em>)
+and the JavaScript Kurento utility library (<em>kurento-utils</em>) for the
+client-side. Other client libraries are managed with
+<a class="reference external" href="http://www.webjars.org/">webjars</a>:</p>
+<div class="highlight-xml"><div class="highlight"><pre><span></span><span class="nt">&lt;dependencies&gt;</span>
+   <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.kurento<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>kurento-client<span class="nt">&lt;/artifactId&gt;</span>
+   <span class="nt">&lt;/dependency&gt;</span>
+   <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.kurento<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>kurento-utils-js<span class="nt">&lt;/artifactId&gt;</span>
+   <span class="nt">&lt;/dependency&gt;</span>
+   <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.webjars<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>webjars-locator<span class="nt">&lt;/artifactId&gt;</span>
+   <span class="nt">&lt;/dependency&gt;</span>
+   <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.webjars.bower<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>bootstrap<span class="nt">&lt;/artifactId&gt;</span>
+   <span class="nt">&lt;/dependency&gt;</span>
+   <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.webjars.bower<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>demo-console<span class="nt">&lt;/artifactId&gt;</span>
+   <span class="nt">&lt;/dependency&gt;</span>
+   <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.webjars.bower<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>adapter.js<span class="nt">&lt;/artifactId&gt;</span>
+   <span class="nt">&lt;/dependency&gt;</span>
+   <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.webjars.bower<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>jquery<span class="nt">&lt;/artifactId&gt;</span>
+   <span class="nt">&lt;/dependency&gt;</span>
+   <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.webjars.bower<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>ekko-lightbox<span class="nt">&lt;/artifactId&gt;</span>
+   <span class="nt">&lt;/dependency&gt;</span>
+<span class="nt">&lt;/dependencies&gt;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">We are in active development. You can find the latest version of
+Kurento Java Client at <a class="reference external" href="http://search.maven.org/#search%7Cga%7C1%7Ckurento-client">Maven Central</a>.</p>
+</div>
+<p>Kurento Java Client has a minimum requirement of <strong>Java 7</strong>. Hence, you need to
+include the following properties in your pom:</p>
+<div class="highlight-xml"><div class="highlight"><pre><span></span><span class="nt">&lt;maven.compiler.target&gt;</span>1.7<span class="nt">&lt;/maven.compiler.target&gt;</span>
+<span class="nt">&lt;maven.compiler.source&gt;</span>1.7<span class="nt">&lt;/maven.compiler.source&gt;</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="http://doc-kurento.readthedocs.io/en/stable/tutorials/js/tutorial-loopback-stats.html" class="btn btn-neutral float-right" title="JavaScript - Loopback stats">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="http://doc-kurento.readthedocs.io/en/stable/tutorials/js/tutorial-recorder.html" class="btn btn-neutral" title="JavaScript - Recorder"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr>
+
+  <div role="contentinfo">
+    <p>
+        © Copyright 2016, kurento.org.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org/">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Read the Docs</span>
+      v: stable
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions"><!-- Inserted RTD Footer -->
+<div class="injected">
+
+  
+
+      
+      
+      
+      <dl>
+        <dt>Versions</dt>
+        
+        
+        <dd><a href="http://doc-kurento.readthedocs.io/en/latest/tutorials/java/tutorial-repository.html">latest</a></dd>
+        
+        
+         <strong> 
+        <dd><a href="http://doc-kurento.readthedocs.io/en/stable/tutorials/java/tutorial-repository.html">stable</a></dd>
+         </strong> 
+        
+      </dl>
+      
+      
+
+      
+      
+      <dl>
+        <dt>Downloads</dt>
+        
+        <dd><a href="http://readthedocs.org/projects/doc-kurento/downloads/pdf/stable/">PDF</a></dd>
+        
+        <dd><a href="http://readthedocs.org/projects/doc-kurento/downloads/htmlzip/stable/">HTML</a></dd>
+        
+        <dd><a href="http://readthedocs.org/projects/doc-kurento/downloads/epub/stable/">Epub</a></dd>
+        
+      </dl>
+      
+      
+
+      
+      <dl>
+        <!-- These are kept as relative links for internal installs that are http -->
+        <dt>On Read the Docs</dt>
+        <dd>
+          <a href="http://readthedocs.org/projects/doc-kurento/">Project Home</a>
+        </dd>
+        <dd>
+          <a href="http://readthedocs.org/projects/doc-kurento/builds/">Builds</a>
+        </dd>
+        <dd>
+          <a href="http://readthedocs.org/projects/doc-kurento/downloads/">Downloads</a>
+        </dd>
+      </dl>
+      
+
+      
+
+      
+      <dl>
+        <dt>On GitHub</dt>
+        <dd>
+          <a href="https://github.com/Kurento/doc-kurento-readthedocs/blob/3f3fcf1e9675c045d7edc2410f9d6d5f4690a228/source/tutorials/java/tutorial-repository.rst">View</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/Kurento/doc-kurento-readthedocs/edit/3f3fcf1e9675c045d7edc2410f9d6d5f4690a228/source/tutorials/java/tutorial-repository.rst">Edit</a>
+        </dd>
+      </dl>
+      
+      
+
+      
+      <dl>
+        <dt>Search</dt>
+        <dd>
+          <div style="padding: 6px;">
+            <form id="flyout-search-form" class="wy-form" target="_blank" action="http://readthedocs.org/projects/doc-kurento/search/" method="get">
+              <input name="q" placeholder="Search docs" value="" type="text">
+              </form>
+          </div>
+        </dd>
+      </dl>
+      
+
+
+
+      <hr>
+      
+      Free document hosting provided by <a href="https://readthedocs.org/">Read the Docs</a>. 
+      
+
+      
+
+</div>
+</div>
+  </div>
+
+
+
+  
+
+    
+      
+      
+      
+      
+      
+      
+
+  
+
+  
+  
+
+  
+  
+  
+   
+
+
+<div id="SL_balloon_obj" style="display: none;"><div id="SL_button" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 24px; height: 24px; position: absolute; cursor: pointer;"></div><div id="SL_shadow_translation_result2" style="display: none;"></div><div id="SL_shadow_translator"><div id="SL_providers"><div class="SL_BL_LABLE_ON" title="Google" id="SL_P0">G</div><div class="SL_BL_LABLE_ON" title="Microsoft" id="SL_P1">M</div><div class="SL_BL_LABLE_ON" title="Translator" id="SL_P2">T</div></div><div id="SL_planshet" style="background: rgb(244, 245, 245) url('undefined') repeat scroll 0% 0%;"><div id="SL_arrow_up"></div><div id="SL_TB"><div id="bubblelogo" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 24px; height: 24px; position: absolute;"></div><table id="SL_tables"><tr><td width="10%" align="right"><input id="SLloc" title="鎖定語言" type="checkbox"></td><td width="20%" align="left"><select id="SL_lng_from"><option value="auto">檢測語言</option><option value="sq">阿尔巴尼亚语</option><option value="ar">阿拉伯语</option><option value="az">阿塞拜疆语</option><option value="ga">爱尔兰语</option><option value="et">爱沙尼亚语</option><option value="eu">巴斯克语</option><option value="be">白俄罗斯语</option><option value="bg">保加利亚语</option><option value="is">冰岛语</option><option value="pl">波兰语</option><option value="bs">波斯尼亚语</option><option value="fa">波斯语</option><option value="af">布尔语(南非荷兰语)</option><option value="da">丹麦语</option><option value="de">德语</option><option value="ru">俄语</option><option value="fr">法语</option><option value="tl">菲律宾语</option><option value="fi">芬兰语</option><option value="km">高棉语</option><option value="ka">格鲁吉亚语</option><option value="gu">古吉拉特语</option><option value="kk">哈萨克语</option><option value="ht">海地克里奥尔语</option><option value="ko">韩语</option><option value="ha">豪萨语</option><option value="nl">荷兰语</option><option value="gl">加利西亚语</option><option value="ca">加泰罗尼亚语</option><option value="cs">捷克语</option><option value="kn">卡纳达语</option><option value="hr">克罗地亚语</option><option value="la">拉丁语</option><option value="lv">拉脱维亚语</option><option value="lo">老挝语</option><option value="lt">立陶宛语</option><option value="ro">罗马尼亚语</option><option value="mg">马尔加什语</option><option value="mt">马耳他语</option><option value="mr">马拉地语</option><option value="ml">马拉雅拉姆语</option><option value="ms">马来语</option><option value="mk">马其顿语</option><option value="mi">毛利语</option><option value="mn">蒙古语</option><option value="bn">孟加拉语</option><option value="my">缅甸语</option><option value="hmn">苗语</option><option value="zu">南非祖鲁语</option><option value="ne">尼泊尔语</option><option value="no">挪威语</option><option value="pa">旁遮普语</option><option value="pt">葡萄牙语</option><option value="ny">齐切瓦语</option><option value="ja">日语</option><option value="sv">瑞典语</option><option value="sr">塞尔维亚语</option><option value="st">塞索托语</option><option value="si">僧伽罗语</option><option value="eo">世界语</option><option value="sk">斯洛伐克语</option><option value="sl">斯洛文尼亚语</option><option value="sw">斯瓦希里语</option><option value="ceb">宿务语</option><option value="so">索马里语</option><option value="tg">塔吉克语</option><option value="te">泰卢固语</option><option value="ta">泰米尔语</option><option value="th">泰语</option><option value="tr">土耳其语</option><option value="cy">威尔士语</option><option value="ur">乌尔都语</option><option value="uk">乌克兰语</option><option value="uz">乌兹别克语</option><option value="iw">希伯来语</option><option value="el">希腊语</option><option value="es">西班牙语</option><option value="hu">匈牙利语</option><option value="hy">亚美尼亚语</option><option value="ig">伊博语</option><option value="it">意大利语</option><option value="yi">意第绪语</option><option value="hi">印地语</option><option value="su">印尼巽他语</option><option value="id">印尼语</option><option value="jw">印尼爪哇语</option><option value="en">英语</option><option value="yo">约鲁巴语</option><option value="vi">越南语</option><option value="zh-CN">中文简体</option><option value="zh-TW">中文繁体</option></select></td><td width="5%" align="center"><div id="SL_switch_b" title="切換語言" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 10px; height: 10px; cursor: pointer;" align="center"></div></td><td width="20%" align="left"><select id="SL_lng_to"><option value="sq">阿尔巴尼亚语</option><option value="ar">阿拉伯语</option><option value="az">阿塞拜疆语</option><option value="ga">爱尔兰语</option><option value="et">爱沙尼亚语</option><option value="eu">巴斯克语</option><option value="be">白俄罗斯语</option><option value="bg">保加利亚语</option><option value="is">冰岛语</option><option value="pl">波兰语</option><option value="bs">波斯尼亚语</option><option value="fa">波斯语</option><option value="af">布尔语(南非荷兰语)</option><option value="da">丹麦语</option><option value="de">德语</option><option value="ru">俄语</option><option value="fr">法语</option><option value="tl">菲律宾语</option><option value="fi">芬兰语</option><option value="km">高棉语</option><option value="ka">格鲁吉亚语</option><option value="gu">古吉拉特语</option><option value="kk">哈萨克语</option><option value="ht">海地克里奥尔语</option><option value="ko">韩语</option><option value="ha">豪萨语</option><option value="nl">荷兰语</option><option value="gl">加利西亚语</option><option value="ca">加泰罗尼亚语</option><option value="cs">捷克语</option><option value="kn">卡纳达语</option><option value="hr">克罗地亚语</option><option value="la">拉丁语</option><option value="lv">拉脱维亚语</option><option value="lo">老挝语</option><option value="lt">立陶宛语</option><option value="ro">罗马尼亚语</option><option value="mg">马尔加什语</option><option value="mt">马耳他语</option><option value="mr">马拉地语</option><option value="ml">马拉雅拉姆语</option><option value="ms">马来语</option><option value="mk">马其顿语</option><option value="mi">毛利语</option><option value="mn">蒙古语</option><option value="bn">孟加拉语</option><option value="my">缅甸语</option><option value="hmn">苗语</option><option value="zu">南非祖鲁语</option><option value="ne">尼泊尔语</option><option value="no">挪威语</option><option value="pa">旁遮普语</option><option value="pt">葡萄牙语</option><option value="ny">齐切瓦语</option><option value="ja">日语</option><option value="sv">瑞典语</option><option value="sr">塞尔维亚语</option><option value="st">塞索托语</option><option value="si">僧伽罗语</option><option value="eo">世界语</option><option value="sk">斯洛伐克语</option><option value="sl">斯洛文尼亚语</option><option value="sw">斯瓦希里语</option><option value="ceb">宿务语</option><option value="so">索马里语</option><option value="tg">塔吉克语</option><option value="te">泰卢固语</option><option value="ta">泰米尔语</option><option value="th">泰语</option><option value="tr">土耳其语</option><option value="cy">威尔士语</option><option value="ur">乌尔都语</option><option value="uk">乌克兰语</option><option value="uz">乌兹别克语</option><option value="iw">希伯来语</option><option value="el">希腊语</option><option value="es">西班牙语</option><option value="hu">匈牙利语</option><option value="hy">亚美尼亚语</option><option value="ig">伊博语</option><option value="it">意大利语</option><option value="yi">意第绪语</option><option value="hi">印地语</option><option value="su">印尼巽他语</option><option value="id">印尼语</option><option value="jw">印尼爪哇语</option><option value="en">英语</option><option value="yo">约鲁巴语</option><option value="vi">越南语</option><option value="zh-CN">中文简体</option><option value="zh-TW">中文繁体</option></select></td><td width="5%" align="center"> </td><td width="6%" align="center"><div id="SL_TTS_voice" title="聆聽" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="6%" align="center"><div id="SL_copy" title="複製譯文" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="6%" align="center"><div id="SL_bbl_font_patch" title="此功能在字典中禁用"></div><div id="SL_bbl_font" title="字體大小" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="6%" align="center"><div id="SL_TH" title="翻譯歷史" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="10%"></td><td width="6%" align="right"><div id="SL_pin" title="固定彈出窗口" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 16px; height: 16px; cursor: pointer;"></div></td></tr></table></div><div id="SL_alert_bbl"><div id="SLHKclose"></div><div id="SL_alert_cont"></div></div></div><div id="SL_shadow_translation_result" style="background: rgb(255, 255, 255) url('undefined') repeat scroll 0% 0%;"></div><div id="SL_loading" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; position: absolute; width: 35px; margin-left: 180px; margin-top: -40px; height: 35px;"></div><div id="SL_player2"></div><div id="SL_alert100">語言功能限200個字符</div><div id="SL_Balloon_options" style="background: rgb(255, 255, 255) none repeat scroll 0% 0%;"><div id="SL_arrow_down"></div><table width="100%"><tr><td width="18%" height="16" align="left"><div id="SL_bbl_donate" title="進行一點捐款" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="68%" align="center"><a href="#" id="OPlnk" title="顯示選項">選項</a> : <a href="#" id="HISTlnk" title="翻譯歷史">歷史</a> : <a href="http://about.imtranslator.net/tutorials/presentations/imtranslator-translator-for-firefox/popup-bubble-application/" target="_top" id="HELPlnk" title="幫助">幫助</a> : <a href="#" id="FBlnk" title="反饋">反饋</a></td><td width="15%" align="right"><a id="SL_Balloon_Close" href="#" title="關閉">關閉</a></td></tr></table></div></div></div></body>
+</html>

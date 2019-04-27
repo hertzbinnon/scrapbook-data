@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html dir="ltr" class="client-js" lang="en">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+<meta charset="UTF-8"><title>GStreamer - LinuxTVWiki</title>
+<meta name="generator" content="MediaWiki 1.22.15">
+<link rel="shortcut icon" href="linuxtv-icon.png">
+<link rel="search" type="application/opensearchdescription+xml" href="https://www.linuxtv.org/wiki/opensearch_desc.php" title="LinuxTVWiki (en)">
+<link rel="EditURI" type="application/rsd+xml" href="https://www.linuxtv.org/wiki/api.php?action=rsd">
+<link rel="alternate" type="application/atom+xml" title="LinuxTVWiki Atom feed" href="https://www.linuxtv.org/wiki/index.php?title=Special:RecentChanges&amp;feed=atom">
+
+<meta name="ResourceLoaderDynamicStyles" content="">
+
+
+
+
+
+
+<!--[if lt IE 7]><style type="text/css">body{behavior:url("/wiki/skins/vector/csshover.min.htc")}</style><![endif]-->
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-GStreamer skin-vector action-view vector-animateLayout">
+		<div id="mw-page-base" class="noprint"></div>
+		<div id="mw-head-base" class="noprint"></div>
+		<div id="content" class="mw-body" role="main">
+			<a id="top"></a>
+			<div id="mw-js-message" style="display: none;"></div>
+						<h1 id="firstHeading" class="firstHeading" lang="en"><span dir="auto">GStreamer</span></h1>
+			<div id="bodyContent">
+								<div id="siteSub">From LinuxTVWiki</div>
+								<div id="contentSub"></div>
+												<div id="jump-to-nav" class="mw-jump">
+					Jump to:					<a href="#mw-navigation">navigation</a>, 					<a href="#p-search">search</a>
+				</div>
+				<div id="mw-content-text" dir="ltr" class="mw-content-ltr" lang="en"><p>GStreamer is a toolkit for building audio- and video-processing pipelines.  A pipeline might stream video from a file to a network, or add an echo to a recording, or (most interesting to us) capture the output of a Video4Linux device.  Gstreamer is most often used to power graphical applications such as <a rel="nofollow" class="external text" href="https://wiki.gnome.org/Apps/Videos">Totem</a>, but can also be used directly from the command-line.  This page will explain how GStreamer is better than the alternatives, and how to build an encoder using its command-line interface.
+</p><p><b>Before reading this page</b>, see <a href="https://www.linuxtv.org/wiki/index.php/V4L_capturing" title="V4L capturing">V4L capturing</a> to set your system up and create an initial recording.  This page assumes you have already implemented the simple pipeline described there.
+</p>
+<div id="toc" class="toc"><div id="toctitle"><h2>Contents</h2><span class="toctoggle">&nbsp;[<a href="#" class="internal" id="togglelink">hide</a>]&nbsp;</span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Introduction_to_GStreamer"><span class="tocnumber">1</span> <span class="toctext">Introduction to GStreamer</span></a>
+<ul>
+<li class="toclevel-2 tocsection-2"><a href="#Why_is_GStreamer_better_at_encoding.3F"><span class="tocnumber">1.1</span> <span class="toctext">Why is GStreamer better at encoding?</span></a></li>
+<li class="toclevel-2 tocsection-3"><a href="#Getting_GStreamer"><span class="tocnumber">1.2</span> <span class="toctext">Getting GStreamer</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#Using_GStreamer_with_gst-launch-1.0"><span class="tocnumber">1.3</span> <span class="toctext">Using GStreamer with gst-launch-1.0</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Using_GStreamer_with_entrans"><span class="tocnumber">1.4</span> <span class="toctext">Using GStreamer with entrans</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-6"><a href="#Building_pipelines"><span class="tocnumber">2</span> <span class="toctext">Building pipelines</span></a>
+<ul>
+<li class="toclevel-2 tocsection-7"><a href="#Record_raw_video_only"><span class="tocnumber">2.1</span> <span class="toctext">Record raw video only</span></a></li>
+<li class="toclevel-2 tocsection-8"><a href="#Record_raw_audio_only"><span class="tocnumber">2.2</span> <span class="toctext">Record raw audio only</span></a></li>
+<li class="toclevel-2 tocsection-9"><a href="#Record_video_and_audio"><span class="tocnumber">2.3</span> <span class="toctext">Record video and audio</span></a></li>
+<li class="toclevel-2 tocsection-10"><a href="#Create_multiple_sinks"><span class="tocnumber">2.4</span> <span class="toctext">Create multiple sinks</span></a></li>
+<li class="toclevel-2 tocsection-11"><a href="#Encode_audio_and_video"><span class="tocnumber">2.5</span> <span class="toctext">Encode audio and video</span></a></li>
+<li class="toclevel-2 tocsection-12"><a href="#Add_buffers"><span class="tocnumber">2.6</span> <span class="toctext">Add buffers</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-13"><a href="#Common_caputuring_issues_and_their_solutions"><span class="tocnumber">3</span> <span class="toctext">Common caputuring issues and their solutions</span></a>
+<ul>
+<li class="toclevel-2 tocsection-14"><a href="#Reducing_Jerkiness"><span class="tocnumber">3.1</span> <span class="toctext">Reducing Jerkiness</span></a></li>
+<li class="toclevel-2 tocsection-15"><a href="#Avoiding_pitfalls_with_video_noise"><span class="tocnumber">3.2</span> <span class="toctext">Avoiding pitfalls with video noise</span></a></li>
+<li class="toclevel-2 tocsection-16"><a href="#Investigating_bugs_in_GStreamer"><span class="tocnumber">3.3</span> <span class="toctext">Investigating bugs in GStreamer</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-17"><a href="#Sample_pipelines"><span class="tocnumber">4</span> <span class="toctext">Sample pipelines</span></a>
+<ul>
+<li class="toclevel-2 tocsection-18"><a href="#record_from_a_bad_analog_signal_to_MJPEG_video_and_RAW_mono_audio"><span class="tocnumber">4.1</span> <span class="toctext">record from a bad analog signal to MJPEG video and RAW mono audio</span></a></li>
+<li class="toclevel-2 tocsection-19"><a href="#View_pictures_from_a_webcam_.28GStreamer_0.10.29"><span class="tocnumber">4.2</span> <span class="toctext">View pictures from a webcam (GStreamer 0.10)</span></a></li>
+<li class="toclevel-2 tocsection-20"><a href="#Entrans:_Record_to_DVD-compliant_MPEG2_.28GStreamer_0.10.29"><span class="tocnumber">4.3</span> <span class="toctext">Entrans: Record to DVD-compliant MPEG2 (GStreamer 0.10)</span></a></li>
+<li class="toclevel-2 tocsection-21"><a href="#Bash_script_to_record_video_tapes_with_entrans"><span class="tocnumber">4.4</span> <span class="toctext">Bash script to record video tapes with entrans</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-22"><a href="#Further_documentation_resources"><span class="tocnumber">5</span> <span class="toctext">Further documentation resources</span></a></li>
+<li class="toclevel-1 tocsection-23"><a href="#External_Links"><span class="tocnumber">6</span> <span class="toctext">External Links</span></a></li>
+</ul>
+</div>
+
+<h2><span class="mw-headline" id="Introduction_to_GStreamer">Introduction to GStreamer</span></h2>
+<p>No two use cases for encoding are quite alike.  What's your preferred workflow?  Is your processor fast enough to encode high quality video in real-time?  Do you have enough disk space to store the raw video then process it after the fact?  Do you want to play your video in DVD players, or is it enough that it works in your version of <a rel="nofollow" class="external text" href="http://www.videolan.org/vlc/index.en_GB.html">VLC</a>?  How will you work around your system's obscure quirks?
+</p><p><b>Use GStreamer if</b> you want the best video quality possible with your hardware, and don't mind spending a weekend browsing the Internet for information.
+</p><p><b>Avoid GStreamer if</b> you just want something quick-and-dirty, or can't stand programs with bad documentation and unhelpful error messages.
+</p>
+<h3><span class="mw-headline" id="Why_is_GStreamer_better_at_encoding.3F">Why is GStreamer better at encoding?</span></h3>
+<p>GStreamer isn't as easy to use as <code>mplayer</code>, and doesn't have as advanced editing functionality as <code>ffmpeg</code>.  But it has superior support for synchronising audio and video in disturbed sources such as VHS tapes.  If you specify your input is (say) 25 frames per second video and 48,000Hz audio, most tools will synchronise audio and video simply by writing 1 video frame, 1,920 audio frames, 1 video frame and so on.  There are at least three ways this can cause errors:
+</p>
+<ul>
+<li> <b>initialisation timing</b>: audio and video desynchronised by a certain amount from the first frame, usually caused by audio and video devices taking different amounts of time to initialise.  For example, the first audio frame might be delivered to GStreamer 0.01 seconds after it was requested, but the first video frame might not be delivered until 0.7 seconds after it was requested, causing all video to be 0.6 seconds behind the audio
+<ul>
+<li> <code>mencoder</code>'s <i>-delay</i> option solves this by delaying the audio
+</li>
+</ul>
+</li>
+<li> <b>failure to encode</b>: frames that desynchronise gradually over time, usually caused by audio and video shifting relative to each other when frames are dropped. For example if your CPU is not fast enough and sometimes drops a video frame, after 25 dropped frames the video will be one second ahead of the audio
+<ul>
+<li> <code>mencoder</code>'s <i>-harddup</i> option solves this by duplicating other frames to fill in the gaps
+</li>
+</ul>
+</li>
+<li> <b>source frame rate</b>: frames that aren't delivered at the advertised rate, usually caused by inaccurate clocks in the source hardware.  For example, a low-cost webcam that advertises 25 FPS video and 48kHz audio might actually deliver 25.01 video frames and 47,999 audio frames per second, causing your audio and video to drift apart by a second or so per hour
+<ul>
+<li> video tapes are especially problematic here - if you've ever seen a VCR struggle during those few seconds between two recordings on a tape, you've seen them adjusting the tape speed to accurately track the source.  Frame counts can vary enough during these periods to instantly desynchronise audio and video
+</li>
+<li> <code>mencoder</code> has no solution for this problem
+</li>
+</ul>
+</li>
+</ul>
+<p>GStreamer solves these problems by attaching a timestamp to each incoming frame based on the time GStreamer receives the frame.  It can then mux the sources back together accurately using these timestamps, either by using a format that supports variable framerates or by duplicating frames to fill in the blanks:
+</p>
+<ol>
+<li> If you choose a container format that supports timestamps (e.g. Matroska), timestamps are automatically written to the file and used to vary the playback speed
+</li>
+<li> If you choose a container format that does not support timestamps (e.g. AVI), you must duplicate other frames to fill in the gaps by adding the <code>videorate</code> and <code>audiorate</code> plugins to the end of the relevant pipelines
+</li>
+</ol>
+<h3><span class="mw-headline" id="Getting_GStreamer">Getting GStreamer</span></h3>
+<p>GStreamer, its most common plugins and tools are available through your distribution's package manager.  Most Linux distributions include both the legacy <i>0.10</i> and modern <i>1.0</i> release series - each has bugs that stop them from working on some hardware, and this page focuses mostly on the modern <i>1.0</i> series.  Converting between <i>0.10</i> and <i>1.0</i> is mostly just search-and-replace work (e.g. changing instances of <code>av</code> to <code>ff</code> because of the switch from <code>ffmpeg</code> to <code>libavcodec</code>).  See <a rel="nofollow" class="external text" href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/manual/html/chapter-porting-1.0.html">the porting guide</a> for more.
+</p><p>Other plugins are also available, such as <code><a rel="nofollow" class="external text" href="http://gentrans.sourceforge.net/">GEntrans</a></code> (used in some examples below).  Google might help you find packages for your distribution, otherwise you'll need to download and compile them yourself.
+</p>
+<h3><span class="mw-headline" id="Using_GStreamer_with_gst-launch-1.0">Using GStreamer with gst-launch-1.0</span></h3>
+<p><code>gst-launch</code> is the standard command-line interface to GStreamer.  Here's the simplest pipline you can build:
+</p>
+<pre>gst-launch-1.0 fakesrc&nbsp;! fakesink
+</pre>
+<p>This connects a single (fake) source to a single (fake) sink using the 1.0 series of GStreamer:
+</p>
+<div class="center"><div class="floatnone"><a href="https://www.linuxtv.org/wiki/index.php/File:GStreamer-simple-pipeline.png" class="image" title="Very simple pipeline"><img alt="Very simple pipeline" src="gstreamer-simple-pipeline.png" width="570" height="208"></a></div></div>
+<p>GStreamer can build all kinds of pipelines, but you probably want to build one that looks something like this:
+</p>
+<div class="center"><div class="floatnone"><a href="https://www.linuxtv.org/wiki/index.php/File:Example-pipeline.png" class="image" title="Idealised pipeline example"><img alt="Idealised pipeline example" src="example-pipeline.png" width="505" height="340"></a></div></div>
+<p>To get a list of elements that can go in a GStreamer pipeline, do:
+</p>
+<pre>gst-inspect-1.0 | less
+</pre>
+<p>Pass an element name to <code>gst-inspect-1.0</code> for detailed information.  For example:
+</p>
+<pre>gst-inspect-1.0 fakesrc
+gst-inspect-1.0 fakesink
+</pre>
+<p>The images above are based on graphs created by GStreamer itself.  Install <a rel="nofollow" class="external text" href="http://www.graphviz.org/">Graphviz</a> to build graphs of your pipelines. For faster viewing of those graphs, you may install xdot from <a rel="nofollow" class="external autonumber" href="http://www.semicomplete.com/projects/xdotool/">[1]</a>:
+</p>
+<pre>mkdir gst-visualisations
+GST_DEBUG_DUMP_DOT_DIR=gst-visualisations gst-launch-1.0 fakesrc&nbsp;! fakesink
+xdot gst-visualisations/*-gst-launch.*_READY.dot
+</pre>
+<p>You may also compiles those graph to PNG, SVG or other supported formats.
+</p>
+<pre> dot -Tpng gst-visualisations/*-gst-launch.*_READY.dot &gt; my-pipeline.png
+</pre>
+<p>To get graphs of the example pipelines below, prepend <code>GST_DEBUG_DUMP_DOT_DIR=gst-visualisations </code> to the <code>gst-launch-1.0</code> command.  Run this command to generate a PNG version of GStreamer's most interesting stage:
+</p>
+<pre>xdot gst-visualisations/*-gst-launch.PLAYING_READY.dot
+</pre>
+<p>Remember to empty the <code>gst-visualisations</code> directory between runs.
+</p>
+<h3><span class="mw-headline" id="Using_GStreamer_with_entrans">Using GStreamer with entrans</span></h3>
+<p><code>gst-launch-1.0</code> is the main command-line interface to GStreamer, available by default.  But <code>entrans</code> is a bit smarter:
+</p>
+<ul>
+<li> it provides partly-automated composition of GStreamer pipelines
+</li>
+<li> it allows you to cut streams, for example to capture for a predefined duration.  That ensures headers are written correctly, which is not always the case if you close <code>gst-launch-1.0</code> by pressing Ctrl+C. To use this feature one has to insert a <i>dam</i> element after the first <i>queue</i> of each part of the pipeline
+</li>
+</ul>
+<h2><span class="mw-headline" id="Building_pipelines">Building pipelines</span></h2>
+<p>You will probably need to build your own GStreamer pipeline for your particular use case.  This section contains examples to give you the basic idea.
+</p><p>Note: for consistency and ease of copy/pasting, all filenames in this section are of the form <code>test-$( date --iso-8601=seconds )</code> - your shell should automatically convert this to e.g. <code>test-2010-11-12T13:14:15+1600.avi</code>
+</p>
+<h3><span class="mw-headline" id="Record_raw_video_only">Record raw video only</span></h3>
+<p>A simple pipeline that initialises one video <i>source</i>, sets the video format, <i>muxes</i> it into a file format, then saves it to a file:
+</p>
+<pre>gst-launch-1.0 \
+    v4l2src device=$VIDEO_DEVICE \
+       &nbsp;! $VIDEO_CAPABILITIES \
+       &nbsp;! avimux \
+       &nbsp;! filesink location=test-$( date --iso-8601=seconds ).avi
+</pre>
+<p>This will create an AVI file with raw video and no audio.  It should play in most software, but the file will be huge.
+</p>
+<h3><span class="mw-headline" id="Record_raw_audio_only">Record raw audio only</span></h3>
+<p>A simple pipeline that initialises one audio <i>source</i>, sets the audio format, <i>muxes</i> it into a file format, then saves it to a file:
+</p>
+<pre>gst-launch-1.0 \
+    alsasrc device=$AUDIO_DEVICE \
+       &nbsp;! $AUDIO_CAPABILITIES \
+       &nbsp;! avimux \
+       &nbsp;! filesink location=test-$( date --iso-8601=seconds ).avi
+</pre>
+<p>This will create an AVI file with raw audio and no video.
+</p>
+<h3><span class="mw-headline" id="Record_video_and_audio">Record video and audio</span></h3>
+<pre>gst-launch-1.0 \
+    v4l2src device=$VIDEO_DEVICE \
+       &nbsp;! $VIDEO_CAPABILITIES \
+       &nbsp;! mux. \
+    alsasrc device=$AUDIO_DEVICE \
+       &nbsp;! $AUDIO_CAPABILITIES \
+       &nbsp;! mux. \
+    avimux name=mux \
+       &nbsp;! filesink location=test-$( date --iso-8601=seconds ).avi
+</pre>
+<p>Instead of a straightforward pipe with a single source leading into a muxer, this pipe has three parts:
+</p>
+<ol>
+<li> a video source leading to a named element (<code>! <i>name</i>.</code> with a full stop means "pipe to the <i>name</i> element")
+</li>
+<li> an audio source leading to the same element
+</li>
+<li> a named muxer element leading to a file sink
+</li>
+</ol>
+<p>Muxers combine data from many inputs into a single output, allowing you to build quite flexible pipes.
+</p>
+<h3><span class="mw-headline" id="Create_multiple_sinks">Create multiple sinks</span></h3>
+<p>The <code>tee</code> element splits a single source into multiple outputs:
+</p>
+<pre>gst-launch-1.0 \
+    v4l2src device=$VIDEO_DEVICE \
+       &nbsp;! $VIDEO_CAPABILITIES \
+       &nbsp;! avimux \
+       &nbsp;! tee name=network \
+       &nbsp;! filesink location=test-$( date --iso-8601=seconds ).avi \
+    tcpclientsink host=127.0.0.1 port=5678 
+</pre>
+<p>This sends your stream to a file (<code>filesink</code>) and out over the network (<code>tcpclientsink</code>).  To make this work, you'll need another program listening on the specified port (e.g. <code>nc -l 127.0.0.1 -p 5678</code>).
+</p>
+<h3><span class="mw-headline" id="Encode_audio_and_video">Encode audio and video</span></h3>
+<p>As well as piping streams around, GStreamer can manipulate their contents.  The most common manipulation is to encode a stream:
+</p>
+<pre>gst-launch-1.0 \
+    v4l2src device=$VIDEO_DEVICE \
+       &nbsp;! $VIDEO_CAPABILITIES \
+       &nbsp;! videoconvert \
+       &nbsp;! theoraenc \
+       &nbsp;! queue \
+       &nbsp;! mux. \
+    alsasrc device=$AUDIO_DEVICE \
+       &nbsp;! $AUDIO_CAPABILITIES \
+       &nbsp;! audioconvert \
+       &nbsp;! vorbisenc \
+       &nbsp;! mux. \
+    oggmux name=mux \
+       &nbsp;! filesink location=test-$( date --iso-8601=seconds ).ogg
+</pre>
+<p>The <code>theoraenc</code> and <code>vorbisenc</code> elements encode the video and audio using <a rel="nofollow" class="external text" href="https://en.wikipedia.org/wiki/Theora">Ogg Theora</a> and <a rel="nofollow" class="external text" href="https://en.wikipedia.org/wiki/Vorbis">Ogg Vorbis</a> encoders.  The pipes are then muxed together into an <a rel="nofollow" class="external text" href="https://en.wikipedia.org/wiki/Ogg">Ogg</a> container before being saved.
+</p>
+<h3><span class="mw-headline" id="Add_buffers">Add buffers</span></h3>
+<p>Different elements work at different speeds.  For example, a CPU-intensive encoder might fall behind when another process uses too much processor time, or a duplicate frame detector might hold frames back while it examines them.  This can cause streams to fall out of sync, or frames to be dropped altogether.  You can add queues to smooth these problems out:
+</p>
+<pre>gst-launch-1.0 -q -e \
+    v4l2src device=$VIDEO_DEVICE \
+       &nbsp;! queue max-size-buffers=0 max-size-time=0 max-size-bytes=0 \
+       &nbsp;! $VIDEO_CAPABILITIES \
+       &nbsp;! videoconvert \
+       &nbsp;! x264enc interlaced=true pass=quant quantizer=0 speed-preset=ultrafast byte-stream=true \
+       &nbsp;! progressreport update-freq=1 \
+       &nbsp;! mux. \
+    alsasrc device=$AUDIO_DEVICE \
+       &nbsp;! queue max-size-buffers=0 max-size-time=0 max-size-bytes=0 \
+       &nbsp;! $AUDIO_CAPABILITIES \
+       &nbsp;! audioconvert \
+       &nbsp;! flacenc \
+       &nbsp;! mux. \
+    matroskamux name=mux min-index-interval=1000000000 \
+       &nbsp;! filesink location=test-$( date --iso-8601=seconds ).mkv
+</pre>
+<p>This creates a file using FLAC audio and x264 video in lossless mode, muxed into in a Matroska container.  Because we used <code>speed-preset=ultrafast</code>, the buffers should just smooth out the flow of frames through the pipelines.  Even though the buffers are set to the maximum possible size, <code>speed-preset=veryslow</code> would eventually fill the video buffer and start dropping frames.
+</p><p>Some other things to note about this pipeline:
+</p>
+<ul>
+<li> <a rel="nofollow" class="external text" href="https://trac.ffmpeg.org/wiki/Encode/H.264">FFmpeg's H.264 page</a> includes a useful discussion of speed presets (both programs use the same underlying library)
+</li>
+<li> <code>quantizer=0</code> sets the video codec to lossless mode (~30GB/hour).  Anything up to <code>quantizer=18</code> should not lose information visible to the human eye, and will produce much smaller files (~10GB/hour)
+</li>
+<li> <code>min-index-interval=1000000000</code> improves seek times by telling the Matroska muxer to create one <i>cue data</i> entry per second of playback.  Cue data is a few kilobytes per hour, added to the end of the file when encoding completes.  If you try to watch your Matroska video while it's being recorded, it will take a long time to skip forward/back because the cue data hasn't been written yet
+</li>
+</ul>
+<h2><span class="mw-headline" id="Common_caputuring_issues_and_their_solutions">Common caputuring issues and their solutions</span></h2>
+<h3><span class="mw-headline" id="Reducing_Jerkiness">Reducing Jerkiness</span></h3>
+<p>If motion that should appear smooth instead stops and starts, try the following:
+</p><p><b>Check for muxer issues</b>.  Some muxers need big chunks of data, which can cause one stream to pause while it waits for the other to fill up.  Change your pipeline to pipe your audio and video directly to their own <code>filesink</code>s - if the separate files don't judder, the muxer is the problem.
+</p>
+<ul>
+<li> If the muxer is at fault, add <i>! queue max-size-buffers=0 max-size-time=0 max-size-bytes=0</i> immediately before each stream goes to the muxer
+<ul>
+<li> queues have hard-coded maximum sizes - you can chain queues together if you need more buffering than one buffer can hold
+</li>
+</ul>
+</li>
+</ul>
+<p><b>Check your CPU load</b>.  When GStreamer uses 100% CPU, it may need to drop frames to keep up.
+</p>
+<ul>
+<li> If frames are dropped occasionally when CPU usage spikes to 100%, add a (larger) buffer to help smooth things out.
+<ul>
+<li> this can be a source's internal buffer (e.g. <i>alsasrc buffer-time=2000000</i>), or it can be an extra buffering step in your pipeline (<i>! queue max-size-buffers=0 max-size-time=0 max-size-bytes=0</i>)
+</li>
+</ul>
+</li>
+<li> If frames are dropped when other processes have high CPU load, consider using <a rel="nofollow" class="external text" href="https://en.wikipedia.org/wiki/Nice_(Unix)">nice</a> to make sure encoding gets CPU priority
+</li>
+<li> If frames are dropped regularly, use a different codec, change the parameters, lower the resolution, or otherwise choose a less resource-intensive solution
+</li>
+</ul>
+<p>As a general rule, you should try increasing buffers first - if it doesn't work, it will just increase the pipeline's latency a bit.  Be careful with <code>nice</code>, as it can slow down or even halt your computer.
+</p><p><b>Check for incorrect timestamps</b>.  If your video driver works by filling up an internal buffer then passing a cluster of frames without timestamps, GStreamer will think these should all have (nearly) the same timestamp.  Make sure you have a <code>videorate</code> element in your pipeline, then add <i>silent=false</i> to it.  If it reports many framedrops and framecopies even when the CPU load is low, the driver is probably at fault.
+</p>
+<ul>
+<li> <code>videorate</code> on its own will actually make this problem worse by picking one frame and replacing all the others with it.  Instead install <code>entrans</code> and add its <i>stamp</i> element between <i>v4l2src</i> and <i>queue</i> (e.g. <i>v4l2src do-timestamp=true&nbsp;! stamp sync-margin=2 sync-interval=5&nbsp;! videorate&nbsp;! queue</i>)
+<ul>
+<li> <i>stamp</i> intelligently guesses timestamps if drivers don't support timestamping.  Its <i>sync-</i> options drop or copy frames to get a nearly-constant framerate.  Using <code>videorate</code> as well does no harm and can solve some remaining problems
+</li>
+</ul>
+</li>
+</ul>
+<h3><span class="mw-headline" id="Avoiding_pitfalls_with_video_noise">Avoiding pitfalls with video noise</span></h3>
+<p>If your video contains periods of <a rel="nofollow" class="external text" href="https://en.wikipedia.org/wiki/Noise_(video)">video noise</a> (snow), you may need to deal with some extra issues:
+</p>
+<ul>
+<li> Most devices send an EndOfStream signal if the input signal quality drops too low, causing GStreamer to finish capturing.  To prevent the device from sending EOS, set <i>num-buffers=-1</i> on the <i>v4l2src</i> element.
+</li>
+<li> The <i>stamp</i> plugin gets confused by periods of snow, causing it to generate faulty timestamps and framedropping.  <i>stamp</i> will recover normal behaviour when the break is over,  but will probably leave the buffer full of weirdly-stamped frames.  <i>stamp</i> only drops one weirdly-stamped frame each sync-interval, so it can take several minutes until everything works fine again.  To solve this problem, set <i>leaky=2</i> on each <i>queue</i> element to allow dropping old frames
+</li>
+<li> Periods of noise (snow, bad signal etc.) are hard to encode.  Variable bitrate encoders will often drive up the bitrate during the noise then down afterwards to maintain the average bitrate.  To minimise the issues, specify a minimum and maximum bitrate in your encoder
+</li>
+<li> Snow at the start of a recording is just plain ugly.  To get black input instead from a VCR, use the remote control to change the input source before you start recording
+</li>
+</ul>
+<h3><span class="mw-headline" id="Investigating_bugs_in_GStreamer">Investigating bugs in GStreamer</span></h3>
+<p>GStreamer comes with a extensive tracing system that let you figure-out the problems. Yet, you often need to understand the internals of GStreamer to be able to read those traces. You should read this <a rel="nofollow" class="external text" href="https://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gst-running.html">documentation page</a> for the basic of how the tracing system works. When something goes wrong you should:
+</p>
+<ol>
+<li> try and see if there is a useful error message by enabling the ERROR debug level, <code>GST_DEBUG=2 gst-launch-1.0</code>
+</li>
+<li> try similar pipelines - reducing to it's most minimal form, and add more elements until you can reproduce the issue.
+</li>
+<li> as you are most likely having issue with V4L2 element, you may enable full v4l2 traces using <code>GST_DEBUG="v4l2*:7,2" gst-launch-1.0</code>.
+</li>
+<li> find an error message that looks relevant, search the Internet for information about it
+</li>
+<li> try more variations based on what you learnt, until you eventually find something that works
+</li>
+<li> ask on Freenode #gstreamer or through <a rel="nofollow" class="external text" href="mailto:gstreamer-devel@lists.freedesktop.org">GStreamer Mailing List</a>
+</li>
+<li> if you think you found a bug, you should report it through <a rel="nofollow" class="external text" href="https://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer">Gnome Bugzilla</a>
+</li>
+</ol>
+<h2><span class="mw-headline" id="Sample_pipelines">Sample pipelines</span></h2>
+<h3><span class="mw-headline" id="record_from_a_bad_analog_signal_to_MJPEG_video_and_RAW_mono_audio">record from a bad analog signal to MJPEG video and RAW mono audio</span></h3>
+<pre>gst-launch-1.0 \
+    v4l2src device=$VIDEO_DEVICE do-timestamp=true \
+       &nbsp;! $VIDEO_CAPABILITIES \
+       &nbsp;! videorate \
+       &nbsp;! $VIDEO_CAPABILITIES \
+       &nbsp;! videoconvert \
+       &nbsp;! $VIDEO_CAPABILITIES \
+       &nbsp;! jpegenc \
+       &nbsp;! queue \
+       &nbsp;! mux. \
+    alsasrc device=$AUDIO_DEVICE \
+       &nbsp;! $AUDIO_CAPABILITIES \
+       &nbsp;! audiorate \
+       &nbsp;! audioresample \
+       &nbsp;! $AUDIO_CAPABILITIES, rate=44100 \
+       &nbsp;! audioconvert \
+       &nbsp;! $AUDIO_CAPABILITIES, rate=44100, channels=1 \
+       &nbsp;! queue \
+       &nbsp;! mux. \
+    avimux name=mux&nbsp;! filesink location=test-$( date --iso-8601=seconds ).avi
+</pre>
+<p>The chip that captures audio and video might not deliver the exact framerates specified, which the AVI format can't handle.  The <code>audiorate</code> and <code>videorate</code> elements remove or duplicate frames to maintain a constant rate.
+</p>
+<h3><span class="mw-headline" id="View_pictures_from_a_webcam_.28GStreamer_0.10.29">View pictures from a webcam (GStreamer 0.10)</span></h3>
+<pre>gst-launch-0.10 \
+    v4l2src do-timestamp=true device=$VIDEO_DEVICE \
+       &nbsp;! video/x-raw-yuv,format=\(fourcc\)UYVY,width=320,height=240 \
+       &nbsp;! ffmpegcolorspace \
+       &nbsp;! autovideosink
+</pre>
+<p>In GStreamer 0.10, <i>videoconvert</i> was called <i>ffmpegcolorspace</i>.
+</p>
+<h3><span class="mw-headline" id="Entrans:_Record_to_DVD-compliant_MPEG2_.28GStreamer_0.10.29">Entrans: Record to DVD-compliant MPEG2 (GStreamer 0.10)</span></h3>
+<pre>entrans -s cut-time -c 0-180 -v -x '.*caps' --dam -- --raw \
+    v4l2src queue-size=16 do-timestamp=true device=$VIDEO_DEVICE norm=PAL-BG num-buffers=-1 \
+       &nbsp;! stamp silent=false progress=0 sync-margin=2 sync-interval=5 \
+       &nbsp;! queue silent=false leaky=2 max-size-buffers=0 max-size-time=0 max-size-bytes=0 \
+       &nbsp;! dam \
+       &nbsp;! cogcolorspace \
+       &nbsp;! videorate silent=false \
+       &nbsp;! 'video/x-raw-yuv,width=720,height=576,framerate=25/1,interlaced=true,aspect-ratio=4/3' \
+       &nbsp;! queue silent=false leaky=2 max-size-buffers=0 max-size-time=0 max-size-bytes=0 \
+       &nbsp;! ffenc_mpeg2video rc-buffer-size=1500000 rc-max-rate=7000000 rc-min-rate=3500000 bitrate=4000000 max-key-interval=15 pass=pass1 \
+       &nbsp;! queue silent=false leaky=2 max-size-buffers=0 max-size-time=0 max-size-bytes=0 \
+       &nbsp;! mux. \
+    pulsesrc buffer-time=2000000 do-timestamp=true \
+       &nbsp;! queue silent=false leaky=2 max-size-buffers=0 max-size-time=0 max-size-bytes=0 \
+       &nbsp;! dam \
+       &nbsp;! audioconvert \
+       &nbsp;! audiorate silent=false \
+       &nbsp;! audio/x-raw-int,rate=48000,channels=2,depth=16 \
+       &nbsp;! queue silent=false max-size-buffers=0 max-size-time=0 max-size-bytes=0 \
+       &nbsp;! ffenc_mp2 bitrate=192000 \
+       &nbsp;! queue silent=false leaky=2 max-size-buffers=0 max-size-time=0 max-size-bytes=0 \
+       &nbsp;! mux. \
+    ffmux_mpeg name=mux \
+       &nbsp;! filesink location=test-$( date --iso-8601=seconds ).mpg
+</pre>
+<p>This captures 3 minutes (180 seconds, see first line of the command) to <i>test-$( date --iso-8601=seconds ).mpg</i> and even works for bad input signals.
+</p>
+<ul>
+<li> I wasn't able to figure out how to produce a mpeg with ac3-sound as neither ffmux_mpeg nor mpegpsmux support ac3 streams at the moment. mplex does but I wasn't able to get it working as one needs very big buffers to prevent the pipeline from stalling and at least my GStreamer build didn't allow for such big buffers.
+</li>
+<li> The limited buffer size on my system is again the reason why I had to add a third queue element to the middle of the audio as well as of the video part of the pipeline to prevent jerking.
+</li>
+<li> In many HOWTOs you find ffmpegcolorspace instead of cogcolorspace. You can even use this but cogcolorspace is much faster.
+</li>
+<li> It seems to be important that the <i>video/x-raw-yuv,width=720,height=576,framerate=25/1,interlaced=true,aspect-ratio=4/3</i>-statement is after <i>videorate</i> as videorate seems to drop the aspect-ratio-metadata otherwise resulting in files with aspect-ratio 1 in theis headers. Those files are probably played back warped and programs like dvdauthor complain.
+</li>
+</ul>
+<h3><span class="mw-headline" id="Bash_script_to_record_video_tapes_with_entrans">Bash script to record video tapes with entrans</span></h3>
+<p>For most use cases, you'll want to wrap GStreamer in a larger shell script.  This script protects against several common mistakes during encoding.
+</p><p>See also <a href="https://www.linuxtv.org/wiki/index.php/V4L_capturing/script" title="V4L capturing/script">the V4L capturing script</a> for a a wrapper that represents a whole workflow.
+</p>
+<pre>#!/bin/bash
+ 
+ targetdirectory="~/videos"
+ 
+ 
+ # Test ob doppelt geöffnet
+ 
+ if [[ -e "~/.lock_shutdown.digitalisieren" ]]; then
+     echo ""
+     echo ""
+     echo "Capturing already running. It is impossible to capture to tapes simultaneously. Hit a key to abort."
+     read -n 1
+     exit
+ fi
+ 
+ # trap keyboard interrupt (control-c)
+ trap control_c 0 SIGHUP SIGINT SIGQUIT SIGABRT SIGKILL SIGALRM SIGSEGV SIGTERM
+ 
+ control_c()
+ # run if user hits control-c
+ {
+   cleanup
+   exit $?
+ }
+ 
+ cleanup()
+ {
+   rm ~/.lock_shutdown.digitalisieren
+   return $?
+ }
+ 
+ touch "~/.lock_shutdown.digitalisieren"
+ 
+ echo ""
+ echo ""
+ echo "Please enter the length of the tape in minutes and press ENTER. (Press Ctrl+C to abort.)"
+ echo ""
+ while read -e laenge; do
+     if [[ $laenge == [0-9]* ]]; then
+         break 2
+     else
+         echo ""
+         echo ""
+         echo "That's not a number."
+         echo "Please enter the length of the tape in minutes and press ENTER. (Press Ctrl+C to abort.)"
+         echo ""
+     fi
+ done
+ 
+ let laenge=laenge+10  # Sicherheitsaufschlag, falls Band doch länger
+ let laenge=laenge*60
+ 
+ echo ""
+ echo ""
+ echo "Please type in the description of the tape."
+ echo "Don't forget to rewind the tape?"
+ echo "Hit ENTER to start capturing. Press Ctrl+C to abort."
+ echo ""
+ read -e name;
+ name=${name//\//_}
+ name=${name//\"/_}
+ name=${name//:/_}
+ 
+ # Falls Name schon vorhanden
+ if [[ -e "$targetdirectory/$name.mpg" ]]; then
+     nummer=0
+     while [[ -e "$targetdirectory/$name.$nummer.mpg" ]]; do
+        let nummer=nummer+1
+     done
+     name=$name.$nummer
+ fi
+ 
+ # Audioeinstellungen setzen: unmuten, Regler
+ amixer -D pulse cset name='Capture Switch' 1 &gt;&amp; /dev/null      # Aufnahme-Kanal einschalten
+ amixer -D pulse cset name='Capture Volume' 20724 &gt;&amp; /dev/null  # Aufnahme-Pegel einstellen
+ 
+ # Videoinput auswählen und Karte einstellen
+ v4l2-ctl --set-input 3 &gt;&amp; /dev/null
+ v4l2-ctl -c saturation=80 &gt;&amp; /dev/null
+ v4l2-ctl -c brightness=130 &gt;&amp; /dev/null
+ 
+ let ende=$(date +%s)+laenge
+ 
+ echo ""
+ echo "Working"
+ echo "Capturing will be finished at "$(date -d @$ende +%H.%M)"."
+ echo ""
+ echo "Press Ctrl+C to finish capturing now."
+ 
+ 
+ nice -n -10 entrans -s cut-time -c 0-$laenge -m --dam -- --raw \
+ v4l2src queue-size=16 do-timestamp=true device=$VIDEO_DEVICE norm=PAL-BG num-buffers=-1 ! stamp sync-margin=2 sync-interval=5 silent=false progress=0 ! \
+    queue leaky=2 max-size-buffers=0 max-size-time=0 max-size-bytes=0 ! dam ! \
+    cogcolorspace ! videorate ! \
+    'video/x-raw-yuv,width=720,height=576,framerate=25/1,interlaced=true,aspect-ratio=4/3' ! \
+    queue leaky=2 max-size-buffers=0 max-size-time=0 max-size-bytes=0 ! \
+    ffenc_mpeg2video rc-buffer-size=1500000 rc-max-rate=7000000 rc-min-rate=3500000 bitrate=4000000 max-key-interval=15 pass=pass1 ! \
+    queue leaky=2 max-size-buffers=0 max-size-time=0 max-size-bytes=0 ! mux. \
+ pulsesrc buffer-time=2000000 do-timestamp=true ! \
+    queue leaky=2 max-size-buffers=0 max-size-time=0 max-size-bytes=0 ! dam ! \
+    audioconvert ! audiorate ! \
+    audio/x-raw-int,rate=48000,channels=2,depth=16 ! \
+    queue max-size-buffers=0 max-size-time=0 max-size-bytes=0 ! \
+    ffenc_mp2 bitrate=192000 ! \
+    queue leaky=2 max-size-buffers=0 max-size-time=0 max-size-bytes=0 ! mux. \
+ ffmux_mpeg name=mux ! filesink location=\"$targetdirectory/$name.mpg\" &gt;&amp; /dev/null
+ 
+ echo "Finished Capturing"
+ rm ~/.lock_shutdown.digitalisieren
+</pre>
+<p>The script uses a command line similar to <a href="https://www.linuxtv.org/wiki/index.php/GStreamer#Record_to_DVD-compliant_MPEG2" title="GStreamer">this</a> to produce a DVD compliant MPEG2 file.
+</p>
+<ul>
+<li> The script aborts if another instance is already running.
+</li>
+<li> If not it asks for the length of the tape and its description
+</li>
+<li> It records to <i>description.mpg</i> or if this file already exists to <i>description.0.mpg</i> and so on for the given time plus 10 minutes. The target-directory has to be specified in the beginning of the script.
+</li>
+<li> As setting of the inputs and settings of the capture device is only partly possible via GStreamer other tools are used.
+</li>
+<li> Adjust the settings to match your input sources, the recording volume, capturing saturation and so on.
+</li>
+</ul>
+<h2><span class="mw-headline" id="Further_documentation_resources">Further documentation resources</span></h2>
+<ul>
+<li> <a href="https://www.linuxtv.org/wiki/index.php/V4L_capturing" title="V4L capturing">V4L Capturing</a>
+</li>
+<li> <a rel="nofollow" class="external text" href="http://gstreamer.freedesktop.org/">Gstreamer project</a>
+</li>
+<li> <a rel="nofollow" class="external text" href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/faq/html/">FAQ</a>
+</li>
+<li> <a rel="nofollow" class="external text" href="http://gstreamer.freedesktop.org/documentation">Documentation</a>
+<ul>
+<li> <a rel="nofollow" class="external text" href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-plugins/html/">Core plugins</a>
+</li>
+<li> <a rel="nofollow" class="external text" href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-ffmpeg-plugins/html/">FFMpeg plugins</a>
+</li>
+<li> <a rel="nofollow" class="external text" href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-plugins/html/">Base plugins</a>
+</li>
+<li> <a rel="nofollow" class="external text" href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-good-plugins/html/">Good plugins</a>
+</li>
+<li> <a rel="nofollow" class="external text" href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-bad-plugins/html/">Bad plugins</a>
+</li>
+<li> <a rel="nofollow" class="external text" href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-ugly-plugins/html/">Ugly plugins</a>
+</li>
+<li> <a rel="nofollow" class="external text" href="http://gentrans.sourceforge.net/docs/head/gst-entrans-plugins/html/ch02.html">Entrans plugins</a>
+</li>
+</ul>
+</li>
+<li> man gst-launch
+</li>
+<li> <a rel="nofollow" class="external text" href="http://gentrans.sourceforge.net/docs/head/manual/html/entrans.html">entrans command line tool documentation</a>
+</li>
+<li> gst-inspect <i>plugin-name</i>
+</li>
+</ul>
+<h2><span class="mw-headline" id="External_Links">External Links</span></h2>
+<ul>
+<li> <a rel="nofollow" class="external text" href="http://gstreamer.freedesktop.org/">GStreamer project page</a>
+</li>
+<li> <a rel="nofollow" class="external text" href="http://en.wikipedia.org/wiki/GStreamer">GStreamer Wikipedia page</a>
+</li>
+<li> <a rel="nofollow" class="external text" href="http://gentrans.sourceforge.net/">GEntrans project</a>
+</li>
+</ul>
+
+<!-- 
+NewPP limit report
+CPU time usage: 0.081 seconds
+Real time usage: 0.086 seconds
+Preprocessor visited node count: 100/1000000
+Preprocessor generated node count: 116/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/40
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key linuxtvwikidb:pcache:idhash:3677-0!*!0!!en!2!* and timestamp 20170526200853
+ -->
+</div>								<div class="printfooter">
+				Retrieved from "<a href="https://www.linuxtv.org/wiki/index.php?title=GStreamer&amp;oldid=34900">https://www.linuxtv.org/wiki/index.php?title=GStreamer&amp;oldid=34900</a>"				</div>
+												<div id="catlinks" class="catlinks"><div id="mw-normal-catlinks" class="mw-normal-catlinks"><a href="https://www.linuxtv.org/wiki/index.php/Special:Categories" title="Special:Categories">Categories</a>: <ul><li><a href="https://www.linuxtv.org/wiki/index.php/Category:Software" title="Category:Software">Software</a></li><li><a href="https://www.linuxtv.org/wiki/index.php/Category:Apps_%26_Utilities" title="Category:Apps &amp; Utilities">Apps &amp; Utilities</a></li></ul></div></div>												<div class="visualClear"></div>
+							</div>
+		</div>
+		<div id="mw-navigation">
+			<h2>Navigation menu</h2>
+			<div id="mw-head">
+				<div id="p-personal" role="navigation" class="" aria-labelledby="p-personal-label">
+	<h3 id="p-personal-label">Personal tools</h3>
+	<ul>
+<li id="pt-login"><a href="https://www.linuxtv.org/wiki/index.php?title=Special:UserLogin&amp;returnto=GStreamer" title="You are encouraged to log in; however, it is not mandatory [alt-shift-o]" accesskey="o">Log in / create account</a></li>	</ul>
+</div>
+				<div id="left-navigation">
+					<div id="p-namespaces" role="navigation" class="vectorTabs" aria-labelledby="p-namespaces-label">
+	<h3 id="p-namespaces-label">Namespaces</h3>
+	<ul>
+					<li id="ca-nstab-main" class="selected"><span><a href="https://www.linuxtv.org/wiki/index.php/GStreamer" title="View the content page [alt-shift-c]" accesskey="c">Page</a></span></li>
+					<li id="ca-talk"><span><a href="https://www.linuxtv.org/wiki/index.php/Talk:GStreamer" title="Discussion about the content page [alt-shift-t]" accesskey="t">Discussion</a></span></li>
+			</ul>
+</div>
+<div id="p-variants" role="navigation" class="vectorMenu emptyPortlet" aria-labelledby="p-variants-label">
+	<h3 id="mw-vector-current-variant">
+		</h3>
+	<h3 id="p-variants-label" tabindex="0"><span>Variants</span><a href="#" tabindex="-1"></a></h3>
+	<div class="menu">
+		<ul>
+					</ul>
+	</div>
+</div>
+				</div>
+				<div id="right-navigation">
+					<div id="p-views" role="navigation" class="vectorTabs" aria-labelledby="p-views-label">
+	<h3 id="p-views-label">Views</h3>
+	<ul>
+					<li id="ca-view" class="selected"><span><a href="https://www.linuxtv.org/wiki/index.php/GStreamer">Read</a></span></li>
+					<li id="ca-viewsource"><span><a href="https://www.linuxtv.org/wiki/index.php?title=GStreamer&amp;action=edit" title="This page is protected.
+You can view its source [alt-shift-e]" accesskey="e">View source</a></span></li>
+					<li id="ca-history" class="collapsible"><span><a href="https://www.linuxtv.org/wiki/index.php?title=GStreamer&amp;action=history" title="Past revisions of this page [alt-shift-h]" accesskey="h">View history</a></span></li>
+			</ul>
+</div>
+<div id="p-cactions" role="navigation" class="vectorMenu emptyPortlet" aria-labelledby="p-cactions-label">
+	<h3 id="p-cactions-label" tabindex="0"><span>Actions</span><a href="#" tabindex="-1"></a></h3>
+	<div class="menu">
+		<ul>
+					</ul>
+	</div>
+</div>
+<div id="p-search" role="search">
+	<h3><label for="searchInput">Search</label></h3>
+	<form action="https://www.linuxtv.org/wiki/index.php" id="searchform">
+				<div id="simpleSearch">
+						<input name="search" placeholder="Search" title="Search LinuxTVWiki [alt-shift-f]" accesskey="f" id="searchInput" tabindex="1" autocomplete="off" value="">						<button type="submit" name="button" title="Search the pages for this text" id="searchButton"><img src="search-ltr.png" alt="Search" width="12" height="13"></button>								<input name="title" value="Special:Search" type="hidden">
+		</div>
+	</form>
+</div>
+				</div>
+			</div>
+			<div id="mw-panel" class="collapsible-nav">
+					<div id="p-logo" role="banner"><a style="background-image: url('linuxtv.png');" href="https://www.linuxtv.org/wiki/index.php/Main_Page" title="Visit the main page"></a></div>
+				<div class="portal first persistent" role="navigation" id="p-navigation" aria-labelledby="p-navigation-label">
+	<h3 id="p-navigation-label">Navigation</h3>
+	<div class="body">
+		<ul>
+			<li id="n-LinuxTV-Home"><a href="http://www.linuxtv.org/" rel="nofollow">LinuxTV Home</a></li>
+			<li id="n-mainpage"><a href="https://www.linuxtv.org/wiki/index.php/Main_Page" title="Visit the main page [alt-shift-z]" accesskey="z">Main Page</a></li>
+			<li id="n-categories"><a href="https://www.linuxtv.org/wiki/index.php/Special:Categories">Categories</a></li>
+			<li id="n-recentchanges"><a href="https://www.linuxtv.org/wiki/index.php/Special:RecentChanges" title="A list of recent changes in the wiki [alt-shift-r]" accesskey="r">Recent changes</a></li>
+			<li id="n-randompage"><a href="https://www.linuxtv.org/wiki/index.php/Special:Random" title="Load a random page [alt-shift-x]" accesskey="x">Random page</a></li>
+			<li id="n-help"><a href="https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Contents" rel="nofollow" title="The place to find out">Help</a></li>
+		</ul>
+	</div>
+</div>
+<div class="portal expanded" role="navigation" id="p-tb" aria-labelledby="p-tb-label">
+	<h3 id="p-tb-label" tabindex="2"><a href="#">Tools</a></h3>
+	<div class="body" style="display: block;">
+		<ul>
+			<li id="t-whatlinkshere"><a href="https://www.linuxtv.org/wiki/index.php/Special:WhatLinksHere/GStreamer" title="A list of all wiki pages that link here [alt-shift-j]" accesskey="j">What links here</a></li>
+			<li id="t-recentchangeslinked"><a href="https://www.linuxtv.org/wiki/index.php/Special:RecentChangesLinked/GStreamer" title="Recent changes in pages linked from this page [alt-shift-k]" accesskey="k">Related changes</a></li>
+			<li id="t-specialpages"><a href="https://www.linuxtv.org/wiki/index.php/Special:SpecialPages" title="A list of all special pages [alt-shift-q]" accesskey="q">Special pages</a></li>
+			<li id="t-print"><a href="https://www.linuxtv.org/wiki/index.php?title=GStreamer&amp;printable=yes" rel="alternate" title="Printable version of this page [alt-shift-p]" accesskey="p">Printable version</a></li>
+			<li id="t-permalink"><a href="https://www.linuxtv.org/wiki/index.php?title=GStreamer&amp;oldid=34900" title="Permanent link to this revision of the page">Permanent link</a></li>
+			<li id="t-info"><a href="https://www.linuxtv.org/wiki/index.php?title=GStreamer&amp;action=info">Page information</a></li>
+		</ul>
+	</div>
+</div>
+			</div>
+		</div>
+		<div id="footer" role="contentinfo">
+							<ul id="footer-info">
+											<li id="footer-info-lastmod"> This page was last modified on 13 June 2016, at 19:49.</li>
+											<li id="footer-info-viewcount">This page has been accessed 57,884 times.</li>
+									</ul>
+							<ul id="footer-places">
+											<li id="footer-places-privacy"><a href="https://www.linuxtv.org/wiki/index.php/LinuxTVWiki:Privacy_policy" title="LinuxTVWiki:Privacy policy">Privacy policy</a></li>
+											<li id="footer-places-about"><a href="https://www.linuxtv.org/wiki/index.php/LinuxTVWiki:About" title="LinuxTVWiki:About">About LinuxTVWiki</a></li>
+											<li id="footer-places-disclaimer"><a href="https://www.linuxtv.org/wiki/index.php/LinuxTVWiki:General_disclaimer" title="LinuxTVWiki:General disclaimer">Disclaimers</a></li>
+									</ul>
+										<ul id="footer-icons" class="noprint">
+					<li id="footer-poweredbyico">
+						<a href="https://www.mediawiki.org/"><img src="poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31"></a>
+					</li>
+				</ul>
+						<div style="clear: both;"></div>
+		</div>
+		
+
+
+<!-- Served in 0.074 secs. -->
+	
+
+<div style="display: none; font-size: 13px;" class="suggestions"><div class="suggestions-results"></div><div class="suggestions-special"></div></div></body>
+</html>

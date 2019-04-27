@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html dir="ltr" prefix="content: http://purl.org/rss/1.0/modules/content/  dc: http://purl.org/dc/terms/  foaf: http://xmlns.com/foaf/0.1/  og: http://ogp.me/ns#  rdfs: http://www.w3.org/2000/01/rdf-schema#  schema: http://schema.org/  sioc: http://rdfs.org/sioc/ns#  sioct: http://rdfs.org/sioc/types#  skos: http://www.w3.org/2004/02/skos/core#  xsd: http://www.w3.org/2001/XMLSchema# " class="wf-loading js" lang="en">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    <meta charset="utf-8">
+
+<meta name="Generator" content="Drupal 8 (https://www.drupal.org)">
+<meta name="MobileOptimized" content="width">
+<meta name="HandheldFriendly" content="true">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="shortcut icon" href="favicon.ico" type="image/vnd.microsoft.icon">
+<link rel="canonical" href="https://www.linuxjournal.com/node/10267">
+<link rel="shortlink" href="https://www.linuxjournal.com/node/10267">
+<link rel="revision" href="https://www.linuxjournal.com/node/10267">
+
+    <title>Completely Fair Scheduler | Linux Journal</title>
+    
+
+
+      <!--   <script defer src="https://use.fontawesome.com/releases/v5.0.9/js/all.js" integrity="sha384-8iPTk2s/jMVj81dnzb/iFR2sdA7u06vHJyyLlAd4snFpCl/SnyUjRrbdJsw1pGIl" crossorigin="anonymous"></script>-->
+
+    
+    
+<!--[if lte IE 8]>
+<script src="/sites/default/files/js/js_VtafjXmRvoUgAzqzYTA3Wrjkx9wcWhjP0G4ZnnqRamA.js"></script>
+<![endif]-->
+
+
+  
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body class="path-node page-node-type-xmlnode has-glyphicons">
+    <a href="#main-content" class="visually-hidden focusable skip-link">
+      Skip to main content
+    </a>
+    
+      <div class="dialog-off-canvas-main-canvas" data-off-canvas-main-canvas="">
+    <div id="wrap">
+<div class="leader-wrapper" id="leader-wrapper">
+  <div class="leader container">
+    <div class="region region-leader">
+    <section id="block-patreon" class="block block-block-content block-block-content9ae264c7-7c6f-4de3-acbf-4b4497017472 clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><a href="https://www.patreon.com/bePatron?u=10705728"><img alt="Become a Patron!" data-entity-type="file" data-entity-uuid="afa5defb-aa9d-4348-b3a0-d0dd6414882c" src="become_a_patron_button.png"></a>
+</div>
+      
+  </section>
+
+
+  </div>
+
+  </div>
+</div>
+
+<div class="brand-wrapper" id="brand-wrapper">
+  <div class="brand container">
+    <div class="region region-brand">
+          <a class="logo navbar-btn" href="https://www.linuxjournal.com/" title="Home" rel="home">
+      <h1><img src="ljlogo.png" alt="Linux Journal"></h1>
+    </a>
+      
+  </div>
+
+  </div>
+
+          <div class="header-wrapper">
+    <header class="navbar navbar-default container" id="navbar" role="banner">
+                                            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+            <div class="region region-navigation-collapsible">
+    <section id="block-linuxjournal-main-menu" class="block block-system block-system-menu-blockmain clearfix navbar__menu col-xs-12 col-sm-8">
+  
+    
+
+      
+      <ul class="menu menu--main nav navbar-nav">
+                        <li>
+        <a href="https://www.linuxjournal.com/subscribe">Subscribe</a>
+                  </li>
+                        <li class="expanded dropdown">
+        <a href="https://www.linuxjournal.com/" class="dropdown-toggle" data-toggle="dropdown">Topics+ <span class="caret"></span></a>
+                          <ul class="dropdown-menu">
+                        <li>
+        <a href="https://www.linuxjournal.com/tag/cloud">Cloud</a>
+                  </li>
+                        <li>
+        <a href="https://www.linuxjournal.com/tag/desktop">Desktop</a>
+                  </li>
+                        <li>
+        <a href="https://www.linuxjournal.com/tag/kernel" data-drupal-link-system-path="taxonomy/term/662">Kernel</a>
+                  </li>
+                        <li>
+        <a href="https://www.linuxjournal.com/tag/mobile">Mobile</a>
+                  </li>
+                        <li>
+        <a href="https://www.linuxjournal.com/tag/multimedia">Multimedia</a>
+                  </li>
+                        <li>
+        <a href="https://www.linuxjournal.com/tag/networking">Networking</a>
+                  </li>
+                        <li>
+        <a href="https://www.linuxjournal.com/tag/privacy">Privacy</a>
+                  </li>
+                        <li>
+        <a href="https://www.linuxjournal.com/tag/programming">Programming</a>
+                  </li>
+                        <li>
+        <a href="https://www.linuxjournal.com/tag/security" data-drupal-link-system-path="taxonomy/term/31">Security</a>
+                  </li>
+                        <li>
+        <a href="https://www.linuxjournal.com/tag/servers">Servers</a>
+                  </li>
+                        <li>
+        <a href="https://www.linuxjournal.com/tag/sysadmin" data-drupal-link-system-path="taxonomy/term/21">SysAdmin</a>
+                  </li>
+        </ul>
+  
+            </li>
+                        <li>
+        <a href="https://www.linuxjournal.com/news" data-drupal-link-system-path="news">News</a>
+                  </li>
+                        <li>
+        <a href="https://www.linuxjournal.com/books" data-drupal-link-system-path="books">Books</a>
+                  </li>
+                        <li>
+        <a href="https://www.linuxjournal.com/magazine" data-drupal-link-system-path="node/1339717">Magazine</a>
+                  </li>
+        </ul>
+  
+
+  </section>
+
+<section class="search-block-form block block-search block-search-form-block clearfix navbar__search col-xs-12 col-sm-4 col-md-4 col-md-offset-0" data-drupal-selector="search-block-form" id="block-linuxjournal-search" role="search">
+  
+      <h2 class="block-title sr-only">Search</h2>
+    
+
+      <form action="https://www.linuxjournal.com/search/node" method="get" id="search-block-form" accept-charset="UTF-8">
+  <div class="form-item js-form-item form-type-search js-form-type-search form-item-keys js-form-item-keys form-no-label form-group">
+      <label for="edit-keys" class="control-label sr-only">Search</label>
+  
+  
+  <div class="input-group"><input title="Enter the terms you wish to search for." data-drupal-selector="edit-keys" class="form-search form-control" placeholder="Search" id="edit-keys" name="keys" value="" size="15" maxlength="128" type="search"><span class="input-group-btn"><button type="submit" value="Search" class="button js-form-submit form-submit btn-primary btn icon-only" name=""><span class="sr-only">Search</span><span class="icon glyphicon glyphicon-search" aria-hidden="true"></span></button></span></div>
+
+  
+  
+      <div id="edit-keys--description" class="description help-block">
+      Enter the terms you wish to search for.
+    </div>
+  </div>
+<div class="form-actions form-group js-form-wrapper form-wrapper" data-drupal-selector="edit-actions" id="edit-actions--2"></div>
+
+</form>
+
+  </section>
+
+
+  </div>
+
+        </div>
+            <div class="navbar-header">
+          <div class="region region-navigation">
+    <section id="block-mobilenavigation" class="block block-system block-system-menu-blockmenu-mobile-navbar clearfix col-xs-12 col-md-8 col-md-offset-2 col-lg-8 col-lg-offset-0 navbar__menu navbar__mobilenavigation">
+  
+    
+
+      
+      <ul class="menu menu--menu-mobile-navbar nav">
+                        <li>
+        <a href="https://www.linuxjournal.com/news" data-drupal-link-system-path="news">News</a>
+                  </li>
+                        <li>
+        <a href="https://www.linuxjournal.com/popular" data-drupal-link-system-path="popular">Popular</a>
+                  </li>
+                        <li>
+        <a href="https://www.linuxjournal.com/recent" data-drupal-link-system-path="recent">Recent</a>
+                  </li>
+        </ul>
+  
+
+  </section>
+
+  </div>
+
+      </div>
+          </header>
+    </div>
+  
+</div>
+  <div role="main" class="main-container container js-quickedit-main-content" id="main">
+    <div class="row">
+
+            
+            
+                  <section class="col-sm-12">
+
+                                      <div class="highlighted">  <div class="region region-highlighted">
+    
+
+  </div>
+</div>
+                  
+                
+                
+                
+                          <a id="main-content"></a>
+            <div class="region region-content">
+        <h1 class="page-header"><span>Completely Fair Scheduler</span>
+</h1>
+
+  <div data-history-node-id="10267" class="row bs-2col-stacked node node--type-xmlnode node--view-mode-full">
+  
+
+    <div class="col-sm-12 bs-region bs-region--top">
+    
+      <div class="field field--name-field-tags field--type-entity-reference field--label-hidden field--items">
+              <div class="field--item"><div about="/tag/howtos" typeof="schema:Thing">
+  
+      <h2><a href="https://www.linuxjournal.com/tag/howtos">
+            <div property="schema:name" class="field field--name-name field--type-string field--label-hidden field--item">HOWTOs</div>
+      </a></h2>
+      <span property="schema:name" content="HOWTOs" class="hidden"></span>
+
+  
+</div>
+</div>
+          </div>
+  
+            <div class="field field--name-node-author field--type-ds field--label-hidden field--item">by Chandandeep Singh Pabla</div>
+      
+            <div class="field field--name-node-post-date field--type-ds field--label-hidden field--item">on August 1, 2009</div>
+      
+  </div>
+  
+    <div class="col-sm-9 bs-region bs-region--left">
+    
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><div xml:lang="en" lang="en"><div xml:lang="en" lang="en"><div><a></a></div>
+
+<p>
+Most modern operating systems are designed to try to extract optimal performance
+from underlying hardware resources. This is achieved mainly by
+virtualization of the two main hardware resources: CPU and memory.
+Modern operating systems provide a multitasking environment that essentially
+gives each task its own virtual CPU.
+The task generally is unaware of the fact that it does not have exclusive
+use of the CPU.
+</p><p>
+Similarly, memory virtualization is achieved by giving each task its own
+virtual memory address space, which is then mapped onto the real memory of the system.
+Again, the task generally is unaware of the fact that its virtual memory addresses
+may not map to the same physical address in real memory.
+</p>
+
+<p>
+CPU virtualization is achieved by “sharing” the CPU
+between multiple tasks—that is, each running task gets a small fraction of the
+CPU at regular intervals.
+The algorithm used to select one task at a time from the multiple available
+runnable tasks is called the scheduler, and the process of selecting the next
+task is called scheduling.
+</p><p>
+The scheduler is one of the most important
+components of any OS.
+Implementing a scheduling algorithm is difficult for a couple reasons.
+First, an acceptable algorithm has to
+allocate CPU time such that higher-priority tasks (for example, interactive
+applications like a Web browser) are given preference over low-priority
+tasks (for example, non-interactive batch processes like program compilation).
+At the same time, the scheduler must protect against low-priority process
+starvation. In other words, low-priority processes must be
+allowed to run eventually, regardless of how many high-priority processes are vying
+for CPU time. Schedulers also must be crafted carefully, so that processes appear to be
+running simultaneously without having too large an impact on system
+throughput.
+</p><p>
+For interactive processes like GUIs, the ideal scheduler would
+give each process a very small amount of time on the CPU and rapidly cycle
+between processes.
+Because users expect interactive processes to respond to input immediately,
+the delay between user input and process execution ideally should be
+imperceptible to humans—somewhere between 50 and 150ms at most.
+</p><p>
+For non-interactive processes, the situation is reversed. Switching between
+processes, or context switching, is a relatively expensive operation. Thus,
+larger slices of time on the processor and fewer context switches can
+improve system performance and throughput. The scheduling algorithm must
+strike a balance between all of these competing needs.
+</p><p>
+Like most modern operating systems, Linux is a multitasking operating
+system, and therefore, it has a scheduler.
+The Linux scheduler has evolved over time.
+</p></div><div xml:lang="en" lang="en"><div><a></a>
+O(1) Scheduler</div><p>
+The Linux scheduler was overhauled completely with the release of kernel 2.6.
+This new scheduler is called the O(1) scheduler—O(...) is referred to
+as “big O notation”.
+The name was chosen because the scheduler's algorithm required constant time
+to make a scheduling decision, regardless of the number of tasks.
+The algorithm used by the O(1) scheduler relies on active and expired arrays
+of processes to achieve constant scheduling time. Each process is given a
+fixed time quantum, after which it is preempted and moved to the
+expired array. Once all the tasks from the active array have exhausted
+their time quantum and have been moved to the expired array, an array switch
+takes place. This switch makes the active array the new
+empty expired array, while the expired array becomes the active array.
+</p><p>
+The main issue with this algorithm is the complex heuristics used to mark
+a task as interactive or non-interactive. The algorithm tries to identify
+interactive processes by analyzing average sleep time (the amount of time
+the process spends waiting for input). Processes that sleep for long
+periods of time probably are waiting for user input, so the scheduler
+assumes they're interactive. The scheduler gives a priority bonus to
+interactive tasks (for better throughput) while penalizing non-interactive
+tasks by lowering their priorities. All the calculations to determine the
+interactivity of tasks are complex and subject to potential
+miscalculations, causing non-interactive behavior from an interactive process.
+</p><p>
+As I explain later in this article, CFS is free from any such
+calculations and just tries to be “fair” to every task running in
+the system.
+</p></div><div xml:lang="en" lang="en"><div><a></a>
+Completely Fair Scheduler</div><p>
+According to Ingo Molnar, the author of the CFS, its core design can
+be summed up in single sentence: “CFS basically models an 'ideal, precise
+multitasking CPU' on real hardware.”
+</p><p>
+Let's try to understand what “ideal, precise, multitasking CPU” means,
+as the CFS
+tries to emulate this CPU. An “ideal, precise, multitasking
+CPU”
+is a hardware CPU that can run multiple processes at the same time (in
+parallel), giving each process an equal share of processor power (not time, but power).
+If a single process is running, it would receive 100% of the processor's
+power. With two processes, each would have exactly 50% of the physical
+power (in parallel). Similarly, with four processes running, each would get
+precisely 25% of physical CPU power in parallel and so on. Therefore, this
+CPU would be “fair” to all the tasks running in the system
+(Figure 1).
+</p><div><a href="https://www.linuxjournal.com/files/linuxjournal.com/linuxjournal/articles/102/10267/10267f1.jpg"><img src="10267f1.inline.jpg"></a><div><p>
+Figure 1. Ideal, Precise, Multitasking CPU
+</p></div></div><p>
+Obviously, this ideal CPU is nonexistent, but the CFS tries to
+emulate such a processor in software. On an actual real-world
+processor, only one task can be allocated to a CPU at a particular time.
+Therefore, all other tasks wait during this period. So, while the
+currently running task gets 100% of the CPU power, all other tasks get 0%
+of the CPU power. This is obviously not fair (Figure 2).
+</p><div><a href="https://www.linuxjournal.com/files/linuxjournal.com/linuxjournal/articles/102/10267/10267f2.jpg"><img src="10267f2.inline.jpg"></a><div><p>
+Figure 2. Actual Hardware CPU
+</p></div></div><p>
+The CFS tries to eliminate this unfairness from
+the system. The CFS tries
+to keep track of the fair share of the CPU that would have been
+available to each process in the system. So, CFS runs a fair clock
+at a fraction of real CPU clock speed. The fair
+clock's rate of increase is calculated by dividing the wall time (in
+nanoseconds) by the total
+number of processes waiting. The resulting value is the amount of CPU time
+to which each process is entitled.
+</p><p>
+As a process waits for the CPU, the scheduler
+tracks the amount of time it would have used on the ideal processor. This
+wait time, represented by the per-task wait_runtime variable, is used to rank
+processes for scheduling and to determine the amount of time the process is
+allowed to execute before being preempted. The process with the longest
+wait time (that is, with the gravest need of CPU) is picked by the scheduler
+and assigned to the CPU. When this process is running, its wait time
+decreases, while the time of other waiting tasks increases (as they were
+waiting). This essentially means that after some time, there will be
+another task with the largest wait time (in gravest need of the CPU), and
+the currently running task will be preempted. Using this principle,
+CFS tries to be fair to all tasks and always tries to have a
+system with zero wait time for each process—each process has an equal
+share of the CPU (something an “ideal, precise, multitasking CPU”
+would have done).
+</p></div>
+
+<div xml:lang="en" lang="en"><div><a></a>
+Kernel 2.6.23</div><p>
+In order for the CFS to emulate an “ideal, precise,
+multitasking CPU” by giving each runnable process an equal slice of
+execution time, CFS needs to have the following:
+</p><div><ol type="1"><li><p>
+A mechanism to calculate what the fair CPU share is per
+process. This is achieved by using a system-wide runqueue fair_clock
+variable (cfs_rq-&gt;fair_clock). This fair clock runs at a fraction of real
+time, so that it runs at the ideal pace for a single task when there are N
+runnable tasks in the system. For example, if you have four runnable tasks,
+fair_clock increases at one-fourth of the speed of wall time
+(which means 25% fair CPU power).
+</p></li><li><p>
+A mechanism to keep track of the time for which each process was waiting
+while the CPU was assigned to the currently running task. This wait time is
+accumulated in the per-process variable wait_runtime (process-&gt;wait_runtime).
+</p></li></ol></div></div><div xml:lang="en" lang="en"><div><a></a></div><div><p><b>
+Red-Black Tree (RBTree)</b></p><p>
+A red-black tree is a type of self-balancing binary search tree—a data
+structure typically used to implement associative arrays. It is complex,
+but it has good worst-case running time for its operations and is efficient in
+practice. It can search, insert and delete in O(log n) time, where n is
+the number of elements in the tree. In red-black trees, the leaf nodes are
+not relevant and do not contain data. These leaves need not be explicit in
+computer memory—a null child pointer can encode the fact that this child
+is a leaf—but it simplifies some algorithms for operating on red-black
+trees if the leaves really are explicit nodes. To save memory, sometimes a
+single sentinel node performs the role of all leaf nodes; all references
+from internal nodes to leaf nodes then point to the sentinel node.
+(Source: Wikipedia.)
+</p></div><p>
+CFS uses the fair clock and wait runtime to keep all the runnable tasks
+sorted by the rq-&gt;fair_clock - p-&gt;wait_runtime key in the rbtree (see
+the Red-Black Tree sidebar). So, the leftmost task in the tree is the one
+with the “gravest CPU
+need”, and CFS picks the leftmost task and sticks to it. As the system
+progresses forward, newly awakened tasks are put into the tree farther and
+farther to the right—slowly but surely giving every task a chance to
+become the leftmost task and, thus, get on the CPU within a deterministic
+amount of time.
+</p><p>
+Because of this simple design, CFS no longer uses active and expired arrays
+and dispensed with sophisticated heuristics to mark tasks as interactive
+versus non-interactive.
+</p><p>
+CFS implements priorities by using
+weighted tasks—each task is assigned a weight based
+on its static priority. So, while running, the task with lower weight
+(lower-priority) will see time elapse at a faster rate than that of a
+higher-priority task. This means its wait_runtime will exhaust more quickly
+than that of a higher-priority task, so lower-priority tasks will get less
+CPU time compared to higher-priority tasks.
+</p></div><div xml:lang="en" lang="en"><div><a></a>
+Kernel 2.6.24</div><p>
+CFS has been modified a bit further in 2.6.24. Although the basic
+concept of fairness remains, a few implementation details have changed.
+Now, instead of chasing the global fair clock (rq-&gt;fair_clock), tasks chase
+each other. A clock per task, vruntime, is introduced, and an approximated
+average is used to initialize this clock for new tasks. Each task tracks its
+runtime and is queued in the RBTree using this parameter. So, the task that has
+run least (the one that has the gravest CPU need) is the leftmost node of
+the RBTree and will be picked up by the scheduler.
+See Resources for more details about this implementation.
+</p><p>
+In kernel 2.6.24, another major addition to CFS is group
+scheduling. Plain CFS tries to be fair to all the tasks
+running in the system. For example, let's say there is a total of 25
+runnable processes in the system. CFS tries to be fair by
+allocating 4% of the CPU to all of them. However, let's say that out of these 25
+processes, 20 belong to user A while 5 belong to user B. User B is at
+an inherent disadvantage, as A is getting more CPU power than B. Group
+scheduling tries to eliminate this problem. It first tries to be fair to a
+group and then to individual tasks within that group. So CFS,
+with group scheduling enabled, will allocate 50% of the CPU to each user A
+and B. The allocated 50% share of A will be divided fairly among
+A's 20 tasks, while the other 50% of the CPU time will be distributed
+fairly among B's 5 tasks.
+</p></div><div xml:lang="en" lang="en"><div><a></a>
+Scheduling Classes/Modular Scheduler</div><p>
+With kernel 2.6.23, the Linux scheduler also has
+been made modular. Each
+scheduling policy (SCHED_FIFO, SCHED_RR, SCHED_OTHER and so on) can be
+implemented independently of the base scheduler code. This modularization
+is similar to object-oriented class hierarchies (Figure 3).
+</p><div><a href="https://www.linuxjournal.com/files/linuxjournal.com/linuxjournal/articles/102/10267/10267f3.jpg"><img src="10267f3.inline.jpg"></a><div><p>
+Figure 3. Modular Scheduler
+</p></div></div><p>
+The core scheduler does not need to be aware of the implementation
+details of the individual scheduling policies.
+In kernel 2.6.23, sched.c (the “scheduler” from older kernels) is divided
+into the following files to make the scheduler modular:
+</p><div><ul type="disc"><li><p>
+kernel/sched.c: contains the code of a generic scheduler, thereby
+exposing functions like sched(). The specific scheduling policy is
+implemented in a different file.
+</p></li><li><p>
+kernel/sched_fair.c: this is the main file that implements the CFS
+scheduler and provides the SCHED_NORMAL, SCHED_BATCH and SCHED_IDLE
+scheduling policies.
+</p></li><li><p>
+kernel/sched_rt.c: provides the SCHED_RR and SCHED_FIFO policies
+used by real-time (RT) threads.
+</p></li></ul></div><p>
+Each of these scheduling policies (fair and RT) registers its function
+pointers with the core scheduler. The core scheduler calls the appropriate
+scheduler (fair or RT),
+based on the scheduling policy of the particular process. As with the O(1)
+scheduler, real-time processes will have higher priority than normal processes.
+CFS mainly addresses non-real-time processes, and the RT scheduler remains
+more or less the same as before
+(except for a few changes as to how non-active/expired arrays are maintained).
+</p><p>
+With this new modular scheduler in place, people who want to write new
+schedulers for a particular policy can do so by simply registering these new
+policy functions with the core scheduler.
+</p></div>
+
+<div xml:lang="en" lang="en"><div><a></a>
+Summary</div><p>
+The CFS design is quite radical and innovative in its
+approach. Features like the modular scheduler ease the task of integrating
+new scheduler types to the core scheduler.
+</p></div><div xml:lang="en" lang="en"><div><a></a></div><div><p><b>
+Resources</b></p><p>
+Linux Kernel Source Code (2.6.23/2.6.24):
+sched-design-CFS.txt by Ingo Molnar
+</p><p>
+IBM Developer Works Article Multiprocessing with the Completely Fair
+Scheduler: <a href="http://kerneltrap.org/node/8059">kerneltrap.org/node/8059</a>
+</p><p>
+Blog Post Related to CFS: <a href="http://immike.net/blog/2007/08/01/what-is-the-completely-fair-scheduler">immike.net/blog/2007/08/01/what-is-the-completely-fair-scheduler</a>
+</p></div></div></div>
+<div><p>
+Chandandeep Singh Pabla works at STMicroelectronics. He has extensive
+experience in the development of embedded software for multimedia (DVD/STB)
+chipsets on multiple operating systems. He can be reached at
+<a href="mailto:chandandeep.pabla@st.com">chandandeep.pabla@st.com</a>.
+</p></div></div>
+      
+    <section class="section--disqus">
+    <a id="comments-link" class="btn btn-default" href="https://www.linuxjournal.com/node/10267#disqus_thread">Load Disqus comments</a>
+
+    <div id="disqus_thread"></div>
+  
+
+    
+</section>
+  </div>
+  
+    <div class="col-sm-3 bs-region bs-region--right">
+    
+            <div class="field field--name-dynamic-block-fieldnode-related-articles field--type-ds field--label-hidden field--item"><div class="views-element-container form-group"><div class="view view-related-content view-id-related_content view-display-id-block_1 js-view-dom-id-6ca9495e10c4a90f8251118243c03e2a0cc23c2b4b5ab6a3d2e23c4a0db55f7a">
+  
+    
+      <div class="view-header">
+      <h2>You May Like</h2>
+    </div>
+      
+      <div class="view-content">
+          <div class="views-row"><div class="views-field views-field-field-node-image"><div class="field-content">  <a href="https://www.linuxjournal.com/content/testing-models"><img src="binarydata50_1.jpg" alt="" typeof="foaf:Image" class="img-responsive" width="75" height="75">
+
+</a>
+</div></div><div class="views-field views-field-title"><span class="field-content"><a href="https://www.linuxjournal.com/content/testing-models" hreflang="und">Testing Models</a></span></div><div class="views-field views-field-uid"><span class="field-content"><a href="https://www.linuxjournal.com/users/reuven-m-lerner" hreflang="en">Reuven M. Lerner</a></span></div></div>
+    <div class="views-row"><div class="views-field views-field-field-node-image"><div class="field-content">  <a href="https://www.linuxjournal.com/content/moon-waxing-or-waning"><img src="moon-619124_640_0.jpg" alt="" typeof="foaf:Image" class="img-responsive" width="75" height="75">
+
+</a>
+</div></div><div class="views-field views-field-title"><span class="field-content"><a href="https://www.linuxjournal.com/content/moon-waxing-or-waning" hreflang="und">Is the Moon Waxing or Waning?</a></span></div><div class="views-field views-field-uid"><span class="field-content"><a href="https://www.linuxjournal.com/users/dave-taylor" hreflang="en">Dave Taylor</a></span></div></div>
+    <div class="views-row"><div class="views-field views-field-field-node-image"><div class="field-content">  <a href="https://www.linuxjournal.com/content/william-rothwell-and-nick-garners-certified-ethical-hacker-complete-video-course-pearson-it-"><img src="12150f5.jpg" alt="" typeof="foaf:Image" class="img-responsive" width="75" height="75">
+
+</a>
+</div></div><div class="views-field views-field-title"><span class="field-content"><a href="https://www.linuxjournal.com/content/william-rothwell-and-nick-garners-certified-ethical-hacker-complete-video-course-pearson-it-" hreflang="und">William Rothwell and Nick Garner's Certified Ethical Hacker Complete Video Course (Pearson IT Certification)</a></span></div><div class="views-field views-field-uid"><span class="field-content"><a href="https://www.linuxjournal.com/users/james-gray" hreflang="en">James Gray</a></span></div></div>
+    <div class="views-row"><div class="views-field views-field-field-node-image"><div class="field-content">  <a href="https://www.linuxjournal.com/content/flash-roms-raspberry-pi"><img src="11933f1.jpg" alt="" typeof="foaf:Image" class="img-responsive" width="75" height="75">
+
+</a>
+</div></div><div class="views-field views-field-title"><span class="field-content"><a href="https://www.linuxjournal.com/content/flash-roms-raspberry-pi" hreflang="und">Flash ROMs with a Raspberry Pi</a></span></div><div class="views-field views-field-uid"><span class="field-content"><a href="https://www.linuxjournal.com/users/kyle-rankin" hreflang="en">Kyle Rankin</a></span></div></div>
+
+    </div>
+  
+          </div>
+</div>
+</div>
+      
+  </div>
+  
+  
+</div>
+
+
+
+  </div>
+
+              </section>
+
+                </div>
+  </div>
+
+      <footer class="footer container" role="contentinfo">
+        <div class="region region-footer">
+    <section id="block-subscribebanner" class="block block-block-content block-block-contentc630d46a-fc08-4b5b-8e79-bc07b89a408f clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><a href="https://www.linuxjournal.com/subscribe"><picture> 
+<source media="all and (min-width: 768px)" data-entity-type="file" data-entity-uuid="bcd2e038-a112-47b9-a5d9-c976671caa8a" srcset="/sites/default/files/inline-images/Subwebbanner_0.jpg" 2x"="" type="image/jpeg"> 
+<source media="all and (max-width: 767px)" data-entity-type="file" data-entity-uuid="4b321af7-6624-4796-aa42-699d449c5093" srcset="/sites/default/files/inline-images/Mobile-subs_0.png" 1x"="" type="image/jpeg"> 
+<img alt="Subscribe to Linux Journal's Digital Edition. Join a community with a deep appreciation for open source philosophies, digital freedoms, and privacy." data-entity-type="file" data-entity-uuid="bcd2e038-a112-47b9-a5d9-c976671caa8a" src="subwebbanner_0.jpg"> 
+</picture></a></div>
+      
+  </section>
+
+
+  </div>
+
+      		<div class="footer-blocks col-sm-12">
+                <div class="col-md-6 col-sm-12 footer-left">
+                        <div class="region region-footer-left">
+    <section id="block-connectwithusfooter" class="block block-block-content block-block-content5e722bd4-5e08-454b-8507-956089bfa661 clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><div class="footer-heading">Connect With Us <span class="social-media"><a href="https://youtube.com/linuxjournalonline" alt="Linux Journal on YouTube"><i class="fa fa-youtube fa-2x"></i></a><a href="https://www.facebook.com/linuxjournal/" alt="Linux Journal on Facebook"><i class="fa fa-facebook-f fa-2x"></i></a><a href="https://twitter.com/linuxjournal" alt="Linux Journal on Twitter"><i class="fa fa-twitter fa-2x"></i></a></span></div>
+
+<p>Linux Journal, currently celebrating its 24th year of publication, is the original magazine of the global Open Source community.</p></div>
+      
+  </section>
+
+<section id="block-linuxjournal-block-9" class="block block-block-content block-block-content8669793b-e217-4426-a79e-eb3c21ede127 clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><div id="copyright">© 2018 Linux Journal, LLC. All rights reserved.</div>
+</div>
+      
+  </section>
+
+<nav role="navigation" aria-labelledby="block-footersubmenu-menu" id="block-footersubmenu">
+            
+  <h2 class="visually-hidden" id="block-footersubmenu-menu">Footer Submenu</h2>
+  
+
+        
+      <ul class="menu menu--footer-submenu nav">
+                        <li>
+        <a href="https://www.linuxjournal.com/content/privacy-statement" data-drupal-link-system-path="node/1000321">Privacy Policy</a>
+                  </li>
+                        <li>
+        <a href="https://www.linuxjournal.com/terms-service" data-drupal-link-system-path="node/1339804">Terms of Service</a>
+                  </li>
+                        <li>
+        <a href="https://www.linuxjournal.com/sponsors" data-drupal-link-system-path="node/1339742">Advertise</a>
+                  </li>
+        </ul>
+  
+
+  </nav>
+
+  </div>
+
+                  </div>
+        
+        		<div class="col-md-4 col-sm-8 footer-middle">
+                        <div class="region region-footer-middle">
+    <nav role="navigation" aria-labelledby="block-footermenucolumn1-menu" id="block-footermenucolumn1">
+            
+  <h2 class="visually-hidden" id="block-footermenucolumn1-menu">Footer Menu Column 1</h2>
+  
+
+        
+      <ul class="menu menu--footer-menu-column-1 nav">
+                        <li>
+        <a href="https://www.linuxjournal.com/subscribe">Subscribe</a>
+                  </li>
+                        <li>
+        <a href="https://www.linuxjournal.com/renew">Renew</a>
+                  </li>
+                        <li>
+        <a href="https://www.linuxjournal.com/digital">Backissues</a>
+                  </li>
+                        <li>
+        <a href="https://www.linuxjournal.com/subs/customer_service" data-drupal-link-system-path="node/1009253">Customer Service</a>
+                  </li>
+        </ul>
+  
+
+  </nav>
+<nav role="navigation" aria-labelledby="block-footermenucolumn2-menu" id="block-footermenucolumn2">
+            
+  <h2 class="visually-hidden" id="block-footermenucolumn2-menu">Footer Menu Column 2</h2>
+  
+
+        
+      <ul class="menu menu--footer-menu-column-2 nav">
+                        <li>
+        <a href="https://www.linuxjournal.com/content/masthead" data-drupal-link-system-path="node/1007727">Masthead</a>
+                  </li>
+                        <li>
+        <a href="https://www.linuxjournal.com/content/linux-journal-20-faq" data-drupal-link-system-path="node/1339633">FAQ</a>
+                  </li>
+                        <li>
+        <a href="https://www.linuxjournal.com/author" data-drupal-link-system-path="node/1009249">Authors</a>
+                  </li>
+                        <li>
+        <a href="https://www.linuxjournal.com/contact" data-drupal-link-system-path="contact">Letters to Editor</a>
+                  </li>
+        </ul>
+  
+
+  </nav>
+<nav role="navigation" aria-labelledby="block-footermenucolumn3-menu" id="block-footermenucolumn3">
+            
+  <h2 class="visually-hidden" id="block-footermenucolumn3-menu">Footer Menu Column 3</h2>
+  
+
+        
+      <ul class="menu menu--footer-menu-column-3 nav">
+                        <li>
+        <a href="https://www.linuxjournal.com/rss_feeds" data-drupal-link-system-path="node/1000457">RSS Feeds</a>
+                  </li>
+                        <li>
+        <a href="https://www.linuxjournal.com/enewsletters" data-drupal-link-system-path="node/1007818">Newsletters</a>
+                  </li>
+                        <li>
+        <a href="http://www.linuxjournalstore.com/">Merchandise</a>
+                  </li>
+                        <li>
+        <a href="https://www.linuxjournal.com/aboutus" data-drupal-link-system-path="node/1000267">Contact Us</a>
+                  </li>
+        </ul>
+  
+
+  </nav>
+
+  </div>
+
+                  </div>
+        
+                <div class="col-md-2 col-sm-4 footer-right">
+                        <div class="region region-footer-right">
+    <section id="block-poweredbypiafooter" class="block block-block-content block-block-contente8212bd8-8d73-432d-bae8-4048739fc08f clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><p>Powered by</p>
+
+<p><a href="http://www.privateinternetaccess.com/pages/buy-vpn/linuxjournal"><img alt="Powered by Private Internet Access" data-entity-type="file" data-entity-uuid="0fecf230-9d20-41c1-bf85-59e5eed64f2e" src="pia-logo-black.jpg"></a></p></div>
+      
+  </section>
+
+
+  </div>
+
+                  </div>
+                </div>
+    </footer>
+  
+</div> 
+  </div>
+
+    
+    
+
+
+
+
+    <!-- START EMBED -->
+
+<!-- END EMBED -->
+  
+
+<div style="position: absolute; margin: 0px; padding: 0px; border: 0px none; height: 0px; width: 0px; overflow: hidden;"><a aria-hidden="true"></a><button aria-hidden="true"></button><input aria-hidden="true" value=""></div></body>
+</html>

@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    <link rel="canonical" href="http://blog.csdn.net/hn_lgc/article/details/53963627"> 
+    
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    <meta name="description" content="有两种方式，使用Android.mk构建文件和不使用的，
+不使用Android.mk的：
+首先配置好ndk工具，通过sdk manager下载即可，比较简单，这里略过。
+1、首先声明native方法在某个类中：
+
+public native String stringFromeJni();
+2、点击build下面构建或make project，生成内点的.class文件
+
+3、接着">
+    <meta name="keywords" content="android,ndk">
+    <meta http-equiv="Cache-Control" content="no-siteapp"><link rel="alternate" media="handheld" href="http://blog.csdn.net/hn_lgc/article/details/53963627#">
+    <meta name="shenma-site-verification" content="5a59773ab8077d4a62bf469ab966a63b_1497598848">
+    
+    
+    <!-- adhoc sdk -->
+       
+       
+                 <!-- adhoc sdk end -->
+    <title>Android Studio的gradle下配置ndk，jni - CSDN博客</title>
+
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body><div id="BAIDU_DUP_fp_wrapper" style="position: absolute; left: -1px; bottom: -1px; z-index: 0; width: 0px; height: 0px; overflow: hidden; visibility: hidden; display: none;"><iframe id="BAIDU_DUP_fp_iframe" src="index_1.html" style="width: 0px; height: 0px; visibility: hidden; display: none;"></iframe></div>
+
+<div class="container clearfix">
+  <main>
+    <article>
+        <h1 class="csdn_top">Android Studio的gradle下配置ndk，jni</h1>
+        <div class="article_bar clearfix">
+            <div class="artical_tag">
+                <span class="original">
+                原创                </span>
+                <span class="time">2017年01月01日 06:05:15</span>
+            </div>
+
+            <ul class="article_tags clearfix csdn-tracking-statistics" data-mod="popu_377">
+                <li class="tit">标签：</li>
+
+<!--          [startarticletags]-->
+                                                            <li><a href="http://so.csdn.net/so/search/s.do?q=android&amp;t=blog" target="_top">android</a> <span>/</span></li>
+                                            <li><a href="http://so.csdn.net/so/search/s.do?q=ndk&amp;t=blog" target="_top">ndk</a> <span>/</span></li>
+                                            <li><a href="http://so.csdn.net/so/search/s.do?q=jni&amp;t=blog" target="_top">jni</a> <span>/</span></li>
+                                    <!--          [endarticletags]-->
+            </ul>
+            <ul class="right_bar">
+                <li><button class="btn-noborder"><i class="icon iconfont icon-read"></i><span class="txt">3317</span></button></li>
+<!--                <li><button class="btn-noborder but-comment-topicon"><i class="icon iconfont icon-pinglun"></i><span class="txt">--><!--</span></button></li>-->
+<!--                <li><button class="btn-noborder btn-like"><i  class="icon iconfont icon-xihuan-"></i><span class="txt">--><!--</span></button></li>-->
+                <li class="edit">
+                    <a class="btn-noborder" href="http://blog.csdn.net/hn_lgc/article/details/53963627">
+                        <i class="icon iconfont icon-bianji"></i><span class="txt">编辑</span>
+                    </a>
+                </li>
+                <li class="del">
+                    <a class="btn-noborder" onclick="javascript:deleteArticle(fileName);return false;">
+                        <i class="icon iconfont icon-shanchu"></i><span class="txt">删除</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div id="article_content" class="article_content csdn-tracking-statistics" data-mod="popu_519" data-dsm="post">
+                        
+<p style="text-align: center;"><span style="white-space: pre;"></span><strong><span style="font-size: 24px;">Android Studio的gradle下配置ndk，jni</span></strong><br>
+</p>
+<p style="text-align: center;"><strong><span style="font-size: 24px;"><br>
+</span></strong></p>
+<p>有三种种方式，使用目前最新的CMake方式，使用ndk-build也就是Android.mk构建文件，还有只使用gradle简单配置的。</p>
+<p>而目前Android Studio对CMake的支持要好得多，配置实际上更简单了，最重要的是使用cmake是支持断点调试的，并且可以使用Android Studio的智能代码提示和各种编辑功能。</p>
+<p>这样native开发效率可以提升数倍，而另外的方式是不行的，所以基本上建议新的项目放弃其他方式，使用cmake。但有个小问题是目前网上资料少，遇到问题解决可能麻烦一些。</p>
+<p><strong><span style="font-size: 24px;">使用CMake：</span></strong></p>
+<p>分两种情况，新项目中使用，以及在旧项目中添加CMake支持：</p>
+<p>官网上有相应的教程，是汉化版，操作并不太复杂，可以直接看。</p>
+<p>https://developer.android.com/studio/projects/add-native-code.html<br>
+</p>
+<p>然后根据上面教程去学会几个Android Studio下cmake的常用命令，下面也有按自己的理解的介绍，只有几种，记住就好了，不会花太多时间。</p>
+<p><br>
+</p>
+<p>另外想要进行NDK开发，最好要通过官网或其他途径了解native开发的相关知识，比如.a,.so库，ABI等等，以及JNI开发的一些知识。</p>
+<p>（书籍《Android &nbsp;C++使用NDK.pdf》，书中Android.mk、工具使用等的知识不用看）不然很难入手。</p>
+<p><br>
+</p>
+<p><strong>1、关于CMake：</strong>先对cmake有个基本的了解，用起来会更有底气一些。因为目前在不同的平台上有不同的make工具，GNU &nbsp;Make，QT 的qmake，微软的msnMake等，一个库或代码项目如果想要在不同的平台上运行的话，就要针对不同的平台分别创建make脚本，然后分别make一次，而CMake就是为了解决这种繁琐的操作。为着跨平台而生的，编写好cmake的脚本后，他就会自动的为你生成不同平台的makefile，然后自动的make。</p>
+<p>cmake的构建脚本就叫做CMakeList.txt,它的语法十分的简单：有命令，注释，空格组成。而命令有命令名称，小括号及参数组成。</p>
+<p>命令有很多，基本命令是 cmake_minimum_required(VERSION x)表明最小的版本。</p>
+<p><strong>2、cmake下面一些具体的操作：</strong></p>
+<p></p>
+<pre style="background-color: rgb(43, 43, 43); color: rgb(169, 183, 198); font-family: &quot;宋体&quot;; font-size: 10.5pt;">set(pathToProject F:\\androidProject\\BaoZouPTu)</pre>
+将项目目录放到一个方便的变量中，也可以不写，使用的时候直接写。
+<p></p>
+<p></p>
+<pre style="background-color: rgb(43, 43, 43); color: rgb(169, 183, 198); font-family: &quot;宋体&quot;; font-size: 10.5pt;">#支持-std=gnu++11
+set(CMAKE_VERBOSE_MAKEFILE on)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")</pre>
+支持的C++的标准，这个要写上，不然一些C++的API比如STL中可能就无法使用
+<p></p>
+<p></p>
+<pre style="background-color: rgb(43, 43, 43); color: rgb(169, 183, 198); font-family: &quot;宋体&quot;; font-size: 10.5pt;">add_library(imageSynthesis SHARED
+                    ImageSynthesis.cpp
+                    NewColorTransfer.cpp
+                    MyUtil.cpp
+                    edgeBlur.cpp
+ )
+</pre>
+<p></p>
+<p>将自己写的源文件编译到一个库比如imageSynthsis中，类型为共享库，这里注意所有用到的源文件都必须编译 到库中，头文件不用写进去。然后可以有多个库，后面连接起来就行了。</p>
+<p></p>
+<pre style="background-color: rgb(43, 43, 43); color: rgb(169, 183, 198); font-family: &quot;宋体&quot;; font-size: 10.5pt;">target_link_libraries(imageSynthesis log android -ljnigraphics lib_opencv)</pre>
+将自己生成的库，系统的库链接到目标上。
+<p></p>
+<p>加入第三方的库，这里以OpenCv为例：</p>
+<p></p>
+<pre style="background-color: rgb(43, 43, 43); color: rgb(169, 183, 198); font-family: &quot;宋体&quot;; font-size: 10.5pt;">#配置加载native依赖
+include_directories(${pathToOpenCv}/sdk/native/jni/include)
+#动态方式加载
+add_library(lib_opencv STATIC IMPORTED )
+#引入libopencv_java3.so文件
+set_target_properties(lib_opencv
+                       PROPERTIES
+                       IMPORTED_LOCATION ${pathToProject}/app/src/main/jniLibs/${ANDROID_ABI}/libopencv_java3.so
+                       )
+</pre>
+第一条命令包含库的头文件目录，
+<p></p>
+<p>第二条命令 指定库名称；导入方式，这里注意 静态导入和动态导入区别：静态导入静态库时是将库里面的内容抠出来放到你的库中去，而另外三种则不会，他们会直接将库赋值到你的apk中，这可能到值体积过大。然后import表明是导入的库，而不是用源文件创建的库，在下一条命令导入</p>
+<p>第三条命令 属性和导入需要的库的绝对路径，.so或.a都可以。第二个参数表示选取的哭的属性，不如如果导入的目录下有多个ABI对应的库，这里可以指定只导入哪些ABI种类的；然后根据头文件就可以在代码中使用了。</p>
+<p>这里关于静态动态，体积的控制还有些需要探究的地方。</p>
+<p><strong>3、控制ABI的话：</strong></p>
+<p>需要在gradle中去配置：defaultconfig节点下面用它进行配置，貌似不能在cmake相关的地方控制</p>
+<p></p>
+<pre style="background-color: rgb(43, 43, 43); color: rgb(169, 183, 198); font-family: &quot;宋体&quot;; font-size: 10.5pt;">ndk {
+    <span style="color: rgb(128, 128, 128);">// Specifies the ABI configurations of your native
+</span><span style="color: rgb(128, 128, 128);">    // libraries Gradle should build and package with your APK.
+</span><span style="color: rgb(128, 128, 128);">    </span>abiFilters <span style="color: rgb(106, 135, 89);">'armeabi'
+</span>}</pre>
+<br>
+<p></p>
+<p><br>
+</p>
+<p><strong><span style="font-size: 18px;">使用CMmake时的一到库中些坑：</span></strong></p>
+<p>（1）当编写了在Java代码中定义了一个本地native方法，然后快捷键让Android Studio自动生成native方法的实现时（CMake的优势），此方法要在外部调用，必须在方法前面加上一句</p>
+<pre style="background-color: rgb(43, 43, 43); color: rgb(169, 183, 198); font-family: &quot;宋体&quot;; font-size: 10.5pt;"><span style="color: rgb(204, 120, 50);"><strong>extern </strong></span><span style="color: rgb(106, 135, 89);">"C"</span></pre>
+<p></p>
+<p>而Android Studio自动生成的方法是不会添加的，运行起来就是找不到实现。</p>
+<p>当时遇到这个问题也是困惑了大半天，愣是找不出问题，想着自动生成的方法明明在那儿，怎么会没有实现呢，后来通过直接new 一个C++项目仔细看了不同才知道，这是目前 版本的一个坑吧，所以生成之后要自己手动在前面加上那句话。</p>
+<p>（2）导入系统的库的时候，native的bitmap相关的api，头文件叫bitmap.h，然而并没有对应的bimap.x的库，它被包含在</p>
+<pre style="background-color: rgb(43, 43, 43); color: rgb(169, 183, 198); font-family: 宋体; font-size: 10.5pt;">-ljnigraphics</pre>
+<p></p>
+<p>中，所以在target_link_libraries的时候要链接上它，否则相关的api无法使用。</p>
+<p>（3）初期开发过程中一定严格按照步骤来，不然因为不太了解，编译过程中出了什么问题要找半天，很费时间。出现问题时仔细看请错误提示，对解决很有帮助的。</p>
+<p>（4）然后就是C++的知识了，尤其是指针和引用的区别等，使用是我就经常遇到这两个没弄清半天找不出错误的情况。</p>
+<p><br>
+</p>
+<p><strong><span style="font-size: 18px;">Android.mk以及纯使用gradle的</span></strong></p>
+<p>（不推荐使用）</p>
+<p><strong>一、gradle中简单配置的：</strong></p>
+<p>首先配置好ndk工具，通过sdk manager下载即可，比较简单，这里略过。</p>
+<p>1、首先声明native方法在某个类中：<br>
+</p>
+<pre style="background-color: rgb(43, 43, 43); color: rgb(169, 183, 198); font-family: &quot;宋体&quot;; font-size: 10.5pt;"><span style="color: rgb(204, 120, 50);">public native </span>String <span style="color: rgb(255, 198, 109);">stringFromeJni</span>()<span style="color: rgb(204, 120, 50);">;</span></pre>
+2、点击build下面构建或make project，生成内点的.class文件
+<p></p>
+<p>3、<span style="color: rgb(54, 46, 43); font-family: Arial; font-size: 18px;">接着在Android Studio的terminate</span><span style="color: rgb(54, 46, 43); font-family: Arial; font-size: 18px;">终端cd 转到src/main/java文件夹下面</span></p>
+<p><span style="color: rgb(54, 46, 43); font-family: Arial; font-size: 18px;">输入 &nbsp;</span><span style="font-size: 14px; color: rgb(51, 51, 51); font-family: arial,宋体,sans-serif; line-height: 28px;"><span style="font-size: 24px;">javah&nbsp;-d&nbsp;../jni &lt;包名&gt;.&lt;所在类的类名&gt; &nbsp;回车</span></span></p>
+<p>Javah系统会自动生成头文件，在jni目录下面。</p>
+<p>（注意如果代码中包含中文，可能出现这个问题“错误: 编码UTF-8的不可映射字符”</p>
+<p>这时在刚才的命令行中加入字符集指定</p>
+<p>javah -d ../jni &nbsp;-encoding UTF-8 &nbsp;a.baozouptu.ptu.tietu.pictureSynthesis.PictureSynthesis</p>
+<p>&nbsp;UTF-8 这个字符集是Android Studio右下角指明的，如果还不行的话，点击右下角转换其它字符集，再加到命令行中尝试<br>
+</p>
+<p>最后不行的话先去注释掉中文，生成头文件之后在加入之）</p>
+<p><img src="53963627" alt=""><br>
+</p>
+<p>4、新建c源文件，然后复制头文件名作文新建c源文件的头文件库</p>
+<p></p>
+<pre style="background-color: rgb(43, 43, 43); color: rgb(169, 183, 198); font-family: &quot;宋体&quot;; font-size: 10.5pt;"><span style="color: rgb(187, 181, 41);">#include</span><span style="color: rgb(106, 135, 89);"> &lt;com_lgc_ndklearning_MainActivity.h&gt;
+</span><span style="color: rgb(106, 135, 89);">
+</span><span style="color: rgb(106, 135, 89);">
+</span><span style="color: rgb(106, 135, 89);">
+</span>JNIEXPORT jstring JNICALL Java_com_lgc_ndklearning_MainActivity_stringFromeJni
+  (JNIEnv *env<span style="color: rgb(204, 120, 50);">, </span>jobject)
+  {
+  <span style="color: rgb(204, 120, 50);"><strong>return </strong></span>env-&gt;NewStringUTF(<span style="color: rgb(106, 135, 89);">"hello jni"</span>)<span style="color: rgb(204, 120, 50);">;
+</span><span style="color: rgb(204, 120, 50);">  </span>}
+
+</pre>
+在里面写上代码。
+<p></p>
+<p>6、配置gradle</p>
+<p><span style="font-family: 宋体; color: rgb(204, 120, 50);"><span style="font-size: 14px; white-space: pre;">在module的defaultConfig节点下面加上如下，指定abi，库的名称等</span></span><br>
+</p>
+<pre style="background-color: rgb(43, 43, 43); color: rgb(169, 183, 198); font-family: &quot;宋体&quot;; font-size: 10.5pt;">ndk{
+    <span style="color: rgb(152, 118, 170);">moduleName </span><span style="color: rgb(106, 135, 89);">"jnilib"
+</span><span style="color: rgb(106, 135, 89);">    </span>ldLibs <span style="color: rgb(106, 135, 89);">"log"</span>,<span style="color: rgb(106, 135, 89);">"z"</span>,<span style="color: rgb(106, 135, 89);">"m"
+</span><span style="color: rgb(106, 135, 89);">    </span>abiFilters <span style="color: rgb(106, 135, 89);">"armeabi"</span>,<span style="color: rgb(106, 135, 89);">"armeabi-v7a"
+</span>}</pre>
+7、最后在gradle.properties文件末尾加上一句
+<p></p>
+<p></p>
+<pre style="background-color: rgb(43, 43, 43); color: rgb(169, 183, 198); font-family: &quot;宋体&quot;; font-size: 10.5pt;"><span style="color: rgb(204, 120, 50);">android.useDeprecatedNdk</span><span style="color: rgb(128, 128, 128);">=</span><span style="color: rgb(106, 135, 89);">true</span></pre>
+8、使用这个native方法前，使用<span style="font-family: 宋体; color: rgb(204, 120, 50);"><span style="font-size: 14px; white-space: pre;">如下</span></span><br>
+<pre style="background-color: rgb(43, 43, 43); color: rgb(169, 183, 198); font-family: &quot;宋体&quot;; font-size: 10.5pt;"><span style="color: rgb(204, 120, 50);">static </span>{
+    System.<span style="font-style: italic;">loadLibrary</span>(<span style="color: rgb(106, 135, 89);">"hello-jni"</span>)<span style="color: rgb(204, 120, 50);">;
+</span>}</pre>
+加载共享库。
+<p></p>
+<p>方法这样整个配置就完成了，上面的函数可以当做一般的方法调用的。</p>
+<p><strong><br>
+</strong></p>
+<p><strong>二、使用Android.mk文件。</strong></p>
+<p>使用Android.mk文件时，其他可以不变，需要改动的就两个地方</p>
+<p>首先gradle删除第一种方式添加的ndk节点，添加如下内容,在defaultConfig节点后面</p>
+<p>前面的必须删除，因为两种方式是冲突的，如果不是会出现很难处理的问题。</p>
+<p></p>
+<pre style="background-color: rgb(43, 43, 43); color: rgb(169, 183, 198); font-family: &quot;宋体&quot;; font-size: 10.5pt;"><pre style="background-color: rgb(43, 43, 43); color: rgb(169, 183, 198); font-family: &quot;宋体&quot;; font-size: 10.5pt;">    <span style="color: rgb(128, 128, 128);">/*  ndk{
+</span><span style="color: rgb(128, 128, 128);">          moduleName "jnilib"
+</span><span style="color: rgb(128, 128, 128);">          ldLibs "log","z","m"
+</span><span style="color: rgb(128, 128, 128);">          abiFilters "armeabi","armeabi-v7a"
+</span><span style="color: rgb(128, 128, 128);">      }*/
+</span>}
+sourceSets.<span style="color: rgb(106, 135, 89);">main </span>{
+    jni.srcDirs = []
+}
+task ndkBuild(<span style="color: rgb(106, 135, 89);">type</span>: Exec, <span style="color: rgb(106, 135, 89);">description</span>: <span style="color: rgb(106, 135, 89);">'Compile JNI source via NDK'</span>) {
+    commandLine <span style="color: rgb(106, 135, 89);">'F:</span><span style="color: rgb(204, 120, 50);">\\</span><span style="color: rgb(106, 135, 89);">Android</span><span style="color: rgb(204, 120, 50);">\\</span><span style="color: rgb(106, 135, 89);">sdk</span><span style="color: rgb(204, 120, 50);">\\</span><span style="color: rgb(106, 135, 89);">ndk-bundle</span><span style="color: rgb(204, 120, 50);">\\</span><span style="color: rgb(106, 135, 89);">ndk-build.cmd'</span>,<span style="color: rgb(128, 128, 128);">//这里本地ndk的路径
+</span><span style="color: rgb(128, 128, 128);">            </span><span style="color: rgb(106, 135, 89);">'NDK_PROJECT_PATH=build/intermediates/ndk'</span>,
+            <span style="color: rgb(106, 135, 89);">'NDK_LIBS_OUT=src/main/jniLibs'</span>,
+            <span style="color: rgb(106, 135, 89);">'APP_BUILD_SCRIPT=src/main/jni/Android.mk',
+</span><span style="color: rgb(106, 135, 89);">            'NDK_APPLICATION_MK=src/main/jni/Application.mk'
+</span>}
+<span style="color: rgb(152, 118, 170);">tasks</span>.withType(JavaCompile){
+    compileTask-&gt;compileTask.dependsOn ndkBuild
+}
+</pre></pre>
+<br>
+<p></p>
+<p>2.让后在生成的jni目录下面新建Android.mk文件和Application.mk两个文件，添加如下内容</p>
+<p>Android.mk</p>
+<p></p>
+<pre style="background-color: rgb(43, 43, 43); color: rgb(169, 183, 198); font-family: &quot;宋体&quot;; font-size: 10.5pt;">LOCAL_PATH :=$(call my-dir)
+include $(CLEAR_VARS)
+LOCAL_MODULE :=hello-jni    生成的so库的名称
+LOCAL_SRC_FILES :=com_lgc_ndklearning_MainActivity.cpp  源文件名
+include $(BUILD_SHARED_LIBRARY)</pre>
+Application.mk&nbsp;
+<p></p>
+<p></p>
+<pre style="background-color: rgb(43, 43, 43); color: rgb(169, 183, 198); font-family: &quot;宋体&quot;; font-size: 10.5pt;">APP_ABI :=armeabi armeabi-v7a</pre>
+指定一下abi版本
+<p></p>
+<p>这样就行了</p>
+                    </div>
+    </article>
+      <div class="readall_box csdn-tracking-statistics" data-mod="popu_376">
+          <div class="read_more_mask"></div>
+          <a class="btn btn-large btn-gray-fred read_more_btn" target="_self">阅读全文</a>
+      </div>
+      <div class="article_copyright">
+              </div>
+      <ul class="article_collect clearfix csdn-tracking-statistics" data-mod="popu_378">
+          <li class="tit">本文已收录于以下专栏：</li>
+<!--          [startarticlecolumns]-->
+                                <!--          [endarticlecolumns]-->
+      </ul>
+      <div class="comment_box clearfix">
+          <div id="comment_form">
+              <div id="commentsbmitarear">
+                              </div>
+          </div>
+      </div>
+      <div class="comment_li_outbox">
+          <div id="comment_list"></div>
+      </div>
+
+      <div class="more_comment">
+          <div id="comment_bar" class="trackgin-ad" data-mod="popu_385"></div>
+      </div>
+
+      <h3 class="recommend_tit">相关文章推荐</h3>
+      <div class="recommend_list clearfix">
+                                                                                                                  <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                          <dd>
+                              <h2><a href="http://blog.csdn.net/sbsujjbcy/article/details/48469569" target="_top" strategy="BlogCommendFromBaidu_0">Android Studio使用新的Gradle构建工具配置NDK环境</a></h2>
+                              <div class="summary">
+                                  从Android Studio 1.3 Beta1开始，就支持了NDK。不过使用的是一个全新的实验性的gradle构建工具。官方地址http://tools.android.com/tech-docs...                              </div>
+                              <ul>
+                                  <li class="avatar_img"><a href="http://blog.csdn.net/sbsujjbcy" target="_top" strategy="BlogCommendFromBaidu_0"><img src="3_sbsujjbcy.jpg" alt="sbsujjbcy" title="sbsujjbcy"></a></li>
+                                  <li class="user_name"><a href="http://blog.csdn.net/sbsujjbcy">sbsujjbcy</a></li>
+                                  <li class="time">2015年09月15日 16:33</li>
+                                  <li class="visited_num"><i class="icon iconfont icon-read"></i><span>30955</span></li>
+                              </ul>
+                          </dd>
+                      </dl>
+                                                                                                                                <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                          <dd>
+                              <h2><a href="http://blog.csdn.net/jasonwang18/article/details/55504906" target="_top" strategy="BlogCommendFromBaidu_1">Android Studio使用新的Gradle构建工具配置NDK环境（三）</a></h2>
+                              <div class="summary">
+                                  上篇我们分析了如何采用gradle脚本就行ndk交叉编译，本篇我们将讨论如何用Android studio最新的cmake体系来进行Android ndk的交叉编译。
+
+
+CMake是一个跨平台的安装...                              </div>
+                              <ul>
+                                  <li class="avatar_img"><a href="http://blog.csdn.net/jasonwang18" target="_top" strategy="BlogCommendFromBaidu_1"><img src="3_jasonwang18.jpg" alt="jasonwang18" title="jasonwang18"></a></li>
+                                  <li class="user_name"><a href="http://blog.csdn.net/jasonwang18">jasonwang18</a></li>
+                                  <li class="time">2017年02月17日 10:07</li>
+                                  <li class="visited_num"><i class="icon iconfont icon-read"></i><span>2724</span></li>
+                              </ul>
+                          </dd>
+                      </dl>
+                                                                                                              <div id="_rju89r3ji4o"></div><a href="http://www.baidu.com/cb.php?c=IgF_pyfqnHmknjnvPjc0IZ0qnfK9ujYzP1ndPWb10Aw-5Hc3rHnYnHb0TAq15HfLPWRznjb0T1YYPyP9mHF-rHTdPjf3ny7b0AwY5HDdnHDkPH6sPWD0IgF_5y9YIZ0lQzq-uZR8mLPbUB48ugfEIAqspynETZ-YpAq8nWqdIAdxTvqdThP-5yF_UvTkn0KzujYk0AFV5H00TZcqn0KdpyfqnHRLPjnvnfKEpyfqnHc4rj6kP0KWpyfqP1cvrHnz0AqLUWYs0ZK45HcsP6KWThnqnH64Pj6" target="_top">
+	<dl class="clearfix csdn-tracking-statistics" data-mod="popu_393">
+		<dt><img class="maxwidth" src="0f0000amsxjrrz6gpolka0.jpg" alt="" title=""></dt>
+		<dd>
+			<div class="summary">
+				<h2>Python这么牛逼的原因竟然是？</h2>  <div class="summary">码农圈金句「学完 Python,可以上天」，为什么80%的人都要选择Python? 这么火的背后，他们是这么说的...</div> 
+			</div>
+		</dd>
+	</dl>
+</a>
+                                                                                <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                          <dd>
+                              <h2><a href="http://blog.csdn.net/XXOOYC/article/details/48523669" target="_top" strategy="BlogCommendFromBaidu_2">gradle编译ndk失败</a></h2>
+                              <div class="summary">
+                                  将Eclipse Project移到Android Studio中，遇到很多问题。
+
+
+问题1：我的Application.mk中申明了只编译ARM 32位，移过去却发现在编译ARM 64，于是Fai...                              </div>
+                              <ul>
+                                  <li class="avatar_img"><a href="http://blog.csdn.net/XXOOYC" target="_top" strategy="BlogCommendFromBaidu_2"><img src="3_xxooyc.jpg" alt="XXOOYC" title="XXOOYC"></a></li>
+                                  <li class="user_name"><a href="http://blog.csdn.net/XXOOYC">XXOOYC</a></li>
+                                  <li class="time">2015年09月17日 16:34</li>
+                                  <li class="visited_num"><i class="icon iconfont icon-read"></i><span>765</span></li>
+                              </ul>
+                          </dd>
+                      </dl>
+                                                                                                                                <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                          <dd>
+                              <h2><a href="http://blog.csdn.net/a396901990/article/details/51922182" target="_top" strategy="BlogCommendFromBaidu_3">NDK开发－Android Studio+gradle-experimental开发ndk</a></h2>
+                              <div class="summary">
+                                  NDK开发－Android Studio+gradle-experimental开发ndk                              </div>
+                              <ul>
+                                  <li class="avatar_img"><a href="http://blog.csdn.net/a396901990" target="_top" strategy="BlogCommendFromBaidu_3"><img src="3_a396901990.jpg" alt="a396901990" title="a396901990"></a></li>
+                                  <li class="user_name"><a href="http://blog.csdn.net/a396901990">a396901990</a></li>
+                                  <li class="time">2016年08月01日 10:14</li>
+                                  <li class="visited_num"><i class="icon iconfont icon-read"></i><span>3538</span></li>
+                              </ul>
+                          </dd>
+                      </dl>
+                                                                                                                                <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                          <dd>
+                              <h2><a href="http://blog.csdn.net/ashqal/article/details/21869151" target="_top" strategy="BlogCommendFromBaidu_4">【android ndk】macos环境下Android Studio中利用gradle编译jni模块及配置</a></h2>
+                              <div class="summary">
+                                  Android Studio使用gradle对jni中的代码进行自动编译，很方便，推荐大家使用，下面是我总结的入门教程，包括了模块的配置...                              </div>
+                              <ul>
+                                  <li class="avatar_img"><a href="http://blog.csdn.net/ashqal" target="_top" strategy="BlogCommendFromBaidu_4"><img src="3_ashqal.jpg" alt="ashqal" title="ashqal"></a></li>
+                                  <li class="user_name"><a href="http://blog.csdn.net/ashqal">ashqal</a></li>
+                                  <li class="time">2014年03月23日 15:12</li>
+                                  <li class="visited_num"><i class="icon iconfont icon-read"></i><span>46968</span></li>
+                              </ul>
+                          </dd>
+                      </dl>
+                                                                                            <!-- 广告位：PC端-博客详情通栏7（feed流）-808*120 -->
+                      <div id="_yfokmhkkup"></div><a href="http://www.baidu.com/cb.php?c=IgF_pyfqnHmknjnzPHn0IZ0qnfK9ujYzP1f4Pjnd0Aw-5Hc4nj6vPjm0TAq15Hf4rjn1n1b0T1YdnvnLPyN9rAc4n1w9nAD30AwY5HDdnHDkPH6sPWD0IgF_5y9YIZ0lQzqMpgwBUvqoQhP8QvIGIAPCmgfEmvq_Iyd8Q1R4uW79P1I9rHnYnvczPHN-n19-uAfLrjqdIAdxTvqdThP-5HDknHNbmhkEusKzujYk0AFV5H00TZcqn0KdpyfqnHRLPjnvnfKEpyfqnHnsnj0YnsKWpyfqP1cvrHnz0AqLUWYs0ZK45HcsP6KWThnqPHbvrHf" target="_top">
+	<dl class="clearfix csdn-tracking-statistics" data-mod="popu_393">
+		<dt><img class="maxwidth" src="0f000ntu6uyvif9wpq-cgs.jpg" alt="" title=""></dt>
+		<dd>
+			<div class="summary">
+				<h2>TensorFlow on Android：物体识别</h2>  <div class="summary">如何在 Android 上面运行 TensorFlow，并利用基于 TensorFlow 的 Object Detection API 来实现一个可以识别静态图片中的物体的应用？</div> 
+			</div>
+		</dd>
+	</dl>
+</a>
+                                                                                                  <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                          <dd>
+                              <h2><a href="http://blog.csdn.net/carson_ho/article/details/73250163" target="_top" strategy="BlogCommendFromBaidu_5">Android：JNI 与 NDK到底是什么？（含实例教学）</a></h2>
+                              <div class="summary">
+                                  前言
+在Android开发中，使用 NDK开发的需求正逐渐增大
+但很多人却搞不懂 JNI 与 NDK 到底是怎么回事
+今天，我将先介绍JNI 与 NDK  &amp; 之间的区别，手把手进行 NDK的使用教学...                              </div>
+                              <ul>
+                                  <li class="avatar_img"><a href="http://blog.csdn.net/carson_ho" target="_top" strategy="BlogCommendFromBaidu_5"><img src="3_carson_ho.jpg" alt="carson_ho" title="carson_ho"></a></li>
+                                  <li class="user_name"><a href="http://blog.csdn.net/carson_ho">carson_ho</a></li>
+                                  <li class="time">2017年06月14日 17:03</li>
+                                  <li class="visited_num"><i class="icon iconfont icon-read"></i><span>9552</span></li>
+                              </ul>
+                          </dd>
+                      </dl>
+                                                                                                                                <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                          <dd>
+                              <h2><a href="http://blog.csdn.net/qiujuer/article/details/24209457" target="_top" strategy="BlogCommendFromBaidu_6">[Android][Android Studio] Gradle项目中添加JNI生成文件(.so文件)</a></h2>
+                              <div class="summary">
+                                  使用Android Studio进行开发时打包.SO（JNI）文件的几种方式以及历史。                              </div>
+                              <ul>
+                                  <li class="avatar_img"><a href="http://blog.csdn.net/qiujuer" target="_top" strategy="BlogCommendFromBaidu_6"><img src="3_qiujuer.jpg" alt="qiujuer" title="qiujuer"></a></li>
+                                  <li class="user_name"><a href="http://blog.csdn.net/qiujuer">qiujuer</a></li>
+                                  <li class="time">2014年04月21日 01:05</li>
+                                  <li class="visited_num"><i class="icon iconfont icon-read"></i><span>34038</span></li>
+                              </ul>
+                          </dd>
+                      </dl>
+                                                                                                                                <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                          <dd>
+                              <h2><a href="http://blog.csdn.net/harry_helei/article/details/53184234" target="_top" strategy="BlogCommendFromBaidu_7">Gradle环境下添加JNI编译</a></h2>
+                              <div class="summary">
+                                  这里只涉及如何在build.gradle文件中添加自动编译配置，不包括如何JNI文件的新建和添加。
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 本人所用的gradle版本为V3.1。
+
+
+1、修改local.properties属性...                              </div>
+                              <ul>
+                                  <li class="avatar_img"><a href="http://blog.csdn.net/harry_helei" target="_top" strategy="BlogCommendFromBaidu_7"><img src="3_harry_helei.jpg" alt="harry_helei" title="harry_helei"></a></li>
+                                  <li class="user_name"><a href="http://blog.csdn.net/harry_helei">harry_helei</a></li>
+                                  <li class="time">2016年11月16日 11:09</li>
+                                  <li class="visited_num"><i class="icon iconfont icon-read"></i><span>1113</span></li>
+                              </ul>
+                          </dd>
+                      </dl>
+                                                                                                                                <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                          <dd>
+                              <h2><a href="http://blog.csdn.net/mzx0078/article/details/51557805" target="_top" strategy="BlogCommendFromBaidu_8">Android Studio使用gradle-experimental构建NDK工程(无需Android.mk、Application.mk文件)</a></h2>
+                              <div class="summary">
+                                  1.首先新建一个Android工程Gradle_Experimental_NDK，我们打开Gradle_Experimental_NDK/gradle/wrapper下的gradle-wrapper....                              </div>
+                              <ul>
+                                  <li class="avatar_img"><a href="http://blog.csdn.net/mzx0078" target="_top" strategy="BlogCommendFromBaidu_8"><img src="3_mzx0078.jpg" alt="mzx0078" title="mzx0078"></a></li>
+                                  <li class="user_name"><a href="http://blog.csdn.net/mzx0078">mzx0078</a></li>
+                                  <li class="time">2016年06月01日 17:46</li>
+                                  <li class="visited_num"><i class="icon iconfont icon-read"></i><span>2914</span></li>
+                              </ul>
+                          </dd>
+                      </dl>
+                                                                                                                                <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                          <dd>
+                              <h2><a href="http://blog.csdn.net/cauchyweierstrass/article/details/53261581" target="_top" strategy="BlogCommendFromBaidu_9">AndroidStudio使用NDK配置方法</a></h2>
+                              <div class="summary">
+                                  配置Gradle生成so
+编译多个模块
+关联Androidmk到Gradle
+使用cmake
+配置Gradle生成so在AndroidStudio2.1及以前我是通过下面的方式配置NDK的，不知道是从...                              </div>
+                              <ul>
+                                  <li class="avatar_img"><a href="http://blog.csdn.net/cauchyweierstrass" target="_top" strategy="BlogCommendFromBaidu_9"><img src="3_cauchyweierstrass.jpg" alt="cauchyweierstrass" title="cauchyweierstrass"></a></li>
+                                  <li class="user_name"><a href="http://blog.csdn.net/cauchyweierstrass">cauchyweierstrass</a></li>
+                                  <li class="time">2016年11月21日 17:28</li>
+                                  <li class="visited_num"><i class="icon iconfont icon-read"></i><span>6387</span></li>
+                              </ul>
+                          </dd>
+                      </dl>
+                                                                    </div>
+  </main>
+<aside>
+  <div class="right_box user_info">
+      <dl class="inf_bar clearfix">
+          <dt class="csdn-tracking-statistics" data-mod="popu_381">
+              <a href="http://blog.csdn.net/hn_lgc" target="_top">
+                  <img src="3_hn_lgc.jpg" class="avatar_pic">
+              </a>
+              <span class="medals" title="">
+                  </span>
+          </dt>
+          <dd>
+              <h3 class="csdn-tracking-statistics" data-mod="popu_380"><a href="http://blog.csdn.net/hn_lgc" target="_top" id="uid">hn_lgc</a></h3>
+              <span class="csdn-tracking-statistics" data-mod="popu_379"><a class="btn btn-redborder-small " id="span_add_follow" target="_self">＋关注</a></span>
+          </dd>
+      </dl>
+      <div class="inf_number_box clearfix">
+          <dl>
+              <dt>原创</dt>
+              <dd>44</dd>
+          </dl>
+          <dl>
+              <dt>粉丝</dt>
+              <dd id="fan">2</dd>
+          </dl>
+          <dl>
+              <dt>喜欢</dt>
+              <dd>1</dd>
+          </dl>
+          <dl>
+        <dt>码云</dt>
+        <dd>&nbsp;</dd>
+      </dl>
+
+      </div>
+  <div class="writings">
+        <div class="public_signal clearfix">
+          <h3>他的最新文章</h3>
+          <a href="http://blog.csdn.net/hn_lgc" target="_top" class="more"><span>更多文章</span></a>
+        </div>
+          <ul class="inf_list clearfix csdn-tracking-statistics" data-mod="popu_382">
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/hn_lgc/article/details/78421194" target="_top">文件操作一些特性</a>
+              </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/hn_lgc/article/details/78193059" target="_top">git的学习二</a>
+              </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/hn_lgc/article/details/78190239" target="_top">电脑等工具</a>
+              </li>
+                        </ul>
+      </div>
+  </div>
+  <div class="extension_other csdn-tracking-statistics" data-mod="popu_389">
+     <!--u3032528-->
+    <div class="flashrecommend">
+        <div><div><div id="samrbclwn" style="padding: 0px;"><iframe scrolling="no" src="index_2.html" width="300" height="250" frameborder="0"></iframe></div></div></div>
+    </div>
+  </div>
+
+<!--    [StartShowSelfColumn]-->
+    <!--    [EndShowSelfColumn]-->
+    <div class="fixRight">
+        <div class="right_box padb0 csdn-tracking-statistics" data-mod="popu_391">
+            <h3 class="tit"><span><em>在线课程</em></span></h3>
+            <ul class="edu_li clearfix">
+<!--            [starteducourses]-->
+                                                            <li>
+                            <div>
+                                <a href="http://edu.csdn.net/huiyiCourse/series_detail/72?utm_source=blog7" target="_top">
+                                    <img src="201711141432559281.png" alt="React API设计上的精华糟点及使用注意点" title="React API设计上的精华糟点及使用注意点">
+                                </a>
+                            </div>
+                            <div>
+                                <p><a href="http://edu.csdn.net/huiyiCourse/series_detail/72?utm_source=blog7" target="_top">React API设计上的精华糟点及使用注意点</a></p>
+                                <p>讲师：钟钦成</p>
+                            </div>
+                        </li>
+                                            <li>
+                            <div>
+                                <a href="http://edu.csdn.net/huiyiCourse/detail/594?utm_source=blog7" target="_top">
+                                    <img src="201711141029037427.png" alt="C语言大型软件设计的面向对象" title="C语言大型软件设计的面向对象">
+                                </a>
+                            </div>
+                            <div>
+                                <p><a href="http://edu.csdn.net/huiyiCourse/detail/594?utm_source=blog7" target="_top">C语言大型软件设计的面向对象</a></p>
+                                <p>讲师：宋宝华</p>
+                            </div>
+                        </li>
+                                    <!--            [endeducourses]-->
+            </ul>
+            </div>
+        <div class="extension_other csdn-tracking-statistics bottomRcom" data-mod="popu_389" style="position: absolute; z-index: -5; opacity: 0; pointer-events: none;">
+            <!--u3032528-->
+            <div class="flashrecommend">
+                <!-- 请置于所有广告位代码之前 -->
+                
+
+                <!-- 广告位：PC端-博客详情页右侧视窗1（feed流）-300*250 -->
+                <div id="_kobic88pwsg"></div><div><iframe scrolling="no" src="index_3.html" width="300" height="250" frameborder="0"></iframe></div>
+            </div>
+        </div>
+
+    </div>
+    <div class="user-hotArticle">
+        <h3>热门文章</h3>
+        <ul class="hotArticle-list csdn-tracking-statistics" data-mod="popu_521">
+<!--            [StartHotArticles]-->
+                                                <li>
+                        <a href="http://blog.csdn.net/hn_lgc/article/details/3844797">Android Studio 使用本地的gradle</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>6216</span></div>
+                    </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/hn_lgc/article/details/3844797">Android使用intent跳转到其它应用activity界面</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>5786</span></div>
+                    </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/hn_lgc/article/details/3844797">Android Studio的gradle下配置ndk，jni</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>3287</span></div>
+                    </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/hn_lgc/article/details/3844797">Android Studio上编写运行Java代码</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>2193</span></div>
+                    </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/hn_lgc/article/details/3844797">Android 简单的条形颜色选择器</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>1772</span></div>
+                    </li>
+                            <!--            [EndHotArticles]-->
+        </ul>
+    </div>
+<!--    [startcustom]-->
+    <!--    [endcustom]-->
+</aside></div>
+
+<div class="left_fixed">
+    <div class="left_show_button">
+        <span>
+          <i class="icon iconfont icon-youjiantou"></i>
+        </span>
+    </div>
+    <ul class="left_menu">
+        <li>
+            <button class="left-fixed-btn btn-like csdn-tracking-statistics" data-mod="popu_373" target="_self">
+                <a href="javascript:void(0);" class="iconbox border_red"><i class="icon iconfont icon-dianzan"></i></a>
+                <a class="txt" href="javascript:void(0);">0</a>
+            </button>
+        </li>
+        <li id="blog_artical_directory">
+            <button class="left-fixed-btn left_menu_btn csdn-tracking-statistics" data-mod="popu_372" target="_self">
+                <a href="javascript:void(0);" class="iconbox border_black"><i class="icon iconfont icon-mulu"></i></a>
+            </button>
+        </li>
+        <li class="menu_con">
+            <div class="list_father">
+                <div class="arr_box">
+                    <button class="btn-noborder arr-btn scroll-down  left_scroll_down"><i class="icon iconfont icon-xiajiantou"></i></button>
+                    <button class="btn-noborder arr-btn scroll-up left_scroll_top"><i class="icon iconfont icon-shangjiantou"></i></button>
+                </div>
+                <div class="arr"></div>
+                <div id="csdnBlogDir"></div>
+            </div>
+        </li>
+        <!--        <li>-->
+        <!--            <button class="left-fixed-btn btn-like tracking-ad" data-mod="popu_373" target="_self">-->
+        <!--                <span class="iconbox border_red"><i class="icon iconfont icon-xihuan-"></i></span>-->
+        <!--                <span class="txt">喜欢</span>-->
+        <!--                <span class="untxt">取消喜欢</span>-->
+        <!--            </button>-->
+        <!--        </li>-->
+        <li>
+            <button class="left-fixed-btn csdn-tracking-statistics" data-mod="popu_374" id="com-quick-collect" target="_self">
+                <a href="javascript:void(0);" class="iconbox border_purple"><i class="icon iconfont icon-shoucang"></i></a>
+            </button>
+        </li>
+        <li>
+            <button class="left-fixed-btn btn-pinglun csdn-tracking-statistics" data-mod="popu_544">
+                <a href="javascript:void(0);" class="iconbox border_purple"><i class="icon iconfont icon-pinglun"></i></a>
+            </button>
+        </li>
+        <li id="share_box">
+            <button class="left-fixed-btn  csdn-tracking-statistics" data-mod="popu_375" target="_self">
+                <a href="javascript:void(0);" class="iconbox border_orange"><i class="icon iconfont icon-fenxiang"></i></a>
+            </button>
+            <div class="bdsharebuttonbox csdn-tracking-statistics bdshare-button-style0-16" data-mod="popu_172" data-bd-bind="1511158061812">
+                <div class="outside">
+                    <span class="iconbox border_red2"><i class="icon iconfont icon-xinlang"></i></span>
+                    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"> </a>
+                </div>
+                <div class="outside">
+                    <span class="iconbox border_green"><i class="icon iconfont icon-weixin"></i></span>
+                    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"> </a>
+                </div>
+                <div class="outside">
+                    <span class="iconbox border_blue"><i class="icon iconfont icon-QQ"></i></span>
+                    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"> </a>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>
+<div class="right_fixed">
+    <div class="r_ico">
+        <i class="icon iconfont icon-jubao"></i>
+        <span class="txt" id="reportBtn">内容举报</span>
+    </div>
+    <div class="returnTop">
+        <i class="icon iconfont icon-fanhuidingbu"></i>
+        <span>返回顶部</span>
+    </div>
+</div>
+<div id="pop_win"></div>
+<div id="popup_mask"></div>
+<div class="pop_CA_cover"></div>
+<div class="pop pop_CA">
+    <div class="CA_header">
+        收藏助手
+        <span class="cancel_icon" id="fapancle"></span>
+    </div>
+    <iframe src="index_4.html" id="collectIframe" scrolling="no" width="100%" height="360" frameborder="0"></iframe>
+</div>
+<!--举报-->
+<div id="report_dialog" style="top: 250px; left: 343.5px;"><div id="panel_report">
+    <div class="panel_head">不良信息举报</div>
+    <form method="post" id="frmReport" class="panel_body" action="http://blog.csdn.net/hn_lgc/article/details/53963627">
+        <table class="pop_table" cellspacing="4" cellpadding="0" border="0">
+            <tbody><tr><td colspan="2">您举报文章：<a href="http://blog.csdn.net/hn_lgc/article/details/53963627" target="_top">Android Studio的gradle下配置ndk，jni</a></td></tr>
+            <tr>
+                <th style="width: 60px;">举报原因：</th>
+                <td id="panel_reporttype">
+                    <label><input class="report_type" id="report_sex" name="report_type" value="1" type="radio">色情</label>
+                    <label><input class="report_type" id="report_Politics" name="report_type" value="2" type="radio">政治</label>
+                    <label><input class="report_type" id="report_copy" name="report_type" value="3" type="radio">抄袭</label>
+                    <label><input class="report_type" id="report_ad" name="report_type" value="4" type="radio">广告</label>
+                    <label><input class="report_type" id="report_want" name="report_type" value="5" type="radio">招聘</label>
+                    <label><input class="report_type" id="report_call" name="report_type" value="6" type="radio">骂人</label>
+                    <br>
+                    <label><input class="report_type" id="report_other" name="report_type" value="7" type="radio">其他</label>
+                    <input name="report_other_content" id="report_other_content" maxlength="30" style="display: none;" value="" type="text">
+                </td>
+            </tr>
+            <tr id="panel_originalurl" style="display: none;">
+                <th>原文地址：</th>
+                <td>
+                    <input id="originalurl" value="http://" name="originalurl" style="width: 90%;" type="text">
+                </td>
+            </tr>
+            <tr>
+                <th id="sp_reason">原因补充：</th>
+                <td>
+                    <textarea id="report_description" style="width: 300px;" rows="3" name="report_description"></textarea>
+                    <p id="sp_n" style="color: rgb(153, 153, 153); margin: 0px; padding: 0px;">(最多只允许输入30个字)</p>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input id="btnSubmitReport" name="submit" class="btn_1" src="btn_submit.jpg" type="image" align="middle">
+                    <span style="padding-left: 20px;"></span>
+                    <img id="btnCloseReportDialog" src="btn_cancel.jpg" align="middle">
+                    <div id="error" style="color: red;">
+                    </div>
+                </td>
+            </tr>
+            </tbody></table>
+    </form>
+</div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

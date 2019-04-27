@@ -1,0 +1,1068 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+<script id="allmobilize" charset="utf-8" src="http://a.yunshipei.com/ac0ecd4968d76dbea889a1a0f28e176f/allmobilize.min.js"></script><meta http-equiv="Cache-Control" content="no-siteapp" /><link rel="alternate" media="handheld" href="#" />
+
+<meta http-equiv="Content-Type"	content="text/html;	charset=gb2312">
+<title>突破舒适区 - 51CTO技术博客 - 领先的IT技术博客</title>
+<meta name="description" content="突破舒适区 (http://tchuairen.blog.51cto.com)">
+<meta name="keywords" content="突破舒适区">
+<meta http-equiv="Cache-Control" content="private">
+<base href="http://tchuairen.blog.51cto.com/"></base>
+<script src="/js/def.js"></script>
+<SCRIPT language=javascript src="http://blog.51cto.com/js/message.js" type=text/javascript></SCRIPT>
+<SCRIPT language=javascript src="http://blog.51cto.com/js/user_comment.js" type=text/javascript></SCRIPT>
+<SCRIPT language=javascript src="http://blog.51cto.com/js/base2.js" type=text/javascript></SCRIPT>
+<SCRIPT language=javascript src="http://blog.51cto.com/js/dialog_utf8.js" type=text/javascript></SCRIPT>
+<link href="/css/skin/40.css" rel="stylesheet" type="text/css">
+<link rel="alternate" href="../rss.php?uid=3848118" type="application/rss+xml" title="RSS 2.0">
+<link rel="edituri" type="application/rsd+xml" title="rsd" href="xmlrpc.php?rsd=1" />
+<link href="http://blog.51cto.com/css/header_master_top.css" rel="stylesheet" type="text/css" />
+<link href="http://blog.51cto.com/css/skin/base.css" rel="stylesheet" type="text/css" />
+<style type="text/css">
+	.mainNav li a{display:inline-block}
+</style>
+<script>
+var myid = "";
+function add_flink(){
+	if(myid==""){
+
+        var refurlk = "http://tchuairen.blog.51cto.com";
+
+				//commentSubmit("",refurlk);
+				location.href="http://home.51cto.com/index.php?reback="+encodeURIComponent(encodeURIComponent(refurlk));
+				
+				return false;
+	}else{
+		var mtk = "f61243bb35112d18dc0d3fb301b40c90";
+      		var url='/mod/edit_flink.php?type=addflink&uid=3848118&flink=http://tchuairen.blog.51cto.com&mtk='+mtk;
+		var ajax = InitAjax1();
+		ajax.open("GET", url, true);
+		ajax.onreadystatechange = function() {
+			if (ajax.readyState == 4 && ajax.status == 200) {
+				/*if(myid == 5290427){
+					alert(ajax.responseText);
+				}*/
+				if(ajax.responseText==""){
+					alert("添加成功。");
+				}
+				if(ajax.responseText=="1"){
+				alert("链接指向自己。");
+				}
+				if(ajax.responseText=="2"){
+				alert("友情链接已存在。")
+				}
+				if(ajax.responseText=="4"){
+					alert("验证已过期。")
+					}
+			}
+		}
+		ajax.send(null);
+	}
+
+
+
+}
+function sendmessage(){
+
+	var refurlk = "http://tchuairen.blog.51cto.com";
+
+	if(myid){
+		return true;
+	}else{
+		commentSubmit("",refurlk);
+		return false;
+	}
+}
+function copylink(ourl){
+	if(!ourl){
+		var clipBoardContent = "http://tchuairen.blog.51cto.com";
+	}else{
+		var clipBoardContent = ourl;
+	}
+	window.clipboardData.setData("Text",clipBoardContent);
+	alert("复制成功!");
+	return false;
+}
+function correctPNG() {
+if (document.getElementById('blog_touxian'))
+{
+var img = document.getElementById('blog_touxian');
+      var imgName = img.src.toUpperCase()
+      var imgID = (img.id) ? "id='" + img.id + "' " : ""
+      var imgClass = (img.className) ? "class='" + img.className + "' " : ""
+      var imgTitle = (img.title) ? "title='" + img.title + "' " : "title='" + img.alt + "' "
+      var imgStyle = "display:inline-block;" + img.style.cssText
+      if (img.align == "left") imgStyle = "float:left;" + imgStyle
+      if (img.align == "right") imgStyle = "float:right;" + imgStyle
+      if (img.parentElement.href) imgStyle = "cursor:hand;" + imgStyle
+      var strNewHTML = "<span " + imgID + imgClass + imgTitle
+         + " style=\"" + "width:" + img.width + "px; height:" + img.height + "px;" + imgStyle + ";"
+         + "filter:progid:DXImageTransform.Microsoft.AlphaImageLoader"
+         + "(src=\'" + img.src + "\', sizingMethod='scale');\"></span>" ;
+      img.outerHTML = strNewHTML;
+}
+}
+//window.attachEvent("onload", correctPNG);
+window.onload=correctPNG;
+
+function copy(){
+var text=document.getElementById("txtUser").value;
+if(copy2Clipboard(text)!=false){ 
+alert("复制成功了！ "); 
+} 
+}
+function copy2Clipboard(txt){ 
+if(window.clipboardData){ 
+window.clipboardData.clearData(); 
+window.clipboardData.setData("Text",txt); 
+}else if(navigator.userAgent.indexOf("Opera")!=-1){ 
+window.location=txt; 
+}else if(window.netscape){ 
+try{ 
+netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect"); 
+} 
+catch(e){ 
+alert("您使用的浏览器不支持此复制功能，请使用Ctrl+C或鼠标右键。"); 
+return false; 
+} 
+var clip=Components.classes['@mozilla.org/widget/clipboard;1'].createInstance(Components.interfaces.nsIClipboard); 
+if(!clip)return; 
+var trans=Components.classes['@mozilla.org/widget/transferable;1'].createInstance(Components.interfaces.nsITransferable); 
+if(!trans)return; 
+trans.addDataFlavor('text/unicode'); 
+var str=new Object(); 
+var len=new Object(); 
+var str=Components.classes["@mozilla.org/supports-string;1"].createInstance(Components.interfaces.nsISupportsString); 
+var copytext=txt;str.data=copytext; 
+trans.setTransferData("text/unicode",str,copytext.length*2); 
+var clipid=Components.interfaces.nsIClipboard; 
+if(!clip)return false; 
+clip.setData(trans,null,clipid.kGlobalClipboard); 
+return true;
+} 
+}
+
+function mod_close(){
+  document.getElementById('mod_tg').style.display="none";
+}
+
+function match_invite(uid) {
+    var url='/mod/match_invite.php';
+	var ajax = InitAjax();
+    var re = 'uid=' + uid;
+	ajax.open("POST", url, true);
+    ajax.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+	ajax.send(re);
+    ajax.onreadystatechange = function() {
+        if (ajax.readyState == 4 && ajax.status == 200) {
+            if(ajax.responseText == 1){
+                alert("邀请信息已经发送成功。");
+            } else if(ajax.responseText=="-1"){
+                alert("邀请失败，请稍候再试。");
+            } else if(ajax.responseText=="2"){
+                alert("该用户已经报名了。")
+            }
+        }
+    }
+}
+
+</script>
+<style type="text/css">
+/*
+.artContent img {max-width:450px !important;}
+.showContent img{max-width:650px!important;}
+*/
+
+.artContent img{max-width: 450px; width:expression(this.width > 450 ? "450px" : this.width)}
+/*
+.showContent img{max-width: 450px; width:expression(this.width > 650 ? "650px" : this.width)}
+*/
+
+
+</style>
+</head>
+
+<body >
+
+<div id="home_top">
+<div class="top_nav" style="width:990px;">
+<div class="left"  style="margin-top:10px; width:600px;"><a href="http://blog.51cto.com/" target="_blank"><img src="images/head_blog_sibebar_logo.gif" align="absmiddle" style="margin-top:-4px;" /></a><!--<a target="_blank" href="http://www.51cto.com">51CTO首页</a>--><img height="25" align="absmiddle" width="16" src="http://home.51cto.com/public/themes/blue/images/top_bg_xian.gif" style="margin-top:-4px;" ><a href="http://blog.51cto.com/" target="_blank">首页</a><img height="25" align="absmiddle" width="16" src="http://home.51cto.com/public/themes/blue/images/top_bg_xian.gif" style="margin-top:-4px;" ><a href="http://home.51cto.com?reback=http%253A%252F%252Ftchuairen.blog.51cto.com%252F" >我的博客</a><img height="25" align="absmiddle" width="16" src="http://home.51cto.com/public/themes/blue/images/top_bg_xian.gif" style="margin-top:-4px;" >
+
+
+   <a href="http://blog.51cto.com/artcommend">推荐博文</a>
+    <img height="25" align="absmiddle" width="16" src="http://home.51cto.com/public/themes/blue/images/top_bg_xian.gif" style="margin-top:-4px;" ><a href="http://blog.51cto.com/original/">最新原创</a>
+    <img height="25" align="absmiddle" width="16" src="http://home.51cto.com/public/themes/blue/images/top_bg_xian.gif" style="margin-top:-4px;" ><a href="http://blog.51cto.com/expert">专家博客</a>
+    <img height="25" align="absmiddle" width="16" src="http://home.51cto.com/public/themes/blue/images/top_bg_xian.gif" style="margin-top:-4px;" ><a href="http://blog.51cto.com/blogcommend">推荐博客</a>
+    <img height="25" align="absmiddle" width="16" src="http://home.51cto.com/public/themes/blue/images/top_bg_xian.gif" style="margin-top:-4px;" ><a target="_blank" href="http://so.51cto.com">搜索</a>
+    <!--<a href="javascript:void(0);" style="color:#FF0000; text-decoration:underline; display:none" id="showMessagerDim">每日博报</a>-->
+</div>
+
+<div class="right" style="width:380px;">
+<div class="more"><img height="16" align="absmiddle" width="27" src="http://home.51cto.com/public/themes/blue/images/top_shequ.gif"><a href="javascript:viod(0);" onmouseout="popupClose()" onmouseover="show(3,this)">网站导航<img align="absmiddle" style="padding-left: 4px;" src="http://images.51cto.com/images/art/top_images/nav_ico1.gif"></a>            </div>            <span id="login_status"><div class="login" id="login_status"></div>    </span>                </div>    </div></div>
+
+
+
+<div class="subMenu3" id="s3" onmouseover="popupNoClose()" onmouseout="popupClose()">
+<ul>
+
+<li><a href="http://edu.51cto.com" target="_blank">学院</a></li>
+<li><a href="http://blog.51cto.com" target="_blank">博客</a></li>
+<li><a href="http://bbs.51cto.com" target="_blank">论坛</a></li>
+<li><a href="http://down.51cto.com" target="_blank">下载</a></li>
+    <li><a href="http://home.51cto.com" target="_blank">家园</a></li>
+<li><a href="http://wot.51cto.com/?blog" target="_blank">WOT峰会</a></li>
+    <li><a href="http://www.51cto.com" target="_blank">51CTO主站</a></li>
+</ul>
+</div>
+<!--简导航end-->
+
+
+
+<div class="headerBox">
+<div class="header">
+<div class="header_l">
+<div class="logo_blogname">
+
+
+<div class="blogLogo">
+<a href="http://blog.51cto.com/blogcommend" target="_blank"><img src="http://blog.51cto.com/image/skin/blogLogo01.png" width="161px;" height="70px;"></a>
+</div>
+
+
+<div class="blogName">
+<a href="http://tchuairen.blog.51cto.com"><h1>突破舒适区</h1></a>
+</div>
+</div><!--logo_blogname end-->
+<div class="blogLink">
+
+<a href="http://tchuairen.blog.51cto.com">http://tchuairen.blog.51cto.com</a> <input id="txtUser" type="hidden" size=32 value="http://tchuairen.blog.51cto.com" />   <a href="javascript:void(0);" onclick="copy();">【复制】</a> <a href='/rss.php?uid=3848118' target='_blank'><a href='/rss.php?uid=3848118' target='_blank'>【订阅】</a>
+
+</div>
+
+
+
+</div><!--header_l end-->
+<div class="header_r">
+<div class="blogInfo"><span><a href="http://tchuairen.blog.51cto.com/3848118/o" title="察看qw87112所有原创文章">原创</a>:96</span><span><a href="http://tchuairen.blog.51cto.com/3848118/t" title="察看qw87112所有翻译文章">翻译</a>:0</span><span><a href="http://tchuairen.blog.51cto.com/3848118/c" title="察看qw87112所有转载文章">转载</a>:2</span></div>
+
+</div>
+</div>
+<!--header end-->
+</div><!--headerBox end-->
+<div class="mainNav">
+<span class="mainNavT"></span>
+<ul>
+<li><a href="/">主页</a></li>|<li><a href="/3848118/d-1">Web服务器</a></li>|<li><a href="/3848118/d-2">MySQL</a></li>|<li><a href="/3848118/d-3">高可用集群</a></li>|<li><a href="/3848118/d-4">常用命令及技巧</a></li>|<li><a href="/3848118/d-5">运维自动化</a></li>
+</ul>
+<span class="mainNavB"></span>
+</div>
+<!--mainNav end-->
+
+
+
+
+<div class="blogMain">
+<div class="blogLeft" id="layout_0" style="min-height: 500px;width:240">
+<div class="box moduleUser">
+<div class="title">
+<h2><a href ='/'>qw87112 的BLOG</a></h2>
+</div>
+<div class="modCon">
+
+<div class="userImage position_r" style="margin: 10px auto 5px;text-align: center;width: 130px;border: 1px solid #D4D4D4;"><a href="/"> <script src="http://blog.51cto.com/mod/userface.php?useruid=3848118"></script></a></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class="newcrumbox">
+        <div class="a_lsits">
+            <a href="http://home.51cto.com/index.php?s=/Notify/write/uid/3848118" class="newicon_3 newicon_d">发私信</a>
+            <a href='/' onclick='add_flink(3848118);return false' class="newicon_5 newicon_l">加友情链接</a>
+        </div>
+
+    </div>
+
+<div style="width:239px;height:64px;display:none;">
+
+
+<div style="float:left;"><p style="padding:15px 0 0 28px; line-height:20px;">2012年度IT博客大赛<br><a target="_blank" href=" http://blog.51cto.com/contest2012/#top10000" style="color:#F00; text-decoration:underline;">十大杰出IT博客诞生</a></p></div>
+<div style="float:right;"><a target="_blank" href="http://blog.51cto.com/contest2012/"><img width="57" height="27" src="http://img1.51cto.com/images/blog_match_endlook.jpg" style="margin:23px 20px 0 0;"></a></div>
+
+
+
+<div class="clear"></div>
+</div>
+
+</div><!--modCon end-->
+<span class="modBot"></span>
+</div><div class="infoList box">
+<div class="title">
+<h2>博客统计信息</h2>
+</div>
+<div class="modCon">
+<p>
+<span class="infoListHead"><a href="http://blog.51cto.com/blogcommend" target="_blank" class="operlink"><b>51CTO推荐博客</b></a> <br></span>
+用户名：qw87112<br />
+文章数：98<br />
+评论数：56<br />
+访问量：107547<br />
+无忧币：2160<br />
+<a href="http://51ctoblog.blog.51cto.com/26414/5591" target="_blank">博客积分</a>：1966<br />
+<a href="http://51ctoblog.blog.51cto.com/26414/5591" target="_blank">博客等级</a>：6<br />
+注册日期：2011-11-02<br />
+<script src="http://blog.51cto.com/active/no1/blogno1countdown.php"></script>
+
+</p>
+</div>
+<span class="modBot"></span>
+</div>
+
+<div class="friendLink box">
+<div class="title">
+  <h2>友情链接</h2>
+</div>
+<div class="modCon">
+<ul>
+
+<li><a href="http://mayulin.blog.51cto.com" title="梦~从这里起航" target="_blank">梦~从这里起航</a></li>
+
+<li><a href="http://caoyameng.blog.51cto.com" title="让技术做的更清晰" target="_blank">让技术做的更清晰</a></li>
+
+<li><a href="http://chenguang.blog.51cto.com" title="李晨光原创技术博客" target="_blank">李晨光原创技术博客</a></li>
+
+<li><a href="http://scholar.blog.51cto.com" title="北城书生" target="_blank">北城书生</a></li>
+
+<li><a href="http://lizhenliang.blog.51cto.com" title="“企鹅”那点事儿" target="_blank">“企鹅”那点事儿</a></li>
+
+<li><a href="http://www.cnblogs.com/lyhabc/p/3886402.html" title="" target="_blank">mysql</a></li>
+
+<li><a href="http://lyp0909.blog.51cto.com" title="諸葛草廬" target="_blank">諸葛草廬</a></li>
+
+<li><a href="http://yuhongchun.blog.51cto.com" title="抚琴煮酒" target="_blank">抚琴煮酒</a></li>
+
+<li><a href="http://nolinux.blog.51cto.com/" title="" target="_blank">MoglieFS优化</a></li>
+
+<li><a href="http://lovelace.blog.51cto.com/" title="" target="_blank">追马</a></li>
+
+<li><a href="http://manfred12.blog.51cto.com" title="aha45" target="_blank">aha45</a></li>
+
+<li><a href="http://freeloda.blog.51cto.com" title="Share your knowledge …" target="_blank">Share your knowle..</a></li>
+
+<li><a href="http://bbotte.blog.51cto.com" title="一颗石头  BBOTTE的博客" target="_blank">金戈铁马行飞燕</a></li>
+
+<li><a href="http://foreveryan.blog.51cto.com" title="For The Dream" target="_blank">For The Dream</a></li>
+
+<li><a href="http://ixdba.blog.51cto.com" title="技术成就梦想" target="_blank">技术成就梦想</a></li>
+
+<li><a href="http://linuxguest.blog.51cto.com" title="fenghao.cn&#39;s Softzone!我的soft空间" target="_blank">fenghao.cn&#39;s ..</a></li>
+
+<li><a href="http://rfyiamcool.blog.51cto.com" title="峰云，就她了。" target="_blank">峰云，就她了。</a></li>
+
+<li><a href="http://mageedu.blog.51cto.com" title="马哥教育Linux运维培训" target="_blank">马哥教育Linux运维..</a> <img src='http://img1.51cto.com/images/tubiao1.gif' alt='本日内更新'></li>
+
+<li><a href="http://xjsunjie.blog.51cto.com" title="滴水穿石孙杰" target="_blank">滴水穿石孙杰</a></li>
+
+<li><a href="http://baidutech.blog.51cto.com" title="百度技术博客" target="_blank">百度技术博客</a></li>
+
+<li><a href="http://laoguang.blog.51cto.com" title="Free Linux, Share Linux" target="_blank">Free Linux, Share..</a></li>
+
+<li><a href="http://51ctoblog.blog.51cto.com" title="51CTO博客开发" target="_blank">51CTO博客开发</a> <img src='http://img1.51cto.com/images/tubiao2.gif' alt='三日内更新'></li>
+
+</ul>
+</div><!--modCon end-->
+<span class="modBot"></span>
+</div><!--friendLink end-->
+
+<div class="hotArt box">
+<div class="title">
+<h2>热门文章</h2>
+</div>
+<div class="modCon">
+<ul>
+<li><a href="/3848118/1840596">Logstash 讲解与实战应用</a></li>
+<li><a href="/3848118/1861167">ELK+Filebeat+Kafka+ZooK..</a></li>
+<li><a href="/3848118/1855090">Kafka 入门 and kafka+lo..</a></li>
+<li><a href="/3848118/1782945">带你使用Nginx实现HTTPS..</a></li>
+<li><a href="/3848118/1540695">tomcat完结篇，JVM状态监..</a></li>
+<li><a href="/3848118/1686875">Linux 邮件服务器 之跟我..</a></li>
+<li><a href="/3848118/1771597">Nginx+PHP7 安装及配置</a></li>
+<li><a href="/3848118/1720965">Python 多进程开发与多线..</a></li>
+
+</ul>
+</div>
+<span class="modBot"></span>
+</div>
+
+
+<div class="newComments box">
+<div class="title">
+<h2 class="fl">最新评论</h2>
+
+
+</div>
+<div class="modCon">
+<ul>
+
+<li><a href='http://hypocritical.blog.51cto.com/' class='operlink' target=_blank><b>dong540855184</b></a>：</a><a href="/3848118/1855090" target=_blank>回复 lanyanfeng456: 应该是兼容..</a></li>
+
+<li><a href='http://989446.blog.51cto.com/' class='operlink' target=_blank><b>lanyanfeng456</b></a>：</a><a href="/3848118/1855090" target=_blank>回复 dong540855184: [ERROR][log..</a></li>
+
+<li><a href='http://wangpengtai.blog.51cto.com/' class='operlink' target=_blank><b>wangpengtai</b></a>：</a><a href="/3848118/1861167" target=_blank>什么都不说，献上我的膝盖</a></li>
+
+<li><a href='http://allen686.blog.51cto.com/' class='operlink' target=_blank><b>Allen在路上</b></a>：</a><a href="/3848118/1861167" target=_blank>很好，很强大！！！！</a></li>
+
+<li><a href='http://12853896.blog.51cto.com/' class='operlink' target=_blank><b>马尔克ov</b></a>：</a><a href="/3848118/1861167" target=_blank>请问楼主,用logstash做filter为什么..</a></li>
+
+</ul>
+</div>
+<span class="modBot"></span>
+</div>
+
+<div class="myComments box">
+<div class="title">
+<h2>我最近发表的评论</h2>
+</div>
+<div class="modCon">
+<dl>
+
+<dt>对 <a href="http://tchuairen.blog.51cto.com/3848118/1861167" target="_blank">ELK+Filebeat+Kaf..</a> 回复</dt>
+<dd>回复 kuailejiuhaowdl: Failed to..</dd>
+
+<dt>对 <a href="http://tchuairen.blog.51cto.com/3848118/1861167" target="_blank">ELK+Filebeat+Kaf..</a> 回复</dt>
+<dd>回复 kuailejiuhaowdl: 并没有报..</dd>
+
+<dt>对 <a href="http://tchuairen.blog.51cto.com/3848118/1861167" target="_blank">ELK+Filebeat+Kaf..</a> 回复</dt>
+<dd>回复 nxxse: 我这个架构 Master ..</dd>
+
+<dt>对 <a href="http://mageedu.blog.51cto.com/4265610/1901901" target="_blank">一次Linux服务器..</a> 回复</dt>
+<dd>文章内容很棒，已学习，感谢楼主。|..</dd>
+
+<dt>对 <a href="http://tchuairen.blog.51cto.com/3848118/1861167" target="_blank">ELK+Filebeat+Kaf..</a> 回复</dt>
+<dd>回复 miaocbin: filebeat 采集日..</dd>
+
+</dl>
+</div>
+<span class="modBot"></span>
+</div>
+<!--myComments end-->
+
+<div class="blogRss box">
+<div class="title">
+  <h2>订阅我的博客</h2></div>
+<div class="modCon"> <a href="rss.php?uid=3848118"  target="_blank"><img src="http://img1.51cto.com/image/skin/def/icon_sub_c1s17.gif" width="65" height="21" /></a><br />
+  <a href="http://fusion.google.com/add?feedurl=http://tchuairen.blog.51cto.com/rss.php?uid=3848118"  target="_blank"><img src="http://img1.51cto.com/image/skin/def/icon_subshot01_google.gif"  alt="google reader" width="108" height="20" /></a>
+  <a href="http://www.xianguo.com/subscribe.php?url=http://tchuairen.blog.51cto.com/rss.php?uid=3848118"  target="_blank"><img src="http://img1.51cto.com/image/skin/def/icon_subshot01_xianguo.gif"  alt="鲜果" width="108" height="20" /></a>
+  <a href="http://mail.qq.com/cgi-bin/feed?u=http://tchuairen.blog.51cto.com/rss.php?uid=3848118"  target="_blank"><img src="http://img1.51cto.com/image/skin/def/icon_subshot01_qq.gif"  alt="QQ邮箱" width="108" height="20" /></a>
+  <a href="http://reader.youdao.com/b.do?keyfrom=51cto&amp;url=http://tchuairen.blog.51cto.com/rss.php?uid=3848118"  target="_blank"><img src="http://img1.51cto.com/image/skin/def/icon_subshot01_youdao.gif" alt="有道"  width="108" height="20" /></a>
+  <a href="http://www.zhuaxia.com/add_channel.php?url=http://tchuairen.blog.51cto.com/rss.php?uid=3848118"  target="_blank"><img src="http://img1.51cto.com/image/skin/def/icon_subshot01_zhuaxia.gif"  alt="抓虾"  width="108" height="20" /></a></div><!--modCon end-->
+<span class="modBot"></span>
+</div>
+<!--blogRss end-->
+
+</div>
+<!--left end-->
+
+<div class="blogRight"  id="layout_1" style="min-height: 500px;width:750">
+<div class="box art">
+<div class="title">
+<h2 class="fl">文章</h2>
+<a href="/all/3848118" class="fr">文章列表&gt;&gt;</a></div>
+<div class="modCon">
+
+<div class="blogList">
+<div class="artHead">
+  <div>
+
+	<span class="artType01" style="margin-right: 5px;"><a href="javascript:void(0)">原创</a></span>
+
+  <h3 class="artTitle"><a href="/3848118/1887468">Python 多进程实战 & 回调函数理解与实战</a>
+
+
+  </h3>
+  </div>
+<div class="time">2016-12-29 20:39:02</div></div>
+<div class="artContent mt10" style="max-width:600px;"> 这篇博文主要讲下笔者在工作中Python多进程的实战运用和回调函数的理解和运用。多进程实战实战一、批量文件下载从一个文件中按行读取 url ，根据 url 下载文件到指定位置，用多进程实现。#!/usr/local/python27/bin/python2.7frommultiprocessingimportProcess,Poolimportos,time,random,sysimporturllib#文件下载函数deffiledown(url,file):urllib.urlretrieve(url,file)if__name__=='__main__':p=&..</div>
+
+<!--artContent end-->
+<div class="artFoot"><span class="fl">类别：未分类|<a href="/3848118/1887468">阅读</a>(335)|<a href="/3848118/1887468#replay">回复</a>(0)|<a href="javascript:void(0);" onclick="openFavoulist(1887468)">赞</a>(0)</span><span class="fr"><a href="/3848118/1887468">阅读全文&gt;&gt;</a> </span></div>
+</div>
+<!--blogList end-->
+
+
+<div class="blogList">
+<div class="artHead">
+  <div>
+
+	<span class="artType01" style="margin-right: 5px;"><a href="javascript:void(0)">原创</a></span>
+
+  <h3 class="artTitle"><a href="/3848118/1871556">Logstash 插件安装</a>
+
+
+  </h3>
+  </div>
+<div class="time">2016-11-10 17:26:20</div></div>
+<div class="artContent mt10" style="max-width:600px;"> 官方的安装指令是:bin/plugininstalllogstash-output-webhdfs但是往往安装不成功，一般就是如下情况，然后卡着不动了:Validating logstash-output-webhdfs 。。。原因是防火墙挡掉了logstash的默认gem sourcecatGemfile|grepsource#source"https://rubygems.org"修改 gem source 为国内源:cd/opt/logstash#来到logstash安装目录vimGemfilesource"https://ruby.taobao.org/"执行安装指令bin/plugininstalllogstash-output-webhdfs如果..</div>
+
+<!--artContent end-->
+<div class="artFoot"><span class="fl">类别：未分类|<a href="/3848118/1871556">阅读</a>(633)|<a href="/3848118/1871556#replay">回复</a>(0)|<a href="javascript:void(0);" onclick="openFavoulist(1871556)">赞</a>(0)</span><span class="fr"><a href="/3848118/1871556">阅读全文&gt;&gt;</a> </span></div>
+</div>
+<!--blogList end-->
+
+
+<div class="blogList">
+<div class="artHead">
+  <div>
+
+	<span class="artType01" style="margin-right: 5px;"><a href="javascript:void(0)">原创</a></span>
+
+  <h3 class="artTitle"><a href="/3848118/1861864">Elasticsearch Index API & Aggregations API & Query DSL</a>
+
+
+  </h3>
+  </div>
+<div class="time">2016-10-14 13:33:54</div></div>
+<div class="artContent mt10" style="max-width:600px;"> 这篇小菜给大家演示和讲解一些Elasticsearch的API，如在工作中用到时，方便查阅。一、Index API创建索引库curl-XPUT'http://127.0.0.1:9200/test_index/'-d'{"settings":{"index":{"number_of_shards":3,"number_of_replicas":1}},..</div>
+
+<!--artContent end-->
+<div class="artFoot"><span class="fl">类别：未分类|<a href="/3848118/1861864">阅读</a>(346)|<a href="/3848118/1861864#replay">回复</a>(0)|<a href="javascript:void(0);" onclick="openFavoulist(1861864)">赞</a>(0)</span><span class="fr"><a href="/3848118/1861864">阅读全文&gt;&gt;</a> </span></div>
+</div>
+<!--blogList end-->
+
+
+<div class="blogList">
+<div class="artHead">
+  <div>
+
+	<span class="artType01" style="margin-right: 5px;"><a href="javascript:void(0)">原创</a></span>
+
+  <h3 class="artTitle"><a href="/3848118/1861603">Elasticsearch 基础理论 & 配置调优</a>
+
+
+  </h3>
+  </div>
+<div class="time">2016-10-13 17:54:21</div></div>
+<div class="artContent mt10" style="max-width:600px;"> 一、简介ElasticSearch是一个基于Lucene的搜索服务器。它提供了一个分布式多用户能力的全文搜索引擎，基于RESTful web接口。Elasticsearch是用Java开发的，并作为Apache许可条款下的开放源码发布，是当前流行的企业级搜索引擎。它不但包括了全文搜索功能，还可以进行以下工作:分布式实时文件存储，并将每一个字段都编入索引，使其可以被搜索。实时分析的分布式搜索引擎。可以扩展到上百台服务器，处理PB级别的结构化或非结构化数据。使用案例：维基百科使用Elasticsearch来进行全文搜做并高亮显示关键词，以及提供search-as-you-type、..</div>
+
+<!--artContent end-->
+<div class="artFoot"><span class="fl">类别：未分类|<a href="/3848118/1861603">阅读</a>(2018)|<a href="/3848118/1861603#replay">回复</a>(3)|<a href="javascript:void(0);" onclick="openFavoulist(1861603)">赞</a>(5)</span><span class="fr"><a href="/3848118/1861603">阅读全文&gt;&gt;</a> </span></div>
+</div>
+<!--blogList end-->
+
+
+<div class="blogList">
+<div class="artHead">
+  <div>
+
+	<span class="artType01" style="margin-right: 5px;"><a href="javascript:void(0)">原创</a></span>
+
+  <h3 class="artTitle"><a href="/3848118/1861167">ELK+Filebeat+Kafka+ZooKeeper 构建海量日志分析平台</a>
+
+  <a href="http://blog.51cto.com/artcommend" target="_blank"><img src="http://blog.51cto.com/image/skin/40/indextj.gif" width="15" height="15" /></a>
+
+
+  </h3>
+  </div>
+<div class="time">2016-10-12 16:41:08</div></div>
+<div class="artContent mt10" style="max-width:600px;"> 什么要做日志分析平台？随着业务量的增长，每天业务服务器将会产生上亿条的日志，单个日志文件达几个GB，这时我们发现用Linux自带工具，cat grep awk 分析越来越力不从心了，而且除了服务器日志，还有程序报错日志，分布在不同的服务器，查阅繁琐。待解决的痛点:1、大量不同种类的日志成为了运维人员的负担，不方便管理;2、单个日志文件巨大，无法使用常用的文本工具分析，检索困难;3、日志分布在多台不同的服务器上，业务一旦出现故障，需要一台台查看日志。为了解决以上困扰:接下来我们要一步步构建这个日志分析平台，架构图如下:架..</div>
+
+<!--artContent end-->
+<div class="artFoot"><span class="fl">类别：未分类|<a href="/3848118/1861167">阅读</a>(6613)|<a href="/3848118/1861167#replay">回复</a>(25)|<a href="javascript:void(0);" onclick="openFavoulist(1861167)">赞</a>(30)</span><span class="fr"><a href="/3848118/1861167">阅读全文&gt;&gt;</a> </span></div>
+</div>
+<!--blogList end-->
+
+
+<div class="blogList">
+<div class="artHead">
+  <div>
+
+	<span class="artType01" style="margin-right: 5px;"><a href="javascript:void(0)">原创</a></span>
+
+  <h3 class="artTitle"><a href="/3848118/1859494">ZooKeeper基本讲解 & 集群构建 & 常用操作指令</a>
+
+
+  </h3>
+  </div>
+<div class="time">2016-10-08 18:26:16</div></div>
+<div class="artContent mt10" style="max-width:600px;"> 一、ZooKeeper概述ZooKeeper是一种为分布式应用所设计的高可用、高性能且一致的开源协调服务，是Google的Chubby一个开源实现，是Hadoop和Hbase的重要组件，它提供了一项基本服务：分布式锁服务。由于ZooKeeper的开源特性，后来我们的开发者在分布式锁的基础上，摸索了出了其他的使用方法：配置维护、组服务、分布式消息队列、分布式通知/协调等。zookeeper是基于内存同步数据的，所以集群内的节点其内存中的数据结构是完全相同的，因此效率非常高。ZooKeeper具备的几个特点决定了它能够用在大型的、分布式的系统当中:顺序一致性从同一..</div>
+
+<!--artContent end-->
+<div class="artFoot"><span class="fl">类别：未分类|<a href="/3848118/1859494">阅读</a>(882)|<a href="/3848118/1859494#replay">回复</a>(0)|<a href="javascript:void(0);" onclick="openFavoulist(1859494)">赞</a>(1)</span><span class="fr"><a href="/3848118/1859494">阅读全文&gt;&gt;</a> </span></div>
+</div>
+<!--blogList end-->
+
+
+<div class="blogList">
+<div class="artHead">
+  <div>
+
+	<span class="artType01" style="margin-right: 5px;"><a href="javascript:void(0)">原创</a></span>
+
+  <h3 class="artTitle"><a href="/3848118/1855090">Kafka 入门 and kafka+logstash 实战应用</a>
+
+  <a href="http://blog.51cto.com/artcommend" target="_blank"><img src="http://blog.51cto.com/image/skin/40/indextj.gif" width="15" height="15" /></a>
+
+
+  </h3>
+  </div>
+<div class="time">2016-09-21 17:16:56</div></div>
+<div class="artContent mt10" style="max-width:600px;"> 一、基础理论这块是整个kafka的核心无论你是先操作在来看还是先看在操作都需要多看几遍。首先来了解一下Kafka所使用的基本术语TopicKafka将消息种子(Feed)分门别类 每一类的消息称之为话题(Topic).Producer发布消息的对象称之为话题生产者(Kafka topic producer)Consumer订阅消息并处理发布的消息的种子的对象称之为话题消费者(consumers)Broker已发布的消息保存在一组服务器中称之为Kafka集群。集群中的每一个服务器都是一个代理(Broker). 消费者可以订阅一个或多个话题并从Broker拉数据从而消费这些已发布的消息。让我们站的高一点从..</div>
+
+<!--artContent end-->
+<div class="artFoot"><span class="fl">类别：未分类|<a href="/3848118/1855090">阅读</a>(3470)|<a href="/3848118/1855090#replay">回复</a>(6)|<a href="javascript:void(0);" onclick="openFavoulist(1855090)">赞</a>(3)</span><span class="fr"><a href="/3848118/1855090">阅读全文&gt;&gt;</a> </span></div>
+</div>
+<!--blogList end-->
+
+
+<div class="blogList">
+<div class="artHead">
+  <div>
+
+	<span class="artType01" style="margin-right: 5px;"><a href="javascript:void(0)">原创</a></span>
+
+  <h3 class="artTitle"><a href="/3848118/1843966">Python 如何理解又晕又好用的装饰器</a>
+
+
+  </h3>
+  </div>
+<div class="time">2016-08-29 16:08:16</div></div>
+<div class="artContent mt10" style="max-width:600px;"> Python 装饰器这东西对初学者来说是个坑，很容易绕晕，笔者当时初学装饰器时花费了数天时间，看了不同讲师对这块内容的讲解，还是一知半解。 不过装饰器在开发中可是很好用的，有必要攻破，希望这篇文章能帮助学习者快速攻破难关。初步理解#先来看一个简单函数defshow():print('Mrtu')show()#执行结果:Mrtu#现在我们用装饰器扩展这个函数，在打印"Mrtu"之前打印一行"hello"&..</div>
+
+<!--artContent end-->
+<div class="artFoot"><span class="fl">类别：未分类|<a href="/3848118/1843966">阅读</a>(69)|<a href="/3848118/1843966#replay">回复</a>(0)|<a href="javascript:void(0);" onclick="openFavoulist(1843966)">赞</a>(0)</span><span class="fr"><a href="/3848118/1843966">阅读全文&gt;&gt;</a> </span></div>
+</div>
+<!--blogList end-->
+
+
+<div class="blogList">
+<div class="artHead">
+  <div>
+
+	<span class="artType01" style="margin-right: 5px;"><a href="javascript:void(0)">原创</a></span>
+
+  <h3 class="artTitle"><a href="/3848118/1840596">Logstash 讲解与实战应用</a>
+
+
+  </h3>
+  </div>
+<div class="time">2016-08-20 16:06:07</div></div>
+<div class="artContent mt10" style="max-width:600px;"> 一、Logstash 介绍Logstash 是一款强大的数据处理工具，它可以实现数据传输，格式处理，格式化输出，还有强大的插件功能，常用于日志处理。官网地址:https://www.elastic.co/products/logstash 工作流程Logstash 工作的三个阶段：input 数据输入端，可以接收来自任何地方的源数据。file：从文件中读取syslog：监听在514端口的系统日志信息，并解析成RFC3164格式。redis：从redis-server list 中获取beat：接收来自Filebeat的事件Filter 数据中转层，主要进行格式处理，数据类型转换、数据过滤、字段添加，修改等，常用的过滤器如下。gr..</div>
+
+<!--artContent end-->
+<div class="artFoot"><span class="fl">类别：未分类|<a href="/3848118/1840596">阅读</a>(7543)|<a href="/3848118/1840596#replay">回复</a>(1)|<a href="javascript:void(0);" onclick="openFavoulist(1840596)">赞</a>(1)</span><span class="fr"><a href="/3848118/1840596">阅读全文&gt;&gt;</a> </span></div>
+</div>
+<!--blogList end-->
+
+
+<div class="blogList">
+<div class="artHead">
+  <div>
+
+	<span class="artType01" style="margin-right: 5px;"><a href="javascript:void(0)">原创</a></span>
+
+  <h3 class="artTitle"><a href="/3848118/1831281">nginx + uwsgi + Django 应用部署</a>
+
+
+  </h3>
+  </div>
+<div class="time">2016-07-28 16:07:33</div></div>
+<div class="artContent mt10" style="max-width:600px;"> 今天来看下基于Django开发的应用如何在Centos6环境部署系统环境:Centos6.5 x64软件版本:Django 1.9.5 、uwsgi-2.0.13.1nginx 安装配置（略）请见:http://tchuairen.blog.51cto.com/3848118/1771597一、安装uwsgi#安装有两种方式#1、源码安装#从官网下载uwsgi源码包:http://uwsgi-docs.readthedocs.io/en/latest/#安装编译需要的程序包yuminstalllibxml2-devellibxml2-ycduwsgi-2.0.13.1pythonsetup.pyinstall#2、使用工具直接安装..</div>
+
+<!--artContent end-->
+<div class="artFoot"><span class="fl">类别：<a href=/3848118/d-1>Web服务器</a>|<a href="/3848118/1831281">阅读</a>(342)|<a href="/3848118/1831281#replay">回复</a>(1)|<a href="javascript:void(0);" onclick="openFavoulist(1831281)">赞</a>(1)</span><span class="fr"><a href="/3848118/1831281">阅读全文&gt;&gt;</a> </span></div>
+</div>
+<!--blogList end-->
+
+
+
+<div class="pages"><a href='/3848118/p-1' >&nbsp;<<&nbsp;</a>&nbsp;&nbsp;<b>1</b>&nbsp; <a href="/3848118/p-2" >&nbsp;2&nbsp;</a> <a href="/3848118/p-3" >&nbsp;3&nbsp;</a> <a href="/3848118/p-4" >&nbsp;4&nbsp;</a> <a href="/3848118/p-5" >&nbsp;5&nbsp;</a> <input type='text' size='2' style='height: 16px; border:1px solid #E5E5E5;' onkeydown="javascript: if(event.keyCode==13) window.location='/3848118/p-'+this.value;"> <a href='/3848118/p-10' >&nbsp;>>&nbsp;</a>&nbsp;&nbsp;页数 ( 1/10 )</div>
+</div><!--modCon end-->
+<span class="modBot"></span>
+</div>
+
+<div class="box recentGuests">
+<div class="title">
+<h2>最近访客</h2>
+</div>
+<div class="modCon">
+<ul>
+
+<li><a href="http://1459687.blog.51cto.com"><img src="http://ucenter.51cto.com/avatar.php?uid=1449687&size=middle" /></a>
+<p><a href="http://1459687.blog.51cto.com">waeke</a></p>
+
+<li><a href="http://11420509.blog.51cto.com"><img src="http://ucenter.51cto.com/avatar.php?uid=11410509&size=middle" /></a>
+<p><a href="http://11420509.blog.51cto.com">inonou</a></p>
+
+<li><a href="http://2039835.blog.51cto.com"><img src="http://ucenter.51cto.com/avatar.php?uid=2029835&size=middle" /></a>
+<p><a href="http://2039835.blog.51cto.com">richa..</a></p>
+
+<li><a href="http://11386218.blog.51cto.com"><img src="http://ucenter.51cto.com/avatar.php?uid=11376218&size=middle" /></a>
+<p><a href="http://11386218.blog.51cto.com">KANTPM</a></p>
+
+<li><a href="http://12251474.blog.51cto.com"><img src="http://ucenter.51cto.com/avatar.php?uid=12241474&size=middle" /></a>
+<p><a href="http://12251474.blog.51cto.com">晓枫88</a></p>
+
+<li><a href="http://itzhoujun.blog.51cto.com"><img src="http://ucenter.51cto.com/avatar.php?uid=6812629&size=middle" /></a>
+<p><a href="http://itzhoujun.blog.51cto.com">shixi..</a></p>
+
+<li><a href="http://xmomo.blog.51cto.com"><img src="http://ucenter.51cto.com/avatar.php?uid=5994484&size=middle" /></a>
+<p><a href="http://xmomo.blog.51cto.com">Linux..</a></p>
+
+<li><a href="http://7150278.blog.51cto.com"><img src="http://ucenter.51cto.com/avatar.php?uid=7140278&size=middle" /></a>
+<p><a href="http://7150278.blog.51cto.com">llqzh..</a></p>
+
+<li><a href="http://12670858.blog.51cto.com"><img src="http://ucenter.51cto.com/avatar.php?uid=12660858&size=middle" /></a>
+<p><a href="http://12670858.blog.51cto.com">wb58b..</a></p>
+
+<li><a href="http://7901310.blog.51cto.com"><img src="http://ucenter.51cto.com/avatar.php?uid=7891310&size=middle" /></a>
+<p><a href="http://7901310.blog.51cto.com">china..</a></p>
+
+<li><a href="http://024mj.blog.51cto.com"><img src="http://ucenter.51cto.com/avatar.php?uid=10252785&size=middle" /></a>
+<p><a href="http://024mj.blog.51cto.com">mj为</a></p>
+
+<li><a href="http://sofar.blog.51cto.com"><img src="http://ucenter.51cto.com/avatar.php?uid=353572&size=middle" /></a>
+<p><a href="http://sofar.blog.51cto.com">workming</a></p>
+
+</ul>
+<span class="clear"></span>
+</div>
+<span class="modBot"></span>
+</div>
+
+</div>
+<!--center end-->
+
+<div class="rightIndex" id="layout_3" style="min-height: 500px;width:240">
+</div>
+<!--right end-->
+
+</div>
+<!--blogMian end-->
+<script src="http://blog.51cto.com/js/header.php?uid=3848118"></script>
+<script language="javascript">
+function openFavoulist(tid)
+	{
+		window.open ('http://blog.51cto.com/mod/favourlist.php?tid=' + tid,'newwindow','height=300,width=500,top=400,left=400,toolbar=no,menubar=no,scrollbars=no, resizable=no,location=no, status=no,z-look=yes');
+	}
+</script>
+
+<script src="http://blog.51cto.com/js/jquery-1.2.6.pack.js"></script>
+<script src="http://blog.51cto.com/js/jquery.top.js"></script>
+<link href="http://blog.51cto.com/css/blog_top/blog_top.css" rel="stylesheet" type="text/css" />
+	<!-- Baidu Button BEGIN fav1 -->
+	<!--<script>-->
+<!--var bds_config = {'wbUid':1706976420};-->
+<!--window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":["mshare","weixin","sqq","tsina","qzone","bdysc","renren","tqq","tieba","douban","bdhome","taobao","hi","youdao"], 'bdPic':'http://blog.51cto.com/attachment/201305/173413310.jpg',"bdStyle":"1","bdSize":"16"},"slide":{"type":"slide","bdImg":"6","bdPos":"right","bdTop":"100"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];-->
+<!--</script>-->
+<!--<div id="message" class="blogpop" style="background-color:#FFFFFF;z-index:100;width:389px;height:196px;position:absolute; display:none; bottom:0; top:'document.documentElement.scrollTop + document.documentElement.clientHeight-196+'px;right:0; overflow:hidden;"><iframe style="width:800px;height:536px;top:0px;left:0px;position:absolute;visibility:inherit;z-index:-1;" frameborder=0 ></iframe>-->
+<!--<div style="height:36px;background:url(http://blog.51cto.com/image/blog_top/popbgx.jpg) repeat-x; position:relative;width:387px;border-right-color:#2668B7;border-right-width:2px;border-right-style:solid 2px #2668B7;"><span style="right:10px;padding:12px 0 0;position:absolute;top:0"><span style="margin-right:80px;color:#828282;width:190px;padding:10px 0 0 10px;font-size:14px">每日博报 精彩不止一点</span><img title="关闭" id="message_close" src="http://blog.51cto.com/image/blog_top/close.jpg" alt="关闭" /></span><div style="width:387px;height:36px;left:0;overflow:hidden; text-indent:-999em;background:url(http://blog.51cto.com/image/blog_top/hdtit.jpg) no-repeat;border-right:solid 2px #2668B7;"><a style="display: block; height: 36px;width:138px;" target="_blank" href="http://blog.51cto.com"></a>-->
+<!--</div>-->
+<!--<div style="clear:both;"></div>-->
+<!--</div>-->
+	<!--<div id="message_content" style="border-top:none;font-family:Microsoft YaHei;font-size:12px;width:389px;height:160pxpx;text-align:left;overflow:hidden;">-->
+	<!--<script type='text/javascript'>&lt;!&ndash;//<![CDATA[-->
+	   <!--var m3_u = (location.protocol=='https:'?'https://gg.51cto.com/www/delivery/ajs.php':'http://gg3.51cto.com/www/delivery/ajs.php');-->
+	   <!--var m3_r = Math.floor(Math.random()*99999999999);-->
+	   <!--if (!document.MAX_used) document.MAX_used = ',';-->
+	   <!--document.write ("<scr"+"ipt type='text/javascript' src='"+m3_u);-->
+	   <!--document.write ("?zoneid=454");-->
+	   <!--document.write ('&amp;cb=' + m3_r);-->
+	   <!--if (document.MAX_used != ',') document.write ("&amp;exclude=" + document.MAX_used);-->
+	   <!--document.write (document.charset ? '&amp;charset='+document.charset : (document.characterSet ? '&amp;charset='+document.characterSet : ''));-->
+	   <!--document.write ("&amp;loc=" + escape(window.location));-->
+	   <!--if (document.referrer) document.write ("&amp;referer=" + escape(document.referrer));-->
+	   <!--if (document.context) document.write ("&context=" + escape(document.context));-->
+	   <!--if (document.mmm_fo) document.write ("&amp;mmm_fo=1");-->
+	   <!--document.write ("'><\/scr"+"ipt>");-->
+	<!--//]]>&ndash;&gt;</script>-->
+	<!--</div>-->
+<!--</div>-->
+<style>
+.backToTop {
+    display: none;
+	WIDTH: 45px;
+	height:45px;
+	BOTTOM: 20px;
+     position: fixed;
+    _position: absolute;
+    right: 140px;
+    bottom: 10px;
+    _bottom: "auto";
+    cursor: pointer;
+    opacity: .6;
+    filter: Alpha(opacity=60);
+	text-indent:-9999px;
+}
+.tops { background:url(/images/.jpg) no-repeat center center; }
+.newcrumbox{ width:193px; margin:0 auto;}
+.a_lsits a{display: inline-block;  height:22px; line-height:22px; padding-left: 28px; color:#555; border:1px solid #d6d6d6; border-radius: 3px; background: #efefef; font-size:12px; margin-bottom: 8px; text-decoration: none; background:url(https://s4.51cto.com/wyfs02/M01/98/95/wKiom1k-Wz6DbAw-AAAQL3nX74k572.png) no-repeat;}
+.a_lsits .newicon_d{ width:55px;}
+.a_lsits .newicon_l{ width:70px;}
+.a_lsits .newicon_1{ background-position: 8px 4px;}
+.a_lsits .newicon_2{ background-position: 8px -22px;}
+.a_lsits .newicon_3{ background-position: 8px -49px;}
+.a_lsits .newicon_4{ background-position: 8px -102px;}
+.a_lsits .newicon_5{ background-position: 8px -74px;}
+.a_listbot{ text-align: center; margin-top: 5px;}
+.a_listbot a{ display: inline-block;font-size:12px;padding-left: 35px;background:url(https://s4.51cto.com/wyfs02/M01/98/95/wKiom1k-Wz6DbAw-AAAQL3nX74k572.png) no-repeat;height:22px; line-height:22px; color:#E93504;text-decoration: none;}
+.a_listbot a.style_1{background-position: 8px -74px; }
+.a_listbot a.style_2{background-position: 8px -131px;}
+</style>
+<!-- <div style="width:100px; height:300px; position:fixed; top:25%;left:50%;margin-left:-613px;z-index:100; _position:absolute; _margin-top: 0; _top:expression(documentElement.scrollTop+(documentElement.clientHeight-this.offsetHeight)/2+50);" id="f_close_box">
+<img border="0" usemap="#Map1" src="https://s1.51cto.com/wyfs02/M00/93/21/wKiom1kISujgrYSbAADPIiyteUc221.jpg">
+<map id="Map1" name="Map1">
+<area onclick="document.getElementById('f_close_box').style.display='none';" href="javascript:void(0);" coords="86,14,10"  shape="circle">
+</map>
+
+</div> -->
+<Iframe src="http://home.51cto.com/iframe/get-station-ads" style="position: fixed;left:0; top:240px;width:100px; height:300px;" scrolling="no" frameborder="0"></iframe>
+<script>
+(function() {
+	  $('#showMessagerDim').show();
+	   var _html = $("#addTop").html();
+	  if(get_cookie('blog_top')==''){
+//		 show_pop();
+	     jQuery.messager.showblogtop('', _html);
+	     $("#message").find("#adTop").show();
+	     var date=new Date();
+	     var test = date.getTime();
+	     document.cookie="blog_top=yes;domain=.blog.51cto.com;expires="+date.toGMTString()+";path=/;";
+	     }
+	    $("#showMessagerDim").click(function(){
+	    	jQuery.messager.showblogtop('', _html);
+			$("#message").find("#adTop").show();
+			//removeIframe();
+		});
+		
+		function get_cookie(Name) {
+		    var search = Name + "=";
+		    var returnvalue = "";
+		    if (document.cookie.length > 0) {
+		        offset = document.cookie.indexOf(search);
+		        if (offset != -1) {
+		            offset += search.length;
+
+		            end1 = document.cookie.indexOf(";", offset);
+
+		            if (end1 == -1)
+		            end1 = document.cookie.length;
+		            returnvalue=unescape(document.cookie.substring(offset, end1));
+		        }
+		    }
+		    return returnvalue;
+		}
+	})();
+
+</script>
+
+
+<style>
+.vlist{ margin:10px 10px; height:65px;}
+.vlist a img{ float:left; margin-right:10px;}
+.vlist dl{ text-align:left;}
+.vlist dl dt{ height:40px;line-height: 20px; overflow:hidden; padding-top:5px;}
+.vlist dl dt,.vlist dl dt a{ color:#262626;}
+.vlist dl dd,.vlist dl dd a{ color:#777;}
+
+.video-icon{
+    position: relative;
+}
+.video-icon a.i_video {
+    background: url("http://www.51cto.com/images/homepage/Images/eduplay.png") repeat scroll 0 0 rgba(0, 0, 0, 0);
+    display: block;
+    height: 25px;
+    left:31px;
+    position: absolute;
+    top:22px;
+    width: 25px;
+    z-index: 10;
+}
+</style>
+<!-- Baidu Button END -->
+<script type="text/javascript">
+jQuery(function() {
+	jQuery('.blog_match_yq').click(function(){
+		var wind_uid = '';
+		if(!wind_uid){
+			alert("请先登录！");
+			return false;
+		}
+		jQuery.ajax({
+			   type: "POST",
+			   url:"/contest2012/index.php?mod=sendmsg",
+			   dataType: "html",
+			   data: "vuid=" + 3848118,
+			   success: function(data) {
+					if(data == 0)
+					{
+						alert("查无此人！");
+						return false;
+					}else if(data == 1){
+						alert("请先登录！");
+						return false;
+					}else if(data == 2){
+						alert("不能邀请自己！");
+						return false;
+					}else if(data == 22){  
+						alert("邀请信息已发出！");
+						return false;
+					}
+			   }
+		  });
+	});
+})
+</script>
+
+
+</div>
+</div>
+<div class="clear"></div>
+<!-- <script>
+jQuery(function(){
+	var html= "<div id=\"sogou_se_tgbar\" style=\"text-align:center;margin:0px auto 2px auto;clear:both;background:url(http://home.51cto.com/public/images/notice/sogou_se_tgbar_bg_final1.gif) repeat-x;width:950px;color:#000;font-size:13px;height:36px;z-index:21474836471\"><div style=\"float:left;cursor:pointer;width:910px;text-align:center;border-left:solid #efbf00 1px;height:32px; line-height:32px;txt-align:center;\"><span style=\"\">	<a href=\"http://51ctoblog.blog.51cto.com/26414/1093282\">【新年祝福征集】51CTO社区年底嘉年华活动正在征集博主祝福语，祝福以红包的形式随机的赠送给访问51CTO的网友 点此送祝福>></a></span></div><div onclick=\"document.getElementById('sogou_se_tgbar').style.display = 'none';\" style=\"float:right;width:20px;cursor:pointer;height:28px;padding:4px 8px 0px 8px;border-right:solid #efbf00 1px\"><img style=\"border:none;margin:4px 0px 0px 0px;\" src=\"http://home.51cto.com/public/images/notice/sogou_se_tgbar_close_final1.gif\"></div></div>"
+	jQuery('body').prepend(html);
+})
+</script> -->
+</div>
+<style>
+    .fixexit_small {
+        bottom: 185px;
+        position: fixed;
+        right: 10px;
+        z-index: 99;
+    }
+    .fixexit_small .exit_list {
+        margin-top: 4px;
+    }
+    .fixexit_small .exit_list .ina {
+        border-radius: 5px;
+        display: block;
+        height: 40px;
+        text-align: center;
+        width: 40px;
+    }
+    .fixexit_small .exit_list .ina b {
+        color: #fff;
+        cursor: pointer;
+        display: inline-block;
+        font-size: 12px;
+        font-weight: normal;
+        line-height: 15px;
+        padding-top: 5px;
+        text-align: center;
+    }
+    .fixexit_small .exit_list_fkui .ina {
+        background: #40afff none repeat scroll 0 0;
+    }
+    .fixexit_small .exit_list_fkui .ina:hover {
+        background: #2ea7ff none repeat scroll 0 0;
+    }
+    .fixexit_small .exit_list_zxun .ina {
+        background: #c1c1c1 url("./images/anchor_qq.png") no-repeat scroll 9px 9px;
+    }
+    .fixexit_small .exit_list_zxun .ina:hover {
+        background: #40afff url("./images/anchor_qq.png") no-repeat scroll 9px 9px;
+    }
+    .fixexit_small .exit_list_zxun .ina img {
+        height: 18px;
+        width: 18px;
+    }
+    .fixexit_small .exit_list_gaozhao .ina {
+        background: #c1c1c1 url("./images/gaozhao.jpg")  no-repeat center center;
+    }
+    .fixexit_small .exit_list_gaozhao .ina:hover {
+        background: #40afff url("./images/gaozhao.jpg")  no-repeat center center;
+    }
+    .fixexit_small .exit_list_gaozhao .ina img {
+        height: 18px;
+        width: 18px;
+    }
+    .fixexit_small .exit_list_back {
+        bottom: 0;
+        display: none;
+        left: 0;
+        position: absolute;
+    }
+    .fixexit_small .exit_list_back .ina {
+        background: #c1c1c1 url("./images/anchor_top.png") no-repeat scroll 10px 12px;
+    }
+    .fixexit_small .exit_list_back .ina:hover {
+        background: #40afff none repeat scroll 0 0;
+    }
+    .fixexit_small .exit_list_back .ina b {
+        display: none;
+    }
+    .fixexit_small .exit_list_back .ina:hover b {
+        display: block;
+    }
+
+</style>
+<div class="fixexit_small">
+    <div class="infixexit" style='font-family: "微软雅黑"'>
+        <div class="exit_list exit_list_zxun"><a href="http://wpa.qq.com/msgrd?v=3&uin=1173854158&site=qq&menu=yes" class="ina" target="_blank"></a></div>
+        <div class="exit_list exit_list_fkui "><span class="ina"><a href="http://51ctoblog.blog.51cto.com/26414/1933645" ><b>意见<br />反馈</b></a></span></div>
+        <div class="exit_list  exit_list_gaozhao"><a href='http://51ctoblog.blog.51cto.com' target ='_black' class="ina"></a></div>
+
+    </div>
+</div>
+<div id="footer">
+  <div id="innerFooter">
+	<center>
+		<small>
+			Copyright By 51CTO.COM 版权所有<br><br>
+			<a href="http://blog.51cto.com" target="_blank"><img src="http://img1.51cto.com/image/skin/40/copyright.jpg"></a>
+	  </small>
+	</center>
+  </div>
+</div>
+<script src="http://home.51cto.com/index.php?s=/Index/getLoginStatus/reback/http%253A%252F%252Ftchuairen.blog.51cto.com%252F" charset='utf-8'></script>
+<div style="display:none">
+<script src="http://logs.51cto.com/rizhi/count/count.js"></script>
+<div style="display:none">
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?2283d46608159c3b39fc9f1178809c21";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+    <script type="text/javascript">
+        var uid = "";
+        var _educto = _educto || [];
+        _educto.push(['_setUserId',uid]);
+    </script>
+
+    <script type="text/javascript">
+        document.write(decodeURI("%3Cscript src='https://tongji.51cto.com/cto.js/d2cb9d6ccefce8d1e89582c2a2a24cc0' type='text/javascript'%3E%3C/script%3E"));
+        function bdmsPoint(behavior,method){
+            _educto.push(['_trackEvent', behavior, method])
+        }
+        $(function(){
+            $(".bdms_point").click(function(){
+                bdmsPoint($(this).attr("data-behavior"),$(this).attr("data-method"));
+            })
+        })
+    </script>
+
+
+</div>
+<iframe frameborder="0" scrolling="no" width="0" height="0" src="http://log.51cto.com/pageview.php?frompos=blog_art"></iframe>
+</div>
+
+<script src="http://blog.51cto.com/js/poptop.js"></script>
+<script src="http://home.51cto.com/iframe/iframe-member-adv?blog"></script>
+</body>
+</html>

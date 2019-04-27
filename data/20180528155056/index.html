@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    <meta charset="UTF-8">
+    <link rel="canonical" href="https://blog.csdn.net/doitsjz/article/details/73351176"> 
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="referrer" content="always">
+    <meta name="description" content="流媒体传输中常用的RTCP包主要有SR／RR／SDES／BYE／APP／XR，主要由RFC 3611和RFC 3550定义。
+
+而WEBRTC视频中常用的RTCP包比语音要多很多，语音的RTCP主要用于状态传递，统计数据。而视频中的RTCP更多赋予了控制功能，比如关键帧请求，码率控制等等。
+
+
+
+
+本文不介绍语音中的RTCP，只介绍视频中的RTCP包。
+
+这些报文遵守RFC458">
+    <meta name="keywords" content="webrtc,rtcp">
+    <meta http-equiv="Cache-Control" content="no-siteapp"><link rel="alternate" media="handheld" href="https://blog.csdn.net/doitsjz/article/details/73351176#">
+    <meta name="shenma-site-verification" content="5a59773ab8077d4a62bf469ab966a63b_1497598848">
+    
+
+    <link href="favicon.ico" rel="SHORTCUT ICON">
+    <title>WEBRTC 实时视频传输中的RTCP协议码率控制报文 - CSDN博客</title>
+    
+            
+        
+
+    
+    
+    
+    
+        
+         
+    
+
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body><div id="BAIDU_DUP_fp_wrapper" style="position: absolute; left: -1px; bottom: -1px; z-index: 0; width: 0px; height: 0px; overflow: hidden; visibility: hidden; display: none;"><iframe id="BAIDU_DUP_fp_iframe" src="index_1.html" style="width: 0px; height: 0px; visibility: hidden; display: none;"></iframe></div><div id="MathJax_Message" style="display: none;"></div>    
+    
+    
+    
+
+
+
+<header>
+	<div class="container d-flex clearfix">
+		<div class="title-box">
+			<h6 class="title-blog">
+				<a href="https://blog.csdn.net/doitsjz">伍意的博客</a>
+			</h6>
+			<p class="description">技术成就梦想，活到老学到老！</p>
+		</div>
+		<div class="opt-box d-flex justify-content-end">
+			<a class="btn btn-sm" href="https://blog.csdn.net/doitsjz/rss/list">
+					<svg class="icon" aria-hidden="true">
+						<use xlink:href="#csdnc-rss"></use>
+					</svg>RSS订阅</a>
+					</div>
+	</div>
+</header>
+<div class="container clearfix pt0" id="mainBox">
+    <main>
+        <div class="blog-content-box">
+	<div class="article-title-box">
+			<span class="article-type type-2 float-left">转</span>		<h6 class="title-article">WEBRTC 实时视频传输中的RTCP协议码率控制报文</h6>
+	</div>
+	<div class="article-info-box">
+		<div class="article-bar-top d-flex">
+												<span class="time">2017年06月16日 21:34:51</span>
+			<div class="float-right">
+				<span class="read-count">阅读数：963</span>
+											</div>
+		</div>
+	</div>
+	<article>
+		<div id="article_content" class="article_content clearfix csdn-tracking-statistics" data-pid="blog" data-mod="popu_307" data-dsm="post">
+                    
+            <div class="htmledit_views">
+                
+<p style="margin-top: 0px; margin-bottom: 0px; font-family: Arial,&quot;Microsoft YaHei&quot;; color: rgb(51, 51, 51);">
+</p>
+<p style="margin-top: 0px; margin-bottom: 0px; font-family: Arial,&quot;Microsoft YaHei&quot;; color: rgb(51, 51, 51);">
+<span style="font-size: 24px;">流媒体传输中常用的RTCP包主要有SR／RR／SDES／BYE／APP／XR，主要由RFC 3611和RFC 3550定义。</span></p>
+<p style="margin-top: 0px; margin-bottom: 0px; font-family: Arial,&quot;Microsoft YaHei&quot;; color: rgb(51, 51, 51);">
+<span style="font-size: 24px;">而WEBRTC视频中常用的RTCP包比语音要多很多，语音的RTCP主要用于状态传递，统计数据。而视频中的RTCP更多赋予了控制功能，比如关键帧请求，码率控制等等。</span></p>
+<p style="margin-top: 0px; margin-bottom: 0px; font-family: Arial,&quot;Microsoft YaHei&quot;; color: rgb(51, 51, 51);">
+<span style="font-size: 24px;"><br></span></p>
+<p style="margin-top: 0px; margin-bottom: 0px; font-family: Arial,&quot;Microsoft YaHei&quot;; color: rgb(51, 51, 51);">
+<span style="font-size: 24px;">本文不介绍语音中的RTCP，只介绍视频中的RTCP包。</span></p>
+<p style="margin-top: 0px; margin-bottom: 0px; font-family: Arial,&quot;Microsoft YaHei&quot;; color: rgb(51, 51, 51);">
+<span style="font-size: 24px;">这些报文遵守<a href="http://www.rfc-editor.org/rfc/pdfrfc/rfc4585.txt.pdf" style="background: transparent none repeat scroll 0% 0%; color: rgb(51, 51, 51); margin: 0px; padding: 0px;">RFC4585</a>和<a href="http://www.rfc-editor.org/rfc/pdfrfc/rfc5104.txt.pdf" style="background: transparent none repeat scroll 0% 0%; color: rgb(51, 51, 51); margin: 0px; padding: 0px;">RFC5104</a>协议。<br></span></p>
+<p style="margin-top: 0px; margin-bottom: 0px; font-family: Arial,&quot;Microsoft YaHei&quot;; color: rgb(51, 51, 51);">
+<span style="font-size: 24px;"><br></span></p>
+<p style="margin-top: 0px; margin-bottom: 0px; font-family: Arial,&quot;Microsoft YaHei&quot;; color: rgb(51, 51, 51);">
+<span style="font-size: 24px;">第一类：关键帧请求</span></p>
+<p style="margin-top: 0px; margin-bottom: 0px; font-family: Arial,&quot;Microsoft YaHei&quot;; color: rgb(51, 51, 51);">
+<span style="font-size: 24px;">主要包括SLI／PLI／FIR，作用是在关键帧丢失无法解码时，请求发送方重新生成并发送一个关键帧。</span></p>
+<p style="margin-top: 0px; margin-bottom: 0px; font-family: Arial,&quot;Microsoft YaHei&quot;; color: rgb(51, 51, 51);">
+<span style="font-size: 24px;">这本质是一种重传，但是跟传输层的重传的区别是，它重传是最新生成的帧。</span></p>
+<p style="margin-top: 0px; margin-bottom: 0px; font-family: Arial,&quot;Microsoft YaHei&quot;; color: rgb(51, 51, 51);">
+<span style="font-size: 24px;">PLI 是Picture Loss Indication，SLI 是Slice Loss Indication。</span></p>
+<p style="margin-top: 0px; margin-bottom: 0px; font-family: Arial,&quot;Microsoft YaHei&quot;; color: rgb(51, 51, 51);">
+<span style="font-size: 24px;">发送方接收到接收方反馈的PLI或SLI需要重新让编码器生成关键帧并发送给接收端。</span></p>
+<p style="margin-top: 0px; margin-bottom: 0px; font-family: Arial,&quot;Microsoft YaHei&quot;; color: rgb(51, 51, 51);">
+<span style="font-size: 24px;"><br></span></p>
+<p style="margin-top: 0px; margin-bottom: 0px; font-family: Arial,&quot;Microsoft YaHei&quot;; color: rgb(51, 51, 51);">
+<span style="font-size: 24px;">FIR 是Full Intra Request，这里面Intra的含义可能很多人不知道。</span></p>
+<p style="margin-top: 0px; margin-bottom: 0px; font-family: Arial,&quot;Microsoft YaHei&quot;; color: rgb(51, 51, 51);">
+<span style="font-size: 24px;">Intra的含义是图像内编码，不需要其他图像信息即可解码；Inter指图像间编码，解码需要参考帧。</span></p>
+<p style="margin-top: 0px; margin-bottom: 0px; font-family: Arial,&quot;Microsoft YaHei&quot;; color: rgb(51, 51, 51);">
+<span style="font-size: 24px;">故Intra Frame其实就是指I帧，Inter Frame指P帧或B帧。</span></p>
+<p style="margin-top: 0px; margin-bottom: 0px; font-family: Arial,&quot;Microsoft YaHei&quot;; color: rgb(51, 51, 51);">
+<span style="font-size: 24px;"><br></span></p>
+<p style="margin-top: 0px; margin-bottom: 0px; font-family: Arial,&quot;Microsoft YaHei&quot;; color: rgb(51, 51, 51);">
+<span style="font-size: 24px;">那么为什么在PLI和SLI之外还需要一个FIR呢？</span></p>
+<p style="margin-top: 0px; margin-bottom: 0px; font-family: Arial,&quot;Microsoft YaHei&quot;; color: rgb(51, 51, 51);">
+<span style="font-size: 24px;">原因是使用场景不同，FIR更多是在一个中心化的Video Conference中，新的参与者加入，就需要发送一个FIR，其他的参与者给他发送一个关键帧这样才能解码，</span></p>
+<p style="margin-top: 0px; margin-bottom: 0px; font-family: Arial,&quot;Microsoft YaHei&quot;; color: rgb(51, 51, 51);">
+<span style="font-size: 24px;">而PLI和SLI的含义更多是在发生丢包或解码错误时使用。</span></p>
+<p style="margin-top: 0px; margin-bottom: 0px; font-family: Arial,&quot;Microsoft YaHei&quot;; color: rgb(51, 51, 51);">
+<span style="font-size: 24px;"><br></span></p>
+<p style="margin-top: 0px; margin-bottom: 0px; font-family: Arial,&quot;Microsoft YaHei&quot;; color: rgb(51, 51, 51);">
+<span style="font-size: 24px;">第二类：重传请求</span></p>
+<p style="margin-top: 0px; margin-bottom: 0px; font-family: Arial,&quot;Microsoft YaHei&quot;; color: rgb(51, 51, 51);">
+<span style="font-size: 24px;">主要包括RTX／NACK／RPSI</span></p>
+<p style="margin-top: 0px; margin-bottom: 0px; font-family: Arial,&quot;Microsoft YaHei&quot;; color: rgb(51, 51, 51);">
+<span style="font-size: 24px;">这个重传跟关键帧请求的区别是它可以要求任意帧进行重传<br></span></p>
+<p style="margin-top: 0px; margin-bottom: 0px; font-family: Arial,&quot;Microsoft YaHei&quot;; color: rgb(51, 51, 51);">
+<span style="font-size: 24px;"><br></span></p>
+<p style="margin-top: 0px; margin-bottom: 0px; font-family: Arial,&quot;Microsoft YaHei&quot;; color: rgb(51, 51, 51);">
+<span style="font-size: 24px;">第三类：码率控制</span></p>
+<p style="margin-top: 0px; margin-bottom: 0px; font-family: Arial,&quot;Microsoft YaHei&quot;; color: rgb(51, 51, 51);">
+<span style="font-size: 24px;">主要包括REMB／TMMBR／TMMBN</span></p>
+<p style="margin-top: 0px; margin-bottom: 0px; font-family: Arial,&quot;Microsoft YaHei&quot;; color: rgb(51, 51, 51);">
+</p>
+<p style="margin-top: 0px; margin-bottom: 0px; font-family: Arial,&quot;Microsoft YaHei&quot;; color: rgb(51, 51, 51);">
+<span style="font-size: 24px;">TMMBR是Temporal Max Media Bitrate Request，表示临时最大码率请求。表明接收端当前带宽受限，告诉发送端控制码率。</span></p>
+<span style="font-size: 24px;"><span style="color: rgb(51, 51, 51); font-family: sans-serif;">REMB是ReceiverEstimated Max Bitrate，接收端估计的最大码率。</span><br style="color: rgb(51, 51, 51); font-family: sans-serif;"></span>
+<p style="margin-top: 0px; margin-bottom: 0px; font-family: Arial,&quot;Microsoft YaHei&quot;; color: rgb(51, 51, 51);">
+<span style="font-size: 24px;">TMMBN是Temporal Max Media Bitrate Notification</span></p>
+<br>            </div>
+                </div>
+				<div class="hide-article-box text-center csdn-tracking-statistics tracking-click" data-mod="popu_376">
+			<a class="btn btn-red-hollow" id="btn-readmore">阅读更多</a>
+		</div>
+        	</article>
+	
+		<div class="article-bar-bottom">
+						<div class="tags-box artic-tag-box">
+			<span class="label">文章标签：</span>
+						<a class="tag-link" href="http://so.csdn.net/so/search/s.do?q=webrtc&amp;t=blog" target="_top">webrtc						</a><a class="tag-link" href="http://so.csdn.net/so/search/s.do?q=rtcp&amp;t=blog" target="_top">rtcp						</a>
+		</div>
+						<div class="tags-box">
+			<span class="label">个人分类：</span>
+						<a class="tag-link" href="https://blog.csdn.net/doitsjz/article/category/6259777" target="_top">webrtc						</a>
+		</div>
+					</div>
+	
+	<!-- !empty($pre_next_article[0]) -->
+		</div>
+
+
+
+
+        <div class="edu-promotion"></div>
+        <a id="commentBox"></a>
+<div class="comment-box">
+	  	<div class="unlogin-box text-center">
+		想对作者说点什么？
+		<!-- $curl 当前地址 -->
+		<a href="https://passport.csdn.net/account/login?from=https://blog.csdn.net/doitsjz/article/details/73351176#commentBox" class="btn btn-sm btn-red">我来说一句</a>
+	</div>
+			<div class="comment-list-container">
+		<a id="comments"></a>
+		<div class="comment-list-box">
+		</div>
+		<div id="commentPage" class="pagination-box d-none"></div>
+		<div class="opt-box text-center">
+			<button class="btn btn-sm btn-link-blue" id="btnMoreComment"></button>
+		</div>
+	</div>
+</div>        <div class="recommend-box">
+            		<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/wangruihit/article/details/47041515" target="_top" strategy="BlogCommendFromBaidu_0">
+				<em>Webrtc</em>(7) <em>实时</em><em>视频传输</em>中的<em>RTCP</em><em>协议</em>			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/wangruihit/article/details/47041515" target="_top">
+				我以前主要研究语音，语音中常用的<em>RTCP</em>包主要有SR／RR／SDES／BYE／APP／XR，主要由RFC 3611和RFC 3550定义。
+而视频中常用的<em>RTCP</em>包比语音要多很多，语音的<em>RTCP</em>主要...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/wangruihit" title="wangruihit" target="_blank">
+					<img src="3_wangruihit.jpg" alt="wangruihit" class="avatar-pic">
+					<span class="name">wangruihit</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2015-07-24 15:37:59</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：6845</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/perfectpdl/article/details/49925721" target="_top" strategy="BlogCommendFromBaidu_1">
+				<em>webrtc</em> 丢包反馈之 <em>rtcp</em> goog-remb			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/perfectpdl/article/details/49925721" target="_top">
+				本文原创自 http://blog.csdn.net/voipmaker&nbsp; 转载注明出处
+
+
+
+<em>webrtc</em>内置支持多种丢包处理机制，他的反馈是通过<em>rtcp</em> 实现的，包括<em>rtcp</em>-fb nac...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/perfectpdl" title="perfectpdl" target="_blank">
+					<img src="3_perfectpdl.jpg" alt="perfectpdl" class="avatar-pic">
+					<span class="name">perfectpdl</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2015-11-19 14:28:48</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：5000</span>
+			</p>
+		</div>
+	</div>
+								<div class="recommend-item-box recommend-ad-box" id="ad1"></div>
+				
+
+			
+				<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/caoshangpa/article/details/53037746" target="_top" strategy="BlogCommendFromBaidu_2">
+				<em>WebRTC</em>中RTP/<em>RTCP</em><em>协议</em>实现分析			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/caoshangpa/article/details/53037746" target="_top">
+				一 前言
+
+
+RTP/<em>RTCP</em><em>协议</em>是流媒体通信的基石。RTP<em>协议</em>定义流媒体数据在互联网上传输的数据包格式，而<em>RTCP</em><em>协议</em>则负责可靠传输、流量控制和拥塞控制等服务质量保证。在<em>WebRTC</em>项目中，R...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/caoshangpa" title="caoshangpa" target="_blank">
+					<img src="3_caoshangpa.jpg" alt="caoshangpa" class="avatar-pic">
+					<span class="name">caoshangpa</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2016-11-04 18:25:55</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：1888</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/volvet/article/details/53097673" target="_top" strategy="BlogCommendFromBaidu_3">
+				<em>WebRTC</em>中的拥塞控制 二:  RTP in <em>WebRTC</em>			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/volvet/article/details/53097673" target="_top">
+				RTP in <em>WebRTC</em> 
+<em>RTCP</em> 
+   1.   FIR,   Full Intra Request,   申请一个I-Frame,   用于新用户加入的时候, 申请一个I-Frame 作为解...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/volvet" title="volvet" target="_blank">
+					<img src="3_volvet.jpg" alt="volvet" class="avatar-pic">
+					<span class="name">volvet</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2016-11-09 11:17:13</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：1479</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/liuhongxiangm/article/details/53543668" target="_top" strategy="BlogCommendFromBaidu_5">
+				[<em>webrtc</em>] <em>rtcp</em>模块中rtt时间计算			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/liuhongxiangm/article/details/53543668" target="_top">
+				RTT指 round-trip time，即计算AB两端的往返时延这里可以分成两个问题：如何在A端估算A和B之间的RTT时间?如何在B端估算A和B之间的RTT时间?本文参考资料: 
+rfc 3550 ...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/liuhongxiangm" title="liuhongxiangm" target="_blank">
+					<img src="3_liuhongxiangm.jpg" alt="liuhongxiangm" class="avatar-pic">
+					<span class="name">liuhongxiangm</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2016-12-09 19:53:49</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：1014</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/liuhongxiangm/article/details/53788218" target="_top" strategy="BlogCommendFromBaidu_6">
+				<em>webrtc</em>研究-remb<em>协议</em>分析			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/liuhongxiangm/article/details/53788218" target="_top">
+				分析入口 <em>webrtc</em>/ideo/vie_remb.ccvoid VieRemb::OnReceiveBitrateChanged(const std::vector&amp; ssrcs,
+        ...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/liuhongxiangm" title="liuhongxiangm" target="_blank">
+					<img src="3_liuhongxiangm.jpg" alt="liuhongxiangm" class="avatar-pic">
+					<span class="name">liuhongxiangm</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2016-12-21 17:46:54</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：733</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box recommend-ad-box" id="a_d_feed_0"></div>
+			
+			<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/DittyChen/article/details/78065974" target="_top" strategy="BlogCommendFromBaidu_7">
+				<em>RTCP</em>介绍及发送间隔控制			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/DittyChen/article/details/78065974" target="_top">
+				1、简述
+RTP<em>实时</em>传输<em>协议</em>，广泛应用于流媒体传输应用场景，根据rfc3550介绍，RTP<em>协议</em>应用场景有如下几种：
+Ø&nbsp; 简单多播音频会议（Simple Multicast Audio Confere...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/DittyChen" title="DittyChen" target="_blank">
+					<img src="3_dittychen.jpg" alt="DittyChen" class="avatar-pic">
+					<span class="name">DittyChen</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2017-09-22 18:40:22</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：1329</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/haijianmingCSDN/article/details/78699395" target="_top" strategy="BlogCommendFromBaidu_8">
+				<em>webrtc</em> 码率设置			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/haijianmingCSDN/article/details/78699395" target="_top">
+				<em>WebRTC</em>原生就是为了p2p通话而设计的，视频的码流会尽量匹配你的带宽。你会发现，当两个客户端在局域网内 
+通话时，视频的码流会非常大，有时会达到两三兆。在有些业务场景下，你可能不希望要这么大的视频...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/haijianmingCSDN" title="haijianmingCSDN" target="_blank">
+					<img src="3_haijianmingcsdn.jpg" alt="haijianmingCSDN" class="avatar-pic">
+					<span class="name">haijianmingCSDN</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2017-12-03 00:00:37</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：853</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/MeRcy_PM/article/details/71474264" target="_top" strategy="BlogCommendFromBaidu_9">
+				<em>webrtc</em>中<em>rtcp</em>反馈与<em>码率控制</em>模块分析			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/MeRcy_PM/article/details/71474264" target="_top">
+				<em>webrtc</em>中<em>rtcp</em>反馈与<em>码率控制</em>模块分析			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/MeRcy_PM" title="MeRcy_PM" target="_blank">
+					<img src="3_mercy_pm.jpg" alt="MeRcy_PM" class="avatar-pic">
+					<span class="name">MeRcy_PM</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2017-05-09 15:10:34</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：2153</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/chinabinlang/article/details/78294464" target="_top" strategy="BlogCommendFromBaidu_10">
+				<em>webrtc</em>中的<em>码率控制</em>			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/chinabinlang/article/details/78294464" target="_top">
+				名词解释：
+
+
+GCC谷歌提出的拥塞控制算法(Google Congestion
+ Control，简称GCC[1])来控制发送端码率
+
+
+
+RTT： 往返延时
+
+
+TransportCC：
+REMB...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/chinabinlang" title="chinabinlang" target="_blank">
+					<img src="3_chinabinlang.jpg" alt="chinabinlang" class="avatar-pic">
+					<span class="name">chinabinlang</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2017-10-20 13:35:10</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：2030</span>
+			</p>
+		</div>
+	</div>
+			            <div class="recommend-loading-box">
+                <img src="feedloading.gif">
+            </div>
+            <div class="recommend-end-box">
+                <p class="text-center">没有更多推荐了，<a href="https://blog.csdn.net/" class="c-blue c-blue-hover c-blue-focus">返回首页</a></p>
+            </div>
+        </div>
+    </main>
+    <aside>
+		    <div id="asideProfile" class="aside-box">
+    <h3 class="aside-title">个人资料</h3>
+    <div class="profile-intro d-flex">
+        <div class="avatar-box d-flex justify-content-center flex-column">
+            <a href="https://blog.csdn.net/doitsjz">
+                <img src="3_doitsjz.jpg" class="avatar_pic">
+            </a>
+        </div>
+        <div class="user-info d-flex justify-content-center flex-column">
+            <p class="name csdn-tracking-statistics tracking-click" data-mod="popu_379">
+                <a href="https://blog.csdn.net/doitsjz" target="_top" class="text-truncate" id="uid">doitsjz</a>
+            </p>
+                    </div>
+                <div class="opt-box d-flex justify-content-center flex-column">
+            <span class="csdn-tracking-statistics tracking-click" data-mod="popu_379">
+                                <a class="btn btn-sm btn-red-hollow" href="https://passport.csdn.net/account/login?from=https://blog.csdn.net/doitsjz/article/details/73351176" target="_self">关注</a>
+                            </span>
+            
+        </div>
+            </div>
+    <div class="data-info d-flex item-tiling">
+        <dl class="text-center" title="71">
+            <dt>原创</dt>
+            <dd><span class="count">71</span></dd>
+        </dl>
+        <dl class="text-center" title="35">
+            <dt>粉丝</dt>
+            <dd><span class="count" id="fan">35</span></dd>
+        </dl>
+        <dl class="text-center" title="6">
+            <dt>喜欢</dt>
+            <dd><span class="count">6</span></dd>
+        </dl>
+        <dl class="text-center" title="53">
+            <dt>评论</dt>
+            <dd><span class="count">53</span></dd>
+        </dl>
+    </div>
+    <div class="grade-box clearfix">
+        <dl>
+            <dt>等级：</dt>
+            <dd>
+                <a href="https://blog.csdn.net/home/help.html#level" title="5级,点击查看等级说明" target="_top">
+                    <svg class="icon icon-level" aria-hidden="true">
+                        <use xlink:href="#csdnc-bloglevel-5"></use>
+                    </svg>
+                </a>
+            </dd>
+        </dl>
+        <dl>
+            <dt>访问：</dt>
+            <dd title="215150">
+                21万+            </dd>
+        </dl>
+        <dl>
+            <dt>积分：</dt>
+            <dd title="2993">
+                2993            </dd>
+        </dl>
+        <dl title="14935">
+            <dt>排名：</dt>
+            <dd>1万+</dd>
+        </dl>
+    </div>
+        <div class="badge-box d-flex">
+        <span>勋章：</span>
+                        <a class="icon-badge" title="持之以恒">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#csdnc-m-lasting"></use>
+            </svg>
+            <div class="icon-arrow"></div>
+            <div class="grade-detail-box item2">
+                <div class="pos-box">
+                    <div class="left-box d-flex justify-content-center align-items-center flex-column">
+                        <svg class="icon" aria-hidden="true">
+                            <use xlink:href="#csdnc-m-lasting"></use>
+                        </svg>
+                        <p>持之以恒</p>
+                    </div>
+                    <div class="right-box d-flex justify-content-center align-items-center">
+                        授予每个自然月内发布4篇或4篇以上原创或翻译IT博文的用户。不积跬步无以至千里，不积小流无以成江海，程序人生的精彩需要坚持不懈地积累！
+                    </div>
+                </div>
+            </div>
+        </a>
+                            </div>
+    </div>		    <div class="csdn-tracking-statistics mb8 box-shadow" data-pid="blog" data-mod="popu_4" style="height: 250px;">
+    <div class="aside-content text-center" id="cpro_u2734133">
+        <!-- 投放代码 -->
+        <div id="_8dw41bwgmev"><iframe scrolling="no" src="index_2.html" width="300" height="250" frameborder="0"></iframe></div>
+    </div>
+</div>
+		    <div id="asideNewArticle" class="aside-box">
+    <h3 class="aside-title">最新文章</h3>
+    <div class="aside-content">
+        <ul class="inf_list clearfix csdn-tracking-statistics tracking-click" data-mod="popu_382">
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/doitsjz/article/details/77948446" target="_top">CentOS上配置rsyslog客户端用以远程记录日志</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/doitsjz/article/details/77418088" target="_top">Zookeeper C API学习总结</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/doitsjz/article/details/77338316" target="_top">Zookeeper应用场景</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/doitsjz/article/details/76864822" target="_top">网络摄像机-ISP基础一</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/doitsjz/article/details/74415296" target="_top">解析UML用例图中include与extend的区别</a>
+            </li>
+                    </ul>
+    </div>
+</div>
+		    		    <div id="asideCategory" class="aside-box flexible-box">
+    <h3 class="aside-title">个人分类</h3>
+    <div class="aside-content">
+        <ul>
+                        <li>
+                <a href="https://blog.csdn.net/doitsjz/article/category/5957775">
+                    网络编程                    <span class="count float-right">16篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/doitsjz/article/category/5957777">
+                    TCP                    <span class="count float-right">15篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/doitsjz/article/category/5957779">
+                    UDP                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/doitsjz/article/category/5957985">
+                    文件系统、FAT32                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/doitsjz/article/category/5957991">
+                    存储                    <span class="count float-right">11篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/doitsjz/article/category/5966869">
+                    软件架构                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/doitsjz/article/category/5967747">
+                    字符编码                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/doitsjz/article/category/5967749">
+                    C++                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/doitsjz/article/category/5971525">
+                    软件需求                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/doitsjz/article/category/5971659">
+                    程序语言                    <span class="count float-right">9篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/doitsjz/article/category/5971721">
+                    WINDOWS开发                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/doitsjz/article/category/5971741">
+                    移动开发                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/doitsjz/article/category/5971757">
+                    Linux开发                    <span class="count float-right">10篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/doitsjz/article/category/5975889">
+                    音视频                    <span class="count float-right">14篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/doitsjz/article/category/5977393">
+                    软件思想                    <span class="count float-right">8篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/doitsjz/article/category/5978787">
+                    开源软件                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/doitsjz/article/category/5978917">
+                    IOS                    <span class="count float-right">12篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/doitsjz/article/category/6057156">
+                    加解密                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/doitsjz/article/category/6109637">
+                    OBJECTC                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/doitsjz/article/category/6112554">
+                    RTMP                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/doitsjz/article/category/6259777">
+                    webrtc                    <span class="count float-right">36篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/doitsjz/article/category/6364210">
+                    网络摄像机                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/doitsjz/article/category/6376293">
+                    物联网                    <span class="count float-right">17篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/doitsjz/article/category/6864311">
+                    硬件驱动                    <span class="count float-right">14篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/doitsjz/article/category/6947206">
+                    消息中间件                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                    </ul>
+    </div>
+        <p class="text-center">
+        <a class="btn btn-link-blue flexible-btn" data-fbox="aside-archive">展开</a>
+    </p>
+    </div>
+		    <div id="asideArchive" class="aside-box flexible-box">
+    <h3 class="aside-title">归档</h3>
+    <div class="aside-content">
+        <ul class="archive-list">
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/doitsjz/article/month/2017/09">
+                    2017年9月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/doitsjz/article/month/2017/08">
+                    2017年8月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/doitsjz/article/month/2017/07">
+                    2017年7月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/doitsjz/article/month/2017/06">
+                    2017年6月                    <span class="count float-right">24篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/doitsjz/article/month/2017/05">
+                    2017年5月                    <span class="count float-right">19篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/doitsjz/article/month/2017/04">
+                    2017年4月                    <span class="count float-right">27篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/doitsjz/article/month/2017/03">
+                    2017年3月                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/doitsjz/article/month/2017/02">
+                    2017年2月                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/doitsjz/article/month/2017/01">
+                    2017年1月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/doitsjz/article/month/2016/12">
+                    2016年12月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/doitsjz/article/month/2016/09">
+                    2016年9月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/doitsjz/article/month/2016/08">
+                    2016年8月                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/doitsjz/article/month/2016/07">
+                    2016年7月                    <span class="count float-right">14篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/doitsjz/article/month/2016/06">
+                    2016年6月                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/doitsjz/article/month/2016/05">
+                    2016年5月                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/doitsjz/article/month/2016/03">
+                    2016年3月                    <span class="count float-right">11篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/doitsjz/article/month/2016/02">
+                    2016年2月                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/doitsjz/article/month/2016/01">
+                    2016年1月                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/doitsjz/article/month/2015/12">
+                    2015年12月                    <span class="count float-right">8篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/doitsjz/article/month/2015/11">
+                    2015年11月                    <span class="count float-right">23篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/doitsjz/article/month/2015/09">
+                    2015年9月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                    </ul>
+    </div>
+        <p class="text-center">
+        <a class="btn btn-link-blue flexible-btn" data-fbox="aside-archive">展开</a>
+    </p>
+    </div>
+		    <div id="asideHotArticle" class="aside-box">
+	<h3 class="aside-title">热门文章</h3>
+	<div class="aside-content">
+		<ul class="hotArticle-list csdn-tracking-statistics tracking-click" data-mod="popu_521">
+							<li>
+					<a href="https://blog.csdn.net/doitsjz/article/details/50766819">RTMP直播点播-基于开源crtmpserver</a>
+					<p class="read">阅读量：<span>10909</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/doitsjz/article/details/73457447">关于抓包出现TCP DUP ACK问题</a>
+					<p class="read">阅读量：<span>10407</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/doitsjz/article/details/51585995">webrtc成功编译(windows vs2015)</a>
+					<p class="read">阅读量：<span>7996</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/doitsjz/article/details/51787567">WEBRTC 支持H264编解码</a>
+					<p class="read">阅读量：<span>7268</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/doitsjz/article/details/52290285">ISP图像质量调节介绍</a>
+					<p class="read">阅读量：<span>6685</span></p>
+				</li>
+					</ul>
+	</div>
+</div>
+		    <div id="asideNewComments" class="aside-box">
+    <h3 class="aside-title">最新评论</h3>
+    <div class="aside-content">
+        <ul class="newcomment-list">
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/doitsjz/article/details/54705671#comments">WEBRTC 视频接收到解码</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/wc6kum88" class="user-name" target="_top">wc6kum88</a>：现在的源码结构已经不是这样了，这是什么时候的源码                </p>
+            </li>
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/doitsjz/article/details/70991335#comments">WiFi、ZigBee、BLE用哪...</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/wjf1997" class="user-name" target="_top">wjf1997</a>：小米内部是这样选的                </p>
+            </li>
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/doitsjz/article/details/51911046#comments">WEBRTC TURNSERVER...</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/hujj1986" class="user-name" target="_top">hujj1986</a>：请问在linux下采用默认配置启动时总是提示3478端口被占用是什么原因啊？
+ Relay por...                </p>
+            </li>
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/doitsjz/article/details/51911046#comments">WEBRTC TURNSERVER...</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/hujj1986" class="user-name" target="_top">hujj1986</a>：请问在linux下采用默认配置启动时总是提示3478端口被占用是什么原因啊？
+ Relay por...                </p>
+            </li>
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/doitsjz/article/details/72850979#comments">千万级并发连接的秘密</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/zjluming" class="user-name" target="_top">zjluming</a>：说的容易做起来难                </p>
+            </li>
+                    </ul>
+    </div>
+</div>
+		<div id="asideFooter">
+			
+		<div class="aside-box">
+						<div><iframe scrolling="no" src="index_3.html" width="300" height="250" frameborder="0"></iframe></div>
+					</div>
+				<div class="aside-box">
+			<div class="persion_article">
+			</div>
+		</div>
+	</div>
+</aside>
+
+
+</div>
+<div class="mask-dark"></div>
+<div class="report-box">
+    <div class="pos-box">
+        <h2 class="title">不良信息举报</h2>
+        <a class="btn-close">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#csdnc-times"></use>
+            </svg>
+        </a>
+        <form id="frmReport" action="https://blog.csdn.net/doitsjz/article/details/73351176">
+            <div class="form-box">
+                <div class="txt-row-box">
+                    <label class="title" id="reptTit">举报内容：</label>
+                    <p class="rpt-title text-truncate">WEBRTC 实时视频传输中的RTCP协议码率控制报文</p>
+                </div>
+                <div class="txt-row-box">
+                    <label class="title">举报原因：</label>
+                    <div class="rdo-box">
+                        <label><input class="rdo-chk report-type" id="report_sex" name="report_type" value="1" type="radio">色情</label>
+                        <label><input class="rdo-chk report-type" id="report_Politics" name="report_type" value="2" type="radio">政治</label>
+                        <label><input class="rdo-chk report-type" id="report_copy" name="report_type" value="3" type="radio">抄袭</label>
+                        <label><input class="rdo-chk report-type" id="report_ad" name="report_type" value="4" type="radio">广告</label>
+                        <label><input class="rdo-chk report-type" id="report_want" name="report_type" value="5" type="radio">招聘</label>
+                        <label><input class="rdo-chk report-type" id="report_call" name="report_type" value="6" type="radio">骂人</label>
+                        <label><input class="rdo-chk report-type" id="report_other" name="report_type" value="7" type="radio">其他</label>
+                    </div>
+                </div>
+                <div class="txt-row-box" id="rptOriginalurl">
+                    <label class="title">原文地址：</label>
+                    <div class="txt-box">
+                        <input class="ipt" name="originalurl" value="" type="text">
+                    </div>
+                </div>
+                <div class="txt-row-box">
+                    <label class="title">原因补充：</label>
+                    <div class="txt-box">
+                        <textarea class="ipt ipt-textarea" name="description" maxlength="30"></textarea>
+                        <p class="remark">最多只允许输入30个字</p>
+                    </div>
+                </div>
+            </div>
+            <div class="opt-box text-right">
+                <input class="btn btn-link-gray btn-close" value="取消" type="reset">
+                <input class="btn btn-red btn-submit" value="提交" type="submit">
+            </div>
+        </form>
+    </div>
+</div>
+<div class="pulllog-box" style="display: block;">
+	<div class="pulllog clearfix">
+		<span class="text float-left">加入CSDN，享受更精准的内容推荐，与500万程序员共同成长！</span>
+		<div class="pulllog-btn float-right clearfix">
+            <button class="pulllog-login float-left csdn-tracking-statistics tracking-click" data-mod="popu_557">
+                登录
+            </button>
+            <div class="pulllog-sigin float-left csdn-tracking-statistics tracking-click" data-mod="popu_558">
+                <a href="https://passport.csdn.net/account/mobileregister" target="_top">注册</a>
+            </div>
+            <button class="btn-close">
+                <svg class="icon" aria-hidden="true">
+                    <use xlink:href="#csdnc-times"></use>
+                </svg>
+            </button>
+		</div>
+	</div>
+</div>
+<div id="loginWrap" style="display: none;"></div>
+<div class="tool-box">
+	<ul class="meau-list">
+		<li>
+			<button class="btn-like " title="点赞">
+				<svg class="icon active" aria-hidden="true">
+					<use xlink:href="#csdnc-thumbsup-ok"></use>
+				</svg><svg class="icon no-active" aria-hidden="true">
+					<use xlink:href="#csdnc-thumbsup"></use>
+				</svg>
+				<p>0</p>
+			</button>
+		</li>
+		<li class="toc-container-box" id="liTocBox">
+			<button class="btn-toc" title="目录">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-contents"></use>
+				</svg><br>目录
+			</button>
+			<div class="toc-container">
+				<div class="pos-box">
+					<div class="icon-arrow"></div>
+					<div class="scroll-box">
+						<div class="toc-box"></div>
+					</div>
+				</div>
+				<div class="opt-box">
+					<button class="btn-opt prev nomore" title="向上">
+						<svg class="icon" aria-hidden="true">
+							<use xlink:href="#csdnc-chevronup"></use>
+						</svg>
+					</button>
+					<button class="btn-opt next">
+						<svg class="icon" aria-hidden="true">
+							<use xlink:href="#csdnc-chevrondown"></use>
+						</svg>
+					</button>
+				</div>
+			</div>
+		</li>
+		<li>
+			<button class="btn-bookmark" title="收藏">
+				<svg class="icon active" aria-hidden="true">
+					<use xlink:href="#csdnc-bookmark-ok"></use>
+				</svg><svg class="icon no-active" aria-hidden="true">
+					<use xlink:href="#csdnc-bookmark"></use>
+				</svg><br>收藏
+			</button>
+		</li>
+		<li>
+			<a class="btn-comments" title="评论" href="#commentBox">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-comments"></use>
+				</svg><br>评论
+			</a>
+		</li>
+				<li class="bdsharebuttonbox">
+			<a class="btn-comments bds_weixin" data-cmd="weixin" title="微信分享">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-wechat"></use>
+				</svg><br>微信
+			</a>
+		</li>
+		<li class="bdsharebuttonbox">
+			<a class="btn-comments bds_tsina" data-cmd="tsina" title="微博分享">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-weibo"></use>
+				</svg><br>微博
+			</a>
+		</li>
+		<li class="bdsharebuttonbox">
+			<a class="btn-comments bds_qzone" data-cmd="qzone" title="QQ分享">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-qq"></use>
+				</svg><br>QQ
+			</a>
+		</li>
+	</ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="box-box-default">
+    <a class="btn-remove">
+        关闭
+    </a>
+    <div><div id="dqbwbkhj" style="zoom:1;"><div style="text-align: left;"><div id="rpzfkuu" style="margin-bottom: 0px;"><iframe scrolling="no" src="index_4.html" width="160" height="600" frameborder="0"></iframe></div></div></div></div>
+</div>
+<div class="box-box-large">
+    <a class="btn-remove">
+        关闭
+    </a>
+    <div id="_kfo11sxors"><iframe scrolling="no" src="index_8.html" width="250" height="250" frameborder="0"></iframe></div>
+</div>
+</body>
+</html>

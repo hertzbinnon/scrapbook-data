@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+    
+    
+    
+    <link href="http://bytefish.de/" type="application/atom+xml" rel="alternate" title="http://bytefish.de ATOM Feed">
+    <link href="http://bytefish.de/feeds/rss.xml" type="application/atom+xml" rel="alternate" title="http://bytefish.de RSS Feed">
+    <title>Machine Learning with OpenCV</title>
+  
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+    <div id="container">
+      <div id="header">
+        <h1 class="page-title"><a href="http://bytefish.de/" class="page-title-link">bytefish.de</a></h1>
+          <div id="menu">
+            <ul class="navigation">
+                            <li class="navigation-item"><a href="http://bytefish.de/blog" class="navigation-link blocklink">blog</a></li>
+                            <li class="navigation-item"><a href="http://bytefish.de/about" class="navigation-link blocklink">about</a></li>
+                            <li class="navigation-item"><a href="http://bytefish.de/pages" class="navigation-link blocklink">pages</a></li>
+                            <li class="navigation-item"><a href="http://bytefish.de/documents" class="navigation-link blocklink">documents</a></li>
+                          </ul>
+          </div>
+      </div>
+      <div class="clearer"></div>
+      <article class="main-column">
+          <header>
+    <h1 class="title">Machine Learning with OpenCV</h1>
+    <p class="byline">By <a href="http://bytefish.de/author/philipp-wagner.html">Philipp Wagner</a> | May 25, 2010</p>
+  </header>
+    <section class="content">
+    <p>Machine Learning is a branch of Artificial Intelligence and concerned with the question how to make machines able to learn from data. The core idea is to enable a machine to make intelligent decisions and predictions based on experiences from the past. Algorithms of Machine Learning require interdisciplinary knowledge and often intersect with topics of statistics, mathematics, physics, pattern recognition and more.</p>
+<p><a href="http://opencv.org/">OpenCV</a> (Open Source Computer Vision) is a library for computer vision and comes with a machine learning library for:</p>
+<ul>
+<li>Decision Trees</li>
+<li>Boosting</li>
+<li>Support Vector Machines</li>
+<li>Expectation Maximization</li>
+<li>Neural Networks</li>
+<li>...</li>
+</ul>
+<p>Finding simple examples to get started is difficult, so I wrote a document and a program for the C++ Machine Learning API of OpenCV. You can download it from my github account at:</p>
+<ul>
+<li><a href="https://github.com/bytefish/opencv">https://github.com/bytefish/opencv</a></li>
+</ul>
+<h2 id="sourcecode">Sourcecode</h2>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;math.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;string&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">"cv.h"</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">"ml.h"</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">"highgui.h"</span><span class="cp"></span>
+
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">cv</span><span class="p">;</span>
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+
+<span class="kt">bool</span> <span class="n">plotSupportVectors</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">numTrainingPoints</span> <span class="o">=</span> <span class="mi">200</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">numTestPoints</span> <span class="o">=</span> <span class="mi">2000</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">size</span> <span class="o">=</span> <span class="mi">200</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">eq</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="c1">// accuracy</span>
+<span class="kt">float</span> <span class="nf">evaluate</span><span class="p">(</span><span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="o">&amp;</span> <span class="n">predicted</span><span class="p">,</span> <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="o">&amp;</span> <span class="n">actual</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">assert</span><span class="p">(</span><span class="n">predicted</span><span class="p">.</span><span class="n">rows</span> <span class="o">==</span> <span class="n">actual</span><span class="p">.</span><span class="n">rows</span><span class="p">);</span>
+    <span class="kt">int</span> <span class="n">t</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">f</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">actual</span><span class="p">.</span><span class="n">rows</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kt">float</span> <span class="n">p</span> <span class="o">=</span> <span class="n">predicted</span><span class="p">.</span><span class="n">at</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
+        <span class="kt">float</span> <span class="n">a</span> <span class="o">=</span> <span class="n">actual</span><span class="p">.</span><span class="n">at</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
+        <span class="k">if</span><span class="p">((</span><span class="n">p</span> <span class="o">&gt;=</span> <span class="mf">0.0</span> <span class="o">&amp;&amp;</span> <span class="n">a</span> <span class="o">&gt;=</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="n">p</span> <span class="o">&lt;=</span> <span class="mf">0.0</span> <span class="o">&amp;&amp;</span>  <span class="n">a</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">t</span><span class="o">++</span><span class="p">;</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="n">f</span><span class="o">++</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">t</span> <span class="o">*</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="n">f</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// plot data and class</span>
+<span class="kt">void</span> <span class="nf">plot_binary</span><span class="p">(</span><span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="o">&amp;</span> <span class="n">data</span><span class="p">,</span> <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="o">&amp;</span> <span class="n">classes</span><span class="p">,</span> <span class="n">string</span> <span class="n">name</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">plot</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">CV_8UC3</span><span class="p">);</span>
+    <span class="n">plot</span><span class="p">.</span><span class="n">setTo</span><span class="p">(</span><span class="n">cv</span><span class="o">::</span><span class="n">Scalar</span><span class="p">(</span><span class="mf">255.0</span><span class="p">,</span><span class="mf">255.0</span><span class="p">,</span><span class="mf">255.0</span><span class="p">));</span>
+    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">data</span><span class="p">.</span><span class="n">rows</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+
+        <span class="kt">float</span> <span class="n">x</span> <span class="o">=</span> <span class="n">data</span><span class="p">.</span><span class="n">at</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">size</span><span class="p">;</span>
+        <span class="kt">float</span> <span class="n">y</span> <span class="o">=</span> <span class="n">data</span><span class="p">.</span><span class="n">at</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">size</span><span class="p">;</span>
+
+        <span class="k">if</span><span class="p">(</span><span class="n">classes</span><span class="p">.</span><span class="n">at</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">cv</span><span class="o">::</span><span class="n">circle</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="n">Point</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="n">CV_RGB</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span><span class="mi">1</span><span class="p">);</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="n">cv</span><span class="o">::</span><span class="n">circle</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="n">Point</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="n">CV_RGB</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span><span class="mi">1</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="n">cv</span><span class="o">::</span><span class="n">imshow</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">plot</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// function to learn</span>
+<span class="kt">int</span> <span class="nf">f</span><span class="p">(</span><span class="kt">float</span> <span class="n">x</span><span class="p">,</span> <span class="kt">float</span> <span class="n">y</span><span class="p">,</span> <span class="kt">int</span> <span class="n">equation</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">switch</span><span class="p">(</span><span class="n">equation</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="mi">0</span><span class="o">:</span>
+        <span class="k">return</span> <span class="n">y</span> <span class="o">&gt;</span> <span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="mi">10</span><span class="p">)</span> <span class="o">?</span> <span class="o">-</span><span class="mi">1</span> <span class="o">:</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="k">break</span><span class="p">;</span>
+    <span class="k">case</span> <span class="mi">1</span><span class="o">:</span>
+        <span class="k">return</span> <span class="n">y</span> <span class="o">&gt;</span> <span class="n">cos</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="mi">10</span><span class="p">)</span> <span class="o">?</span> <span class="o">-</span><span class="mi">1</span> <span class="o">:</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="k">break</span><span class="p">;</span>
+    <span class="k">case</span> <span class="mi">2</span><span class="o">:</span>
+        <span class="k">return</span> <span class="n">y</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="o">*</span><span class="n">x</span> <span class="o">?</span> <span class="o">-</span><span class="mi">1</span> <span class="o">:</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="k">break</span><span class="p">;</span>
+    <span class="k">case</span> <span class="mi">3</span><span class="o">:</span>
+        <span class="k">return</span> <span class="n">y</span> <span class="o">&gt;</span> <span class="n">tan</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="mi">10</span><span class="p">)</span> <span class="o">?</span> <span class="o">-</span><span class="mi">1</span> <span class="o">:</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="k">break</span><span class="p">;</span>
+    <span class="k">default</span><span class="o">:</span>
+        <span class="k">return</span> <span class="n">y</span> <span class="o">&gt;</span> <span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="mi">10</span><span class="p">)</span> <span class="o">?</span> <span class="o">-</span><span class="mi">1</span> <span class="o">:</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// label data with equation</span>
+<span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">labelData</span><span class="p">(</span><span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">points</span><span class="p">,</span> <span class="kt">int</span> <span class="n">equation</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">labels</span><span class="p">(</span><span class="n">points</span><span class="p">.</span><span class="n">rows</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">CV_32FC1</span><span class="p">);</span>
+    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">points</span><span class="p">.</span><span class="n">rows</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+             <span class="kt">float</span> <span class="n">x</span> <span class="o">=</span> <span class="n">points</span><span class="p">.</span><span class="n">at</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
+             <span class="kt">float</span> <span class="n">y</span> <span class="o">=</span> <span class="n">points</span><span class="p">.</span><span class="n">at</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span>
+             <span class="n">labels</span><span class="p">.</span><span class="n">at</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">equation</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="k">return</span> <span class="n">labels</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">svm</span><span class="p">(</span><span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="o">&amp;</span> <span class="n">trainingData</span><span class="p">,</span> <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="o">&amp;</span> <span class="n">trainingClasses</span><span class="p">,</span> <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="o">&amp;</span> <span class="n">testData</span><span class="p">,</span> <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="o">&amp;</span> <span class="n">testClasses</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">CvSVMParams</span> <span class="n">param</span> <span class="o">=</span> <span class="n">CvSVMParams</span><span class="p">();</span>
+
+    <span class="n">param</span><span class="p">.</span><span class="n">svm_type</span> <span class="o">=</span> <span class="n">CvSVM</span><span class="o">::</span><span class="n">C_SVC</span><span class="p">;</span>
+    <span class="n">param</span><span class="p">.</span><span class="n">kernel_type</span> <span class="o">=</span> <span class="n">CvSVM</span><span class="o">::</span><span class="n">RBF</span><span class="p">;</span> <span class="c1">//CvSVM::RBF, CvSVM::LINEAR ...</span>
+    <span class="n">param</span><span class="p">.</span><span class="n">degree</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// for poly</span>
+    <span class="n">param</span><span class="p">.</span><span class="n">gamma</span> <span class="o">=</span> <span class="mi">20</span><span class="p">;</span> <span class="c1">// for poly/rbf/sigmoid</span>
+    <span class="n">param</span><span class="p">.</span><span class="n">coef0</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// for poly/sigmoid</span>
+
+    <span class="n">param</span><span class="p">.</span><span class="n">C</span> <span class="o">=</span> <span class="mi">7</span><span class="p">;</span> <span class="c1">// for CV_SVM_C_SVC, CV_SVM_EPS_SVR and CV_SVM_NU_SVR</span>
+    <span class="n">param</span><span class="p">.</span><span class="n">nu</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span> <span class="c1">// for CV_SVM_NU_SVC, CV_SVM_ONE_CLASS, and CV_SVM_NU_SVR</span>
+    <span class="n">param</span><span class="p">.</span><span class="n">p</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span> <span class="c1">// for CV_SVM_EPS_SVR</span>
+
+    <span class="n">param</span><span class="p">.</span><span class="n">class_weights</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span> <span class="c1">// for CV_SVM_C_SVC</span>
+    <span class="n">param</span><span class="p">.</span><span class="n">term_crit</span><span class="p">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">CV_TERMCRIT_ITER</span> <span class="o">+</span><span class="n">CV_TERMCRIT_EPS</span><span class="p">;</span>
+    <span class="n">param</span><span class="p">.</span><span class="n">term_crit</span><span class="p">.</span><span class="n">max_iter</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">;</span>
+    <span class="n">param</span><span class="p">.</span><span class="n">term_crit</span><span class="p">.</span><span class="n">epsilon</span> <span class="o">=</span> <span class="mf">1e-6</span><span class="p">;</span>
+
+    <span class="c1">// SVM training (use train auto for OpenCV&gt;=2.0)</span>
+    <span class="n">CvSVM</span> <span class="nf">svm</span><span class="p">(</span><span class="n">trainingData</span><span class="p">,</span> <span class="n">trainingClasses</span><span class="p">,</span> <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="p">(),</span> <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="p">(),</span> <span class="n">param</span><span class="p">);</span>
+
+    <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">predicted</span><span class="p">(</span><span class="n">testClasses</span><span class="p">.</span><span class="n">rows</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">CV_32F</span><span class="p">);</span>
+
+    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">testData</span><span class="p">.</span><span class="n">rows</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">sample</span> <span class="o">=</span> <span class="n">testData</span><span class="p">.</span><span class="n">row</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+
+        <span class="kt">float</span> <span class="n">x</span> <span class="o">=</span> <span class="n">sample</span><span class="p">.</span><span class="n">at</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
+        <span class="kt">float</span> <span class="n">y</span> <span class="o">=</span> <span class="n">sample</span><span class="p">.</span><span class="n">at</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span>
+
+        <span class="n">predicted</span><span class="p">.</span><span class="n">at</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">=</span> <span class="n">svm</span><span class="p">.</span><span class="n">predict</span><span class="p">(</span><span class="n">sample</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Accuracy_{SVM} = "</span> <span class="o">&lt;&lt;</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">predicted</span><span class="p">,</span> <span class="n">testClasses</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="n">plot_binary</span><span class="p">(</span><span class="n">testData</span><span class="p">,</span> <span class="n">predicted</span><span class="p">,</span> <span class="s">"Predictions SVM"</span><span class="p">);</span>
+
+    <span class="c1">// plot support vectors</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">plotSupportVectors</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">plot_sv</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">CV_8UC3</span><span class="p">);</span>
+        <span class="n">plot_sv</span><span class="p">.</span><span class="n">setTo</span><span class="p">(</span><span class="n">cv</span><span class="o">::</span><span class="n">Scalar</span><span class="p">(</span><span class="mf">255.0</span><span class="p">,</span><span class="mf">255.0</span><span class="p">,</span><span class="mf">255.0</span><span class="p">));</span>
+
+        <span class="kt">int</span> <span class="n">svec_count</span> <span class="o">=</span> <span class="n">svm</span><span class="p">.</span><span class="n">get_support_vector_count</span><span class="p">();</span>
+        <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">vecNum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">vecNum</span> <span class="o">&lt;</span> <span class="n">svec_count</span><span class="p">;</span> <span class="n">vecNum</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">const</span> <span class="kt">float</span><span class="o">*</span> <span class="n">vec</span> <span class="o">=</span> <span class="n">svm</span><span class="p">.</span><span class="n">get_support_vector</span><span class="p">(</span><span class="n">vecNum</span><span class="p">);</span>
+            <span class="n">cv</span><span class="o">::</span><span class="n">circle</span><span class="p">(</span><span class="n">plot_sv</span><span class="p">,</span> <span class="n">Point</span><span class="p">(</span><span class="n">vec</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">size</span><span class="p">,</span> <span class="n">vec</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">size</span><span class="p">),</span> <span class="mi">3</span> <span class="p">,</span> <span class="n">CV_RGB</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">));</span>
+        <span class="p">}</span>
+    <span class="n">cv</span><span class="o">::</span><span class="n">imshow</span><span class="p">(</span><span class="s">"Support Vectors"</span><span class="p">,</span> <span class="n">plot_sv</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">mlp</span><span class="p">(</span><span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="o">&amp;</span> <span class="n">trainingData</span><span class="p">,</span> <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="o">&amp;</span> <span class="n">trainingClasses</span><span class="p">,</span> <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="o">&amp;</span> <span class="n">testData</span><span class="p">,</span> <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="o">&amp;</span> <span class="n">testClasses</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">layers</span> <span class="o">=</span> <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">CV_32SC1</span><span class="p">);</span>
+
+    <span class="n">layers</span><span class="p">.</span><span class="n">row</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">=</span> <span class="n">cv</span><span class="o">::</span><span class="n">Scalar</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+    <span class="n">layers</span><span class="p">.</span><span class="n">row</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">=</span> <span class="n">cv</span><span class="o">::</span><span class="n">Scalar</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+    <span class="n">layers</span><span class="p">.</span><span class="n">row</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">=</span> <span class="n">cv</span><span class="o">::</span><span class="n">Scalar</span><span class="p">(</span><span class="mi">15</span><span class="p">);</span>
+    <span class="n">layers</span><span class="p">.</span><span class="n">row</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">=</span> <span class="n">cv</span><span class="o">::</span><span class="n">Scalar</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+
+    <span class="n">CvANN_MLP</span> <span class="n">mlp</span><span class="p">;</span>
+    <span class="n">CvANN_MLP_TrainParams</span> <span class="n">params</span><span class="p">;</span>
+    <span class="n">CvTermCriteria</span> <span class="n">criteria</span><span class="p">;</span>
+    <span class="n">criteria</span><span class="p">.</span><span class="n">max_iter</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
+    <span class="n">criteria</span><span class="p">.</span><span class="n">epsilon</span> <span class="o">=</span> <span class="mf">0.00001f</span><span class="p">;</span>
+    <span class="n">criteria</span><span class="p">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">CV_TERMCRIT_ITER</span> <span class="o">|</span> <span class="n">CV_TERMCRIT_EPS</span><span class="p">;</span>
+    <span class="n">params</span><span class="p">.</span><span class="n">train_method</span> <span class="o">=</span> <span class="n">CvANN_MLP_TrainParams</span><span class="o">::</span><span class="n">BACKPROP</span><span class="p">;</span>
+    <span class="n">params</span><span class="p">.</span><span class="n">bp_dw_scale</span> <span class="o">=</span> <span class="mf">0.05f</span><span class="p">;</span>
+    <span class="n">params</span><span class="p">.</span><span class="n">bp_moment_scale</span> <span class="o">=</span> <span class="mf">0.05f</span><span class="p">;</span>
+    <span class="n">params</span><span class="p">.</span><span class="n">term_crit</span> <span class="o">=</span> <span class="n">criteria</span><span class="p">;</span>
+
+    <span class="n">mlp</span><span class="p">.</span><span class="n">create</span><span class="p">(</span><span class="n">layers</span><span class="p">);</span>
+
+    <span class="c1">// train</span>
+    <span class="n">mlp</span><span class="p">.</span><span class="n">train</span><span class="p">(</span><span class="n">trainingData</span><span class="p">,</span> <span class="n">trainingClasses</span><span class="p">,</span> <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="p">(),</span> <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="p">(),</span> <span class="n">params</span><span class="p">);</span>
+
+    <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">response</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">CV_32FC1</span><span class="p">);</span>
+    <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">predicted</span><span class="p">(</span><span class="n">testClasses</span><span class="p">.</span><span class="n">rows</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">CV_32F</span><span class="p">);</span>
+    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">testData</span><span class="p">.</span><span class="n">rows</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">response</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">CV_32FC1</span><span class="p">);</span>
+        <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">sample</span> <span class="o">=</span> <span class="n">testData</span><span class="p">.</span><span class="n">row</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+
+        <span class="n">mlp</span><span class="p">.</span><span class="n">predict</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="n">response</span><span class="p">);</span>
+        <span class="n">predicted</span><span class="p">.</span><span class="n">at</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="o">=</span> <span class="n">response</span><span class="p">.</span><span class="n">at</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
+
+    <span class="p">}</span>
+
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Accuracy_{MLP} = "</span> <span class="o">&lt;&lt;</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">predicted</span><span class="p">,</span> <span class="n">testClasses</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="n">plot_binary</span><span class="p">(</span><span class="n">testData</span><span class="p">,</span> <span class="n">predicted</span><span class="p">,</span> <span class="s">"Predictions Backpropagation"</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">knn</span><span class="p">(</span><span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="o">&amp;</span> <span class="n">trainingData</span><span class="p">,</span> <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="o">&amp;</span> <span class="n">trainingClasses</span><span class="p">,</span> <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="o">&amp;</span> <span class="n">testData</span><span class="p">,</span> <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="o">&amp;</span> <span class="n">testClasses</span><span class="p">,</span> <span class="kt">int</span> <span class="n">K</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="n">CvKNearest</span> <span class="n">knn</span><span class="p">(</span><span class="n">trainingData</span><span class="p">,</span> <span class="n">trainingClasses</span><span class="p">,</span> <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="p">(),</span> <span class="nb">false</span><span class="p">,</span> <span class="n">K</span><span class="p">);</span>
+    <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">predicted</span><span class="p">(</span><span class="n">testClasses</span><span class="p">.</span><span class="n">rows</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">CV_32F</span><span class="p">);</span>
+    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">testData</span><span class="p">.</span><span class="n">rows</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">const</span> <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">sample</span> <span class="o">=</span> <span class="n">testData</span><span class="p">.</span><span class="n">row</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+            <span class="n">predicted</span><span class="p">.</span><span class="n">at</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="o">=</span> <span class="n">knn</span><span class="p">.</span><span class="n">find_nearest</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="n">K</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Accuracy_{KNN} = "</span> <span class="o">&lt;&lt;</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">predicted</span><span class="p">,</span> <span class="n">testClasses</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="n">plot_binary</span><span class="p">(</span><span class="n">testData</span><span class="p">,</span> <span class="n">predicted</span><span class="p">,</span> <span class="s">"Predictions KNN"</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">bayes</span><span class="p">(</span><span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="o">&amp;</span> <span class="n">trainingData</span><span class="p">,</span> <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="o">&amp;</span> <span class="n">trainingClasses</span><span class="p">,</span> <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="o">&amp;</span> <span class="n">testData</span><span class="p">,</span> <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="o">&amp;</span> <span class="n">testClasses</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="n">CvNormalBayesClassifier</span> <span class="n">bayes</span><span class="p">(</span><span class="n">trainingData</span><span class="p">,</span> <span class="n">trainingClasses</span><span class="p">);</span>
+    <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">predicted</span><span class="p">(</span><span class="n">testClasses</span><span class="p">.</span><span class="n">rows</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">CV_32F</span><span class="p">);</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">testData</span><span class="p">.</span><span class="n">rows</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">const</span> <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">sample</span> <span class="o">=</span> <span class="n">testData</span><span class="p">.</span><span class="n">row</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+        <span class="n">predicted</span><span class="p">.</span><span class="n">at</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">=</span> <span class="n">bayes</span><span class="p">.</span><span class="n">predict</span><span class="p">(</span><span class="n">sample</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Accuracy_{BAYES} = "</span> <span class="o">&lt;&lt;</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">predicted</span><span class="p">,</span> <span class="n">testClasses</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="n">plot_binary</span><span class="p">(</span><span class="n">testData</span><span class="p">,</span> <span class="n">predicted</span><span class="p">,</span> <span class="s">"Predictions Bayes"</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">decisiontree</span><span class="p">(</span><span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="o">&amp;</span> <span class="n">trainingData</span><span class="p">,</span> <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="o">&amp;</span> <span class="n">trainingClasses</span><span class="p">,</span> <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="o">&amp;</span> <span class="n">testData</span><span class="p">,</span> <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="o">&amp;</span> <span class="n">testClasses</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="n">CvDTree</span> <span class="n">dtree</span><span class="p">;</span>
+    <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">var_type</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">CV_8U</span><span class="p">);</span>
+
+    <span class="c1">// define attributes as numerical</span>
+    <span class="n">var_type</span><span class="p">.</span><span class="n">at</span><span class="o">&lt;</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="o">=</span> <span class="n">CV_VAR_NUMERICAL</span><span class="p">;</span>
+    <span class="n">var_type</span><span class="p">.</span><span class="n">at</span><span class="o">&lt;</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="o">=</span> <span class="n">CV_VAR_NUMERICAL</span><span class="p">;</span>
+    <span class="c1">// define output node as numerical</span>
+    <span class="n">var_type</span><span class="p">.</span><span class="n">at</span><span class="o">&lt;</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="o">=</span> <span class="n">CV_VAR_NUMERICAL</span><span class="p">;</span>
+
+    <span class="n">dtree</span><span class="p">.</span><span class="n">train</span><span class="p">(</span><span class="n">trainingData</span><span class="p">,</span><span class="n">CV_ROW_SAMPLE</span><span class="p">,</span> <span class="n">trainingClasses</span><span class="p">,</span> <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="p">(),</span> <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="p">(),</span> <span class="n">var_type</span><span class="p">,</span> <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="p">(),</span> <span class="n">CvDTreeParams</span><span class="p">());</span>
+    <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">predicted</span><span class="p">(</span><span class="n">testClasses</span><span class="p">.</span><span class="n">rows</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">CV_32F</span><span class="p">);</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">testData</span><span class="p">.</span><span class="n">rows</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">const</span> <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">sample</span> <span class="o">=</span> <span class="n">testData</span><span class="p">.</span><span class="n">row</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+        <span class="n">CvDTreeNode</span><span class="o">*</span> <span class="n">prediction</span> <span class="o">=</span> <span class="n">dtree</span><span class="p">.</span><span class="n">predict</span><span class="p">(</span><span class="n">sample</span><span class="p">);</span>
+        <span class="n">predicted</span><span class="p">.</span><span class="n">at</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">=</span> <span class="n">prediction</span><span class="o">-&gt;</span><span class="n">value</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Accuracy_{TREE} = "</span> <span class="o">&lt;&lt;</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">predicted</span><span class="p">,</span> <span class="n">testClasses</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="n">plot_binary</span><span class="p">(</span><span class="n">testData</span><span class="p">,</span> <span class="n">predicted</span><span class="p">,</span> <span class="s">"Predictions tree"</span><span class="p">);</span>
+<span class="p">}</span>
+
+
+<span class="kt">int</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+
+    <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">trainingData</span><span class="p">(</span><span class="n">numTrainingPoints</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">CV_32FC1</span><span class="p">);</span>
+    <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">testData</span><span class="p">(</span><span class="n">numTestPoints</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">CV_32FC1</span><span class="p">);</span>
+
+    <span class="n">cv</span><span class="o">::</span><span class="n">randu</span><span class="p">(</span><span class="n">trainingData</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span>
+    <span class="n">cv</span><span class="o">::</span><span class="n">randu</span><span class="p">(</span><span class="n">testData</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span>
+
+    <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">trainingClasses</span> <span class="o">=</span> <span class="n">labelData</span><span class="p">(</span><span class="n">trainingData</span><span class="p">,</span> <span class="n">eq</span><span class="p">);</span>
+    <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">testClasses</span> <span class="o">=</span> <span class="n">labelData</span><span class="p">(</span><span class="n">testData</span><span class="p">,</span> <span class="n">eq</span><span class="p">);</span>
+
+    <span class="n">plot_binary</span><span class="p">(</span><span class="n">trainingData</span><span class="p">,</span> <span class="n">trainingClasses</span><span class="p">,</span> <span class="s">"Training Data"</span><span class="p">);</span>
+    <span class="n">plot_binary</span><span class="p">(</span><span class="n">testData</span><span class="p">,</span> <span class="n">testClasses</span><span class="p">,</span> <span class="s">"Test Data"</span><span class="p">);</span>
+
+    <span class="n">svm</span><span class="p">(</span><span class="n">trainingData</span><span class="p">,</span> <span class="n">trainingClasses</span><span class="p">,</span> <span class="n">testData</span><span class="p">,</span> <span class="n">testClasses</span><span class="p">);</span>
+    <span class="n">mlp</span><span class="p">(</span><span class="n">trainingData</span><span class="p">,</span> <span class="n">trainingClasses</span><span class="p">,</span> <span class="n">testData</span><span class="p">,</span> <span class="n">testClasses</span><span class="p">);</span>
+    <span class="n">knn</span><span class="p">(</span><span class="n">trainingData</span><span class="p">,</span> <span class="n">trainingClasses</span><span class="p">,</span> <span class="n">testData</span><span class="p">,</span> <span class="n">testClasses</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+    <span class="n">bayes</span><span class="p">(</span><span class="n">trainingData</span><span class="p">,</span> <span class="n">trainingClasses</span><span class="p">,</span> <span class="n">testData</span><span class="p">,</span> <span class="n">testClasses</span><span class="p">);</span>
+    <span class="n">decisiontree</span><span class="p">(</span><span class="n">trainingData</span><span class="p">,</span> <span class="n">trainingClasses</span><span class="p">,</span> <span class="n">testData</span><span class="p">,</span> <span class="n">testClasses</span><span class="p">);</span>
+
+    <span class="n">cv</span><span class="o">::</span><span class="n">waitKey</span><span class="p">();</span>
+
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h2 id="experimental-settings">Experimental Settings</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Trainingdata size</td>
+      <td>200</td>
+    </tr>
+    <tr>
+      <td>Testdata size</td>
+      <td>2000</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Please note: I didn't optimize any parameters in these experiments. A Support Vector Machine may perform much better, if you choose an appropriate Kernel and optimize the parameters subsequently (for example with a Grid Search). A Neural Network may perform much better, when choosing the appropriate number of layers and training iterations. And so on... So don't interpret too much into these experimental results, I really wanted to show some features of OpenCV only.</p>
+<h2 id="results">Results</h2>
+<h3 id="y-2x">y = 2x</h3>
+<table>
+  <thead>
+    <tr><th>Predictor</th><th>Accuracy</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Support Vector Machine </td><td> 0.99</td></tr>
+    <tr><td>Multi Layer Perceptron (2, 10, 15, 1)</td><td> 0.994</td></tr>
+    <tr><td>k-Nearest-Neighbor (k = 3)</td><td> 0.9825</td></tr>
+    <tr><td>Normal Bayes</td><td> 0.9425</td></tr>
+    <tr><td>Decision Tree</td><td>0.923</td></tr>
+  </tbody>
+</table>
+
+<h4 id="plot">Plot</h4>
+<p><img alt="dummy" src="2x.png" class="mediacenter" width="600"></p>
+<h3 id="y-sin10x">y = sin(10x)</h3>
+<table>
+  <thead>
+    <tr><th>Predictor</th><th>Accuracy</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Support Vector Machine </td><td> 0.913</td></tr>
+    <tr><td>Multi Layer Perceptron (2, 10, 15, 1)</td><td> 0.6855 </td></tr>
+    <tr><td>k-Nearest-Neighbor (k = 3)</td><td> 0.9 </td></tr>
+    <tr><td>Normal Bayes</td><td> 0.632 </td></tr>
+    <tr><td>Decision Tree</td><td> 0.886 </td></tr>
+  </tbody>
+</table>
+
+<h4 id="plot_1">Plot</h4>
+<p><img alt="dummy" src="sin10x.png" class="mediacenter" width="600"></p>
+<h3 id="y-tan10x">y = tan(10x)</h3>
+<table>
+  <thead>
+    <tr><th>Predictor</th><th>Accuracy</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Support Vector Machine</td><td> 0.7815</td></tr>
+    <tr><td>Multi Layer Perceptron (2, 10, 15, 1)</td><td>0.5115</td></tr>
+    <tr><td>k-Nearest-Neighbor (k = 3)</td><td> 0.8195 </td></tr>
+    <tr><td>Normal Bayes</td><td> 0.542 </td></tr>
+    <tr><td>Decision Tree</td><td> 0.9155 </td></tr>
+  </tbody>
+</table>
+
+<h4 id="plot_2">Plot</h4>
+<p><img alt="dummy" src="tan10x.png" class="mediacenter" width="600"></p>
+  </section>
+  <div id="comments">
+      <div id="disqus_thread"></div>
+    
+    
+    <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>  </div>  
+  
+      </article>
+      <div class="clearer"></div>
+      <div id="links">
+        <ul class="footer">
+                <li class="footer-item"><a href="http://www.opensource.org/licenses/BSD-3-Clause">bsd</a></li>
+                <li class="footer-item"><a href="http://validator.w3.org/check/referer">xhtml</a></li>
+                <li class="footer-item"><a href="http://jigsaw.w3.org/css-validator/check/referer?profile=css">css3</a></li>
+                <li class="footer-item"><a href="https://github.com/getpelican">pelican</a></li>
+                 </ul>
+      </div>
+    </div>
+  
+</body>
+</html>

@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    <link rel="canonical" href="http://blog.csdn.net/fancycow/article/details/9961477"> 
+    
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    
+    
+    
+    
+    
+
+    
+    
+    
+
+    
+    
+    <meta name="description" content="原文链接：http://blog.csdn.net/alex_xhl/article/details/6061764（原文分为三篇，我合成了一篇）
+&nbsp;
+1.踏出 gstreamer plugin 的第一步&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+搞 gstreamer 插件已經好一陣子，好不容易勉強算的上知道怎麼去寫一個插件，嚴格說來看 gstreamer 寫的 plugin writer’s guide 應該是看">
+    <meta name="keywords" content="gsteamer,plugin">
+    <meta http-equiv="Cache-Control" content="no-siteapp"><link rel="alternate" media="handheld" href="http://blog.csdn.net/fancycow/article/details/9961477#">
+    <meta name="shenma-site-verification" content="5a59773ab8077d4a62bf469ab966a63b_1497598848">
+    <title>Gstreamer Plugin 编写 之 入门 - CSDN博客</title>
+    <link href="favicon.ico" rel="SHORTCUT ICON">
+      
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body><div id="BAIDU_DUP_fp_wrapper" style="position: absolute; left: -1px; bottom: -1px; z-index: 0; width: 0px; height: 0px; overflow: hidden; visibility: hidden; display: none;"><iframe id="BAIDU_DUP_fp_iframe" src="index_1.html" style="width: 0px; height: 0px; visibility: hidden; display: none;"></iframe></div>
+
+<div class="container clearfix">
+  <main>
+    <article>
+        <h1 class="csdn_top">Gstreamer Plugin 编写 之 入门</h1>
+        <div class="article_bar clearfix">
+            <div class="artical_tag">
+                <span class="original">
+                转载                </span>
+                <span class="time">2013年08月14日 11:31:21</span>
+            </div>
+
+            <ul class="article_tags clearfix csdn-tracking-statistics tracking-click" data-mod="popu_377">
+                <li class="tit">标签：</li>
+
+<!--          [startarticletags]-->
+                                                            <li><a href="http://so.csdn.net/so/search/s.do?q=gsteamer&amp;t=blog" target="_top">gsteamer</a> <span>/</span></li>
+                                            <li><a href="http://so.csdn.net/so/search/s.do?q=plugin&amp;t=blog" target="_top">plugin</a> <span>/</span></li>
+                                    <!--          [endarticletags]-->
+            </ul>
+            <ul class="right_bar">
+                <li><button class="btn-noborder"><i class="icon iconfont icon-read"></i><span class="txt">4626</span></button></li>
+                <li class="edit">
+                    <a class="btn-noborder" href="http://blog.csdn.net/fancycow/article/details/9961477">
+                        <i class="icon iconfont icon-bianji"></i><span class="txt">编辑</span>
+                    </a>
+                </li>
+                <li class="del">
+                    <a class="btn-noborder" onclick="javascript:deleteArticle(fileName);return false;">
+                        <i class="icon iconfont icon-shanchu"></i><span class="txt">删除</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div id="article_content" class="article_content csdn-tracking-statistics tracking-click" data-mod="popu_519" data-dsm="post">
+                        
+<p>原文链接：<a target="_top" href="http://blog.csdn.net/alex_xhl/article/details/6061764">http://blog.csdn.net/alex_xhl/article/details/6061764</a>（原文分为三篇，我合成了一篇）</p>
+<p>&nbsp;</p>
+<p>1.<u><span style="color: rgb(0, 102, 204);">踏出 gstreamer plugin 的第一步&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></u></p>
+<p>搞 gstreamer 插件已經好一陣子，好不容易勉強算的上知道怎麼去寫一個插件，嚴格說來看 gstreamer 寫的 plugin writer’s guide 應該是看不懂要怎麼接著去叫 gstreamer 做事的，網路上找的到的資料，也絕大多數是在講 integration layer (也就是純 player 啦) 的部份，而對於 development layer (也就是 pipeline 裡的 element) 該怎麼撰寫付之闕如。我打算趁手上的 wmv 插件告個段落時寫個筆記，算是為了交流，也算是幫自己重新確認觀念無誤。</p>
+<p><img title="[转]踏出 <wbr>gstreamer <wbr>plugin <wbr>的第一步" alt="[转]踏出 <wbr>gstreamer <wbr>plugin <wbr>的第一步" src="e56469c1cf087f13b319a8b1.jpg"></p>
+<p><span>這回我想拿 mp3 檔案做例子，用一個比較普遍而且廣泛應用的格式做練習有很多好處，一來沒有影像，就先省去同步的問題，也不會有 cpu / bandwidth 不夠的問題 (因為 video 的 bitrate 比 audio 高出很多)；二來測試檔案滿地爬，而且橫跨多種不同參數的壓縮格式，更好的是可以互相參照的播放器也是滿地爬(一不小心就踩到的程度…搭捷運時年輕人幾乎人手一台 player)，抓蟲或對照功能時很好用。</span></p>
+<p>gstreamer 提供了一個 command line 建立 pipeline 的工具：gst-launch。給不同的參數可以自動或手動的方式去播放一個多媒體檔，這個工具說方便很方便，說不方便也的確有點麻煩。方便是一個指令就可以叫它開始播檔案，省去圖型化介面的慢和滑老鼠的動作；不方便是因為它除了 play 以外沒有別的 navigation command，不像 mplayer 還有給 hotkey 快轉 (快轉對於看謎片來說是很重要的呀!!)。至於所謂的 pipeline，長得就像這樣</p>
+<p><a target="_top" href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/manual/html/images/simple-player.png"><img title="[转]踏出 <wbr>gstreamer <wbr>plugin <wbr>的第一步" alt="[转]踏出 <wbr>gstreamer <wbr>plugin <wbr>的第一步" src="6b63cc570b209e82b745aeb1.jpg" width="520" height="196"></a></p>
+<p>箭頭和方塊組成的結構就稱為 pipeline，而每個方塊 (element) 都負責某一部份的資料處理，稱為 element。這和 DirectShow 的 graph 是相當神似的。有 DirectShow 基礎的人應該會比我還快了解 gstreamer 吧。</p>
+<p>總之，自動建立 pipeline 的指令是如此：</p>
+<blockquote>
+<p><kbd><span style="font-family: NSimsun;">gst-launch playbin uri=file:///path/to/file.mp3</span></kbd></p>
+</blockquote>
+<p>而手動建立的話可以這麼簡單：</p>
+<blockquote>
+<p><kbd><span style="font-family: NSimsun;">gst-launch filesrc location=/path/to/file.mp3 ! mad ! alsasink</span></kbd></p>
+</blockquote>
+<p>其中的 mad 就是 gstreamer 會 runtime 去 load 的 element ，也就是接下來會深入去講的主題。如果你的系統缺少了解碼 mp3 必要的函式庫或 gstreamer 針對 mp3 的插件，那就會播放失敗。開源的 mp3 函式庫很多，我們就用 mad (mpeg audio decoder)。以 ubuntu 為例，安裝必要的函式庫很容易：</p>
+<blockquote>
+<p><kbd><span style="font-family: NSimsun;">sudo apt-get install libmad0 gstreamer0.10-plugins-ugly</span></kbd></p>
+</blockquote>
+<p></p>
+<p></p>
+<p>如此應該就可以順利聽到 mp3 的音樂了。其他必要的 element 像是 audio renderer 通常預設就會安裝了。知道了這些工具後我們就可以開始以 mad 為師的 gstreamer 插件學習過程。</p>
+<p>首先，我們最好用 gst-inspect 看看 mad 這個插件的一些資料，這些都會是接下來寫程式或多或少會用到的。</p>
+<blockquote>
+<p><kbd><span style="font-family: NSimsun;">gst-inspect mad</span></kbd></p>
+</blockquote>
+<p>我們會看到一些對這個插件的描述，pad template 的 capabilities 等等，<a target="_top" href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/pwg/html/section-basics-types.html"><span style="color: rgb(108, 130, 181);">gstreamer 的文件</span></a>裡有比較清楚的列出哪些 properties
+ 對 capabilities 的描述和對應的意義，此處就不多說。</p>
+<p>gst-launch 和 gst-inspect 是開發插件時滿重要的兩個工具，玩熟練後我們就可以開始實作自己的 mp3 gstreamer 插件。gstreamer 很體貼的在網站上擺了一個插件的 template，我們就從這個 template 開始走下去。</p>
+<blockquote>
+<pre><kbd>git clone git://anongit.freedesktop.org/gstreamer/gst-template.git</kbd> </pre>
+</blockquote>
+<p>下載後在作業目錄會找到一個 gst-template 的資料夾，然後進到 gst-plugin/src 執行</p>
+<blockquote>
+<p><kbd><span style="font-family: NSimsun;">../tools/make_element mp3dec</span></kbd></p>
+</blockquote>
+<p>這個 tool 會用 mp3dec 為名產生一個 gstreamer plugin 的 template。這兩件事情就是在做 gstreamer plugin writer’s guide 的 section 3.1, 3.2。</p>
+<p>接著，我們要「立刻」看到自己寫的 plugin 被 gst-inspect 找到，這要怎麼做呢？</p>
+<p>首先，改寫 gst-plugin/src/Makefile.am，讓他編譯我們的程式，用文字編輯器把 gstplugin 這個字串換成 gstmp3dec。接著就像一般我們在編譯開源專案一樣，藉 autotool 來產生 Makefile，執行 gst-plugin/autogen.sh 。接著到 gst-plugin/src 下 make，就會在 gst-plugin/src/.libs/ 下面看到 libgstmp3dec.so，這個就是我們的 gstreamer 插件。你可以用</p>
+<blockquote>
+<p><kbd><span style="font-family: NSimsun;">GST_PLUGIN_PATH=/path/to/gst-template/gst-plugin/src/.libs/ gst-inspect mp3dec</span></kbd></p>
+</blockquote>
+<p>來檢視這個插件的細節，就像之前我們檢視 mad 一樣，會發現很多資訊在 mad 裡面有的，在 mp3dec 這個新生的插件裡看不到，那些就是我們要慢慢加上去的功能。</p>
+<p>&nbsp;</p>
+<h3><span class="link_title">2<a target="_top" href="http://blog.csdn.net/alex_xhl/article/details/6061767">&nbsp;看見 gstreamer plugin 的第二步&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</a></span></h3>
+<p>上一篇我們把一些編譯 gstreamer 插件的環境給準備好，也透過 gst-inspect 看到新加入的插件 ( 在上一個例子中是「mp3dec」) 的屬性，接著就要親眼見證它的運作了。</p>
+<p>先打開 gstmp3dec.c 找到</p>
+<blockquote>
+<p><kbd><span style="font-family: NSimsun;">g_printf(“I'm plugged, therefore I’m in./n”);</span></kbd></p>
+</blockquote>
+<p>這一行，改一下文字，然後跳出重編，執行</p>
+<blockquote>
+<p><kbd><span style="font-family: NSimsun;">gst-launch filesrc location=/path/to/file.mp3 ! mad ! mp3dec ! alsasink</span></kbd></p>
+</blockquote>
+<p>有沒有看到一行你剛剛改的字拚命洗畫面，那就是插件運作的明證。接著我們要開始改寫這個插件，來讓它取代 mad。所以測試方法也很明確，就是要讓</p>
+<blockquote>
+<p><kbd><span style="font-family: NSimsun;">gst-launch filesrc location=/path/to/file.mp3 ! mp3dec ! alsasink</span></kbd></p>
+</blockquote>
+<p>這指令可以正確地播出 file.mp3 的內容。這個指令會在接下來的測試過程中不斷的被執行。</p>
+<p><span>接著編輯 gstmp3dec.c (這個檔案也會不斷的修改)，尋找 GstStaticPadTemplate ，會找到已經被自動產生的兩個 pad：sink_factory 和 src_factory 。還不知道 pad 是什麼沒關係，先想像它是插件的「開口」就好；上一篇文章我們有提到所謂的 pipeline 的箭頭是有方向性的，資料從源頭 (檔案、網路…等) 讀取出來後，從讀取的插件開始(即：file-source)，到播送的插件出去(即：audio-sink 和 video-sink)。</span></p>
+<p><a target="_top" href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/manual/html/images/simple-player.png"><img title="[转]看見 <wbr>gstreamer <wbr>plugin <wbr>的第二步" alt="[转]看見 <wbr>gstreamer <wbr>plugin <wbr>的第二步" src="f9967147f897f760cffca3be.jpg" width="640" height="241"></a></p>
+<p>透過插件的「開口」，資料才能在插件之間流動，就像濾水器的進水閥和出水閥，控制流進流出的水量、速度等等。不過 gstreamer 的水閥比較複雜一點，它必須再去判斷多媒體資料流的屬性，動態地決定輸入的多媒體檔案要用哪一個濾水器來承接。在這裡水閥就是<a target="_top" href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html"><span style="color: rgb(108, 130, 181);">GstPad</span></a>
+ ，而標示水閥的「屬性」就是 <a target="_top" href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html">
+<span style="color: rgb(108, 130, 181);">GstCaps</span></a>。 進水閥我們稱為「sink pad」，出水閥我們稱為「source pad」，所以按上圖來看，file-source 沒有「安裝」「sink pad」是因為他在進水的那一條路是透過系統的 file I/O 來處理，不屬於 gstreamer pad 的範疇；同樣的 audio-sink 和 video-sink 沒有「安裝」「source pad」是因為在播放聲音和影像的部份是透過系統的 A/V renderer。而在中間的插件們，最基本的型態是一個進水(後稱
+ sinkpad )一個出水(後稱 srcpad )，像 decoder ；而 demuxer 要把 audio/video (或更多，視封裝格式而定) 資料拆開給各自的解碼器，就會有一個 sinkpad ，多個 srcpad ，因為責任重大，demuxer 寫起來也比較複雜。</p>
+<p>解釋完插件和 pad、caps 之間的關係後，我們先透過程式去設定 mp3dec 的屬性。為求簡單，我們照抄 mad 的屬性就好，所以 sink_factory 和 src_factory 會改成如下</p>
+<blockquote>
+<p></p>
+<pre><kbd> static GstStaticPadTemplate sink_factory = GST_STATIC_PAD_TEMPLATE ("sink", GST_PAD_SINK, GST_PAD_ALWAYS, GST_STATIC_CAPS ("audio/mpeg, / mpegversion=1, / layer=[1,3], / rate={8000,11025,12000,16000,22050,24000,32000,44100,48000},/ channels=[1,2]") ); static GstStaticPadTemplate src_factory = GST_STATIC_PAD_TEMPLATE ("src", GST_PAD_SRC, GST_PAD_ALWAYS, GST_STATIC_CAPS ("audio/x-raw-int, / endianness=1234, / signed=true, / width=32, / depth=32, / rate={8000,11025,12000,16000,22050,24000,32000,44100,48000},/ channels=[1,2]") );</kbd> </pre>
+</blockquote>
+<p>重編後再用 gst-inspect 檢查一下就會發現在 Pad Templates 裡所描述 sinkpad 和 srcpad 的屬性都更新了，看的出來 mp3dec 接受的輸入格式是 mpeg1 audio layer3 的資料流，輸出 pcm 。設定這些屬性的目的就跟前述一樣，讓 gstreamer 在自動產生 pipeline 的時候可以按照我們設定的格式找到正確的插件來處理資料。(想像一下濾水器的進入出入閥標示著這個是濾工業用水、那個是濾農業用水、另一個是濾家庭用水，口徑多少、每單位吃水量多少…等等等，如此就算濾水器的功能一樣，而相對應的口徑、水量不符合，gstreamer
+ 也不會接錯。)</p>
+<p>然而，這邊設定的 caps 只是一個樣板，告訴上下插件輸入和輸出資料的格式及相關屬性的「範圍」，做為建立 pipeline 時參考的依據，當檔案開始播放時，真正的資料流的格式、屬性要等解碼完才知道。換言之，caps 的設定不一定是在 template 裡寫死就好，有時要另外動態產生運行時對應的 caps 並指派給 pad ( 包括 sinkpad 和 srcpad )。</p>
+<p>在處理 sinkpad 和 srcpad 的程式都還沒寫之前就先設定 caps 其實並沒有具體的功能，但我覺得這樣解釋比較不會搞不清楚或混淆 caps 的目的和重要性。</p>
+<p>當 caps 被設定好後，我們再來執行看看前面執行過的指令</p>
+<blockquote>
+<p><kbd><span style="font-family: NSimsun;">gst-launch filesrc location=/path/to/file.mp3 ! mad ! mp3dec ! alsasink</span></kbd></p>
+</blockquote>
+<p>有沒有發現結果不一樣了？此時音樂不會播，程式直接中斷並吐出一行字：</p>
+<blockquote>
+<p><kbd><span style="font-family: NSimsun;">WARNING: erroneous pipeline: could not link mad0 to mp3dec0</span></kbd></p>
+</blockquote>
+<p>原因很簡單，就是 gstreamer 發現 mad 的輸出閥 (srcpad) 和 mp3dec 的輸入閥 (sinkpad) 的 caps 不符合。所以跑都不跑就直接跳掉了。</p>
+<p>&nbsp;</p>
+<p><u><span style="color: rgb(0, 102, 204);">3.推動 gstreamer plugin 的第三步&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></u></p>
+<p>前面兩篇我們完成了兩件很重要的事情，第一是建立了編寫插件程式的環境和測試方法，第二是替插件裝好了進出水閥 (sinkpad 和 srcpad) 的格式和屬性，格式不合的資料進不來，也出不去。接下來我們要開始放水，讓資料流進這個插件。</p>
+<p>gstreamer 在處理資料的流動有兩種主要的模式，一個是「推」，一個是「拉」。兩種模式需要實作的 routine 不同，在對資料的操作 (manipulation) 上的重點也不一樣，很容易被搞得摸不清方向(其實我到現在還是有很多沒搞懂的地方…)。首先先解釋一下兩者的不同。</p>
+<p><span>「推」模式就是由上游的插件控制資料的大小、流速，向下「推」到下游的插件，所以下游的插件並不會事先知道有多少資料會被送進來，它就必須先準備一個緩衝區來承接資料，然後判斷緩衝區裡的資料是否足夠拆解出一個壓縮單位的資料，夠的話就把資料切割出一個固定大小送給解碼器，剩下的資料要留著和下一筆流進來的資料做連接。</span></p>
+<p>「拉」模式則是需要自己控制資料大小、流速，告訴上游的插件說自己要多少資料，從幾分幾秒開始讀，自己控制速度、大小等等變數，把資料「拉」進來。因為要流進來的資料量 (舉例來說，media-object 的 size、chunk size、packet size) 自己可以控制，就不需要設計一個緩衝區來放資料。</p>
+<p>通常，「拉」模式會用在 demuxer，而「推」模式用在其他插件，所以 gst-template 提供的例子是「推」模式的寫法。_chain() 函式就是讓上游插件把資料送進來的接口，當資料開始流動的時候 (完成啟動階段(activation stage)後，啟動的部份留待後述。) 會直接喚起初始階段時向 pad 註冊的 chain 函式，這個函式的介面 (GstPadChainFunction) 是已經被定義好的，其中一個變數是 GstBuffer 的指標，資料就被塞在這個指標所指向的記憶體空間。我們便可以透過註冊進去的函式，取得操作這段資料的
+ handle 。</p>
+<p>Gstreamer 在處理資料流有四個狀態：Null, Ready, Pause, Playing 按順序切換。也就是說，剛開始播放一個檔案時狀態變化是： Null –&gt; Ready –&gt; Pause –&gt; Playing，當播放結束要釋放 pipeline 的順序就是原路走回去：Playing –&gt; Pause –&gt; Ready –&gt; Null。我們寫的這個 mp3dec 插件是要把 mpeg audio decoder libmad 包裝為 gstreamer 插件，所以在開始播放檔案之前必須先把插件初始化
+ (比如說，設定 member variable 的初始值，初始化 gstreamer 的其他元件等等)，當然，也要先初始化 libmad。初始化的動作一般來說，應該要放在 Null 轉到 Ready 的階段，或 Ready 轉到 Pause 的階段，絕對不可能是在 Pause 轉到 Playing 的階段，因為 Pause 和 Playing 兩個狀態是切換播放模式用的 (如：暫停、快進、Seeking) 。</p>
+<p>到目前為止都很抽象，我們走進源碼來看就會好一點。</p>
+<p>為了處理剛提到的狀態切換，我們要註冊一個 _change_state() 函式。</p>
+<div>
+<div>
+<pre><span style="color: rgb(96, 96, 96);"> 1:</span> <span style="color: rgb(0, 0, 255);">static</span> GstStateChangeReturn</pre>
+<pre><span style="color: rgb(96, 96, 96);"> 2:</span> gst_mp3dec_change_state(GstElement* element, GstStateChange transition)</pre>
+<pre><span style="color: rgb(96, 96, 96);"> 3:</span> {</pre>
+<pre><span style="color: rgb(96, 96, 96);"> 4:</span> GstStateChangeReturn ret = GST_STATE_CHANGE_SUCCESS;</pre>
+<pre><span style="color: rgb(96, 96, 96);"> 5:</span> Gstmp3dec *dec;</pre>
+<pre><span style="color: rgb(96, 96, 96);"> 6:</span> dec = GST_MP3DEC(element);</pre>
+<pre><span style="color: rgb(96, 96, 96);"> 7:</span> </pre>
+<pre><span style="color: rgb(96, 96, 96);"> 8:</span> <span style="color: rgb(0, 0, 255);">switch</span>(transition)</pre>
+<pre><span style="color: rgb(96, 96, 96);"> 9:</span> {</pre>
+<pre><span style="color: rgb(96, 96, 96);"> 10:</span> <span style="color: rgb(0, 0, 255);">case</span> GST_STATE_CHANGE_NULL_TO_READY:</pre>
+<pre><span style="color: rgb(96, 96, 96);"> 11:</span> mad_frame_init(&amp;dec-&gt;frame);</pre>
+<pre><span style="color: rgb(96, 96, 96);"> 12:</span> mad_stream_init(&amp;dec-&gt;stream);</pre>
+<pre><span style="color: rgb(96, 96, 96);"> 13:</span> mad_synth_init(&amp;dec-&gt;synth);</pre>
+<pre><span style="color: rgb(96, 96, 96);"> 14:</span> <span style="color: rgb(0, 0, 255);">break</span>;</pre>
+<pre><span style="color: rgb(96, 96, 96);"> 15:</span> <span style="color: rgb(0, 0, 255);">default</span>:</pre>
+<pre><span style="color: rgb(96, 96, 96);"> 16:</span> <span style="color: rgb(0, 0, 255);">break</span>;</pre>
+<pre><span style="color: rgb(96, 96, 96);"> 17:</span> }</pre>
+<pre><span style="color: rgb(96, 96, 96);"> 18:</span> </pre>
+<pre><span style="color: rgb(96, 96, 96);"> 19:</span> ret = parent_class-&gt;change_state(element, transition);</pre>
+<pre><span style="color: rgb(96, 96, 96);"> 20:</span> <span style="color: rgb(0, 0, 255);">if</span>(ret == GST_STATE_CHANGE_FAILURE)</pre>
+<pre><span style="color: rgb(96, 96, 96);"> 21:</span> <span style="color: rgb(0, 0, 255);">return</span> ret;</pre>
+<pre><span style="color: rgb(96, 96, 96);"> 22:</span> </pre>
+<pre><span style="color: rgb(96, 96, 96);"> 23:</span> <span style="color: rgb(0, 0, 255);">switch</span>(transition)</pre>
+<pre><span style="color: rgb(96, 96, 96);"> 24:</span> {</pre>
+<pre><span style="color: rgb(96, 96, 96);"> 25:</span> <span style="color: rgb(0, 0, 255);">case</span> GST_STATE_CHANGE_READY_TO_NULL:</pre>
+<pre><span style="color: rgb(96, 96, 96);"> 26:</span> gst_mp3dec_reset(dec);</pre>
+<pre><span style="color: rgb(96, 96, 96);"> 27:</span> <span style="color: rgb(0, 0, 255);">break</span>;</pre>
+<pre><span style="color: rgb(96, 96, 96);"> 28:</span> <span style="color: rgb(0, 0, 255);">default</span>:</pre>
+<pre><span style="color: rgb(96, 96, 96);"> 29:</span> <span style="color: rgb(0, 0, 255);">break</span>;</pre>
+<pre><span style="color: rgb(96, 96, 96);"> 30:</span> }</pre>
+<pre><span style="color: rgb(96, 96, 96);"> 31:</span> <span style="color: rgb(0, 0, 255);">return</span> ret;</pre>
+<pre><span style="color: rgb(96, 96, 96);"> 32:</span> }</pre>
+<pre><span style="color: rgb(96, 96, 96);"> 33:</span> </pre>
+<pre><span style="color: rgb(96, 96, 96);"> 34:</span> <span style="color: rgb(0, 0, 255);">static</span> <span style="color: rgb(0, 0, 255);">void</span> gst_mp3dec_clas_init()</pre>
+<pre><span style="color: rgb(96, 96, 96);"> 35:</span> {</pre>
+<pre><span style="color: rgb(96, 96, 96);"> 36:</span> ...</pre>
+<pre><span style="color: rgb(96, 96, 96);"> 37:</span> gstelement_class-&gt;change_state = gst_mp3dec_change_state;</pre>
+<pre><span style="color: rgb(96, 96, 96);"> 38:</span> ...</pre>
+<pre><span style="color: rgb(96, 96, 96);"> 39:</span> }</pre>
+</div>
+</div>
+<p>如剛所說，當狀態從 NULL 轉到 READY 時 (GST_STATE_CHANGE_NULL_TO_READY)，插件要做初始化，配置記憶體等。反過來當狀態從READY轉到NULL時 (GST_STATE_CHANGE_READY_TO_NULL)，就要釋放資源。為了避免當主要的執行續(main thread)還在運作時，就因為收到「停止」的指令，從 PLAYING 切進 NULL ，把資源都給釋放掉，所以狀態轉換要分成兩個 switch-case 來處理。</p>
+<p>我們可以試著討論一下 pipeline 如此處理狀態切換的理由是什麼。想像你手上有一個濾水器，一個水桶的污水和一個乾淨的水壺。當你要開始過濾污水的時候，你會不會先檢查水壺已經正確地接在濾水器的另一端了？要開始把污水往下倒時，會不會先把濾水器的開關打開，會吧？水壺和濾水器都「READY」了以後，才開始把污水往下倒。如果你使用濾水器的方法和我不同，請麻煩接受這個「由下而上READY」的想法，因為這是 gstreamer 在做開關控制的精神。</p>
+<p>反過來看，如果要停止濾水，該是怎樣的順序？沒錯，把上面過濾的順序反過來。先停止倒污水，再關閉濾水器，最後才蓋上水壺。這樣的流程要怎麼用程式碼表達呢？</p>
+<p>Gstreamer 只提供了一個函式來處理整個 pipeline 開始和結束的動作，在 mp3dec 這個例子中，就是我們註冊進去的 gst_mp3dec_change_state。只有一個函式的話，還要兼顧「開的時候下游先開，關的時候上游先關」的原則，最簡單的做法就是：播放初始時先替自己做初始化，準備好了以後通知上游。播放結束時先通知上游，再釋放自己的資源。所以，就會出現上面那段程式碼的寫法。</p>
+<p>當 pipeline 的狀態被切換到 PLAYING 的時候，gstreamer 會開始做 preroll (提取影音資料進緩衝區)，此時 _chain() 函式就會被觸發。主要的資料處理工作就是在 _chain() 裡完成，在「拉」模式的情況下，主要的資料處理工作則是在 _loop() 裡完成，以後會說明。因為 _chain() 裡面牽涉到 mpeg audio 解碼的程式，和 libmad 調用的部份、處理緩衝佇列等等比較複雜，將另開篇幅說明。</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+                    </div>
+    </article>
+      <div class="readall_box csdn-tracking-statistics tracking-click" data-mod="popu_376">
+          <div class="read_more_mask"></div>
+          <a class="btn btn-large btn-gray-fred read_more_btn" target="_self">阅读全文</a>
+      </div>
+      <div class="article_copyright">
+              </div>
+      <ul class="article_collect clearfix csdn-tracking-statistics tracking-click" data-mod="popu_378">
+          <li class="tit">本文已收录于以下专栏：</li>
+<!--          [startarticlecolumns]-->
+                                <!--          [endarticlecolumns]-->
+      </ul>
+      <div class="comment_box clearfix">
+          <div id="comment_form">
+              <div id="commentsbmitarear">
+                              </div>
+          </div>
+      </div>
+      <div class="comment_li_outbox">
+          <div id="comment_list"></div>
+      </div>
+
+      <div class="more_comment">
+          <div id="comment_bar" class="trackgin-ad" data-mod="popu_385"></div>
+      </div>
+
+      <!-- <h3 class="recommend_tit" id="related">相关文章推荐</h3> -->
+      <div class="recommend_list clearfix" id="rasss">
+                                                                                      <dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <a href="http://blog.csdn.net/yi7900/article/details/7819028" target="_top" strategy="BlogCommendFromBaidu_0">
+                        <dd class="clearfix">
+                          <h2 class="">一步一步创建GStreamer插件(</h2>
+                          <div class="summary">
+                              原文地址：一步一步创建GStreamer插件(ZZ)作者：wuqiseu
+
+1、获取创建插件的模板gst-template
+http://hi.baidu.com/zhxust/blog/ite...                          </div>
+
+                          <ul class="">
+                              <li class="avatar_img"><img src="3_yi7900.jpg" alt="yi7900" title="yi7900"></li>
+                              <li class="user_name">yi7900</li>
+                              <li class="time">2012年08月01日 16:22</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>10577</span></li>
+                          </ul>
+                        </dd>
+                      </a>
+                  </dl>
+                                                                                                    <dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <a href="http://blog.csdn.net/acs713/article/details/7708503" target="_top" strategy="BlogCommendFromBaidu_1">
+                        <dd class="clearfix">
+                          <h2 class="">gstreamer插件工作原理与流程分析</h2>
+                          <div class="summary">
+                              gstreamer plugins的工作同所有的基于插件的程序的工作原理类似，本质上都是通过读取动态库实现的，只需要每个动态库都实现某一个特定的接口就可以了，比如XX_init等，gstreamer统...                          </div>
+
+                          <ul class="">
+                              <li class="avatar_img"><img src="3_acs713.jpg" alt="acs713" title="acs713"></li>
+                              <li class="user_name">acs713</li>
+                              <li class="time">2012年07月02日 14:48</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>9387</span></li>
+                          </ul>
+                        </dd>
+                      </a>
+                  </dl>
+                                                                                      <div id="_kzx16lm898g"></div><iframe style="width: 100%; height: 123px; border: 0px none;" scrolling="no" src="index_2.html"></iframe>
+                                                                <dl class="clearfix csdn-tracking-statistics downloadElement" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <a class="clearfix" href="http://download.csdn.net/download/wuks64/5901751" target="_top" strategy="BlogCommendFromBaidu_2">
+                        <dd class="floatL">
+                            <div class="summary">
+                                <h2>GStreamer Plugin Writer's Guide</h2>
+                                <div class="summary">
+                                    <ul>
+                                        <li class="time">2013年08月10日 09:08</li>
+                                        <li class="visited_num fileSize">645KB</li>
+                                        <li class="download_btn">下载</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </dd>
+                        <dt class="floatR"><img class="maxwidth" src="pdf.svg" alt="" title=""></dt>
+                      </a>
+                  </dl>
+                                                                                                    <dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <a href="http://blog.csdn.net/fei_ing/article/details/47173759" target="_top" strategy="BlogCommendFromBaidu_3">
+                        <dd class="clearfix">
+                          <h2 class="">gstreamer插件工作原理与流程分析</h2>
+                          <div class="summary">
+                              gstreamer plugins的工作同所有的基于插件的程序的工作原理类似，本质上都是通过读取动态库实现的，只需要每个动态库都实现某一个特定的接口就可以了，比如XX_init等，gstreamer统...                          </div>
+
+                          <ul class="">
+                              <li class="avatar_img"><img src="3_fei_ing.jpg" alt="fei_ing" title="fei_ing"></li>
+                              <li class="user_name">fei_ing</li>
+                              <li class="time">2015年07月31日 18:26</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>580</span></li>
+                          </ul>
+                        </dd>
+                      </a>
+                  </dl>
+                                                                                                    <dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <a href="http://blog.csdn.net/liu_xiao_cheng/article/details/43017491" target="_top" strategy="BlogCommendFromBaidu_4">
+                        <dd class="clearfix">
+                          <h2 class="">GStreamer开发介绍</h2>
+                          <div class="summary">
+                              I.&nbsp;介绍
+GStreamer&nbsp;是一个非常强大而且通用的流媒体应用程序框架。&nbsp;GStreamer所具备的很多优点来源于其框架的模块化:&nbsp;GStreamer能够无缝的合并新的插件。&nbsp;但是,&nbsp;由于追求模...                          </div>
+
+                          <ul class="">
+                              <li class="avatar_img"><img src="3_liu_xiao_cheng.jpg" alt="liu_xiao_cheng" title="liu_xiao_cheng"></li>
+                              <li class="user_name">liu_xiao_cheng</li>
+                              <li class="time">2015年01月22日 12:00</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>3313</span></li>
+                          </ul>
+                        </dd>
+                      </a>
+                  </dl>
+                                                                        <!-- 广告位：PC端-博客详情通栏7（feed流）-808*120 -->
+              <iframe style="width: 100%; height: 123px; border: 0px none;" scrolling="no" src="index_3.html"></iframe>
+                                                                              <dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <a href="http://blog.csdn.net/android_lee/article/details/6785979" target="_top" strategy="BlogCommendFromBaidu_5">
+                        <dd class="clearfix">
+                          <h2 class="">一步一步创建GStreamer插件</h2>
+                          <div class="summary">
+                              1、获取创建插件的模板gst-template
+
+方法一： CVS
+$cvs -d:pserver:anoncvs@cvs.freedesktop.org/cvs/gstreamer login...                          </div>
+
+                          <ul class="">
+                              <li class="avatar_img"><img src="3_android_lee.jpg" alt="android_lee" title="android_lee"></li>
+                              <li class="user_name">android_lee</li>
+                              <li class="time">2011年09月17日 22:15</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>1891</span></li>
+                          </ul>
+                        </dd>
+                      </a>
+                  </dl>
+                                                                                                    <dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <a href="http://blog.csdn.net/sinat_28502203/article/details/46010485" target="_top" strategy="BlogCommendFromBaidu_6">
+                        <dd class="clearfix">
+                          <h2 class="">gstreamer插件指南</h2>
+                          <div class="summary">
+                              GStreamer插件开发指南 (0.10.9.1)
+I. 介绍
+GStreamer是一个用来创建流媒体应用程序的非常强大和通用的框架。GStreamer框架的许多优点来源于它的模块性 ：GStr...                          </div>
+
+                          <ul class="">
+                              <li class="avatar_img"><img src="3_sinat_28502203.jpg" alt="sinat_28502203" title="sinat_28502203"></li>
+                              <li class="user_name">sinat_28502203</li>
+                              <li class="time">2015年05月26日 17:15</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>3386</span></li>
+                          </ul>
+                        </dd>
+                      </a>
+                  </dl>
+                                                                                                    <dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <a href="http://blog.csdn.net/sinat_28502203/article/details/46010485" target="_top" strategy="BlogCommendFromQuerySearch_7">
+                        <dd class="clearfix">
+                          <h2 class="">gstreamer插件指南</h2>
+                          <div class="summary">
+                              GStreamer插件开发指南 (0.10.9.1)
+I. 介绍
+GStreamer是一个用来创建流媒体应用程序的非常强大和通用的框架。GStreamer框架的许多优点来源于它的模块性 ：GStr...                          </div>
+
+                          <ul class="">
+                              <li class="avatar_img"><img src="3_sinat_28502203.jpg" alt="sinat_28502203" title="sinat_28502203"></li>
+                              <li class="user_name">sinat_28502203</li>
+                              <li class="time">2015年05月26日 17:15</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>3386</span></li>
+                          </ul>
+                        </dd>
+                      </a>
+                  </dl>
+                                                                                                    <dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <a href="http://blog.csdn.net/fei534358549/article/details/52304933" target="_top" strategy="BlogCommendFromQuerySearch_8">
+                        <dd class="clearfix">
+                          <h2 class="">gstreamer插件简介（1）--gstreamer框架</h2>
+                          <div class="summary">
+                              1. 简介
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; GStreamer是一个开源的多媒体框架库。利用它，可以构建一系列的媒体处理模块，包括从简单的ogg播放功能到复杂的音频（混音）和视频（非线性编辑）的处理。
+应用程序可以透...                          </div>
+
+                          <ul class="">
+                              <li class="avatar_img"><img src="3_fei534358549.jpg" alt="fei534358549" title="fei534358549"></li>
+                              <li class="user_name">fei534358549</li>
+                              <li class="time">2016年08月24日 23:13</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>1397</span></li>
+                          </ul>
+                        </dd>
+                      </a>
+                  </dl>
+                                                                                                    <dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <a href="http://blog.csdn.net/techx/article/details/44062121" target="_top" strategy="BlogCommendFromQuerySearch_9">
+                        <dd class="clearfix">
+                          <h2 class="">GStreamer 1.0 运行时环境变量设置</h2>
+                          <div class="summary">
+                              插件搜索路径GStreamer程序运行时，按照以下顺序搜索插件： 
+PATH
+GST_PLUGIN_PATH_1_0                   或    GST_PLUGIN_PATH
+GS...                          </div>
+
+                          <ul class="">
+                              <li class="avatar_img"><img src="3_techx.jpg" alt="techx" title="techx"></li>
+                              <li class="user_name">techx</li>
+                              <li class="time">2015年03月04日 16:38</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>1735</span></li>
+                          </ul>
+                        </dd>
+                      </a>
+                  </dl>
+                                                    </div>
+  </main>
+<aside>
+  <div class="right_box user_info">
+      <dl class="inf_bar clearfix">
+          <dt class="csdn-tracking-statistics tracking-click" data-mod="popu_381">
+              <a href="http://blog.csdn.net/fancycow" target="_top">
+                  <img src="3_fancycow.jpg" class="avatar_pic">
+              </a>
+              <span class="medals" title="">
+                  </span>
+          </dt>
+          <dd>
+              <h3 class="csdn-tracking-statistics tracking-click" data-mod="popu_380"><a href="http://blog.csdn.net/fancycow" target="_top" id="uid">fancycow</a></h3>
+              <span class="csdn-tracking-statistics tracking-click" data-mod="popu_379"><a class="btn btn-redborder-small " id="span_add_follow" target="_self">＋关注</a></span>
+          </dd>
+      </dl>
+      <div class="inf_number_box clearfix">
+          <dl>
+              <dt>原创</dt>
+              <dd>20</dd>
+          </dl>
+          <dl>
+              <dt>粉丝</dt>
+              <dd id="fan">17</dd>
+          </dl>
+          <dl>
+              <dt>喜欢</dt>
+              <dd>2</dd>
+          </dl>
+          <dl>
+        <dt>码云</dt>
+        <dd>&nbsp;</dd>
+      </dl>
+
+      </div>
+
+  </div>
+          <div class="extension_other csdn-tracking-statistics tracking-click" data-mod="popu_389">
+          <!--u3032528-->
+        <div class="flashrecommend">
+            <div id="_ohcqwmy9zcf" style="width: 100%;"><iframe scrolling="no" src="index_4.html" width="300" height="250" frameborder="0"></iframe></div>
+        </div>
+      </div>
+      <div class="writings">
+    <div class="public_signal clearfix">
+      <h3>他的最新文章</h3>
+      <a href="http://blog.csdn.net/fancycow" target="_top" class="more"><span>更多文章</span></a>
+    </div>
+      <ul class="inf_list clearfix csdn-tracking-statistics tracking-click" data-mod="popu_382">
+                    <li class="clearfix">
+              <a href="http://blog.csdn.net/fancycow/article/details/10577043" target="_top">结构体前向申明的小细节</a>
+          </li>
+                    <li class="clearfix">
+              <a href="http://blog.csdn.net/fancycow/article/details/8061437" target="_top">修行吧，我</a>
+          </li>
+                    <li class="clearfix">
+              <a href="http://blog.csdn.net/fancycow/article/details/7953434" target="_top">分享一个智能提示搜索控件的实现</a>
+          </li>
+                    <li class="clearfix">
+              <a href="http://blog.csdn.net/fancycow/article/details/7889695" target="_top">MFC框架下，在ToolBar中添加ComboBox，并且设置ComboBox的字体</a>
+          </li>
+                    <li class="clearfix">
+              <a href="http://blog.csdn.net/fancycow/article/details/7688703" target="_top">ATL技术内幕 第五部分 （完结篇）</a>
+          </li>
+                </ul>
+  </div>
+            <div class="user-hotArticle sort userSort">
+            <h3>文章分类</h3>
+            <ul class="hotArticle-list userSort-list">
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/fancycow/article/category/950459" class="odd-overhidden floatL">个人总结</a>
+                        <div class="read list-left floatR"><span>4篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/fancycow/article/category/1075410" class="odd-overhidden floatL">windows</a>
+                        <div class="read list-left floatR"><span>17篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/fancycow/article/category/1082280" class="odd-overhidden floatL">多彩人生路</a>
+                        <div class="read list-left floatR"><span>5篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/fancycow/article/category/1082287" class="odd-overhidden floatL">c/c++语言</a>
+                        <div class="read list-left floatR"><span>6篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/fancycow/article/category/1082289" class="odd-overhidden floatL">firefox</a>
+                        <div class="read list-left floatR"><span>1篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/fancycow/article/category/1082290" class="odd-overhidden floatL">Gstreamer</a>
+                        <div class="read list-left floatR"><span>3篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/fancycow/article/category/1082291" class="odd-overhidden floatL">ffmpeg</a>
+                        <div class="read list-left floatR"><span>0篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/fancycow/article/category/1082292" class="odd-overhidden floatL">GTK+</a>
+                        <div class="read list-left floatR"><span>1篇</span></div>
+                    </li>
+                            </ul>
+            <div class="unfold-btn">
+              <span>展开</span><i class="icon iconfont icon-xiajiantou"></i>
+            </div>
+        </div>
+    <!--    [StartShowSelfColumn]-->
+    <!--    [EndShowSelfColumn]-->
+            <div class="user-hotArticle sort timeSort">
+          <h3>文章存档</h3>
+          <ul class="hotArticle-list timeSort-list">
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/fancycow/article/month/2013/08" class="odd-overhidden floatL">2013年8月</a>
+                  <div class="read list-left floatR"><span>2篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/fancycow/article/month/2012/10" class="odd-overhidden floatL">2012年10月</a>
+                  <div class="read list-left floatR"><span>1篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/fancycow/article/month/2012/09" class="odd-overhidden floatL">2012年9月</a>
+                  <div class="read list-left floatR"><span>1篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/fancycow/article/month/2012/08" class="odd-overhidden floatL">2012年8月</a>
+                  <div class="read list-left floatR"><span>1篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/fancycow/article/month/2012/06" class="odd-overhidden floatL">2012年6月</a>
+                  <div class="read list-left floatR"><span>5篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/fancycow/article/month/2012/05" class="odd-overhidden floatL">2012年5月</a>
+                  <div class="read list-left floatR"><span>1篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/fancycow/article/month/2012/03" class="odd-overhidden floatL">2012年3月</a>
+                  <div class="read list-left floatR"><span>1篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/fancycow/article/month/2012/02" class="odd-overhidden floatL">2012年2月</a>
+                  <div class="read list-left floatR"><span>14篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/fancycow/article/month/2011/12" class="odd-overhidden floatL">2011年12月</a>
+                  <div class="read list-left floatR"><span>4篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/fancycow/article/month/2011/08" class="odd-overhidden floatL">2011年8月</a>
+                  <div class="read list-left floatR"><span>9篇</span></div>
+                </li>
+                      </ul>
+          <div class="unfold-btn">
+            <span>展开</span><i class="icon iconfont icon-xiajiantou"></i>
+          </div>
+        </div>
+        <div class="user-hotArticle">
+        <h3>他的热门文章</h3>
+        <ul class="hotArticle-list csdn-tracking-statistics tracking-click" data-mod="popu_521">
+<!--            [StartHotArticles]-->
+                                                <li>
+                        <a href="http://blog.csdn.net/fancycow/article/details/7261191">firefox插件（plugin）开发概述</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>22050</span></div>
+                    </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/fancycow/article/details/6676064">Win32 API中使用定时器的三种方法</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>15035</span></div>
+                    </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/fancycow/article/details/7552520">gstreamer 中 gst-inspect获取信息，gst-launch测试链路示例</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>6910</span></div>
+                    </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/fancycow/article/details/9961477">Gstreamer Plugin 编写 之 入门</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>4622</span></div>
+                    </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/fancycow/article/details/7077480">windows的应用程序之CUI(控制台)程序和(GUI)程序</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>4243</span></div>
+                    </li>
+                            <!--            [EndHotArticles]-->
+        </ul>
+    </div>
+
+<!--    [startcustom]-->
+    <!--    [endcustom]-->
+  <div class="fixRight_box" style="height: 256px;">
+    <div class="fixRight">
+                    <!--u3163270-->
+            <div><iframe scrolling="no" src="index_5.html" width="300" height="250" frameborder="0"></iframe></div>
+              <div class="copyright csdn-tracking-statistics" data-mod="popu_475" data-dsm="post">
+        <h3 class="feed_new_tit"><span class="line"></span><span class="txt">联系我们</span></h3>
+        <ul class="feed_contact">
+          <li>
+            <a href="http://wpa.qq.com/msgrd?v=3&amp;uin=2431299880&amp;site=qq&amp;menu=yes" target="_top">
+              <span class="ico"><i class="icon iconfont icon-QQ"></i></span>
+              <span class="txt">网站客服</span>
+            </a>
+          </li>
+          <li class="clearfix">
+            <a href="http://e.weibo.com/csdnsupport/profile" target="_top">
+              <span class="ico"><i class="icon iconfont icon-xinlang"></i></span>
+              <span class="txt">微博客服</span>
+            </a>
+          </li>
+          <li class="clearfix">
+            <a href="mailto:webmaster@csdn.net" target="_top">
+              <span class="ico"><i class="icon iconfont icon-mail"></i></span>
+              <span class="txt">webmaster@csdn.net</span>
+            </a>
+          </li>
+          <li class="clearfix">
+            <span class="ico"><i class="icon iconfont icon-call"></i></span>
+            <span class="txt">400-660-0108</span>
+          </li>
+        </ul>
+        <div class="feed_copyright">
+          <p><a href="http://www.miibeian.gov.cn/" target="_top">京ICP证09002463号</a></p>
+          <p><a href="http://www.csdn.net/company/about.html" target="_top">关于</a>|<a href="http://www.csdn.net/company/recruit.html" target="_top">招聘</a>|<a href="http://www.csdn.net/company/marketing.html" target="_top">广告服务</a></p>
+          <p><img src="ali.png" alt="ali" title="ali"></p>
+          <p>Copyright © 1999-2018</p>
+          <p>CSDN.NET, All Rights Reserved</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</aside></div>
+
+<div class="left_fixed">
+    <div class="left_show_button">
+        <span>
+          <i class="icon iconfont icon-youjiantou"></i>
+        </span>
+    </div>
+    <ul class="left_menu" id="share_box">
+        <li>
+            <button class="left-fixed-btn btn-like csdn-tracking-statistics tracking-click" data-mod="popu_373" target="_self" title="点赞">
+                <a href="javascript:void(0);" class="iconbox border_red"><i class="icon iconfont icon-dianzan"></i></a>
+                <a class="txt" href="javascript:void(0);">0</a>
+            </button>
+        </li>
+        <li id="blog_artical_directory">
+            <button class="left-fixed-btn left_menu_btn csdn-tracking-statistics tracking-click" data-mod="popu_372" target="_self" title="目录">
+                <a href="javascript:void(0);" class="iconbox border_black"><i class="icon iconfont icon-mulu"></i></a>
+            </button>
+        </li>
+        <li class="menu_con">
+            <div class="list_father">
+                <div class="arr_box">
+                    <button class="btn-noborder arr-btn scroll-down  left_scroll_down"><i class="icon iconfont icon-xiajiantou"></i></button>
+                    <button class="btn-noborder arr-btn scroll-up left_scroll_top"><i class="icon iconfont icon-shangjiantou"></i></button>
+                </div>
+                <div class="arr"></div>
+                <div id="csdnBlogDir"></div>
+            </div>
+        </li>
+        <!--        <li>-->
+        <!--            <button class="left-fixed-btn btn-like tracking-ad" data-mod="popu_373" target="_self">-->
+        <!--                <span class="iconbox border_red"><i class="icon iconfont icon-xihuan-"></i></span>-->
+        <!--                <span class="txt">喜欢</span>-->
+        <!--                <span class="untxt">取消喜欢</span>-->
+        <!--            </button>-->
+        <!--        </li>-->
+        <li>
+            <button class="left-fixed-btn csdn-tracking-statistics tracking-click" data-mod="popu_374" id="com-quick-collect" target="_self" title="收藏">
+                <a href="javascript:void(0);" class="iconbox border_purple"><i class="icon iconfont icon-shoucang"></i></a>
+            </button>
+        </li>
+        <li>
+            <button class="left-fixed-btn btn-pinglun csdn-tracking-statistics tracking-click" data-mod="popu_544" title="评论">
+                <a href="javascript:void(0);" class="iconbox border_purple"><i class="icon iconfont icon-pinglun"></i></a>
+            </button>
+        </li>
+        <li class="bdsharebuttonbox bdshare-button-style0-16" data-bd-bind="1516182530624">
+          <button class="outside left-fixed-btn csdn-tracking-statistics tracking-click" data-mod="popu_172" title="分享到新浪微博">
+                <span class="iconbox border_red2"><i class="icon iconfont icon-xinlang"></i></span>
+                <a href="#" class="bds_tsina" data-cmd="tsina"> </a>
+          </button>
+        </li>
+        <li class="bdsharebuttonbox bdshare-button-style0-16" data-bd-bind="1516182530624">
+          <button class="outside left-fixed-btn csdn-tracking-statistics tracking-click" data-mod="popu_172" title="分享到微信">
+              <span class="iconbox border_green"><i class="icon iconfont icon-weixin"></i></span>
+              <a href="#" class="bds_weixin" data-cmd="weixin"> </a>
+          </button>
+        </li>
+        <li class="bdsharebuttonbox bdshare-button-style0-16" data-bd-bind="1516182530624">
+          <button class="outside left-fixed-btn csdn-tracking-statistics tracking-click" data-mod="popu_172" title="分享到QQ空间">
+              <span class="iconbox border_blue"><i class="icon iconfont icon-QQ"></i></span>
+              <a href="#" class="bds_qzone" data-cmd="qzone"> </a>
+          </button>
+        </li>
+        <li id="share_box">
+            
+            <div class="bdsharebuttonbox csdn-tracking-statistics tracking-click bdshare-button-style0-16" data-mod="popu_172" data-bd-bind="1516182530624">
+                
+                
+                
+            </div>
+        </li>
+    </ul>
+</div>
+<div class="right_fixed">
+    <div class="r_ico">
+        <i class="icon iconfont icon-jubao"></i>
+        <span class="txt" id="reportBtn">内容举报</span>
+    </div>
+    <div class="returnTop">
+        <i class="icon iconfont icon-fanhuidingbu"></i>
+        <span>返回顶部</span>
+    </div>
+</div>
+<div id="pop_win"></div>
+<div id="popup_mask"></div>
+<div class="pop_CA_cover"></div>
+<div class="pop pop_CA">
+    <div class="CA_header">
+        收藏助手
+        <span class="cancel_icon" id="fapancle"></span>
+    </div>
+    <iframe src="index_6.html" id="collectIframe" scrolling="no" width="100%" height="360" frameborder="0"></iframe>
+</div>
+<!--举报-->
+<div id="report_dialog" style="top: 250px; left: 343.5px;"><div id="panel_report">
+    <div class="panel_head">不良信息举报</div>
+    <form method="post" id="frmReport" class="panel_body" action="http://blog.csdn.net/fancycow/article/details/9961477">
+        <table class="pop_table" cellspacing="4" cellpadding="0" border="0">
+            <tbody><tr><td colspan="2">您举报文章：<a href="http://blog.csdn.net/fancycow/article/details/9961477" target="_top">Gstreamer Plugin 编写 之 入门</a></td></tr>
+            <tr>
+                <th style="width: 60px;">举报原因：</th>
+                <td id="panel_reporttype">
+                    <label><input class="report_type" id="report_sex" name="report_type" value="1" type="radio">色情</label>
+                    <label><input class="report_type" id="report_Politics" name="report_type" value="2" type="radio">政治</label>
+                    <label><input class="report_type" id="report_copy" name="report_type" value="3" type="radio">抄袭</label>
+                    <label><input class="report_type" id="report_ad" name="report_type" value="4" type="radio">广告</label>
+                    <label><input class="report_type" id="report_want" name="report_type" value="5" type="radio">招聘</label>
+                    <label><input class="report_type" id="report_call" name="report_type" value="6" type="radio">骂人</label>
+                    <br>
+                    <label><input class="report_type" id="report_other" name="report_type" value="7" type="radio">其他</label>
+                    <input name="report_other_content" id="report_other_content" maxlength="30" style="display: none;" value="" type="text">
+                </td>
+            </tr>
+            <tr id="panel_originalurl" style="display: none;">
+                <th>原文地址：</th>
+                <td>
+                    <input id="originalurl" value="http://" name="originalurl" style="width: 90%;" type="text">
+                </td>
+            </tr>
+            <tr>
+                <th id="sp_reason">原因补充：</th>
+                <td>
+                    <textarea id="report_description" style="width: 300px;" rows="3" name="report_description"></textarea>
+                    <p id="sp_n" style="color: rgb(153, 153, 153); margin: 0px; padding: 0px;">(最多只允许输入30个字)</p>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input id="btnSubmitReport" name="submit" class="btn_1" src="btn_submit.jpg" type="image" align="middle">
+                    <span style="padding-left: 20px;"></span>
+                    <img id="btnCloseReportDialog" src="btn_cancel.jpg" align="middle">
+                    <div id="error" style="color: red;">
+                    </div>
+                </td>
+            </tr>
+            </tbody></table>
+    </form>
+</div>
+    
+</div>
+<!--  fixme 后期清理掉  -->
+<div id="a52b5334d" style="width: 1px; height: 1px; display: none;">
+    
+    
+</div>
+
+
+<!-- <script type="text/javascript" src="http://passport.csdn.net/content/loginbox/login.js"></script> -->
+
+
+
+
+<div class="" id="loginWrap"></div>
+<div class="" id="dlMask"></div>
+
+</body>
+</html>

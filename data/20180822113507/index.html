@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+<meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1"><meta name="renderer" content="webkit"><meta property="qc:admins" content="15317273575564615446375"><meta property="og:image" content="https://static.segmentfault.com/v-5b7544bd/global/img/touch-icon.png"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"><meta name="alexaVerifyID" content="LkzCRJ7rPEUwt6fVey2vhxiw1vQ"><meta name="apple-itunes-app" content="app-id=958101793, app-argument="><title>如何只查看tar.gz压缩文件中顶层目录的列表 - superzy的回答 - SegmentFault 思否</title><meta name="description" content="例如使用了如下命令会列出所有的文件: {代码...} 使用什么命令，才能只显示顶层的目录列表。如下，我只需要如下的信息： {代码...}"><meta name="keywords" content="linux,shell"><link rel="search" type="application/opensearchdescription+xml" href="https://segmentfault.com/opensearch.xml" title="SegmentFault"><link rel="shortcut icon" href="favicon.ico"><link rel="apple-touch-icon" href="https://static.segmentfault.com/v-5b7544bd/global/img/touch-icon.png"><meta name="msapplication-TileColor" content="#009a61"><meta name="msapplication-square150x150logo" content="https://static.segmentfault.com/v-5b7544bd/global/img/touch-icon.png"><link rel="alternate" type="application/atom+xml" title="SegmentFault 最新问题" href="https://segmentfault.com/feeds/questions"><link rel="alternate" type="application/atom+xml" title="SegmentFault 最新文章" href="https://segmentfault.com/feeds/blogs"><link rel="preload" href="https://adservice.google.com/adsid/integrator.js?domain=segmentfault.com" as="script">
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body data-mod="qa" class="qa-question "><iframe style="width: 0px; height: 0px; display: none;" src="index_1.html"></iframe><!--[if lt IE 9]><div class="alert alert-danger topframe" role="alert">你的浏览器实在<strong>太太太太太太旧了</strong>，放学别走，升级完浏览器再说 <a target="_blank" class="alert-link" href="http://browsehappy.com">立即升级</a></div><![endif]--><img id="icon4weChat" style="height: 0px; width: 0px;" data-src="https://static.segmentfault.com/v-5b7544bd/global/img/touch-icon-512.png"><div id="gridMapHoverBox" style="position: absolute; border: 1px solid rgb(0, 154, 97); z-index: 99; font-size: 10px; background: rgb(255, 255, 255) none repeat scroll 0% 0%;"></div><div id="mm_124884735_33830642_146292853" class="hidden-xs"></div><i class="fa fa-times-circle close-banner-1111" aria-hidden="true" style="position: absolute; right: 15px; top: 15px; font-size: 18px; cursor: pointer; color: rgba(255, 255, 255, 0.25);"></i><div class="global-nav sf-header sf-header--index"><div class="bottom-nav visible-xs visible-sm hidden"><div class="opts"><a class="opts-group " href="https://segmentfault.com/"><i class="fa fa-home" aria-hidden="true"></i><span>首页</span></a><a class="opts-group active" href="https://segmentfault.com/questions"><i class="fa fa-comments" aria-hidden="true"></i><span>问答</span></a><a class="opts-group " href="https://segmentfault.com/blogs"><i class="fa fa-pencil-square" aria-hidden="true"></i><span>专栏</span></a><a class="opts-group " href="https://segmentfault.com/lives"><i class="fa fa-play-circle" aria-hidden="true"></i><span>讲堂</span></a><div class="opts-group"><div class="btn-group dropup"><i class="fa fa-bars dropdown hoverDropdown" data-toggle="dropdown" aria-hidden="true"><span>更多</span></i><ul class="dropdown-menu"><li><a href="https://segmentfault.com/jobs">职位</a></li><li><a href="https://segmentfault.com/events">活动</a></li><li><a href="https://segmentfault.com/tags">标签</a></li><li><a href="https://segmentfault.com/badges">徽章</a></li></ul></div></div></div></div><nav class="container nav"><div class="visible-xs visible-sm header-response"><a href="https://segmentfault.com/search" style="display: block;"><i class="fa fa-search" aria-hidden="true"></i></a><div class="sf-header__logo sf-header__logo--response"><h1><a href="https://segmentfault.com/" style="height: 24px; background-size: auto 24px;"></a></h1></div><a href="https://segmentfault.com/user/login" class="pull-right login-btn"><i class="fa fa-user" aria-hidden="true"></i></a></div><div class="row hidden-xs hidden-sm"><div class="col-sm-8 col-md-9 col-lg-9"><div class="sf-header__logo"><h1><a href="https://segmentfault.com/">SegmentFault</a></h1></div><div><ul class="menu list-inline pull-left hidden-xs"><li class="menu__item"><a href="https://segmentfault.com/" class="">首页</a></li><li class="menu__item"><a href="https://segmentfault.com/questions" class="active-nav">问答</a></li><li class="menu__item"><a href="https://segmentfault.com/blogs" class="">专栏</a></li><li class="menu__item"><a href="https://segmentfault.com/lives" class="">讲堂</a></li><li class="menu__item menu__item--more dropdown"><a href="##" class="dropdown-toggle dropdownBtn" data-toggle="dropdown">
+                                        发现<i class="fa fa-caret-down" style="font-size: 14px; margin-left: 5px;" aria-hidden="true"></i></a><div class="dropdown-block hidden"><ul class="dropdown-content-menu"><li><a href="https://segmentfault.com/groups">圈子</a></li><li><a href="https://segmentfault.com/events">活动</a></li><li><a href="https://segmentfault.com/tags">标签</a></li><li><a href="https://segmentfault.com/jobs">找工作</a></li><li><a href="https://segmentfault.com/users">排行榜</a></li><li><a href="https://segmentfault.com/badges">徽章</a></li><li><a href="https://segmentfault.com/notes">笔记</a></li><li><a href="https://docs.segmentfault.com/" target="_top">开发手册<i style="line-height: 20px; font-size: 12px; color: rgb(245, 166, 35);" class="ml10 fa fa-external-link-square"></i></a></li><li><a href="https://business.segmentfault.com/ads?utm_source=sf-header" target="_top">广告投放<i style="line-height: 20px; font-size: 12px; color: rgb(245, 166, 35);" class="ml10 fa fa-external-link-square"></i></a></li></ul></div></li><li class="menu__item visible-sm-inline-block"><a href="https://segmentfault.com/search"><span class="glyphicon glyphicon-search" style="vertical-align: middle;"></span></a></li></ul><form action="https://segmentfault.com/search" class="header-search  hidden-sm hidden-xs pull-right"><button class="btn btn-link"><span class="sr-only">搜索</span><span class="glyphicon glyphicon-search"></span></button><input id="searchBox" name="q" placeholder="搜索问题或关键字" class="form-control" value="" type="text"></form></div></div><div class="col-sm-4 col-md-3 col-lg-3 text-right"><ul class="opts list-inline hidden-xs"><li class="opts__item"><a href="https://segmentfault.com/user/login" class="SFRegister btn-signin" style="margin-bottom: 2px;">立即登录</a><a href="https://segmentfault.com/user/register" class="SFLogin ml10 btn-signup" onclick="_gaq.push(['_trackEvent', 'Button', 'Click', 'Login']);">免费注册</a></li></ul></div></div><div class="sub-head hidden-xs"><span class="tag-nav__item btn-all-tag"><a href="https://segmentfault.com/tags" class="text-secondNav">热门标签</a></span><div class="tag-container-outer"><span class="tag-nav__item mr20 active"><a class="active" href="https://segmentfault.com/questions">全部</a></span><div class="tag-container"><span class="tag-nav__item mr20"><a class="text-secondNav" href="https://segmentfault.com/t/javascript">javascript</a></span><span class="tag-nav__item mr20"><a class="text-secondNav" href="https://segmentfault.com/t/php">php</a></span><span class="tag-nav__item mr20"><a class="text-secondNav" href="https://segmentfault.com/t/python">python</a></span><span class="tag-nav__item mr20"><a class="text-secondNav" href="https://segmentfault.com/t/java">java</a></span><span class="tag-nav__item mr20"><a class="text-secondNav" href="https://segmentfault.com/t/mysql">mysql</a></span><span class="tag-nav__item mr20"><a class="text-secondNav" href="https://segmentfault.com/t/ios">ios</a></span><span class="tag-nav__item mr20"><a class="text-secondNav" href="https://segmentfault.com/t/android">android</a></span><span class="tag-nav__item mr20"><a class="text-secondNav" href="https://segmentfault.com/t/node.js">node.js</a></span><span class="tag-nav__item mr20"><a class="text-secondNav" href="https://segmentfault.com/t/html5">html5</a></span><span class="tag-nav__item mr20"><a class="text-secondNav" href="https://segmentfault.com/t/linux">linux</a></span><span class="tag-nav__item mr20"><a class="text-secondNav" href="https://segmentfault.com/t/c%2B%2B">c++</a></span><span class="tag-nav__item mr20"><a class="text-secondNav" href="https://segmentfault.com/t/css3">css3</a></span><span class="tag-nav__item mr20"><a class="text-secondNav" href="https://segmentfault.com/t/git">git</a></span><span class="tag-nav__item mr20"><a class="text-secondNav" href="https://segmentfault.com/t/golang">golang</a></span><span class="tag-nav__item mr20"><a class="text-secondNav" href="https://segmentfault.com/t/ruby">ruby</a></span><span class="tag-nav__item mr20"><a class="text-secondNav" href="https://segmentfault.com/t/vim">vim</a></span><span class="tag-nav__item mr20"><a class="text-secondNav" href="https://segmentfault.com/t/docker">docker</a></span><span class="tag-nav__item mr20"><a class="text-secondNav" href="https://segmentfault.com/t/mongodb">mongodb</a></span></div></div><div class="gradient-block"></div></div></nav></div><div class="wrap">
+
+            <div id="loginBanner" class="hidden-sm hidden-xs loginBanner">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-md-7">
+                <h1 class="title">在 SegmentFault，学习技能、解决问题</h1>
+                <p class="desc">每个月，我们帮助 1000 万的开发者解决各种各样的技术问题。并助力他们在技术能力、职业生涯、影响力上获得提升。</p>
+            </div>
+            <div class="col-lg-3 col-lg-offset-3 col-md-4 col-md-offset-1">
+                <form class="register-form clearfix" action="https://segmentfault.com/api/user/phone/register">
+
+                    
+                    <a href="https://segmentfault.com/user/register" class="SFLogin btn btn-lg btn-primary mr15">免费注册</a>
+                    <a href="https://segmentfault.com/user/login" class="SFRegister btn btn-lg btn-primary">立即登录</a>
+                </form>
+            </div>
+        </div>
+    </div>
+        <i class="fa fa-times-circle" aria-hidden="true"></i>
+    </div>
+
+    
+    <div class="post-topheader">
+        <div class="container">
+            <div class="block-for-right-border">
+                <div class="row">
+                    <div class="col-md-9 col-sm-8 col-xs-12">
+                        <span class="post-topheader__title--icon-symbol">问</span>
+
+                        <div class="post-topheader__info">
+                            <h1 class="h3 post-topheader__info--title" id="questionTitle" data-id="1010000004094930">
+                                <a href="https://segmentfault.com/q/1010000004094930">如何只查看tar.gz压缩文件中顶层目录的列表</a>
+                            </h1>
+
+                            <ul class="taglist--inline inline-block question__title--tag mr10">
+                                                                    <li class="tagPopup mb5">
+                                        <a class="tag" href="https://segmentfault.com/t/linux" data-toggle="popover" data-img="https://avatar-static.segmentfault.com/329/062/3290625956-1040000000089392_huge256" data-placement="top" data-original-title="linux" data-id="1040000000089392">
+                                                                                        linux
+                                        </a>
+                                    </li>
+                                                                    <li class="tagPopup mb5">
+                                        <a class="tag" href="https://segmentfault.com/t/shell" data-toggle="popover" data-img="" data-placement="top" data-original-title="shell" data-id="1040000000089669">
+                                                                                        shell
+                                        </a>
+                                    </li>
+                                                            </ul>
+
+                            <div class="question__author">
+                                <a href="https://segmentfault.com/u/txgcwm" class="mr5"><strong>txgcwm</strong></a>
+                                2015年12月04日提问<span class="hidden-xs">
+                                                                                          </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-4 col-xs-12 hidden-xs">
+                        <ul class="post-topheader__side list-unstyled">
+                            <li>
+                                                                    <button type="button" id="sideFollow" class="btn btn-success btn-sm" data-id="1010000004094930" data-do="follow" data-type="question" data-toggle="tooltip" data-placement="right" title="关注后将获得更新提醒">关注
+                                    </button>
+                                                                <strong>3</strong> 关注
+                            </li>
+                            <li>
+                                                                    <button type="button" id="sideBookmark" class="btn btn-default btn-sm" data-id="1010000004094930" data-type="question">收藏
+                                    </button>
+                                                                <strong id="sideBookmarked">1</strong> 收藏，<strong class="no-stress">4k</strong> 浏览
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end .post-topheader -->
+
+    <div class="container mt30">
+        <div class="row">
+            <div class="col-xs-12 col-md-9 main">
+                <article class="widget-question__item">
+                    <div class="post-col">
+                        <div class="widget-vote  ">
+                            <button type="button" class="like" data-id="1010000004094930" data-type="question" data-do="like" data-toggle="tooltip" data-placement="top" title="问题对人有帮助，内容完整，我也想知道答案">
+                                <span class="sr-only">问题对人有帮助，内容完整，我也想知道答案</span>
+                            </button>
+                                                        <span class="count">0</span>
+                            <button type="button" class="hate" data-id="1010000004094930" data-type="question" data-do="hate" data-toggle="tooltip" data-placement="bottom" title="问题没有实际价值，缺少关键内容，没有改进余地">
+                                <span class="sr-only">问题没有实际价值，缺少关键内容，没有改进余地</span>
+                            </button>
+                        </div>
+                        <!-- end .widget-vote -->
+                    </div>
+
+                    <div class="post-offset">
+                        <div class="question fmt" data-id="1010000004094930">
+                                                            
+<p>例如使用了如下命令会列出所有的文件:</p>
+<pre><code>$ tar -tf udpSocket.tar 
+udpSocket/
+udpSocket/clientUdp
+udpSocket/clientUdp.c
+udpSocket/makefile
+udpSocket/serverUdp.c
+udpSocket/serverUdp.h
+udpSocket/serverUdp.o
+udpSocket/singLinklistUdp
+udpSocket/singLinklistUdp.c
+udpSocket/singLinklistUdp.o</code></pre>
+<p>使用什么命令，才能只显示顶层的目录列表。如下，我只需要如下的信息：</p>
+<pre><code>udpSocket/</code></pre>
+
+                            
+                        </div>
+
+
+                                                                                                                                                
+                        
+                        <div class="row">
+                            <div class="post-opt col-md-8">
+                                <ul class="list-inline mb0"><li class="pr15"><a href="https://segmentfault.com/q/1010000004094930">2015年12月04日提问</a></li><li class="pl0 pr15"><a href="javascript:void(0);" class="comments" data-id="1010000004094930" data-target="#comment-1010000004094930"><i class="fa fa-commenting mr4" aria-hidden="true"></i>评论</a></li><li class="edit-btn js__rank-check pl0 pr15" data-toggle="tooltip" data-placement="top" title="声望需要达到 15"><a class="  " href="javascript:;" data-title="如何只查看tar.gz压缩文件中顶层目录的列表" data-url="http://sfau.lt/bNrlrq" data-id="1010000004094930">邀请回答</a></li><li data-toggle="tooltip" data-placement="top" title="声望需要达到 200" class="edit-btn js__rank-check pl0 pr15"><a href="javascript:;">编辑</a></li><li class="dropdown js__content-ops pl0 pr15" data-module="question" data-typetext="问题" data-id="1010000004094930"><a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-ellipsis-h" aria-hidden="true"></i></a><ul class="dropdown-menu dropdown-menu-left"><li><a href="#911" data-toggle="modal" data-target="#911" data-action="report">举报</a></li></ul></li></ul>                            </div>
+
+                            
+                        </div>
+
+
+                        <div class="widget-comments hidden" id="comment-1010000004094930" data-id="1010000004094930"><div class="widget-comments__form row"><form class="clearfix SFLogin" method="POST" action="https://segmentfault.com/q/1010000004094930/a-1020000004095248"><div class="form-group mb0 widget-comments__form--input"><input name="id" value="1010000004094930" type="hidden"><textarea rows="1" name="text" class="SFLogin form-control mono" id="commentText-1010000004094930" data-id="1010000004094930" placeholder="使用评论询问更多信息或提出修改意见，请不要在评论里回答问题"></textarea></div><div class="widget-comments__btn"><div class="pull-right"><button type="submit" class="btn btn-default postComment" data-id="1010000004094930">提交评论
+                            </button><span class="widget-comments__btn--tips"><a href="javascript:void(0);" class="toggle-comment-helper" title="语法提示"><i class="fa fa-question-circle"></i></a></span></div></div></form><div class="col-md-12"><div class="alert alert-warning alert-dismissible mb0 mt10 fmt comment-helper" data-rank="" style="display: none;" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close" style="right: 0px;"><span aria-hidden="true">×</span></button>
+                        评论支持部分 Markdown 语法：<code>**bold**</code><code>_italic_</code><code>[link](http://example.com)</code><code>&gt; 引用</code><code>`code`</code><code>-
+                        列表</code>。<br>同时，被你 @ 的用户也会收到通知
+                    </div></div></div><!-- /.widget-comments__form --></div><!-- /.widget-comments -->
+                    </div>
+                    <!-- end .post-offset -->
+                </article>
+
+                                <div id="mm_124884735_33830642_143436142" class="mt20 ad-detail-mm hidden-xs"><span style="overflow: visible; position: relative; display: block; width: 728px; height: 90px; background: rgba(0, 0, 0, 0) none repeat scroll 0% 0%; border: 0px none; text-align: left;"><span style="overflow: hidden; position: absolute; display: block; width: 728px; height: 90px; background: rgba(0, 0, 0, 0) none repeat scroll 0% 0%; border: 0px none; text-align: left;"><span style="overflow: hidden; position: absolute; display: block; width: 728px; height: 90px; background: rgba(0, 0, 0, 0) none repeat scroll 0% 0%; border: 0px none; text-align: left;"><a href="https://afptrack.alimama.com/clk?bid=0bfbf7ca00005b7cd9467578470449cb&amp;pid=mm_124884735_33830642_143436142&amp;cid=272554&amp;mid=256419&amp;oid=34336&amp;productType=1&amp;qytInfoMTime=1534878886&amp;e=1o3K3wnC6UhfumWCnJqSgavMHevtNrxaVsl3R1kyi48r4hHzkZV1s2Nt5ruiAbrys%2FgleahFSnOgz2qM1a80QUs3yb9a8u0%2BSwggHcabbMSbI3LBk6RJznhYIkhYs9zv&amp;k=129" target="_top" style="position: absolute; display: block; top: 0px; left: 0px; margin: 0px; padding: 0px; width: 728px; height: 90px; text-decoration: none; opacity: 0; z-index: 1; cursor: pointer; background: rgb(255, 255, 255) none repeat scroll 0% 0%;"></a><img id="ac_cs_mm_124884735_33830642_143436142_1" src="004341a2e3d7a98e72d9156f120bad43.png" style="width: 728px; height: 90px;" border="0"></span></span></span></div>
+                
+                    <div class="widget-answers qa-answer">
+                <h2 class="title h5 mt30 mb20 post-title">
+            <a href="https://segmentfault.com/q/1010000004094930">查看全部 2 个回答</a>
+        </h2>
+                
+    
+            
+
+
+    <article class="clearfix widget-answers__item accepted" id="a-1020000004095248">
+        <div class="post-col">
+            <div class="widget-vote ">
+                <button type="button" class="like" data-id="1020000004095248" data-type="answer" data-do="like" data-toggle="tooltip" data-placement="top" title="答案对人有帮助，有参考价值">
+                    <span class="sr-only">答案对人有帮助，有参考价值</span>
+                </button>
+                                <span class="count">0</span>
+                <button type="button" class="hate" data-id="1020000004095248" data-type="answer" data-do="hate" data-toggle="tooltip" data-placement="bottom" title="答案没帮助，是错误的答案，答非所问">
+                    <span class="sr-only">答案没帮助，是错误的答案，答非所问</span>
+                </button>
+
+            </div>
+            
+              <!-- 该答案被采纳 -->
+            <div class="text-center accepted-check cancel-cursor-pointer mt15" data-id="1020000004095248" data-do="accept/cancel" data-type="answer" style="white-space: nowrap;" ;="">
+                <i class="fa fa-check-circle accepted-check-icon" aria-hidden="true"></i><br>
+                <span class="fontsize13">已采纳</span>
+            </div>
+
+            
+                        
+        </div>
+
+        <div class="post-offset">
+            <div class="answer fmt" data-id="1020000004095248">
+                                    
+<p>方法一：</p>
+<pre><code class="shell">tar -tf udpSocket.tar | awk -F "/" '{print $1}' | sort | uniq</code></pre>
+<p>方法二：</p>
+<pre><code class="shell">tar -tf udpSocket.tar | awk -F "/" '{print $1}' | tail -n 1</code></pre>
+<p>方法三：</p>
+<pre><code class="shell">tar -tf udpSocket.tar | awk -F "/" '{print $1}' | sed -n '1p'</code></pre>
+
+                            </div>
+
+            
+                        
+            <div class="row answer__info--row">
+                <div class="post-opt col-md-8 col-sm-8 col-xs-10">
+                    <ul class="list-inline mb0"><li class="pr15"><a href="https://segmentfault.com/q/1010000004094930/a-1020000004095248"> 2015年12月04日回答</a></li><li class="pl0 pr15"><a href="javascript:void(0);" class="comments" data-id="1020000004095248" data-target="#comment-1020000004095248"><i class="fa fa-commenting mr4" aria-hidden="true"></i>2 评论</a></li><li class="pl0 pr15"><a href="javascript:;" class="answer__reward-btn" data-id="1020000004095248"><i class="fa fa-jpy mr4" aria-hidden="true"></i><span>赞赏</span></a></li><li data-toggle="tooltip" data-placement="top" title="声望需要达到 200" class="edit-btn js__rank-check pl0 pr15"><a href="javascript:;">编辑</a></li></ul>                </div>
+
+                <div class="col-md-2 col-sm-2 col-xs-2 answer__info--author-avatar">
+                    <a class="mr10 inline-block" href="https://segmentfault.com/u/superzy"><img class="avatar-32 " data-toggle="popover" data-slug="superzy" data-id="1030000004095217" src="2843679730-566111cf33c7d_big64" alt=""></a>
+                </div>
+                <div class="col-md-2 col-sm-2 hidden-xs answer__info--author">
+                    <div class=" answer__info--author-warp">
+                        <a class="answer__info--author-name" title="superzy" href="https://segmentfault.com/u/superzy">superzy</a><span class="answer__info--author-rank">42 声望</span></div>
+                </div>
+            </div>
+
+
+            <div class="widget-comments hidden" id="comment-1020000004095248" data-id="1020000004095248"><div class="widget-comments__form row"><form class="clearfix SFLogin" method="POST" action="https://segmentfault.com/q/1010000004094930/a-1020000004095248"><div class="form-group mb0 widget-comments__form--input"><input name="id" value="1020000004095248" type="hidden"><textarea rows="1" name="text" class="SFLogin form-control mono" id="commentText-1020000004095248" data-id="1020000004095248" placeholder="使用评论询问更多信息或提出修改意见，请不要在评论里回答问题"></textarea></div><div class="widget-comments__btn"><div class="pull-right"><button type="submit" class="btn btn-default postComment" data-id="1020000004095248">提交评论
+                            </button><span class="widget-comments__btn--tips"><a href="javascript:void(0);" class="toggle-comment-helper" title="语法提示"><i class="fa fa-question-circle"></i></a></span></div></div></form><div class="col-md-12"><div class="alert alert-warning alert-dismissible mb0 mt10 fmt comment-helper" data-rank="" style="display: none;" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close" style="right: 0px;"><span aria-hidden="true">×</span></button>
+                        评论支持部分 Markdown 语法：<code>**bold**</code><code>_italic_</code><code>[link](http://example.com)</code><code>&gt; 引用</code><code>`code`</code><code>-
+                        列表</code>。<br>同时，被你 @ 的用户也会收到通知
+                    </div></div></div><!-- /.widget-comments__form --></div><!-- /.widget-comments -->
+
+
+        </div>
+            </article><!-- /article -->
+
+            </div><!-- /.widget-answers -->
+        <div class="mt20">
+        <a href="https://segmentfault.com/q/1010000004094930">
+            <strong>查看全部 2 个回答</strong>
+        </a>
+    </div>
+    
+                
+                            </div>
+            <!-- /.main -->
+
+
+            
+<div class="col-xs-12 col-md-3 side">
+
+    <div class="widget-box widget_lives pt0 hidden" style="border-top: medium none;" id="live-recommend-wrapper">
+        <h2 class="widget-box__title">
+            讲堂推荐
+            <i class="fa fa-youtube-play fa-sm" aria-hidden="true"></i>
+            <a href="https://segmentfault.com/lives" class="pull-right more">更多</a>
+        </h2>
+        <div id="live-recommend" class="mb20"></div>
+    </div>
+
+    <div class="mb25 hidden-md hidden-sm hidden-xs">
+    <img src="20180822.png" alt="Planets" usemap="#gridsMap" width="255" height="255">
+    <map name="gridsMap" id="gridsMap"></map>
+    <div style="text-align: center;"><a style="text-align: center; color: rgb(158, 158, 158); font-size: 12px;" href="https://segmentfault.com/sponsor">想在上方展示你的广告？</a></div>
+            
+    </div>
+
+    <!--     <div data-api="/api/news/hottest">
+        <script type="text/template">
+            <div class="widget_headline widget-box mt20 mb30">
+                <h2 class="h4 widget-box__title">热门头条</h2>
+                <ul class="taglist--block pl20" >
+                    <% _.each(data,function(d){ %>
+                    <li class="">
+                        <a href="<%- d.url %>" data-id="<%- d.id %>"
+                           data-original-title="<%= d.name %>"><%= d.title %></a>
+                        <p class=""><span class="mr5 color_F5A623"><%- d.VotesWord %> 赞</span> | <span class="ml5"><%- d.comments %> 评论</span></p>
+                    </li>
+                    <% }) %>
+                    <a href="/news" target="_blank" class="f12" >更多头条内容→</a>
+                </ul>
+
+            </div>
+        </script>
+    </div>
+ -->
+    
+            <!--     <div data-type="widget" data-api="/api/bookmarkArchive/hots" data-api-overwrite="/api/bookmarkArchive/1010000004094930/related">
+        <script type="text/template">
+            <div class="widget-box widget-box--bookmark no-border">
+                <h4 class="widget-box__title">相关收藏夹 <a id="widgetBookmarkRefresh" class="userstab pull-right"
+                                                          href="javascript:;">换一组</a></h4>
+                <ul class="widget-links list-unstyled media">
+                    <% _.each(data,function(d){ %>
+                    <li class="widget-links__item">
+                        <img class="pull-left pattern pattern-<%= d.id%19 %> mr10" src="https://static.segmentfault.com/v-5b7544bd/global/img/pattern/<%= d.id%10 ? d.id%10 : 10 %>.svg" width="32">
+                        <div class="media-body">
+                            <a target="_blank" class="ellipsis mr0" href="<%- d.url %>"><%= d.name %></a>
+                            <p class="mb0">
+                                <span><%- d.num %></span> 个条目 <span class="division">|</span> <span><%- d.followers %></span> 人关注
+                            </p>
+                        </div>
+                    </li>
+                    <% }) %>
+                </ul>
+            </div>
+        </script>
+    </div>
+ -->
+        <div id="paradigm-question-related"></div>
+
+        
+        <div class="widget-share__full" data-text="如何只查看tar.gz压缩文件中顶层目录的列表" data-url="https://segmentfault.com/q/1010000004094930" data-shorturl="http://sfau.lt/bNrlrq"></div>
+
+
+
+                <div class="ad-should-be-fixed">
+            <div id="mm_124884735_33830642_145440102" class="mb25"></div>
+            <div id="mm_124884735_33830642_120290173" class="mb25"><div id="ac_wrap_mm_124884735_33830642_120290173" style="width: 255px;">
+<!-- 详情页侧栏矩形（跟随） -->
+<ins class="adsbygoogle" style="display: inline-block; width: 255px; height: 213px;" data-ad-client="ca-pub-6330872677300335" data-ad-slot="9674628595" data-adsbygoogle-status="done"><ins id="aswift_0_expand" style="display: inline-table; border: medium none; height: 213px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 255px; background-color: transparent;"><ins id="aswift_0_anchor" style="display: block; border: medium none; height: 213px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 255px; background-color: transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" id="aswift_0" name="aswift_0" style="left: 0px; position: absolute; top: 0px; width: 255px; height: 213px;" src="index_2.html" width="255" height="213" frameborder="0"></iframe></ins></ins></ins>
+</div></div>
+        </div>
+    
+</div><!-- /.side -->
+
+        </div>
+    </div>
+</div>
+
+<div id="shareToWeiboModal" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">×</span><span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title">分享</h4>
+            </div>
+            <div class="modal-body">
+                <p class="sfModal-content">
+                    分享到微博？
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default dont-likeweibo" data-dismiss="modal">取消</button>
+                <a href="https://segmentfault.com/q/1010000004094930/a-1020000004095248" id="shareLink" class="btn btn-primary done-btn" target="_top" onclick="$('#shareToWeiboModal').modal('hide')">分享</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="delete-modal" class="modal widget-911" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title radio-del question-close-only">关闭<span class="type-911">问题</span>（请谨慎操作）</h4>
+                <h4 class="modal-title radio-del question-delete-only">删除<span class="type-911">问题</span>（请谨慎操作）</h4>
+                <h4 class="modal-title radio-del answer-delete-only">删除<span class="type-911">回答</span>（请谨慎操作）</h4>
+                <h4 class="modal-title radio-del answer-ignore-only">忽略<span class="type-911">回答</span></h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <strong class="required radio-del question-close-only">关闭理由：</strong>
+                    <strong class="required radio-del question-delete-only answer-delete-only">删除理由：</strong>
+                    <strong class="required radio-del answer-ignore-only">忽略理由：</strong>
+                </p>
+                <div id="reportDescription">
+                    <div class="radio-del radio all">
+                        <label>
+                            <input name="descRadio" value="推广（招聘、广告、SEO 等）方面的内容" type="radio">
+                            推广（招聘、广告、SEO 等）方面的内容
+                        </label>
+                    </div>
+                    <div class="radio-del radio question-close-only">
+                        <label>
+                            <input name="descRadio" value="与已有问题重复" type="radio">
+                            与已有问题重复（请编辑该提问指向已有相同问题）
+                        </label>
+                    </div>
+                    <div class="radio-del radio answer-ignore-only">
+                        <label>
+                            <input name="descRadio" value="答非所问，不符合答题要求" type="radio">
+                            答非所问，不符合答题要求
+                        </label>
+                    </div>
+                    <div class="radio-del radio answer-ignore-only">
+                        <label>
+                            <input name="descRadio" value="宜作评论而非答案" type="radio">
+                            宜作评论而非答案
+                        </label>
+                    </div>
+                    <div class="radio-del radio all">
+                        <label>
+                            <input name="descRadio" value="带有人身攻击、辱骂、仇恨等违反条款的内容" type="radio">
+                            带有人身攻击、辱骂、仇恨等违反条款的内容
+                        </label>
+                    </div>
+                    <div class="radio-del radio question-close-only">
+                        <label>
+                            <input name="descRadio" value="无法获得确切结果的问题" type="radio">
+                            无法获得确切结果的问题
+                        </label>
+                    </div>
+                    <div class="radio-del radio question-close-only">
+                        <label>
+                            <input name="descRadio" value="非开发直接相关的问题" type="radio">
+                            非开发直接相关的问题
+                        </label>
+                    </div>
+                    <div class="radio-del radio question-close-only question-delete-only">
+                        <label>
+                            <input name="descRadio" value="非技术提问的讨论型问题" type="radio">
+                            非技术提问的讨论型问题
+                        </label>
+                    </div>
+
+                    <div class="radio-del radio all btwRadio">
+                        <label>
+                            <input name="descRadio" value="" type="radio">
+                            其他原因（请补充说明）
+                        </label>
+                    </div>
+                    <div class="btw" style="display: none;">
+                        <p class="mt20"><strong>补充说明：</strong></p>
+                        <textarea class="form-control" rows="3" name="description" id="deleteDesc"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-danger" id="submit-delete">提交</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<div class="modal widget-911" id="911" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal" type="button">
+          <span aria-hidden="true">×</span>
+          <span class="sr-only">Close</span>
+        </button>
+        <h4 class="modal-title"><span data-model="action"></span><span data-model="type"></span></h4>
+      </div>
+      <div class="modal-body">
+        <form id="reportForm" action="https://segmentfault.com/q/1010000004094930/a-1020000004095248">
+          <!-- 后台返回信息 -->
+          <p class="alert alert-warning" data-model="returnMsg"></p>
+          <div data-role="base">
+            <p>
+              <strong class="required">我要<span data-model="action"></span>该<span data-model="type"></span>，理由是：</strong>
+            </p>
+            <ul class="list-unstyled" data-model="list"></ul>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-default pull-left" type="button" data-role="back" style="display: none;">返回重选</button>
+                <button class="btn btn-default" data-dismiss="modal" type="button">取消</button>
+        <button class="btn btn-primary" data-role="submit" type="button">提交</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+    <div id="loginBanner" class="hidden-sm hidden-xs loginBanner">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-md-7">
+                <h1 class="title">在 SegmentFault，学习技能、解决问题</h1>
+                <p class="desc">每个月，我们帮助 1000 万的开发者解决各种各样的技术问题。并助力他们在技术能力、职业生涯、影响力上获得提升。</p>
+            </div>
+            <div class="col-lg-3 col-lg-offset-3 col-md-4 col-md-offset-1">
+                <form class="register-form clearfix" action="https://segmentfault.com/api/user/phone/register">
+
+                    
+                    <a href="https://segmentfault.com/user/register" class="SFLogin btn btn-lg btn-primary mr15">免费注册</a>
+                    <a href="https://segmentfault.com/user/login" class="SFRegister btn btn-lg btn-primary">立即登录</a>
+                </form>
+            </div>
+        </div>
+    </div>
+    </div>
+
+
+
+
+
+
+
+<footer id="footer">
+    <div class="container">
+        <div class="row hidden-xs">
+            <dl class="col-sm-2 site-link">
+                <dt>产品</dt>
+                
+                <dd><a href="https://segmentfault.com/questions/hottest?utm_source=sf-footer&amp;utm_medium=footer-nav&amp;utm_campaign=product&amp;utm_content=footer-links-hottest-questions&amp;utm_term=%E7%83%AD%E9%97%A8%E9%97%AE%E7%AD%94">热门问答</a></dd>
+                <dd><a href="https://segmentfault.com/blogs/hottest?utm_source=sf-footer&amp;utm_medium=footer-nav&amp;utm_campaign=product&amp;utm_content=footer-links-hottest-questions&amp;utm_term=%E7%83%AD%E9%97%A8%E4%B8%93%E6%A0%8F">热门专栏</a></dd>
+                <dd><a href="https://segmentfault.com/lives?utm_source=sf-footer&amp;utm_medium=footer-nav&amp;utm_campaign=product&amp;utm_content=footer-links-hottest-questions&amp;utm_term=%E7%83%AD%E9%97%A8%E8%AE%B2%E5%A0%82">热门讲堂</a></dd>
+                <dd><a href="https://segmentfault.com/events?utm_source=sf-footer&amp;utm_medium=footer-nav&amp;utm_campaign=product&amp;utm_content=footer-links-hottest-questions&amp;utm_term=%E6%9C%80%E6%96%B0%E6%B4%BB%E5%8A%A8">最新活动</a></dd>
+                <dd><a href="https://segmentfault.com/groups?utm_source=sf-footer&amp;utm_medium=footer-nav&amp;utm_campaign=product&amp;utm_content=footer-links-hottest-questions&amp;utm_term=%E5%9C%88%E5%AD%90">圈子</a></dd>
+                <dd><a href="https://segmentfault.com/jobs?utm_source=sf-footer&amp;utm_medium=footer-nav&amp;utm_campaign=product&amp;utm_content=footer-links-hottest-questions&amp;utm_term=%E6%89%BE%E5%B7%A5%E4%BD%9C">找工作</a></dd>
+                <dd><a href="https://segmentfault.com/app?utm_source=sf-footer&amp;utm_medium=footer-nav&amp;utm_campaign=product&amp;utm_content=footer-links-hottest-questions&amp;utm_term=app">移动客户端</a></dd>
+                
+            </dl>
+            
+            <dl class="col-sm-2 site-link">
+                <dt>资源</dt>
+                <dd><a href="https://segmentfault.com/weekly?utm_source=sf-footer&amp;utm_medium=footer-nav&amp;utm_campaign=resource&amp;utm_content=footer-links-weekly&amp;utm_term=%E6%AF%8F%E5%91%A8%E7%B2%BE%E9%80%89">每周精选</a></dd>
+                <dd><a href="https://segmentfault.com/users?utm_source=sf-footer&amp;utm_medium=footer-nav&amp;utm_campaign=resource&amp;utm_content=footer-links-users&amp;utm_term=%E7%94%A8%E6%88%B7%E6%8E%92%E8%A1%8C%E6%A6%9C">用户排行榜</a></dd>
+                <dd><a href="https://segmentfault.com/badges?utm_source=sf-footer&amp;utm_medium=footer-nav&amp;utm_campaign=resource&amp;utm_content=footer-links-badges&amp;utm_term=%E5%BE%BD%E7%AB%A0">徽章</a></dd>
+                <dd><a href="https://segmentfault.com/faq?utm_source=sf-footer&amp;utm_medium=footer-nav&amp;utm_campaign=resource&amp;utm_content=footer-links-faq&amp;utm_term=%E5%B8%AE%E5%8A%A9%E4%B8%AD%E5%BF%83">帮助中心</a></dd>
+                <dd><a href="https://segmentfault.com/repu?utm_source=sf-footer&amp;utm_medium=footer-nav&amp;utm_campaign=resource&amp;utm_content=footer-links-repu&amp;utm_term=%E5%A3%B0%E6%9C%9B%E4%B8%8E%E6%9D%83%E9%99%90">声望与权限</a></dd>
+                <dd><a href="https://segmentfault.com/community?utm_source=sf-footer&amp;utm_medium=footer-nav&amp;utm_campaign=resource&amp;utm_content=footer-links-community&amp;utm_term=%E7%A4%BE%E5%8C%BA%E6%9C%8D%E5%8A%A1%E4%B8%AD%E5%BF%83">社区服务中心</a></dd>
+                <dd><a href="https://docs.segmentfault.com/?utm_source=sf-footer&amp;utm_medium=footer-nav&amp;utm_campaign=resource&amp;utm_content=footer-links-docs&amp;utm_term=%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C">开发手册</a></dd>
+
+   
+            </dl>
+
+            <dl class="col-sm-2 site-link">
+                <dt>商务</dt>
+                <dd><a href="https://business.segmentfault.com/services?utm_source=sf-footer&amp;utm_medium=footer-nav&amp;utm_campaign=business&amp;utm_content=footer-links-services-rencai&amp;utm_term=%E4%BA%BA%E6%89%8D%E6%9C%8D%E5%8A%A1" target="_top">人才服务</a></dd>
+                <dd><a href="https://business.segmentfault.com/services?utm_source=sf-footer&amp;utm_medium=footer-nav&amp;utm_campaign=business&amp;utm_content=footer-links-services-qiyeneixun&amp;utm_term=%E4%BC%81%E4%B8%9A%E6%9C%8D%E5%8A%A1" target="_top">企业培训</a></dd>
+                <dd><a href="https://business.segmentfault.com/services?utm_source=sf-footer&amp;utm_medium=footer-nav&amp;utm_campaign=business&amp;utm_content=footer-links-services-huodongcehua&amp;utm_term=%E6%B4%BB%E5%8A%A8%E7%AD%96%E5%88%92" target="_top">活动策划</a></dd>
+                <dd><a href="https://business.segmentfault.com/ads?utm_source=sf-footer&amp;utm_medium=footer-nav&amp;utm_campaign=business&amp;utm_content=footer-links-ads&amp;utm_term=%E5%B9%BF%E5%91%8A%E6%8A%95%E6%94%BE" target="_top">广告投放</a></dd>
+                <dd><a href="https://business.segmentfault.com/bc?utm_source=sf-footer&amp;utm_medium=footer-nav&amp;utm_campaign=business&amp;utm_content=footer-links-bc&amp;utm_term=%E5%8C%BA%E5%9D%97%E9%93%BE%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88" target="_top">区块链解决方案</a></dd>
+                <dd><a href="https://business.segmentfault.com/contact?utm_source=sf-footer&amp;utm_medium=footer-nav&amp;utm_campaign=business&amp;utm_content=footer-links-contact&amp;utm_term=%E5%90%88%E4%BD%9C%E8%81%94%E7%B3%BB" target="_top">合作联系</a></dd>
+            </dl>
+            
+            <dl class="col-sm-2 site-link">
+                <dt>关于</dt>
+                <dd><a href="https://about.segmentfault.com/?utm_source=sf-footer&amp;utm_medium=footer-nav&amp;utm_campaign=about&amp;utm_content=about-index&amp;utm_term=%E5%85%B3%E4%BA%8E%E6%88%91%E4%BB%AC">关于我们</a></dd>
+                <dd><a href="https://about.segmentfault.com/careers.html?utm_source=sf-footer&amp;utm_medium=footer-nav&amp;utm_campaign=about&amp;utm_content=about-careers&amp;utm_term=%E5%8A%A0%E5%85%A5%E6%88%91%E4%BB%AC">加入我们</a></dd>
+                <dd><a href="https://about.segmentfault.com/contact.html?utm_source=sf-footer&amp;utm_medium=footer-nav&amp;utm_campaign=about&amp;utm_content=about-contact&amp;utm_term=%E8%81%94%E7%B3%BB%E6%88%91%E4%BB%AC">联系我们</a></dd>
+            </dl>
+
+            <dl class="col-sm-2 site-link">
+                <dt>关注</dt>
+                                <dd><a href="https://segmentfault.com/blog/segmentfault" target="_top">产品技术日志</a></dd>
+                                <dd><a href="https://segmentfault.com/blog/community_admin" target="_top">社区运营日志</a></dd>
+                                <dd><a href="https://segmentfault.com/blog/segmentfault_news" target="_top">市场运营日志</a></dd>
+                                <dd><a href="https://segmentfault.com/blog/segmentfault_team" target="_top">团队日志</a></dd>
+                                <dd><a href="https://segmentfault.com/blog/interview" target="_top">社区访谈</a></dd>
+                                <dd>
+                    <ul class="sn-inline">
+                        <li>
+                            <a class="entypo-wechart icon-sn-weixin weixin-popover-qrcode" data-toggle="popover" data-placement="top" data-content="">微信</a>
+                        </li>
+                        <li>
+                            <a href="http://weibo.com/segmentfault" target="_top" class="entypo-weibo icon-sn-weibo">新浪微博</a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/SegmentFault" target="_top" class="entypo-facebook icon-sn-github">Github</a>
+                        </li>
+                        <li>
+                            <a href="https://twitter.com/segment_fault" target="_top" class="entypo-twitter icon-sn-twitter">Twitter</a>
+                        </li>
+                    </ul>
+                </dd>
+            </dl>
+
+            <dl class="col-sm-2 site-link" id="license">
+                <dt>条款</dt>
+                <dd><a href="https://segmentfault.com/tos">服务条款</a></dd>
+                <dd><a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_top">内容许可</a></dd>
+                <dd>
+                    <a href="https://segmentfault.com/app" class="clearfix mt10 block"><img src="appqrcode.png" class="app-qrcode"></a>
+                    <div class="app-download-desc">
+                        <p>扫一扫下载 App</p>
+                    </div>
+                    
+                </dd>
+            </dl>
+        </div>
+        <div class="copyright">
+            Copyright © 2011-2018 SegmentFault. 当前呈现版本 17.06.16<br>
+            <a href="http://www.miibeian.gov.cn/" rel="nofollow">浙ICP备 15005796号-2</a> &nbsp;
+            <a target="_top" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=33010602002000" rel="nofollow">浙公网安备 33010602002000号</a>
+            <span class="ml5">杭州堆栈科技有限公司版权所有</span>
+            <p class="mt30">CDN 存储服务由 <a target="_top" href="https://www.upyun.com/?utm_source=segmentfault&amp;utm_medium=link&amp;utm_campaign=upyun&amp;md=segmentfault">又拍云</a> 赞助提供 </p>
+        </div>
+        <p class="text-center">
+            <a class="js__view--selector hidden-sm hidden-md hidden-lg" data-action="mobile" href="javascript:;">移动版</a>
+            <a class="js__view--selector hidden-sm hidden-md hidden-lg" data-action="desktop" href="javascript:;">桌面版</a>
+        </p>
+    </div>
+</footer>
+
+<div id="fixedTools" class="hidden-xs hidden-sm">
+    <a id="backtop" class="hidden border-bottom" href="#">回顶部</a>
+</div>
+
+    
+    
+    
+
+
+
+
+
+
+             
+                 
+        
+            
+
+
+
+
+
+
+
+        
+            <ins id="ac_js86_mm_124884735_33830642_145440102" style="display: none;"></ins>
+            <ins id="ac_js86_mm_124884735_33830642_120290173" style="display: none;"></ins>
+     
+
+        
+            <ins id="ac_js86_mm_124884735_33830642_143436142" style="display: none;"></ins>
+     
+
+
+        
+            <ins id="ac_js86_mm_124884735_33830642_146292853" style="display: none;"></ins>
+     
+
+
+<iframe id="google_osd_static_frame_4811981147423" name="google_osd_static_frame" style="display: none; width: 0px; height: 0px;" src="index_6.html"></iframe></body>
+</html>

@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    <meta charset="UTF-8">
+    <link rel="canonical" href="https://blog.csdn.net/Jkf40622/article/details/48311455"> 
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="referrer" content="always">
+    <meta name="description" content="来源:http://wenku.baidu.com/view/8f82728471fe910ef12df8f4.html
+
+
+
+Q1:&nbsp;为什么要写这篇文章？
+
+A1：在最近的工作中遇到了不少问题，其中很多都是和EDID相关的。可以说，作为一家以“显示”为生的企业，我们时时刻刻在与EDID打交道。EDID这东西很简单，但是如果不了解其基本原理和概念的话，会给我们的工作带来不少麻烦。因此，">
+    <meta name="keywords" content="">
+    <meta http-equiv="Cache-Control" content="no-siteapp"><link rel="alternate" media="handheld" href="https://blog.csdn.net/Jkf40622/article/details/48311455#">
+    <meta name="shenma-site-verification" content="5a59773ab8077d4a62bf469ab966a63b_1497598848">
+    <link href="favicon.ico" rel="SHORTCUT ICON">
+    <title>HDMI之EDID使用说明 - CSDN博客</title>
+    
+            
+        
+
+    
+    
+    
+    
+        
+         
+    
+
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body><div id="BAIDU_DUP_fp_wrapper" style="position: absolute; left: -1px; bottom: -1px; z-index: 0; width: 0px; height: 0px; overflow: hidden; visibility: hidden; display: none;"><iframe id="BAIDU_DUP_fp_iframe" src="index_1.html" style="width: 0px; height: 0px; visibility: hidden; display: none;"></iframe></div><div id="MathJax_Message" style="display: none;"></div>    
+    
+    
+    
+
+
+
+<header>
+	<div class="container d-flex clearfix">
+		<div class="title-box">
+			<h6 class="title-blog">
+				<a href="https://blog.csdn.net/jkf40622">Jkf40622的专栏</a>
+			</h6>
+			<p class="description">梦断星魂</p>
+		</div>
+		<div class="opt-box d-flex justify-content-end">
+			<a class="btn btn-sm" href="https://blog.csdn.net/jkf40622/rss/list">
+					<svg class="icon" aria-hidden="true">
+						<use xlink:href="#csdnc-rss"></use>
+					</svg>RSS订阅</a>
+					</div>
+	</div>
+</header>
+<div class="container clearfix pt0" id="mainBox">
+    <aside>
+		    <div id="asideProfile" class="aside-box">
+    <h3 class="aside-title">个人资料</h3>
+    <div class="profile-intro d-flex">
+        <div class="avatar-box d-flex justify-content-center flex-column">
+            <a href="https://blog.csdn.net/jkf40622">
+                <img src="3_jkf40622.jpg" class="avatar_pic">
+            </a>
+        </div>
+        <div class="user-info d-flex justify-content-center flex-column">
+            <p class="name csdn-tracking-statistics tracking-click" data-mod="popu_379">
+                <a href="https://blog.csdn.net/jkf40622" target="_top" class="text-truncate" id="uid">jkf40622</a>
+            </p>
+                    </div>
+                <div class="opt-box d-flex justify-content-center flex-column">
+            <span class="csdn-tracking-statistics tracking-click" data-mod="popu_379">
+                                <a class="btn btn-sm btn-red-hollow" href="https://passport.csdn.net/account/login?from=https://blog.csdn.net/Jkf40622/article/details/48311455" target="_self">关注</a>
+                            </span>
+            
+        </div>
+            </div>
+    <div class="data-info d-flex item-tiling">
+        <dl class="text-center" title="9">
+            <dt>原创</dt>
+            <dd><span class="count">9</span></dd>
+        </dl>
+        <dl class="text-center" title="26">
+            <dt>粉丝</dt>
+            <dd id="fan"><span class="count">26</span></dd>
+        </dl>
+        <dl class="text-center" title="6">
+            <dt>喜欢</dt>
+            <dd><span class="count">6</span></dd>
+        </dl>
+        <dl class="text-center" title="1">
+            <dt>评论</dt>
+            <dd><span class="count">1</span></dd>
+        </dl>
+    </div>
+    <div class="grade-box clearfix">
+        <dl>
+            <dt>等级：</dt>
+            <dd>
+                <a href="https://blog.csdn.net/home/help.html#level" title="4级,点击查看等级说明" target="_top">
+                    <svg class="icon icon-level" aria-hidden="true">
+                        <use xlink:href="#csdnc-bloglevel-4"></use>
+                    </svg>
+                </a>
+            </dd>
+        </dl>
+        <dl>
+            <dt>访问：</dt>
+            <dd title="80850">
+                8万+            </dd>
+        </dl>
+        <dl>
+            <dt>积分：</dt>
+            <dd title="1082">
+                1082            </dd>
+        </dl>
+        <dl title="47878">
+            <dt>排名：</dt>
+            <dd>4万+</dd>
+        </dl>
+    </div>
+        <div class="badge-box d-flex">
+        <span>勋章：</span>
+                        <a class="icon-badge" title="持之以恒">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#csdnc-m-lasting"></use>
+            </svg>
+            <div class="icon-arrow"></div>
+            <div class="grade-detail-box item2">
+                <div class="pos-box">
+                    <div class="left-box d-flex justify-content-center align-items-center flex-column">
+                        <svg class="icon" aria-hidden="true">
+                            <use xlink:href="#csdnc-m-lasting"></use>
+                        </svg>
+                        <p>持之以恒</p>
+                    </div>
+                    <div class="right-box d-flex justify-content-center align-items-center">
+                        授予每个自然月内发布4篇或4篇以上原创或翻译IT博文的用户。不积跬步无以至千里，不积小流无以成江海，程序人生的精彩需要坚持不懈地积累！
+                    </div>
+                </div>
+            </div>
+        </a>
+                            </div>
+    </div>		    <div class="csdn-tracking-statistics mb8 box-shadow" data-pid="blog" data-mod="popu_4" style="height: 250px;">
+    <div class="aside-content text-center" id="cpro_u2734133">
+        <!-- 投放代码 -->
+        <div id="_fo7eodv1nck"><iframe scrolling="no" src="index_2.html" width="300" height="250" frameborder="0"></iframe><span style="width: 0px; height: 0px; margin-bottom: 0px;"></span></div>
+    </div>
+</div>
+		    <div id="asideNewArticle" class="aside-box">
+    <h3 class="aside-title">最新文章</h3>
+    <div class="aside-content">
+        <ul class="inf_list clearfix csdn-tracking-statistics tracking-click" data-mod="popu_382">
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/Jkf40622/article/details/78340946" target="_top">修改Ubuntu的aptget源为阿里源的方法</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/Jkf40622/article/details/71746715" target="_top">解决STM32 Flash擦写操作导致USART接收丢数据</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/Jkf40622/article/details/71403443" target="_top">RTMP流媒体播放流程解析</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/Jkf40622/article/details/71403391" target="_top">RTMP规范简单分析</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/Jkf40622/article/details/70174333" target="_top">ORTP库使用详解</a>
+            </li>
+                    </ul>
+    </div>
+</div>
+		    		    <div id="asideCategory" class="aside-box flexible-box">
+    <h3 class="aside-title">个人分类</h3>
+    <div class="aside-content">
+        <ul>
+                        <li>
+                <a href="https://blog.csdn.net/jkf40622/article/category/1256128">
+                    嵌入式开发学习                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/jkf40622/article/category/1839715">
+                    嵌入式操作系统的学习                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/jkf40622/article/category/2529539">
+                    linux底层驱动开发之USB子系统篇                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/jkf40622/article/category/2530077">
+                    linux底层驱动开发之设备驱动模型篇                    <span class="count float-right">10篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/jkf40622/article/category/2530805">
+                    linux底层驱动开发之MTD子系统篇                    <span class="count float-right">8篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/jkf40622/article/category/2530807">
+                    linux底层驱动开发之系统总线BUS篇                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/jkf40622/article/category/2535515">
+                    linux底层驱动开发之RTC篇                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/jkf40622/article/category/2571659">
+                    linux系统工具及应用类                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/jkf40622/article/category/2625479">
+                    linux底层驱动开发之基础篇                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/jkf40622/article/category/2626443">
+                    linux底层驱动开发之网卡篇                    <span class="count float-right">8篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/jkf40622/article/category/2633747">
+                    linux底层驱动开发之固件篇                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/jkf40622/article/category/2634929">
+                    linux底层驱动开发之input子系统篇                    <span class="count float-right">13篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/jkf40622/article/category/2651373">
+                    linux底层驱动开发之ALSA声卡篇                    <span class="count float-right">8篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/jkf40622/article/category/2657503">
+                    linux底层驱动开发之Video视频篇                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/jkf40622/article/category/2718225">
+                    linux底层驱动开发之LED篇                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/jkf40622/article/category/2726941">
+                    linux之文件系统篇                    <span class="count float-right">8篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/jkf40622/article/category/2766683">
+                    linux之Uboot                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/jkf40622/article/category/2771337">
+                    linux底层驱动开发之内存RAM篇                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/jkf40622/article/category/2792763">
+                    Linux底层驱动开发之UART                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/jkf40622/article/category/2832827">
+                    STM32芯片开发                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/jkf40622/article/category/3125015">
+                    Android系统开发                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/jkf40622/article/category/5686055">
+                    HDMI相关文档                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/jkf40622/article/category/6906053">
+                    音视频项目开发                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                    </ul>
+    </div>
+        <p class="text-center">
+        <a class="btn btn-link-blue flexible-btn" data-fbox="aside-archive">展开</a>
+    </p>
+    </div>
+		    <div id="asideArchive" class="aside-box flexible-box">
+    <h3 class="aside-title">归档</h3>
+    <div class="aside-content">
+        <ul class="archive-list">
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/jkf40622/article/month/2017/10">
+                    2017年10月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/jkf40622/article/month/2017/05">
+                    2017年5月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/jkf40622/article/month/2017/04">
+                    2017年4月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/jkf40622/article/month/2016/06">
+                    2016年6月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/jkf40622/article/month/2016/02">
+                    2016年2月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/jkf40622/article/month/2015/12">
+                    2015年12月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/jkf40622/article/month/2015/10">
+                    2015年10月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/jkf40622/article/month/2015/09">
+                    2015年9月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/jkf40622/article/month/2015/08">
+                    2015年8月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/jkf40622/article/month/2015/07">
+                    2015年7月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/jkf40622/article/month/2015/04">
+                    2015年4月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/jkf40622/article/month/2015/03">
+                    2015年3月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/jkf40622/article/month/2015/01">
+                    2015年1月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/jkf40622/article/month/2014/12">
+                    2014年12月                    <span class="count float-right">17篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/jkf40622/article/month/2014/11">
+                    2014年11月                    <span class="count float-right">18篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/jkf40622/article/month/2014/10">
+                    2014年10月                    <span class="count float-right">36篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/jkf40622/article/month/2014/09">
+                    2014年9月                    <span class="count float-right">15篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/jkf40622/article/month/2012/10">
+                    2012年10月                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                    </ul>
+    </div>
+        <p class="text-center">
+        <a class="btn btn-link-blue flexible-btn" data-fbox="aside-archive">展开</a>
+    </p>
+    </div>
+		    <div id="asideHotArticle" class="aside-box">
+	<h3 class="aside-title">热门文章</h3>
+	<div class="aside-content">
+		<ul class="hotArticle-list csdn-tracking-statistics tracking-click" data-mod="popu_521">
+							<li>
+					<a href="https://blog.csdn.net/jkf40622/article/details/48311455">HDMI之EDID使用说明</a>
+					<p class="read">阅读量：<span>5819</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/jkf40622/article/details/50312455">STM32芯片开发之添加外置NOR FALSH扩展代码空间</a>
+					<p class="read">阅读量：<span>2915</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/jkf40622/article/details/41680797">linux传感器三之轴陀螺仪（MPU3050）驱动解析</a>
+					<p class="read">阅读量：<span>2556</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/jkf40622/article/details/41646463">linux传感器一之加速度传感器驱动代码</a>
+					<p class="read">阅读量：<span>2367</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/jkf40622/article/details/47087799">HDMI之EDID数据解析</a>
+					<p class="read">阅读量：<span>2086</span></p>
+				</li>
+					</ul>
+	</div>
+</div>
+		    <div id="asideNewComments" class="aside-box">
+    <h3 class="aside-title">最新评论</h3>
+    <div class="aside-content">
+        <ul class="newcomment-list">
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/jkf40622/article/details/41680797#comments">linux传感器三之轴陀螺仪（MP...</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/jr5454" class="user-name" target="_top">jr5454</a>：HI，能向你请教一下MPU3050方面的吗，可以加你QQ不，我的QQ是269984132                </p>
+            </li>
+                    </ul>
+    </div>
+</div>
+		<div id="asideFooter">
+			
+		<div class="aside-box">
+						<div><iframe scrolling="no" src="index_3.html" width="300" height="250" frameborder="0"></iframe><em id="hffadwehfv" style="display: none; padding-top: 0px;"></em></div>
+					</div>
+				<div class="aside-box">
+			<div class="persion_article">
+			</div>
+		</div>
+	</div>
+</aside>
+
+
+    <main>
+        <div class="blog-content-box">
+	<div class="article-title-box">
+			<span class="article-type type-2 float-left">转</span>		<h6 class="title-article">HDMI之EDID使用说明</h6>
+	</div>
+	<div class="article-info-box">
+		<div class="article-bar-top d-flex">
+												<span class="time">2015年09月09日 09:53:16</span>
+			<div class="float-right">
+				<span class="read-count">阅读数：5829</span>
+											</div>
+		</div>
+	</div>
+	<article>
+		<div id="article_content" class="article_content csdn-tracking-statistics" data-pid="blog" data-mod="popu_307" data-dsm="post">
+                    
+            <div class="htmledit_views">
+                
+<p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px;">
+来源:<a href="http://wenku.baidu.com/view/8f82728471fe910ef12df8f4.html" style="color: rgb(51, 51, 51); text-decoration: none; margin: 0px; padding: 0px; font-family: Arial,&quot;宋体&quot;,sans-serif; line-height: 30px;">http://wenku.baidu.com/view/8f82728471fe910ef12df8f4.html</a></p>
+<p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px;">
+</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+<span style="margin: 0px; padding: 0px;"><strong>Q1:&nbsp;为什么要写这篇文章？</strong></span></p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+A1<span style="margin: 0px; padding: 0px;">：</span>在最近的工作中遇到了不少问题，其中很多都是和EDID相关的。可以说，作为一家以“显示”为生的企业，我们时时刻刻在与EDID打交道。EDID这东西很简单，但是如果不了解其基本原理和概念的话，会给我们的工作带来不少麻烦。因此，我决定将我对EDID的理解和调试EDID的一些经验写成一篇文章，供大家学习和参考，希望能对大家的工作有所帮助。为了方便阅读和理解，文章写成<a href="http://www.haogongju.net/tag/%E9%97%AE%E7%AD%94" title="问答" style="color: rgb(51, 51, 51); text-decoration: none; margin: 0px; padding: 0px;">问答</a>的形式。由于本人接触EDID的时间不长，文章中难免有错误和疏漏之处，希望大家给予指正。好，闲话少说，咱们书归正传。</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+<span style="margin: 0px; padding: 0px;"><strong>Q2：EDID是什么？</strong></span></p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+<span style="margin: 0px; padding: 0px;">A2：</span>EDID的全称是Extended Display&nbsp;<a href="http://www.haogongju.net/tag/IDE" title="Ide" style="color: rgb(51, 51, 51); text-decoration: none; margin: 0px; padding: 0px;">Ide</a>ntification Data(扩展显示标识<a href="http://www.haogongju.net/tag/%E6%95%B0%E6%8D%AE" title="数据" style="color: rgb(51, 51, 51); text-decoration: none; margin: 0px; padding: 0px;">数据</a>)，共有128字节。其中包含有关显示器及其<a href="http://www.haogongju.net/tag/%E6%80%A7%E8%83%BD" title="性能" style="color: rgb(51, 51, 51); text-decoration: none; margin: 0px; padding: 0px;">性能</a>的参数，包括供应商信息、最大图像大小、颜色设置、厂商预设置、频率范围的限制以及显示器名和序列号的字符串等等。形象地说，EDID就是显示器的身份证、户口本、技能证书等证件的集合，目的就是告诉别人我是谁，我从哪来，我能干什么。</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+<span style="margin: 0px; padding: 0px;"><strong>Q3：为什么要使用EDID？</strong></span></p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+<span style="margin: 0px; padding: 0px;">A3：</span>为了能让PC或其他的图像输出设备更好的识别显示器属性</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+EDID并非古而有之，在古老的CRT时期是没有EDID这个概念的，那为什么后来会有呢？因为随着显示设备的发展，显示器的种类越来越多，模拟的、数字的、普屏的、宽屏的、17寸、19寸、22寸……这让PC傻了眼，分辨率和时序的种类太多了，而每种显示器又不可能支持所有的分辨率，那怎么知道该给显示器一个什么样的分辨率啊？显示出的效果是最佳效果吗？不仅如此，随便输出一个分辨率还有损坏显示器硬件的可能，这可太危险了。于是，EDID临危受命，担当起显示器和PC之前的传话筒<span style="color: rgb(128, 0, 0); margin: 0px; padding: 0px;">。“PC你好，我是A显示器，我能显示N种分辨率，最佳分辨率是XXX”。“显示器你好，收到你的信息，现在就按最佳分辨率给你输出”。</span>这下大家明白了吧，EDID就是为了能让PC或其他的图像输出设备更好的识别显示器属性而出现的。</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+<span style="margin: 0px; padding: 0px;"><strong>Q4：经常听到有同志一会说“EDID信息”，一会说“DDC信息”。那么哪种说法更准确？EDID和DDC的关系又是什么？</strong></span></p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+<span style="margin: 0px; padding: 0px;">A4：</span>&nbsp;DDC的全称是Display Data Channel(显示数据通道)，顾名思义，它是一个通道。我们可以说<span style="color: rgb(128, 0, 0); margin: 0px; padding: 0px;">DDC是用来传送EDID信息的</span>，也可以说EDID信息是通过DDC传送的，所以，“DDC信息”的说法并不准确。至于DDC究竟是怎么传送EDID的，我们后面再说。</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+<span style="margin: 0px; padding: 0px;"><strong>Q5：每个显示器只有一个EDID吗？</strong></span></p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+<span style="margin: 0px; padding: 0px;">A5：</span>不一定。</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+现在的显示器功能很强大，通常都提供多种<a href="http://www.haogongju.net/tag/%E8%A7%86%E9%A2%91" title="视频" style="color: rgb(51, 51, 51); text-decoration: none; margin: 0px; padding: 0px;">视频</a>接口，常见的有DVI、VGA、HDMI、Display Port等，由于每种接口的特性和带宽不同，使得不同接口的EDID也不同。使用哪个接口，PC读到的就是哪个接口的EDID。我们的设备主要使用DVI、VGA、VIDEO几种接口。由于VIDEO接口的几种制式如PAL、NTSC等，其分辨率场频都是固定的，没有使用EDID的必要，故不在讨论之列。本文下面的问题都围绕DVI、VGA两种接口展开</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+<span style="margin: 0px; padding: 0px;"><strong>Q6：说了半天，EDID对我们到底有什么用？</strong></span></p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+<span style="margin: 0px; padding: 0px;"></span></p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+<span style="margin: 0px; padding: 0px;">A6：</span>要回答这个问题，首先要弄清我们设备的应用场景，请看下图</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+<img src="30191425-fea215d790a04715889c126f92c04d9c.jpg" alt="" style="border: medium none; margin: 0px auto; padding: 0px;" width="528" height="92">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;" align="left">
+这是一个典型的应用场景，PC将视频信号发送到我们的设备上，经过一系列的传输或切换，设备将视频信号发送到显示器或投影机上，也就是说，我们的设备位于PC和显示器之间。首先，在输入端，设备需要让PC知道自己是能够输入视频信号的，换句话说，设备要“欺骗”PC，让PC认为自己是一台显示器。如果不这样的话，PC可能会拒绝输出任何视频信号的（仅限于DVI接口，VGA接口不需要EDID也能输出），这叫“不见兔子不撒鹰”。除此之外，设备还要告诉PC自己支持的显示时序。而在输出端，当设备需要自建输出时序（如大屏控制器的输出卡）而不是简单的复制输入时序（如各种矩阵设备）的时候，就需要知道显示器支持的显示时序，从而让自己输出的信号能在显示器上正常显示。在这些地方，EDID就发挥作用了。<span style="color: rgb(128, 0, 0); margin: 0px; padding: 0px;">在输入端PC通过读取设备上的EDID来获悉设备支持的显示时序，而同样，在输出端设备需要读取显示器的EDID来确定自己的输出时序。</span></p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+<span style="margin: 0px; padding: 0px;"><strong>Q7：上面说过PC上的VGA接口不需要EDID信息也能输出，而且公司的VGA输入设备里绝大多数也没有EDID，那么VGA接口有EDID吗？它是必需的吗？</strong></span></p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+<span style="margin: 0px; padding: 0px;"></span></p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+<span style="margin: 0px; padding: 0px;">A7：</span>&nbsp;VGA接口也有EDID，但不是必需的。</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+液晶显示器、型号较新的CRT显示器和投影机在VGA接口都是有EDID的，而型号较老的CRT显示器和投影机则没有。当PC连接一个没有EDID的VGA设备时，会将其识别成一个“默认监示器”。这时，PC只能输出一些内置的默认分辨率和时序，如果需要的分辨率不在默认的分辨率当中，那PC是没办法输出的。这时候，就需要在VGA设备中添加EDID，来使PC支持需要的分辨率。</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+<span style="margin: 0px; padding: 0px;"><strong>Q8：如何获取显示器的EDID？</strong></span></p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+<span style="margin: 0px; padding: 0px;">A8：</span>使用“SoftMCCS”软件。安装软件后打开，可以看到软件<a href="http://www.haogongju.net/tag/%E7%95%8C%E9%9D%A2" title="界面" style="color: rgb(51, 51, 51); text-decoration: none; margin: 0px; padding: 0px;">界面</a>如下：</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+<img src="30191707-565197d17e30422bac82f602e100a98b.jpg" alt="" style="border: medium none; margin: 0px auto; padding: 0px;"></p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+操作步骤如下：</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+1、打开SoftMCCS软件</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+2、如果接了多台显示器，则在左上角的栏中选择需要读取EDID的显示器型号，如“DELL E198WFP”</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+3、点击左上角“File&nbsp;-&gt; Save EDID as”，将EDID信息保存在自己想要的位置，文件名可以自己指定，文件类型要选择“Raylar EDID file (*.dat)”</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+用文本编辑工具（如写字板）打开刚刚保存的EDID文件，如下图</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+&nbsp;<img src="30191853-e703dd60a80546f79fdfa39f8a96d919.jpg" alt="" style="border: medium none; margin: 0px auto; padding: 0px;"></p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+可以看到右下方有128个16进制数，这就是刚刚保存的EDID信息了</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+<span style="margin: 0px; padding: 0px;"><strong>Q9：EDID里都包含什么信息？哪些是我们关心的？</strong></span></p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+<span style="margin: 0px; padding: 0px;">A9：</span>刚才我们已经通过“SoftMCCS”软件获取了EDID数据文件，下面要介绍另一个软件来分析这个数据，“Phoenix EDID Designer”。软件只有一个exe文件，不需要安装。点击打开按钮，然后找到并打开我们刚刚保存的EDID文件，打开后如下图</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+<img src="30192346-393776216326489c8e66f39234d086dd.jpg" alt="" style="border: medium none; margin: 0px auto; padding: 0px;"></p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+打开之后默认是只读的，数据都是灰色，为了看起来更清楚，点击 取消只读属性，如下图所示</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+&nbsp;<img src="30192320-e28db0f6809c4d1d938cfa521450e0cd.jpg" alt="" style="border: medium none; margin: 0px auto; padding: 0px;"></p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+图中红线圈出的部分中可以看到5个选项卡，EDID中的信息基本都包含在其中，我们逐个看一下。</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+打开EDID文件后默认显示的是“General”选项卡，里面介绍了显示器中一些基本的信息，一般与我们无关，也不用修改。</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+点击“Basic Display Parameter”选项卡，如下图所示</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+<img src="30192358-143e5f1d1d064164a3f23213d5cda027.jpg" alt="" style="border: medium none; margin: 0px auto; padding: 0px;"></p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;" align="left">
+这里面对我们有用的信息只有“Video Input Definition”（视频输入描述）。在Q7中曾经提到，VGA接口也是有EDID的。而VGA的EDID和其他数字接口EDID的最大区别就是视频输入描述。VGA接口的输入是Analog，而如图中DVI接口的EDID，选则Digital输入。</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+“Color/Established Timings”&nbsp;</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+<img src="30192406-d0bb4aa5642d4f4c9126c7f5b45b09cd.jpg" alt="" style="border: medium none; margin: 0px auto; padding: 0px;"></p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;" align="left">
+“Established Timings”（内建时序）表示显示器是否支持一些通用时序。若支持，则在相应的分辨率时序前打钩。例如，由上图中可知显示器不支持720*400@88Hz和<a href="mailto:1024*768@87hz" style="color: rgb(51, 51, 51); text-decoration: none; margin: 0px; padding: 0px;">1024*768@87Hz</a>这两种时序。</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+“Standard Timings”（标准时序）</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+<img src="30192413-16fe94d70faf4551a99cc23ac6fe610c.jpg" alt="" style="border: medium none; margin: 0px auto; padding: 0px;"></p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;" align="left">
+标准时序是对内建时序的扩充，最多可描述8个时序，图中我们看到的是1-4个时序，点击红色方框中的“5-8”可看到后4个时序。以时序1（Timing ID #1）为例，“Enable”前打钩表示显示器支持此时序；“H Active”表示一行中的有效像素；“Refresh”表示刷新率，也叫场频率，单位Hz，注意这里的刷新率值必须大于等于60Hz；“Aspect Ratio”表示图像的宽高比，等于一行中的有效像素和图像的有效行数之比。例如时序1中行有效像素是1440，宽高比是16：10，我们就可以知道图像的有效行数是1440/16*10=900。</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+“Detailed Timings”（详细时序）</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+&nbsp;<img src="30192421-a0e2fc156f284b59a39d9bfec9fc4a13.jpg" alt="" style="border: medium none; margin: 0px auto; padding: 0px;"></p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;" align="left">
+详细时序这个区域可以说是整个EDID中和我们关系最密切，也是我们需要了解最多和改动最频繁的区域。它分为4个块（Block），可通过左上角的按钮在各个块之间切换（软件的显示有问题，4个按钮分别为Block 1、2、3、4）。每个块既可以是一个时序说明（Timing）也可以是一个显示器描述符（Monitor Descriptor）。需要注意的是：Block 1必须是时序说明，它描述的是显示器的最佳时序。</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;" align="left">
+上图中的显示的就是Block 1，注意右上角的Timing / Monitor Descriptor切换的部分是灰色的，这证实了我们刚才的说法：Block 1只能表示时序。</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+左下角的Timing部分描述了时序的主要参数，含义见下表（软件显示有问题，参数名称显示不完整，表格中的参数也仅对应其在软件中的位置）。H Image、H Border、V Image、V Border几个参数一般用不到，表格中没有列出</p>
+<table style="color: rgb(51, 51, 51); margin: 0px; padding: 0px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px; line-height: 30px;" cellspacing="0" cellpadding="0" border="0"><tbody style="margin: 0px; padding: 0px;"><tr style="margin: 0px; padding: 0px;"><td style="margin: 0px; padding: 0px;" width="72">
+<p style="margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px;" align="center">
+<span style="margin: 0px; padding: 0px; font-size: 14px;">参数</span></p>
+</td>
+<td style="margin: 0px; padding: 0px;" width="150">
+<p style="margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px;" align="center">
+<span style="margin: 0px; padding: 0px; font-size: 14px;">含义</span></p>
+</td>
+<td style="margin: 0px; padding: 0px;" width="94">
+<p style="margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px;" align="center">
+<span style="margin: 0px; padding: 0px; font-size: 14px;">参数</span></p>
+</td>
+<td style="margin: 0px; padding: 0px;" width="154">
+<p style="margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px;" align="center">
+<span style="margin: 0px; padding: 0px; font-size: 14px;">含义</span></p>
+</td>
+</tr><tr style="margin: 0px; padding: 0px;"><td style="margin: 0px; padding: 0px;" width="72">
+<p style="margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px;" align="center">
+<span style="margin: 0px; padding: 0px; font-size: 14px;">Pixel</span></p>
+</td>
+<td style="margin: 0px; padding: 0px;" width="150">
+<p style="margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px;" align="left">
+<span style="margin: 0px; padding: 0px; font-size: 14px;">像素时钟频率</span></p>
+</td>
+<td style="margin: 0px; padding: 0px;" width="94">
+<p style="margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px;" align="center">
+<span style="margin: 0px; padding: 0px; font-size: 14px;">Interlaced</span></p>
+</td>
+<td style="margin: 0px; padding: 0px;" width="154">
+<p style="margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px;" align="left">
+<span style="margin: 0px; padding: 0px; font-size: 14px;">前面打钩表示是隔行显示</span></p>
+</td>
+</tr><tr style="margin: 0px; padding: 0px;"><td style="margin: 0px; padding: 0px;" width="72">
+<p style="margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px;" align="center">
+<span style="margin: 0px; padding: 0px; font-size: 14px;">H &nbsp; Active</span></p>
+</td>
+<td style="margin: 0px; padding: 0px;" width="150">
+<p style="margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px;" align="left">
+<span style="margin: 0px; padding: 0px; font-size: 14px;">一行中有效的像素</span></p>
+</td>
+<td style="margin: 0px; padding: 0px;" width="94">
+<p style="margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px;" align="center">
+<span style="margin: 0px; padding: 0px; font-size: 14px;">V &nbsp; Active</span></p>
+</td>
+<td style="margin: 0px; padding: 0px;" width="154">
+<p style="margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px;" align="left">
+<span style="margin: 0px; padding: 0px; font-size: 14px;">一场中有效的行数</span></p>
+</td>
+</tr><tr style="margin: 0px; padding: 0px;"><td style="margin: 0px; padding: 0px;" width="72">
+<p style="margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px;" align="center">
+<span style="margin: 0px; padding: 0px; font-size: 14px;">H &nbsp; Blank</span></p>
+</td>
+<td style="margin: 0px; padding: 0px;" width="150">
+<p style="margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px;" align="left">
+<span style="margin: 0px; padding: 0px; font-size: 14px;">一行中的消隐期长度，单位是像素</span></p>
+</td>
+<td style="margin: 0px; padding: 0px;" width="94">
+<p style="margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px;" align="center">
+<span style="margin: 0px; padding: 0px; font-size: 14px;">V &nbsp; Blank</span></p>
+</td>
+<td style="margin: 0px; padding: 0px;" width="154">
+<p style="margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px;" align="left">
+<span style="margin: 0px; padding: 0px; font-size: 14px;">一场中的消隐期长度，单位是行</span></p>
+</td>
+</tr><tr style="margin: 0px; padding: 0px;"><td style="margin: 0px; padding: 0px;" width="72">
+<p style="margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px;" align="center">
+<span style="margin: 0px; padding: 0px; font-size: 14px;">H &nbsp; sync</span></p>
+</td>
+<td style="margin: 0px; padding: 0px;" width="150">
+<p style="margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px;" align="left">
+<span style="margin: 0px; padding: 0px; font-size: 14px;">行同步前沿宽度，即从行有效像素结束到行同步开始的像素数</span></p>
+</td>
+<td style="margin: 0px; padding: 0px;" width="94">
+<p style="margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px;" align="center">
+<span style="margin: 0px; padding: 0px; font-size: 14px;">V &nbsp; sync</span></p>
+</td>
+<td style="margin: 0px; padding: 0px;" width="154">
+<p style="margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px;" align="left">
+<span style="margin: 0px; padding: 0px; font-size: 14px;">场同步前沿宽度，即从一场中有效行结束到场同步开始的行数</span></p>
+</td>
+</tr><tr style="margin: 0px; padding: 0px;"><td style="margin: 0px; padding: 0px;" width="72">
+<p style="margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px;" align="center">
+<span style="margin: 0px; padding: 0px; font-size: 14px;">H &nbsp; sync</span></p>
+</td>
+<td style="margin: 0px; padding: 0px;" width="150">
+<p style="margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px;" align="left">
+<span style="margin: 0px; padding: 0px; font-size: 14px;">行同步信号宽度，单位是像素</span></p>
+</td>
+<td style="margin: 0px; padding: 0px;" width="94">
+<p style="margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px;" align="center">
+<span style="margin: 0px; padding: 0px; font-size: 14px;">V &nbsp; sync</span></p>
+</td>
+<td style="margin: 0px; padding: 0px;" width="154">
+<p style="margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px;" align="left">
+<span style="margin: 0px; padding: 0px; font-size: 14px;">场同步信号宽度，单位是行</span></p>
+</td>
+</tr></tbody></table><p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+&nbsp;</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+表中各参数的位置关系如下图所示</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+&nbsp;<img src="30192910-604881adedaa4cfbb6a9541371f16a17.jpg" alt="" style="border: medium none; margin: 0px auto; padding: 0px;"></p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+由图中可知，消隐期=前沿+同步+后沿，这4个参数已知其中3个就可以推算出另一个。</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+软件右下角的Sync Scheme描述了同步信号的信息。左边是同步方式，一般选择“Digital Separate”（数字分离）；右边是同步信号的极性，选择表示极性为正，即高有效。</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+<span style="margin: 0px; padding: 0px;">Q：如何修改EDID文件？</span></p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+大多数情况下，我们需要的EDID文件可由已知的EDID文件修改得到，步骤如下：</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+1、打开Phoenix EDID Designer软件</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+2、用软件打开需要修改的EDID文件</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+3、去掉只读属性</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+4、修改相应的EDID信息。一般需要修改的地方有：</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+（1）视频输入描述。VGA接口要选Analog，DVI接口要选Digital</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+（2）详细时序。将Block 1中的时序修改成需要的时序，将其他Block中的“显示器名称”修改成需要的名称</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+5、点击File-&gt;Save EDID as保存修改后的EDID文件</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+<span style="margin: 0px; padding: 0px;">Q：修改EDID文件的时候需要注意什么？</span></p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+A：修改EDID的时候要特别注意以下几方面：</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+1、视频输入描述不要选错，VGA接口选Analog，DVI接口选Digital，否则可能造成显卡无输出。如果需要一个VGA的EDID，最好修改前的EDID就是VGA的，而不是用一个DVI的EDID改成VGA的</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+2、同一种分辨率可能有多种刷新率，如60Hz、75Hz；多种时序，如Normal，Reduced Blanking等。修改EDID的时候要注意设备或显示器支持哪一种，不要改错。具体的时序说明参见VESA的标准文档</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+<span style="margin: 0px; padding: 0px;">Q：如何在设备上加入EDID？</span></p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+A：Q4中提到，DDC是传送EDID的通道，PC和设备之间的DDC连接如下图所示&nbsp;</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+图中视频接口包括VGA、DVI等等。DDC实际上是一个I­­<sup style="margin: 0px; padding: 0px;">2</sup>C总线，PC通过它连接到一个I<sub style="margin: 0px; padding: 0px;">­</sub><sup style="margin: 0px; padding: 0px;">2</sup>C Flash存储器上（一般是24LC21A），里面存储的就是EDID的128字节信息。在设备上加入EDID，就是将Flash接到DDC上，接法见下表。</p>
+<div style="color: rgb(51, 51, 51); margin: 0px; padding: 0px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px; line-height: 30px;" align="center">
+<table style="color: rgb(51, 51, 51); margin: 0px; padding: 0px;" cellspacing="0" cellpadding="0" border="0"><tbody style="margin: 0px; padding: 0px;"><tr style="margin: 0px; padding: 0px;"><td style="margin: 0px; padding: 0px;" valign="top" width="72">
+<p style="margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px;" align="center">
+<span style="margin: 0px; padding: 0px; font-size: 14px;">接口</span></p>
+</td>
+<td style="margin: 0px; padding: 0px;" valign="top" width="72">
+<p style="margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px;" align="center">
+<span style="margin: 0px; padding: 0px; font-size: 14px;">SDA</span></p>
+</td>
+<td style="margin: 0px; padding: 0px;" valign="top" width="72">
+<p style="margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px;" align="center">
+<span style="margin: 0px; padding: 0px; font-size: 14px;">SCL</span></p>
+</td>
+</tr><tr style="margin: 0px; padding: 0px;"><td style="margin: 0px; padding: 0px;" valign="top" width="72">
+<p style="margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px;" align="center">
+<span style="margin: 0px; padding: 0px; font-size: 14px;">VGA</span></p>
+</td>
+<td style="margin: 0px; padding: 0px;" valign="top" width="72">
+<p style="margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px;" align="center">
+<span style="margin: 0px; padding: 0px; font-size: 14px;">12</span></p>
+</td>
+<td style="margin: 0px; padding: 0px;" valign="top" width="72">
+<p style="margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px;" align="center">
+<span style="margin: 0px; padding: 0px; font-size: 14px;">15</span></p>
+</td>
+</tr><tr style="margin: 0px; padding: 0px;"><td style="margin: 0px; padding: 0px;" valign="top" width="72">
+<p style="margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px;" align="center">
+<span style="margin: 0px; padding: 0px; font-size: 14px;">DVI</span></p>
+</td>
+<td style="margin: 0px; padding: 0px;" valign="top" width="72">
+<p style="margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px;" align="center">
+<span style="margin: 0px; padding: 0px; font-size: 14px;">7</span></p>
+</td>
+<td style="margin: 0px; padding: 0px;" valign="top" width="72">
+<p style="margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px;" align="center">
+<span style="margin: 0px; padding: 0px; font-size: 14px;">6</span></p>
+</td>
+</tr></tbody></table></div>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;" align="center">
+表中是DDC通道在VGA和DVI接口中对应的线序</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+然后就是将EDID信息写入Flash中。对于大屏控制器和融合器，目前的软件已经支持在PC端更新设备EDID，使用方法参见黄工的文档。而对于其他一些设备，可以使用专用的<a href="http://www.haogongju.net/tag/%E7%BC%96%E7%A8%8B" title="编程" style="color: rgb(51, 51, 51); text-decoration: none; margin: 0px; padding: 0px;">编程</a>器来烧写Flash。针对生产部常用的Easy<a href="http://www.haogongju.net/tag/PR" title="PR" style="color: rgb(51, 51, 51); text-decoration: none; margin: 0px; padding: 0px;">PR</a>O
+ 100B编程器，烧写步骤如下：</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+1、打开Phoenix EDID Designer软件</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+2、用软件打开需要烧写的EDID文件（dat格式）</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+3、点击File Export，将EDID文件保存为hex格式</p>
+<p style="color: rgb(51, 51, 51); margin-top: 8px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; line-height: 30px; font-family: Arial,&quot;宋体&quot;,sans-serif; font-size: 16px;">
+4、用编程器软件调用hex文件进行烧写，具体过程不再赘述</p>
+<div><br></div>
+            </div>
+                </div>
+				<div class="hide-article-box text-center csdn-tracking-statistics tracking-click" data-mod="popu_376">
+			<a class="btn btn-red-hollow" id="btn-readmore">阅读更多</a>
+		</div>
+        	</article>
+	
+		<div class="article-bar-bottom">
+								<div class="tags-box">
+			<span class="label">个人分类：</span>
+						<a class="tag-link" href="https://blog.csdn.net/jkf40622/article/category/5686055" target="_top">HDMI相关文档						</a><a class="tag-link" href="https://blog.csdn.net/jkf40622/article/category/6906053" target="_top">音视频项目开发						</a>
+		</div>
+					</div>
+	
+	<!-- !empty($pre_next_article[0]) -->
+		</div>
+
+
+
+        <div class="edu-promotion"></div>
+        <a id="commentBox"></a>
+<div class="comment-box">
+	  	<div class="unlogin-box text-center">
+		想对作者说点什么？
+		<!-- $curl 当前地址 -->
+		<a href="https://passport.csdn.net/account/login?from=https://blog.csdn.net/Jkf40622/article/details/48311455#commentBox" class="btn btn-sm btn-red">我来说一句</a>
+	</div>
+			<div class="comment-list-container">
+		<a id="comments"></a>
+		<div class="comment-list-box">
+		</div>
+		<div id="commentPage" class="pagination-box d-none"></div>
+		<div class="opt-box text-center">
+			<button class="btn btn-sm btn-link-blue" id="btnMoreComment"></button>
+		</div>
+	</div>
+</div>        <div class="recommend-box">
+            		<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://edu.csdn.net/course/detail/4337?utm_source=blogre1" target="_top" strategy="EduRecommendInPriority_0">
+				adobe acrobat dc 2017从基础入门到精通PDF文档编辑制作加密保护视频教程			</a>
+		</h4>
+		<p class="content">
+			<a href="https://edu.csdn.net/course/detail/4337?utm_source=blogre1" target="_top" strategy="EduRecommendInPriority_0">
+				Adobe Acrobat dc 2017是Acrobat最新的版本，在新版中提供了更完善的Microsoft Office格式转换功能，让用户可以轻易地在 PDF、doc、xls 或是 ppt 等格式间转换。睿鱼教育出品的dc版本课程，轻松易学，让你3天掌握顶级PDF制作流程！本套课程配套素材：链接：http://pan.baidu.com/s/1cipQge 密码：gwpm			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<span class="read-num">学院</span>
+			</p>
+			<p>
+				<span class="date">2017年03月06日 10:38</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/wowo1109/article/details/8805045" target="_top" strategy="BlogCommendFromBaidu_1">
+				HDMI EDID解读			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/wowo1109/article/details/8805045" target="_top" strategy="BlogCommendFromBaidu_1">
+				现在的显示设备比如显示器，电视等都HDMI接口，那通常每个HDMI接口都保留有一份EDID数据，这个数据可以存在程序里面由系统启动过程中来初始化，更常见的做法是每个HDMI口会有一个EEPROM来保存...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/wowo1109" title="wowo1109" target="_blank">
+					<img src="3_wowo1109.jpg" alt="wowo1109" class="avatar-pic">
+					<span class="name">wowo1109</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2013-04-15 17:57:43</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：41121</span>
+			</p>
+		</div>
+	</div>
+				<div class="recommend-item-box recommend-ad-box"><newsfeed class="newsfeed QIHOO__WEB__SO__1525675914618_943" id="QIHOO__WEB__SO__1525675914618_943" style="display: block; margin: 0px; padding: 0px; border: medium none; width: 800px; height: 120px; overflow: hidden; position: relative; text-align: left;"><info-div id="QIHOO__WEB__SO__1525675914618_943-info" style="zoom:1"></info-div></newsfeed>
+
+			
+		</div>
+				<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/heyustudent/article/details/38038003" target="_top" strategy="BlogCommendFromBaidu_2">
+				HDMI之EDID			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/heyustudent/article/details/38038003" target="_top" strategy="BlogCommendFromBaidu_2">
+				http://zh.wikipedia.org/wiki/EDID
+
+
+
+
+
+&nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;
+
+
+
+
+&nbsp;
+（1） 厂商，一般为3个字母，一个字母对应一个ASCII码（见下...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/heyustudent" title="heyustudent" target="_blank">
+					<img src="3_heyustudent.jpg" alt="heyustudent" class="avatar-pic">
+					<span class="name">heyustudent</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2014-07-22 11:24:15</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：1462</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/Jkf40622/article/details/47087799" target="_top" strategy="BlogCommendFromBaidu_3">
+				HDMI之EDID数据解析			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/Jkf40622/article/details/47087799" target="_top" strategy="BlogCommendFromBaidu_3">
+				分类：&nbsp;LINUX
+
+
+
+
+Hdmi edid 数据解析&nbsp;&nbsp;
+
+
+
+一.EDID数据格式：
+
+EDID 1.3 data format
+Byte sequence&nbsp;
+
+00-19 Header inf...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/Jkf40622" title="Jkf40622" target="_blank">
+					<img src="3_jkf40622.jpg" alt="Jkf40622" class="avatar-pic">
+					<span class="name">Jkf40622</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2015-07-27 17:14:39</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：2088</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/u012890170/article/details/71513059" target="_top" strategy="BlogCommendFromBaidu_4">
+				通过HDMI获取显示器EDID数据			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/u012890170/article/details/71513059" target="_top" strategy="BlogCommendFromBaidu_4">
+				通过HDMI获取显示器EDID数据			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/u012890170" title="u012890170" target="_blank">
+					<img src="3_u012890170.jpg" alt="u012890170" class="avatar-pic">
+					<span class="name">u012890170</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2017-05-09 23:33:08</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：566</span>
+			</p>
+		</div>
+	</div>
+						<div class="recommend-item-box recommend-download-box csdn-tracking-statistics clearfix" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<div class="content float-left">
+				<h4 class="text-truncate">
+					<a href="https://download.csdn.net/download/reality2000/8902977" target="_top" strategy="BlogCommendFromBaidu_5">
+						pc端读取连接hdmi设备的edid					</a>
+				</h4>
+				<p>
+					<span class="data">2015年07月15日 </span>
+					<span class="size">672KB</span>
+					<span class="type">下载</span>
+				</p>
+			</div>
+			<div class="img-box float-right">
+				<a href="https://download.csdn.net/download/reality2000/8902977" target="_top" strategy="BlogCommendFromBaidu_5">
+					<img src="rar.svg" alt="">
+				</a>
+			</div>
+		</div>
+					<div class="recommend-item-box recommend-ad-box" id="yd_a_d_feed_0">
+			
+		<iframe style="width: 100%; height: 90px; border: 0px none;" scrolling="no" src="index_4.html"></iframe></div>
+			<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/Special_Lin/article/details/16355055" target="_top" strategy="BlogCommendFromBaidu_6">
+				HDMI EDID格式解析			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/Special_Lin/article/details/16355055" target="_top" strategy="BlogCommendFromBaidu_6">
+				现在的显示设备比如显示器，电视等都HDMI接口，那通常每个HDMI接口都保留有一份EDID数据，这个数据可以存在程序里面由系统启动过程中来初始化，更常见的做法是每个HDMI口会有一个EEPROM来保存...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/Special_Lin" title="Special_Lin" target="_blank">
+					<img src="3_special_lin.jpg" alt="Special_Lin" class="avatar-pic">
+					<span class="name">Special_Lin</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2013-11-16 10:54:00</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：3740</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/tea1896/article/details/53228111" target="_top" strategy="BlogCommendFromBaidu_7">
+				HDMI EDID的修改			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/tea1896/article/details/53228111" target="_top" strategy="BlogCommendFromBaidu_7">
+				公司的编码器产品连接一款机顶盒没有声音输出，经过打印发现，编码器被识别为了DVI设备，所以没有音频输出。
+&nbsp;HDMI输出设备都是根据接收端的EDID信息来决定是DVI还是HDMI， 因此我们需要修改E...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/tea1896" title="tea1896" target="_blank">
+					<img src="3_tea1896.jpg" alt="tea1896" class="avatar-pic">
+					<span class="name">tea1896</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2016-11-19 10:38:36</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：3473</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/spider__032/article/details/28879221" target="_top" strategy="BlogCommendFromBaidu_8">
+				HDMI EDID的VSDB部分解读			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/spider__032/article/details/28879221" target="_top" strategy="BlogCommendFromBaidu_8">
+				最近在调SMART TV的3D,4K的支持.在HDMI 1.4a版本中,这些信息主要在EDID扩展(后128字节)中的Vendor-Specific Data Block(VSDB)中,网上关于EDI...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/spider__032" title="spider__032" target="_blank">
+					<img src="3_spider__032.jpg" alt="spider__032" class="avatar-pic">
+					<span class="name">spider__032</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2014-06-06 15:44:41</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：5268</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/phenixyf/article/details/77771942" target="_top" strategy="BlogCommendFromBaidu_9">
+				EDID：识别和解决常见问题指南			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/phenixyf/article/details/77771942" target="_top" strategy="BlogCommendFromBaidu_9">
+				随着 HDMI、DVI 和 DisplayPort 的迅速采用，专业视音频行业正继续从
+
+模拟向数字视频技术转换。虽然在很大程度上取得了成功，但在向最
+
+终用户提供稳定、无故障的视频系统时，这...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/phenixyf" title="phenixyf" target="_blank">
+					<img src="3_phenixyf.jpg" alt="phenixyf" class="avatar-pic">
+					<span class="name">phenixyf</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2017-09-01 13:45:52</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：2794</span>
+			</p>
+		</div>
+	</div>
+			            <div class="recommend-loading-box">
+                <img src="feedloading.gif">
+            </div>
+            <div class="recommend-end-box">
+                <p class="text-center">没有更多推荐了，<a href="https://blog.csdn.net/" class="c-blue c-blue-hover c-blue-focus">返回首页</a></p>
+            </div>
+        </div>
+    </main>
+</div>
+<div class="mask-dark"></div>
+<div class="report-box">
+    <div class="pos-box">
+        <h2 class="title">不良信息举报</h2>
+        <a class="btn-close">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#csdnc-times"></use>
+            </svg>
+        </a>
+        <form id="frmReport" action="https://blog.csdn.net/Jkf40622/article/details/48311455">
+            <div class="form-box">
+                <div class="txt-row-box">
+                    <label class="title" id="reptTit">举报内容：</label>
+                    <p class="rpt-title text-truncate">HDMI之EDID使用说明</p>
+                </div>
+                <div class="txt-row-box">
+                    <label class="title">举报原因：</label>
+                    <div class="rdo-box">
+                        <label><input class="rdo-chk report-type" id="report_sex" name="report_type" value="1" type="radio">色情</label>
+                        <label><input class="rdo-chk report-type" id="report_Politics" name="report_type" value="2" type="radio">政治</label>
+                        <label><input class="rdo-chk report-type" id="report_copy" name="report_type" value="3" type="radio">抄袭</label>
+                        <label><input class="rdo-chk report-type" id="report_ad" name="report_type" value="4" type="radio">广告</label>
+                        <label><input class="rdo-chk report-type" id="report_want" name="report_type" value="5" type="radio">招聘</label>
+                        <label><input class="rdo-chk report-type" id="report_call" name="report_type" value="6" type="radio">骂人</label>
+                        <label><input class="rdo-chk report-type" id="report_other" name="report_type" value="7" type="radio">其他</label>
+                    </div>
+                </div>
+                <div class="txt-row-box" id="rptOriginalurl">
+                    <label class="title">原文地址：</label>
+                    <div class="txt-box">
+                        <input class="ipt" name="originalurl" value="" type="text">
+                    </div>
+                </div>
+                <div class="txt-row-box">
+                    <label class="title">原因补充：</label>
+                    <div class="txt-box">
+                        <textarea class="ipt ipt-textarea" name="description" maxlength="30"></textarea>
+                        <p class="remark">最多只允许输入30个字</p>
+                    </div>
+                </div>
+            </div>
+            <div class="opt-box text-right">
+                <input class="btn btn-link-gray btn-close" value="取消" type="reset">
+                <input class="btn btn-red btn-submit" value="提交" type="submit">
+            </div>
+        </form>
+    </div>
+</div>
+<div class="pulllog-box" style="display: block;">
+	<div class="pulllog clearfix">
+		<span class="text float-left">加入CSDN，享受更精准的内容推荐，与500万程序员共同成长！</span>
+		<div class="pulllog-btn float-right clearfix">
+            <button class="pulllog-login float-left csdn-tracking-statistics tracking-click" data-mod="popu_557">
+                登录
+            </button>
+            <div class="pulllog-sigin float-left csdn-tracking-statistics tracking-click" data-mod="popu_558">
+                <a href="https://passport.csdn.net/account/mobileregister" target="_top">注册</a>
+            </div>
+            <button class="btn-close">
+                <svg class="icon" aria-hidden="true">
+                    <use xlink:href="#csdnc-times"></use>
+                </svg>
+            </button>
+		</div>
+	</div>
+</div>
+<div id="loginWrap" style="display: none;"></div>
+<div class="tool-box">
+	<ul class="meau-list">
+		<li>
+			<button class="btn-like" title="点赞">
+				<svg class="icon active" aria-hidden="true">
+					<use xlink:href="#csdnc-thumbsup-ok"></use>
+				</svg><svg class="icon no-active" aria-hidden="true">
+					<use xlink:href="#csdnc-thumbsup"></use>
+				</svg>
+				<p>2</p>
+			</button>
+		</li>
+		<li class="toc-container-box" id="liTocBox">
+			<button class="btn-toc" title="目录">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-contents"></use>
+				</svg><br>目录
+			</button>
+			<div class="toc-container">
+				<div class="pos-box">
+					<div class="icon-arrow"></div>
+					<div class="scroll-box">
+						<div class="toc-box"></div>
+					</div>
+				</div>
+				<div class="opt-box">
+					<button class="btn-opt prev nomore" title="向上">
+						<svg class="icon" aria-hidden="true">
+							<use xlink:href="#csdnc-chevronup"></use>
+						</svg>
+					</button>
+					<button class="btn-opt next">
+						<svg class="icon" aria-hidden="true">
+							<use xlink:href="#csdnc-chevrondown"></use>
+						</svg>
+					</button>
+				</div>
+			</div>
+		</li>
+		<li>
+			<button class="btn-bookmark" title="收藏">
+				<svg class="icon active" aria-hidden="true">
+					<use xlink:href="#csdnc-bookmark-ok"></use>
+				</svg><svg class="icon no-active" aria-hidden="true">
+					<use xlink:href="#csdnc-bookmark"></use>
+				</svg><br>收藏
+			</button>
+		</li>
+		<li>
+			<a class="btn-comments" title="评论" href="#commentBox">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-comments"></use>
+				</svg><br>评论
+			</a>
+		</li>
+				<li class="bdsharebuttonbox">
+			<a class="btn-comments bds_weixin" data-cmd="weixin" title="微信分享">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-wechat"></use>
+				</svg><br>微信
+			</a>
+		</li>
+		<li class="bdsharebuttonbox">
+			<a class="btn-comments bds_tsina" data-cmd="tsina" title="微博分享">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-weibo"></use>
+				</svg><br>微博
+			</a>
+		</li>
+		<li class="bdsharebuttonbox">
+			<a class="btn-comments bds_qzone" data-cmd="qzone" title="QQ分享">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-qq"></use>
+				</svg><br>QQ
+			</a>
+		</li>
+	</ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+<div class="box-box-default">
+    <a class="btn-remove">
+        关闭
+    </a>
+    <div id="_8pnfduz48k"><iframe scrolling="no" src="index_5.html" width="160" height="600" frameborder="0"></iframe></div>
+</div>
+<div class="box-box-large">
+    <a class="btn-remove">
+        关闭
+    </a>
+    <div id="_fyt8sopdzmg"><div id="gkgiz" style="padding-bottom: 0px;"><iframe scrolling="no" src="index_6.html" width="250" height="250" frameborder="0"></iframe></div></div>
+</div>
+</body>
+</html>

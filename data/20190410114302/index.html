@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+
+<link rel="icon" href="avatar.png" sizes="32x32">
+
+    <meta charset="UTF-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="renderer" content="webkit">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+    <title>「自己开发直播」通过Nginx-rtmp-module搭建直播服务器并实现直播 - Postbird - 招猫逗狗的开发者</title>
+
+    
+
+
+
+
+
+
+
+
+	
+    <!--[if lt IE 9]>
+
+    <script src="//cdnjscn.b0.upaiyun.com/libs/html5shiv/r29/html5.min.js"></script>
+
+    <script src="//cdnjscn.b0.upaiyun.com/libs/respond.js/1.3.0/respond.min.js"></script>
+
+    <![endif]-->
+
+  
+
+
+<meta name="description" content="帮别人做一个简单（非常非常简单）的直播平台（摆摆样子），涉及到了搭建RTMP流媒体服务器（虽然我觉得用SDK好的很多hhh）。简单的了解了一下直播需要的关键的地方在于流媒体服务器，而构建流媒体服...">
+<meta name="keywords" content="rtmp,nginx,nginx-rtmp-module">
+<link rel="alternate" type="application/rss+xml" title="「自己开发直播」通过Nginx-rtmp-module搭建直播服务器并实现直播 » Postbird - 招猫逗狗的开发者 » RSS 2.0" href="http://www.ptbird.cn/feed/nginx-rtmp-module-server.html">
+<link rel="alternate" type="application/rdf+xml" title="「自己开发直播」通过Nginx-rtmp-module搭建直播服务器并实现直播 » Postbird - 招猫逗狗的开发者 » RSS 1.0" href="http://www.ptbird.cn/feed/rss/nginx-rtmp-module-server.html">
+<link rel="alternate" type="application/atom+xml" title="「自己开发直播」通过Nginx-rtmp-module搭建直播服务器并实现直播 » Postbird - 招猫逗狗的开发者 » ATOM 1.0" href="http://www.ptbird.cn/feed/atom/nginx-rtmp-module-server.html">
+
+
+
+
+
+
+
+
+<link rel="preload" href="https://adservice.google.com/adsid/integrator.js?domain=www.ptbird.cn" as="script"><link rel="preload" href="http://pagead2.googlesyndication.com/pagead/js/r20190403/r20190131/show_ads_impl.js" as="script">
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body class=" single"><div style="" class="postbird-img-glass-box"><img style="width: auto; height: auto;"></div><ins class="adsbygoogle adsbygoogle-noablate" style="display: none !important;" data-adsbygoogle-status="done"><ins id="aswift_0_expand" style="display: inline-table; border: medium none; height: 0px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 0px; background-color: transparent;"><ins id="aswift_0_anchor" style="display: block; border: medium none; height: 0px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 0px; background-color: transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" id="aswift_0" name="aswift_0" style="left: 0px; position: absolute; top: 0px; border: 0px none; width: 0px; height: 0px;" src="index_1.html" frameborder="0"></iframe></ins></ins></ins>
+
+<!--[if lt IE 8]>
+
+    <div class="browsehappy" role="dialog">当前网页 <strong>不支持</strong> 你正在使用的浏览器. 为了正常的访问, 请 <a href="http://browsehappy.com/">升级你的浏览器</a>.</div>
+
+<![endif]-->
+
+<div id="nav">
+
+	
+	<nav class="nav-menu">
+
+		<a class="site-name" href="http://www.ptbird.cn/" title="There I am , in the world more exciting! Postbird 一个喜欢招猫逗狗的开发者">P</a>
+
+		<a class="site-index" href="http://www.ptbird.cn/"><i class="fa fa-home"></i><span>首页</span></a>
+
+		
+		
+		<a href="http://www.ptbird.cn/list.html" title="分类目录"><i class="fa fa-list"></i><span>分类目录</span></a>
+
+		
+		<a href="http://www.ptbird.cn/th-large.html" title="文章归档"><i class="fa fa-th-large"></i><span>文章归档</span></a>
+
+		
+		<a href="http://www.ptbird.cn/tags.html" title="标签"><i class="fa fa-tags"></i><span>标签</span></a>
+
+		
+		<a href="http://www.ptbird.cn/link.html" title="友情链接"><i class="fa fa-link"></i><span>友情链接</span></a>
+
+		
+		<a href="http://www.ptbird.cn/phone.html" title="联系方式"><i class="fa fa-phone"></i><span>联系方式</span></a>
+
+		
+		<a href="http://www.ptbird.cn/comments.html" title="给我留言"><i class="fa fa-comments"></i><span>给我留言</span></a>
+
+		
+		<!--<a class="site-index"  href="http://work.ptbird.cn"><i class="fa fa-cogs"></i><span>我的作品</span></a>
+
+		<a class="site-index" href="http://person.ptbird.cn"><i class="fa fa-user-secret"></i><span>个人信息</span></a>-->
+
+
+
+	</nav>
+
+	
+
+</div><!-- end #header -->
+
+<div class="nav-user">
+
+	<a class="btn-search" href="#"><i class="fa fa-search"></i></a>
+
+	<a class="btn-read-mode" href="#"><i class="fa fa-sun-o"></i></a>
+
+	
+		<a href="http://www.ptbird.cn/admin/login.php">登录</a>
+
+	
+</div>
+
+<div id="wrapper" class="clearfix">
+
+<div id="cover" style="display: none;">
+
+	<div class="cover-img" style="background-image: url('bg.jpg');"></div>
+
+	<div class="cover-info">
+
+	
+		<img class="avatar" src="avatar.jpg" alt="" width="72">
+
+<h3 style="color: rgb(51, 51, 51);">Postbird</h3>
+
+	
+      <p style="color: rgb(51, 51, 51);">There I am , in the world more exciting!</p>
+
+
+
+    </div>
+
+</div>
+
+
+
+<div id="body">
+
+<div class="main " id="main"><div class="page-title">
+	<ul>
+		<li><a href="http://www.ptbird.cn/">最新</a></li>
+				<li class="active">
+							<a href="http://www.ptbird.cn/category/tch/">技术</a>
+					</li>
+						
+               
+		<li class="page-search">
+			<form id="search" method="post" action="http://www.ptbird.cn/" role="search">
+				<label for="s" class="sr-only">搜索关键字</label>
+				<input name="s" class="text" placeholder="输入关键字搜索" value="" type="text">
+				<button type="submit" class="submit" title="搜索"><i class="fa fa-search"></i></button>
+			</form>
+		</li>
+	</ul>
+</div>
+
+
+<div class="main-inner">
+
+    <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+
+        <div class="post-header">
+
+            <div class="post-author clearfix">
+
+                <a class="avatar fleft" href="http://www.ptbird.cn/author/1/"><img src="avatar_001.jpg" alt="postbird" width="50px"></a>
+
+                <p><span class="label">作者</span> <a href="http://www.ptbird.cn/author/1/">Postbird</a> <span title="最后编辑于2019.04.03 22:20:40">2017.03.04 21:46:00</span></p>
+
+                
+                <p>写了494篇文章,回复387人,</p>
+
+                
+            </div>
+
+            <h2 class="post-title">「自己开发直播」通过Nginx-rtmp-module搭建直播服务器并实现直播</h2>
+
+            <div class="post-meta">
+
+                <a href="http://www.ptbird.cn/nginx-rtmp-module-server.html#comments">评论：14</a>
+
+                
+                <em>·</em>
+
+                <a href="http://www.ptbird.cn/nginx-rtmp-module-server.html">阅读：16188</a><em>·</em>
+
+                <span>喜欢：3</span>
+
+                
+            </div>
+
+        </div>
+
+        <div class="post-content markdown-body">
+
+            <p>帮别人做一个简单（非常非常简单）的直播平台（摆摆样子），涉及到了搭建RTMP流媒体服务器（虽然我觉得用SDK好的很多hhh）。</p><p>简单的了解了一下直播需要的关键的地方在于流媒体服务器，而构建流媒体服务器的方式有很多种，本着<font color="red">免费且方便</font>的思想，最终选择了 <font color="red">nginx-rtmp-module</font></p><p>本文主要参照自：<a href="http://blog.csdn.net/kingroc/article/details/50839994"></a><a href="http://blog.csdn.net/kingroc/article/details/50839994">http://blog.csdn.net/kingroc/article/details/50839994</a></p><ul><li>参照而非转载</li><li>因为每个人的环境什么的都不同，所以在搭建配置的过程中各种坑，我也会记录一下</li><li>非常感谢原作者的分享与撰写</li></ul><p>不管怎么样，不建议使用windows搭建，nginx在windows上暴殄天物了。 </p><p><font color="red">文章后面会给出如何在windows下进行直播和观看直播，原作者未给出。</font></p><span id="menu_index_1" name="menu_index_1"></span><h1>一、环境和工具</h1><ol><li><p><strong>ubuntu 14.04 desktop</strong></p><ul><li>不用server的原因是一部分的演示用到了linux视频播放和直播软件，自己还要装桌面，麻烦。</li><li>不建议使用 最新的16TLS，我一开始就用它来做的，但是各种坑，因为很多包都被废弃或者必须降级</li><li>ubuntu我装在vmware上，使用NAT静态ip（配置NAT静态ip可以参照这篇文章：<a href="http://www.linuxdiyf.com/linux/20707.html"></a><a href="http://www.linuxdiyf.com/linux/20707.html">http://www.linuxdiyf.com/linux/20707.html</a>）</li></ul></li><li><p><strong>Nginx1.8.1</strong></p><ul><li>这个是我之前装的版本，版本没什么大的影响</li><li>我是源代码编译安装的，不建议用 apt-get install nginx</li></ul></li><li><p><strong>nginx-rtmp-module</strong></p><ul><li>github地址：<a href="https://github.com/arut/nginx-rtmp-module"></a><a href="https://github.com/arut/nginx-rtmp-module">https://github.com/arut/nginx-rtmp-module</a></li></ul></li><li><p>直播肯定用大名鼎鼎的<strong>OBS</strong></p><ul><li>OBS地址： <a href="https://obsproject.com/"></a><a href="https://obsproject.com/">https://obsproject.com/</a></li></ul></li><li><p>观看目前只是用客户端观看，使用的是<strong>VLC media player</strong></p><ul><li>地址：<a href="https://www.videolan.org/vlc/"></a><a href="https://www.videolan.org/vlc/">https://www.videolan.org/vlc/</a></li><li>下载建议直接百度下载就行了，vlc官网些许慢</li></ul></li></ol><p>需要说明的是，在linux下直播和观看当然也没有任何的问题，而且上面提到的作者也介绍了如何在linux进行直播和观看直播。</p><p>建议阅读他的文章如下：（配置完在说...）</p><ol><li><a href="http://blog.csdn.net/kingroc/article/details/50829213">在linux上安装obs直播（需要ffmpeg）：</a><a href="http://blog.csdn.net/kingroc/article/details/50829213">http://blog.csdn.net/kingroc/article/details/50829213</a></li><li><a href="http://blog.csdn.net/kingroc/article/details/50839994#t4">在linux上使用OBS：</a><a href="http://blog.csdn.net/kingroc/article/details/50839994#t4">http://blog.csdn.net/kingroc/article/details/50839994#t4</a></li><li>至于VLC怎么观看网络流视频这个很简单，搜索一下就可以。</li></ol><span id="menu_index_2" name="menu_index_2"></span><h1>二、安装Ngnix</h1><blockquote><p>下面所有的操作都是在root用户下进行的，因此没有sudo</p></blockquote><span id="menu_index_3" name="menu_index_3"></span><h2>1、安装各种依赖包</h2><pre class="line-numbers  language-bash"><code class="  language-bash">$ <span class="token function">apt-get</span> <span class="token function">install</span> openssl libssl-dev libpcre3 libpcre3-dev<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p><font color="red"><strong>坑：</strong>安装 libpcre3-dev 包括其他几个依赖库会提示你安装失败，因为已经存在的库版本太高，需要进行降级处理，而使用 ubuntu 16.0 LTS降级的时候，不知道为什么把python等多个库都删除了，因此很多软件都挂了，无奈我只能放弃 Ubuntu 16.0</font></p><p>典型的错误提示如下：</p><pre class="line-numbers"><code>下列软件包有未满足的依赖关系：
+openssh-server : 依赖: openssh-client (= 1:6.6p1-2ubuntu1)
+E: 无法修正错误，因为您要求某些软件包保持现状，就是它们破坏了软件包间的依赖关系。</code></pre><p><font color="blue"><strong>解决办法：</strong>至于什么是降级处理怎么降级处理可以具体参照百度，不过需要注意的是，<strong>在提示你是否Y/n的时候，一定要看看，要不要卸载软件，再输入Y确认，避免误操作</strong>！</font></p><p>如果是上面的需要降级，则如下操作即可进行降级：</p><p><strong>注意是将后面括号的内容加到要安装库的后面，但是和 = 之间的空格要去掉</strong></p><pre class="line-numbers  language-bash"><code class="  language-bash"><span class="token comment">#降级处理</span>
+$ <span class="token function">apt-get</span> <span class="token function">install</span> openssh-client<span class="token operator">=</span>1:6.6p1-2ubuntu1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><span id="menu_index_4" name="menu_index_4"></span><h2>2、编辑安装nginx与rtmp-module</h2><blockquote><p>nginx和nginx-rtmp-module是一起编译安装的。</p></blockquote><p><strong>我将下载下来的nginx和nginx-rtmp-moudle-master两个文件夹都放在了 /usr/local/下</strong>，（-master是因为我在github下载的，没有改名字）</p><p>如下图所示，而nginx是编译后安装好的nginx路径（编译安装使用的是默认配置，只是加上了rtmp-module,没有做其他的配置和改动）。</p><p><img src="3849957504.png" alt="postbird" class="center-block" style="cursor: zoom-in;"></p><p><strong>编译安装Nginx</strong></p><pre class="line-numbers  language-bash"><code class="  language-bash"><span class="token comment">#注意nginx-rtmp-module-master的路径</span>
+$ ./configure --add-module<span class="token operator">=</span><span class="token punctuation">..</span>/nginx-rtmp-module-master
+$ <span class="token function">make</span>
+$ <span class="token function">make</span> <span class="token function">install</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre><p>经过上面的默认配置安装之后，nginx目录分别如下：<br><font color="red"></font></p><ul><li><font color="red">nginx安装目录  <strong>/usr/local/nginx</strong></font></li><li><font color="red">nginx配置目录 <strong>/usr/local/nginx/conf/nginx.conf</strong></font></li><li><font color="red">nginx运行目录 <strong>/usr/local/nginx/sbin/nginx --options</strong></font></li></ul><p></p><p><strong>测试nginx服务器</strong></p><p>进入安装目录/usr/local/nginx，运行命令</p><pre class="line-numbers  language-bash"><code class="  language-bash">$ ./sbin/nginx<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>在浏览器输入linux能够访问nginx即可。</p><p><img src="919947394.png" alt="postbird" class="center-block" style="cursor: zoom-in;"></p><span id="menu_index_5" name="menu_index_5"></span><h1>三、配置直播服务器</h1><blockquote><p>所有的配置都基于 nginx-rtmp-module 的官方文档</p></blockquote><p>github地址如下： <a href="https://github.com/arut/nginx-rtmp-module#nginx-based-media-streaming-server"></a><a href="https://github.com/arut/nginx-rtmp-module#nginx-based-media-streaming-server">https://github.com/arut/nginx-rtmp-module#nginx-based-media-streaming-server</a></p><p>因为我们这里只考虑直播，因此点播就不在记录了。</p><p>关于<strong>视频点播服务器的配置</strong>可以查看上面作者的文章：[<a href="http://blog.csdn.net/kingroc/article/details/50839994">http://blog.csdn.net/kingroc/article/details/50839994</a>] [9]</p><p><font color="red">视频点播服务器和视频直播的不同我想不需要说明，一个实时推流（如果不了解什么是推流可以百度一下就OK），一个是也是播放视频流，但是是基于文件进行的。点播无非是通过播放某服务器上的文件进行推流，从而能够观看，而直播是有专门推流客户端进行实时推流。</font></p><p>我把我的<strong>nginx.conf的配置贴出来（<font color="red">只注明和直播有关的内容</font>），改写的注释我都写了，该去掉的配置我也都去掉了，唯一需要注意的就是我监听的是一个域名，而不是ip，因为域名我是为了在局域网使用。</strong></p><ol><li><font color="red">我的<strong>ubuntu IP</strong>是 192.168.124.129,<strong>hosts文件</strong>将rtmp-postbird指向了这个ip。</font></li><li><font color="red"><strong>同时windows的hosts文件我也改过，同样将rtmp-postbird指向了192.168.124.129，这样子好处是，很轻松在windows上进行推流和观看</strong></font></li><li>rtmp上最重要的配置就是 <strong>push rtmp://rtmp-postbird/live;</strong>（详细查看下面注释）</li></ol><pre class="line-numbers  language-bash"><code class="  language-bash"><span class="token comment">#/usr/local/nginx/conf/nginx.conf</span>
+<span class="token comment">#注明：请勿直接覆盖原来的conf文件,这只是部分有关直播的内容</span>
+<span class="token comment">#配置RTMP，这个配置格式在github的readme上有详细说明</span>
+
+rtmp <span class="token punctuation">{</span>                
+    server <span class="token punctuation">{</span>
+        listen 1935<span class="token punctuation">;</span>  <span class="token comment">#服务端口--默认</span>
+       chunk_size 4096<span class="token punctuation">;</span>   <span class="token comment">#数据传输块的大小--默认</span>
+        <span class="token comment">#设置直播的application名称是 live</span>
+    application live<span class="token punctuation">{</span> 
+        live on<span class="token punctuation">;</span> <span class="token comment">#live on表示开启直播模式</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment">#设置推流的应用名称</span>
+    application push<span class="token punctuation">{</span> 
+        live on<span class="token punctuation">;</span> <span class="token comment">#开启直播</span>
+        push rtmp://rtmp-postbird/live<span class="token punctuation">;</span> <span class="token comment">#推流到上面的直播应用</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span class="token comment">#下面的server是在http的一级配置标签下的</span>
+<span class="token comment">#请在http里面找到server</span>
+<span class="token comment">#上面的注释对懂nginx的人是废话，但是如果你不熟悉nginx，建议认真看看</span>
+http<span class="token punctuation">{</span>
+    <span class="token punctuation">..</span>.<span class="token comment"># 这里有一些其他的配置</span>
+ server <span class="token punctuation">{</span>
+        listen       80<span class="token punctuation">;</span> <span class="token comment">#端口</span>
+    server_name  rtmp-postbird<span class="token punctuation">;</span><span class="token comment">#设置http服务器监听的域名 hosts中配置了</span>
+    <span class="token comment">#下面两个是加上去的，用来配置直播的http访问</span>
+        <span class="token comment">#具体的意思可以在github的文档中查看</span>
+    location /stat <span class="token punctuation">{</span>    
+                rtmp_stat all<span class="token punctuation">;</span>
+               rtmp_stat_stylesheet stat.xsl<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        location /stat.xsl <span class="token punctuation">{</span>
+                <span class="token comment">#注意这里的路径不能错误，直接写绝对路径就可以</span>
+        root /usr/local/nginx-rtmp-module-master/<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        location / <span class="token punctuation">{</span>
+            root   html<span class="token punctuation">;</span>
+            index  index.html index.htm<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        error_page   500 502 503 504  /50x.html<span class="token punctuation">;</span>
+        location <span class="token operator">=</span> /50x.html <span class="token punctuation">{</span>
+            root   html<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p><font color="blue">配置完之后，需要重新启动nginx</font></p><pre class="line-numbers  language-bash"><code class="  language-bash"><span class="token comment">#为了清楚我就用了绝对地址</span>
+$ /usr/local/nginx/sbin/nginx -s reload<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><p>然后在浏览器输入 <strong><a href="http://rtmp-ostbird/stat">http://rtmp-ostbird/stat</a></strong> ,stat就是上面server中配置的名称</p><p>如果能看到下面图片的内容，则证明配置没有问题，一般没啥问题，我是一次就成功的。如果无法访问，请关闭防火墙以及查看hosts文件等等。</p><p><img src="63148280.png" alt="postbird" class="center-block" style="cursor: zoom-in;"></p><span id="menu_index_6" name="menu_index_6"></span><h1>四、进行直播</h1><p>下面是在windows上进行直播，如果想在linux上直播，请返回到本篇文章第一个大标题下查看。</p><span id="menu_index_7" name="menu_index_7"></span><h2>1、下载OBS并进行安装</h2><p>这个...没啥好说的</p><span id="menu_index_8" name="menu_index_8"></span><h2>2、使用OBS直播</h2><p>关于OBS直播软件怎么使用网上很多都是与直播平台挂钩的。</p><p>这里只是简单说下，打开之后，在来源那里点击加号，选择一个来源，比如我选择了摄像头，如下图的马赛克的摄像头。</p><p><img src="1152916437.png" alt="2116593834.png" title="2116593834.png" style="cursor: zoom-in;"></p><span id="menu_index_9" name="menu_index_9"></span><h2>3、配置串流服务</h2><ol><li>点击【<strong>设置</strong>】</li><li>选择【<strong>串流</strong>】</li><li><strong>串流类型</strong>选择【<strong>自定义流媒体服务器</strong>】</li><li>URL填写我们上面配置的push地址【<strong>rtmp://rtmp-postbird/push</strong>】</li><li>密钥没有配置，不需要填写。</li><li>【完成】</li><li>【<strong>开始串流</strong>】</li></ol><span id="menu_index_10" name="menu_index_10"></span><h1>五、观看直播</h1><p>直播使用VLC进行观看，其实很简单就是填一个链接就OK。</p><ol><li>打开VLC media player，</li><li>选择【媒体】-&gt;【网络串流】</li><li>在地址输入：<strong>rtmp://rtmp-postbird/live</strong>（之前配置的live的地址）</li><li>确认后即可观看</li></ol><span id="menu_index_11" name="menu_index_11"></span><h1>六、确认能直播</h1><p><img src="1371649397.png" alt="1581124109.png" title="1581124109.png" style="cursor: zoom-in;"></p><span id="menu_index_12" name="menu_index_12"></span><h1>七、问题</h1><p>这个只是实现了推流然后能观看，依旧有很多问题。</p><ol><li>在windows上直播观看延迟大约在5-10秒，如果非局域网这个速度没法看。</li><li><font color="red">现在所有人只要填写推流地址，就能进行播放和查看，没有权限控制，虽然rtmp本身对ip有一个策略机制可以配置，但是并没有什么实际的用处，需要结合程序实现控制，也是后面需要实现的功能</font></li><li>目前还没有考虑网页上的观看，网页上考虑使用html5流媒体播放器，结合hls协议实现，也是后面回去研究一下。</li></ol>            
+<ins class="adsbygoogle" style="display: block; text-align: center; height: 123px;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-6086496827186858" data-ad-slot="3378944138" data-adsbygoogle-status="done"><ins id="aswift_1_expand" style="display: inline-table; border: medium none; height: 123px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 490px; background-color: transparent;"><ins id="aswift_1_anchor" style="display: block; border: medium none; height: 123px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 490px; background-color: transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" id="aswift_1" name="aswift_1" style="left: 0px; position: absolute; top: 0px; border: 0px none; width: 490px; height: 123px;" src="index_3.html" width="490" height="123" frameborder="0"></iframe></ins></ins></ins>
+
+        <!-- <div class="with-line">文章已经结束啦</div> -->
+        <ul id="nav-footer">
+            <li class="item1"></li>
+            <li class=""><a href="#"><span>文章已经结束啦</span></a></li>
+        </ul>
+        </div>
+        <div style="padding: 10px; border: 1px dotted rgb(0, 133, 115); margin-bottom: 15px; margin-top: 10px;">
+            <div class="post-tags"><font color="#008573">标签：</font><a href="http://www.ptbird.cn/tag/rtmp/">rtmp</a><a href="http://www.ptbird.cn/tag/nginx/">nginx</a><a href="http://www.ptbird.cn/tag/nginx-rtmp-module/">nginx-rtmp-module</a></div>
+        </div>
+         
+        <div class="" style="background-color: rgb(246, 246, 246); padding: 10px; margin-bottom: 10px;">
+
+            <p>文章版权：<a style="color: rgb(21, 167, 240);" href="http://www.ptbird.cn/">Postbird-There I am , in the world more exciting!</a></p>
+
+            <p>本文链接：<a style="color: rgb(21, 167, 240);" href="http://www.ptbird.cn/nginx-rtmp-module-server.html">http://www.ptbird.cn/nginx-rtmp-module-server.html</a></p>
+
+            <p>转载请注明文章原始出处 !</p>
+
+        </div>
+            <div style="text-align: center;">
+                <div id="qrcodeContent"><img src="data:image/png;base64,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"></div> 
+                <div style="padding: 10px;">
+                    <span>扫描二维码,在手机阅读！</span>
+                </div>
+            </div>
+             
+
+        <div class="post-tool">
+
+            
+            <a class="btn-like" href="javascript:void(0);" data-cid="1268" title="3"><i class="fa fa-heart-o"></i> 赞 | <span>3</span></a>
+
+            
+            <a class="btn-donate" href="javascript:void(0);">赏</a>
+
+        </div>
+
+        
+
+    </article>
+
+    
+
+    <div id="comments">
+        	<p>
+		<span>14</span> 条评论		<a class="fright" href="#respond-post-1268"><i class="fa fa-pencil"></i> 添加新评论</a>
+	</p>
+    <ol class="comment-list"><li itemscope="" itemtype="http://schema.org/UserComments" id="comment-590" class="comment-body comment-parent comment-odd">
+    <div class="comment-avatar">
+		<img class="avatar" src="d10ca8d11301c2f4993ac2279ce4b930" width="32">
+	</div>
+    <div class="comment-meta">
+        <div class="comment-meta-author">苹果虫子</div>
+        <div class="comment-meta-time">
+        <a href="http://www.ptbird.cn/nginx-rtmp-module-server.html/comment-page-1#comment-590"><time itemprop="commentTime" datetime="2019-04-03T16:50:29+08:00">April 3rd, 2019 at 04:50 pm</time></a>
+        </div>
+                <div class="comment-meta-reply">
+            <a href="http://www.ptbird.cn/nginx-rtmp-module-server.html/comment-page-1?replyTo=590#respond-post-1268" rel="nofollow" onclick="return TypechoComment.reply('comment-590', 590);">回复</a>        </div>
+    </div>
+    <div class="comment-content" itemprop="commentText">
+    <p>正解</p>    </div>
+    
+    </li>
+<li itemscope="" itemtype="http://schema.org/UserComments" id="comment-393" class="comment-body comment-parent comment-even">
+    <div class="comment-avatar">
+		<img class="avatar" src="404dcbe7ae75f2f4d9a16131f2da3a70" width="32">
+	</div>
+    <div class="comment-meta">
+        <div class="comment-meta-author">elesos</div>
+        <div class="comment-meta-time">
+        <a href="http://www.ptbird.cn/nginx-rtmp-module-server.html/comment-page-1#comment-393"><time itemprop="commentTime" datetime="2018-07-02T16:25:08+08:00">July 2nd, 2018 at 04:25 pm</time></a>
+        </div>
+                <div class="comment-meta-reply">
+            <a href="http://www.ptbird.cn/nginx-rtmp-module-server.html/comment-page-1?replyTo=393#respond-post-1268" rel="nofollow" onclick="return TypechoComment.reply('comment-393', 393);">回复</a>        </div>
+    </div>
+    <div class="comment-content" itemprop="commentText">
+    <p>建议直接用第3方的直播sdk，比如starRTC,声网之类，简单粗暴，让更多时间去干更有意义的事情。</p>    </div>
+    
+        <div class="comment-children" itemprop="discusses">
+        <ol class="comment-list"><li itemscope="" itemtype="http://schema.org/UserComments" id="comment-394" class="comment-body comment-child comment-level-odd comment-odd comment-by-author">
+    <div class="comment-avatar">
+		<img class="avatar" src="df84adc4bafe5998d5c3da0af4b58818" width="32">
+	</div>
+    <div class="comment-meta">
+        <div class="comment-meta-author"><a href="http://www.ptbird.cn/" rel="external nofollow">Postbird</a></div>
+        <div class="comment-meta-time">
+        <a href="http://www.ptbird.cn/nginx-rtmp-module-server.html/comment-page-1#comment-394"><time itemprop="commentTime" datetime="2018-07-02T16:28:31+08:00">July 2nd, 2018 at 04:28 pm</time></a>
+        </div>
+                <div class="comment-meta-reply">
+            <a href="http://www.ptbird.cn/nginx-rtmp-module-server.html/comment-page-1?replyTo=394#respond-post-1268" rel="nofollow" onclick="return TypechoComment.reply('comment-394', 394);">回复</a>        </div>
+    </div>
+    <div class="comment-content" itemprop="commentText">
+    <p>只会调用sdk，什么底层的都不去接触，原理也不知道，就叫有意义了？</p>    </div>
+    
+    </li>
+</ol>    </div>
+    </li>
+<li itemscope="" itemtype="http://schema.org/UserComments" id="comment-369" class="comment-body comment-parent comment-odd">
+    <div class="comment-avatar">
+		<img class="avatar" src="b8fbb5a9fd811da210b1f656dc1230cc" width="32">
+	</div>
+    <div class="comment-meta">
+        <div class="comment-meta-author">philShy</div>
+        <div class="comment-meta-time">
+        <a href="http://www.ptbird.cn/nginx-rtmp-module-server.html/comment-page-1#comment-369"><time itemprop="commentTime" datetime="2018-05-02T16:42:37+08:00">May 2nd, 2018 at 04:42 pm</time></a>
+        </div>
+                <div class="comment-meta-reply">
+            <a href="http://www.ptbird.cn/nginx-rtmp-module-server.html/comment-page-1?replyTo=369#respond-post-1268" rel="nofollow" onclick="return TypechoComment.reply('comment-369', 369);">回复</a>        </div>
+    </div>
+    <div class="comment-content" itemprop="commentText">
+    <p>看到这，果断关注</p>    </div>
+    
+    </li>
+<li itemscope="" itemtype="http://schema.org/UserComments" id="comment-367" class="comment-body comment-parent comment-even">
+    <div class="comment-avatar">
+		<img class="avatar" src="9dfbf0dd4be387818b2049639adae09b" width="32">
+	</div>
+    <div class="comment-meta">
+        <div class="comment-meta-author">wbq</div>
+        <div class="comment-meta-time">
+        <a href="http://www.ptbird.cn/nginx-rtmp-module-server.html/comment-page-1#comment-367"><time itemprop="commentTime" datetime="2018-04-27T14:40:57+08:00">April 27th, 2018 at 02:40 pm</time></a>
+        </div>
+                <div class="comment-meta-reply">
+            <a href="http://www.ptbird.cn/nginx-rtmp-module-server.html/comment-page-1?replyTo=367#respond-post-1268" rel="nofollow" onclick="return TypechoComment.reply('comment-367', 367);">回复</a>        </div>
+    </div>
+    <div class="comment-content" itemprop="commentText">
+    <p>请教下，既然直播平台这么好搭建，那么做直播的研发人员都做哪些活呢？还有就是这个靠什么赚钱，谢谢！</p>    </div>
+    
+        <div class="comment-children" itemprop="discusses">
+        <ol class="comment-list"><li itemscope="" itemtype="http://schema.org/UserComments" id="comment-368" class="comment-body comment-child comment-level-odd comment-odd comment-by-author">
+    <div class="comment-avatar">
+		<img class="avatar" src="df84adc4bafe5998d5c3da0af4b58818" width="32">
+	</div>
+    <div class="comment-meta">
+        <div class="comment-meta-author"><a href="http://www.ptbird.cn/" rel="external nofollow">Postbird</a></div>
+        <div class="comment-meta-time">
+        <a href="http://www.ptbird.cn/nginx-rtmp-module-server.html/comment-page-1#comment-368"><time itemprop="commentTime" datetime="2018-04-29T12:05:08+08:00">April 29th, 2018 at 12:05 pm</time></a>
+        </div>
+                <div class="comment-meta-reply">
+            <a href="http://www.ptbird.cn/nginx-rtmp-module-server.html/comment-page-1?replyTo=368#respond-post-1268" rel="nofollow" onclick="return TypechoComment.reply('comment-368', 368);">回复</a>        </div>
+    </div>
+    <div class="comment-content" itemprop="commentText">
+    <p>一个行业，技术只是实现手段，是否赚钱要看公司的政策、运行方式。【直播平台这么好搭建】这理解是错误的，你看到的只是最简单的实现，可能20个人看直播、100个人看直播没问题，一旦人数多了，就要涉及负载均衡、网络带宽、服务器压力、数据库压力等等，这个例子就像是开发一个类似淘宝的多商家商城网上很多开源项目，但是不能说这就是淘宝了。直播靠的无非是广告和礼物。</p>    </div>
+    
+    </li>
+</ol>    </div>
+    </li>
+<li itemscope="" itemtype="http://schema.org/UserComments" id="comment-357" class="comment-body comment-parent comment-odd">
+    <div class="comment-avatar">
+		<img class="avatar" src="9cd98c39cfcba09e722ae1cd0d74b883" width="32">
+	</div>
+    <div class="comment-meta">
+        <div class="comment-meta-author">谁知寸草心</div>
+        <div class="comment-meta-time">
+        <a href="http://www.ptbird.cn/nginx-rtmp-module-server.html/comment-page-1#comment-357"><time itemprop="commentTime" datetime="2018-03-03T21:12:46+08:00">March 3rd, 2018 at 09:12 pm</time></a>
+        </div>
+                <div class="comment-meta-reply">
+            <a href="http://www.ptbird.cn/nginx-rtmp-module-server.html/comment-page-1?replyTo=357#respond-post-1268" rel="nofollow" onclick="return TypechoComment.reply('comment-357', 357);">回复</a>        </div>
+    </div>
+    <div class="comment-content" itemprop="commentText">
+    <p>我不用摄像头直播,我有个hdmi编码器,从编码器输出内容直播该怎么操作？编码器hdmi输入端是我家机顶盒,输出端是网口。</p>    </div>
+    
+        <div class="comment-children" itemprop="discusses">
+        <ol class="comment-list"><li itemscope="" itemtype="http://schema.org/UserComments" id="comment-358" class="comment-body comment-child comment-level-odd comment-odd comment-by-author">
+    <div class="comment-avatar">
+		<img class="avatar" src="df84adc4bafe5998d5c3da0af4b58818" width="32">
+	</div>
+    <div class="comment-meta">
+        <div class="comment-meta-author"><a href="http://www.ptbird.cn/" rel="external nofollow">Postbird</a></div>
+        <div class="comment-meta-time">
+        <a href="http://www.ptbird.cn/nginx-rtmp-module-server.html/comment-page-1#comment-358"><time itemprop="commentTime" datetime="2018-03-04T12:52:23+08:00">March 4th, 2018 at 12:52 pm</time></a>
+        </div>
+                <div class="comment-meta-reply">
+            <a href="http://www.ptbird.cn/nginx-rtmp-module-server.html/comment-page-1?replyTo=358#respond-post-1268" rel="nofollow" onclick="return TypechoComment.reply('comment-358', 358);">回复</a>        </div>
+    </div>
+    <div class="comment-content" itemprop="commentText">
+    <p>只要能够推出 rtmp 的流就可以，我使用的 OBS 是一个能够通过摄像头采集转成 RTMP 视频流的，而 RTMP 服务器就是处理这些视频流。看你的设备能够推出什么视频流，然后去处理即可。 RTMP 只是其中一种</p>    </div>
+    
+    </li>
+</ol>    </div>
+    </li>
+<li itemscope="" itemtype="http://schema.org/UserComments" id="comment-356" class="comment-body comment-parent comment-even">
+    <div class="comment-avatar">
+		<img class="avatar" src="9cd98c39cfcba09e722ae1cd0d74b883" width="32">
+	</div>
+    <div class="comment-meta">
+        <div class="comment-meta-author">谁知寸草心</div>
+        <div class="comment-meta-time">
+        <a href="http://www.ptbird.cn/nginx-rtmp-module-server.html/comment-page-1#comment-356"><time itemprop="commentTime" datetime="2018-03-03T21:12:30+08:00">March 3rd, 2018 at 09:12 pm</time></a>
+        </div>
+                <div class="comment-meta-reply">
+            <a href="http://www.ptbird.cn/nginx-rtmp-module-server.html/comment-page-1?replyTo=356#respond-post-1268" rel="nofollow" onclick="return TypechoComment.reply('comment-356', 356);">回复</a>        </div>
+    </div>
+    <div class="comment-content" itemprop="commentText">
+    <p>我不用摄像头直播,我有个hdmi编码器,从编码器输出内容直播该怎么操作？编码器hdmi输入端是我家机顶盒,输出端是网口。</p>    </div>
+    
+    </li>
+<li itemscope="" itemtype="http://schema.org/UserComments" id="comment-338" class="comment-body comment-parent comment-odd">
+    <div class="comment-avatar">
+		<img class="avatar" src="7c8be810cc77dc034eb915ed203c1b57" width="32">
+	</div>
+    <div class="comment-meta">
+        <div class="comment-meta-author">·111</div>
+        <div class="comment-meta-time">
+        <a href="http://www.ptbird.cn/nginx-rtmp-module-server.html/comment-page-1#comment-338"><time itemprop="commentTime" datetime="2017-12-27T17:50:14+08:00">December 27th, 2017 at 05:50 pm</time></a>
+        </div>
+                <div class="comment-meta-reply">
+            <a href="http://www.ptbird.cn/nginx-rtmp-module-server.html/comment-page-1?replyTo=338#respond-post-1268" rel="nofollow" onclick="return TypechoComment.reply('comment-338', 338);">回复</a>        </div>
+    </div>
+    <div class="comment-content" itemprop="commentText">
+    <p>手机上面可以看么？</p>    </div>
+    
+        <div class="comment-children" itemprop="discusses">
+        <ol class="comment-list"><li itemscope="" itemtype="http://schema.org/UserComments" id="comment-339" class="comment-body comment-child comment-level-odd comment-odd comment-by-author">
+    <div class="comment-avatar">
+		<img class="avatar" src="df84adc4bafe5998d5c3da0af4b58818" width="32">
+	</div>
+    <div class="comment-meta">
+        <div class="comment-meta-author"><a href="http://www.ptbird.cn/" rel="external nofollow">Postbird</a></div>
+        <div class="comment-meta-time">
+        <a href="http://www.ptbird.cn/nginx-rtmp-module-server.html/comment-page-1#comment-339"><time itemprop="commentTime" datetime="2017-12-28T11:10:40+08:00">December 28th, 2017 at 11:10 am</time></a>
+        </div>
+                <div class="comment-meta-reply">
+            <a href="http://www.ptbird.cn/nginx-rtmp-module-server.html/comment-page-1?replyTo=339#respond-post-1268" rel="nofollow" onclick="return TypechoComment.reply('comment-339', 339);">回复</a>        </div>
+    </div>
+    <div class="comment-content" itemprop="commentText">
+    <p>手机上看取决于前端使用什么播放器插件，与服务端无关</p>    </div>
+    
+    </li>
+</ol>    </div>
+    </li>
+<li itemscope="" itemtype="http://schema.org/UserComments" id="comment-239" class="comment-body comment-parent comment-even">
+    <div class="comment-avatar">
+		<img class="avatar" src="untitled" width="32">
+	</div>
+    <div class="comment-meta">
+        <div class="comment-meta-author">网友</div>
+        <div class="comment-meta-time">
+        <a href="http://www.ptbird.cn/nginx-rtmp-module-server.html/comment-page-1#comment-239"><time itemprop="commentTime" datetime="2017-03-06T21:18:13+08:00">March 6th, 2017 at 09:18 pm</time></a>
+        </div>
+                <div class="comment-meta-reply">
+            <a href="http://www.ptbird.cn/nginx-rtmp-module-server.html/comment-page-1?replyTo=239#respond-post-1268" rel="nofollow" onclick="return TypechoComment.reply('comment-239', 239);">回复</a>        </div>
+    </div>
+    <div class="comment-content" itemprop="commentText">
+    <p>666</p>    </div>
+    
+    </li>
+</ol>        
+        <div id="respond-post-1268" class="respond">
+        <div class="cancel-comment-reply">
+        <a id="cancel-comment-reply-link" href="http://www.ptbird.cn/nginx-rtmp-module-server.html#respond-post-1268" rel="nofollow" style="display: none;" onclick="return TypechoComment.cancelReply();">取消回复</a>        </div>
+    	<h3 id="response">添加新评论</h3>
+    	<form method="post" action="http://www.ptbird.cn/nginx-rtmp-module-server.html/comment" id="comment-form" role="form">
+            <p>
+								
+                <textarea rows="4" cols="50" name="text" id="textarea" class="textarea" required="" placeholder="如评论不显示，请等候管理员人工审核"></textarea>
+            </p>
+			<div class="comment-fields">
+			    		<p>
+    			<input name="author" id="author" class="text" value="" required="" type="text">
+				 <label for="author" class="required">称呼</label>
+    		</p>
+    		<p> 
+    			<input name="mail" id="mail" class="text" value="" required="" type="email">
+				<label for="mail" class="required">邮箱</label>
+			</p>
+    		<p> 
+    			<input name="url" id="url" class="text" placeholder="http://" value="" type="url">
+				<label for="url">网站</label>
+			</p>
+                		
+    		<p>
+                <button type="submit" class="btn">提交评论</button>
+            </p>
+			</div>
+    	<input name="_" value="3bedb34c35f28dae09b0e5135c6964b5" type="hidden"></form>
+    </div>
+    </div>
+
+
+
+</div>
+
+</div><!-- end #main-->
+
+
+
+
+
+	</div><!-- end #main-->
+
+</div><iframe id="google_osd_static_frame_1207538789239" name="google_osd_static_frame" style="display: none; width: 0px; height: 0px;" src="index_4.html"></iframe><!-- end #body -->
+
+
+
+
+<footer class="footer">
+
+	<div class="footer-inner">
+
+<p><a href="https://github.com/postbird/" target="_top">Github</a>&nbsp;|&nbsp;<a href="https://git.oschina.net/postbird" target="_top">Git@OSC</a>&nbsp;|&nbsp;<a href="http://www.singee77.com/" target="_top">Singee77</a>&nbsp;|&nbsp;<a href="https://www.cnbanwagong.com/" target="_top">搬瓦工VPS</a>&nbsp;|&nbsp;<a href="https://www.zhaojin97.cn/" target="_top">赵</a>&nbsp;|&nbsp;<a href="https://qqdie.com/links.html" target="_top">QQ爹の博客</a>&nbsp;|&nbsp;<a href="https://www.dustit.me/" target="_top">言告言归 </a>&nbsp;|&nbsp;<a href="https://www.williamjing.com/" target="_top" title="William" s="" blog'="">William's Blog </a>&nbsp;|&nbsp;</p>
+		
+		
+		<p>
+
+		
+		<a href="http://www.ptbird.cn/list.html" title="分类目录">分类目录</a>
+
+		
+		<a href="http://www.ptbird.cn/th-large.html" title="文章归档">文章归档</a>
+
+		
+		<a href="http://www.ptbird.cn/tags.html" title="标签">标签</a>
+
+		
+		<a href="http://www.ptbird.cn/link.html" title="友情链接">友情链接</a>
+
+		
+		<a href="http://www.ptbird.cn/phone.html" title="联系方式">联系方式</a>
+
+		
+		<a href="http://www.ptbird.cn/comments.html" title="给我留言">给我留言</a>
+
+		
+		</p>
+
+		
+		<p>© 2019 <a href="http://www.ptbird.cn/">Postbird - 招猫逗狗的开发者</a>
+
+			<em>·</em> <a href="http://www.typecho.org/" target="_top">Typecho</a>
+
+			 <em>·</em> <a href="http://www.miitbeian.gov.cn/" target="blank">鲁ICP备16034533号-1</a>
+			<em>·</em> Theme By <a href="http://lixianhua.com/" target="_top">绛木子</a> <em>·</em> 
+
+			<span>
+
+
+
+
+</span>
+ <a href="https://www.cnzz.com/stat/website.php?web_id=1274011266" target="_top" title="站长统计">站长统计</a>
+
+		</p>
+
+	</div>
+
+</footer><!-- end #footer -->
+
+
+
+<div class="fixed-btn" style="display:none!import;>
+
+	<a class=" btn-gotop"="" onclick="jBlog.goTop();"> <i class="fa fa-angle-up"></i>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

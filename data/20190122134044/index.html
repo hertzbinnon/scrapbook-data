@@ -1,0 +1,2252 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html dir="ltr" prefix="content: http://purl.org/rss/1.0/modules/content/  dc: http://purl.org/dc/terms/  foaf: http://xmlns.com/foaf/0.1/  og: http://ogp.me/ns#  rdfs: http://www.w3.org/2000/01/rdf-schema#  schema: http://schema.org/  sioc: http://rdfs.org/sioc/ns#  sioct: http://rdfs.org/sioc/types#  skos: http://www.w3.org/2004/02/skos/core#  xsd: http://www.w3.org/2001/XMLSchema# " class=" js" style="height: 100%;" lang="zh-hans">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    <meta charset="utf-8">
+
+<meta name="title" content="How to create video thumbnails with Python and Gstreamer | 易学教程">
+<link rel="canonical" href="https://www.e-learn.cn/content/wangluowenzhang/323875">
+<meta name="dcterms.creator" content="Larry Li">
+<meta name="description" content="问题：I'd like to create thumbnails for MPEG-4 AVC videos using Gstreamer and Python. Essentially:  Open the video file Seek to a certain point in time (e.g. 5 seconds) Grab the frame at that time Save the ...">
+<meta name="keywords" content="易学,易学教程,编程,编程教程,编程技术,drupal,laravel,html,css,drupal教程,php,php学习,How to create video thumbnails with Python and Gstreamer ,网络文章">
+<meta name="referrer" content="no-referrer">
+<meta name="Generator" content="Drupal 8 (https://www.drupal.org)">
+<meta name="MobileOptimized" content="width">
+<meta name="HandheldFriendly" content="true">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="shortcut icon" href="favicon.ico" type="image/vnd.microsoft.icon">
+<link rel="revision" href="https://www.e-learn.cn/content/wangluowenzhang/323875">
+
+    <title>How to create video thumbnails with Python and Gstreamer | 易学教程</title>
+    <meta name="google-site-verification" content="VseVHNshC4KAJmJjfMcoxJ5NZN82E7rc03DH9Jm9Cfc">
+    <meta name="shenma-site-verification" content="f8560d5131e4043829a769a8f3fe9b4e_1521300712">
+    <meta name="msvalidate.01" content="B9AE4364B2B0316BF8397624F732C09E">
+    
+
+
+
+        
+<!--[if lte IE 8]>
+<script src="/sites/default/files/js/js_VtafjXmRvoUgAzqzYTA3Wrjkx9wcWhjP0G4ZnnqRamA.js"></script>
+<![endif]-->
+
+    
+    
+    
+    <link rel="preload" href="https://adservice.google.com/adsid/integrator.js?domain=www.e-learn.cn" as="script"><link rel="preload" href="https://pagead2.googlesyndication.com/pagead/js/r20190114/r20180604/show_ads_impl.js" as="script">
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body class="path-node page-node-type-jingpinwenzhang has-glyphicons" style="position: relative; min-height: 100%; top: 0px;">
+    
+
+  
+    
+
+  
+    <a href="#main-content" class="visually-hidden focusable skip-link">
+      跳转到主要内容
+    </a>
+    
+      <div class="dialog-off-canvas-main-canvas" data-off-canvas-main-canvas="">
+              <header class="navbar navbar-default container" id="navbar" role="banner">
+            <div class="navbar-header">
+          <div class="region region-navigation">
+          <a class="logo navbar-btn pull-left" href="https://www.e-learn.cn/" title="首页" rel="home">
+      <img src="logo.svg" alt="首页">
+    </a>
+        <a class="name navbar-brand" href="https://www.e-learn.cn/" title="首页" rel="home">易学教程</a>
+        <p class="navbar-text">天道酬勤 学无止境</p>
+  
+  </div>
+
+                          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+              </div>
+
+                    <div id="navbar-collapse" class="navbar-collapse collapse">
+            <div class="region region-navigation-collapsible">
+    <nav role="navigation" aria-labelledby="block-mainnavigation-menu" id="block-mainnavigation">
+            <h2 class="sr-only" id="block-mainnavigation-menu">Main navigation</h2>
+
+      
+              <ul class="menu nav navbar-nav">
+                            <li class="expanded dropdown">
+        <a href="https://www.e-learn.cn/" class="dropdown-toggle" data-toggle="dropdown">所有教程 <span class="caret"></span></a>
+                                  <ul class="menu dropdown-menu">
+                            <li>
+        <a href="https://www.e-learn.cn/java-technology" data-drupal-link-system-path="taxonomy/term/23">Java技术</a>
+                  </li>
+                        <li>
+        <a href="https://www.e-learn.cn/script-lang" data-drupal-link-system-path="taxonomy/term/29">脚本语言</a>
+                  </li>
+                        <li>
+        <a href="https://www.e-learn.cn/web" data-drupal-link-system-path="taxonomy/term/24">Web技术</a>
+                  </li>
+                        <li>
+        <a href="https://www.e-learn.cn/database" data-drupal-link-system-path="taxonomy/term/27">数据库</a>
+                  </li>
+                        <li>
+        <a href="https://www.e-learn.cn/hightlang" data-drupal-link-system-path="taxonomy/term/30">高级语言</a>
+                  </li>
+                        <li>
+        <a href="https://www.e-learn.cn/misc" data-drupal-link-system-path="taxonomy/term/25">其他技术</a>
+                  </li>
+                        <li>
+        <a href="https://www.e-learn.cn/all-course" data-drupal-link-system-path="taxonomy/term/72">查看所有教程</a>
+                  </li>
+        </ul>
+  
+            </li>
+                        <li class="expanded dropdown">
+        <a href="https://www.e-learn.cn/script-lang" class="dropdown-toggle" data-toggle="dropdown">脚本语言 <span class="caret"></span></a>
+                                  <ul class="menu dropdown-menu">
+                            <li>
+        <a href="https://www.e-learn.cn/php" data-drupal-link-system-path="node/5">PHP教程</a>
+                  </li>
+        </ul>
+  
+            </li>
+                        <li>
+        <a href="https://www.e-learn.cn/content" data-drupal-link-system-path="content">码农之家</a>
+                  </li>
+                        <li>
+        <a href="https://www.e-learn.cn/news" data-drupal-link-system-path="news">科技资讯</a>
+                  </li>
+                        <li>
+        <a href="http://tool.yiixue.com/?from=www.e-learn.cn">易学工具箱</a>
+                  </li>
+                        <li>
+        <a href="https://www.manongdao.com/?from=www.e-learn.cn" title="易学问答">易问</a>
+                  </li>
+        </ul>
+  
+
+
+  </nav>
+<nav role="navigation" aria-labelledby="block-useraccountmenu-menu" id="block-useraccountmenu">
+            <h2 class="sr-only" id="block-useraccountmenu-menu">User account menu</h2>
+
+      
+              <ul class="menu nav navbar-nav navbar-right">
+                            <li>
+        <a href="https://www.e-learn.cn/user/login" data-drupal-link-system-path="user/login">登录</a>
+                  </li>
+        </ul>
+  
+
+
+  </nav>
+
+  </div>
+
+        </div>
+                </header>
+  
+  <div role="main" class="main-container container js-quickedit-main-content">
+    <div class="row">
+
+                              <div class="col-sm-12" role="heading">
+              <div class="region region-header">
+    <section id="block-bannervps" class="block block-block-content block-block-contenta0b17efc-82d2-4e6d-bd06-666a100c5419 clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><p><a rel="external nofollow" href="http://www.idcc.cn/" target="_top"><img src="005byqpggy1fyl2srfcn1j30vo02it96.jpg" style="width: 100%; max-height: 90px;" title="" alt="" vspace="0" border="0"></a></p></div>
+      
+  </section>
+
+<section id="block-ggbanner" class="block block-block-content block-block-content87cf0f81-b41a-49ee-9b17-efc8ff080793 clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><p><ins class="adsbygoogle" style="display: block; height: 90px;" data-ad-client="ca-pub-5408099190056760" data-ad-slot="3782713676" data-ad-format="auto" data-full-width-responsive="true" data-adsbygoogle-status="done"><ins id="aswift_0_expand" style="display: inline-table; border: medium none; height: 90px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 1140px; background-color: transparent;"><ins id="aswift_0_anchor" style="display: block; border: medium none; height: 90px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 1140px; background-color: transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" id="aswift_0" name="aswift_0" style="left: 0px; position: absolute; top: 0px; border: 0px none; width: 1140px; height: 90px;" src="index_1.html" width="1140" height="90" frameborder="0"></iframe></ins></ins></ins></p></div>
+      
+  </section>
+
+<section id="block-wenzilianjie" class="block block-block-content block-block-content8d66823e-19a5-4fc1-bec4-3bea5b665975 clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><table class="character-links" align="center"><tbody><tr class="firstRow"><td style="border-width: 1px; border-style: solid; text-align: center;" valign="top" width="158"><a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=320182422" target="_top" title="顶级域名注册10元起" rel="nofollow" textvalue="顶级域名注册10元起"><span style="font-size: 14px; color: rgb(0, 176, 240);">顶级域名注册10元起</span></a></td><td style="border-width: 1px; border-style: solid; text-align: center;" valign="top" width="158"><a href="https://www.manongdao.com/" target="_top" title="码农岛" textvalue="码农岛" rel="external nofollow" style="color: rgb(255, 192, 0); text-decoration: underline;"><span style="color: rgb(255, 192, 0);">码农岛</span></a></td><td style="border-width: 1px; border-style: solid; text-align: center; word-break: break-all;" valign="top" width="158"><a href="http://www.kuajieji.com/" target="_top" title="老伟德" textvalue="老伟德" rel="external nofollow" style="text-decoration: underline; color: rgb(112, 48, 160);"><span style="color: rgb(112, 48, 160);">老伟德</span></a></td><td style="border-width: 1px; border-style: solid; text-align: center;" valign="top" width="158"><a href="http://www.zihaitao.com/" target="_top" title="好待遇→招代理" rel="external nofollow" style="text-decoration: underline; font-size: 14px; color: rgb(0, 176, 80);"><span style="font-size: 14px; color: rgb(0, 176, 80);">好待遇→招代理</span></a></td><td style="border-width: 1px; border-style: solid; text-align: center;" valign="top" width="158"><a href="https://jq.qq.com/?_wv=1027&amp;k=5xC9C01" target="_top" title="联系上链" rel="nofollow" style="font-size: 14px; color: rgb(255, 0, 0); text-decoration: underline;"><span style="font-size: 14px; color: rgb(255, 0, 0);">文字链接</span></a></td><td style="border-width: 1px; border-style: solid; text-align: center;" valign="top" width="158"><a href="https://jq.qq.com/?_wv=1027&amp;k=5xC9C01" target="_top" title="联系上链" rel="nofollow" style="font-size: 14px; color: rgb(255, 0, 0); text-decoration: underline;"><span style="font-size: 14px; color: rgb(255, 0, 0);">文字链接</span></a></td><td style="border-width: 1px; border-style: solid; text-align: center;" valign="top" width="158"><a href="https://jq.qq.com/?_wv=1027&amp;k=5xC9C01" target="_top" title="联系上链" rel="nofollow" style="font-size: 14px; color: rgb(255, 0, 0); text-decoration: underline;"><span style="font-size: 14px; color: rgb(255, 0, 0);">文字链接</span></a></td></tr><tr style="display: none;"><td style="border-width: 1px; border-style: solid; text-align: center;" valign="top" width="158"><a href="https://jq.qq.com/?_wv=1027&amp;k=5xC9C01" target="_top" title="联系上链" rel="nofollow" style="font-size: 14px; color: rgb(255, 0, 0); text-decoration: underline;"><span style="font-size: 14px; color: rgb(255, 0, 0);">文字链接</span></a></td><td style="border-width: 1px; border-style: solid; text-align: center;" valign="top" width="158"><a href="https://jq.qq.com/?_wv=1027&amp;k=5xC9C01" target="_top" title="联系上链" rel="nofollow" style="font-size: 14px; color: rgb(255, 0, 0); text-decoration: underline;"><span style="font-size: 14px; color: rgb(255, 0, 0);">文字链接</span></a></td><td style="border-width: 1px; border-style: solid; text-align: center;" valign="top" width="158"><a href="https://jq.qq.com/?_wv=1027&amp;k=5xC9C01" target="_top" title="联系上链" rel="nofollow" style="font-size: 14px; color: rgb(255, 0, 0); text-decoration: underline;"><span style="font-size: 14px; color: rgb(255, 0, 0);">文字链接</span></a></td><td style="border-width: 1px; border-style: solid; text-align: center;" valign="top" width="158"><a href="https://jq.qq.com/?_wv=1027&amp;k=5xC9C01" target="_top" title="联系上链" rel="nofollow" style="font-size: 14px; color: rgb(255, 0, 0); text-decoration: underline;"><span style="font-size: 14px; color: rgb(255, 0, 0);">文字链接</span></a></td><td style="border-width: 1px; border-style: solid; text-align: center;" valign="top" width="158"><a href="https://jq.qq.com/?_wv=1027&amp;k=5xC9C01" target="_top" title="联系上链" rel="nofollow" style="font-size: 14px; color: rgb(255, 0, 0); text-decoration: underline;"><span style="font-size: 14px; color: rgb(255, 0, 0);">文字链接</span></a></td><td style="border-width: 1px; border-style: solid; text-align: center;" valign="top" width="158"><a href="https://jq.qq.com/?_wv=1027&amp;k=5xC9C01" target="_top" title="联系上链" rel="nofollow" style="font-size: 14px; color: rgb(255, 0, 0); text-decoration: underline;"><span style="font-size: 14px; color: rgb(255, 0, 0);">文字链接</span></a></td><td style="border-width: 1px; border-style: solid; text-align: center;" valign="top" width="158"><a href="https://jq.qq.com/?_wv=1027&amp;k=5xC9C01" target="_top" title="联系上链" rel="nofollow" style="font-size: 14px; color: rgb(255, 0, 0); text-decoration: underline;"><span style="font-size: 14px; color: rgb(255, 0, 0);">文字链接</span></a></td></tr><tr style="display: none;"><td style="border-width: 1px; border-style: solid; text-align: center;" valign="top" width="158"><a href="https://jq.qq.com/?_wv=1027&amp;k=5xC9C01" target="_top" title="联系上链" rel="nofollow"><span style="font-size: 14px;">文字链接</span></a></td><td style="border-width: 1px; border-style: solid; text-align: center;" valign="top" width="158"><a href="https://jq.qq.com/?_wv=1027&amp;k=5xC9C01" target="_top" title="联系上链" rel="nofollow"><span style="font-size: 14px;">文字链接</span></a></td><td style="border-width: 1px; border-style: solid; text-align: center;" valign="top" width="158"><a href="https://jq.qq.com/?_wv=1027&amp;k=5xC9C01" target="_top" title="联系上链" rel="nofollow"><span style="font-size: 14px;">文字链接</span></a></td><td style="border-width: 1px; border-style: solid; text-align: center;" valign="top" width="158"><a href="https://jq.qq.com/?_wv=1027&amp;k=5xC9C01" target="_top" title="联系上链" rel="nofollow"><span style="font-size: 14px;">文字链接</span></a></td><td style="border-width: 1px; border-style: solid; text-align: center;" valign="top" width="158"><a href="https://jq.qq.com/?_wv=1027&amp;k=5xC9C01" target="_top" title="联系上链" rel="nofollow"><span style="font-size: 14px;">文字链接</span></a></td><td style="border-width: 1px; border-style: solid; text-align: center;" valign="top" width="158"><a href="https://jq.qq.com/?_wv=1027&amp;k=5xC9C01" target="_top" title="联系上链" rel="nofollow"><span style="font-size: 14px;">文字链接</span></a></td><td style="border-width: 1px; border-style: solid; text-align: center;" valign="top" width="158"><a href="https://jq.qq.com/?_wv=1027&amp;k=5xC9C01" target="_top" title="联系上链" rel="nofollow"><span style="font-size: 14px;">文字链接</span></a></td></tr></tbody></table><p><br></p></div>
+      
+  </section>
+
+    <ol class="breadcrumb">
+          <li>
+                  <a href="https://www.e-learn.cn/content">码农之家</a>
+              </li>
+          <li class="active">
+                  How to create video thumbnails with Python and Gstreamer
+              </li>
+      </ol>
+
+
+<section id="block-baiduurlpush" class="block block-block-content block-block-contente795675f-7395-4a8f-864e-180053c15737 clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item">
+</div>
+      
+  </section>
+
+
+  </div>
+
+          </div>
+              
+            
+                  <section class="col-sm-9">
+
+                
+                                      
+                  
+                          <a id="main-content"></a>
+            <div class="region region-content">
+        <h1 class="page-header"><span>How to create video thumbnails with Python and Gstreamer</span>
+</h1>
+
+<section id="block-ggttitexia" class="block block-block-content block-block-content28901a46-a5ac-46bd-9991-e494187fb44a clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><!-- e-learn title 下 --><p><ins class="adsbygoogle" style="display: block; height: 90px;" data-ad-client="ca-pub-5408099190056760" data-ad-slot="9504893770" data-ad-format="auto" data-full-width-responsive="true" data-adsbygoogle-status="done"><ins id="aswift_1_expand" style="display: inline-table; border: medium none; height: 90px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 848px; background-color: transparent;"><ins id="aswift_1_anchor" style="display: block; border: medium none; height: 90px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 848px; background-color: transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" id="aswift_1" name="aswift_1" style="left: 0px; position: absolute; top: 0px; border: 0px none; width: 848px; height: 90px;" src="index_4.html" width="848" height="90" frameborder="0"></iframe></ins></ins></ins></p></div>
+      
+  </section>
+
+  <article data-history-node-id="323875" role="article" about="/content/wangluowenzhang/323875" class="jingpinwenzhang full clearfix">
+
+  
+    
+
+      <footer>
+      <article typeof="schema:Person" about="/user/0">
+  </article>
+
+      <div class="author">
+	        由 <span><span typeof="schema:Person" property="schema:name" datatype="" lang="">匿名 (未验证)</span></span>
+ 提交于 2018-04-06 14:26:58        
+      </div>
+    </footer>
+  
+  <div class="content">
+    <ul class="links inline list-inline"><li class="comment-forbidden"><a href="https://www.e-learn.cn/user/login?destination=/content/wangluowenzhang/323875%23comment-form">登录</a>或<a href="https://www.e-learn.cn/user/register?destination=/content/wangluowenzhang/323875%23comment-form">注册</a>以发表评论</li><li class="statistics-counter">10 次浏览</li></ul>
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item jumpto-cotainer"><div class="alert alert-success" role="alert">可以将文章内容翻译成中文,广告屏蔽插件可能会导致该功能失效(如失效，请关闭广告屏蔽插件后再试):<div id="google_translate_element"><div class="skiptranslate goog-te-gadget" dir="ltr" style=""><div id=":0.targetLanguage"><select class="goog-te-combo" aria-label="语言翻译微件"><option value="">选择语言</option><option value="zh-CN">中文(简体)</option><option value="ja">日语</option><option value="en">英语</option><option value="zh-TW">中文(繁体)</option></select></div>由 <span style="white-space: nowrap;"><a class="goog-logo-link" href="https://translate.google.com/" target="_top"><img src="googlelogo_color_42x16dp.png" style="padding-right: 3px;" alt="Google 翻译" width="37px" height="14px">翻译</a></span>强力驱动</div></div></div><div class="jumpto-block"><h1 id="jumpto_0">问题:</h1></div><div class="post-text" itemprop="text">
+
+<p>I'd like to create thumbnails for MPEG-4 AVC videos using Gstreamer and Python. Essentially:</p>
+
+<ol><li>Open the video file</li>
+<li>Seek to a certain point in time (e.g. 5 seconds)</li>
+<li>Grab the frame at that time</li>
+<li>Save the frame to disc as a .jpg file</li>
+</ol><p>I've been looking at <a href="https://stackoverflow.com/questions/12003663/gstreamer-how-to-extract-video-frame-from-the-flow" rel="nofollow">this other similar question</a>, but I cannot quite figure out how to do the seek and frame capture automatically without user input.</p>
+
+<p>So in summary, how can I capture a video thumbnail with Gstreamer and Python as per the steps above? </p>
+    </div><div class="jumpto-block"><h1 id="jumpto_1">回答1:</h1></div><div class="post-text" itemprop="text">
+<p>To elaborate on <a href="https://stackoverflow.com/users/598905/ensonic" rel="nofollow">ensonic</a>'s answer, here's an example:</p>
+
+<pre class="prettyprint;brush:html prettyprinted" style=""><code><span class="kwd">import</span><span class="pln"> os
+</span><span class="kwd">import</span><span class="pln"> sys
+
+</span><span class="kwd">import</span><span class="pln"> gst
+
+</span><span class="kwd">def</span><span class="pln"> get_frame</span><span class="pun">(</span><span class="pln">path</span><span class="pun">,</span><span class="pln"> offset</span><span class="pun">=</span><span class="lit">5</span><span class="pun">,</span><span class="pln"> caps</span><span class="pun">=</span><span class="pln">gst</span><span class="pun">.</span><span class="typ">Caps</span><span class="pun">(</span><span class="str">'image/png'</span><span class="pun">)):</span><span class="pln">
+    pipeline </span><span class="pun">=</span><span class="pln"> gst</span><span class="pun">.</span><span class="pln">parse_launch</span><span class="pun">(</span><span class="str">'playbin2'</span><span class="pun">)</span><span class="pln">
+    pipeline</span><span class="pun">.</span><span class="pln">props</span><span class="pun">.</span><span class="pln">uri </span><span class="pun">=</span><span class="pln"> </span><span class="str">'file://'</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> os</span><span class="pun">.</span><span class="pln">path</span><span class="pun">.</span><span class="pln">abspath</span><span class="pun">(</span><span class="pln">path</span><span class="pun">)</span><span class="pln">
+    pipeline</span><span class="pun">.</span><span class="pln">props</span><span class="pun">.</span><span class="pln">audio_sink </span><span class="pun">=</span><span class="pln"> gst</span><span class="pun">.</span><span class="pln">element_factory_make</span><span class="pun">(</span><span class="str">'fakesink'</span><span class="pun">)</span><span class="pln">
+    pipeline</span><span class="pun">.</span><span class="pln">props</span><span class="pun">.</span><span class="pln">video_sink </span><span class="pun">=</span><span class="pln"> gst</span><span class="pun">.</span><span class="pln">element_factory_make</span><span class="pun">(</span><span class="str">'fakesink'</span><span class="pun">)</span><span class="pln">
+    pipeline</span><span class="pun">.</span><span class="pln">set_state</span><span class="pun">(</span><span class="pln">gst</span><span class="pun">.</span><span class="pln">STATE_PAUSED</span><span class="pun">)</span><span class="pln">
+    </span><span class="com"># Wait for state change to finish.</span><span class="pln">
+    pipeline</span><span class="pun">.</span><span class="pln">get_state</span><span class="pun">()</span><span class="pln">
+    </span><span class="kwd">assert</span><span class="pln"> pipeline</span><span class="pun">.</span><span class="pln">seek_simple</span><span class="pun">(</span><span class="pln">
+        gst</span><span class="pun">.</span><span class="pln">FORMAT_TIME</span><span class="pun">,</span><span class="pln"> gst</span><span class="pun">.</span><span class="pln">SEEK_FLAG_FLUSH</span><span class="pun">,</span><span class="pln"> offset </span><span class="pun">*</span><span class="pln"> gst</span><span class="pun">.</span><span class="pln">SECOND</span><span class="pun">)</span><span class="pln">
+    </span><span class="com"># Wait for seek to finish.</span><span class="pln">
+    pipeline</span><span class="pun">.</span><span class="pln">get_state</span><span class="pun">()</span><span class="pln">
+    buffer </span><span class="pun">=</span><span class="pln"> pipeline</span><span class="pun">.</span><span class="pln">emit</span><span class="pun">(</span><span class="str">'convert-frame'</span><span class="pun">,</span><span class="pln"> caps</span><span class="pun">)</span><span class="pln">
+    pipeline</span><span class="pun">.</span><span class="pln">set_state</span><span class="pun">(</span><span class="pln">gst</span><span class="pun">.</span><span class="pln">STATE_NULL</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> buffer
+
+</span><span class="kwd">def</span><span class="pln"> main</span><span class="pun">():</span><span class="pln">
+    buf </span><span class="pun">=</span><span class="pln"> get_frame</span><span class="pun">(</span><span class="pln">sys</span><span class="pun">.</span><span class="pln">argv</span><span class="pun">[</span><span class="lit">1</span><span class="pun">])</span><span class="pln">
+
+    </span><span class="kwd">with</span><span class="pln"> file</span><span class="pun">(</span><span class="str">'frame.png'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'w'</span><span class="pun">)</span><span class="pln"> </span><span class="kwd">as</span><span class="pln"> fh</span><span class="pun">:</span><span class="pln">
+        fh</span><span class="pun">.</span><span class="pln">write</span><span class="pun">(</span><span class="pln">str</span><span class="pun">(</span><span class="pln">buf</span><span class="pun">))</span><span class="pln">
+
+</span><span class="kwd">if</span><span class="pln"> __name__ </span><span class="pun">==</span><span class="pln"> </span><span class="str">'__main__'</span><span class="pun">:</span><span class="pln">
+    main</span><span class="pun">()</span></code></pre>
+
+<p>This generates a PNG image. You can get raw image data using <code>gst.Caps("video/x-raw-rgb,bpp=24,depth=24")</code> or something like that.</p>
+
+<p>Note that in GStreamer 1.0 (as opposed to 0.10), <code>playbin2</code> has been renamed to <code>playbin</code> and the <code>convert-frame</code> signal is named <code>convert-sample</code>. </p>
+
+<p>The mechanics of seeking are explained in <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/manual/html/section-eventsseek.html" rel="nofollow">this chapter of the GStreamer Application Development Manual</a>. The 0.10 <code>playbin2</code> documentation no longer seems to be online, but the documentation for 1.0 is <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-plugins/html/gst-plugins-base-plugins-playbin.html" rel="nofollow">here</a>.</p>
+    </div><br><br><div class="jumpto-block"><h1 id="jumpto_2">回答2:</h1></div><div class="post-text" itemprop="text">
+<p>Use playbin2. set the uri to the media file, use gst_element_seek_simple to seek to the desired time position and then use g_signal_emit to invoke the "convert-frame" action signal.</p>
+    </div><br><br><div class="jumpto-block"><h1 id="jumpto_3">回答3:</h1></div><div class="post-text" itemprop="text">
+<p>An example in Vala, with GStreamer 1.0 :
+</p>
+
+<pre class="prettyprint;brush:html prettyprinted" style=""><code><span class="kwd">var</span><span class="pln"> playbin </span><span class="pun">=</span><span class="pln"> </span><span class="typ">Gst</span><span class="pun">.</span><span class="typ">ElementFactory</span><span class="pun">.</span><span class="pln">make </span><span class="pun">(</span><span class="str">"playbin"</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">);</span><span class="pln">
+playbin</span><span class="pun">.</span><span class="kwd">set</span><span class="pln"> </span><span class="pun">(</span><span class="str">"uri"</span><span class="pun">,</span><span class="pln"> </span><span class="str">"file:///path/to/file"</span><span class="pun">);</span><span class="pln">
+</span><span class="com">// some code here.</span><span class="pln">
+</span><span class="kwd">var</span><span class="pln"> caps </span><span class="pun">=</span><span class="pln"> </span><span class="typ">Gst</span><span class="pun">.</span><span class="typ">Caps</span><span class="pun">.</span><span class="pln">from_string</span><span class="pun">(</span><span class="str">"image/png"</span><span class="pun">);</span><span class="pln">
+</span><span class="typ">Gst</span><span class="pun">.</span><span class="typ">Sample</span><span class="pln"> sample</span><span class="pun">;</span><span class="pln">
+</span><span class="typ">Signal</span><span class="pun">.</span><span class="pln">emit_by_name</span><span class="pun">(</span><span class="pln">playbin</span><span class="pun">,</span><span class="pln"> </span><span class="str">"convert-sample"</span><span class="pun">,</span><span class="pln"> caps</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">out</span><span class="pln"> sample</span><span class="pun">);</span><span class="pln">
+</span><span class="kwd">if</span><span class="pun">(</span><span class="pln">sample </span><span class="pun">==</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pun">;</span><span class="pln">
+</span><span class="kwd">var</span><span class="pln"> sample_caps </span><span class="pun">=</span><span class="pln"> sample</span><span class="pun">.</span><span class="pln">get_caps </span><span class="pun">();</span><span class="pln">
+</span><span class="kwd">if</span><span class="pun">(</span><span class="pln">sample_caps </span><span class="pun">==</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pun">;</span><span class="pln">
+unowned </span><span class="typ">Gst</span><span class="pun">.</span><span class="typ">Structure</span><span class="pln"> structure </span><span class="pun">=</span><span class="pln"> sample_caps</span><span class="pun">.</span><span class="pln">get_structure</span><span class="pun">(</span><span class="lit">0</span><span class="pun">);</span><span class="pln">
+</span><span class="kwd">int</span><span class="pln"> width </span><span class="pun">=</span><span class="pln"> </span><span class="pun">(</span><span class="kwd">int</span><span class="pun">)</span><span class="pln">structure</span><span class="pun">.</span><span class="pln">get_value </span><span class="pun">(</span><span class="str">"width"</span><span class="pun">);</span><span class="pln">
+</span><span class="kwd">int</span><span class="pln"> height </span><span class="pun">=</span><span class="pln"> </span><span class="pun">(</span><span class="kwd">int</span><span class="pun">)</span><span class="pln">structure</span><span class="pun">.</span><span class="pln">get_value </span><span class="pun">(</span><span class="str">"height"</span><span class="pun">);</span><span class="pln">
+</span><span class="kwd">var</span><span class="pln"> memory </span><span class="pun">=</span><span class="pln"> sample</span><span class="pun">.</span><span class="pln">get_buffer</span><span class="pun">().</span><span class="pln">get_memory </span><span class="pun">(</span><span class="lit">0</span><span class="pun">);</span><span class="pln">
+</span><span class="typ">Gst</span><span class="pun">.</span><span class="typ">MapInfo</span><span class="pln"> info</span><span class="pun">;</span><span class="pln">
+memory</span><span class="pun">.</span><span class="pln">map </span><span class="pun">(</span><span class="kwd">out</span><span class="pln"> info</span><span class="pun">,</span><span class="pln"> </span><span class="typ">Gst</span><span class="pun">.</span><span class="typ">MapFlags</span><span class="pun">.</span><span class="pln">READ</span><span class="pun">);</span><span class="pln">
+uint8</span><span class="pun">[]</span><span class="pln"> data </span><span class="pun">=</span><span class="pln"> info</span><span class="pun">.</span><span class="pln">data</span><span class="pun">;</span></code></pre>
+    </div><br><br><div class="jumpto-block"><h1 id="jumpto_4">回答4:</h1></div><div class="post-text" itemprop="text">
+<p>It's an old question but I still haven't found it documented anywhere.<br>
+I found that the following worked on a playing video with Gstreamer 1.0</p>
+
+<pre class="prettyprint;brush:html prettyprinted" style=""><code><span class="kwd">import</span><span class="pln"> gi
+</span><span class="kwd">import</span><span class="pln"> time
+gi</span><span class="pun">.</span><span class="pln">require_version</span><span class="pun">(</span><span class="str">'Gst'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'1.0'</span><span class="pun">)</span><span class="pln">
+</span><span class="kwd">from</span><span class="pln"> gi</span><span class="pun">.</span><span class="pln">repository </span><span class="kwd">import</span><span class="pln"> </span><span class="typ">Gst</span><span class="pln">
+
+</span><span class="kwd">def</span><span class="pln"> get_frame</span><span class="pun">():</span><span class="pln">
+    caps </span><span class="pun">=</span><span class="pln"> </span><span class="typ">Gst</span><span class="pun">.</span><span class="typ">Caps</span><span class="pun">(</span><span class="str">'image/png'</span><span class="pun">)</span><span class="pln">
+    pipeline </span><span class="pun">=</span><span class="pln"> </span><span class="typ">Gst</span><span class="pun">.</span><span class="typ">ElementFactory</span><span class="pun">.</span><span class="pln">make</span><span class="pun">(</span><span class="str">"playbin"</span><span class="pun">,</span><span class="pln"> </span><span class="str">"playbin"</span><span class="pun">)</span><span class="pln">
+    pipeline</span><span class="pun">.</span><span class="pln">set_property</span><span class="pun">(</span><span class="str">'uri'</span><span class="pun">,</span><span class="str">'file:///home/rolf/GWPE.mp4'</span><span class="pun">)</span><span class="pln">
+    pipeline</span><span class="pun">.</span><span class="pln">set_state</span><span class="pun">(</span><span class="typ">Gst</span><span class="pun">.</span><span class="typ">State</span><span class="pun">.</span><span class="pln">PLAYING</span><span class="pun">)</span><span class="pln">
+    </span><span class="com">#Allow time for it to start</span><span class="pln">
+    time</span><span class="pun">.</span><span class="pln">sleep</span><span class="pun">(</span><span class="lit">0.5</span><span class="pun">)</span><span class="pln">
+    </span><span class="com"># jump 30 seconds</span><span class="pln">
+    seek_time </span><span class="pun">=</span><span class="pln"> </span><span class="lit">30</span><span class="pln"> </span><span class="pun">*</span><span class="pln"> </span><span class="typ">Gst</span><span class="pun">.</span><span class="pln">SECOND
+    pipeline</span><span class="pun">.</span><span class="pln">seek</span><span class="pun">(</span><span class="lit">1.0</span><span class="pun">,</span><span class="pln"> </span><span class="typ">Gst</span><span class="pun">.</span><span class="typ">Format</span><span class="pun">.</span><span class="pln">TIME</span><span class="pun">,(</span><span class="typ">Gst</span><span class="pun">.</span><span class="typ">SeekFlags</span><span class="pun">.</span><span class="pln">FLUSH </span><span class="pun">|</span><span class="pln"> </span><span class="typ">Gst</span><span class="pun">.</span><span class="typ">SeekFlags</span><span class="pun">.</span><span class="pln">ACCURATE</span><span class="pun">),</span><span class="typ">Gst</span><span class="pun">.</span><span class="typ">SeekType</span><span class="pun">.</span><span class="pln">SET</span><span class="pun">,</span><span class="pln"> seek_time </span><span class="pun">,</span><span class="pln"> </span><span class="typ">Gst</span><span class="pun">.</span><span class="typ">SeekType</span><span class="pun">.</span><span class="pln">NONE</span><span class="pun">,</span><span class="pln"> </span><span class="pun">-</span><span class="lit">1</span><span class="pun">)</span><span class="pln">
+
+    </span><span class="com">#Allow video to run to prove it's working, then take snapshot</span><span class="pln">
+    time</span><span class="pun">.</span><span class="pln">sleep</span><span class="pun">(</span><span class="lit">1</span><span class="pun">)</span><span class="pln">
+    buffer </span><span class="pun">=</span><span class="pln"> pipeline</span><span class="pun">.</span><span class="pln">emit</span><span class="pun">(</span><span class="str">'convert-sample'</span><span class="pun">,</span><span class="pln"> caps</span><span class="pun">)</span><span class="pln">
+    buff </span><span class="pun">=</span><span class="pln"> buffer</span><span class="pun">.</span><span class="pln">get_buffer</span><span class="pun">()</span><span class="pln">
+    result</span><span class="pun">,</span><span class="pln"> map </span><span class="pun">=</span><span class="pln"> buff</span><span class="pun">.</span><span class="pln">map</span><span class="pun">(</span><span class="typ">Gst</span><span class="pun">.</span><span class="typ">MapFlags</span><span class="pun">.</span><span class="pln">READ</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pln"> result</span><span class="pun">:</span><span class="pln">
+        data </span><span class="pun">=</span><span class="pln"> map</span><span class="pun">.</span><span class="pln">data
+        pipeline</span><span class="pun">.</span><span class="pln">set_state</span><span class="pun">(</span><span class="typ">Gst</span><span class="pun">.</span><span class="typ">State</span><span class="pun">.</span><span class="pln">NULL</span><span class="pun">)</span><span class="pln">
+        </span><span class="kwd">return</span><span class="pln"> data
+    </span><span class="kwd">else</span><span class="pun">:</span><span class="pln">
+        </span><span class="kwd">return</span><span class="pln">
+
+</span><span class="kwd">if</span><span class="pln"> __name__ </span><span class="pun">==</span><span class="pln"> </span><span class="str">'__main__'</span><span class="pun">:</span><span class="pln">
+    </span><span class="typ">Gst</span><span class="pun">.</span><span class="pln">init</span><span class="pun">(</span><span class="kwd">None</span><span class="pun">)</span><span class="pln">
+    image </span><span class="pun">=</span><span class="pln"> get_frame</span><span class="pun">()</span><span class="pln">
+    </span><span class="kwd">with</span><span class="pln"> open</span><span class="pun">(</span><span class="str">'frame.png'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'wb'</span><span class="pun">)</span><span class="pln"> </span><span class="kwd">as</span><span class="pln"> snapshot</span><span class="pun">:</span><span class="pln">
+        snapshot</span><span class="pun">.</span><span class="pln">write</span><span class="pun">(</span><span class="pln">image</span><span class="pun">)</span></code></pre>
+
+<p>The code should run with both Python2 and Python3, I hope it helps someone.</p>
+    </div><br><br><div class="zhuanzai">转载请标明出处:<a href="https://www.e-learn.cn/content/wangluowenzhang/323875" target="_top">How to create video thumbnails with Python and Gstreamer</a></div>
+<div>文章来源: <a href="https://stackoverflow.com/questions/15789652/how-to-create-video-thumbnails-with-python-and-gstreamer" target="_top" rel="nofollow">How to create video thumbnails with Python and Gstreamer</a></div><nav class="jumpto-subnav fixed"><div class="jumpto-title">跳转到</div><ul class="jumpto-first"><li><a href="#jumpto_0" class="">问题:</a></li><li><a href="#jumpto_1" class="">回答1:</a></li><li><a href="#jumpto_2" class="">回答2:</a></li><li><a href="#jumpto_3" class="">回答3:</a></li><li><a href="#jumpto_4" class="">回答4:</a></li></ul><div class="jumpto-close"><a href="#" id="jumpto-close">Close</a></div></nav></div>
+      <div class="vote-widget vote-widget--like-and-dislike">
+      <div class="vote-like type-node" id="like-container-node-323875">
+      <a title="Like" data-entity-id="323875" data-entity-type="node" class="disable-status">Like</a>
+      <span class="count">0</span>
+    </div>
+      <div class="vote-dislike type-node" id="dislike-container-node-323875">
+      <a title="Dislike" data-entity-id="323875" data-entity-type="node" class="disable-status">Dislike</a>
+      <span class="count">0</span>
+    </div>
+  </div>
+
+  </div>
+
+</article>
+
+<section id="block-stackarticle" class="block block-block-content block-block-contentdbfd7eac-03fc-4e95-81b7-416168fd4a06 clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item">
+
+
+
+
+
+</div>
+      
+  </section>
+
+<section id="block-changyandashang" class="block block-block-content block-block-content634f8878-01fc-43ce-bb0c-6eb4d974b4e2 clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><div id="cyReward" role="cylabs" data-use="reward" style="text-align: center; margin-top: 20px; margin-bottom: 20px;"><div id="cy-reward-click" class="cy-reward-btn cy-reward-btn-red"></div>    <div id="cy-reward-pop">        <div node-type="cy-close-btn" class="cy-close-btn"></div>        <img class="cy-avatar" src="qyckjjf_png">        <div class="cy-reward-title">感谢你的支持，我会继续努力！</div>        <div node-type="cy-reward-code" class="cy-reward-code">                        <img node-type="alipay-code" style="display: block;" src="qyciqat_png">            <img node-type="weichat-code" src="qycips2_png">                    </div>        <div class="cy-reward-txt">扫码打赏，建议金额1-10元</div>                        <div node-type="platform-choice" class="platform-choice clearfix">            <div class="platform-item">                <span node-type="check-platform" data-id="alipay" class="platform-radio-box platform-checked"></span>                <span class="platform-logo alipay"></span>            </div>            <div class="platform-item">                <span node-type="check-platform" data-id="weichat" class="platform-radio-box"></span>                <span class="platform-logo weichat"></span>            </div>        </div>                        <p class="power-cy">            <a href="http://changyan.kuaizhan.com/" style="text-decoration: none; color: rgb(209, 209, 209);" target="_top">Powered By 畅言</a><br>            提醒：打赏金额将直接进入对方账号，无法退款，请您谨慎操作。        </p>    </div></div>
+<div id="cyEmoji" role="cylabs" data-use="emoji"><div class="cy-wrapper">
+    <div class="emoji-tip">您看完此文的心情是 
+        </div>
+    <ul class="emoji-list">
+                    <li class="emoji-item" data-eid="29" data-ubb="[打酱油]" data-desc="打酱油，路过……" data-num="0" style="width: 124px;">
+                <div><img src="11.gif" title="打酱油"></div>
+                <p class="emoji-name">打酱油</p>
+                <p class="emoji-num">0人</p>
+            </li>
+                    <li class="emoji-item" data-eid="30" data-ubb="[鼓掌]" data-desc="鼓掌！撒花！啪啪啪~啪啪啪~" data-num="0" style="width: 124px;">
+                <div><img src="1.gif" title="鼓掌"></div>
+                <p class="emoji-name">鼓掌</p>
+                <p class="emoji-num">0人</p>
+            </li>
+                    <li class="emoji-item" data-eid="31" data-ubb="[流泪]" data-desc="好讨厌，眼泪一直停不下来……" data-num="0" style="width: 124px;">
+                <div><img src="3.gif" title="流泪"></div>
+                <p class="emoji-name">流泪</p>
+                <p class="emoji-num">0人</p>
+            </li>
+                    <li class="emoji-item" data-eid="42" data-ubb="[赞]" data-desc="赞一个！" data-num="0" style="width: 124px;">
+                <div><img src="13.gif" title="赞"></div>
+                <p class="emoji-name">赞</p>
+                <p class="emoji-num">0人</p>
+            </li>
+                    <li class="emoji-item" data-eid="41" data-ubb="[愤怒]" data-desc="一股怒火不由得从两肋窜了上来！" data-num="0" style="width: 124px;">
+                <div><img src="10.gif" title="愤怒"></div>
+                <p class="emoji-name">愤怒</p>
+                <p class="emoji-num">0人</p>
+            </li>
+                    <li class="emoji-item" data-eid="43" data-ubb="[鄙视]" data-desc="战斗力只有5的渣渣！" data-num="0" style="width: 124px;">
+                <div><img src="9.gif" title="鄙视"></div>
+                <p class="emoji-name">鄙视</p>
+                <p class="emoji-num">0人</p>
+            </li>
+            </ul>
+</div></div>
+<div id="cyQing" role="cylabs" data-use="qing"><div class="cy-wrapper">
+    <div class="qing-tip">还没有人发表观点</div>
+    <ul class="qing-list">
+                    </ul>
+    <div class="qing-input">
+        <input name="qing-content" placeholder="请输入你的观点" value="" type="text">
+        <button>发表</button>
+    </div>
+</div></div>
+
+<ins class="adsbygoogle" style="display: none;" data-ad-client="ca-pub-5408099190056760" data-ad-slot="9435106707" data-ad-format="auto" data-full-width-responsive="true" data-adsbygoogle-status="done"></ins>
+<a rel="external nofollow" href="http://www.ds399.com/" target="_top"><img src="005byqpgly1fyj92uej1zj30m802habi.jpg" style="width: 100%; max-height: 90px;" title="Layui" alt="Layui" vspace="0" border="0"></a>
+
+<div id="SOHUCS" sid="323875"><div id="SOHU_MAIN"><div node-type="cy-collection-btn" class="cy-collection-btn"><i></i><span>收藏文章</span></div>
+<div class="module-cmt-header">
+    <div class="cy-hidden">
+        <button id="jump-to-kz"></button>
+    </div>
+    <div class="clear-g section-title-w">
+        <div class="title-user-w">
+            <div node-type="user" class="clear-g user-wrap-w">
+                <span node-type="user-name" class="wrap-name-w"></span>
+            </div>
+        </div>
+    </div>
+    <div class="section-cbox-w">
+        <div class="cbox-block-w clear-g">
+            <div node-type="block-head-w" class="block-head-w">
+                <div node-type="avatar" class="head-img-w">
+                    <a href="javascript:void(0);">
+                        <img node-type="user-head" src="pic42_null.gif" alt="" width="42" height="42">
+                        <div node-type="head-img-ie-mask" class="head-img-ie-mask"></div>
+                    </a>
+                    <div node-type="notice-node" style="display: none;" class="cy-avatar-notice-node"></div>
+                                    </div>
+                <div node-type="header-login" class="header-login">登录</div>
+                <!-- <div class="cy-to-shequ-head">
+                   -     <span>我的社区</span>
+                   - </div> -->
+                <img node-type="header-skin" class="header-skin">
+                <div node-type="cy-hot-words" class="cy-hot-words"></div>
+            </div>
+            <div node-type="login-select" class="block-post-w">
+                <!-- 放置cbox初始状态 -->
+                <div class="module-cmt-box">
+    <!-- 展开状态 -->
+    <div class="post-wrap-w">
+        <div class="post-wrap-border-l"></div>
+        <div class="post-wrap-border-r"></div>
+        <div node-type="post-wrap-main" class="post-wrap-main">
+            <div class="post-wrap-border-t">
+                <div node-type="post-wrap-border-t-l" class="post-wrap-border-t-l"></div>
+                <div node-type="post-wrap-border-t-r" class="post-wrap-border-t-r"></div>
+            </div>
+            <div class="wrap-area-w">
+                <div class="area-textarea-w">
+                    <textarea node-type="textarea" name="" class="textarea-fw textarea-bf">有事没事说两句...</textarea>
+                </div>
+            </div>
+        </div>
+        <div class="clear-g wrap-action-w">
+           <div class="action-function-w">
+                <ul class="clear-g">
+                    <li node-type="function-face" class="function-face-w">
+                        <a class="effect-w" href="javascript:void(0)">
+                            <i class="face-b"></i>
+                        </a>
+                    </li>
+                    <li node-type="function-uploading" class="function-uploading-w">
+                        <a class="effect-w" href="javascript:void(0)" title="上传图片">
+                            <i class="uploading-b"></i>
+                        </a>
+                        <div class="uploading-file-w">
+                            <a href="javascript:void(0);" name="" class="file-fw"></a>
+                        </div>
+                    <form style="display: none;" action="https://www.e-learn.cn/content/wangluowenzhang/323875"><input name="file" accept="image/jpg,image/jpeg,image/png" type="file"></form></li>
+                </ul>
+                <!-- 表情 -->
+                <div node-type="face-box" class="face-wrapper-dw">
+                    <div node-type="face-cont" class="wrapper-cont-dw">
+                        <ul class="clear-g">
+                            <li>
+                                <span title="流汗" data_path="base" data-ubb="/流汗" class="face-item face_01"></span>
+                            </li>
+                            <li>
+                                <span title="钱" data_path="base" data-ubb="/钱" class="face-item face_02"></span>
+                            </li>
+                            <li>
+                                <span title="发怒" data_path="base" data-ubb="/发怒" class="face-item face_03"></span>
+                            </li>
+                            <li>
+                                <span title="浮云" data_path="base" data-ubb="/浮云" class="face-item face_04"></span>
+                            </li>
+                            <li>
+                                <span title="给力" data_path="base" data-ubb="/给力" class="face-item face_05"></span>
+                            </li>
+                            <li>
+                                <span title="大哭" data_path="base" data-ubb="/大哭" class="face-item face_06"></span>
+                            </li>
+                            <li>
+                                <span title="憨笑" data_path="base" data-ubb="/憨笑" class="face-item face_07"></span>
+                            </li>
+                            <li>
+                                <span title="色" data_path="base" data-ubb="/色" class="face-item face_08"></span>
+                            </li>
+                        </ul>
+                        <ul class="clear-g">
+                            <li>
+                                <span title="奋斗" data_path="base" data-ubb="/奋斗" class="face-item face_09"></span>
+                            </li>
+                            <li>
+                                <span title="鼓掌" data_path="base" data-ubb="/鼓掌" class="face-item face_10"></span>
+                            </li>
+                            <li>
+                                <span title="鄙视" data_path="base" data-ubb="/鄙视" class="face-item face_11"></span>
+                            </li>
+                            <li>
+                                <span title="可爱" data_path="base" data-ubb="/可爱" class="face-item face_12"></span>
+                            </li>
+                            <li>
+                                <span title="闭嘴" data_path="base" data-ubb="/闭嘴" class="face-item face_13"></span>
+                            </li>
+                            <li>
+                                <span title="疑问" data_path="base" data-ubb="/疑问" class="face-item face_14"></span>
+                            </li>
+                            <li>
+                                <span title="抓狂" data_path="base" data-ubb="/抓狂" class="face-item face_15"></span>
+                            </li>
+                            <li>
+                                <span title="惊讶" data_path="base" data-ubb="/惊讶" class="face-item face_16"></span>
+                            </li>
+                        </ul>
+                        <ul class="clear-g">
+                            <li>
+                                <span title="可怜" data_path="base" data-ubb="/可怜" class="face-item face_17"></span>
+                            </li>
+                            <li>
+                                <span title="弱" data_path="base" data-ubb="/弱" class="face-item face_18"></span>
+                            </li>
+                            <li>
+                                <span title="强" data_path="base" data-ubb="/强" class="face-item face_19"></span>
+                            </li>
+                            <li>
+                                <span title="握手" data_path="base" data-ubb="/握手" class="face-item face_20"></span>
+                            </li>
+                            <li>
+                                <span title="拳头" data_path="base" data-ubb="/拳头" class="face-item face_21"></span>
+                            </li>
+                            <li>
+                                <span title="酒" data_path="base" data-ubb="/酒" class="face-item face_22"></span>
+                            </li>
+                            <li>
+                                <span title="玫瑰" data_path="base" data-ubb="/玫瑰" class="face-item face_23"></span>
+                            </li>
+                            <li>
+                                <span title="打酱油" data_path="base" data-ubb="/打酱油" class="face-item face_24"></span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div node-type="user-face-cont" class="wrapper-user-face-dw nano">
+                        <div class="nano-content">
+                            <ul class="clear-g">
+                                <li class="upload-face-btn"></li>
+                                <li class="manage-face-btn"></li>
+                                <li class="cancel-face-btn"></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div node-type="face-tab" class="action-face-tab-dw">
+                        <ul class="clear-g">
+                            <li node-type="official-face" class="official-face-btn active"></li>
+                            <li node-type="user-face" class="user-face-btn" style="display: none;"></li>
+                        </ul>
+                    </div>
+                    <div node-type="confirm-box" class="cy-confirm-box">
+                        <div class="cy-confirm-text">
+                            <span>表情删除后不可恢复，是否删除</span>
+                        </div>
+                        <div class="cy-confirm-btn-row">
+                            <div class="cy-confirm-btn-cancel">取消</div>
+                            <div class="cy-confirm-btn-confirm">确定</div>
+                        </div>
+                    </div>
+                </div>
+                <!--  上传图片 --><!--  uploading-efw -->
+                <div node-type="uploading-wrapper" class="uploading-wrapper-dw uploading-efw ">
+                    <div class="uploading-wrapper-dw-t"></div>
+                    <div class="uploading-wrapper-dw-b"></div>
+                    <div node-type="image-uploading" class="wrapper-loading-dw">
+                        <div class="loading-word-dw"><span class="word-icon-dw"></span>图片正在上传，请稍后...</div>
+                        <div class="loading-btn-dw">
+                            <a href="javascript:void(0)">取消上传</a>
+                        </div>
+                    </div>
+                    <div node-type="image-uploaded" class="wrapper-image-dw">
+                        <div class="image-close-dw">
+                            <a href="javascript:void(0)"></a>
+                        </div>
+                        <div class="image-pic-dw">
+                            <img node-type="image-pic" alt="" src="323875">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clear-g action-issue-w">
+                <div class="issue-btn-w">
+                    <a href="javascript:void(0)">
+                        <button node-type="issue" class="btn-fw"></button>
+                    </a>
+                </div>
+            <!--
+            <div class="issue-icon-w" node-type="share-icons">
+                </div>
+            -->
+            </div>
+            <div class="cbox-prompt-w" node-type="error-tips">
+                <span node-type="prompt-empty" class="prompt-empty-w">评论内容为空！</span>
+            </div>
+        </div>
+    </div>
+</div>
+                <!-- 放置cbox发布状态 -->
+                <!-- 提示条 -->
+                <!-- 零评论提示条 -->
+                <div class="list-comment-empty-w">
+                    
+                </div>
+                <!-- 提示连接到快站社区 -->
+                <!-- <div class="list-comment-kuaizhan-w">
+                    <div node-type="kuaizhan-prompt" class="kuaizhan-prompt-w">
+                        <span class="prompt-text-w">点击查看更多精彩内容</span>
+                    </div>
+                </div> -->
+                <!--关闭评论-->
+                <div class="list-close-comment-w">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div><!-- 评论列表  S -->
+<div node-type="module-cmt-list" class="module-cmt-list section-list-w">
+    
+    <div class="cmt-list-type">
+        <ul class="clear-g type-lists">
+                <li class="type-list active">评论</li>
+                <!-- <li class="type-list">热门</li> -->
+        </ul>
+        <div class="cmt-list-border"></div>
+        <div class="cmt-list-number">
+            <span class="comment-number"><span class="cy-number">5</span>人参与,<span class="cy-number">5</span>条评论</span>
+        </div>
+    </div>
+            <!-- 最新评论 -->
+    <div class="list-block-gw list-newest-w">
+        <div node-type="cmt-list-title" class="block-title-gw">
+            <ul class="clear-g">
+                <li>
+                    <div class="title-name-gw title-name-bg">
+                    <div class="title-name-gw-tag"></div>最新评论</div>
+                </li>
+            </ul>
+        </div>
+        <div node-type="cmt-list" id="cy-cmt-list"><div node-type="cmt-item" data-id="898505546" data-user-id="146717368" data-platform-id="0" class="clear-g block-cont-gw">
+    <div class="cont-head-gw">
+        <div class="head-img-gw">
+                        <a node-type="photo" href="javascript:;" title="大尾巴没大姨妈">
+                <div class="img-corner"></div>
+                <img src="s_30000001_1393915340344_c55" alt="" width="42" height="42">
+            </a>
+        </div>
+    </div>
+    <div class="cont-msg-gw"><div node-type="prop-wrap" class="prop-wrap" style="height: 90px;">
+    <div class="prop-wrap-hidden" style="height: 90px;">
+    <span class="icon" style="left: 39px; top: 30px; background: rgba(0, 0, 0, 0) url('pisqycj_png') no-repeat scroll 0% 0%;">
+</span><span class="icon" style="left: 71px; top: 19px; background: rgba(0, 0, 0, 0) url('pisqphc_png') no-repeat scroll 0% 0%;">
+</span><span class="icon" style="left: 135px; top: 32px; background: rgba(0, 0, 0, 0) url('pisptvv_png') no-repeat scroll 0% 0%;">
+</span><span class="icon" style="left: 182px; top: 38px; background: rgba(0, 0, 0, 0) url('pispjyc_png') no-repeat scroll 0% 0%;">
+</span><span class="icon" style="left: 244.5px; top: 5px; background: rgba(0, 0, 0, 0) url('pisnfae_png') no-repeat scroll 0% 0%;">
+</span><span class="icon" style="left: 310px; top: 32px; background: rgba(0, 0, 0, 0) url('pispqha_png') no-repeat scroll 0% 0%;">
+</span><span class="icon" style="left: 338px; top: 20px; background: rgba(0, 0, 0, 0) url('pispbiy_png') no-repeat scroll 0% 0%;">
+</span><span class="icon" style="left: 370.5px; top: 39px; background: rgba(0, 0, 0, 0) url('pispbiy_png') no-repeat scroll 0% 0%;">
+</span><span class="icon" style="left: 463px; top: 19px; background: rgba(0, 0, 0, 0) url('pisptvv_png') no-repeat scroll 0% 0%;">
+</span><span class="icon" style="left: 476.5px; top: 31px; background: rgba(0, 0, 0, 0) url('pisnigx_png') no-repeat scroll 0% 0%;">
+</span><span class="icon" style="left: 549px; top: 47px; background: rgba(0, 0, 0, 0) url('pisnofg_png') no-repeat scroll 0% 0%;">
+</span><span class="icon" style="left: 605px; top: 16px; background: rgba(0, 0, 0, 0) url('pisnmly_png') no-repeat scroll 0% 0%;">
+</span><span class="icon" style="left: 669px; top: 6px; background: rgba(0, 0, 0, 0) url('pisptvv_png') no-repeat scroll 0% 0%;">
+</span><span class="icon" style="left: 696.5px; top: 44px; background: rgba(0, 0, 0, 0) url('pisnofg_png') no-repeat scroll 0% 0%;">
+</span><span class="icon" style="left: 775px; top: 24px; background: rgba(0, 0, 0, 0) url('pisnigx_png') no-repeat scroll 0% 0%;">
+</span></div>
+</div>
+        <div class="msg-wrap-gw" style="margin-top: -90px;">
+            <div class="wrap-user-gw global-clear-spacing">
+                                <span class="user-time-gw">2018年7月28日 22:47</span>
+                <span node-type="nickname" class="user-name-gw"><a href="javascript:void(0)">大尾巴没大姨妈</a></span><!-- 管理员、铭牌图标 -->
+<span class="user-level-gw user-1-4-gw user-1-gw">
+    <i>潜水</i>
+</span><!-- 管理员、铭牌图标 END -->
+                                
+                <span class="user-address-gw">[<i>新疆维吾尔自治区阿克苏地区</i>网友]</span>
+                            </div>
+            
+            
+            <div class="wrap-issue-gw">
+                <p class="issue-wrap-gw"><span class="wrap-word-gw">该评论已删除</span></p>
+                <div class="cy-see-more">
+                    <span></span><i></i>
+                </div>
+            </div>
+            <!-- 图片展示 -->
+            
+            <div node-type="btns-bar" class="clear-g wrap-action-gw">
+                <div node-type="action-click-gw" class="action-click-gw global-clear-spacing">
+                    <i class="gap-gw"></i>
+                    <span node-type="report" class="click-report-gw"><a href="javascript:void(0)"><i class="icon-gw icon-flag"></i><em>举报</em></a></span><i class="gap-gw"></i><span node-type="reply" class="click-reply-gw"><a href="javascript:void(0)">回复</a></span>
+                    <i class="gap-gw"></i>
+                    <span node-type="support" class="click-ding-gw">
+                        <a href="javascript:;"><i class="icon-gw icon-ding-bg"></i><em class="icon-name-bg"></em></a>
+                    </span>
+                    
+                    <i class="gap-gw"></i>
+                    <span node-type="oppose" class="click-cai-gw">
+                        <a href="javascript:;"><i class="icon-gw icon-cai-bg"></i><em class="icon-name-bg"></em></a>
+                    </span>
+                    
+                <i class="gap-gw"></i><span node-type="prop" class="click-prop-gw"><span class="prop-span"><a href="javascript:void(0)"></a></span></span></div>
+                
+            </div>
+                    </div>
+    </div>
+</div><div node-type="cmt-item" data-id="898505544" data-user-id="146736542" data-platform-id="0" class="clear-g block-cont-gw">
+    <div class="cont-head-gw">
+        <div class="head-img-gw">
+                        <a node-type="photo" href="javascript:;" title="排好队吃果果6">
+                <div class="img-corner"></div>
+                <img src="s_30000001_1393915339668_c55" alt="" width="42" height="42">
+            </a>
+        </div>
+    </div>
+    <div class="cont-msg-gw"><div node-type="prop-wrap" class="prop-wrap" style="height: 90px;">
+    <div class="prop-wrap-hidden" style="height: 90px;">
+    <span class="icon" style="left: 157px; top: 50px; background: rgba(0, 0, 0, 0) url('pfseooq_png') no-repeat scroll 0% 0%;">
+</span><span class="icon" style="left: 299px; top: 43px; background: rgba(0, 0, 0, 0) url('pisntun_png') no-repeat scroll 0% 0%;">
+</span><span class="icon" style="left: 324.5px; top: 32px; background: rgba(0, 0, 0, 0) url('pfseda7_png') no-repeat scroll 0% 0%;">
+</span><span class="icon" style="left: 435.5px; top: 51px; background: rgba(0, 0, 0, 0) url('pisntun_png') no-repeat scroll 0% 0%;">
+</span><span class="icon" style="left: 518px; top: 20px; background: rgba(0, 0, 0, 0) url('pfsdzew_png') no-repeat scroll 0% 0%;">
+</span></div>
+</div>
+        <div class="msg-wrap-gw" style="margin-top: -90px;">
+            <div class="wrap-user-gw global-clear-spacing">
+                                <span class="user-time-gw">2018年7月28日 21:31</span>
+                <span node-type="nickname" class="user-name-gw"><a href="javascript:void(0)">排好队吃果果6</a></span><!-- 管理员、铭牌图标 -->
+<span class="user-level-gw user-1-4-gw user-1-gw">
+    <i>潜水</i>
+</span><!-- 管理员、铭牌图标 END -->
+                                
+                <span class="user-address-gw">[<i>河北省乐亭县</i>网友]</span>
+                            </div>
+            
+            
+            <div class="wrap-issue-gw">
+                <p class="issue-wrap-gw"><span class="wrap-word-gw">说的好，还是期待国产比较实在。</span></p>
+                <div class="cy-see-more">
+                    <span></span><i></i>
+                </div>
+            </div>
+            <!-- 图片展示 -->
+            
+            <div node-type="btns-bar" class="clear-g wrap-action-gw">
+                <div node-type="action-click-gw" class="action-click-gw global-clear-spacing">
+                    <i class="gap-gw"></i>
+                    <span node-type="report" class="click-report-gw"><a href="javascript:void(0)"><i class="icon-gw icon-flag"></i><em>举报</em></a></span><i class="gap-gw"></i><span node-type="reply" class="click-reply-gw"><a href="javascript:void(0)">回复</a></span>
+                    <i class="gap-gw"></i>
+                    <span node-type="support" class="click-ding-gw">
+                        <a href="javascript:;"><i class="icon-gw icon-ding-bg"></i><em class="icon-name-bg"></em></a>
+                    </span>
+                    
+                    <i class="gap-gw"></i>
+                    <span node-type="oppose" class="click-cai-gw">
+                        <a href="javascript:;"><i class="icon-gw icon-cai-bg"></i><em class="icon-name-bg"></em></a>
+                    </span>
+                    
+                <i class="gap-gw"></i><span node-type="prop" class="click-prop-gw"><span class="prop-span"><a href="javascript:void(0)"></a></span></span></div>
+                
+            </div>
+                    </div>
+    </div>
+</div><div node-type="ad-pc-feed" data-id="25" class="clear-g block-cont-gw" id="feedAv" style="display: block !important; visibility: visible !important; overflow: visible !important; opacity: 1 !important; height: auto !important;">
+    <div id="MZADX_205185" style="visibility: visible; opacity: 1;"></div>
+    <div id="MZADX_205180" style="visibility: visible; opacity: 1;"></div>
+    <div class="cont-head-gw" style="visibility: visible; opacity: 1;">
+        <div class="head-img-gw" style="visibility: visible; opacity: 1;">
+            <a node-type="flow-icon" href="https://changyan.kuaizhan.com/detail#advert" title="畅言商业版" style="visibility: visible; opacity: 1;">
+                <div class="img-corner" style="visibility: visible; opacity: 1;"></div>
+                <img src="qy8a0zb_png" alt="" style="visibility: visible; opacity: 1;" width="42" height="42">
+            </a>
+        </div>
+    </div>
+    <div class="cont-msg-gw" style="visibility: visible; opacity: 1;">
+        <div class="msg-wrap-gw" style="visibility: visible; opacity: 1;">
+            <div class="wrap-user-gw global-clear-spacing" style="visibility: visible; opacity: 1;">
+                <span node-type="feed-name" class="user-name-gw" style="visibility: visible; opacity: 1;"><a href="https://changyan.kuaizhan.com/detail#advert" style="visibility: visible; opacity: 1;">畅言</a></span>
+            </div>
+            <!--<div class="wrap-issue-gw">-->
+                <!--<a href="https://changyan.kuaizhan.com/detail#advert" target="_blank" data-id="25">-->
+                    <!--<p class="issue-wrap-gw"><span class="wrap-word-gw">畅言正式推出商业版包月/包年VIP服务，评论流弹窗位置全站去广告，一对一专业技术支持，一对一重点客户服务，现在就加入我们的VIP大家庭吧！</span></p>-->
+                <!--</a>-->
+            <!--</div>-->
+            <!-- 图片展示开始 -->
+            <div node-type="image-view" class="wrap-picture-show-gw" style="background: transparent none repeat scroll 0% 0%; visibility: visible; opacity: 1;">
+                <div class="picture-box-gw picture-box-bg cy-feed-picture-box" style="visibility: visible; opacity: 1;">
+                    <!--<div class="box-area-gw" id="clickPic">-->
+                        <!--<a href="https://changyan.kuaizhan.com/detail#advert" target="_blank" data-id="25">-->
+                            <!--<img node-type="ad-feed-image" class="cy-ad-feed-image" src="//e80c500186e5e.cdn.sohucs.com/r1DlCQf_png" style="height: 144px; width: 576px"/>-->
+                        <!--</a>-->
+                    <!--</div>-->
+                    <div id="MZADX_222872" style="visibility: visible; opacity: 1;"></div>
+                    <div id="MZADX_205186" style="visibility: visible; opacity: 1;"><div class="ws-u1812191142" style="visibility: visible; opacity: 1;"></div><iframe scrolling="no" src="index_5.html" style="width: 640px; height: 100px; margin: 0px; padding: 0px; border: 0px none;" frameborder="0"></iframe></div>
+                </div>
+            </div>
+              <!-- 图片展示结束 -->
+            <div node-type="btns-bar" class="clear-g wrap-action-gw" style="visibility: visible; opacity: 1;">
+                <a href="http://changyan.kuaizhan.com/" target="_top" data-id="25" style="visibility: visible; opacity: 1;">
+                    <span style="width: 30px; height: 14px; line-height: 14px; text-align: center; color: rgb(67, 151, 237); font-size: 12px; border: 1px solid rgb(67, 151, 237); border-radius: 2px; cursor: pointer; visibility: visible; opacity: 1;">广告</span>
+                </a>
+                <div class="action-from-gw cy-feed-show-detail" id="clickMore" style="visibility: visible; opacity: 1;">
+                    <a href="https://changyan.kuaizhan.com/detail#advert" target="_top" node-type="feed-detail-link" data-id="" style="visibility: visible; opacity: 1;">站长点击我去广告&gt;</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div><div node-type="cmt-item" data-id="898505545" data-user-id="146740354" data-platform-id="0" class="clear-g block-cont-gw">
+    <div class="cont-head-gw">
+        <div class="head-img-gw">
+                        <a node-type="photo" href="javascript:;" title="舞协之家">
+                <div class="img-corner"></div>
+                <img src="s_30000001_1393915342892_c55" alt="" width="42" height="42">
+            </a>
+        </div>
+    </div>
+    <div class="cont-msg-gw"><div node-type="prop-wrap" class="prop-wrap" style="height: 90px;">
+    <div class="prop-wrap-hidden" style="height: 90px;">
+    <span class="icon" style="left: 13px; top: 34px; background: rgba(0, 0, 0, 0) url('pisnigx_png') no-repeat scroll 0% 0%;">
+</span><span class="icon" style="left: 171px; top: 32px; background: rgba(0, 0, 0, 0) url('pisqtfl_png') no-repeat scroll 0% 0%;">
+</span></div>
+</div>
+        <div class="msg-wrap-gw" style="margin-top: -90px;">
+            <div class="wrap-user-gw global-clear-spacing">
+                                <span class="user-time-gw">2018年7月28日 9:13</span>
+                <span node-type="nickname" class="user-name-gw"><a href="javascript:void(0)">舞协之家</a></span><!-- 管理员、铭牌图标 -->
+<span class="user-level-gw user-1-4-gw user-1-gw">
+    <i>潜水</i>
+</span><!-- 管理员、铭牌图标 END -->
+                                
+                <span class="user-address-gw">[<i>河北省海兴县</i>网友]</span>
+                            </div>
+            
+            
+            <div class="wrap-issue-gw">
+                <p class="issue-wrap-gw"><span class="wrap-word-gw">价格堪比苹果的说~</span></p>
+                <div class="cy-see-more">
+                    <span></span><i></i>
+                </div>
+            </div>
+            <!-- 图片展示 -->
+            
+            <div node-type="btns-bar" class="clear-g wrap-action-gw">
+                <div node-type="action-click-gw" class="action-click-gw global-clear-spacing">
+                    <i class="gap-gw"></i>
+                    <span node-type="report" class="click-report-gw"><a href="javascript:void(0)"><i class="icon-gw icon-flag"></i><em>举报</em></a></span><i class="gap-gw"></i><span node-type="reply" class="click-reply-gw"><a href="javascript:void(0)">回复</a></span>
+                    <i class="gap-gw"></i>
+                    <span node-type="support" class="click-ding-gw">
+                        <a href="javascript:;"><i class="icon-gw icon-ding-bg"></i><em class="icon-name-bg"></em></a>
+                    </span>
+                    
+                    <i class="gap-gw"></i>
+                    <span node-type="oppose" class="click-cai-gw">
+                        <a href="javascript:;"><i class="icon-gw icon-cai-bg"></i><em class="icon-name-bg"></em></a>
+                    </span>
+                    
+                <i class="gap-gw"></i><span node-type="prop" class="click-prop-gw"><span class="prop-span"><a href="javascript:void(0)"></a></span></span></div>
+                
+            </div>
+                    </div>
+    </div>
+</div><div node-type="cmt-item" data-id="898505547" data-user-id="146715074" data-platform-id="0" class="clear-g block-cont-gw">
+    <div class="cont-head-gw">
+        <div class="head-img-gw">
+                        <a node-type="photo" href="javascript:;" title="章恩旗">
+                <div class="img-corner"></div>
+                <img src="s_30000001_1393915338531_c55" alt="" width="42" height="42">
+            </a>
+        </div>
+    </div>
+    <div class="cont-msg-gw"><div node-type="prop-wrap" class="prop-wrap" style="height: 90px;">
+    <div class="prop-wrap-hidden" style="height: 90px;">
+    <span class="icon" style="left: 141px; top: 3px; background: rgba(0, 0, 0, 0) url('pfsdzew_png') no-repeat scroll 0% 0%;">
+</span></div>
+</div>
+        <div class="msg-wrap-gw" style="margin-top: -90px;">
+            <div class="wrap-user-gw global-clear-spacing">
+                                <span class="user-time-gw">2018年7月28日 5:55</span>
+                <span node-type="nickname" class="user-name-gw"><a href="javascript:void(0)">章恩旗</a></span><!-- 管理员、铭牌图标 -->
+<span class="user-level-gw user-1-4-gw user-1-gw">
+    <i>潜水</i>
+</span><!-- 管理员、铭牌图标 END -->
+                                
+                <span class="user-address-gw">[<i>河南省市辖区</i>网友]</span>
+                            </div>
+            
+            
+            <div class="wrap-issue-gw">
+                <p class="issue-wrap-gw"><span class="wrap-word-gw">该评论已删除</span></p>
+                <div class="cy-see-more">
+                    <span></span><i></i>
+                </div>
+            </div>
+            <!-- 图片展示 -->
+            
+            <div node-type="btns-bar" class="clear-g wrap-action-gw">
+                <div node-type="action-click-gw" class="action-click-gw global-clear-spacing">
+                    <i class="gap-gw"></i>
+                    <span node-type="report" class="click-report-gw"><a href="javascript:void(0)"><i class="icon-gw icon-flag"></i><em>举报</em></a></span><i class="gap-gw"></i><span node-type="reply" class="click-reply-gw"><a href="javascript:void(0)">回复</a></span>
+                    <i class="gap-gw"></i>
+                    <span node-type="support" class="click-ding-gw">
+                        <a href="javascript:;"><i class="icon-gw icon-ding-bg"></i><em class="icon-name-bg"></em></a>
+                    </span>
+                    
+                    <i class="gap-gw"></i>
+                    <span node-type="oppose" class="click-cai-gw">
+                        <a href="javascript:;"><i class="icon-gw icon-cai-bg"></i><em class="icon-name-bg"></em></a>
+                    </span>
+                    
+                <i class="gap-gw"></i><span node-type="prop" class="click-prop-gw"><span class="prop-span"><a href="javascript:void(0)"></a></span></span></div>
+                
+            </div>
+                    </div>
+    </div>
+</div><div node-type="cmt-item" data-id="898505543" data-user-id="146717532" data-platform-id="0" class="clear-g block-cont-gw">
+    <div class="cont-head-gw">
+        <div class="head-img-gw">
+                        <a node-type="photo" href="javascript:;" title="夜风话凄凉">
+                <div class="img-corner"></div>
+                <img src="s_30000001_1393915344364_c55" alt="" width="42" height="42">
+            </a>
+        </div>
+    </div>
+    <div class="cont-msg-gw"><div node-type="prop-wrap" class="prop-wrap" style="height: 90px;">
+    <div class="prop-wrap-hidden" style="height: 90px;">
+    <span class="icon" style="left: 1px; top: 40px; background: rgba(0, 0, 0, 0) url('pisnigx_png') no-repeat scroll 0% 0%;">
+</span><span class="icon" style="left: 131.5px; top: 50px; background: rgba(0, 0, 0, 0) url('pislhmb_png') no-repeat scroll 0% 0%;">
+</span><span class="icon" style="left: 351px; top: 28px; background: rgba(0, 0, 0, 0) url('pfseooq_png') no-repeat scroll 0% 0%;">
+</span><span class="icon" style="left: 366.5px; top: 34px; background: rgba(0, 0, 0, 0) url('pisnofg_png') no-repeat scroll 0% 0%;">
+</span><span class="icon" style="left: 564px; top: 44px; background: rgba(0, 0, 0, 0) url('pfsema0_png') no-repeat scroll 0% 0%;">
+</span></div>
+</div>
+        <div class="msg-wrap-gw" style="margin-top: -90px;">
+            <div class="wrap-user-gw global-clear-spacing">
+                                <span class="user-time-gw">2018年7月28日 1:18</span>
+                <span node-type="nickname" class="user-name-gw"><a href="javascript:void(0)">夜风话凄凉</a></span><!-- 管理员、铭牌图标 -->
+<span class="user-level-gw user-1-4-gw user-1-gw">
+    <i>潜水</i>
+</span><!-- 管理员、铭牌图标 END -->
+                                
+                <span class="user-address-gw">[<i>广东省徐闻县</i>网友]</span>
+                            </div>
+            
+            
+            <div class="wrap-issue-gw">
+                <p class="issue-wrap-gw"><span class="wrap-word-gw">该评论已删除</span></p>
+                <div class="cy-see-more">
+                    <span></span><i></i>
+                </div>
+            </div>
+            <!-- 图片展示 -->
+            
+            <div node-type="btns-bar" class="clear-g wrap-action-gw">
+                <div node-type="action-click-gw" class="action-click-gw global-clear-spacing">
+                    <i class="gap-gw"></i>
+                    <span node-type="report" class="click-report-gw"><a href="javascript:void(0)"><i class="icon-gw icon-flag"></i><em>举报</em></a></span><i class="gap-gw"></i><span node-type="reply" class="click-reply-gw"><a href="javascript:void(0)">回复</a></span>
+                    <i class="gap-gw"></i>
+                    <span node-type="support" class="click-ding-gw">
+                        <a href="javascript:;"><i class="icon-gw icon-ding-bg"></i><em class="icon-name-bg"></em></a>
+                    </span>
+                    
+                    <i class="gap-gw"></i>
+                    <span node-type="oppose" class="click-cai-gw">
+                        <a href="javascript:;"><i class="icon-gw icon-cai-bg"></i><em class="icon-name-bg"></em></a>
+                    </span>
+                    
+                <i class="gap-gw"></i><span node-type="prop" class="click-prop-gw"><span class="prop-span"><a href="javascript:void(0)"></a></span></span></div>
+                
+            </div>
+                    </div>
+    </div>
+</div></div>
+    </div>
+</div>
+<!-- 评论列表  E --><div class="module-cmt-footer">
+    <!-- 评论关闭 -->
+    <div class="list-comment-close-w">
+        <div class="close-wrap-w close-wrap-b">该评论已关闭!</div>
+    </div>
+    <!-- 翻页 -->
+    <div class="section-page-w">
+    </div>
+    <!-- 某站正在使用畅言 -->
+    <div class="section-service-w">
+        <div class="service-wrap-w">
+            <a href="http://changyan.kuaizhan.com/" target="_top">
+            
+            易学教程正在使用畅言
+                        </a>
+        </div>
+    </div>
+    <div node-type="cy-to-shequ" class="cy-redirect-btn">
+        <span class="cy-redirect-text">去社区看看吧</span><i class="cy-right-arrow"></i>
+    </div>
+    <div node-type="cy-to-hots" class="cy-redirect-btn">
+        <span class="cy-redirect-text">去热评看看吧</span><i class="cy-right-arrow"></i>
+    </div>
+    <div class="cy-to-shequ-float"></div>
+</div><div node-type="hot-topic" class="module-hot-topic clear-g"><div class="images-slider" node-type="imagesCon">
+    <div class="forStep">
+        <ul class="sliders" style="left: 0px;">
+            
+            <li class="slider" style="left: 0px;">
+                <a href="https://www.e-learn.cn/content/wangluowenzhang/1806560" target="_top">
+                    <img src="topic_picture_6" alt="python-ldap and Microsoft Active Directory: connect and delete user | 易学教程">
+                </a>
+                <div class="opacity" node-type="opacity">
+                    <div class="foropicity"></div>
+                    <div class="text-background">
+                        <a class="text" href="https://www.e-learn.cn/content/wangluowenzhang/1806560" title="python-ldap and Microsoft Active Directory: connect and delete user | 易学教程" target="_top">python-ldap and Microsoft Active Directory: connect and delete user | 易学教程</a>
+                    </div>
+                </div>
+            </li>
+            
+            <li class="slider">
+                <a href="https://www.e-learn.cn/content/wangluowenzhang/1812466" target="_top">
+                    <img src="topic_picture_17" alt="Git: is it possible to edit the commit message using the pre-push hook? | 易学教程">
+                </a>
+                <div class="opacity" node-type="opacity">
+                    <div class="foropicity"></div>
+                    <div class="text-background">
+                        <a class="text" href="https://www.e-learn.cn/content/wangluowenzhang/1812466" title="Git: is it possible to edit the commit message using the pre-push hook? | 易学教程" target="_top">Git: is it possible to edit the commit message using the pre-push hook? | 易学教程</a>
+                    </div>
+                </div>
+            </li>
+            
+            <li class="slider">
+                <a href="https://www.e-learn.cn/content/wangluowenzhang/1832180" target="_top">
+                    <img src="topic_picture_21" alt="PDO if fetch() then print_r($smt->fetch(PDO::FETCH_OBJ)) wont show any result | 易学教程">
+                </a>
+                <div class="opacity" node-type="opacity">
+                    <div class="foropicity"></div>
+                    <div class="text-background">
+                        <a class="text" href="https://www.e-learn.cn/content/wangluowenzhang/1832180" title="PDO if fetch() then print_r($smt->fetch(PDO::FETCH_OBJ)) wont show any result | 易学教程" target="_top">PDO if fetch() then print_r($smt-&gt;fetch(PDO::FETCH_OBJ)) wont show any result | 易学教程</a>
+                    </div>
+                </div>
+            </li>
+            
+            <li class="slider">
+                <a href="https://www.e-learn.cn/content/wangluowenzhang/1813606" target="_top">
+                    <img src="topic_picture_4" alt="Insert radio button inside payment_fields function WooCommerce instead of credit card form | 易学教程">
+                </a>
+                <div class="opacity" node-type="opacity">
+                    <div class="foropicity"></div>
+                    <div class="text-background">
+                        <a class="text" href="https://www.e-learn.cn/content/wangluowenzhang/1813606" title="Insert radio button inside payment_fields function WooCommerce instead of credit card form | 易学教程" target="_top">Insert radio button inside payment_fields function WooCommerce instead of credit card form | 易学教程</a>
+                    </div>
+                </div>
+            </li>
+                    </ul>
+        <div class="step">
+            <span class="next" node-type="next"></span>
+            <span class="previous" node-type="previous"></span>
+        </div>
+    </div>
+    <ul class="images">
+        
+        <li class="image current" node-type="sliders">
+            <img src="topic_picture_6" alt="python-ldap and Microsoft Active Directory: connect and delete user | 易学教程">
+            <div class="shadow"></div>
+        </li>
+        
+        <li class="image" node-type="sliders">
+            <img src="topic_picture_17" alt="Git: is it possible to edit the commit message using the pre-push hook? | 易学教程">
+            <div class="shadow"></div>
+        </li>
+        
+        <li class="image" node-type="sliders">
+            <img src="topic_picture_21" alt="PDO if fetch() then print_r($smt->fetch(PDO::FETCH_OBJ)) wont show any result | 易学教程">
+            <div class="shadow"></div>
+        </li>
+        
+        <li class="image" node-type="sliders">
+            <img src="topic_picture_4" alt="Insert radio button inside payment_fields function WooCommerce instead of credit card form | 易学教程">
+            <div class="shadow"></div>
+        </li>
+            </ul>
+</div>
+<div class="topic" node-type="topic" style="width: 498px;">
+    <span class="title">热评话题</span>
+    <ul class="topic-list">
+        
+        <li>
+            <a href="https://www.e-learn.cn/content/wangluowenzhang/1813606" title="Insert radio button inside payment_fields function WooCommerce instead of credit card form | 易学教程" target="_top">Insert radio button inside payment_fields function WooCommerce instead of credit card form | 易学教程</a>
+        </li>
+        
+        <li>
+            <a href="https://www.e-learn.cn/content/wangluowenzhang/1921117" title="HTML CSS - Responsive buttons (grid) | 易学教程" target="_top">HTML CSS - Responsive buttons (grid) | 易学教程</a>
+        </li>
+        
+        <li>
+            <a href="https://www.e-learn.cn/content/wangluowenzhang/1854635" title="GPUImage - How to chain filters with GPUImagePicture? | 易学教程" target="_top">GPUImage - How to chain filters with GPUImagePicture? | 易学教程</a>
+        </li>
+        
+        <li>
+            <a href="https://www.e-learn.cn/content/wangluowenzhang/1895450" title="Powershell Get_EventLog for multiple servers | 易学教程" target="_top">Powershell Get_EventLog for multiple servers | 易学教程</a>
+        </li>
+        
+        <li>
+            <a href="https://www.e-learn.cn/content/wangluowenzhang/1842456" title="System.Threading.Timer working logic and if an unexpected error happens how to handle | 易学教程" target="_top">System.Threading.Timer working logic and if an unexpected error happens how to handle | 易学教程</a>
+        </li>
+        
+        <li>
+            <a href="https://www.e-learn.cn/content/wangluowenzhang/1833270" title="Dynamically adding target attribute to a collection of pre-existing anchor tags within a known div element | 易学教程" target="_top">Dynamically adding target attribute to a collection of pre-existing anchor tags within a known div element | 易学教程</a>
+        </li>
+        
+        <li>
+            <a href="https://www.e-learn.cn/content/wangluowenzhang/1809023" title="Could not create navigation based on Zend_Acl | 易学教程" target="_top">Could not create navigation based on Zend_Acl | 易学教程</a>
+        </li>
+            </ul>
+</div></div><div class="module-cmt-float-bar">
+    <div class="module-cmt-float-bar-body" style="bottom: 0px;">
+        <div class="close-w"><a node-type="close" href="javascript:void(0)">关闭</a></div>
+        <div class="float-bar-logo"></div>
+        <div class="wrap-cont-w">
+            <!-- 评论 Begin -->
+            <div class="cont-minwidth-w">
+                <div class="cont-form-w">
+                    <!-- 圆角 -->
+                    <div class="hidden-corner"></div>
+                    <!-- 圆角end -->
+                        <!-- 登录 Begin -->
+                        <div class="fb-login-wrap-w" style="display: none;">
+                            <span node-type="fb-user-name" class="user-info">
+                                <img src="323875">
+                            </span>
+                        </div>
+                        <div class="fb-logout-wrap-w" style="">
+                            <span node-type="float-bar-login" class="logout-img"></span>
+                        </div>
+                        <!-- 登录 end -->
+                        <div node-type="post-form" class="form-text-w">
+                            <a class="button-w" href="javascript:void(0)">按钮</a>
+                            <input value="登录并发文" class="text-w" data-default="登录并发文" type="text">
+                            <span class="text-null">内容不能为空！</span>
+                        </div>
+                </div>
+                <div class="cont-comment-w">
+                    <span class="comment-text-w" style="display: none;">立刻说两句吧！</span>
+                    <a class="comment-link-w" href="javascript:void(0)" style="display: block;">查看<span class="comment-link-num"><span class="comment-link-numtext">5</span></span>条评论</a>
+                </div>
+            </div>
+            <!-- 评论 End -->
+            <div node-type="sogou-hot-words" class="fb-sogou-hot-words"></div>
+        </div>
+    </div>
+</div><div class="module-cmt-notice" style="bottom: 270px;">
+    <ul class="nt-list">
+        
+        <li node-type="notice-message" data-alias="message" data-type="message" data-static="static" class="nt-item" style="display: none;">
+            <div class="nt-logo"></div>
+            <a node-type="notice-content" class="nt-text" href="javascript:void(0);">你收到<i>0</i>条新通知</a>
+            <a class="nt-close" href="javascript:void(0);"></a>
+        </li>
+        
+        <li node-type="notice-support" data-alias="support" data-type="support" data-static="static" class="nt-item" style="display: none;">
+            <div class="nt-logo"></div>
+            <a node-type="notice-content" class="nt-text" href="javascript:void(0);">你有<i>0</i>条评论收到赞同</a>
+            <a class="nt-close" href="javascript:void(0);"></a>
+        </li>
+        
+        <li node-type="notice-reply" data-alias="reply" data-type="reply" data-static="static" class="nt-item" style="display: none;">
+            <div class="nt-logo"></div>
+            <a node-type="notice-content" class="nt-text" href="javascript:void(0);">你有<i>0</i>条新回复</a>
+            <a class="nt-close" href="javascript:void(0);"></a>
+        </li>
+        
+        <li node-type="notice-hots" data-alias="hots" data-type="hots" data-static="static" class="nt-item" style="display: none;">
+            <div class="nt-logo"></div>
+            <a node-type="notice-content" class="nt-text" href="javascript:void(0);">本日畅言热评新鲜出炉啦！</a>
+            <a class="nt-close" href="javascript:void(0);"></a>
+        </li>
+        
+        <li node-type="notice-task" data-alias="task" data-type="task" data-static="static" class="nt-item" style="display: none;">
+            <div class="nt-logo"></div>
+            <a node-type="notice-content" class="nt-text" href="javascript:void(0);">你有<i>0</i>个任务已完成</a>
+            <a class="nt-close" href="javascript:void(0);"></a>
+        </li>
+        
+        <li node-type="notice-history" data-alias="history" data-type="history" data-static="static" class="nt-item" style="display: none;">
+            <div class="nt-logo"></div>
+            <a node-type="notice-content" class="nt-text" href="javascript:void(0);">你收获<i>0</i>个畅言足迹</a>
+            <a class="nt-close" href="javascript:void(0);"></a>
+        </li>
+            </ul>
+</div></div></div>
+
+<ins class="adsbygoogle" style="display: block; height: 90px;" data-ad-client="ca-pub-5408099190056760" data-ad-slot="9435106707" data-ad-format="auto" data-full-width-responsive="true" data-adsbygoogle-status="done"><ins id="aswift_2_expand" style="display: inline-table; border: medium none; height: 90px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 848px; background-color: transparent;"><ins id="aswift_2_anchor" style="display: block; border: medium none; height: 90px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 848px; background-color: transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" id="aswift_2" name="aswift_2" style="left: 0px; position: absolute; top: 0px; border: 0px none; width: 848px; height: 90px;" src="index_6.html" width="848" height="90" frameborder="0"></iframe></ins></ins></ins>
+
+</div>
+      
+  </section>
+
+<section id="block-changyananzhuang" class="block block-block-content block-block-contentbfa85b66-bfef-4f46-a08e-e786ac3d9041 clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><div id="0abd4b99d633488bb121f4238540c554" paradigm-34218259186=""><div class="four-paradigm-article-box svelte-q07m5k"><div class="paradigm-article-box svelte-q07m5k"><div class="paradigm-article-box-inner svelte-q07m5k"><div class="paradigm-box-title-bar paradigm-half-margin-bottom svelte-q07m5k"><span class="paradigm-modifier paradigm-modifier-top paradigm-modifier-bottom"><span class="paradigm-modifier-left paradigm-box-title">关联推荐</span></span>
+
+          
+          <div class="paradigm-article-fresh-btn-wrapper svelte-q07m5k"><span class="paradigm-article-fresh-btn">换一换</span></div></div>
+
+      
+      <div class="paradigm-article-box-body svelte-q07m5k"><div class="paradigm-layout-fixed svelte-fxlrhf"><div class="paradigm-article-grid paradigm-clearfix"><div class="paradigm-article-row paradigm-clearfix svelte-1f19shf"><a class="paradigm-article-item svelte-7cx0jq" href="http://www.e-learn.cn/content/wangluowenzhang/30983" target="_top"><div class="titleAbstract svelte-1o7gzvv"><div class="paradigm-article-title  svelte-1711kkw" style="">How to create a GUID/UUID in Python</div><!---->
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-abstract svelte-11iavl3" style="">How do I create a GUID in Python that is platform independent? I hear there is a method using ActivePython on Windows but its Windows only because it uses COM. Is there a method using plain Python?\\\"T</div></div>
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-helper paradigm-clearfix svelte-1ct1ny2"><div class="paradigm-helper-item placeholder svelte-1ct1ny2" style="order: 2; flex-grow: 10;"></div>
+
+    <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publish-time svelte-1ct1ny2">2018-03-17</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-reading-count svelte-1ct1ny2">阅读数:862</span></div>
+      
+
+      
+      
+      </div><!----></div></div></a><!----></div>
+    <div class="paradigm-article-row-dis svelte-1f19shf"></div><div class="paradigm-article-row paradigm-clearfix svelte-1f19shf"><a class="paradigm-article-item svelte-7cx0jq" href="http://www.e-learn.cn/content/wangluowenzhang/344473" target="_top"><div class="titleAbstract svelte-1o7gzvv"><div class="paradigm-article-title  svelte-1711kkw" style="">gstreamer python bindings for windows</div><!---->
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-abstract svelte-11iavl3" style="">I am looking into gstreamer as a means to choose a video device from a list to feed it to an opencv script.I absolutely do not understand how to use gstreamer with python in windows. I installed the f</div></div>
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-helper paradigm-clearfix svelte-1ct1ny2"><div class="paradigm-helper-item placeholder svelte-1ct1ny2" style="order: 2; flex-grow: 10;"></div>
+
+    <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publish-time svelte-1ct1ny2">2018-04-13</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-reading-count svelte-1ct1ny2">阅读数:562</span></div>
+      
+
+      
+      
+      </div><!----></div></div></a><!----></div>
+    <div class="paradigm-article-row-dis svelte-1f19shf"></div><div class="paradigm-article-row paradigm-clearfix svelte-1f19shf"><a class="paradigm-article-item svelte-7cx0jq" href="http://www.e-learn.cn/content/wangluowenzhang/1061698" target="_top"><div class="titleAbstract svelte-1o7gzvv"><div class="paradigm-article-title  svelte-1711kkw" style="">multiprocessing of video frames in python</div><!---->
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-abstract svelte-11iavl3" style="">I am new to multiprocessing in python. I want to extract features from each frame of hour long video files. Processing each frame takes on the order of 30 ms. I thought multiprocessing was a good idea</div></div>
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-helper paradigm-clearfix svelte-1ct1ny2"><div class="paradigm-helper-item placeholder svelte-1ct1ny2" style="order: 2; flex-grow: 10;"></div>
+
+    <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publish-time svelte-1ct1ny2">2018-08-02</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-reading-count svelte-1ct1ny2">阅读数:342</span></div>
+      
+
+      
+      
+      </div><!----></div></div></a><!----></div>
+    <div class="paradigm-article-row-dis svelte-1f19shf"></div><div class="paradigm-article-row paradigm-clearfix svelte-1f19shf"><a class="paradigm-article-item svelte-7cx0jq" href="http://www.e-learn.cn/content/wangluowenzhang/25617" target="_top"><div class="titleAbstract svelte-1o7gzvv"><div class="paradigm-article-title  svelte-1711kkw" style="">How to get the duration of a video in Python?</div><!---->
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-abstract svelte-11iavl3" style="">I need to get the video duration in Python. The video formats that I need to get are , Flash video, , and MOV... I have a shared hosting solution, so I have no support.Youll probably need to invoke an</div></div>
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-helper paradigm-clearfix svelte-1ct1ny2"><div class="paradigm-helper-item placeholder svelte-1ct1ny2" style="order: 2; flex-grow: 10;"></div>
+
+    <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publish-time svelte-1ct1ny2">2018-03-17</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-reading-count svelte-1ct1ny2">阅读数:860</span></div>
+      
+
+      
+      
+      </div><!----></div></div></a><!----></div>
+    <div class="paradigm-article-row-dis svelte-1f19shf"></div><div class="paradigm-article-row paradigm-clearfix svelte-1f19shf"><a class="paradigm-article-item svelte-7cx0jq" href="http://www.e-learn.cn/content/wangluowenzhang/773980" target="_top"><div class="titleAbstract svelte-1o7gzvv"><div class="paradigm-article-title  svelte-1711kkw" style="">Calling Gstreamer inside openCV</div><!---->
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-abstract svelte-11iavl3" style="">I need to call Gstremaer inside an openCV code (opening a video camera essentially).<br>As I looked through the source code, seems to be the file Im looking for.I compiled OpenCV with Gstreamer flag.but</div></div>
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-helper paradigm-clearfix svelte-1ct1ny2"><div class="paradigm-helper-item placeholder svelte-1ct1ny2" style="order: 2; flex-grow: 10;"></div>
+
+    <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publish-time svelte-1ct1ny2">2018-06-14</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-reading-count svelte-1ct1ny2">阅读数:441</span></div>
+      
+
+      
+      
+      </div><!----></div></div></a><!----></div>
+    <div class="paradigm-article-row-dis svelte-1f19shf"></div></div>
+
+  
+  
+  
+  </div><!---->
+          
+        <div class="paradigm-bottom-logo-item svelte-q07m5k"><div class="paradigm-recomm-logo-wrapper svelte-1h8u3is">
+
+  
+  <div class="paradigm-recomm-logo-right svelte-1h8u3is"><a class="paradigm-recomm-logo firstclick svelte-1h8u3is" target="_top" href="http://www.tuijianxitong.cn/">
+      <img class="paradigm-recomm-logo-img firstclick svelte-1h8u3is" src="firstclick-logo.svg"></a></div><!----></div></div></div></div></div></div></div><p><ins class="adsbygoogle" style="display: block; height: 90px;" data-ad-client="ca-pub-5408099190056760" data-ad-slot="3650498804" data-ad-format="auto" data-full-width-responsive="true" data-adsbygoogle-status="done"><ins id="aswift_3_expand" style="display: inline-table; border: medium none; height: 90px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 848px; background-color: transparent;"><ins id="aswift_3_anchor" style="display: block; border: medium none; height: 90px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 848px; background-color: transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" id="aswift_3" name="aswift_3" style="left: 0px; position: absolute; top: 0px; border: 0px none; width: 848px; height: 90px;" src="index_7.html" width="848" height="90" frameborder="0"></iframe></ins></ins></ins></p><div id="5a82cc9ccd5f44e8a013e2d045b04464" paradigm-79107317601=""><div class="four-paradigm-article-box svelte-q07m5k"><div class="paradigm-article-box svelte-q07m5k"><div class="paradigm-article-box-inner svelte-q07m5k"><div class="paradigm-box-title-bar paradigm-half-margin-bottom svelte-q07m5k"><span class="paradigm-modifier paradigm-modifier-top paradigm-modifier-bottom"><span class="paradigm-modifier-left paradigm-box-title">猜你喜欢</span></span>
+
+          
+          </div>
+
+      
+      <div class="paradigm-article-box-body svelte-q07m5k"><div class="paradigm-layout-feed paradigm-clearfix"><div class="paradigm-paradigm-feed-item paradigm-clearfix svelte-xrirq9"><a class="paradigm-article-item svelte-7cx0jq" href="http://www.e-learn.cn/sass/sass-control-directives-expressions" target="_top"><div class="titleAbstract svelte-1o7gzvv"><div class="paradigm-article-title  svelte-1711kkw" style="">Sass控制指令&amp;表达式</div><!---->
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-abstract svelte-11iavl3" style=""></div></div>
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-helper paradigm-clearfix svelte-1ct1ny2"><div class="paradigm-helper-item placeholder svelte-1ct1ny2" style="order: 2; flex-grow: 10;"></div>
+
+    <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publish-time svelte-1ct1ny2">3天前</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-reading-count svelte-1ct1ny2">阅读数:832</span></div>
+      
+
+      
+      
+      </div><!----></div></div></a><!----></div>
+    <div class="paradigm-article-row-dis"></div><div class="paradigm-paradigm-feed-item paradigm-clearfix svelte-xrirq9"><a class="paradigm-article-item svelte-7cx0jq" href="http://www.e-learn.cn/javascript/array-constructor" target="_top"><div class="titleAbstract svelte-1o7gzvv"><div class="paradigm-article-title  svelte-1711kkw" style="">Javascript Array.constructor属性</div><!---->
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-abstract svelte-11iavl3" style="">JavaScript数组构造constructor属性返回的引用，创建实例的原型数组函数下面是参数的详细信息：返回创建此对象的实例的功能。这将产生以下结果：</div></div>
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-helper paradigm-clearfix svelte-1ct1ny2"><div class="paradigm-helper-item placeholder svelte-1ct1ny2" style="order: 2; flex-grow: 10;"></div>
+
+    <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publish-time svelte-1ct1ny2">3天前</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-reading-count svelte-1ct1ny2">阅读数:738</span></div>
+      
+
+      
+      
+      </div><!----></div></div></a><!----></div>
+    <div class="paradigm-article-row-dis"></div><div class="paradigm-paradigm-feed-item paradigm-clearfix svelte-xrirq9"><a class="paradigm-article-item svelte-7cx0jq" href="http://www.e-learn.cn/content/python/488721" target="_top"><div class="titleAbstract svelte-1o7gzvv"><div class="paradigm-article-title  svelte-1711kkw" style="">程序员快递请查收，来自Python黑客大佬的一份DDOS攻击说明书！</div><!---->
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-abstract svelte-11iavl3" style="">DDoS攻击没有我们想象中的那么简单，并不是什么Python程序员都能够做到的。若要知晓黑客利用DDOS攻击原理那么我们必须要知道是实行DDoS攻击比较难的原因是什么？很简单的一句话概括：“Python程序员要掌握一定的入侵技巧。”在此我为叙述下网...</div></div>
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-helper paradigm-clearfix svelte-1ct1ny2"><div class="paradigm-helper-item placeholder svelte-1ct1ny2" style="order: 2; flex-grow: 10;"></div>
+
+    <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publish-time svelte-1ct1ny2">18小时前</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-reading-count svelte-1ct1ny2">阅读数:8</span></div>
+      
+
+      
+      
+      </div><!----></div></div></a><!----></div>
+    <div class="paradigm-article-row-dis"></div><div class="paradigm-paradigm-feed-item paradigm-clearfix svelte-xrirq9"><a class="paradigm-article-item svelte-7cx0jq" href="http://www.e-learn.cn/content/qita/1962329" target="_top"><div class="titleAbstract svelte-1o7gzvv"><div class="paradigm-article-title  svelte-1711kkw" style="">引导页</div><!---->
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-abstract svelte-11iavl3" style="">public class MainActivity extends Activity {}//--------------------------------------------------------------------------------------------------public class Frag_01 extends ...</div></div>
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-helper paradigm-clearfix svelte-1ct1ny2"><div class="paradigm-helper-item placeholder svelte-1ct1ny2" style="order: 2; flex-grow: 10;"></div>
+
+    <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publish-time svelte-1ct1ny2">1天前</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-reading-count svelte-1ct1ny2">阅读数:480</span></div>
+      
+
+      
+      
+      </div><!----></div></div></a><!----></div>
+    <div class="paradigm-article-row-dis"></div><div class="paradigm-paradigm-feed-item paradigm-clearfix svelte-xrirq9"><a class="paradigm-article-item svelte-7cx0jq" href="http://www.e-learn.cn/content/qita/1962516" target="_top"><div class="titleAbstract svelte-1o7gzvv"><div class="paradigm-article-title  svelte-1711kkw" style="">90378高仿 淘宝 -标签控制器  cell</div><!---->
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-abstract svelte-11iavl3" style="">标签控制器懒惰初始化使用lazy关键字可以让变量在使用的时候再初始化。Global的变量是自动懒惰初始化的，不需要lazy关键字。Static的变量也是自动懒惰初始化的，不需要lazy关键字。Property变量用关键字lazy进行懒惰初始化。如果没有lazy关键字，是不...</div></div>
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-helper paradigm-clearfix svelte-1ct1ny2"><div class="paradigm-helper-item placeholder svelte-1ct1ny2" style="order: 2; flex-grow: 10;"></div>
+
+    <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publish-time svelte-1ct1ny2">1天前</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-reading-count svelte-1ct1ny2">阅读数:615</span></div>
+      
+
+      
+      
+      </div><!----></div></div></a><!----></div>
+    <div class="paradigm-article-row-dis"></div><div class="paradigm-paradigm-feed-item paradigm-clearfix svelte-xrirq9"><a class="paradigm-article-item svelte-7cx0jq" href="http://www.e-learn.cn/content/python/1963273" target="_top"><div class="titleAbstract svelte-1o7gzvv"><div class="paradigm-article-title  svelte-1711kkw" style="">推荐一本适合初学者全面自学python的书（附赠电子书）</div><!---->
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-abstract svelte-11iavl3" style="">今天一个朋友问我：有个朋友要学习 python，她属于那种特别能啃书的，让我推荐。我学 python 都是无师自通的，没有看过什么书，因此无法给她推荐，问我有什么意见？他那个朋友是零基础的，ctrl+c、ctrl+v用的贼溜。除此之外，计算机算是零基础了。对...</div></div>
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-helper paradigm-clearfix svelte-1ct1ny2"><div class="paradigm-helper-item placeholder svelte-1ct1ny2" style="order: 2; flex-grow: 10;"></div>
+
+    <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publish-time svelte-1ct1ny2">1天前</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-reading-count svelte-1ct1ny2">阅读数:521</span></div>
+      
+
+      
+      
+      </div><!----></div></div></a><!----></div>
+    <div class="paradigm-article-row-dis"></div><div class="paradigm-paradigm-feed-item paradigm-clearfix svelte-xrirq9"><a class="paradigm-article-item svelte-7cx0jq" href="http://www.e-learn.cn/content/qita/1962417" target="_top"><div class="titleAbstract svelte-1o7gzvv"><div class="paradigm-article-title  svelte-1711kkw" style="">安卓倒计时跳转</div><!---->
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-abstract svelte-11iavl3" style="">//布局文件//起始public class Daojishi extends BaseActivity {private TextView textView;private SharedPreferences sp;private int i=5;//绑定布局//绑定控件//操作数据//hander主线程//设置监听</div></div>
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-helper paradigm-clearfix svelte-1ct1ny2"><div class="paradigm-helper-item placeholder svelte-1ct1ny2" style="order: 2; flex-grow: 10;"></div>
+
+    <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publish-time svelte-1ct1ny2">1天前</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-reading-count svelte-1ct1ny2">阅读数:984</span></div>
+      
+
+      
+      
+      </div><!----></div></div></a><!----></div>
+    <div class="paradigm-article-row-dis"></div><div class="paradigm-paradigm-feed-item paradigm-clearfix svelte-xrirq9"><a class="paradigm-article-item svelte-7cx0jq" href="http://www.e-learn.cn/content/qita/1962319" target="_top"><div class="titleAbstract svelte-1o7gzvv"><div class="paradigm-article-title  svelte-1711kkw" style="">Pascal's Triangle -- LeetCode</div><!---->
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-abstract svelte-11iavl3" style="">再分享一下我老师大神的人工智能教程吧。零基础！通俗易懂！风趣幽默！还带黄段子！希望你也加入到我们人工智能的队伍中来！</div></div>
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-helper paradigm-clearfix svelte-1ct1ny2"><div class="paradigm-helper-item placeholder svelte-1ct1ny2" style="order: 2; flex-grow: 10;"></div>
+
+    <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publish-time svelte-1ct1ny2">1天前</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-reading-count svelte-1ct1ny2">阅读数:160</span></div>
+      
+
+      
+      
+      </div><!----></div></div></a><!----></div>
+    <div class="paradigm-article-row-dis"></div><div class="paradigm-paradigm-feed-item paradigm-clearfix svelte-xrirq9"><a class="paradigm-article-item svelte-7cx0jq" href="http://www.e-learn.cn/content/qita/1962459" target="_top"><div class="titleAbstract svelte-1o7gzvv"><div class="paradigm-article-title  svelte-1711kkw" style="">二叉树--C++实现</div><!---->
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-abstract svelte-11iavl3" style="">如上所示，由正整数1，2，3……组成了一颗特殊二叉树。我们已知这个二叉树的最后一个结点是n。现在的问题是，结点m所在的子树中一共包括多少个结点。 &nbsp;&nbsp;&nbsp; 比如，n = 12，m = 3那么上图中的结点13，14，15以及后面的结点都是不存在的，结点m所在子树...</div></div>
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-helper paradigm-clearfix svelte-1ct1ny2"><div class="paradigm-helper-item placeholder svelte-1ct1ny2" style="order: 2; flex-grow: 10;"></div>
+
+    <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publish-time svelte-1ct1ny2">1天前</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-reading-count svelte-1ct1ny2">阅读数:451</span></div>
+      
+
+      
+      
+      </div><!----></div></div></a><!----></div>
+    <div class="paradigm-article-row-dis"></div><div class="paradigm-paradigm-feed-item paradigm-clearfix svelte-xrirq9"><a class="paradigm-article-item svelte-7cx0jq" href="http://www.e-learn.cn/content/qita/1962367" target="_top"><div class="titleAbstract svelte-1o7gzvv"><div class="paradigm-article-title  svelte-1711kkw" style="">Windows10永久激活</div><!---->
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-abstract svelte-11iavl3" style="">转载自：</div></div>
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-helper paradigm-clearfix svelte-1ct1ny2"><div class="paradigm-helper-item placeholder svelte-1ct1ny2" style="order: 2; flex-grow: 10;"></div>
+
+    <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publish-time svelte-1ct1ny2">1天前</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-reading-count svelte-1ct1ny2">阅读数:756</span></div>
+      
+
+      
+      
+      </div><!----></div></div></a><!----></div>
+    <div class="paradigm-article-row-dis"></div>
+
+  <div class="paradigm-feed-item feed-info svelte-xrirq9">加载更多</div>
+
+  
+
+  </div><!---->
+          
+        </div></div></div></div></div></div>
+      
+  </section>
+
+
+  </div>
+
+              </section>
+
+                              <aside class="col-sm-3" role="complementary">
+              <div class="well region region-sidebar-second">
+    <section id="block-customsearchright" class="block block-block-content block-block-contenta33bcf22-013f-4ad8-81bc-60818422e577 clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><div style="float: right;"><div class="search-block-form contextual-region block block-search block-search-form-block" data-drupal-selector="search-block-form" id="block-bootstrap-search" role="search"><h2 class="visually-hidden">Search</h2><div data-contextual-id="block:block=bootstrap_search:langcode=zh-hans" class="contextual" role="form"><button class="trigger visually-hidden focusable" type="button" aria-pressed="false">开放 Search 配置选项</button><ul class="contextual-links list-paddingleft-2" hidden=""><li><p><a href="https://www.e-learn.cn/admin/structure/block/manage/bootstrap_search?destination=search/node" rel="nofollow">配置区块</a></p></li></ul></div><form action="http://search.e-learn.cn/" method="get" id="search-block-form" accept-charset="UTF-8" data-drupal-form-fields="edit-keys--2"><div class="form-item js-form-item form-type-search js-form-type-search form-item-keys js-form-item-keys form-no-label form-group"><label for="edit-keys--2" class="control-label sr-only">Search</label><div class="input-group"><input title="" data-drupal-selector="edit-keys" class="form-search form-control" placeholder="Search" id="edit-keys--2" name="q" value="" size="15" maxlength="128" data-toggle="tooltip" data-original-title="请输入您想搜索的关键词。" type="search"><span class="input-group-btn"><button type="submit" value="Search" class="button js-form-submit form-submit btn-primary btn icon-only" name=""><span class="sr-only">Search</span><span class="icon glyphicon glyphicon-search" aria-hidden="true"></span></button></span></div></div><div class="form-actions form-group js-form-wrapper form-wrapper" data-drupal-selector="edit-actions" id="edit-actions"></div></form></div></div></div>
+      
+  </section>
+
+<section id="block-tengxunyunshuang11" class="block block-block-content block-block-content6a2f3c44-72b5-488d-a13b-944877db495f clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><p><br></p><p><ins class="adsbygoogle" style="display: block; height: 600px;" data-ad-client="ca-pub-5408099190056760" data-ad-slot="6586654534" data-ad-format="auto" data-full-width-responsive="true" data-adsbygoogle-status="done"><ins id="aswift_4_expand" style="display: inline-table; border: medium none; height: 600px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 223px; background-color: transparent;"><ins id="aswift_4_anchor" style="display: block; border: medium none; height: 600px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 223px; background-color: transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" id="aswift_4" name="aswift_4" style="left: 0px; position: absolute; top: 0px; border: 0px none; width: 223px; height: 600px;" src="index_10.html" width="223" height="600" frameborder="0"></iframe></ins></ins></ins></p><p><br></p></div>
+      
+  </section>
+
+<section class="views-element-container block block-views block-views-blockjingpinwenzhang-left-bar-block-2 clearfix" id="block-views-block-jingpinwenzhang-left-bar-block-2">
+  
+      <h2 class="block-title">文章分类</h2>
+    
+
+      <div class="form-group"><div class="view view-jingpinwenzhang-left-bar view-id-jingpinwenzhang_left_bar view-display-id-block_2 js-view-dom-id-813321f4b0362fa587a1faf74a53335337cfb62b701cce0687f1c601ca60c0ab">
+  
+    
+      
+      <div class="view-content">
+          <div class="views-view-grid vertical cols-2 clearfix">
+            <div class="views-col clearfix col-1" style="width: 50%;">
+                  <div class="views-row row-1"><div class="views-field views-field-name"><span class="field-content"><a href="https://www.e-learn.cn/content/dotnet" hreflang="zh-hans">.NET</a></span></div></div>
+                  <div class="views-row row-2"><div class="views-field views-field-name"><span class="field-content"><a href="https://www.e-learn.cn/taxonomy/term/189" hreflang="zh-hans">Jave EE</a></span></div></div>
+                  <div class="views-row row-3"><div class="views-field views-field-name"><span class="field-content"><a href="https://www.e-learn.cn/content/html" hreflang="zh-hans">Html</a></span></div></div>
+                  <div class="views-row row-4"><div class="views-field views-field-name"><span class="field-content"><a href="https://www.e-learn.cn/content/java" hreflang="zh-hans">Java</a></span></div></div>
+                  <div class="views-row row-5"><div class="views-field views-field-name"><span class="field-content"><a href="https://www.e-learn.cn/content/js" hreflang="zh-hans">JavaScript</a></span></div></div>
+                  <div class="views-row row-6"><div class="views-field views-field-name"><span class="field-content"><a href="https://www.e-learn.cn/content/python" hreflang="zh-hans">Python</a></span></div></div>
+                  <div class="views-row row-7"><div class="views-field views-field-name"><span class="field-content"><a href="https://www.e-learn.cn/taxonomy/term/183" hreflang="zh-hans">Redis</a></span></div></div>
+                  <div class="views-row row-8"><div class="views-field views-field-name"><span class="field-content"><a href="https://www.e-learn.cn/content/nginx" hreflang="zh-hans">Nginx</a></span></div></div>
+                  <div class="views-row row-9"><div class="views-field views-field-name"><span class="field-content"><a href="https://www.e-learn.cn/content/jquery" hreflang="zh-hans">JQuery</a></span></div></div>
+                  <div class="views-row row-10"><div class="views-field views-field-name"><span class="field-content"><a href="https://www.e-learn.cn/content/php" hreflang="zh-hans">PHP</a></span></div></div>
+              </div>
+          <div class="views-col clearfix col-2" style="width: 50%;">
+                  <div class="views-row row-1"><div class="views-field views-field-name"><span class="field-content"><a href="https://www.e-learn.cn/content/linux" hreflang="zh-hans">Linux</a></span></div></div>
+                  <div class="views-row row-2"><div class="views-field views-field-name"><span class="field-content"><a href="https://www.e-learn.cn/content/mysql" hreflang="zh-hans">Mysql</a></span></div></div>
+                  <div class="views-row row-3"><div class="views-field views-field-name"><span class="field-content"><a href="https://www.e-learn.cn/content/drupal" hreflang="zh-hans">Drupal</a></span></div></div>
+                  <div class="views-row row-4"><div class="views-field views-field-name"><span class="field-content"><a href="https://www.e-learn.cn/content/laravel" hreflang="zh-hans">Laravel</a></span></div></div>
+                  <div class="views-row row-5"><div class="views-field views-field-name"><span class="field-content"><a href="https://www.e-learn.cn/content/css" hreflang="zh-hans">CSS</a></span></div></div>
+                  <div class="views-row row-6"><div class="views-field views-field-name"><span class="field-content"><a href="https://www.e-learn.cn/content/ssr" hreflang="zh-hans">科学上网之  SSR</a></span></div></div>
+                  <div class="views-row row-7"><div class="views-field views-field-name"><span class="field-content"><a href="https://www.e-learn.cn/content/%E7%BD%91%E7%BB%9C%E6%96%87%E7%AB%A0" hreflang="zh-hans">网络文章</a></span></div></div>
+                  <div class="views-row row-8"><div class="views-field views-field-name"><span class="field-content"><a href="https://www.e-learn.cn/content/motley" hreflang="zh-hans">杂谈</a></span></div></div>
+                  <div class="views-row row-9"><div class="views-field views-field-name"><span class="field-content"><a href="https://www.e-learn.cn/content/chengxuyuanxiaohua" hreflang="zh-hans">程序猿笑话</a></span></div></div>
+                  <div class="views-row row-10"><div class="views-field views-field-name"><span class="field-content"><a href="https://www.e-learn.cn/taxonomy/term/182" hreflang="zh-hans">其他</a></span></div></div>
+              </div>
+      </div>
+
+    </div>
+  
+          </div>
+</div>
+
+  </section>
+
+<section id="block-xianjianbianlanrewen" class="block block-block-content block-block-content62619c55-3520-4bbc-985f-9f4f1969c742 clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><div id="3b7a78a778824db68c340b12f58bcd5a" paradigm-28666106051=""><div class="four-paradigm-article-box svelte-q07m5k"><div class="paradigm-article-box svelte-q07m5k"><div class="paradigm-article-box-inner svelte-q07m5k"><div class="paradigm-box-title-bar paradigm-half-margin-bottom svelte-q07m5k"><span class="paradigm-modifier paradigm-modifier-top paradigm-modifier-bottom"><span class="paradigm-modifier-left paradigm-box-title">热文推荐</span></span>
+
+          
+          <div class="paradigm-article-fresh-btn-wrapper svelte-q07m5k"><span class="paradigm-article-fresh-btn">换一换</span></div></div>
+
+      
+      <div class="paradigm-article-box-body svelte-q07m5k"><div class="paradigm-layout-fixed svelte-fxlrhf"><div class="paradigm-article-grid paradigm-clearfix"><div class="paradigm-article-row paradigm-clearfix svelte-1f19shf"><a class="paradigm-article-item svelte-7cx0jq" href="http://www.e-learn.cn/thymeleaf/thymeleaf3-servlet3-helloworld" target="_top"><div class="titleAbstract svelte-1o7gzvv"><div class="paradigm-article-title  svelte-1711kkw" style="">Thymeleaf Servlet Hello World示例</div><!---->
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-abstract svelte-11iavl3" style="">Thymeleaf 2模板与Thymeleaf 3几乎100%兼容，因此只需在配置中进行一...</div></div>
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-helper paradigm-clearfix svelte-1ct1ny2"><div class="paradigm-helper-item placeholder svelte-1ct1ny2" style="order: 2; flex-grow: 10;"></div>
+
+    <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publish-time svelte-1ct1ny2">2018-09-27</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-reading-count svelte-1ct1ny2">阅读数:1252</span></div>
+      
+
+      
+      
+      </div><!----></div></div></a><!----></div>
+    <div class="paradigm-article-row-dis svelte-1f19shf"></div><div class="paradigm-article-row paradigm-clearfix svelte-1f19shf"><a class="paradigm-article-item svelte-7cx0jq" href="http://www.e-learn.cn/thymeleaf/standard-dialects" target="_top"><div class="titleAbstract svelte-1o7gzvv"><div class="paradigm-article-title  svelte-1711kkw" style="">Thymeleaf标准方言</div><!---->
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-abstract svelte-11iavl3" style="">本节将带您了解一些最重要的概念，以了解以标准或SpringStandard方言编...</div></div>
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-helper paradigm-clearfix svelte-1ct1ny2"><div class="paradigm-helper-item placeholder svelte-1ct1ny2" style="order: 2; flex-grow: 10;"></div>
+
+    <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publish-time svelte-1ct1ny2">2018-09-27</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-reading-count svelte-1ct1ny2">阅读数:654</span></div>
+      
+
+      
+      
+      </div><!----></div></div></a><!----></div>
+    <div class="paradigm-article-row-dis svelte-1f19shf"></div><div class="paradigm-article-row paradigm-clearfix svelte-1f19shf"><a class="paradigm-article-item svelte-7cx0jq" href="http://www.e-learn.cn/thymeleaf/thymeleaf-instroduce#!/go" target="_top"><div class="titleAbstract svelte-1o7gzvv"><div class="paradigm-article-title  svelte-1711kkw" style="">Thymeleaf简介</div><!---->
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-abstract svelte-11iavl3" style="">Thymeleaf是用于Web和独立环境的现代服务器端Java模板引擎。Thymeleaf...</div></div>
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-helper paradigm-clearfix svelte-1ct1ny2"><div class="paradigm-helper-item placeholder svelte-1ct1ny2" style="order: 2; flex-grow: 10;"></div>
+
+    <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publish-time svelte-1ct1ny2">2018-09-27</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-reading-count svelte-1ct1ny2">阅读数:2043</span></div>
+      
+
+      
+      
+      </div><!----></div></div></a><!----></div>
+    <div class="paradigm-article-row-dis svelte-1f19shf"></div><div class="paradigm-article-row paradigm-clearfix svelte-1f19shf"><a class="paradigm-article-item svelte-7cx0jq" href="http://www.e-learn.cn/thymeleaf/standardurlsyntax" target="_top"><div class="titleAbstract svelte-1o7gzvv"><div class="paradigm-article-title  svelte-1711kkw" style="">Thymeleaf标准URL语法</div><!---->
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-abstract svelte-11iavl3" style="">Thymeleaf标准方言(称为Standard和SpringStandard)提供了一种在Web应...</div></div>
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-helper paradigm-clearfix svelte-1ct1ny2"><div class="paradigm-helper-item placeholder svelte-1ct1ny2" style="order: 2; flex-grow: 10;"></div>
+
+    <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publish-time svelte-1ct1ny2">2018-09-27</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-reading-count svelte-1ct1ny2">阅读数:1019</span></div>
+      
+
+      
+      
+      </div><!----></div></div></a><!----></div>
+    <div class="paradigm-article-row-dis svelte-1f19shf"></div><div class="paradigm-article-row paradigm-clearfix svelte-1f19shf"><a class="paradigm-article-item svelte-7cx0jq" href="http://www.e-learn.cn/index.php/ant/apache-ant-ear-task" target="_top"><div class="titleAbstract svelte-1o7gzvv"><div class="paradigm-article-title  svelte-1711kkw" style="">Ant EAR任务</div><!---->
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-abstract svelte-11iavl3" style="">Ant EAR是JAR任务的扩展，对文件有不同的处理方式。 EAR是指企业应用程...</div></div>
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-helper paradigm-clearfix svelte-1ct1ny2"><div class="paradigm-helper-item placeholder svelte-1ct1ny2" style="order: 2; flex-grow: 10;"></div>
+
+    <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publish-time svelte-1ct1ny2">2018-09-27</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-reading-count svelte-1ct1ny2">阅读数:240</span></div>
+      
+
+      
+      
+      </div><!----></div></div></a><!----></div>
+    <div class="paradigm-article-row-dis svelte-1f19shf"></div><div class="paradigm-article-row paradigm-clearfix svelte-1f19shf"><a class="paradigm-article-item svelte-7cx0jq" href="http://www.e-learn.cn/thymeleaf/spring-expression-language" target="_top"><div class="titleAbstract svelte-1o7gzvv"><div class="paradigm-article-title  svelte-1711kkw" style="">Thymeleaf Spring表达式语言</div><!---->
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-abstract svelte-11iavl3" style="">本文章将介绍Thymeleaf Spring表达式语法中的概念。Spring Expression La...</div></div>
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-helper paradigm-clearfix svelte-1ct1ny2"><div class="paradigm-helper-item placeholder svelte-1ct1ny2" style="order: 2; flex-grow: 10;"></div>
+
+    <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publish-time svelte-1ct1ny2">2018-09-27</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-reading-count svelte-1ct1ny2">阅读数:769</span></div>
+      
+
+      
+      
+      </div><!----></div></div></a><!----></div>
+    <div class="paradigm-article-row-dis svelte-1f19shf"></div><div class="paradigm-article-row paradigm-clearfix svelte-1f19shf"><a class="paradigm-article-item svelte-7cx0jq" href="http://www.e-learn.cn/sass/@each-multiple" target="_top"><div class="titleAbstract svelte-1o7gzvv"><div class="paradigm-article-title  svelte-1711kkw" style="">Sass @each多重分配</div><!---->
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-abstract svelte-11iavl3" style="">多个值也可以用 @each 指令中使用。如，&nbsp;$var1,&nbsp;$var2,$var3,&nbsp;...&nbsp;在&nbsp;.</div></div>
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-helper paradigm-clearfix svelte-1ct1ny2"><div class="paradigm-helper-item placeholder svelte-1ct1ny2" style="order: 2; flex-grow: 10;"></div>
+
+    <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publish-time svelte-1ct1ny2">2018-09-30</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-reading-count svelte-1ct1ny2">阅读数:252</span></div>
+      
+
+      
+      
+      </div><!----></div></div></a><!----></div>
+    <div class="paradigm-article-row-dis svelte-1f19shf"></div><div class="paradigm-article-row paradigm-clearfix svelte-1f19shf"><a class="paradigm-article-item svelte-7cx0jq" href="http://www.e-learn.cn/thymeleaf/thymeleaf-forms" target="_top"><div class="titleAbstract svelte-1o7gzvv"><div class="paradigm-article-title  svelte-1711kkw" style="">Thymeleaf表单</div><!---->
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-abstract svelte-11iavl3" style="">本文章将介绍Thymeleaf中实现表单的语法和概念。编辑源代码以便将产品列...</div></div>
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-helper paradigm-clearfix svelte-1ct1ny2"><div class="paradigm-helper-item placeholder svelte-1ct1ny2" style="order: 2; flex-grow: 10;"></div>
+
+    <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publish-time svelte-1ct1ny2">2018-09-27</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-reading-count svelte-1ct1ny2">阅读数:1168</span></div>
+      
+
+      
+      
+      </div><!----></div></div></a><!----></div>
+    <div class="paradigm-article-row-dis svelte-1f19shf"></div><div class="paradigm-article-row paradigm-clearfix svelte-1f19shf"><a class="paradigm-article-item svelte-7cx0jq" href="http://www.e-learn.cn/thymeleaf/thymeleaf-springmvc5" target="_top"><div class="titleAbstract svelte-1o7gzvv"><div class="paradigm-article-title  svelte-1711kkw" style="">Thymeleaf+SpringMVC5示例</div><!---->
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-abstract svelte-11iavl3" style="">Thymeleaf是一个java模板引擎，它在独立和Web应用程序中处理六种模板(...</div></div>
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-helper paradigm-clearfix svelte-1ct1ny2"><div class="paradigm-helper-item placeholder svelte-1ct1ny2" style="order: 2; flex-grow: 10;"></div>
+
+    <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publish-time svelte-1ct1ny2">2018-09-27</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-reading-count svelte-1ct1ny2">阅读数:1349</span></div>
+      
+
+      
+      
+      </div><!----></div></div></a><!----></div>
+    <div class="paradigm-article-row-dis svelte-1f19shf"></div><div class="paradigm-article-row paradigm-clearfix svelte-1f19shf"><a class="paradigm-article-item svelte-7cx0jq" href="http://www.e-learn.cn/thymeleaf" target="_top"><div class="titleAbstract svelte-1o7gzvv"><div class="paradigm-article-title  svelte-1711kkw" style="">Thymeleaf教程</div><!---->
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-abstract svelte-11iavl3" style="">Thymeleaf是一种用于Web和独立环境的现代服务器端的Java模板引擎。Thy...</div></div>
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-helper paradigm-clearfix svelte-1ct1ny2"><div class="paradigm-helper-item placeholder svelte-1ct1ny2" style="order: 2; flex-grow: 10;"></div>
+
+    <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publish-time svelte-1ct1ny2">2018-09-27</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-reading-count svelte-1ct1ny2">阅读数:1749</span></div>
+      
+
+      
+      
+      </div><!----></div></div></a><!----></div>
+    <div class="paradigm-article-row-dis svelte-1f19shf"></div></div>
+
+  
+  
+  
+  </div><!---->
+          
+        <div class="paradigm-bottom-logo-item svelte-q07m5k"><div class="paradigm-recomm-logo-wrapper svelte-1h8u3is">
+
+  
+  <div class="paradigm-recomm-logo-right svelte-1h8u3is"><a class="paradigm-recomm-logo firstclick svelte-1h8u3is" target="_top" href="http://www.tuijianxitong.cn/">
+      <img class="paradigm-recomm-logo-img firstclick svelte-1h8u3is" src="firstclick-logo.svg"></a></div><!----></div></div></div></div></div></div></div></div>
+      
+  </section>
+
+<section id="block-ggcebianlantop" class="block block-block-content block-block-content11fea65d-2234-4713-af71-419f59eca270 clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><p><ins class="adsbygoogle" style="display: block; height: 600px;" data-ad-client="ca-pub-5408099190056760" data-ad-slot="4992047084" data-ad-format="auto" data-full-width-responsive="true" data-adsbygoogle-status="done"><ins id="aswift_5_expand" style="display: inline-table; border: medium none; height: 600px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 223px; background-color: transparent;"><ins id="aswift_5_anchor" style="display: block; border: medium none; height: 600px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 223px; background-color: transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" id="aswift_5" name="aswift_5" style="left: 0px; position: absolute; top: 0px; border: 0px none; width: 223px; height: 600px;" src="index_16.html" width="223" height="600" frameborder="0"></iframe></ins></ins></ins></p></div>
+      
+  </section>
+
+<section id="block-rightsidebargoogleadsense" class="block block-block-content block-block-contentb452c221-d44b-4985-a7c2-e8e759ef22e8 clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><!-- #####PLUG SDK引入,无需修改参数 --><div id="08dac9890bec488ba59e892ee1a806fa" paradigm-59010136052=""><div class="four-paradigm-article-box svelte-q07m5k"><div class="paradigm-article-box svelte-q07m5k"><div class="paradigm-article-box-inner svelte-q07m5k"><div class="paradigm-box-title-bar paradigm-half-margin-bottom svelte-q07m5k"><span class="paradigm-modifier paradigm-modifier-top paradigm-modifier-bottom"><span class="paradigm-modifier-left paradigm-box-title">相关推荐</span></span>
+
+          
+          </div>
+
+      
+      <div class="paradigm-article-box-body svelte-q07m5k"><div class="paradigm-layout-side"><div class="paradigm-article-grid paradigm-clearfix"><div class="paradigm-article-row paradigm-clearfix svelte-1f19shf"><a class="paradigm-article-item svelte-7cx0jq" href="http://www.e-learn.cn/content/wangluowenzhang/1068837" target="_top"><div class="titleAbstract svelte-1o7gzvv"><div class="paradigm-article-title  svelte-1711kkw" style="">how to get a video file's orientation in Python</div><!---->
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-abstract svelte-11iavl3" style="">I would like to load a video files frames into a numpy array. I want t...</div></div>
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-helper paradigm-clearfix svelte-1ct1ny2"><div class="paradigm-helper-item placeholder svelte-1ct1ny2" style="order: 2; flex-grow: 10;"></div>
+
+    <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publisher-id svelte-1ct1ny2">匿名 (未验证)</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publish-time svelte-1ct1ny2">2018-08-04</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-reading-count svelte-1ct1ny2">阅读数:98</span></div>
+      
+
+      
+      
+      </div><!----></div></div></a><!----></div>
+    <div class="paradigm-article-row-dis svelte-1f19shf"></div><div class="paradigm-article-row paradigm-clearfix svelte-1f19shf"><a class="paradigm-article-item svelte-7cx0jq" href="http://www.e-learn.cn/content/wangluowenzhang/503786" target="_top"><div class="titleAbstract svelte-1o7gzvv"><div class="paradigm-article-title  svelte-1711kkw" style="">Looping a video with gstreamer and gst-launch?</div><!---->
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-abstract svelte-11iavl3" style="">I am able to play a video on the command line with gstreamers like ...</div></div>
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-helper paradigm-clearfix svelte-1ct1ny2"><div class="paradigm-helper-item placeholder svelte-1ct1ny2" style="order: 2; flex-grow: 10;"></div>
+
+    <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publisher-id svelte-1ct1ny2">匿名 (未验证)</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publish-time svelte-1ct1ny2">2018-05-13</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-reading-count svelte-1ct1ny2">阅读数:377</span></div>
+      
+
+      
+      
+      </div><!----></div></div></a><!----></div>
+    <div class="paradigm-article-row-dis svelte-1f19shf"></div><div class="paradigm-article-row paradigm-clearfix svelte-1f19shf"><a class="paradigm-article-item svelte-7cx0jq" href="http://www.e-learn.cn/content/wangluowenzhang/598043" target="_top"><div class="titleAbstract svelte-1o7gzvv"><div class="paradigm-article-title  svelte-1711kkw" style="">create video from array of UIImages and save the video to iPhone librar...</div><!---->
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-abstract svelte-11iavl3" style="">Problem in saving video to iPhone Library....</div></div>
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-helper paradigm-clearfix svelte-1ct1ny2"><div class="paradigm-helper-item placeholder svelte-1ct1ny2" style="order: 2; flex-grow: 10;"></div>
+
+    <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publisher-id svelte-1ct1ny2">匿名 (未验证)</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publish-time svelte-1ct1ny2">2018-05-24</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-reading-count svelte-1ct1ny2">阅读数:134</span></div>
+      
+
+      
+      
+      </div><!----></div></div></a><!----></div>
+    <div class="paradigm-article-row-dis svelte-1f19shf"></div><div class="paradigm-article-row paradigm-clearfix svelte-1f19shf"><a class="paradigm-article-item svelte-7cx0jq" href="http://www.e-learn.cn/content/wangluowenzhang/1061698" target="_top"><div class="titleAbstract svelte-1o7gzvv"><div class="paradigm-article-title  svelte-1711kkw" style="">multiprocessing of video frames in python</div><!---->
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-abstract svelte-11iavl3" style="">I am new to multiprocessing in python. I want to extract features fr...</div></div>
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-helper paradigm-clearfix svelte-1ct1ny2"><div class="paradigm-helper-item placeholder svelte-1ct1ny2" style="order: 2; flex-grow: 10;"></div>
+
+    <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publisher-id svelte-1ct1ny2">匿名 (未验证)</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publish-time svelte-1ct1ny2">2018-08-02</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-reading-count svelte-1ct1ny2">阅读数:342</span></div>
+      
+
+      
+      
+      </div><!----></div></div></a><!----></div>
+    <div class="paradigm-article-row-dis svelte-1f19shf"></div><div class="paradigm-article-row paradigm-clearfix svelte-1f19shf"><a class="paradigm-article-item svelte-7cx0jq" href="http://www.e-learn.cn/content/wangluowenzhang/93006" target="_top"><div class="titleAbstract svelte-1o7gzvv"><div class="paradigm-article-title  svelte-1711kkw" style="">How do I generate circular thumbnails with PIL?</div><!---->
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-abstract svelte-11iavl3" style="">How do I generate circular image thumbnails using PIL? ...</div></div>
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-helper paradigm-clearfix svelte-1ct1ny2"><div class="paradigm-helper-item placeholder svelte-1ct1ny2" style="order: 2; flex-grow: 10;"></div>
+
+    <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publisher-id svelte-1ct1ny2">易学管家</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publish-time svelte-1ct1ny2">2018-03-17</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-reading-count svelte-1ct1ny2">阅读数:590</span></div>
+      
+
+      
+      
+      </div><!----></div></div></a><!----></div>
+    <div class="paradigm-article-row-dis svelte-1f19shf"></div><div class="paradigm-article-row paradigm-clearfix svelte-1f19shf"><a class="paradigm-article-item svelte-7cx0jq" href="http://www.e-learn.cn/content/wangluowenzhang/1372906" target="_top"><div class="titleAbstract svelte-1o7gzvv"><div class="paradigm-article-title  svelte-1711kkw" style="">How does Windows 7 show the thumbnails of application in taskbar?</div><!---->
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-abstract svelte-11iavl3" style="">How does Windows 7 show the thumbnails of application in taskba...</div></div>
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-helper paradigm-clearfix svelte-1ct1ny2"><div class="paradigm-helper-item placeholder svelte-1ct1ny2" style="order: 2; flex-grow: 10;"></div>
+
+    <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publisher-id svelte-1ct1ny2">匿名 (未验证)</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publish-time svelte-1ct1ny2">2018-10-31</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-reading-count svelte-1ct1ny2">阅读数:485</span></div>
+      
+
+      
+      
+      </div><!----></div></div></a><!----></div>
+    <div class="paradigm-article-row-dis svelte-1f19shf"></div><div class="paradigm-article-row paradigm-clearfix svelte-1f19shf"><a class="paradigm-article-item svelte-7cx0jq" href="http://www.e-learn.cn/content/wangluowenzhang/353063" target="_top"><div class="titleAbstract svelte-1o7gzvv"><div class="paradigm-article-title  svelte-1711kkw" style="">Gstreamer tcpserversink v0.10 vs 1.0 and HTML5 video tag</div><!---->
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-abstract svelte-11iavl3" style="">I am embedding a HTML5 video tag in my site, the source being a gstre...</div></div>
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-helper paradigm-clearfix svelte-1ct1ny2"><div class="paradigm-helper-item placeholder svelte-1ct1ny2" style="order: 2; flex-grow: 10;"></div>
+
+    <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publisher-id svelte-1ct1ny2">匿名 (未验证)</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publish-time svelte-1ct1ny2">2018-04-15</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-reading-count svelte-1ct1ny2">阅读数:717</span></div>
+      
+
+      
+      
+      </div><!----></div></div></a><!----></div>
+    <div class="paradigm-article-row-dis svelte-1f19shf"></div><div class="paradigm-article-row paradigm-clearfix svelte-1f19shf"><a class="paradigm-article-item svelte-7cx0jq" href="http://www.e-learn.cn/content/wangluowenzhang/1110600" target="_top"><div class="titleAbstract svelte-1o7gzvv"><div class="paradigm-article-title  svelte-1711kkw" style="">How to stream h264 with udp gstreamer</div><!---->
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-abstract svelte-11iavl3" style="">Im trying to stream a video with h264. Source is a Axis camera. I ma...</div></div>
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-helper paradigm-clearfix svelte-1ct1ny2"><div class="paradigm-helper-item placeholder svelte-1ct1ny2" style="order: 2; flex-grow: 10;"></div>
+
+    <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publisher-id svelte-1ct1ny2">匿名 (未验证)</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publish-time svelte-1ct1ny2">2018-08-18</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-reading-count svelte-1ct1ny2">阅读数:289</span></div>
+      
+
+      
+      
+      </div><!----></div></div></a><!----></div>
+    <div class="paradigm-article-row-dis svelte-1f19shf"></div><div class="paradigm-article-row paradigm-clearfix svelte-1f19shf"><a class="paradigm-article-item svelte-7cx0jq" href="http://www.e-learn.cn/content/wangluowenzhang/884864" target="_top"><div class="titleAbstract svelte-1o7gzvv"><div class="paradigm-article-title  svelte-1711kkw" style="">python gstreamer for windows</div><!---->
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-abstract svelte-11iavl3" style="">I want to use Python bindings for GStreamer on windows. But lookin...</div></div>
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-helper paradigm-clearfix svelte-1ct1ny2"><div class="paradigm-helper-item placeholder svelte-1ct1ny2" style="order: 2; flex-grow: 10;"></div>
+
+    <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publisher-id svelte-1ct1ny2">匿名 (未验证)</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publish-time svelte-1ct1ny2">2018-07-08</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-reading-count svelte-1ct1ny2">阅读数:469</span></div>
+      
+
+      
+      
+      </div><!----></div></div></a><!----></div>
+    <div class="paradigm-article-row-dis svelte-1f19shf"></div><div class="paradigm-article-row paradigm-clearfix svelte-1f19shf"><a class="paradigm-article-item svelte-7cx0jq" href="http://www.e-learn.cn/content/wangluowenzhang/1350633" target="_top"><div class="titleAbstract svelte-1o7gzvv"><div class="paradigm-article-title  svelte-1711kkw" style="">Use (Python) Gstreamer to decode audio (to PCM data)</div><!---->
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-abstract svelte-11iavl3" style="">Im writing an application that uses the Python Gstreamer bindings to ...</div></div>
+
+  <div class="paradigm-half-margin-top"><div class="paradigm-article-helper paradigm-clearfix svelte-1ct1ny2"><div class="paradigm-helper-item placeholder svelte-1ct1ny2" style="order: 2; flex-grow: 10;"></div>
+
+    <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publisher-id svelte-1ct1ny2">匿名 (未验证)</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-publish-time svelte-1ct1ny2">2018-10-29</span></div>
+      
+
+      
+      
+      <div class="paradigm-helper-item svelte-1ct1ny2" style="order: 1;"><span class="paradigm-helper-content paradigm-helper-reading-count svelte-1ct1ny2">阅读数:944</span></div>
+      
+
+      
+      
+      </div><!----></div></div></a><!----></div>
+    <div class="paradigm-article-row-dis svelte-1f19shf"></div></div></div><!---->
+          
+        <div class="paradigm-bottom-logo-item svelte-q07m5k"><div class="paradigm-recomm-logo-wrapper svelte-1h8u3is">
+
+  
+  <div class="paradigm-recomm-logo-right svelte-1h8u3is"><a class="paradigm-recomm-logo firstclick svelte-1h8u3is" target="_top" href="http://www.tuijianxitong.cn/">
+      <img class="paradigm-recomm-logo-img firstclick svelte-1h8u3is" src="firstclick-logo.svg"></a></div><!----></div></div></div></div></div></div></div><!-- right side bar w260 --><p><ins class="adsbygoogle" style="display: block; height: 600px;" data-ad-client="ca-pub-5408099190056760" data-ad-slot="5068947403" data-ad-format="auto" data-adsbygoogle-status="done"><ins id="aswift_6_expand" style="display: inline-table; border: medium none; height: 600px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 223px; background-color: transparent;"><ins id="aswift_6_anchor" style="display: block; border: medium none; height: 600px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 223px; background-color: transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" id="aswift_6" name="aswift_6" style="left: 0px; position: absolute; top: 0px; border: 0px none; width: 223px; height: 600px;" src="index_22.html" width="223" height="600" frameborder="0"></iframe></ins></ins></ins></p><p><br></p></div>
+      
+  </section>
+
+<section id="block-changyanremenxinwen" class="block block-block-content block-block-contenta967328b-1bd3-40ff-947a-24804e4d3c35 clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><!-- 代码1：放在页面需要展示的位置  --><!-- 如果您配置过sourceid，建议在div标签中配置sourceid、cid(分类id)，没有请忽略  --><div id="cyReping" role="cylabs" data-use="reping"><div id="cyWrapper" class="cy-wrapper">
+    <div class="reping-header " style="background-color: rgb(245, 245, 245);"><span style="color: black;">精彩评论</span></div>
+    <ul class="reping-list">
+                <li class="list-item">
+            <div class="reping-avatar   "><img src="11111.gif" title="Thymeleaf简介 | 易学教程" width="50px" height="50px"></div>
+            <div class=" contavatar  ">
+                <span class="reping-nickname">UnDefined</span>
+                <span class="reping-content">洒水车才是</span>
+                <span class="reping-title"><a href="https://www.e-learn.cn/thymeleaf/thymeleaf-instroduce" target="_top" title="Thymeleaf简介 | 易学教程">评:Thymeleaf简介 </a></span>
+            </div>
+        </li>
+                <li class="list-item">
+            <div class="reping-avatar   "><img src="383643769_1459955867612_c55" title="Spring Data JPA 初体验 | 易学教程" width="50px" height="50px"></div>
+            <div class=" contavatar  ">
+                <span class="reping-nickname">RS</span>
+                <span class="reping-content">2.5那里不是使用了@Entity注解了吗，怎么很能用new呢</span>
+                <span class="reping-title"><a href="https://www.e-learn.cn/content/java/530021" target="_top" title="Spring Data JPA 初体验 | 易学教程">评:Spring Data </a></span>
+            </div>
+        </li>
+                <li class="list-item">
+            <div class="reping-avatar   "><img src="11111.gif" title="python刷leetcode题目(1) | 易学教程" width="50px" height="50px"></div>
+            <div class=" contavatar  ">
+                <span class="reping-nickname">K</span>
+                <span class="reping-content">哎，误导</span>
+                <span class="reping-title"><a href="https://www.e-learn.cn/content/python/669642" target="_top" title="python刷leetcode题目(1) | 易学教程">评:python刷leetc</a></span>
+            </div>
+        </li>
+                <li class="list-item">
+            <div class="reping-avatar   "><img src="fac494264beff70ed91fedf32783552b_default_1449555778615_jpg" title="基于Dapper二次封装了一个易用的ORM工具类：SqlDapperUtil | 易学教程" width="50px" height="50px"></div>
+            <div class=" contavatar  ">
+                <span class="reping-nickname">美如冠玉</span>
+                <span class="reping-content">//查询1行表字段与实体类属性不一致映射
+            Person person2 = dapper.GetModel&amp;lt;Person&amp;gt;(select '张...</span>
+                <span class="reping-title"><a href="https://www.e-learn.cn/content/net/1137248" target="_top" title="基于Dapper二次封装了一个易用的ORM工具类：SqlDapperUtil | 易学教程">评:基于Dapper二次封装</a></span>
+            </div>
+        </li>
+                <li class="list-item">
+            <div class="reping-avatar   "><img src="fac494264beff70ed91fedf32783552b_default_1449556067464_jpg" title="钟馗捉妖记电视剧全集在线观看百度云资源 迅雷下载 | 易学教程" width="50px" height="50px"></div>
+            <div class=" contavatar  ">
+                <span class="reping-nickname">金石为开</span>
+                <span class="reping-content">觉得有用的朋友。
+请。
+点。
+击。
+广。
+告。
+支。
+持。
+一。
+下，
+谢谢</span>
+                <span class="reping-title"><a href="https://www.e-learn.cn/content/qita/689307" target="_top" title="钟馗捉妖记电视剧全集在线观看百度云资源 迅雷下载 | 易学教程">评:钟馗捉妖记电视剧全集在线</a></span>
+            </div>
+        </li>
+        </ul>
+</div></div><!-- 代码2：用来读取评论框配置，此代码需放置在代码1之后。 --><!-- 如果当前页面有评论框，代码2请勿放置在评论框代码之前。 --><!-- 如果页面同时使用多个实验室项目，以下代码只需要引入一次，只配置上面的div标签即可 --><p><br></p><p><ins class="adsbygoogle" style="display: block; height: 372px;" data-ad-client="ca-pub-5408099190056760" data-ad-slot="9435106707" data-ad-format="auto" data-full-width-responsive="true" data-adsbygoogle-status="done"><ins id="aswift_7_expand" style="display: inline-table; border: medium none; height: 372px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 223px; background-color: transparent;"><ins id="aswift_7_anchor" style="display: block; border: medium none; height: 372px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 223px; background-color: transparent; overflow: hidden;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" id="aswift_7" name="aswift_7" style="left: 0px; position: absolute; top: 0px; border: 0px none; width: 223px; height: 372px;" src="index_29.html" width="223" height="372" frameborder="0"></iframe></ins></ins></ins></p></div>
+      
+  </section>
+
+
+  </div>
+
+          </aside>
+                  </div>
+  </div>
+
+      <footer class="footer container" role="contentinfo">
+        <div class="region region-footer">
+    <section id="block-youxiajiao" class="block block-block-content block-block-contentfa89158f-8cf1-4590-aaa5-4d71cea3e07e clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><div id="divObj" class="rightGG_mail"><div class="colseGG" style="">如果遮挡特效请点击关闭广告！<a title="关闭" href="javascript:hiden();" rel="nofollow">关闭×</a></div><ins class="adsbygoogle" style="display: inline-block; width: 336px; height: 280px;" data-ad-client="ca-pub-5408099190056760" data-ad-slot="1030636218" data-adsbygoogle-status="done"><ins id="aswift_8_expand" style="display: inline-table; border: medium none; height: 280px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 336px; background-color: transparent;"><ins id="aswift_8_anchor" style="display: block; border: medium none; height: 280px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 336px; background-color: transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" id="aswift_8" name="aswift_8" style="left: 0px; position: absolute; top: 0px; border: 0px none; width: 336px; height: 280px;" src="index_30.html" width="336" height="280" frameborder="0"></iframe></ins></ins></ins></div></div>
+      
+  </section>
+
+<nav role="navigation" aria-labelledby="block-bootstrap-footer-menu" id="block-bootstrap-footer">
+            
+  <h2 class="visually-hidden" id="block-bootstrap-footer-menu">Footer menu</h2>
+  
+
+        
+
+              <ul class="menu nav footer">
+                            <li>
+        <a href="https://www.e-learn.cn/disclaimer" data-drupal-link-system-path="node/31">免责声明</a>
+                  </li>
+                        <li>
+        <a href="https://www.e-learn.cn/about-us" data-drupal-link-system-path="node/32">关于我们</a>
+                  </li>
+                        <li>
+        <a href="https://www.e-learn.cn/contact" data-drupal-link-system-path="contact">联系我们</a>
+                  </li>
+                        <li>
+        <a href="https://www.e-learn.cn/advertising" data-drupal-link-system-path="node/1133814">广告位出售</a>
+                  </li>
+                        <li>
+        <a href="https://www.e-learn.cn/AD" title="本页展示站长搜集到的促销优惠信息，总有一款是你需要的！" data-drupal-link-system-path="node/1133815">广告页</a>
+                  </li>
+                        <li>
+        <a href="https://www.e-learn.cn/gouwu" data-drupal-link-system-path="node/1390407">购物返利</a>
+                  </li>
+        </ul>
+  
+
+
+  </nav>
+<section id="block-copyright" class="block block-block-content block-block-contentb9f0431e-1723-41b2-8a27-450ed4ff074d clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><p style="text-align: center;">QQ群①：<a href="https://jq.qq.com/?_wv=1027&amp;k=5xC9C01" target="_top" title="点击入群" rel="nofollow">892566581</a></p><p><br></p><p style="text-align: center;">本站部分内容来自互联网，其发布内容言论不代表本站观点，如果其链接、内容的侵犯您的权益，烦<a href="https://www.e-learn.cn/contact" target="_self" rel="nofollow">请联系我们</a>，我们将及时予以处理。</p><p style="text-align: center;">Copyright © 2015-2018 &nbsp; &nbsp;<strong><a href="https://www.e-learn.cn/" target="_top" rel="nofollow">易学教程</a></strong>&nbsp; &nbsp; &nbsp;<strong><a href="https://www.e-learn.cn/" target="_top" rel="nofollow">e-learn.cn</a></strong> All Rights Reserved. 备案号：宁ICP备15000671号-3</p></div>
+      
+  </section>
+
+<section id="block-codehighlight" class="block block-block-content block-block-contentdf7510e5-6a1f-4bb0-93c8-62289b13fbed clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item">
+
+
+</div>
+      
+  </section>
+
+<section id="block-youcedaohang" class="block block-block-content block-block-content88c90e69-c240-414c-8b56-4c61450b2ccc clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><div class="card-holder">
+  <div class="card-wrapper">
+    <a href="http://tool.yiixue.com/?from=e-learn.cn" target="_top">
+      <div class="card bg-01">
+        <span class="card-content">易学工具箱</span>
+      </div>
+    </a>
+  </div>
+  <div class="card-wrapper">
+    <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+      <div class="card bg-02">
+        <span class="card-content">支付宝红包</span>
+      </div>
+    </button>
+  </div>
+</div>
+
+ 
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="false" data-keyboard="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+ 
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <img src="005byqpggy1fvp35b2p3zj308c0ciq6b.jpg" alt="" style="width: 40%;">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">不需要</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+</div>
+      
+  </section>
+
+
+  </div>
+
+    </footer>
+  
+  </div><iframe id="cros_iframe" style="width: 1px; height: 1px; border: 0px none; position: absolute; left: -9999px; top: -9999px;" src="index_31.html"></iframe><iframe id="google_osd_static_frame_3045163707338" name="google_osd_static_frame" style="display: none; width: 0px; height: 0px;" src="index_35.html"></iframe><iframe id="cros_iframe" style="width: 1px; height: 1px; border: 0px none; position: absolute; left: -9999px; top: -9999px;" src="index_36.html"></iframe><iframe id="cros_iframe" style="width: 1px; height: 1px; border: 0px none; position: absolute; left: -9999px; top: -9999px;" src="index_39.html"></iframe><iframe id="cros_iframe" style="width: 1px; height: 1px; border: 0px none; position: absolute; left: -9999px; top: -9999px;" src="index_40.html"></iframe><iframe id="cros_iframe" style="width: 1px; height: 1px; border: 0px none; position: absolute; left: -9999px; top: -9999px;" src="index_43.html"></iframe>
+
+    
+    
+
+
+
+
+    
+  
+
+<ins class="adsbygoogle adsbygoogle-noablate" style="display: none !important;" data-adsbygoogle-status="done"><ins id="aswift_9_expand" style="display: inline-table; border: medium none; height: 0px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 0px; background-color: transparent;"><ins id="aswift_9_anchor" style="display: block; border: medium none; height: 0px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 0px; background-color: transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" id="aswift_9" name="aswift_9" style="left: 0px; position: absolute; top: 0px; border: 0px none; width: 0px; height: 0px;" src="index_49.html" frameborder="0"></iframe></ins></ins></ins><div id="goog-gt-tt" class="skiptranslate" dir="ltr"><div style="padding: 8px;"><div><div class="logo"><img src="translate_24dp.png" alt="Google 翻译" width="20" height="20"></div></div></div><div class="top" style="padding: 8px; float: left; width: 100%;"><h1 class="title gray">原文</h1></div><div class="middle" style="padding: 8px;"><div class="original-text"></div></div><div class="bottom" style="padding: 8px;"><div class="activity-links"><span class="activity-link">提供更好的翻译建议</span><span class="activity-link"></span></div><div class="started-activity-container"><hr style="color: rgb(204, 204, 204); background-color: rgb(204, 204, 204); height: 1px; border: medium none;"><div class="activity-root"></div></div></div><div class="status-message" style="display: none;"></div></div><div id="backtotop" style="display: block;">Back to top</div><div class="goog-te-spinner-pos"><div class="goog-te-spinner-animation"><svg xmlns="http://www.w3.org/2000/svg" class="goog-te-spinner" width="96px" height="96px" viewBox="0 0 66 66"><circle class="goog-te-spinner-path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle></svg></div></div></body>
+</html>

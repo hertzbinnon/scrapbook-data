@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html itemscope="itemscope" itemtype="http://schema.org/Article" prefix="og: http://ogp.me/ns#" lang="en-US">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="profile" href="http://gmpg.org/xfn/11">
+	<link rel="pingback" href="http://blog.unixy.net/xmlrpc.php">
+	<!--[if lt IE 9]>
+	<script src="http://blog.unixy.net/wp-content/themes/independent-publisher/js/html5.js" type="text/javascript"></script>
+	<![endif]-->
+	<title>How to build your own CDN using BIND, GeoIP, Nginx, Varnish |</title>
+
+<!-- All in One SEO Pack 2.3.11.4 by Michael Torbert of Semper Fi Web Design[523,595] -->
+<meta name="description" content="In this article, we shall outline the steps required to build a private Content Delivery or Distribution Network (CDN) using Bind, GeoIP, Varnish and Nginx.">
+
+<meta name="keywords" content="cdn,varnish,nginx,own cdn,private cdn,geoip,bind,akamai">
+
+<link rel="canonical" href="http://blog.unixy.net/2010/07/how-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish/">
+<!-- /all in one seo pack -->
+
+<!-- This site is optimized with the Yoast SEO plugin v4.4 - https://yoast.com/wordpress/plugins/seo/ -->
+<link rel="canonical" href="http://blog.unixy.net/2010/07/how-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish/">
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="article">
+<meta property="og:title" content="How to build your own CDN using BIND, GeoIP, Nginx, and Varnish -">
+<meta property="og:description" content="In this article, we shall outline the steps required to build a private Content Delivery or Distribution Network (CDN) using Varnish Cache, Nginx, BIND, and GeoIP. The goal is to build a CDN using free, readily available software but most importantly spend the least amount of funds possible.">
+<meta property="og:url" content="http://blog.unixy.net/2010/07/how-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish/">
+<meta property="article:author" content="https://www.facebook.com/unixy">
+<meta property="article:tag" content="akamai">
+<meta property="article:tag" content="bind">
+<meta property="article:tag" content="build own cdn">
+<meta property="article:tag" content="build your own cdn">
+<meta property="article:tag" content="cache">
+<meta property="article:tag" content="CDN">
+<meta property="article:tag" content="geodns">
+<meta property="article:tag" content="GeoIP">
+<meta property="article:tag" content="global CDN">
+<meta property="article:tag" content="nginx">
+<meta property="article:tag" content="own CDN">
+<meta property="article:tag" content="patch">
+<meta property="article:tag" content="private CDN">
+<meta property="article:tag" content="varnish">
+<meta property="article:section" content="Challenge">
+<meta property="article:published_time" content="2010-07-18T18:40:51+00:00">
+<meta property="article:modified_time" content="2011-09-14T04:24:59+00:00">
+<meta property="og:updated_time" content="2011-09-14T04:24:59+00:00">
+<meta property="og:image" content="http://blog.unixy.net/wp-content/uploads/2010/07/CDN_design-300x273.png">
+<meta property="og:image" content="http://blog.unixy.net/wp-content/uploads/2010/07/text3648-300x237.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:description" content="In this article, we shall outline the steps required to build a private Content Delivery or Distribution Network (CDN) using Varnish Cache, Nginx, BIND, and GeoIP. The goal is to build a CDN using free, readily available software but most importantly spend the least amount of funds possible. ">
+<meta name="twitter:title" content="How to build your own CDN using BIND, GeoIP, Nginx, and Varnish -">
+<meta name="twitter:image" content="http://blog.unixy.net/wp-content/uploads/2010/07/CDN_design-300x273.png">
+<meta name="twitter:creator" content="@unixy">
+<!-- / Yoast SEO plugin. -->
+
+<link rel="dns-prefetch" href="http://s.w.org/">
+<link rel="alternate" type="application/rss+xml" title=" » Feed" href="http://blog.unixy.net/feed/">
+<link rel="alternate" type="application/rss+xml" title=" » Comments Feed" href="http://blog.unixy.net/comments/feed/">
+<link rel="alternate" type="application/rss+xml" title=" » How to build your own CDN using BIND, GeoIP, Nginx, and Varnish Comments Feed" href="http://blog.unixy.net/2010/07/how-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish/feed/">
+		
+		
+
+
+
+
+<!-- This site uses the Google Analytics by MonsterInsights plugin v6.0.12 - Using Analytics tracking - https://www.monsterinsights.com/ -->
+
+<!-- / Google Analytics by MonsterInsights -->
+
+
+
+
+<link rel="https://api.w.org/" href="http://blog.unixy.net/wp-json/">
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://blog.unixy.net/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://blog.unixy.net/wp-includes/wlwmanifest.xml"> 
+<meta name="generator" content="WordPress 4.7.5">
+<link rel="shortlink" href="http://blog.unixy.net/?p=342">
+<link rel="alternate" type="application/json+oembed" href="http://blog.unixy.net/wp-json/oembed/1.0/embed?url=http%3A%2F%2Fblog.unixy.net%2F2010%2F07%2Fhow-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish%2F">
+<link rel="alternate" type="text/xml+oembed" href="http://blog.unixy.net/wp-json/oembed/1.0/embed?url=http%3A%2F%2Fblog.unixy.net%2F2010%2F07%2Fhow-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish%2F&amp;format=xml">
+
+
+
+<link rel="icon" href="cropped-logo2-32x32.png" sizes="32x32">
+<link rel="icon" href="cropped-logo2-192x192.png" sizes="192x192">
+<link rel="apple-touch-icon-precomposed" href="http://blog.unixy.net/wp-content/uploads/2017/01/cropped-logo2-180x180.png">
+<meta name="msapplication-TileImage" content="http://blog.unixy.net/wp-content/uploads/2017/01/cropped-logo2-270x270.png">
+<link rel="stylesheet" type="text/css" id="SL_Style" href="chrome://imtranslator/content/css/translator.css">
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body class="post-template-default single single-post postid-342 single-format-standard" itemscope="itemscope" itemtype="http://schema.org/WebPage">
+
+
+
+<div id="page" class="site">
+	<header id="masthead" class="site-header" role="banner" itemscope="" itemtype="http://schema.org/WPHeader">
+
+		<div class="site-header-info">
+											
+					<a class="site-logo" href="http://blog.unixy.net/">
+				<img alt="" src="bb9e75e559c141e2936dd9520b011040" srcset="http://2.gravatar.com/avatar/bb9e75e559c141e2936dd9520b011040?s=200&amp;d=blank&amp;r=g 2x" class="avatar avatar-100 photo" width="100" height="100">			</a>
+		
+		<h1 class="site-title"><span class="byline"><span class="author p-author vcard h-card"><a class="u-url url fn n" href="http://blog.unixy.net/" title="View all posts by UNIXy" rel="author">UNIXy</a></span></span></h1>
+		<h2 class="site-description"></h2>
+
+		
+		<div class="site-published-separator"></div>
+		<h2 class="site-published">Published</h2>
+		<h2 class="site-published-date"><a href="http://blog.unixy.net/2010/07/how-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish/" title="How to build your own CDN using BIND, GeoIP, Nginx, and Varnish" rel="bookmark"><time class="entry-date dt-published" datetime="2010-07-18T18:40:51+0000" itemprop="datePublished" pubdate="pubdate">July 18, 2010</time></a></h2>
+				
+									</div>
+
+				
+			</header>
+	<!-- #masthead .site-header -->
+
+	<div id="main" class="site-main">
+
+	<div id="primary" class="content-area">
+		<main id="content" class="site-content" role="main">
+
+			
+				
+<article id="post-342" class="post-342 post type-post status-publish format-standard hentry category-challenge tag-akamai tag-bind tag-build-own-cdn tag-build-your-own-cdn tag-cache tag-cdn tag-geodns tag-geoip tag-global-cdn tag-nginx tag-own-cdn tag-patch tag-private-cdn tag-varnish" itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
+		<header class="entry-header">
+					<h2 class="entry-title-meta">
+			<span class="entry-title-meta-author">
+				<span class="byline"><span class="author p-author vcard h-card"><a class="u-url url fn n" href="http://blog.unixy.net/" title="View all posts by UNIXy" rel="author">UNIXy</a></span></span>			</span>
+				in <a href="http://blog.unixy.net/category/challenge/" rel="category tag">Challenge</a>				<span class="entry-title-meta-post-date">
+				<span class="sep"> | </span>
+					<a href="http://blog.unixy.net/2010/07/how-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish/" title="How to build your own CDN using BIND, GeoIP, Nginx, and Varnish" rel="bookmark"><time class="entry-date dt-published" datetime="2010-07-18T18:40:51+0000" itemprop="datePublished" pubdate="pubdate">July 18, 2010</time></a>			</span>
+							</h2>
+			<h1 class="entry-title p-name" itemprop="name">How to build your own CDN using BIND, GeoIP, Nginx, and Varnish</h1>
+			</header>
+	<!-- .entry-header -->
+	<div class="entry-content e-content" itemprop="mainContentOfPage">
+		<p class="no-break"><span class="st_pinterest_large" st_title="How to build your own CDN using BIND, GeoIP, Nginx, and Varnish" st_url="http://blog.unixy.net/2010/07/how-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish/" st_processed="yes"><span style="text-decoration: none; color: rgb(0, 0, 0); display: inline-block; cursor: pointer;" class="stButton"><span class="stLarge" style="background-image: url('pinterest_32.png');"></span></span></span>
+<span class="st_sharethis_large" st_title="How to build your own CDN using BIND, GeoIP, Nginx, and Varnish" st_url="http://blog.unixy.net/2010/07/how-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish/" st_processed="yes"><span style="text-decoration: none; color: rgb(0, 0, 0); display: inline-block; cursor: pointer;" class="stButton"><span class="stLarge" style="background-image: url('sharethis_32.png');"></span></span></span>
+<span class="st_email_large" st_title="How to build your own CDN using BIND, GeoIP, Nginx, and Varnish" st_url="http://blog.unixy.net/2010/07/how-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish/" st_processed="yes"><span style="text-decoration: none; color: rgb(0, 0, 0); display: inline-block; cursor: pointer;" class="stButton"><span class="stLarge" style="background-image: url('email_32.png');"></span></span></span>
+<span st_via="UNIXy" st_username="UNIXy" class="st_twitter_large" st_title="How to build your own CDN using BIND, GeoIP, Nginx, and Varnish" st_url="http://blog.unixy.net/2010/07/how-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish/" st_processed="yes"><span style="text-decoration: none; color: rgb(0, 0, 0); display: inline-block; cursor: pointer;" class="stButton"><span class="stLarge" style="background-image: url('twitter_32.png');"></span></span></span>
+<span class="st_facebook_large" st_title="How to build your own CDN using BIND, GeoIP, Nginx, and Varnish" st_url="http://blog.unixy.net/2010/07/how-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish/" st_processed="yes"><span style="text-decoration: none; color: rgb(0, 0, 0); display: inline-block; cursor: pointer;" class="stButton"><span class="stLarge" style="background-image: url('facebook_32.png');"></span></span></span></p><div style="float: right; margin-left: 10px;"><a href="https://twitter.com/share" class="twitter-share-button" data-count="vertical" data-url="http://blog.unixy.net/2010/07/how-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish/">Tweet</a></div>
+<p><strong>Update (2011-Sep-14)</strong>: UNIXy has built CDN software that you can run on your own hardware (or virtual machine) to build your own secure, flexible, private CDN. We’re working with individuals and organizations that are willing to trial the software. If you’re interested in joining the beta program for the CDN software, don’t hesitate to contact us. UNIXY clients are also welcome to join this program. Moreover they’ll benefit from our fully managed service and continued engineering assistance with the software. Do contact us today to get the ball rolling:<a href="https://www.unixy.net/secure/contact.php" onclick="__gaTracker('send', 'event', 'outbound-article', 'https://www.unixy.net/secure/contact.php', 'https://www.unixy.net/secure/contact.php');" title="CDN Consulting" target="_self">https://www.unixy.net/secure/contact.php</a></p>
+<p><strong>Update (2011-Jul-07):</strong>&nbsp;<a href="http://fastlayer.com/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://fastlayer.com', 'Fastlayer');" title="Fastlayer" target="_top">Fastlayer</a>, <a href="http://www.unixy.net/varnish" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.unixy.net/varnish', 'Varnish');" title="Varnish" target="_top">Varnish</a> for the <a href="http://fastlayer.com/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://fastlayer.com', 'cloud');" title="Fastlayer" target="_top">cloud</a>, is born. Fastlayer is a multi-tenant accelerator software appliance built to run on as small as a virtual machine. Read more here: <a href="http://fastlayer.com/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://fastlayer.com', 'fastlayer.com');" title="Fastlayer.com" target="_top">fastlayer.com</a></p>
+<p><strong>Update (2011-Feb-22)</strong>: We’ve released a Varnish based cPanel script should you be interested in boosting server performance. The benchmarks (conducted &amp; confirmed by third parties) have proved that Varnish+Apache is much faster than Nginx, Litespeed, &amp; Lighttpd. Read more here: <a href="http://www.unixy.net/varnish" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.unixy.net/varnish', 'http://www.unixy.net/varnish');" title="Varnish cPanel" target="_self">http://www.unixy.net/varnish</a></p>
+<p>In this article, we shall outline the steps required to build a private Content Delivery or Distribution Network (CDN) using a <a href="http://www.unixy.net/vps-hosting" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.unixy.net/vps-hosting', 'VPS');" title="VPS" target="_self">VPS</a> with&nbsp;<a href="http://www.varnish-cache.org/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.varnish-cache.org', 'Varnish');" title="Varnish Cache" target="_top">Varnish</a> Cache and <a href="http://www.nginx.org/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.nginx.org', 'Nginx');" title="Nginx" target="_top">Nginx</a>. The goal is to build a CDN using free, readily available software but most importantly spend the least amount of funds possible. To this end, all nodes participating in this network are going to be virtual machines (Xen, Virtuozzo, OpenVZ, etc). Should you have any questions or comments on the configuration of this CDN, please post them in this forum: <a href="http://www.varnish-cache.info/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.varnish-cache.info/', 'http://www.varnish-cache.info/');" title="Varnish Cache Forum" target="_top">http://www.varnish-cache.info/</a></p>
+<p>Our global CDN can not only keep the latest copy of static files closer to our global visitors but can also cache the most used pages (dynamic or not) in memory on the edge nodes! This means less trips to the geographically distant and slower Dynamic Node (see below). This is similar to what <a href="http://www.akamai.com/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.akamai.com', 'Akamai');" title="Akamai" target="_top">Akamai</a> and other well known firms do, only at a fraction of the cost. However, in this article, and to keep things simple, we will only be caching static files.</p>
+<p>Some of you might be surprised to learn that we built this global CDN free of charge for one of our beloved customers. UNIXY offers truly fully managed dedicated servers and clusters with <strong><a href="http://www.unixy.net/dedicated-servers" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.unixy.net/dedicated-servers', 'managed servers');" title="Managed server" target="_self">managed servers</a></strong><strong> starting as low as $45</strong>. Our motto is simple: what you cannot do with a few mouse clicks, we will gladly do it for you! Please visit us online when you have a chance: <a href="http://www.unixy.net/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.unixy.net', 'http://www.unixy.net');" title="Truly Fully Managed Dedicated Servers" target="_self">http://www.unixy.net</a>. Please do ask if you have any question or comment. No question is minor!</p>
+<ul>
+<li><strong>The Big Picture</strong></li>
+</ul>
+<p>The illustration below presents a logical layout of our CDN. Edge nodes can be located just about anywhere in the world. One could also add more nodes at any location should there be a capacity need. The Dynamic Content Node will typically run a mixture of MySQL, Apache, and server-side software built using PHP, Ruby, Python, .Net, or any language for that matter.</p>
+<p>&nbsp;</p>
+<div id="attachment_344" style="width: 310px;" class="wp-caption aligncenter"><a href="http://blog.unixy.net/wp-content/uploads/2010/07/CDN_design.png"><img class="size-medium wp-image-344" title="Global CDN Logical Design" src="cdn_design-300x273.png" alt="Global CDN" srcset="http://blog.unixy.net/wp-content/uploads/2010/07/CDN_design-300x273.png 300w, http://blog.unixy.net/wp-content/uploads/2010/07/CDN_design.png 324w" sizes="(max-width: 300px) 100vw, 300px" width="300" height="273"></a><p class="wp-caption-text">Global CDN</p></div>
+<p>&nbsp;</p>
+<ul>
+<li>Role of Each Software Component</li>
+</ul>
+<p>Nginx is a lightweight high-performance Web server that is able to handle large traffic consistently. We are leveraging its proxy and caching capabilities. We shall compile Nginx and leverage the proxy module. This module allows us to cache data on the local disks of the remote edge locations.</p>
+<p>As its name implies, Varnish Cache is a high-performance caching engine used to keep recently accessed content in memory for fastest access. Varnish is not a Web server. Hence our need to bundle it with Nginx, which is acting as a Web server at the edge nodes. We will cover Varnish in detail in our next installment.</p>
+<p>And finally the glue that holds all of these components together: BIND. BIND is the DNS software used to map Internet host names to IP addresses. We shall patch Bind to add geographical filters support. In other words, BIND will serve each client the IP of closest edge node in the CDN. For example, an vistor from Africa will receive the edge node IP of South Africa or Morocco depending on the filters. We will touch on this later.</p>
+<ul>
+<li>Node Layout</li>
+</ul>
+<p>At a minimum, we will need two nodes to demo and build our private CDN. That’s one Dynamic Content Node and one Edge Location node. The Dynamic Content Node will run the full LAMP stack along with BIND and the geographical filters patch. The Edge Location node will run Nginx and Varnish. One could always run BIND+GeoIP on a separate node as it is good practice. We will assign the hostname dynamic_content to the Dynamic Content Node and edge_node to the Edge Location.</p>
+<ul>
+<li>Installation and configuration</li>
+</ul>
+<p>Download BIND from ISC: <a href="http://www.bind9.net/download">http://www.bind9.net/download</a></p>
+<p>Download MaxMind’s C API:&nbsp;<a href="http://geolite.maxmind.com/download/geoip/api/c/">http://geolite.maxmind.com/download/geoip/api/c/</a></p>
+<blockquote>
+<div id="_mcePaste">[root@dynamic_node /]# cd /usr/src/</div>
+<div id="_mcePaste">[root@dynamic_node&nbsp;src]# wget http://mirrors.24-7-solutions.net/pub/isc/bind9/9.2.4/bind-9.2.4.tar.gz</div>
+<div>[root@dynamic_node src]# wget http://geolite.maxmind.com/download/geoip/api/c/GeoIP-1.4.6.tar.gz</div>
+<div>[root@dynamic_node&nbsp;src]# tar -xzvf&nbsp;bind-9.2.4.tar.gz</div>
+<div>[root@dynamic_node&nbsp;src]# tar -xzvf GeoIP-1.4.6.tar.gz</div>
+<div>[root@dynamic_node&nbsp;src]#&nbsp;cd GeoIP-1.4.6</div>
+<div>[root@dynamic_node&nbsp;GeoIP-1.4.6]# ./configure –prefix=/usr/local/geoip</div>
+<div>[root@dynamic_node&nbsp;GeoIP-1.4.6]# make</div>
+<div>[root@dynamic_node&nbsp;GeoIP-1.4.6]# make install</div>
+<div>[root@dynamic_node&nbsp;GeoIP-1.4.6]# cd ..</div>
+<div>
+<div>[root@dynamic_node&nbsp;src]#&nbsp;patch -p0 &lt; bind-9.2.4-geodns-patch/patch.diff</div>
+<div>[root@dynamic_node&nbsp;src]#&nbsp;cd bind-9.2.4</div>
+<div>[root@dynamic_node&nbsp;bind-9.2.4]#&nbsp;CFLAGS=”-I/usr/local/geoip/include” LDFLAGS=”-L/usr/local/geoip/lib -lGeoIP” ./configure –prefix=/usr/local/bind</div>
+<div>[root@dynamic_node&nbsp;bind-9.2.4]# make</div>
+<div>[root@dynamic_node&nbsp;bind-9.2.4]# make install</div>
+</div>
+</blockquote>
+<div>Bind-GeoIP comes with a named.conf file with examples on how to use filtering. Setup your zone files and test them accordingly. The GeoIP patch official page has instructions and examples. Be sure to read over it should you need help:&nbsp;<a href="http://www.caraytech.com/geodns/">http://www.caraytech.com/geodns/</a>.&nbsp;If you do not have access to nodes in the different geo locations around the world to test your BIND configuration, http://traceroute.org is a good resource to leverage. It allows one to test DNS resolution using a looking glass (ping).</div>
+<div>Here is how the filters should look inside named.conf:</div>
+<div>
+<blockquote>
+<div>view “us” {</div>
+<div>// Match clients from US &amp; Canada</div>
+<div>match-clients { country_US; country_CA; };</div>
+<div>// Provide recursive service to internal clients only.</div>
+<div>recursion no;</div>
+<div>zone “cdn.unixy.net” {</div>
+<div>type master;</div>
+<div>file “pri/unixy-us.db”;</div>
+<div>};</div>
+<div>zone “.” IN {</div>
+<div>type hint;</div>
+<div>file “named.ca”;</div>
+<div>};</div>
+<div>};</div>
+<div>view “latin” {</div>
+<div>// Match from Argentina, Chile and Brazil</div>
+<div>match-clients { country_AR; country_CL; country_BR; };</div>
+<div>// Provide recursive service to internal clients only.</div>
+<div>recursion no;</div>
+<div>zone “cdn.unixy.net” {</div>
+<div>type master;</div>
+<div>file “pri/unixy-latin.db”;</div>
+<div>};</div>
+<div>zone “.” IN {</div>
+<div>type hint;</div>
+<div>file “named.ca”;</div>
+<div>};</div>
+<div>};</div>
+</blockquote>
+</div>
+<div>Let us move on now and install Nginx and Varnish.</div>
+<blockquote>
+<div>[root@edge_node src]# wget http://nginx.org/download/nginx-0.8.45.tar.gz</div>
+<div>[root@edge_node src]# tar -xzvf nginx-0.8.45.tar.gz</div>
+<div>[root@edge_node src]#&nbsp;cd nginx-0.8.45</div>
+<div>[root@edge_node&nbsp;nginx-0.8.45]#&nbsp;./configure –prefix=/usr/local/nginx –with-http_realip_module</div>
+<div>[root@edge_node&nbsp;nginx-0.8.45]# make</div>
+<div>[root@edge_node&nbsp;nginx-0.8.45]# make install</div>
+</blockquote>
+<div>Here is our nginx.conf file with relevant lines only. All other configuration options are stock Nginx:</div>
+<p>&nbsp;</p>
+<blockquote>
+<div>http {</div>
+<div>include &nbsp; &nbsp; &nbsp; mime.types;</div>
+<div>default_type &nbsp;application/octet-stream;</div>
+<div>sendfile &nbsp; &nbsp; &nbsp; &nbsp;on;</div>
+<div>keepalive_timeout &nbsp;65;</div>
+<div>upstream dynamic_node {</div>
+<div style="padding-left: 30px;">server 1.1.1.1:80; # 1.1.1.1 is the IP of the Dynamic Node</div>
+<div>}</div>
+<div>server {</div>
+<div>listen &nbsp; &nbsp; &nbsp; 81;</div>
+<div>server_name &nbsp;cdn.unixy.net;</div>
+<div>location ~* \.(gif|jpg|jpeg|png|wmv|avi|mpg|mpeg|mp4|htm|html|js|css|mp3|swf|ico|flv)$ {</div>
+<div>proxy_set_header &nbsp;X-Real-IP &nbsp;$remote_addr;</div>
+<div><strong>proxy_pass http://dynamic_node;</strong></div>
+<div><strong>proxy_store /var/www/cache$uri;</strong></div>
+<div><strong>proxy_store_access user:rw group:rw all:r;</strong></div>
+<div>}</div>
+</blockquote>
+<div>In bold above are configuration lines that are key and define our private CDN. The upstream is essentially going to be our Dynamic Node to which we pass requests that cannot be served from cache. Also, Nginx will only be caching static files like GIF, PNG, and JS. Varnish on the other hand will be caching dynamic pages. Notice how Nginx listens on port 81. This is because Varnish will listen on port 80 and will forward requests to Nginx on port 80.&nbsp;More on Varnish later.</div>
+<div>Notice how we are using cdn.unixy.net as the handle for our virtual host name. It can be just about anything depending on your configuration. Once the cache builds up, you should start seeing files and directories being populated under&nbsp;/var/www/ as instructed above.</div>
+<div>
+<p>A few seconds of browsing and the disk cache is already populating:</p>
+</div>
+<div>
+<blockquote><p>[root@edge_node /]# ls -al /var/www/cache<br>
+contact-unixy css images index.html javascript js<br>
+[root@edge_node /]#</p></blockquote>
+</div>
+<div>Next we will proceed with installing Varnish. Varnish will act an in-memory cache. While it is not necessary, it can improve response time greatly. Nonetheless, installing Varnish does add a level of complexity to our configuration.</div>
+<blockquote>
+<div>[root@edge_node src]# wget http://downloads.sourceforge.net/project/varnish/varnish/2.1.2/varnish-2.1.2.tar.gz?use_mirror=cdnetworks-us-1&amp;ts=1279434397</div>
+<div>[root@edge_node src]# tar -xzvf varnish-2.1.2.tar.gz</div>
+<div>[root@edge_node src]# tar -xzvf varnish-2.1.2.tar.gz</div>
+<div>[root@edge_node&nbsp;varnish-2.1.2]#&nbsp;./configure –prefix=/usr/local/varnish</div>
+<div>[root@edge_node&nbsp;varnish-2.1.2]# make</div>
+<div>[root@edge_node&nbsp;varnish-2.1.2]# make install</div>
+</blockquote>
+<div>Be sure to follow guides online on the initial setup of Varnish. This article only covers the configuration of the CDN. There are certainly additional Varnish options&nbsp;that need tuning but those are most likely peculiar to your application.</div>
+<div>
+<blockquote>
+<div>backend default {</div>
+<div style="padding-left: 30px;">.host = “127.0.0.1”;</div>
+<div style="padding-left: 30px;">.port = “81”;</div>
+<div>}</div>
+</blockquote>
+</div>
+<div>
+<blockquote>
+<div>sub vcl_recv {</div>
+<div style="padding-left: 30px;">.<br>
+.<br>
+.<br>
+if (req.url ~ “\.(js|css|jpg|jpeg|png|gif|gz|tgz|bz2|tbz|mp3|ogg|swf)$”) {</div>
+<div style="padding-left: 60px;">return (lookup);</div>
+<div style="padding-left: 30px;">}<br>
+.<br>
+.<br>
+.</div>
+<div>}</div>
+</blockquote>
+<blockquote>
+<div>sub vcl_fetch {</div>
+<div style="padding-left: 30px;">.<br>
+.<br>
+.<br>
+if (req.url ~ “\.(js|css|jpg|jpeg|png|gif|gz|tgz|bz2|tbz|mp3|ogg|swf)$”) {</div>
+<div style="padding-left: 60px;">unset obj.http.set-cookie;</div>
+<div style="padding-left: 30px;">}<br>
+.<br>
+.<br>
+.</div>
+<div>}</div>
+</blockquote>
+<div>Go ahead and startup Varnish and browse around you portal a bit to build the cache. Monitor the command varnishstat on the edge node and you will be able to see the cache hits and misses. There should be more hits as the cache builds up over time and more objects are accessed.</div>
+</div>
+<div>
+<p>&nbsp;</p>
+<ul>
+<li>Wrap up</li>
+</ul>
+<p><strong> </strong><strong><span style="font-weight: normal;">The instructions above can replicated across however many additional Edge Nodes you want to add. One could also add redundancy to the BIND+GeoIP setup by configuring secondary nodes. The illustration below shows the flow of a request from top to bottom.</span><br>
+</strong></p>
+<div>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<div id="attachment_389" style="width: 437px;" class="wp-caption aligncenter"><a href="http://blog.unixy.net/wp-content/uploads/2010/07/text3648.png"><img class="size-medium wp-image-389 " title="CDN Request and Response Flow" src="text3648-300x237.png" alt="CDN Built Using Nginx and Varnish" srcset="http://blog.unixy.net/wp-content/uploads/2010/07/text3648-300x237.png 300w, http://blog.unixy.net/wp-content/uploads/2010/07/text3648.png 427w" sizes="(max-width: 427px) 100vw, 427px" width="427" height="338"></a><p class="wp-caption-text">CDN Request and Response Flow</p></div>
+<p><strong> </strong>That’s all folks! I hope you enjoyed this article.</p>
+</div>
+</div>
+<p><span class="st_pinterest_large" st_title="How to build your own CDN using BIND, GeoIP, Nginx, and Varnish" st_url="http://blog.unixy.net/2010/07/how-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish/" st_processed="yes"><span style="text-decoration: none; color: rgb(0, 0, 0); display: inline-block; cursor: pointer;" class="stButton"><span class="stLarge" style="background-image: url('pinterest_32.png');"></span></span></span>
+<span class="st_sharethis_large" st_title="How to build your own CDN using BIND, GeoIP, Nginx, and Varnish" st_url="http://blog.unixy.net/2010/07/how-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish/" st_processed="yes"><span style="text-decoration: none; color: rgb(0, 0, 0); display: inline-block; cursor: pointer;" class="stButton"><span class="stLarge" style="background-image: url('sharethis_32.png');"></span></span></span>
+<span class="st_email_large" st_title="How to build your own CDN using BIND, GeoIP, Nginx, and Varnish" st_url="http://blog.unixy.net/2010/07/how-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish/" st_processed="yes"><span style="text-decoration: none; color: rgb(0, 0, 0); display: inline-block; cursor: pointer;" class="stButton"><span class="stLarge" style="background-image: url('email_32.png');"></span></span></span>
+<span st_via="UNIXy" st_username="UNIXy" class="st_twitter_large" st_title="How to build your own CDN using BIND, GeoIP, Nginx, and Varnish" st_url="http://blog.unixy.net/2010/07/how-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish/" st_processed="yes"><span style="text-decoration: none; color: rgb(0, 0, 0); display: inline-block; cursor: pointer;" class="stButton"><span class="stLarge" style="background-image: url('twitter_32.png');"></span></span></span>
+<span class="st_facebook_large" st_title="How to build your own CDN using BIND, GeoIP, Nginx, and Varnish" st_url="http://blog.unixy.net/2010/07/how-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish/" st_processed="yes"><span style="text-decoration: none; color: rgb(0, 0, 0); display: inline-block; cursor: pointer;" class="stButton"><span class="stLarge" style="background-image: url('facebook_32.png');"></span></span></span></p>
+		
+									</div>
+	<!-- .entry-content -->
+
+			<div class="post-author-bottom">
+			<div class="post-author-card">
+				<a class="site-logo" href="http://blog.unixy.net/">
+					<img alt="" src="bb9e75e559c141e2936dd9520b011040" srcset="http://2.gravatar.com/avatar/bb9e75e559c141e2936dd9520b011040?s=200&amp;d=blank&amp;r=g 2x" class="avatar avatar-100 photo" width="100" height="100">				</a>
+
+				<div class="post-author-info">
+					<h1 class="site-title">
+						<span class="byline"><span class="author p-author vcard h-card"><a class="u-url url fn n" href="http://blog.unixy.net/" title="View all posts by UNIXy" rel="author">UNIXy</a></span></span>					</h1>
+
+					<h2 class="site-description"></h2>
+				</div>
+				<div class="post-published-date">
+					<h2 class="site-published">Published</h2>
+					<h2 class="site-published-date"><a href="http://blog.unixy.net/2010/07/how-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish/" title="How to build your own CDN using BIND, GeoIP, Nginx, and Varnish" rel="bookmark"><time class="entry-date dt-published" datetime="2010-07-18T18:40:51+0000" itemprop="datePublished" pubdate="pubdate">July 18, 2010</time></a></h2>
+										
+					
+				</div>
+			</div>
+		</div>
+		<!-- .post-author-bottom -->
+		
+	<footer class="entry-meta">
+		
+					<div id="share-comment-button" style="display: block;">
+				<button>
+					<i class="share-comment-icon"></i>Write a Comment				</button>
+			</div>
+		
+			</footer>
+	<!-- .entry-meta -->
+
+</article><!-- #post-342 -->
+
+				
+	<div id="commentform-top" style="display: none;"></div> <!-- do not remove; used by jQuery to move the comment reply form here -->
+		<div id="respond" class="comment-respond" style="display: none;">
+		<h3 id="reply-title" class="comment-reply-title"> <small><a rel="nofollow" id="cancel-comment-reply-link" href="http://blog.unixy.net/2010/07/how-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish/" style="display: none;">Cancel Reply</a></small></h3>			<form action="http://blog.unixy.net/wp-comments-post.php" method="post" id="commentform" class="comment-form" novalidate="">
+				<div id="main-reply-title"><h3>Write a Comment</h3></div><div class="comment-form-reply-title"><p>Comment</p></div><p class="comment-form-comment" id="comment-form-field"><textarea id="comment" name="comment" cols="60" rows="6" aria-required="true"></textarea></p><p class="comment-form-author"><label for="author">Name</label><input id="author" name="author" value="" aria-required="true" type="text"></p>
+<p class="comment-form-email"><label for="email">Email</label><input id="email" name="email" value="" aria-required="true" type="text"></p>
+<p class="comment-form-url"><label for="url">Website</label><input id="url" name="url" value="" type="text"></p>
+<p class="form-submit"><input name="submit" id="submit" class="submit" value="Submit Comment" type="submit"> <input name="comment_post_ID" value="342" id="comment_post_ID" type="hidden">
+<input name="comment_parent" id="comment_parent" value="0" type="hidden">
+</p><p>Comment moderation is enabled. Your comment may take some time to appear.</p>			</form>
+			</div><!-- #respond -->
+	
+
+	<div id="comments" class="comments-area">
+				
+			
+			
+			<ol class="commentlist">
+						<li class="comment even thread-even depth-1" id="li-comment-18524">
+		<article id="comment-18524" class="comment">
+			<footer>
+				<div class="comment-author vcard">
+					<img alt="" src="d67dc06a6330e7043f85896351fd7e83" srcset="http://1.gravatar.com/avatar/d67dc06a6330e7043f85896351fd7e83?s=96&amp;d=blank&amp;r=g 2x" class="avatar avatar-48 photo" width="48" height="48">					<cite class="fn">Maxim Veksler</cite>									</div>
+				<!-- .comment-author .vcard -->
+				<div class="comment-meta commentmetadata">
+					<a href="http://blog.unixy.net/2010/07/how-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish/#comment-18524">
+						<time pubdate="" datetime="2011-02-20T16:39:19+00:00">
+							February 20, 2011						</time>
+					</a>
+									</div>
+				<!-- .comment-meta .commentmetadata -->
+			</footer>
+
+			<div class="comment-content "><p>Hi, interesting setup.</p>
+<p>A question – Does this setup also handles DNS resolver proximity? Because if you DNS server sits in US but you try to resolve from China you still get degraded performance.</p>
+<p>Generally speaking: I’m personally intrigued  to know how Akamai really works?</p>
+<p>Maxim.</p>
+</div>
+
+			<div class="reply">
+							</div>
+			<!-- .reply -->
+		</article><!-- #comment-## -->
+		</li><!-- #comment-## -->
+		<li class="comment byuser comment-author-unixy bypostauthor odd alt thread-odd thread-alt depth-1" id="li-comment-18539">
+		<article id="comment-18539" class="comment">
+			<footer>
+				<div class="comment-author vcard">
+					<img alt="" src="bb9e75e559c141e2936dd9520b011040_001.dat" srcset="http://2.gravatar.com/avatar/bb9e75e559c141e2936dd9520b011040?s=96&amp;d=blank&amp;r=g 2x" class="avatar avatar-48 photo" width="48" height="48">					<cite class="fn">UNIXy</cite>									</div>
+				<!-- .comment-author .vcard -->
+				<div class="comment-meta commentmetadata">
+					<a href="http://blog.unixy.net/2010/07/how-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish/#comment-18539">
+						<time pubdate="" datetime="2011-02-22T18:25:26+00:00">
+							February 22, 2011						</time>
+					</a>
+									</div>
+				<!-- .comment-meta .commentmetadata -->
+			</footer>
+
+			<div class="comment-content "><p>Hi Maxim,</p>
+<p>The ratio of DNS queries to HTTP traffic is typically very negligible. So DNS response time lag for a visitor from China interrogating the GeoDNS node in the US is also negligible. DNS responses is cached for several minutes if not hours by local ISP resolvers so DNS “trips” are minimal.</p>
+<p>Regards</p>
+</div>
+
+			<div class="reply">
+							</div>
+			<!-- .reply -->
+		</article><!-- #comment-## -->
+		</li><!-- #comment-## -->
+		<li class="comment even thread-even depth-1" id="li-comment-18556">
+		<article id="comment-18556" class="comment">
+			<footer>
+				<div class="comment-author vcard">
+					<img alt="" src="bd9fda46c9381d7f4715731606a4c613" srcset="http://2.gravatar.com/avatar/bd9fda46c9381d7f4715731606a4c613?s=96&amp;d=blank&amp;r=g 2x" class="avatar avatar-48 photo" width="48" height="48">					<cite class="fn">Mark</cite>									</div>
+				<!-- .comment-author .vcard -->
+				<div class="comment-meta commentmetadata">
+					<a href="http://blog.unixy.net/2010/07/how-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish/#comment-18556">
+						<time pubdate="" datetime="2011-02-26T09:46:57+00:00">
+							February 26, 2011						</time>
+					</a>
+									</div>
+				<!-- .comment-meta .commentmetadata -->
+			</footer>
+
+			<div class="comment-content "><p>How easy is it to add new CDN sites (e.g., an origin pull hostname) to the system? How would this be done?</p>
+</div>
+
+			<div class="reply">
+							</div>
+			<!-- .reply -->
+		</article><!-- #comment-## -->
+		</li><!-- #comment-## -->
+		<li class="comment odd alt thread-odd thread-alt depth-1" id="li-comment-19501">
+		<article id="comment-19501" class="comment">
+			<footer>
+				<div class="comment-author vcard">
+					<img alt="" src="bc7aa4c3598a42bf83a02f89f847bdc5" srcset="http://2.gravatar.com/avatar/bc7aa4c3598a42bf83a02f89f847bdc5?s=96&amp;d=blank&amp;r=g 2x" class="avatar avatar-48 photo" width="48" height="48">					<cite class="fn"><a href="http://www.samhamilton.co.uk/" rel="external nofollow" class="url">Sam Hamilton</a></cite>									</div>
+				<!-- .comment-author .vcard -->
+				<div class="comment-meta commentmetadata">
+					<a href="http://blog.unixy.net/2010/07/how-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish/#comment-19501">
+						<time pubdate="" datetime="2011-06-08T06:43:02+00:00">
+							June 8, 2011						</time>
+					</a>
+									</div>
+				<!-- .comment-meta .commentmetadata -->
+			</footer>
+
+			<div class="comment-content "><p>Thanks for the interesting article. Was just wondering wow come you decide to use both Varnish and Nginx? Why not just use Nginx?</p>
+<p>Thanks<br>
+Sam</p>
+</div>
+
+			<div class="reply">
+							</div>
+			<!-- .reply -->
+		</article><!-- #comment-## -->
+		</li><!-- #comment-## -->
+		<li class="comment even thread-even depth-1" id="li-comment-21346">
+		<article id="comment-21346" class="comment">
+			<footer>
+				<div class="comment-author vcard">
+					<img alt="" src="2b70cd058afa5e54e6aa149852a5a245" srcset="http://2.gravatar.com/avatar/2b70cd058afa5e54e6aa149852a5a245?s=96&amp;d=blank&amp;r=g 2x" class="avatar avatar-48 photo" width="48" height="48">					<cite class="fn">Yo</cite>									</div>
+				<!-- .comment-author .vcard -->
+				<div class="comment-meta commentmetadata">
+					<a href="http://blog.unixy.net/2010/07/how-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish/#comment-21346">
+						<time pubdate="" datetime="2011-11-12T22:14:04+00:00">
+							November 12, 2011						</time>
+					</a>
+									</div>
+				<!-- .comment-meta .commentmetadata -->
+			</footer>
+
+			<div class="comment-content "><p>Hello,</p>
+<p>Why not use Squid in this setup?  Benefits of using Varnish instead of Squid?</p>
+</div>
+
+			<div class="reply">
+							</div>
+			<!-- .reply -->
+		</article><!-- #comment-## -->
+		</li><!-- #comment-## -->
+		<li class="comment odd alt thread-odd thread-alt depth-1" id="li-comment-23898">
+		<article id="comment-23898" class="comment">
+			<footer>
+				<div class="comment-author vcard">
+					<img alt="" src="0c3a9b170f95d0673ec7b5fc1c6c74f5" srcset="http://0.gravatar.com/avatar/0c3a9b170f95d0673ec7b5fc1c6c74f5?s=96&amp;d=blank&amp;r=g 2x" class="avatar avatar-48 photo" width="48" height="48">					<cite class="fn"><a href="http://usefulurl.com/" rel="external nofollow" class="url">Johan</a></cite>									</div>
+				<!-- .comment-author .vcard -->
+				<div class="comment-meta commentmetadata">
+					<a href="http://blog.unixy.net/2010/07/how-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish/#comment-23898">
+						<time pubdate="" datetime="2012-02-15T17:43:45+00:00">
+							February 15, 2012						</time>
+					</a>
+									</div>
+				<!-- .comment-meta .commentmetadata -->
+			</footer>
+
+			<div class="comment-content "><p>First of all, thanks for this great tutorial.<br>
+I’m soon to upgrade my website to using a cdn, I have already written all my scripts to use <a href="http://cdn.mydomain.com/" rel="nofollow">http://cdn.mydomain.com</a>, but currently, that subdomain is on the same server. On the dedicated server I’m renting, how would I change those subdomains settings to use BIND as explained?</p>
+</div>
+
+			<div class="reply">
+							</div>
+			<!-- .reply -->
+		</article><!-- #comment-## -->
+		</li><!-- #comment-## -->
+			</ol><!-- .commentlist -->
+
+			
+		
+		
+		
+			
+			<div id="share-comment-button-bottom" style="display: block;">
+				<button>
+					<i class="share-comment-icon"></i>Write a Comment				</button>
+			</div>
+			<div id="commentform-bottom" style="display: none;"></div> <!-- do not remove; used by jQuery to move the comment reply form here -->
+		
+					<div id="webmentions" class="mentions-list">
+				<h3>Webmentions</h3>
+								<li class="pingback even thread-even depth-1" id="li-comment-471960">
+											<cite class="fn"><a href="http://www.world-mag.pw/criando-um-cdn-content-delivery-network/" rel="external nofollow" class="url">Criando um CDN – content delivery network – World Magazine</a></cite>						<small>February 15, 2012</small>
+										<p>[…] How to build your own CDN using BIND, GeoIP, Nginx, and Varnish […]</p>
+				</li>
+								<li class="pingback odd alt thread-odd thread-alt depth-1" id="li-comment-470506">
+											<cite class="fn"><a href="http://dsgn.ist/2014/09/10/create-cdn-server-using-nginx/" rel="external nofollow" class="url">How to create your own CDN server using Nginx – DSGN.IST</a></cite>						<small>February 15, 2012</small>
+										<p>[…] 1. <a href="http://blog.unixy.net/2010/07/how-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish/" rel="nofollow">http://blog.unixy.net/2010/07/how-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish/</a> 2. […]</p>
+				</li>
+								<li class="pingback even thread-even depth-1" id="li-comment-465423">
+											<cite class="fn"><a href="http://sh-xianggelila.com/cpanel/whm-cpanel-nginx" rel="external nofollow" class="url">Whm Cpanel Nginx – SH Xiang Gelila</a></cite>						<small>February 15, 2012</small>
+										<p>[…] How to build your own CDN using BIND, … – In this article, we shall outline the steps required to build a private Content Delivery or Distribution Network (CDN) using Bind, GeoIP, Varnish and Nginx. […]</p>
+				</li>
+								<li class="pingback odd alt thread-odd thread-alt depth-1" id="li-comment-465288">
+											<cite class="fn"><a href="http://sh-xianggelila.com/cpanel/cpanel-named-conf" rel="external nofollow" class="url">Cpanel Named.conf – SH Xiang Gelila</a></cite>						<small>February 15, 2012</small>
+										<p>[…] How to build your own CDN using BIND, … – How to build your own CDN using BIND, GeoIP, Nginx, and Varnish […]</p>
+				</li>
+								<li class="pingback even thread-even depth-1" id="li-comment-465165">
+											<cite class="fn"><a href="http://sh-xianggelila.com/cpanel/cpanel-proxy-sourceforge" rel="external nofollow" class="url">Cpanel Proxy Sourceforge – SH Xiang Gelila</a></cite>						<small>February 15, 2012</small>
+										<p>[…] How to build your own CDN using … – How to build your own CDN using BIND, GeoIP, Nginx, and Varnish […]</p>
+				</li>
+								<li class="pingback odd alt thread-odd thread-alt depth-1" id="li-comment-465162">
+											<cite class="fn"><a href="http://nearbycircle.com/cpanel/free-varnish-cpanel" rel="external nofollow" class="url">Free Varnish Cpanel – Near By Circle</a></cite>						<small>February 15, 2012</small>
+										<p>[…] How to build your own CDN using … – In this article, we shall outline the steps required to build a private Content Delivery or Distribution Network (CDN) using Bind, GeoIP, Varnish and Nginx. […]</p>
+				</li>
+								<li class="pingback even thread-even depth-1" id="li-comment-465042">
+											<cite class="fn"><a href="http://extendacloud.com/cpanel/nginx-hosting-cpanel" rel="external nofollow" class="url">Nginx Hosting Cpanel – Extends Cloud</a></cite>						<small>February 15, 2012</small>
+										<p>[…] How to build your own CDN using BIND, … – In this article, we shall outline the steps required to build a private Content Delivery or Distribution Network (CDN) using Bind, GeoIP, Varnish and Nginx. […]</p>
+				</li>
+								<li class="pingback odd alt thread-odd thread-alt depth-1" id="li-comment-464628">
+											<cite class="fn"><a href="http://cloudservicescomparison.xyz/cpanel/install-bind-cpanel" rel="external nofollow" class="url">Install Bind Cpanel | Cloud Services Comparison</a></cite>						<small>February 15, 2012</small>
+										<p>[…] How to build your own CDN using BIND, … – In this article, we shall outline the steps required to build a private Content Delivery or Distribution Network (CDN) using Bind, GeoIP, Varnish and Nginx. […]</p>
+				</li>
+								<li class="pingback even thread-even depth-1" id="li-comment-464556">
+											<cite class="fn"><a href="http://cloudstorageservices.xyz/cpanel/geoip-cpanel" rel="external nofollow" class="url">Geoip Cpanel | Cloud Storage Services</a></cite>						<small>February 15, 2012</small>
+										<p>[…] How to build your own CDN using BIND, … – In this article, we shall outline the steps required to build a private Content Delivery or Distribution Network (CDN) using Bind, GeoIP, Varnish and Nginx. […]</p>
+				</li>
+								<li class="pingback odd alt thread-odd thread-alt depth-1" id="li-comment-464538">
+											<cite class="fn"><a href="http://568huiju.com/cpanel/varnish-nginx-cpanel" rel="external nofollow" class="url">Varnish Nginx Cpanel – 568 Huiju</a></cite>						<small>February 15, 2012</small>
+										<p>[…] How to build your own CDN using BIND, GeoIP, Nginx … – In this article, we shall outline the steps required to build a private Content Delivery or Distribution Network (CDN) using Bind, GeoIP, Varnish and Nginx. […]</p>
+				</li>
+								<li class="pingback even thread-even depth-1" id="li-comment-464234">
+											<cite class="fn"><a href="http://systemtoy.com/cpanel/how-to-configure-varnish-on-cpanel" rel="external nofollow" class="url">How To Configure Varnish On Cpanel – System Toy</a></cite>						<small>February 15, 2012</small>
+										<p>[…] How to build your own CDN using BIND, … – How to build your own CDN using BIND, GeoIP, Nginx, and Varnish […]</p>
+				</li>
+								<li class="pingback odd alt thread-odd thread-alt depth-1" id="li-comment-463736">
+											<cite class="fn"><a href="https://mattgeri.com/2010/08/10/build-your-own-cdn/" rel="external nofollow" class="url">Build your own CDN – Matt Geri</a></cite>						<small>February 15, 2012</small>
+										<p>[…] How to build your own CDN using BIND, GeoIP, Nginx, and Varnish […]</p>
+				</li>
+								<li class="pingback even thread-even depth-1" id="li-comment-463667">
+											<cite class="fn"><a href="http://nearbycircle.com/cpanel/cpanel-latest-release-build" rel="external nofollow" class="url">Cpanel Latest Release Build – Near By Circle</a></cite>						<small>February 15, 2012</small>
+										<p>[…] How to build your own CDN using BIND, … – In this article, we shall outline the steps required to build a private Content Delivery or Distribution Network (CDN) using Bind, GeoIP, Varnish and Nginx. […]</p>
+				</li>
+								<li class="pingback odd alt thread-odd thread-alt depth-1" id="li-comment-463571">
+											<cite class="fn"><a href="http://cloudservicescomparison.xyz/cpanel/nginx-for-cpanel" rel="external nofollow" class="url">Nginx For Cpanel | Cloud Services Comparison</a></cite>						<small>February 15, 2012</small>
+										<p>[…] How to build your own CDN using BIND, … – In this article, we shall outline the steps required to build a private Content Delivery or Distribution Network (CDN) using Bind, GeoIP, Varnish and Nginx. […]</p>
+				</li>
+								<li class="pingback even thread-even depth-1" id="li-comment-463564">
+											<cite class="fn"><a href="http://cloudservicescomparison.xyz/cpanel/bind-not-working-cpanel" rel="external nofollow" class="url">Bind Not Working Cpanel | Cloud Services Comparison</a></cite>						<small>February 15, 2012</small>
+										<p>[…] How to build your own CDN using … – In this article, we shall outline the steps required to build a private Content Delivery or Distribution Network (CDN) using Bind, GeoIP, Varnish and Nginx. […]</p>
+				</li>
+								<li class="pingback odd alt thread-odd thread-alt depth-1" id="li-comment-463350">
+											<cite class="fn"><a href="http://systemtoy.com/cpanel/install-squid-cpanel" rel="external nofollow" class="url">Install Squid Cpanel – System Toy</a></cite>						<small>February 15, 2012</small>
+										<p>[…] How to build your own CDN using BIND, … – In this article, we shall outline the steps required to build a private Content Delivery or Distribution Network (CDN) using Bind, GeoIP, Varnish and Nginx. […]</p>
+				</li>
+								<li class="pingback even thread-even depth-1" id="li-comment-463217">
+											<cite class="fn"><a href="http://cloudhybrid.xyz/cpanel/bind-cpanel" rel="external nofollow" class="url">Bind Cpanel | Cloud Hybrid</a></cite>						<small>February 15, 2012</small>
+										<p>[…] How to build your own CDN using BIND, … – In this article, we shall outline the steps required to build a private Content Delivery or Distribution Network (CDN) using Bind, GeoIP, Varnish and Nginx. […]</p>
+				</li>
+								<li class="pingback odd alt thread-odd thread-alt depth-1" id="li-comment-463198">
+											<cite class="fn"><a href="http://cloudplatform.xyz/cpanel/cpanel-dns-only-resolver" rel="external nofollow" class="url">Cpanel Dns Only Resolver | Cloud Platform</a></cite>						<small>February 15, 2012</small>
+										<p>[…] How to build your own CDN using … – In this article, we shall outline the steps required to build a private Content Delivery or Distribution Network (CDN) using Bind, GeoIP, Varnish and Nginx. […]</p>
+				</li>
+								<li class="pingback even thread-even depth-1" id="li-comment-463180">
+											<cite class="fn"><a href="http://cloudpc.xyz/cpanel/cpanel-dns-resolvers" rel="external nofollow" class="url">Cpanel Dns Resolvers | Cloud PC</a></cite>						<small>February 15, 2012</small>
+										<p>[…] How to build your own CDN using … – In this article, we shall outline the steps required to build a private Content Delivery or Distribution Network (CDN) using Bind, GeoIP, Varnish and Nginx. […]</p>
+				</li>
+								<li class="pingback odd alt thread-odd thread-alt depth-1" id="li-comment-463124">
+											<cite class="fn"><a href="http://extendacloud.com/cpanel/cpanel-whm-resolvers" rel="external nofollow" class="url">Cpanel Whm Resolvers – Extends Cloud</a></cite>						<small>February 15, 2012</small>
+										<p>[…] How to build your own CDN using BIND, GeoIP, Nginx … – In this article, we shall outline the steps required to build a private Content Delivery or Distribution Network (CDN) using Bind, GeoIP, Varnish and Nginx. […]</p>
+				</li>
+								<li class="pingback even thread-even depth-1" id="li-comment-461626">
+											<cite class="fn"><a href="http://nearbycircle.com/cpanel/cpanel-failover-setup" rel="external nofollow" class="url">Cpanel Failover Setup</a></cite>						<small>February 15, 2012</small>
+										<p>[…] How to build your own CDN using BIND, GeoIP, Nginx … – In this article, we shall outline the steps required to build a private Content Delivery or Distribution Network (CDN) using Bind, GeoIP, Varnish and Nginx. […]</p>
+				</li>
+								<li class="pingback odd alt thread-odd thread-alt depth-1" id="li-comment-461516">
+											<cite class="fn"><a href="http://nearbycircle.com/cpanel/ca-bundle-cpanel" rel="external nofollow" class="url">Ca Bundle Cpanel</a></cite>						<small>February 15, 2012</small>
+										<p>[…] How to build your own CDN using BIND, GeoIP, Nginx … – In this article, we shall outline the steps required to build a private Content Delivery or Distribution Network (CDN) using Bind, GeoIP, Varnish and Nginx. […]</p>
+				</li>
+								<li class="pingback even thread-even depth-1" id="li-comment-439548">
+											<cite class="fn"><a href="http://kidsmart.info/how-to-build-own-vps/" rel="external nofollow" class="url">How To Build Own Vps | Adsense</a></cite>						<small>February 15, 2012</small>
+										<p>[…] How to build your own CDN using BIND, GeoIP, Nginx … – In this article, we shall outline the steps required to build a private Content Delivery or Distribution Network (CDN) using Bind, GeoIP, Varnish and Nginx. […]</p>
+				</li>
+								<li class="trackback odd alt thread-odd thread-alt depth-1" id="li-comment-426861">
+											<cite class="fn"><a href="http://banklånse.eu/banklan-trots-betalningsanmaerkning/" rel="external nofollow" class="url">låna pengar utan säkerhet</a></cite>						<small>February 15, 2012</small>
+										<p><strong>låna pengar utan säkerhet</strong></p>
+<p>Om du vill fa tillgang till avlöningsdag förskott just nu rätt plats att komma igang pa jakt är pa Internet</p>
+				</li>
+								<li class="trackback even thread-even depth-1" id="li-comment-376191">
+											<cite class="fn"><a href="http://luottoa.webnode.com/" rel="external nofollow" class="url">luottoa</a></cite>						<small>February 15, 2012</small>
+										<p><strong>luottoa</strong></p>
+<p>Sally</p>
+				</li>
+								<li class="trackback odd alt thread-odd thread-alt depth-1" id="li-comment-342436">
+											<cite class="fn"><a href="http://www.asqtampabay.org/googlebots2.asp?ugg-boots-review-9mm-pistols-prices-buy-uggs-5800-outlet-online/" rel="external nofollow" class="url">cheap ugg boots on sale black friday cyber monday</a></cite>						<small>February 15, 2012</small>
+										<p><strong>cheap ugg boots on sale black friday cyber monday</strong></p>
+<p>Forewarning – Don’t Try to follow the other handbags Instructions Until You Check Out This 100 % free Documentation</p>
+				</li>
+								<li class="trackback even thread-even depth-1" id="li-comment-338684">
+											<cite class="fn"><a href="http://www.beysanmak.com/" rel="external nofollow" class="url">burberry outlet</a></cite>						<small>February 15, 2012</small>
+										<p><strong>burberry outlet</strong></p>
+<p>fabric, Fitting, Un tagging, Slide free and even smells immune. The make or model that many went about out of a single</p>
+				</li>
+								<li class="trackback odd alt thread-odd thread-alt depth-1" id="li-comment-288148">
+											<cite class="fn"><a href="http://www.issp.org/images/pjs.asp?sale=parajumpers-jacket-for-women/parajumpers-extra-long-coat" rel="external nofollow" class="url">Parajumpers Extra Long Coat</a></cite>						<small>February 15, 2012</small>
+										<p><strong>Parajumpers Extra Long Coat</strong></p>
+<p>$580.2 million from your third quarter of most 2011. On well known set of footwear, Variety already been stagnant,</p>
+				</li>
+								<li class="pingback even thread-even depth-1" id="li-comment-240225">
+											<cite class="fn"><a href="http://shailan.com/4579/create-cdn-server-using-nginx/" rel="external nofollow" class="url">How to create your own CDN server using Nginx - Shailan.com</a></cite>						<small>February 15, 2012</small>
+										<p>[…] 1. <a href="http://blog.unixy.net/2010/07/how-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish/" rel="nofollow">http://blog.unixy.net/2010/07/how-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish/</a> 2. […]</p>
+				</li>
+								<li class="trackback odd alt thread-odd thread-alt depth-1" id="li-comment-186542">
+											<cite class="fn"><a href="http://www.urbanhotel.co.za/urb.asp?id=burberry-handbags-latest-collection" rel="external nofollow" class="url">burberry handbags less</a></cite>						<small>February 15, 2012</small>
+										<p><strong>burberry handbags less</strong></p>
+<p>place. As yet the industry has reported some economic losses,</p>
+				</li>
+								<li class="pingback even thread-even depth-1" id="li-comment-136725">
+											<cite class="fn"><a href="https://annotary.com/collections/25126/cdn" rel="external nofollow" class="url">CDN | Annotary</a></cite>						<small>February 15, 2012</small>
+										<p>[…] blog.unixy.net […]</p>
+				</li>
+								<li class="pingback odd alt thread-odd thread-alt depth-1" id="li-comment-122973">
+											<cite class="fn"><a href="http://pilastik.net/6/how-to-create-your-own-cdn-server-using-nginx/" rel="external nofollow" class="url">How to create your own CDN server using Nginx | Pilast!k</a></cite>						<small>February 15, 2012</small>
+										<p>[…] 1. <a href="http://blog.unixy.net/2010/07/how-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish/" rel="nofollow">http://blog.unixy.net/2010/07/how-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish/</a> 2. […]</p>
+				</li>
+								<li class="pingback even thread-even depth-1" id="li-comment-102007">
+											<cite class="fn"><a href="http://www.scoop.it/t/mu/p/4006603428/how-to-build-your-own-cdn-using-bind-geoip-nginx-varnish" rel="external nofollow" class="url">How to build your own CDN using BIND, GeoIP, Ng...</a></cite>						<small>February 15, 2012</small>
+										<p>[…] In this article, we shall outline the steps required to build a private Content Delivery or Distribution Network (CDN) using a VPS with Varnish Cache and Nginx. The goal is to build a CDN using free, readily available software but most importantly spend the least amount of funds possible. To this end, all nodes participating in this network are going to be virtual machines (Xen, Virtuozzo, OpenVZ, etc). Our global CDN can not only keep the latest copy of static files closer to our global visitors but can also cache the most used pages (dynamic or not) in memory on the edge nodes! This means less trips to the geographically distant and slower Dynamic Node (see below). This is similar to what Akamai and other well known firms do, only at a fraction of the cost. However, in this article, and to keep things simple, we will only be caching static files.&nbsp; […]</p>
+				</li>
+								<li class="pingback odd alt thread-odd thread-alt depth-1" id="li-comment-98364">
+											<cite class="fn"><a href="http://www.tienle.com/2012/11-21/location-aware-dns-with-bind.html" rel="external nofollow" class="url">Location aware DNS with Bind » TienLe's Blog</a></cite>						<small>February 15, 2012</small>
+										<p>[…] Can also refer to the topic “How to build your own CDN using BIND, GeoIP, Nginx, and Varnish“ […]</p>
+				</li>
+								<li class="trackback even thread-even depth-1" id="li-comment-95735">
+											<cite class="fn"><a href="http://maillotmali.ethicalbase.com/" rel="external nofollow" class="url">maillot mali 2013</a></cite>						<small>February 15, 2012</small>
+										<p><strong>maillot mali 2013…</strong></p>
+<p>Fascinating post and many thanks for sharing. Some things in below I have not imagined about before. Thanks for making these kinds of a amazing publish which is actually extremely well written. will be referring a great deal of pals about this….</p>
+				</li>
+								<li class="pingback odd alt thread-odd thread-alt depth-1" id="li-comment-94185">
+											<cite class="fn"><a href="http://www.eonlinegratis.com/2013/how-to-create-my-own-cdn-or-private-cloud/" rel="external nofollow" class="url">How To Create My Own CDN (or Private Cloud) | Click &amp; Find Answer !</a></cite>						<small>February 15, 2012</small>
+										<p>[…] <a href="http://blog.unixy.net/2010/07/how-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish/" rel="nofollow">http://blog.unixy.net/2010/07/how-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish/</a> […]</p>
+				</li>
+								<li class="trackback even thread-even depth-1" id="li-comment-92764">
+											<cite class="fn"><a href="http://www.treetowntalk.com/P57-Hoodia-Cactus-Diet-Pills.htm" rel="external nofollow" class="url">P57 Hoodia Cactus Diet Pills</a></cite>						<small>February 15, 2012</small>
+										<p><strong>P57 Hoodia Cactus Diet Pills…</strong></p>
+<p>It awesome in support of me to have a web site, which is useful in favor of my know-how. thanks admin…</p>
+				</li>
+								<li class="trackback odd alt thread-odd thread-alt depth-1" id="li-comment-87774">
+											<cite class="fn"><a href="http://felpe-abercrombie-1.oneminutesite.it/" rel="external nofollow" class="url">felpe abercrombie</a></cite>						<small>February 15, 2012</small>
+										<p><strong>felpe abercrombie…</strong></p>
+<p>You actually make it seem so easy with your presentation but I find this topic to be actually something which I think I would never understand. It seems too complicated and very broad for me. I’m looking forward for your next post, I will try to get t…</p>
+				</li>
+								<li class="trackback even thread-even depth-1" id="li-comment-86897">
+											<cite class="fn"><a href="http://www.busrwetwg.org/" rel="external nofollow" class="url">My Homepage</a></cite>						<small>February 15, 2012</small>
+										<p><strong>… [Trackback]…</strong></p>
+<p>[…] Informations on that Topic: blog.unixy.net/2010/07/how-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish/ […]…</p>
+				</li>
+								<li class="pingback odd alt thread-odd thread-alt depth-1" id="li-comment-59765">
+											<cite class="fn"><a href="http://rg443blog.wordpress.com/2013/01/19/how-to-build-your-own-cdn-using-bind-geoip-nginx-varnish/" rel="external nofollow" class="url">How to build your own CDN using BIND, GeoIP, Nginx, Varnish « rg443blog</a></cite>						<small>February 15, 2012</small>
+										<p>[…] How to build your own CDN using BIND, GeoIP, Nginx, Varnish, UNIXy. […]</p>
+				</li>
+								<li class="trackback even thread-even depth-1" id="li-comment-38616">
+											<cite class="fn"><a href="http://www.grzhjv.net/" rel="external nofollow" class="url">URL</a></cite>						<small>February 15, 2012</small>
+										<p><strong>… [Trackback]…</strong></p>
+<p>[…] Find More Informations here: blog.unixy.net/2010/07/how-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish/ […]…</p>
+				</li>
+								<li class="trackback odd alt thread-odd thread-alt depth-1" id="li-comment-26556">
+											<cite class="fn"><a href="http://www.123bas.com/dnls/TwitterSmash.rar" rel="external nofollow" class="url">TwitterSmash Beta Released</a></cite>						<small>February 15, 2012</small>
+										<p><strong>TwitterSmash Beta Released…</strong></p>
+<p>Twitter is becoming an important marketing tool for online publishers and marketers. But it can be time consuming to keep your profile up to date and it often gets forgotten. But not any more!!! I got News for you. TwitterSmash is here to automate all …</p>
+				</li>
+								<li class="pingback even thread-even depth-1" id="li-comment-25433">
+											<cite class="fn"><a href="http://www.datacentermap.com/blog/cdn-software-451.html" rel="external nofollow" class="url">5 CDN Software Solutions - Data Center Map Blog</a></cite>						<small>February 15, 2012</small>
+										<p>[…] are of course other solutions out there, as well as the Do It Your Self approach with for example BIND DNS, GeoIP and Ngihnx, but the purpose of this post is just to give […]</p>
+				</li>
+								<li class="pingback odd alt thread-odd thread-alt depth-1" id="li-comment-23098">
+											<cite class="fn"><a href="http://mattgeri.com/blog/2010/08/build-your-own-cdn/" rel="external nofollow" class="url">Build your own CDN — Matt Geri</a></cite>						<small>February 15, 2012</small>
+										<p>[…] How to build your own CDN using BIND, GeoIP, Nginx, and Varnish […]</p>
+				</li>
+								<li class="pingback even thread-even depth-1" id="li-comment-22775">
+											<cite class="fn"><a href="http://www.pearltrees.com/simonrobic/viatwitter-19/id2060761#pearl14824006&amp;show=reveal,6" rel="external nofollow" class="url">viatwitter 19 by simonrobic - Pearltrees</a></cite>						<small>February 15, 2012</small>
+										<p>[…] How to build your own CDN using BIND, GeoIP, Nginx, Varnish | UNIXy […]</p>
+				</li>
+								<li class="trackback odd alt thread-odd thread-alt depth-1" id="li-comment-22297">
+											<cite class="fn"><a href="http://www.quora.com/Startups-in-India/What-would-be-total-cost-for-Content-delivery-network-setup-in-India#ans885780" rel="external nofollow" class="url">Quora</a></cite>						<small>February 15, 2012</small>
+										<p><strong>What would be total cost for Content delivery network setup in India?…</strong></p>
+<p>CDN costs will be a function of Total Bandwidth that you consume on a monthly basis. Given that there are very few major ISPs and that your audience is possibly going to be situated close to the major metros, you might even consider rolling your own wi…</p>
+				</li>
+								<li class="pingback even thread-even depth-1" id="li-comment-22085">
+											<cite class="fn"><a href="http://www.scoop.it/t/video-breakthroughs/p/822044471/how-to-build-your-own-cdn-using-bind-geoip-nginx-varnish" rel="external nofollow" class="url">How to build your own CDN using BIND, GeoIP, Nginx, Varnish | Video Breakthroughs | Scoop.it</a></cite>						<small>February 15, 2012</small>
+										<p>[…]  How to build your own CDN using BIND, GeoIP, Nginx, Varnish  […]</p>
+				</li>
+								<li class="pingback odd alt thread-odd thread-alt depth-1" id="li-comment-18444">
+											<cite class="fn"><a href="http://www.hostgatorcouponcodex.com/blog/setting-up-a-cdn/" rel="external nofollow" class="url">Setting up a CDN?. | HostGator Coupons Code</a></cite>						<small>February 15, 2012</small>
+										<p>[…] Thanks in advance, any replies will be much appreciated. .  qualityhostings replied: Hi Is this for video/voice streaming or just for file hosting ?  wheimeng replied: <a href="http://blog.unixy.net/2010/07/how-to%E2%80%A6x-and-varnish/" rel="nofollow">http://blog.unixy.net/2010/07/how-to…x-and-varnish/</a> […]</p>
+				</li>
+								<li class="pingback even thread-even depth-1" id="li-comment-13085">
+											<cite class="fn"><a href="http://feint.me/articles-2/weekend-reading-its-been-a-while" rel="external nofollow" class="url">Weekend Reading: Its Been a While</a></cite>						<small>February 15, 2012</small>
+										<p>[…] How to build your own CDN using BIND, GeoIP, Nginx, and Varnish […]</p>
+				</li>
+								<li class="pingback odd alt thread-odd thread-alt depth-1" id="li-comment-11242">
+											<cite class="fn"><a href="http://forum.webhostlist.de/forum/smalltalk/112709-rz-mit-weltweiten-peers.html#post725917" rel="external nofollow" class="url">RZ mit weltweiten Peers - WHL Community Foren</a></cite>						<small>February 15, 2012</small>
+										<p>[…]  Aber auch NGINX kann GeoIP direkt.   Hier ein Blog von einem, der sich das selbst gestrickt hat: <a href="http://blog.unixy.net/2010/07/how-to" rel="nofollow">http://blog.unixy.net/2010/07/how-to</a>…x-and-varnish/              […]</p>
+				</li>
+								<li class="trackback even thread-even depth-1" id="li-comment-10072">
+											<cite class="fn"><a href="http://www.quora.com/How-does-Akamai-CDN-work#ans80942" rel="external nofollow" class="url">Quora</a></cite>						<small>February 15, 2012</small>
+										<p><strong>How does Akamai CDN work?…</strong></p>
+<p>While it’s not specific to Akamai’s implementation, you may find the article at <a href="http://blog.unixy.net/2010/07/how-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish/" rel="nofollow">http://blog.unixy.net/2010/07/how-to-build-your-own-cdn-using-bind-geoip-nginx-and-varnish/</a> to provide some useful information on this topic….</p>
+				</li>
+							</div>
+		
+							
+	</div><!-- #comments .comments-area -->
+
+
+				
+																			<div id="taglist">
+						<ul class="taglist"><li class="taglist-title">Related Content by Tag</li><li><a href="http://blog.unixy.net/tag/akamai/" rel="tag">akamai</a></li><li><a href="http://blog.unixy.net/tag/bind/" rel="tag">bind</a></li><li><a href="http://blog.unixy.net/tag/build-own-cdn/" rel="tag">build own cdn</a></li><li><a href="http://blog.unixy.net/tag/build-your-own-cdn/" rel="tag">build your own cdn</a></li><li><a href="http://blog.unixy.net/tag/cache/" rel="tag">cache</a></li><li><a href="http://blog.unixy.net/tag/cdn/" rel="tag">CDN</a></li><li><a href="http://blog.unixy.net/tag/geodns/" rel="tag">geodns</a></li><li><a href="http://blog.unixy.net/tag/geoip/" rel="tag">GeoIP</a></li><li><a href="http://blog.unixy.net/tag/global-cdn/" rel="tag">global CDN</a></li><li><a href="http://blog.unixy.net/tag/nginx/" rel="tag">nginx</a></li><li><a href="http://blog.unixy.net/tag/own-cdn/" rel="tag">own CDN</a></li><li><a href="http://blog.unixy.net/tag/patch/" rel="tag">patch</a></li><li><a href="http://blog.unixy.net/tag/private-cdn/" rel="tag">private CDN</a></li><li><a href="http://blog.unixy.net/tag/varnish/" rel="tag">varnish</a></li></ul>					</div>
+				
+			
+		</main>
+		<!-- #content .site-content -->
+	</div><!-- #primary .content-area -->
+
+<div id="secondary" class="widget-area" role="complementary">
+	</div><!-- #secondary .widget-area -->
+
+</div><!-- #main .site-main -->
+
+<footer id="colophon" class="site-footer" itemscope="itemscope" itemtype="http://schema.org/WPFooter" role="contentinfo">
+	<div class="site-info">
+		<a href="http://independentpublisher.me/" rel="designer" title="Independent Publisher: A beautiful reader-focused WordPress theme, for you.">Independent Publisher</a> empowered by <a href="http://wordpress.org/" rel="generator" title="WordPress: A free open-source publishing platform">WordPress</a>	</div>
+	<!-- .site-info -->
+</footer><!-- #colophon .site-footer -->
+</div><!-- #page .hfeed .site -->
+
+
+
+
+
+
+
+
+
+
+<div id="SL_balloon_obj" style="display: block;"><div id="SL_button" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: none; width: 24px; height: 24px; position: absolute; cursor: pointer; opacity: 0; left: 372px; top: 3723px; transition: visibility 2s ease 0s, opacity 2s linear 0s;"></div><div id="SL_shadow_translation_result2" style="display: none; margin-top: 30px; margin-left: 1px; direction: ltr; text-align: left; min-height: 40px; font-size: 14px; line-height: 20px;"><div></div></div><div id="SL_shadow_translator" style="display: none; top: 2391px; left: 320px; opacity: 1; box-shadow: 0px 0px 0px rgb(186, 185, 181);"><div id="SL_providers" style="visibility: visible;"><div class="SL_BL_LABLE_ON" title="Google" id="SL_P0">G</div><div class="SL_BL_LABLE_OFF" title="Microsoft" id="SL_P1">M</div><div class="SL_BL_LABLE_DEACT" title="Translator" id="SL_P2">T</div></div><div id="SL_planshet" style="background: rgb(239, 239, 239) none repeat scroll 0% 0%;"><div id="SL_arrow_up" style="display: none; left: 190px;"></div><div id="SL_TB"><div id="bubblelogo" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 24px; height: 24px; position: absolute;"></div><table id="SL_tables"><tr><td width="10%" align="right"><input id="SLloc" title="鎖定語言" type="checkbox"></td><td width="20%" align="left"><select id="SL_lng_from"><option value="auto">檢測語言</option><option value="sq">阿尔巴尼亚语</option><option value="ar">阿拉伯语</option><option value="az">阿塞拜疆语</option><option value="ga">爱尔兰语</option><option value="et">爱沙尼亚语</option><option value="eu">巴斯克语</option><option value="be">白俄罗斯语</option><option value="bg">保加利亚语</option><option value="is">冰岛语</option><option value="pl">波兰语</option><option value="bs">波斯尼亚语</option><option value="fa">波斯语</option><option value="af">布尔语(南非荷兰语)</option><option value="da">丹麦语</option><option value="de">德语</option><option value="ru">俄语</option><option value="fr">法语</option><option value="tl">菲律宾语</option><option value="fi">芬兰语</option><option value="km">高棉语</option><option value="ka">格鲁吉亚语</option><option value="gu">古吉拉特语</option><option value="kk">哈萨克语</option><option value="ht">海地克里奥尔语</option><option value="ko">韩语</option><option value="ha">豪萨语</option><option value="nl">荷兰语</option><option value="gl">加利西亚语</option><option value="ca">加泰罗尼亚语</option><option value="cs">捷克语</option><option value="kn">卡纳达语</option><option value="hr">克罗地亚语</option><option value="la">拉丁语</option><option value="lv">拉脱维亚语</option><option value="lo">老挝语</option><option value="lt">立陶宛语</option><option value="ro">罗马尼亚语</option><option value="mg">马尔加什语</option><option value="mt">马耳他语</option><option value="mr">马拉地语</option><option value="ml">马拉雅拉姆语</option><option value="ms">马来语</option><option value="mk">马其顿语</option><option value="mi">毛利语</option><option value="mn">蒙古语</option><option value="bn">孟加拉语</option><option value="my">缅甸语</option><option value="hmn">苗语</option><option value="zu">南非祖鲁语</option><option value="ne">尼泊尔语</option><option value="no">挪威语</option><option value="pa">旁遮普语</option><option value="pt">葡萄牙语</option><option value="ny">齐切瓦语</option><option value="ja">日语</option><option value="sv">瑞典语</option><option value="sr">塞尔维亚语</option><option value="st">塞索托语</option><option value="si">僧伽罗语</option><option value="eo">世界语</option><option value="sk">斯洛伐克语</option><option value="sl">斯洛文尼亚语</option><option value="sw">斯瓦希里语</option><option value="ceb">宿务语</option><option value="so">索马里语</option><option value="tg">塔吉克语</option><option value="te">泰卢固语</option><option value="ta">泰米尔语</option><option value="th">泰语</option><option value="tr">土耳其语</option><option value="cy">威尔士语</option><option value="ur">乌尔都语</option><option value="uk">乌克兰语</option><option value="uz">乌兹别克语</option><option value="iw">希伯来语</option><option value="el">希腊语</option><option value="es">西班牙语</option><option value="hu">匈牙利语</option><option value="hy">亚美尼亚语</option><option value="ig">伊博语</option><option value="it">意大利语</option><option value="yi">意第绪语</option><option value="hi">印地语</option><option value="su">印尼巽他语</option><option value="id">印尼语</option><option value="jw">印尼爪哇语</option><option value="en">英语</option><option value="yo">约鲁巴语</option><option value="vi">越南语</option><option value="zh-CN">中文简体</option><option value="zh-TW">中文繁体</option></select></td><td width="5%" align="center"><div id="SL_switch_b" title="若源語言設為“檢測語言”，則該功能被禁用" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 10px; height: 10px; cursor: not-allowed;" align="center"></div></td><td width="20%" align="left"><select id="SL_lng_to"><option value="sq">阿尔巴尼亚语</option><option value="ar">阿拉伯语</option><option value="az">阿塞拜疆语</option><option value="ga">爱尔兰语</option><option value="et">爱沙尼亚语</option><option value="eu">巴斯克语</option><option value="be">白俄罗斯语</option><option value="bg">保加利亚语</option><option value="is">冰岛语</option><option value="pl">波兰语</option><option value="bs">波斯尼亚语</option><option value="fa">波斯语</option><option value="af">布尔语(南非荷兰语)</option><option value="da">丹麦语</option><option value="de">德语</option><option value="ru">俄语</option><option value="fr">法语</option><option value="tl">菲律宾语</option><option value="fi">芬兰语</option><option value="km">高棉语</option><option value="ka">格鲁吉亚语</option><option value="gu">古吉拉特语</option><option value="kk">哈萨克语</option><option value="ht">海地克里奥尔语</option><option value="ko">韩语</option><option value="ha">豪萨语</option><option value="nl">荷兰语</option><option value="gl">加利西亚语</option><option value="ca">加泰罗尼亚语</option><option value="cs">捷克语</option><option value="kn">卡纳达语</option><option value="hr">克罗地亚语</option><option value="la">拉丁语</option><option value="lv">拉脱维亚语</option><option value="lo">老挝语</option><option value="lt">立陶宛语</option><option value="ro">罗马尼亚语</option><option value="mg">马尔加什语</option><option value="mt">马耳他语</option><option value="mr">马拉地语</option><option value="ml">马拉雅拉姆语</option><option value="ms">马来语</option><option value="mk">马其顿语</option><option value="mi">毛利语</option><option value="mn">蒙古语</option><option value="bn">孟加拉语</option><option value="my">缅甸语</option><option value="hmn">苗语</option><option value="zu">南非祖鲁语</option><option value="ne">尼泊尔语</option><option value="no">挪威语</option><option value="pa">旁遮普语</option><option value="pt">葡萄牙语</option><option value="ny">齐切瓦语</option><option value="ja">日语</option><option value="sv">瑞典语</option><option value="sr">塞尔维亚语</option><option value="st">塞索托语</option><option value="si">僧伽罗语</option><option value="eo">世界语</option><option value="sk">斯洛伐克语</option><option value="sl">斯洛文尼亚语</option><option value="sw">斯瓦希里语</option><option value="ceb">宿务语</option><option value="so">索马里语</option><option value="tg">塔吉克语</option><option value="te">泰卢固语</option><option value="ta">泰米尔语</option><option value="th">泰语</option><option value="tr">土耳其语</option><option value="cy">威尔士语</option><option value="ur">乌尔都语</option><option value="uk">乌克兰语</option><option value="uz">乌兹别克语</option><option value="iw">希伯来语</option><option value="el">希腊语</option><option value="es">西班牙语</option><option value="hu">匈牙利语</option><option value="hy">亚美尼亚语</option><option value="ig">伊博语</option><option value="it">意大利语</option><option value="yi">意第绪语</option><option value="hi">印地语</option><option value="su">印尼巽他语</option><option value="id">印尼语</option><option value="jw">印尼爪哇语</option><option value="en">英语</option><option value="yo">约鲁巴语</option><option value="vi">越南语</option><option value="zh-CN">中文简体</option><option value="zh-TW">中文繁体</option></select></td><td width="5%" align="center"> </td><td width="6%" align="center"><div id="SL_TTS_voice" title="聆聽" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; visibility: visible;"></div></td><td width="6%" align="center"><div id="SL_copy" title="複製譯文" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;" class="SL_copy_hand"></div></td><td width="6%" align="center"><div id="SL_bbl_font_patch" title="此功能在字典中禁用" style="display: none;"></div><div id="SL_bbl_font" title="字體大小" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;" class="SL_font_off"></div></td><td width="6%" align="center"><div id="SL_TH" title="翻譯歷史" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;" class="SL_TH"></div></td><td width="10%"></td><td width="6%" align="right"><div id="SL_pin" title="固定彈出窗口" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 16px; height: 16px; cursor: pointer;"></div></td></tr></table></div><div id="SL_alert_bbl" style="display: none;"><div id="SLHKclose"></div><div id="SL_alert_cont"></div></div></div><div id="SL_shadow_translation_result" style="background: rgb(255, 255, 255) none repeat scroll 0% 0%; visibility: visible; min-height: 40px; font-size: 14px; line-height: 20px; direction: ltr; text-align: left;"><div></div></div><div id="SL_loading" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: none; position: absolute; width: 35px; margin-left: 180px; margin-top: -40px; height: 35px;"></div><div id="SL_player2" style="display: none; height: 0px; width: 0px;"></div><div id="SL_alert100" style="display: none;">語言功能限200個字符</div><div id="SL_Balloon_options" style="background: rgb(239, 239, 239) none repeat scroll 0% 0%;"><div id="SL_arrow_down" style="display: block; left: 190px;"></div><table width="100%"><tr><td width="18%" height="16" align="left"><div id="SL_bbl_donate" title="進行一點捐款" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="68%" align="center"><a href="#" id="OPlnk" title="顯示選項"><span title="顯示選項">選項</span></a> : <a href="#" id="HISTlnk" title="翻譯歷史"><span title="翻譯歷史">歷史</span></a> : <a href="http://about.imtranslator.net/tutorials/presentations/imtranslator-translator-for-firefox/popup-bubble-application/" target="_top" id="HELPlnk" title="幫助"><span title="幫助">幫助</span></a> : <a href="#" id="FBlnk" title="反饋"><span title="反饋">反饋</span></a></td><td width="15%" align="right"><a id="SL_Balloon_Close" href="#" title="關閉"><span title="關閉">關閉</span></a></td></tr></table></div></div></div><div id="stcpDiv" style="position: absolute; top: -1999px; left: -1988px;">ShareThis Copy and Paste</div><div id="stwrapper" class="stwrapper stwrapper5x stwrapper5x" style="display: none;"><iframe allowtransparency="true" id="stLframe" class="stLframe" name="stLframe" scrolling="no" src="index_1.html" frameborder="0"></iframe></div><div id="stOverlay" onclick="javascript:stWidget.closeWidget();"></div></body>
+</html>

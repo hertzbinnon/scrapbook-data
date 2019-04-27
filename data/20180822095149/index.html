@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    <meta charset="UTF-8">
+    <link rel="canonical" href="https://blog.csdn.net/zhang_danf/article/details/45538825">
+    
+    <meta name="renderer" content="webkit">
+    <meta name="force-rendering" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="referrer" content="always">
+    <meta name="description" content="在使用git pull、git push、git clone会报类似如下的错误：
+
+&nbsp; &nbsp;&nbsp;http://www.iyunv.com/thread-21596-1-1.html
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;error: The requested URL returned error: 401 Unauthorized while accessing&nbsp;https://git.oschina.net/ze">
+    <meta name="keywords" content="">
+    <meta http-equiv="Cache-Control" content="no-siteapp"><link rel="alternate" media="handheld" href="https://blog.csdn.net/zhang_danf/article/details/45538825#">
+    <meta name="shenma-site-verification" content="5a59773ab8077d4a62bf469ab966a63b_1497598848">
+    
+
+    <link href="favicon.ico" rel="SHORTCUT ICON">
+    <title>git报错fatal: HTTP request failed - CSDN博客</title>
+
+            
+        
+
+    
+    
+    
+    
+    <!-- 新版上报 -->
+    
+    <!-- 新版上报end -->
+            
+    
+
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body><div id="BAIDU_DUP_fp_wrapper" style="position: absolute; left: -1px; bottom: -1px; z-index: 0; width: 0px; height: 0px; overflow: hidden; visibility: hidden; display: none;"><iframe id="BAIDU_DUP_fp_iframe" src="index_1.html" style="width: 0px; height: 0px; visibility: hidden; display: none;"></iframe></div><div id="MathJax_Message" style="display: none;"></div>
+    
+    
+
+
+
+<div style="display: none;">
+	<img src="45538825" onerror="setTimeout(function(){if(!/(csdn.net|iteye.com|baiducontent.com|googleusercontent.com|360webcache.com|sogoucdn.com|bingj.com|baidu.com)$/.test(window.location.hostname)){window.location.href=&quot;\x68\x74\x74\x70\x73\x3a\x2f\x2f\x77\x77\x77\x2e\x63\x73\x64\x6e\x2e\x6e\x65\x74&quot;}},3000);">
+</div>
+
+
+
+
+
+<div class="container clearfix" id="mainBox">
+		<!-- <div id="breadcrumbs">
+			<span><a href="https://blog.csdn.net/">博客首页</a></span>
+			<i>></i>
+			<span><a href="https://blog.csdn.net/zhang_danf">武溪嵌人</a></span>
+			<i>></i>
+			<span>git报错fatal: HTTP request failed</span>
+		</div> -->
+    <main>
+        <div class="blog-content-box">
+	<div class="article-header-box">
+		<div class="article-header">
+			<div class="article-title-box">
+				<span class="article-type type-1 float-left">原</span>				<h1 class="title-article">git报错fatal: HTTP request failed</h1>
+			</div>
+			<div class="article-info-box">
+				<div class="article-bar-top d-flex">
+																				<span class="time">2015年05月06日 18:00:03</span>
+					<div class="float-right">
+						<span class="read-count">阅读数：11696</span>
+																	</div>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+	<article>
+		<div id="article_content" class="article_content clearfix csdn-tracking-statistics" data-pid="blog" data-mod="popu_307" data-dsm="post">
+                    
+						<div class="htmledit_views">
+                
+<span style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;">&nbsp;1. &nbsp;在使用git pull、git push、git clone会报类似如下的错误：<br></span><span style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;">&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;</span><span style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;"></span>sudo
+ git clone https://github.com/pcduino/a20-kernel<span style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;"></span><br style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;"><span style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;">&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;fatal: HTTP request failed&nbsp;&nbsp;</span><br style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;"><br style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;"><p><span style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;">&nbsp; &nbsp; 一般是由于以下几种问题造成的：</span></p>
+<p><span style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;"><span></span>1）git版本的问题。</span></p>
+<br style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;"><span style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;">&nbsp; &nbsp; 使用如下指令查看版本：</span><span style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;">&nbsp;&nbsp;</span><br style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;"><span style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;">&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;# git --version&nbsp;&nbsp;</span><br style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;"><span style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;">&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;git version 1.7.0.1&nbsp;&nbsp;</span><br style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;"><p><span style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;">&nbsp; &nbsp; 可以通过安装更高的版本解决问题</span></p>
+<p><span style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;"><span></span>2）系统的时间不对</span></p>
+<p><span style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;"><span></span>使用命令</span></p>
+<p><span style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;"><span style="color: rgb(102, 102, 102); font-family: &quot;宋体&quot;,Arial; font-size: 16px; line-height: 26px;"><span></span>date -s "25
+ MAY 2015 13:45:00"</span></span></p>
+<p><span style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;"><span style="color: rgb(102, 102, 102); font-family: &quot;宋体&quot;,Arial; font-size: 16px; line-height: 26px;"><span></span>修改时间即可。</span></span></p>
+<br style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;"><span style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;">&nbsp;2. &nbsp;
+<span style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;">
+报错</span>fatal: Unable to find remote helper for 'https'</span><br style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;"><br style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;"><span style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;">是因为git 是通过curl请求网络的。仔细检查发现</span><br style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;"><br style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;"><span style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;">&nbsp; &nbsp; &lt;span style="font-family: Arial, Helvetica, sans-serif;"&gt;checking for curl_global_init in -lcurl... no&lt;/span&gt;&nbsp;&nbsp;</span><br style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;"><br style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;"><span id="0_nwp" style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;"><a id="0_nwl" href="http://cpro.baidu.com/cpro/ui/uijs.php?c=news&amp;cf=1001&amp;ch=0&amp;di=128&amp;fv=17&amp;jk=9a5157c2253a2512&amp;k=%B0%B2%D7%B0&amp;k0=%B0%B2%D7%B0&amp;kdi0=0&amp;luki=2&amp;n=10&amp;p=baidu&amp;q=95021150_cpr&amp;rb=0&amp;rs=1&amp;seller_id=1&amp;sid=12253a25c257519a&amp;ssp2=1&amp;stid=0&amp;t=tpclicked3_hc&amp;tu=u1907040&amp;u=http%3A%2F%2Fwww.iyunv.com%2Fthread-21596-1-1.html&amp;urlid=0" rel="nofollow" style="color: rgb(51, 102, 153); text-decoration: none;"><span style="color: rgb(0, 0, 255);">安装</span></a></span><span style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;">curl及curl-devel</span><br style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;"><span style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;">&nbsp; &nbsp; yum install curl curl-devel&nbsp;&nbsp;</span><br style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;"><span style="color: rgb(68, 68, 68); font-family: Tahoma,&quot;Microsoft Yahei&quot;,Simsun; font-size: 14px; line-height: 21px;">然后重新编译即可，即三步走。</span><br>            </div>
+                </div>
+				<div class="hide-article-box text-center">
+			<a class="btn btn-red-hollow" id="btn-readmore" data-track-view="{&quot;mod&quot;:&quot;popu_376&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/zhang_danf/article/details/45538825,&quot;}" data-track-click="{&quot;mod&quot;:&quot;popu_376&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/zhang_danf/article/details/45538825,&quot;}">阅读更多</a>
+		</div>
+        	</article>
+	
+		<div class="article-bar-bottom">
+				<div class="article-copyright">
+			版权声明：本文为博主原创文章，未经博主允许不得转载。			https://blog.csdn.net/zdf511391565/article/details/45538825		</div>
+								<div class="tags-box">
+			<span class="label">个人分类：</span>
+						<a class="tag-link" href="https://blog.csdn.net/zdf511391565/article/category/2465479" target="_top">linux系统						</a>
+		</div>
+					</div>
+	</div>
+
+
+<!-- 博客详情页PC增加广告系统刷量代码 -->
+<div id="a52b5334d" style="width: 1px; height: 1px; display: none;">
+
+
+</div>
+
+
+        <div id="_k4ky2evfnrh"></div><div style="background: rgb(255, 255, 255) none repeat scroll 0% 0%; overflow: hidden;">
+<div id="_fvcai3ov9cj"><iframe scrolling="no" src="index_2.html" width="900" height="104" frameborder="0"></iframe></div>
+</div>
+                                <a id="commentBox"></a>
+<div class="comment-box">
+	  	<div class="unlogin-box text-center">
+		想对作者说点什么？
+		<!-- $curl 当前地址 -->
+		<a href="https://passport.csdn.net/account/login?from=https://blog.csdn.net/zhang_danf/article/details/45538825#commentBox" class="btn btn-sm btn-red">我来说一句</a>
+	</div>
+			<div class="comment-list-container">
+		<a id="comments"></a>
+		<div class="comment-list-box">
+		</div>
+		<div id="commentPage" class="pagination-box d-none"></div>
+		<div class="opt-box text-center">
+			<button class="btn btn-sm btn-link-blue" id="btnMoreComment"></button>
+		</div>
+	</div>
+</div>        <div class="recommend-box">
+            		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-view="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/u010695380/article/details/23363205,BlogCommendFromBaidu_0&quot;}" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/u010695380/article/details/23363205,BlogCommendFromBaidu_0&quot;}">
+		<a href="https://blog.csdn.net/u010695380/article/details/23363205" target="_top" title="<em>fatal</em>: <em>HTTP</em> <em>request</em> <em>failed</em>">
+			<div class="content">
+				<h4 class="text-truncate oneline">
+						<em>fatal</em>: <em>HTTP</em> <em>request</em> <em>failed</em>				</h4>
+				<div class="info-box d-flex align-content-center">
+					<p class="avatar">
+							<img src="3_u010695380.jpg" alt="u010695380" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">u010695380</span>
+								<span class="triangle"></span>
+							</span>
+					</p>
+					<p class="date-and-readNum">
+						<span class="date hover-show">04-10</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-yuedushu"></use>
+							</svg>
+							2605</span>
+						</p>
+					</div>
+					<p class="content oneline">
+							在使用git clone下载cocos的源代码时，老是出现这个错误：fatal: HTTP request failed！
+网上找了半天的解决方法，都没能有效解决，最后一个学长尝试着把http改成了...					</p>
+			</div>
+					</a>
+	</div>
+						<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-view="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/xianjie0318/article/details/81219995,BlogCommendFromBaidu_49&quot;}" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/xianjie0318/article/details/81219995,BlogCommendFromBaidu_49&quot;}">
+		<a href="https://blog.csdn.net/xianjie0318/article/details/81219995" target="_top" title="解决 <em>git</em> clone <em>报错</em> <em>fatal</em>: <em>HTTP</em> <em>request</em> <em>failed</em>">
+			<div class="content">
+				<h4 class="text-truncate oneline">
+						解决 <em>git</em> clone <em>报错</em> <em>fatal</em>: <em>HTTP</em> <em>request</em> <em>failed</em>				</h4>
+				<div class="info-box d-flex align-content-center">
+					<p class="avatar">
+							<img src="3_xianjie0318.jpg" alt="xianjie0318" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">xianjie0318</span>
+								<span class="triangle"></span>
+							</span>
+					</p>
+					<p class="date-and-readNum">
+						<span class="date hover-show">07-26</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-yuedushu"></use>
+							</svg>
+							79</span>
+						</p>
+					</div>
+					<p class="content oneline">
+							问题背景：
+
+git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+
+问题现象：
+
+执行后报错：...					</p>
+			</div>
+					</a>
+	</div>
+									<div class="recommend-item-box recommend-ad-box clearfix">
+					<div id="_b6ppy9tyyt"><iframe scrolling="no" src="index_3.html" width="852" height="60" frameborder="0"></iframe><ins style="display: none;"></ins></div>
+				</div>
+			
+					<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-view="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/u013181595/article/details/75206929,BlogCommendFromBaidu_1&quot;}" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/u013181595/article/details/75206929,BlogCommendFromBaidu_1&quot;}">
+		<a href="https://blog.csdn.net/u013181595/article/details/75206929" target="_top" title="<em>git</em><em>报错</em><em>fatal</em>: <em>HTTP</em> <em>request</em> <em>failed</em>，提示403">
+			<div class="content">
+				<h4 class="text-truncate oneline">
+						<em>git</em><em>报错</em><em>fatal</em>: <em>HTTP</em> <em>request</em> <em>failed</em>，提示403				</h4>
+				<div class="info-box d-flex align-content-center">
+					<p class="avatar">
+							<img src="3_u013181595.jpg" alt="u013181595" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">u013181595</span>
+								<span class="triangle"></span>
+							</span>
+					</p>
+					<p class="date-and-readNum">
+						<span class="date hover-show">07-16</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-yuedushu"></use>
+							</svg>
+							3168</span>
+						</p>
+					</div>
+					<p class="content oneline">
+							1. &nbsp;在使用git pull、git push、git clone会报类似如下的错误：
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;sudo
+ git clone https://github.com/pcduino/a20-k...					</p>
+			</div>
+					</a>
+	</div>
+						<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-view="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/qq245282209/article/details/36666581,BlogCommendFromBaidu_2&quot;}" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/qq245282209/article/details/36666581,BlogCommendFromBaidu_2&quot;}">
+		<a href="https://blog.csdn.net/qq245282209/article/details/36666581" target="_top" title="[Linux]Centos <em>git</em><em>报错</em><em>fatal</em>: <em>HTTP</em> <em>request</em> <em>failed</em>">
+			<div class="content">
+				<h4 class="text-truncate oneline">
+						[Linux]Centos <em>git</em><em>报错</em><em>fatal</em>: <em>HTTP</em> <em>request</em> <em>failed</em>				</h4>
+				<div class="info-box d-flex align-content-center">
+					<p class="avatar">
+							<img src="3_qq245282209.jpg" alt="qq245282209" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">qq245282209</span>
+								<span class="triangle"></span>
+							</span>
+					</p>
+					<p class="date-and-readNum">
+						<span class="date hover-show">07-03</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-yuedushu"></use>
+							</svg>
+							1万</span>
+						</p>
+					</div>
+					<p class="content oneline">
+							在使用git pull、git push、git clone会报类似如下的错误：
+
+
+error: The requested URL returned error: 401 Unauthori...					</p>
+			</div>
+					</a>
+	</div>
+						<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-view="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/fzs333/article/details/46349153,BlogCommendFromBaidu_3&quot;}" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/fzs333/article/details/46349153,BlogCommendFromBaidu_3&quot;}">
+		<a href="https://blog.csdn.net/fzs333/article/details/46349153" target="_top" title="<em>git</em>hub出现<em>HTTP</em> <em>request</em> <em>failed</em>">
+			<div class="content">
+				<h4 class="text-truncate oneline">
+						<em>git</em>hub出现<em>HTTP</em> <em>request</em> <em>failed</em>				</h4>
+				<div class="info-box d-flex align-content-center">
+					<p class="avatar">
+							<img src="3_fzs333.jpg" alt="fzs333" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">fzs333</span>
+								<span class="triangle"></span>
+							</span>
+					</p>
+					<p class="date-and-readNum">
+						<span class="date hover-show">06-03</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-yuedushu"></use>
+							</svg>
+							2606</span>
+						</p>
+					</div>
+					<p class="content oneline">
+							1、archermind@aclgcl-ubnt:/local/frameworktools$ git push
+error: The requested URL returned error: 4...					</p>
+			</div>
+					</a>
+	</div>
+						<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-view="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/bravezhe/article/details/80192188,BlogCommendFromBaidu_4&quot;}" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/bravezhe/article/details/80192188,BlogCommendFromBaidu_4&quot;}">
+		<a href="https://blog.csdn.net/bravezhe/article/details/80192188" target="_top" title="<em>GIT</em> 解决<em>fatal</em>: <em>HTTP</em> <em>request</em> <em>failed</em>问题">
+			<div class="content">
+				<h4 class="text-truncate oneline">
+						<em>GIT</em> 解决<em>fatal</em>: <em>HTTP</em> <em>request</em> <em>failed</em>问题				</h4>
+				<div class="info-box d-flex align-content-center">
+					<p class="avatar">
+							<img src="3_bravezhe.jpg" alt="bravezhe" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">bravezhe</span>
+								<span class="triangle"></span>
+							</span>
+					</p>
+					<p class="date-and-readNum">
+						<span class="date hover-show">05-04</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-yuedushu"></use>
+							</svg>
+							1769</span>
+						</p>
+					</div>
+					<p class="content oneline">
+							安装需求：&amp;amp;gt;# yum install curl-devel expat-devel gettext-devel openssl-devel zlib-devel asciidoc&amp;am...					</p>
+			</div>
+					</a>
+	</div>
+								<div class="recommend-item-box recommend-ad-box" id="a_d_feed_0"></div>
+			
+						<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-view="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/zjq_1314520/article/details/78662239,searchFromBaidu_5&quot;}" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/zjq_1314520/article/details/78662239,searchFromBaidu_5&quot;}">
+		<a href="https://blog.csdn.net/zjq_1314520/article/details/78662239" target="_top" title="第一次使用LoadRunner时遇到的问题">
+			<div class="content">
+				<h4 class="text-truncate oneline">
+						第一次使用LoadRunner时遇到的问题				</h4>
+				<div class="info-box d-flex align-content-center">
+					<p class="avatar">
+							<img src="3_zjq_1314520.jpg" alt="zjq_1314520" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">zjq_1314520</span>
+								<span class="triangle"></span>
+							</span>
+					</p>
+					<p class="date-and-readNum">
+						<span class="date hover-show">11-29</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-yuedushu"></use>
+							</svg>
+							486</span>
+						</p>
+					</div>
+					<p class="content oneline">
+							记录一下第一次使用LoadRunner时遇到的问题安装LoadRunner 
+`Windows 10 + IE11` 装好之后录屏的时候显示`0 Event` ，不要尝试去解决了，试了一天都没解决。请...					</p>
+			</div>
+					</a>
+	</div>
+						<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-view="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/rznice/article/details/19607805,searchFromBaidu_6&quot;}" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/rznice/article/details/19607805,searchFromBaidu_6&quot;}">
+		<a href="https://blog.csdn.net/rznice/article/details/19607805" target="_top" title="Understanding and Investigating SSL Issues Support Pattern">
+			<div class="content">
+				<h4 class="text-truncate oneline">
+						Understanding and Investigating SSL Issues Support Pattern				</h4>
+				<div class="info-box d-flex align-content-center">
+					<p class="avatar">
+							<img src="3_rznice.jpg" alt="rznice" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">rznice</span>
+								<span class="triangle"></span>
+							</span>
+					</p>
+					<p class="date-and-readNum">
+						<span class="date hover-show">02-21</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-yuedushu"></use>
+							</svg>
+							4096</span>
+						</p>
+					</div>
+					<p class="content oneline">
+							Applies to:
+
+
+Oracle WebLogic Server - Version 6.1 and later
+Information in this document applie...					</p>
+			</div>
+					</a>
+	</div>
+						<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-view="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/YABIGNSHI/article/details/55509269,searchFromBaidu_7&quot;}" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/YABIGNSHI/article/details/55509269,searchFromBaidu_7&quot;}">
+		<a href="https://blog.csdn.net/YABIGNSHI/article/details/55509269" target="_top" title="MHA+keepalive高可用环境搭建">
+			<div class="content">
+				<h4 class="text-truncate oneline">
+						MHA+keepalive高可用环境搭建				</h4>
+				<div class="info-box d-flex align-content-center">
+					<p class="avatar">
+							<img src="3_yabignshi.jpg" alt="YABIGNSHI" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">YABIGNSHI</span>
+								<span class="triangle"></span>
+							</span>
+					</p>
+					<p class="date-and-readNum">
+						<span class="date hover-show">02-17</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-yuedushu"></use>
+							</svg>
+							2665</span>
+						</p>
+					</div>
+					<p class="content oneline">
+							MHA（Master HighAvailability）目前在MySQL高可用方面是一个相对成熟的解决方案，它由日本DeNA公司youshimaton（现就职于Facebook公司）开发，是一套优秀的...					</p>
+			</div>
+					</a>
+	</div>
+						<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-view="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/u013805817/article/details/52463053,searchFromBaidu_8&quot;}" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/u013805817/article/details/52463053,searchFromBaidu_8&quot;}">
+		<a href="https://blog.csdn.net/u013805817/article/details/52463053" target="_top" title="[pySpark][note]Web Server Log Analysis with Apache Spark">
+			<div class="content">
+				<h4 class="text-truncate oneline">
+						[pySpark][note]Web Server Log Analysis with Apache Spark				</h4>
+				<div class="info-box d-flex align-content-center">
+					<p class="avatar">
+							<img src="3_u013805817.jpg" alt="u013805817" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">u013805817</span>
+								<span class="triangle"></span>
+							</span>
+					</p>
+					<p class="date-and-readNum">
+						<span class="date hover-show">09-07</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-yuedushu"></use>
+							</svg>
+							1738</span>
+						</p>
+					</div>
+					<p class="content oneline">
+							version 1.0.1 + Web Server Log Analysis with Apache SparkThis lab will demonstrate how easy it is to...					</p>
+			</div>
+					</a>
+	</div>
+						<div class="recommend-item-box type_hot_word">
+									<div class="content clearfix oneline">
+				<h5 class="float-left">相关热词</h5>
+				<div class="float-left">
+									<span>
+						<a href="https://blog.csdn.net/skyxmstar/article/details/65631658" target="_top">
+						git和git</a>
+					</span>
+									<span>
+						<a href="https://blog.csdn.net/tgbus18990140382/article/details/52886786" target="_top">
+						git</a>
+					</span>
+									<span>
+						<a href="https://blog.csdn.net/plokmju88/article/details/55855827" target="_top">
+						git和as</a>
+					</span>
+									<span>
+						<a href="https://blog.csdn.net/skyxmstar/article/details/65631658" target="_top">
+						git和</a>
+					</span>
+									<span>
+						<a href="https://blog.csdn.net/orange228/article/details/79365795" target="_top">
+						git下</a>
+					</span>
+								</div>
+			</div>
+					</div>
+	
+            <div class="recommend-loading-box">
+                <img src="feedloading.gif">
+            </div>
+            <div class="recommend-end-box">
+                <p class="text-center">没有更多推荐了，<a href="https://blog.csdn.net/" class="c-blue c-blue-hover c-blue-focus">返回首页</a></p>
+            </div>
+        </div>
+    </main>
+    <aside>
+		    <div id="asideProfile" class="aside-box">
+    <h3 class="aside-title">个人资料</h3>
+    <div class="profile-intro d-flex">
+        <div class="avatar-box d-flex justify-content-center flex-column">
+            <a href="https://blog.csdn.net/zdf511391565">
+                <img src="3_zdf511391565.jpg" class="avatar_pic">
+            </a>
+        </div>
+        <div class="user-info d-flex justify-content-center flex-column">
+            <p class="name csdn-tracking-statistics tracking-click" data-mod="popu_379">
+                <a href="https://blog.csdn.net/zdf511391565" target="_top" class="text-truncate" id="uid">武溪嵌人</a>
+            </p>
+                    </div>
+                <div class="opt-box d-flex justify-content-center flex-column">
+            <span class="csdn-tracking-statistics tracking-click" data-mod="popu_379">
+                                <a class="btn btn-sm btn-red-hollow" href="https://passport.csdn.net/account/login?from=https://blog.csdn.net/zhang_danf/article/details/45538825" target="_self">关注</a>
+                            </span>
+                    </div>
+            </div>
+    <div class="data-info d-flex item-tiling">
+                <dl class="text-center" title="51">
+                        <dt><a href="https://blog.csdn.net/zhang_danf?t=1">原创</a></dt>
+            <dd><a href="https://blog.csdn.net/zhang_danf?t=1"><span class="count">51</span></a></dd>
+                    </dl>
+        <dl class="text-center" title="111">
+            <dt>粉丝</dt>
+            <dd><span class="count" id="fan">111</span></dd>
+        </dl>
+        <dl class="text-center" title="41">
+            <dt>喜欢</dt>
+            <dd><span class="count">41</span></dd>
+        </dl>
+        <dl class="text-center" title="44">
+            <dt>评论</dt>
+            <dd><span class="count">44</span></dd>
+        </dl>
+    </div>
+    <div class="grade-box clearfix">
+        <dl>
+            <dt>等级：</dt>
+            <dd>
+                <a href="https://blog.csdn.net/home/help.html#level" title="6级,点击查看等级说明" target="_top">
+                    <svg class="icon icon-level" aria-hidden="true">
+                        <use xlink:href="#csdnc-bloglevel-6"></use>
+                    </svg>
+                </a>
+            </dd>
+        </dl>
+        <dl>
+            <dt>访问：</dt>
+            <dd title="627889">
+                62万+            </dd>
+        </dl>
+        <dl>
+            <dt>积分：</dt>
+            <dd title="7561">
+                7561            </dd>
+        </dl>
+        <dl title="3914">
+            <dt>排名：</dt>
+            <dd>3914</dd>
+        </dl>
+    </div>
+    </div>		    <div class="csdn-tracking-statistics mb8 box-shadow" data-pid="blog" data-mod="popu_4" style="height: 250px;">
+    <div class="aside-content text-center" id="cpro_u2734133">
+      <!-- 广告位：PC-博客内页-百度联盟-300x250 --><div id="_0up50h4xake"><iframe scrolling="no" src="index_4.html" width="300" height="250" frameborder="0"></iframe><ins id="waibagri" style="width: 0px; height: 0px; padding-right: 0px;"></ins></div>    </div>
+</div>
+		    <div id="asideNewArticle" class="aside-box">
+    <h3 class="aside-title">最新文章</h3>
+    <div class="aside-content">
+        <ul class="inf_list clearfix csdn-tracking-statistics tracking-click" data-mod="popu_382">
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/zdf511391565/article/details/81541316" target="_top">Hi3516a添加新的Sensor</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/zdf511391565/article/details/81205686" target="_top">v4l2的学习建议和流程解析</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/zdf511391565/article/details/80944487" target="_top">高通camera驱动分析</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/zdf511391565/article/details/80944462" target="_top">基于qualcomm平台的Camera Bring up</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/zdf511391565/article/details/80940232" target="_top">Win 10 无法打开内核设备“\\.\Global\vmx86”</a>
+            </li>
+                    </ul>
+    </div>
+</div>
+		    		    <div id="asideCategory" class="aside-box flexible-box">
+    <h3 class="aside-title">个人分类</h3>
+    <div class="aside-content">
+        <ul>
+                        <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/category/1173464">
+                    嵌入式                    <span class="count float-right">313篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/category/1173465">
+                    android                    <span class="count float-right">38篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/category/1173467">
+                    云计算                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/category/1173468">
+                    linux驱动                    <span class="count float-right">60篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/category/1173469">
+                    linux应用                    <span class="count float-right">106篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/category/2465479">
+                    linux系统                    <span class="count float-right">59篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/category/2622817">
+                    服装设计                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/category/6080528">
+                    无人机                    <span class="count float-right">29篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/category/6474534">
+                    计算机视觉                    <span class="count float-right">25篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/category/6789974">
+                    人工智能                    <span class="count float-right">10篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/category/7509487">
+                    区块链                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                    </ul>
+    </div>
+        <p class="text-center">
+        <a class="btn btn-link-blue flexible-btn" data-fbox="aside-archive">展开</a>
+    </p>
+    </div>
+		    <div id="asideArchive" class="aside-box flexible-box">
+    <h3 class="aside-title">归档</h3>
+    <div class="aside-content">
+        <ul class="archive-list">
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2018/08">
+                    2018年8月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2018/07">
+                    2018年7月                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2018/06">
+                    2018年6月                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2018/05">
+                    2018年5月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2018/04">
+                    2018年4月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2018/03">
+                    2018年3月                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2018/02">
+                    2018年2月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2018/01">
+                    2018年1月                    <span class="count float-right">8篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2017/12">
+                    2017年12月                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2017/11">
+                    2017年11月                    <span class="count float-right">12篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2017/10">
+                    2017年10月                    <span class="count float-right">9篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2017/09">
+                    2017年9月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2017/08">
+                    2017年8月                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2017/07">
+                    2017年7月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2017/06">
+                    2017年6月                    <span class="count float-right">16篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2017/05">
+                    2017年5月                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2017/04">
+                    2017年4月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2017/03">
+                    2017年3月                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2017/02">
+                    2017年2月                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2017/01">
+                    2017年1月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2016/12">
+                    2016年12月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2016/11">
+                    2016年11月                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2016/10">
+                    2016年10月                    <span class="count float-right">27篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2016/09">
+                    2016年9月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2016/08">
+                    2016年8月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2016/06">
+                    2016年6月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2016/05">
+                    2016年5月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2016/04">
+                    2016年4月                    <span class="count float-right">13篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2016/03">
+                    2016年3月                    <span class="count float-right">29篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2016/02">
+                    2016年2月                    <span class="count float-right">10篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2016/01">
+                    2016年1月                    <span class="count float-right">12篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2015/11">
+                    2015年11月                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2015/10">
+                    2015年10月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2015/09">
+                    2015年9月                    <span class="count float-right">11篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2015/08">
+                    2015年8月                    <span class="count float-right">9篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2015/07">
+                    2015年7月                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2015/06">
+                    2015年6月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2015/05">
+                    2015年5月                    <span class="count float-right">10篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2015/04">
+                    2015年4月                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2015/03">
+                    2015年3月                    <span class="count float-right">20篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2015/02">
+                    2015年2月                    <span class="count float-right">9篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2015/01">
+                    2015年1月                    <span class="count float-right">17篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2014/12">
+                    2014年12月                    <span class="count float-right">14篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2014/11">
+                    2014年11月                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2014/10">
+                    2014年10月                    <span class="count float-right">23篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2014/09">
+                    2014年9月                    <span class="count float-right">18篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2014/08">
+                    2014年8月                    <span class="count float-right">29篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2014/07">
+                    2014年7月                    <span class="count float-right">11篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2014/06">
+                    2014年6月                    <span class="count float-right">8篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2014/05">
+                    2014年5月                    <span class="count float-right">20篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2014/04">
+                    2014年4月                    <span class="count float-right">21篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2014/03">
+                    2014年3月                    <span class="count float-right">19篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2014/02">
+                    2014年2月                    <span class="count float-right">19篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2014/01">
+                    2014年1月                    <span class="count float-right">55篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2013/12">
+                    2013年12月                    <span class="count float-right">40篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2013/11">
+                    2013年11月                    <span class="count float-right">10篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2013/10">
+                    2013年10月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zdf511391565/article/month/2013/07">
+                    2013年7月                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                    </ul>
+    </div>
+        <p class="text-center">
+        <a class="btn btn-link-blue flexible-btn" data-fbox="aside-archive">展开</a>
+    </p>
+    </div>
+		    <div id="asideHotArticle" class="aside-box">
+	<h3 class="aside-title">热门文章</h3>
+	<div class="aside-content">
+		<ul class="hotArticle-list csdn-tracking-statistics tracking-click" data-mod="popu_521">
+							<li>
+					<a href="https://blog.csdn.net/zdf511391565/article/details/45538825">git报错fatal: HTTP request failed</a>
+					<p class="read">阅读量：<span>11643</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/zdf511391565/article/details/44040807">微信端口及协议分析</a>
+					<p class="read">阅读量：<span>7532</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/zdf511391565/article/details/50707386">ESP8266 WIFI模块实现远程wifi控制</a>
+					<p class="read">阅读量：<span>6686</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/zdf511391565/article/details/52777642">Android7.0 JACK编译器不支持多用户同时编译的问题的解决</a>
+					<p class="read">阅读量：<span>6217</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/zdf511391565/article/details/50877667">shell脚本转换成二进制的可执行文件方法--加密</a>
+					<p class="read">阅读量：<span>5643</span></p>
+				</li>
+					</ul>
+	</div>
+</div>
+		    <div id="asideNewComments" class="aside-box">
+    <h3 class="aside-title">最新评论</h3>
+    <div class="aside-content">
+        <ul class="newcomment-list">
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/zdf511391565/article/details/39030703#comments">linux下用mpg123听音乐</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/qq_35313839" class="user-name" target="_top">qq_35313839</a>：[reply]zdf511391565[/reply]
+交叉编译的时候不是需要修改configur...                </p>
+            </li>
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/zdf511391565/article/details/70214551#comments">关掉ubuntu16.04图形界面...</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/zdf511391565" class="user-name" target="_top">zdf511391565</a>：sudo ln -s /lib/systemd/system/lightdm.service /e...                </p>
+            </li>
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/zdf511391565/article/details/39030703#comments">linux下用mpg123听音乐</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/zdf511391565" class="user-name" target="_top">zdf511391565</a>：[reply]qq_35313839[/reply]
+这个是开源的，你要什么资料！                </p>
+            </li>
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/zdf511391565/article/details/39030703#comments">linux下用mpg123听音乐</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/qq_35313839" class="user-name" target="_top">qq_35313839</a>：您好，我现在想做mpg123的一些东西，您有相关的资料吗？可以分享一下吗？                </p>
+            </li>
+                    </ul>
+    </div>
+</div>
+		<div id="asideFooter">
+			
+		<div class="aside-box">
+						<div><div><div><abbr style="display: none;"></abbr><iframe scrolling="no" src="index_5.html" width="300" height="250" frameborder="0"></iframe><span id="iylql" class="osdqlxzzrzxbwos" style="width: 0px; height: 0px;"></span></div></div></div>
+					</div>
+				<div class="aside-box">
+			<div class="persion_article">
+			</div>
+		</div>
+	</div>
+</aside>
+
+
+</div>
+<div class="mask-dark"></div>
+<div class="pulllog-box" style="display: block;">
+	<div class="pulllog clearfix">
+		<span class="text float-left">
+			<!-- 广告位：PC-博客内页底通 文字链位置 -->
+			<div id="baidufooter_0001" style="width: 520px; height: 40px; display: inline-block;"></div><ul style="float: left; width: 100%; overflow: hidden;">
+	
+<li style="list-style: outside none none; float: left; margin-right: 10px;">
+	<a href="http://www.baidu.com/cb.php?c=IgF_pyfqnHmkn101nHR0IZ0qnfK9ujYzrjfzPHT30Aw-5HnsnHfdnWD0TAq15HR3PHD4njD0T1YLrjf1uyuhn1-huWPBmvFh0AwY5HDdn1f4njczn1R0IgF_5y9YIZ0lQzqMpgwBUvqoQhP8QvIGIAPCmgfEuhqzUy-8uAN35LNYUNq1ULNzmvRqmLPbUhwYnjT0ThfqnfKBUHYk0ZKz5H00Iy-b5HDdP1f1PWD0Uv-b5HD1nW0sPWD0mv-b5HTzPWb1n6KEIv3qn0KsXHYznjD0mLFW5Hmknjf" target="_top" style="text-decoration: none; font-size: 16px; font-weight: bold; color: rgb(241, 61, 61); padding: 5px 10px 5px 0px;" font-family:="" sf="" pro="" display,roboto,noto,arial,pingfang="" sc,hiragino="" sans="" gb,microsoft="" yahei,sans-serif;text-align:center;"="">
+		<span>「码字计划」:拿万元写作基金！</span>
+	</a>
+</li>
+
+<li style="list-style: outside none none; float: left; margin-right: 10px;">
+	<a href="http://www.baidu.com/cb.php?c=IgF_pyfqnHmkn1cYPjm0IZ0qnfK9ujYzrjfzPHT30Aw-5HnsnHfdnWD0TAq15HR3PHD4njD0T1YLrjf1uyuhn1-huWPBmvFh0AwY5HDdn1f4njczn1R0IgF_5y9YIZK1rBtEuywdQhP1uA38UhNYQLwETA-WQv7GnHDk5LNYUNq1ULNzmvRquA-YUv4M0ZFb5HD0mhYqnfKsTWYs0ZNGujYkPHTYn1mk0AqGujYkn1csnjmk0APGujYLnWm4n1c0ULI85H00TZbqnW0k0APzm1YzrH6drf" target="_top" style="text-decoration: none; font-size: 16px; font-weight: bold; color: rgb(241, 61, 61); padding: 5px 10px 5px 0px;" font-family:="" sf="" pro="" display,roboto,noto,arial,pingfang="" sc,hiragino="" sans="" gb,microsoft="" yahei,sans-serif;text-align:center;"="">
+		<span>AI学习路径图</span>
+	</a>
+</li>
+
+
+<li style="list-style: outside none none; float: left;">
+<div><div id="chlmsxcy" style="padding-top: 0px;"><div><div class="ofddmwrltz" style="display: none; margin-left: 0px;"></div><iframe scrolling="no" src="index_6.html" width="296" height="36" frameborder="0"></iframe></div></div></div>
+</li>
+</ul>
+			
+			
+		</span>
+		<div class="pulllog-btn float-right clearfix">
+            <button class="pulllog-login float-left csdn-tracking-statistics tracking-click" data-mod="popu_557">
+                登录
+            </button>
+            <div class="pulllog-sigin float-left csdn-tracking-statistics tracking-click" data-mod="popu_558">
+                <a href="https://passport.csdn.net/account/mobileregister" target="_top">注册</a>
+            </div>
+            <button class="btn-close">
+                <svg class="icon" aria-hidden="true">
+                    <use xlink:href="#csdnc-times"></use>
+                </svg>
+            </button>
+		</div>
+	</div>
+</div>
+<div id="loginWrap" style="display: none;"></div>
+<div class="tool-box">
+	<ul class="meau-list">
+		<li>
+			<button class="long-height hover-box btn-like " title="点赞">
+				<svg class="icon active hover-hide" aria-hidden="true">
+					<use xlink:href="#csdnc-thumbsup-ok"></use>
+				</svg><svg class="icon no-active hover-hide" aria-hidden="true">
+					<use xlink:href="#csdnc-thumbsup"></use>
+				</svg>
+				<span class="hover-show text-box text">
+					<span class="no-active">点赞</span>
+					<span class="active">取消点赞</span>
+				</span>
+				<p>0</p>
+			</button>
+		</li>
+		<li>
+						
+			<a class="btn-comments low-height hover-box" title="写评论" href="#commentBox">
+				<svg class="icon hover-hide" aria-hidden="true">
+					<use xlink:href="#csdnc-comments"></use>
+				</svg>
+				<span class="hover-show text">评论</span>
+				<p class="">
+										</p>
+			</a>
+		</li>
+		<li class="toc-container-box" id="liTocBox">
+			<button class="btn-toc low-height hover-box" title="目录">
+				<svg class="icon hover-hide" aria-hidden="true">
+					<use xlink:href="#csdnc-contents"></use>
+				</svg>
+				<span class="hover-show text">目录</span>
+			</button>
+			<div class="toc-container">
+				<div class="pos-box">
+					<div class="icon-arrow"></div>
+					<div class="scroll-box">
+						<div class="toc-box"></div>
+					</div>
+				</div>
+				<div class="opt-box">
+					<button class="btn-opt prev nomore" title="向上">
+						<svg class="icon" aria-hidden="true">
+							<use xlink:href="#csdnc-chevronup"></use>
+						</svg>
+					</button>
+					<button class="btn-opt next">
+						<svg class="icon" aria-hidden="true">
+							<use xlink:href="#csdnc-chevrondown"></use>
+						</svg>
+					</button>
+				</div>
+			</div>
+		</li>
+		<li>
+			<button class="btn-bookmark low-height hover-box" title="收藏">
+				<svg class="icon active hover-hide" aria-hidden="true">
+					<use xlink:href="#csdnc-bookmark-ok"></use>
+				</svg>
+				<svg class="icon no-active hover-hide" aria-hidden="true">
+					<use xlink:href="#csdnc-bookmark"></use>
+				</svg>
+					<span class="hover-show text">收藏</span>
+				<!-- <span class="hover-show text-box text">
+					<span class="no-active">收藏</span>
+					<span class="active">取消收藏</span>
+				</span> -->
+			</button>
+		</li>
+				<li class="bdsharebuttonbox">
+			<button class="btn-comments low-height hover-box">
+				<a href="#" class="bds_weixin clear-share-style" data-cmd="weixin" title="手机看"></a>
+				<svg class="icon hover-hide" aria-hidden="true">
+					<use xlink:href="#csdnc-wechat"></use>
+				</svg>
+				<span class="hover-show text">
+					手机看
+				</span>
+			</button>
+		</li>
+							<li class="">
+				<a class="btn-comments low-height hover-box" href="https://blog.csdn.net/zhang_danf/article/details/45533755" title="在pcDuino上编译安装自己的内核+RT3070相关+WiFi热点">
+					<svg class="icon hover-hide" aria-hidden="true">
+						<use xlink:href="#csdnc-shangyiye"></use>
+					</svg>
+					<span class="hover-show text">上一篇</span>
+				</a>
+			</li>
+								<li class="">
+			<a class="btn-comments hover-box low-height" href="https://blog.csdn.net/zhang_danf/article/details/45581721" title="修改ubuntu系统的时间">
+				<svg class="icon hover-hide" aria-hidden="true">
+					<use xlink:href="#csdnc-xiayiye"></use>
+				</svg>
+				<span class="hover-show text">下一篇</span>
+			</a>
+		</li>
+						<li class="bdsharebuttonbox" style="margin-top: 8px;">
+			 
+			
+			<div id="_360_interactive"><info-div style="width: 60px; height: 60px;" id="QIHOO__INTERACTIVE_PLUGIN1534902240811" class="QIHOO__INTERACTIVE_PLUGIN1534902240811-thumbnail"></info-div></div>
+			<img src="201608021757063065.png" style="margin: 0px auto; display: block;" alt="">
+		</li>
+	  	</ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="box-box-aways">
+    <a class="btn-remove">
+        关闭
+    </a>
+    <div id="adAways">
+        <div style="width: 247px; border: 1.5px solid rgb(221, 221, 221); background: rgb(255, 255, 255) none repeat scroll 0% 0%;">
+
+<a href="http://www.baidu.com/cb.php?c=IgF_pyfqnHmkn1D3rH60IZ0qnfK9ujYzrjRYn1nz0Aw-5HnsnWDkPWm0TAq15HR3PW6LnW60T1YLuADLmWcsn1Ddm1whnycY0AwY5HDdn1f4njczn1m0IgF_5y9YIZK1rBtEuv-YmhqEpz4WUBqMpgwWpA7YQvPEUZNVUBtdmWubnjRYPjuBPWu-n1fYnhDzmhu9PvcOIgwVgLPEIgFWuHdBUAqMmvcsrjDd0ZFb5HD0mhYqnfKsTWYs0ZNGujYkPHTYn1mk0AqGujYkn1csnHcz0APGujYLnWm4n1c0ULI85H00TZbqnH0Y0APzm1Ydn1D1n0" target="_top">
+<img src="0f000n1tzphnunmim1-xuf.jpg" style="width: 100%;">
+</a>
+
+<a href="http://www.baidu.com/cb.php?c=IgF_pyfqnHmkn1D3rH60IZ0qnfK9ujYzrjRYn1nz0Aw-5HnsnWDkPWm0TAq15HR3PW6LnW60T1YLuADLmWcsn1Ddm1whnycY0AwY5HDdn1f4njczn1m0IgF_5y9YIZK1rBtEuv-YmhqEpz4WUBqMpgwWpA7YQvPEUZNVUBtdmWubnjRYPjuBPWu-n1fYnhDzmhu9PvcOIgwVgLPEIgFWuHdBUAqMmvcsrjDd0ZFb5HD0mhYqnfKsTWYs0ZNGujYkPHTYn1mk0AqGujYkn1csnHcz0APGujYLnWm4n1c0ULI85H00TZbqnH0Y0APzm1Ydn1D1n0" target="_top" style="font-size: 23px; font-weight: bold; font-family: SF Pro Display,Roboto,Noto,Arial,PingFang SC,Hiragino Sans GB,Microsoft YaHei,sans-serif; text-align: center; text-decoration: none; color: rgb(17, 17, 17);">
+<div style="margin-top: 15px; height: 50px; width: 100%;">
+程序员千万不要学算法！
+</div>
+</a>
+
+<ul style="list-style: outside none none; line-height: 33px; width: 96%; padding: 2%; text-align: center; margin: 36px 0px;">
+<li><a href="http://www.baidu.com/cb.php?c=IgF_pyfqnHmkn1D3rH60IZ0qnfK9ujYzrjRYn1nz0Aw-5HnsnWDkPWm0TAq15HR3PW6LnW60T1YLuADLmWcsn1Ddm1whnycY0AwY5HDdn1f4njczn1m0IgF_5y9YIZK1rBtEuv-YmhqEpz4WUBqMpgwWpA7YQvPEUZNVUBtdmWubnjRYPjuBPWu-n1fYnhDzmhu9PvcOIgwVgLPEIgFWuHdBUAqMmvcsrjDd0ZFb5HD0mhYqnfKsTWYs0ZNGujYkPHTYn1mk0AqGujYkn1csnHcz0APGujYLnWm4n1c0ULI85H00TZbqnH0Y0APzm1Ydn1D1n0" target="_top" style="font-size: 15px; font-family: SF Pro Display,Roboto,Noto,Arial,PingFang SC,Hiragino Sans GB,Microsoft YaHei,sans-serif; text-decoration: none; color: rgb(17, 17, 17);">除非你想被同龄人抛弃... ...</a></li>
+
+<li><a href="http://www.baidu.com/cb.php?c=IgF_pyfqnHmkn1D3rH60IZ0qnfK9ujYzrjRYn1nz0Aw-5HnsnWDkPWm0TAq15HR3PW6LnW60T1YLuADLmWcsn1Ddm1whnycY0AwY5HDdn1f4njczn1m0IgF_5y9YIZK1rBtEuv-YmhqEpz4WUBqMpgwWpA7YQvPEUZNVUBtdmWubnjRYPjuBPWu-n1fYnhDzmhu9PvcOIgwVgLPEIgFWuHdBUAqMmvcsrjDd0ZFb5HD0mhYqnfKsTWYs0ZNGujYkPHTYn1mk0AqGujYkn1csnHcz0APGujYLnWm4n1c0ULI85H00TZbqnH0Y0APzm1Ydn1D1n0" target="_top" style="font-size: 15px; font-family: SF Pro Display,Roboto,Noto,Arial,PingFang SC,Hiragino Sans GB,Microsoft YaHei,sans-serif; text-decoration: none; color: rgb(17, 17, 17);">除非你想错过几百万 ... ...</a></li>
+
+<li><a href="http://www.baidu.com/cb.php?c=IgF_pyfqnHmkn1D3rH60IZ0qnfK9ujYzrjRYn1nz0Aw-5HnsnWDkPWm0TAq15HR3PW6LnW60T1YLuADLmWcsn1Ddm1whnycY0AwY5HDdn1f4njczn1m0IgF_5y9YIZK1rBtEuv-YmhqEpz4WUBqMpgwWpA7YQvPEUZNVUBtdmWubnjRYPjuBPWu-n1fYnhDzmhu9PvcOIgwVgLPEIgFWuHdBUAqMmvcsrjDd0ZFb5HD0mhYqnfKsTWYs0ZNGujYkPHTYn1mk0AqGujYkn1csnHcz0APGujYLnWm4n1c0ULI85H00TZbqnH0Y0APzm1Ydn1D1n0" target="_top" style="font-size: 15px; font-family: SF Pro Display,Roboto,Noto,Arial,PingFang SC,Hiragino Sans GB,Microsoft YaHei,sans-serif; text-decoration: none; color: rgb(17, 17, 17);">除非你不想财务自由 ... ...</a></li>
+
+
+
+
+</ul>
+
+<a href="http://www.baidu.com/cb.php?c=IgF_pyfqnHmkn10vP1b0IZ0qnfK9ujYzrjRYn1nz0Aw-5HnsnWDkPWm0TAq15HR3PW6LnW60T1YLuADLmWcsn1Ddm1whnycY0AwY5HDdn1f4njczn1m0IgF_5y9YIZK1rBtEuv-YmhqEpz4WUBqMpgwWpA7YQvuEThdFUhw-XjqdIAdxTvqdThP-5yF_UvIWmWc0ThfqnfKBUHYk0ZKz5H00Iy-b5HDdP1f1PWD0Uv-b5HD1nW0knWc0mv-b5HTzPWb1n6KEIv3qn0KsXHYknjf0mLFW5HRzPWc1" target="_top" style="text-decoration: none;">
+<div style="margin: 20px auto; height: 36px; border: 1px solid rgb(241, 61, 61); font-size: 17.5px; font-weight: bold; font-family: SF Pro Display,Roboto,Noto,Arial,PingFang SC,Hiragino Sans GB,Microsoft YaHei,sans-serif; text-align: center; padding: 5px 10px; color: rgb(241, 61, 61); width: 100px;">
+查看详情
+</div>
+</a>
+
+
+<div style="float: right; border: 0px solid rgb(241, 61, 61); font-size: 10px; margin: -25px 5px 0px 0px; font-weight: bold; font-family: SF Pro Display,Roboto,Noto,Arial,PingFang SC,Hiragino Sans GB,Microsoft YaHei,sans-serif; text-align: center; color: rgb(221, 221, 221);">
+广告
+</div>
+
+
+
+</div>
+        
+    </div>
+</div>
+<div class="box-box-default">
+    <a class="btn-remove">
+        关闭
+    </a>
+    <div><abbr style="width: 0px; height: 0px;"></abbr><iframe scrolling="no" src="index_7.html" width="160" height="600" frameborder="0"></iframe><ins class="qvyfykbvar" style="display: none;"></ins></div>
+</div>
+<div class="box-box-large">
+    <a class="btn-remove">
+        关闭
+    </a>
+    <div id="_6dsosgsqqeg"><iframe scrolling="no" src="index_8.html" width="250" height="250" frameborder="0"></iframe></div>
+</div>
+<!-- 第四范式SDK -->
+
+<!-- 高亮未与 markdown兼容  -->
+	
+	
+	
+	
+	
+
+	
+
+
+<info-div id="QIHOO__INTERACTIVE_PLUGIN1534902240811-gameBg" style="width: 430px; height: 430px; visibility: hidden; position: fixed; opacity: 0;"><iframe id="QIHOO__INTERACTIVE_PLUGIN1534902240811-popupIframe" scrolling="no" allowtransparency="true" src="index_10.html" data-type="hover" data-id="QIHOO__INTERACTIVE_PLUGIN1534902240811" data-pv="https://xdssp.mediav.com/s?type=12&amp;r=20&amp;uai=FZDBmAIlLhUAJfIIJZD6geUHAA&amp;ubi=FdSuIxXittkBFdrpjg8V+oTUSBUCFRgWxtLlhQcW4IPY4euh6PUdZQAVlp648A4lADYAAA&amp;ugi=FcTgigEVyNtrTBUCFSgVKBUAACaAQBXIAQA&amp;djtransp=FaXik/wGFuCD2OHroej1HRU0FQIVKgA" width="361.34453781512605" height="361.34453781512605" frameborder="no"></iframe></info-div></body>
+</html>

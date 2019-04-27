@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+					<meta name="viewport" content="width=device-width,initial-scale=1.0">
+					
+					
+	
+
+					
+	
+	
+	
+	
+					
+	
+	
+			   
+
+	<title>GStreamer-devel - http sink element</title>
+			<meta name="description" content="http sink element. Hello Developers, Do we have any Http sink plugin in Gstreamer ? If so , in which package do we have it ? I guess we have a http src element from NEON and SOUP But I could not...">
+			<meta name="keywords" content="http, sink, element, developers, do, we, have, any, plugin, gstreamer, which, package, guess, src, neon, soup, could, not, find, gstreamer-devel">
+			
+		 
+					
+	
+	<!-- Start Google Analytics -->
+	
+	<!-- End Google Analytics -->
+				<link rel="stylesheet" type="text/css" id="SL_Style" href="chrome://imtranslator/content/css/translator.css">
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+					<div id="notice" class="notice rounded-bottom"></div>
+					<div class="nabble macro_classic_forum_topic" id="nabble">
+						
+			
+			<div class="top-bar">
+		<div class="breadcrumbs" style="float: left;">
+			<span id="breadcrumbs" class="weak-color">
+		
+				<a href="http://gstreamer-devel.966125.n4.nabble.com/">GStreamer-devel</a>
+	</span>
+		</div>
+		<div style="text-align: right;">
+			<span style="white-space: nowrap;" id="nabble-user-header"><a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=login_page&amp;nextUrl=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-td1047973.html">Login</a>&nbsp;&nbsp;<a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=start_registration_page&amp;nextUrl=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-td1047973.html">Register</a></span>
+	
+		</div>
+	</div>
+			
+			<div id="nabble-newsflash" class="info-message" style="display: none; padding: 0.5em; margin-bottom: 0.5em;"></div>
+	
+			<div id="topic-search-box" class="search-box float-right" style="padding: 0.5em 0px;">
+		<form action="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp">
+		<input name="macro" value="search_page" type="hidden">
+		<input name="node" value="966125" type="hidden">
+		
+		
+		
+		<input id="search-input" name="query" size="18" class="medium-border-color" value="">
+		<div id="search-box-dropdown" class="search-box-dropdown light-bg-color drop-shadow border1 medium-border-color rounded-bottom">
+		<div style="margin: 0.5em 0.5em 0px;">
+					<b>Search</b><br>
+					<input id="search-root-node" name="n" value="966125" checked="checked" type="radio">
+					<label for="search-root-node">everywhere</label><br>
+
+					<input id="search-this-node" name="n" value="1047973" type="radio">
+					<label for="search-this-node">
+						only in this topic
+					</label>
+				</div>
+		<div style="margin: 0.5em; line-height: 2em;">
+			<input class="toolbar action-button float-right" value="Search" type="submit">
+			<a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=adv_search_page&amp;node=1047973" rel="nofollow" style="font-size: 80%;">Advanced Search</a>
+		</div>
+	</div>
+	</form>
+	</div>
+
+	<h1 id="post-title" class="adbayes-content" style="margin: 0.25em 0px 0.8em;">
+		http sink element
+	</h1>
+			<div class="topics-controls-wrapper" style="margin: 1.2em 0px 5em;">
+		<div id="topics-controls-left" class="float-left nowrap">
+			<table>
+		<tbody><tr>
+			<td style="padding-right: 0.1em;">
+		<img src="view-classic.gif" style="border: medium none;" alt="classic" width="18" height="18">
+	</td>
+
+	<td style="padding-right: 1.1em;">
+		Classic
+	</td>
+
+			<td style="padding-right: 0.1em;">
+		<a href="javascript:void(0)" onclick="Nabble.setView('list', '/http-sink-element-tc1047973.html',null)"><img src="view-list.gif" style="border: medium none;" alt="list" width="18" height="18"></a>
+	</td>
+
+	<td style="padding-right: 1.1em;">
+		<a href="javascript:void(0)" onclick="Nabble.setView('list', '/http-sink-element-tc1047973.html',null)">List</a>
+	</td>
+
+			<td style="padding-right: 0.1em;">
+		<a href="javascript:void(0)" onclick="Nabble.setView('threaded', '/http-sink-element-tt1047973.html',null)"><img src="view-threaded.gif" style="border: medium none;" alt="threaded" width="18" height="18"></a>
+	</td>
+
+	<td style="padding-right: 1.1em;">
+		<a href="javascript:void(0)" onclick="Nabble.setView('threaded', '/http-sink-element-tt1047973.html',null)">Threaded</a>
+	</td>
+		</tr>
+	</tbody></table>
+		</div>
+		<div id="topics-controls-right" class="float-right nowrap" style="padding-top: 0.3em;">
+			<span style="padding-right: 1em; height: 21px;">
+		<img id="pin-icon" src="pin.png" title="This topic has been pinned in GStreamer-devel." style="vertical-align: middle; display: none;" width="20" height="21">
+		<div id="tooltip62366" class="nabble-tooltip" use_title="true">
+		
+		<div class="nabble-tooltip-arrow">
+			<div class="d1">♦</div>
+			<div class="d2">♦</div>
+		</div>
+	</div>
+	
+	</span>
+	<span id="lock-icon" class="weak-color" style="padding: 0px 0.5em; margin-right: 0.5em; display: none;">
+		<img src="lock_sm.png" style="vertical-align: middle;" width="10" height="15"> Locked
+	</span>
+	<span style="padding-right: 1em;">
+		6 messages
+	</span>
+	<img src="gear.png" class="image16" alt="Options">
+	<span id="dd_topicdropdown"><span id="topicdropdown" class="dropdown"><a href="javascript:void(0)" title="Click for more options">Options</a> <img src="more.png" width="10" height="10"><table class="light-bg-color medium-border-color drop-shadow" style="margin-top: 1px;"><tbody><tr id="_loadingtopicdropdown" style="display: none;"><td class="dropdown-simple-row"><span id="_loadingSpantopicdropdown">Loading...</span></td></tr><tr id="topicSubscriptionLink"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=subscribe&amp;node=1047973" rel="nofollow">Subscribe via email</a></td></tr><tr class="dropdown-separator"><td class="action-separator medium-border-color">&nbsp;</td></tr><tr id="moveTopic" style="display: none;"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=move_node&amp;node=1047973" rel="nofollow">Move topic</a></td></tr><tr id="pinTopic" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void%20Nabble.pinTopic(1047973)" rel="nofollow">Pin topic</a></td></tr><tr id="unpinTopic" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void%20Nabble.unpinTopic(1047973)" rel="nofollow">Unpin topic</a></td></tr><tr id="lockTopic" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void%20Nabble.lockTopic(1047973)" rel="nofollow">Lock topic</a></td></tr><tr id="unlockTopic" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void%20Nabble.unlockTopic(1047973)" rel="nofollow">Unlock topic</a></td></tr><tr id="deleteRecursively" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deleteFromSite(1047973)" rel="nofollow">Delete this topic</a></td></tr><tr id="deletePost" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deletePost(1047973)" rel="nofollow">Delete this topic</a></td></tr><tr id="changeMetaTags" style="display: none;"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=change_title_and_meta_tags&amp;node=1047973" rel="nofollow">Change title and meta tags</a></td></tr><tr id="embedPost1047973"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/embed/EmbedOptions.jtp?node=1047973" rel="nofollow">Embed post</a></td></tr><tr id="permalink1047973"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="prompt('Copy this:','http://gstreamer-devel.966125.n4.nabble.com/http-sink-element-tp1047973.html')">Permalink</a></td></tr></tbody></table></span></span>
+	
+		</div>
+	</div>
+			<div id="topic-contents" style="margin-top: 1em; clear: both;">
+		<div id="classic-contents">
+		
+		<div class="classic-row">
+		<div class="classic-header">
+			<div class="classic-bar shaded-bg-color rounded-top">
+				<div class="classic-author-name nowrap">
+					<a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=user_nodes&amp;user=7653">arnabsamanta</a>
+				</div>
+				<div class="classic-right-menu shaded-bg-color weak-color">
+					<a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=reply&amp;node=1047973" rel="nofollow">Reply</a> |
+					<a href="javascript:void(0)" onclick="Nabble.setView('threaded', '/http-sink-element-tt1047973.html',1047973)">Threaded</a>
+	<div id="tooltip39996" class="nabble-tooltip" use_title="false">
+		Open this post in threaded view
+		<div class="nabble-tooltip-arrow">
+			<div class="d1">♦</div>
+			<div class="d2">♦</div>
+		</div>
+	</div>
+	 |
+					<span id="dd_postdropdown1047973"><span id="postdropdown1047973" class="dropdown"><a href="javascript:void(0)" title="Click for more options">More</a> <img src="more.png" width="10" height="10"><table class="light-bg-color medium-border-color drop-shadow" style="margin-top: 1px;"><tbody><tr id="_loadingpostdropdown1047973" style="display: none;"><td class="dropdown-simple-row"><span id="_loadingSpanpostdropdown1047973">Loading...</span></td></tr><tr id="replyToAuthor1047973" style="display: none;"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=pm&amp;post=1047973" rel="nofollow">Reply to author</a></td></tr><tr id="editPost1047973" style="display: none;"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=edit_post&amp;node=1047973" rel="nofollow">Edit post</a></td></tr><tr id="movePost1047973" style="display: none;"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=move_node&amp;node=1047973" rel="nofollow">Move post</a></td></tr><tr id="deletePost1047973" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deletePost(1047973)" rel="nofollow">Delete this post</a></td></tr><tr id="deleteRecursively1047973" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deleteFromSite(1047973)" rel="nofollow">Delete this post and replies</a></td></tr><tr id="changePostDate1047973" style="display: none;"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=change_post_date&amp;node=1047973" rel="nofollow">Change post date</a></td></tr><tr id="print1047973"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=print_post&amp;node=1047973" rel="nofollow">Print post</a></td></tr><tr id="permalink1047973"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="prompt('Copy this:','http://gstreamer-devel.966125.n4.nabble.com/http-sink-element-tp1047973.html')">Permalink</a></td></tr><tr id="rawMail1047973" style="display: none;"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=raw_mail&amp;node=1047973" rel="nofollow">Raw mail</a></td></tr><tr id="social1047973" style="white-space: nowrap;"><td style="border: medium none;"><a href="http://twitter.com/share?text=http+sink+element&amp;related=GStreamer-devel&amp;url=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973.html" title="Twitter" target="_top" ignore="y"> <img src="twitter.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.facebook.com/share.php?v=4&amp;src=bm&amp;u=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973.html&amp;t=http+sink+element" title="Facebook" target="_top" ignore="y"> <img src="facebook.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://del.icio.us/post?url=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973.html&amp;title=http+sink+element" title="Delicious" target="_top" ignore="y"> <img src="delicious.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.google.com/bookmarks/mark?op=add&amp;bkmk=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973.html&amp;title=http+sink+element" title="Google Bookmarks" target="_top" ignore="y"> <img src="google.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.stumbleupon.com/submit?url=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973.html&amp;title=http+sink+element" title="Stumble Upon" target="_top" ignore="y"> <img src="stumbleupon.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973.html&amp;title=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973.html&amp;source=GStreamer-devel" title="LinkedIn" target="_top" ignore="y"> <img src="linkedin.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://digg.com/submit?phase=2&amp;url=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973.html&amp;title=http+sink+element" title="Digg" target="_top" ignore="y"> <img src="digg.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a></td></tr></tbody></table></span></span>
+	
+				</div>
+				<div class="classic-subject-line">
+					<span id="red-arrow1047973" class="float-left invisible" style="margin-top: 0.2em; display: inline;">
+		<img title="Selected post" src="arrow.png" alt="Selected post" width="15" height="15">
+	</span>
+					<span class="post-date float-left">
+		<span id="d1264050799000-726">Jan 21, 2010; 1:13pm</span>
+	</span>
+					<h2 class="post-subject float-left adbayes-content" style="width: 30%; overflow: visible; font-family: inherit;">
+		http sink element
+	</h2>
+				</div>
+			</div>
+		</div>
+		<table class="classic-body">
+			<tbody><tr>
+				<td class="classic-author shaded-bg-color rounded-bottom">
+					<div class="avatar-outer">
+		<div class="avatar-inner">
+			<a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=user_nodes&amp;user=7653" rel="nofollow" title="View profile of arnabsamanta" class="nowrap no-decoration"><img class="avatar medium-border-color" src="avatar100.png" alt="arnabsamanta" title="arnabsamanta" width="100" height="100"><img src="online.png" class="online7653 online invisible" title="User is online" alt="online"></a>
+
+	
+	
+		</div>
+	</div>
+	
+	
+	<div class="post-count7653 avatar-label weak-color">48 posts</div>
+	
+				</td>
+				<td class="classic-message">
+					
+	
+	
+	<div id="message1047973" class="message-text adbayes-content">
+		Hello Developers,
+<br><br>Do we have any Http sink plugin in Gstreamer ?
+<br>If so , in which package do we have it ?
+<br><br>I guess we have a http src element from NEON and SOUP
+<br>But I could not find any sink element in HTTP.
+<br><br>Regards,
+<br>Arnab 
+<br><br><br><br><br><br>------------------------------------------------------------------------------
+<br>Throughout its 18-year history, RSA Conference consistently attracts the
+<br>world's best and brightest in the field, creating opportunities for Conference
+<br>attendees to learn about information security's most important issues through
+<br>interactions with peers, luminaries and emerging and established companies.
+<br><a href="http://p.sf.net/sfu/rsaconf-dev2dev" target="_top" rel="nofollow" link="external">http://p.sf.net/sfu/rsaconf-dev2dev</a><br>_______________________________________________
+<br>gstreamer-devel mailing list
+<br><a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=node&amp;node=1047973&amp;i=0" target="_top" rel="nofollow" link="external">[hidden email]</a>
+<br><a href="https://lists.sourceforge.net/lists/listinfo/gstreamer-devel" target="_top" rel="nofollow" link="external">https://lists.sourceforge.net/lists/listinfo/gstreamer-devel</a><br>
+
+	
+	
+	
+	</div>
+				</td>
+			</tr>
+		</tbody></table>
+	</div>
+	<div class="classic-row">
+		<div class="classic-header">
+			<div class="classic-bar shaded-bg-color rounded-top">
+				<div class="classic-author-name nowrap">
+					<a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=user_nodes&amp;user=7644">Stefan Sauer</a>
+				</div>
+				<div class="classic-right-menu shaded-bg-color weak-color">
+					<a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=reply&amp;node=1127265" rel="nofollow">Reply</a> |
+					<a href="javascript:void(0)" onclick="Nabble.setView('threaded', '/http-sink-element-tt1047973.html#a1127265',1127265)">Threaded</a>
+	<div id="tooltip10749" class="nabble-tooltip" use_title="false">
+		Open this post in threaded view
+		<div class="nabble-tooltip-arrow">
+			<div class="d1">♦</div>
+			<div class="d2">♦</div>
+		</div>
+	</div>
+	 |
+					<span id="dd_postdropdown1127265"><span id="postdropdown1127265" class="dropdown"><a href="javascript:void(0)" title="Click for more options">More</a> <img src="more.png" width="10" height="10"><table class="light-bg-color medium-border-color drop-shadow" style="margin-top: 1px;"><tbody><tr id="_loadingpostdropdown1127265" style="display: none;"><td class="dropdown-simple-row"><span id="_loadingSpanpostdropdown1127265">Loading...</span></td></tr><tr id="replyToAuthor1127265" style="display: none;"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=pm&amp;post=1127265" rel="nofollow">Reply to author</a></td></tr><tr id="editPost1127265" style="display: none;"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=edit_post&amp;node=1127265" rel="nofollow">Edit post</a></td></tr><tr id="movePost1127265" style="display: none;"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=move_node&amp;node=1127265" rel="nofollow">Move post</a></td></tr><tr id="deletePost1127265" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deletePost(1127265)" rel="nofollow">Delete this post</a></td></tr><tr id="deleteRecursively1127265" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deleteFromSite(1127265)" rel="nofollow">Delete this post and replies</a></td></tr><tr id="changePostDate1127265" style="display: none;"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=change_post_date&amp;node=1127265" rel="nofollow">Change post date</a></td></tr><tr id="print1127265"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=print_post&amp;node=1127265" rel="nofollow">Print post</a></td></tr><tr id="permalink1127265"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="prompt('Copy this:','http://gstreamer-devel.966125.n4.nabble.com/http-sink-element-tp1047973p1127265.html')">Permalink</a></td></tr><tr id="rawMail1127265" style="display: none;"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=raw_mail&amp;node=1127265" rel="nofollow">Raw mail</a></td></tr><tr id="social1127265" style="white-space: nowrap;"><td style="border: medium none;"><a href="http://twitter.com/share?text=Re%3A+%5Bgst-devel%5D+http+sink+element&amp;related=GStreamer-devel&amp;url=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p1127265.html" title="Twitter" target="_top" ignore="y"> <img src="twitter.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.facebook.com/share.php?v=4&amp;src=bm&amp;u=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p1127265.html&amp;t=Re%3A+%5Bgst-devel%5D+http+sink+element" title="Facebook" target="_top" ignore="y"> <img src="facebook.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://del.icio.us/post?url=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p1127265.html&amp;title=Re%3A+%5Bgst-devel%5D+http+sink+element" title="Delicious" target="_top" ignore="y"> <img src="delicious.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.google.com/bookmarks/mark?op=add&amp;bkmk=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p1127265.html&amp;title=Re%3A+%5Bgst-devel%5D+http+sink+element" title="Google Bookmarks" target="_top" ignore="y"> <img src="google.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.stumbleupon.com/submit?url=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p1127265.html&amp;title=Re%3A+%5Bgst-devel%5D+http+sink+element" title="Stumble Upon" target="_top" ignore="y"> <img src="stumbleupon.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p1127265.html&amp;title=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p1127265.html&amp;source=GStreamer-devel" title="LinkedIn" target="_top" ignore="y"> <img src="linkedin.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://digg.com/submit?phase=2&amp;url=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p1127265.html&amp;title=Re%3A+%5Bgst-devel%5D+http+sink+element" title="Digg" target="_top" ignore="y"> <img src="digg.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a></td></tr></tbody></table></span></span>
+	
+				</div>
+				<div class="classic-subject-line">
+					<span id="red-arrow1127265" class="float-left invisible" style="margin-top: 0.2em;">
+		<img title="Selected post" src="arrow.png" alt="Selected post" width="15" height="15">
+	</span>
+					<span class="post-date float-left">
+		<span id="d1264197085000-50">Jan 23, 2010; 5:51am</span>
+	</span>
+					<h2 class="post-subject float-left adbayes-content" style="width: 30%; overflow: visible; font-family: inherit;">
+		Re: [gst-devel] http sink element
+	</h2>
+				</div>
+			</div>
+		</div>
+		<table class="classic-body">
+			<tbody><tr>
+				<td class="classic-author shaded-bg-color rounded-bottom">
+					<div class="avatar-outer">
+		<div class="avatar-inner">
+			<a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=user_nodes&amp;user=7644" rel="nofollow" title="View profile of Stefan Sauer" class="nowrap no-decoration"><img class="avatar medium-border-color" src="avatar100.png" alt="Stefan Sauer" title="Stefan Sauer" width="100" height="100"><img src="online.png" class="online7644 online invisible" title="User is online" alt="online"></a>
+
+	
+	
+		</div>
+	</div>
+	
+	
+	<div class="post-count7644 avatar-label weak-color">1412 posts</div>
+	
+				</td>
+				<td class="classic-message">
+					
+	
+	
+	<div id="message1127265" class="message-text adbayes-content">
+		Am 21.01.2010 07:13, schrieb arnabsamanta:
+<br>&gt; Hello Developers,
+<br>&gt; 
+<br>&gt; Do we have any Http sink plugin in Gstreamer ?
+<br>&gt; If so , in which package do we have it ?
+<br>&gt; 
+<br>&gt; I guess we have a http src element from NEON and SOUP
+<br>&gt; But I could not find any sink element in HTTP.
+<br><br>That would be a http server and that does not make sense so much as a gstreamer
+<br>sink. You need to write a sever application. E.g. have a look at rygel (upnp
+<br>media server using gstreamer).
+<br><br>stefan
+<br><div class="shrinkable-quote" style="height: 300px; overflow-y: hidden;"><br>&gt; 
+<br>&gt; Regards,
+<br>&gt; Arnab 
+<br>&gt; 
+<br>&gt; 
+<br>&gt; 
+<br>&gt; 
+<br>&gt; 
+<br>&gt; ------------------------------------------------------------------------------
+<br>&gt; Throughout its 18-year history, RSA Conference consistently attracts the
+<br>&gt; world's best and brightest in the field, creating opportunities for Conference
+<br>&gt; attendees to learn about information security's most important issues through
+<br>&gt; interactions with peers, luminaries and emerging and established companies.
+<br>&gt; <a href="http://p.sf.net/sfu/rsaconf-dev2dev" target="_top" rel="nofollow" link="external">http://p.sf.net/sfu/rsaconf-dev2dev</a><br>&gt; _______________________________________________
+<br>&gt; gstreamer-devel mailing list
+<br>&gt; <a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=node&amp;node=1127265&amp;i=0" target="_top" rel="nofollow" link="external">[hidden email]</a>
+<br>&gt; <a href="https://lists.sourceforge.net/lists/listinfo/gstreamer-devel" target="_top" rel="nofollow" link="external">https://lists.sourceforge.net/lists/listinfo/gstreamer-devel</a></div><div class="shrink-quote"><span>...</span> [<a href="javascript:void(0)" collapsed="2">show rest of quote</a>]</div><br><br>------------------------------------------------------------------------------
+<br>Throughout its 18-year history, RSA Conference consistently attracts the
+<br>world's best and brightest in the field, creating opportunities for Conference
+<br>attendees to learn about information security's most important issues through
+<br>interactions with peers, luminaries and emerging and established companies.
+<br><a href="http://p.sf.net/sfu/rsaconf-dev2dev" target="_top" rel="nofollow" link="external">http://p.sf.net/sfu/rsaconf-dev2dev</a><br>_______________________________________________
+<br>gstreamer-devel mailing list
+<br><a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=node&amp;node=1127265&amp;i=1" target="_top" rel="nofollow" link="external">[hidden email]</a>
+<br><a href="https://lists.sourceforge.net/lists/listinfo/gstreamer-devel" target="_top" rel="nofollow" link="external">https://lists.sourceforge.net/lists/listinfo/gstreamer-devel</a><br>
+
+	
+	
+	
+	</div>
+				</td>
+			</tr>
+		</tbody></table>
+	</div>
+	<div class="classic-row">
+		<div class="classic-header">
+			<div class="classic-bar shaded-bg-color rounded-top">
+				<div class="classic-author-name nowrap">
+					<a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=user_nodes&amp;user=59030">Sreerenj Balachandran</a>
+				</div>
+				<div class="classic-right-menu shaded-bg-color weak-color">
+					<a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=reply&amp;node=1288197" rel="nofollow">Reply</a> |
+					<a href="javascript:void(0)" onclick="Nabble.setView('threaded', '/http-sink-element-tt1047973.html#a1288197',1288197)">Threaded</a>
+	<div id="tooltip21212" class="nabble-tooltip" use_title="false">
+		Open this post in threaded view
+		<div class="nabble-tooltip-arrow">
+			<div class="d1">♦</div>
+			<div class="d2">♦</div>
+		</div>
+	</div>
+	 |
+					<span id="dd_postdropdown1288197"><span id="postdropdown1288197" class="dropdown"><a href="javascript:void(0)" title="Click for more options">More</a> <img src="more.png" width="10" height="10"><table class="light-bg-color medium-border-color drop-shadow" style="margin-top: 1px;"><tbody><tr id="_loadingpostdropdown1288197" style="display: none;"><td class="dropdown-simple-row"><span id="_loadingSpanpostdropdown1288197">Loading...</span></td></tr><tr id="replyToAuthor1288197" style="display: none;"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=pm&amp;post=1288197" rel="nofollow">Reply to author</a></td></tr><tr id="editPost1288197" style="display: none;"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=edit_post&amp;node=1288197" rel="nofollow">Edit post</a></td></tr><tr id="movePost1288197" style="display: none;"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=move_node&amp;node=1288197" rel="nofollow">Move post</a></td></tr><tr id="deletePost1288197" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deletePost(1288197)" rel="nofollow">Delete this post</a></td></tr><tr id="deleteRecursively1288197" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deleteFromSite(1288197)" rel="nofollow">Delete this post and replies</a></td></tr><tr id="changePostDate1288197" style="display: none;"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=change_post_date&amp;node=1288197" rel="nofollow">Change post date</a></td></tr><tr id="print1288197"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=print_post&amp;node=1288197" rel="nofollow">Print post</a></td></tr><tr id="permalink1288197"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="prompt('Copy this:','http://gstreamer-devel.966125.n4.nabble.com/http-sink-element-tp1047973p1288197.html')">Permalink</a></td></tr><tr id="rawMail1288197" style="display: none;"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=raw_mail&amp;node=1288197" rel="nofollow">Raw mail</a></td></tr><tr id="social1288197" style="white-space: nowrap;"><td style="border: medium none;"><a href="http://twitter.com/share?text=Re%3A+%5Bgst-devel%5D+http+sink+element&amp;related=GStreamer-devel&amp;url=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p1288197.html" title="Twitter" target="_top" ignore="y"> <img src="twitter.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.facebook.com/share.php?v=4&amp;src=bm&amp;u=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p1288197.html&amp;t=Re%3A+%5Bgst-devel%5D+http+sink+element" title="Facebook" target="_top" ignore="y"> <img src="facebook.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://del.icio.us/post?url=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p1288197.html&amp;title=Re%3A+%5Bgst-devel%5D+http+sink+element" title="Delicious" target="_top" ignore="y"> <img src="delicious.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.google.com/bookmarks/mark?op=add&amp;bkmk=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p1288197.html&amp;title=Re%3A+%5Bgst-devel%5D+http+sink+element" title="Google Bookmarks" target="_top" ignore="y"> <img src="google.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.stumbleupon.com/submit?url=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p1288197.html&amp;title=Re%3A+%5Bgst-devel%5D+http+sink+element" title="Stumble Upon" target="_top" ignore="y"> <img src="stumbleupon.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p1288197.html&amp;title=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p1288197.html&amp;source=GStreamer-devel" title="LinkedIn" target="_top" ignore="y"> <img src="linkedin.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://digg.com/submit?phase=2&amp;url=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p1288197.html&amp;title=Re%3A+%5Bgst-devel%5D+http+sink+element" title="Digg" target="_top" ignore="y"> <img src="digg.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a></td></tr></tbody></table></span></span>
+	
+				</div>
+				<div class="classic-subject-line">
+					<span id="red-arrow1288197" class="float-left invisible" style="margin-top: 0.2em;">
+		<img title="Selected post" src="arrow.png" alt="Selected post" width="15" height="15">
+	</span>
+					<span class="post-date float-left">
+		<span id="d1264253607000-636">Jan 23, 2010; 9:33pm</span>
+	</span>
+					<h2 class="post-subject float-left adbayes-content" style="width: 30%; overflow: visible; font-family: inherit;">
+		Re: [gst-devel] http sink element
+	</h2>
+				</div>
+			</div>
+		</div>
+		<table class="classic-body">
+			<tbody><tr>
+				<td class="classic-author shaded-bg-color rounded-bottom">
+					<div class="avatar-outer">
+		<div class="avatar-inner">
+			<a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=user_nodes&amp;user=59030" rel="nofollow" title="View profile of Sreerenj Balachandran" class="nowrap no-decoration"><img class="avatar medium-border-color" src="avatar100.png" alt="Sreerenj Balachandran" title="Sreerenj Balachandran" width="100" height="100"><img src="online.png" class="online59030 online invisible" title="User is online" alt="online"></a>
+
+	
+	
+		</div>
+	</div>
+	
+	
+	<div class="post-count59030 avatar-label weak-color">63 posts</div>
+	
+				</td>
+				<td class="classic-message">
+					
+	
+	<div class="weak-color" style="font-size: 80%; padding-bottom: 1em;">
+				In reply to <a href="http://gstreamer-devel.966125.n4.nabble.com/http-sink-element-tp1047973.html" rel="nofollow">this post</a> by arnabsamanta
+			</div>
+	<div id="message1288197" class="message-text adbayes-content">
+		On 1/23/10, <a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=node&amp;node=1288197&amp;i=0" target="_top" rel="nofollow" link="external">[hidden email]</a>
+<br>&lt;<a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=node&amp;node=1288197&amp;i=1" target="_top" rel="nofollow" link="external">[hidden email]</a>&gt; wrote:
+<div class="shrinkable-quote" style="height: 300px; overflow-y: hidden;"><br>&gt; Send gstreamer-devel mailing list submissions to
+<br>&gt; 	<a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=node&amp;node=1288197&amp;i=2" target="_top" rel="nofollow" link="external">[hidden email]</a>
+<br>&gt;
+<br>&gt; To subscribe or unsubscribe via the World Wide Web, visit
+<br>&gt; 	<a href="https://lists.sourceforge.net/lists/listinfo/gstreamer-devel" target="_top" rel="nofollow" link="external">https://lists.sourceforge.net/lists/listinfo/gstreamer-devel</a><br>&gt; or, via email, send a message with subject or body 'help' to
+<br>&gt; 	<a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=node&amp;node=1288197&amp;i=3" target="_top" rel="nofollow" link="external">[hidden email]</a>
+<br>&gt;
+<br>&gt; You can reach the person managing the list at
+<br>&gt; 	<a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=node&amp;node=1288197&amp;i=4" target="_top" rel="nofollow" link="external">[hidden email]</a>
+<br>&gt;
+<br>&gt; When replying, please edit your Subject line so it is more specific
+<br>&gt; than "Re: Contents of gstreamer-devel digest..."
+<br>&gt;
+<br>&gt;
+<br>&gt; Today's Topics:
+<br>&gt;
+<br>&gt; &nbsp; &nbsp;1. Problems to rip CD using cdparanoiasrc (Pascal Ognibene)
+<br>&gt; &nbsp; &nbsp;2. Re: render-delay base sink property for lip-sync? (pl bossart)
+<br>&gt; &nbsp; &nbsp;3. Re: set same caps for all tee's branches (Stefan Kost)
+<br>&gt; &nbsp; &nbsp;4. Re: http sink element (Stefan Kost)
+<br>&gt; &nbsp; &nbsp;5. Re: render-delay base sink property for lip-sync? (pl bossart)
+<br>&gt;
+<br>&gt;
+<br>&gt; ----------------------------------------------------------------------
+<br>&gt;
+<br>&gt; Message: 1
+<br>&gt; Date: Fri, 22 Jan 2010 21:27:21 +0100
+<br>&gt; From: Pascal Ognibene &lt;<a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=node&amp;node=1288197&amp;i=5" target="_top" rel="nofollow" link="external">[hidden email]</a>&gt;
+<br>&gt; Subject: [gst-devel] Problems to rip CD using cdparanoiasrc
+<br>&gt; To: <a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=node&amp;node=1288197&amp;i=6" target="_top" rel="nofollow" link="external">[hidden email]</a>
+<br>&gt; Message-ID:
+<br>&gt; 	&lt;<a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=node&amp;node=1288197&amp;i=7" target="_top" rel="nofollow" link="external">[hidden email]</a>&gt;
+<br>&gt; Content-Type: text/plain; charset="utf-8"
+<br>&gt;
+<br>&gt; Hi all,
+<br>&gt;
+<br>&gt; I'm trying to rip a CD using a simple gstreamer pipeline - something that is
+<br>&gt; already done in several programs,
+<br>&gt; but i'd like to understand myself how it works.
+<br>&gt;
+<br>&gt; In the code below, I basically use the EOS event to seek to the next cd
+<br>&gt; track.
+<br>&gt; But the behavior I see is weird:
+<br>&gt; -the first track is ripped ok
+<br>&gt; -I call the start_track_rip function for track 2
+<br>&gt; -the program blocks here forever.
+<br>&gt;
+<br>&gt; I must be doing something really wrong but I can't see what, even by the
+<br>&gt; looking at the sources of sound juicer for example.
+<br>&gt; Any help is welcome,
+<br>&gt;
+<br>&gt; - pog
+<br>&gt;
+<br>&gt; Code below:
+<br>&gt; -----------------
+<br>&gt;
+<br>&gt; #include &lt;glib.h&gt;
+<br>&gt; #include &lt;gst/gst.h&gt;
+<br>&gt; #include &lt;string.h&gt;
+<br>&gt;
+<br>&gt; guint current_rip_track = 1;
+<br>&gt; guint max_rip_track = 10;
+<br>&gt;
+<br>&gt; void start_track_rip();
+<br>&gt;
+<br>&gt; static GMainLoop *loop;
+<br>&gt; GstElement *pipeline;
+<br>&gt;
+<br>&gt; static gboolean
+<br>&gt; my_bus_callback(GstBus * bus, GstMessage * message, gpointer data)
+<br>&gt; {
+<br>&gt; &nbsp; &nbsp; g_print("Got %s message\n", GST_MESSAGE_TYPE_NAME(message));
+<br>&gt; &nbsp; &nbsp; switch (GST_MESSAGE_TYPE(message)) {
+<br>&gt; &nbsp; &nbsp; case GST_MESSAGE_ERROR:{
+<br>&gt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; GError *err;
+<br>&gt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; gchar *debug;
+<br>&gt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; gst_message_parse_error(message, &amp;err, &amp;debug);
+<br>&gt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; g_print("Error: %s\n", err-&gt;message);
+<br>&gt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; g_error_free(err);
+<br>&gt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; g_free(debug);
+<br>&gt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; g_main_loop_quit(loop);
+<br>&gt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; break;
+<br>&gt; &nbsp; &nbsp; &nbsp; &nbsp; }
+<br>&gt; &nbsp; &nbsp; case GST_MESSAGE_EOS:
+<br>&gt; &nbsp; &nbsp; &nbsp; &nbsp; if (current_rip_track &lt; max_rip_track) {
+<br>&gt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; current_rip_track++;
+<br>&gt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; g_print("going to next track %d\n", current_rip_track);
+<br>&gt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; start_track_rip();
+<br>&gt; &nbsp; &nbsp; &nbsp; &nbsp; } else {
+<br>&gt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; g_print("no more tracks, stopping\n");
+<br>&gt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return FALSE;
+<br>&gt; &nbsp; &nbsp; &nbsp; &nbsp; }
+<br>&gt; &nbsp; &nbsp; &nbsp; &nbsp; break;
+<br>&gt; &nbsp; &nbsp; default:
+<br>&gt; &nbsp; &nbsp; &nbsp; &nbsp; /* unhandled message */
+<br>&gt; &nbsp; &nbsp; &nbsp; &nbsp; break;
+<br>&gt; &nbsp; &nbsp; }
+<br>&gt; &nbsp; &nbsp; return TRUE;
+<br>&gt; }
+<br>&gt;
+<br>&gt; static gboolean cb_print_position(GstElement * pipeline)
+<br>&gt; {
+<br>&gt; &nbsp; &nbsp; GstState state, pending_state;
+<br>&gt; &nbsp; &nbsp; static GstFormat format = GST_FORMAT_TIME;
+<br>&gt; &nbsp; &nbsp; gint64 pos, len;
+<br>&gt;
+<br>&gt; &nbsp; &nbsp; gst_element_get_state(pipeline, &amp;state, &amp;pending_state, 0);
+<br>&gt; &nbsp; &nbsp; if (state != GST_STATE_PLAYING &amp;&amp; pending_state != GST_STATE_PLAYING) {
+<br>&gt; &nbsp; &nbsp; &nbsp; &nbsp; return FALSE;
+<br>&gt; &nbsp; &nbsp; }
+<br>&gt;
+<br>&gt; &nbsp; &nbsp; if (gst_element_query_position(pipeline, &amp;format, &amp;pos)
+<br>&gt; &nbsp; &nbsp; &nbsp; &nbsp; &amp;&amp; gst_element_query_duration(pipeline, &amp;format, &amp;len)) {
+<br>&gt; &nbsp; &nbsp; &nbsp; &nbsp; g_print("Time: %" GST_TIME_FORMAT " / %" GST_TIME_FORMAT "\r",
+<br>&gt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; GST_TIME_ARGS(pos), GST_TIME_ARGS(len));
+<br>&gt; &nbsp; &nbsp; }
+<br>&gt; &nbsp; &nbsp; /* call me again */
+<br>&gt; &nbsp; &nbsp; return TRUE;
+<br>&gt; }
+<br>&gt;
+<br>&gt; int main()
+<br>&gt; {
+<br>&gt; &nbsp; &nbsp; gst_init(NULL, NULL);
+<br>&gt;
+<br>&gt; &nbsp; &nbsp; GstElement *source, *filter, *sink;
+<br>&gt; &nbsp; &nbsp; GstBus *bus;
+<br>&gt;
+<br>&gt; &nbsp; &nbsp; // build pipeline
+<br>&gt; &nbsp; &nbsp; pipeline = gst_pipeline_new("rip-pipeline");
+<br>&gt; &nbsp; &nbsp; source = gst_element_factory_make("cdparanoiasrc", "mycdparanoia");
+<br>&gt; &nbsp; &nbsp; filter = gst_element_factory_make("lame", "encoder");
+<br>&gt; &nbsp; &nbsp; sink = gst_element_factory_make("filesink", "myfilesink");
+<br>&gt; &nbsp; &nbsp; gst_bin_add_many(GST_BIN(pipeline), source, filter, sink, NULL);
+<br>&gt;
+<br>&gt; &nbsp; &nbsp; if (!gst_element_link_many(source, filter, sink, NULL)) {
+<br>&gt; &nbsp; &nbsp; &nbsp; &nbsp; g_warning("Failed to link pipeline elements!");
+<br>&gt; &nbsp; &nbsp; }
+<br>&gt;
+<br>&gt; &nbsp; &nbsp; bus = gst_pipeline_get_bus(GST_PIPELINE(pipeline));
+<br>&gt; &nbsp; &nbsp; gst_bus_add_watch(bus, my_bus_callback, NULL);
+<br>&gt; &nbsp; &nbsp; gst_object_unref(bus);
+<br>&gt;
+<br>&gt; &nbsp; &nbsp; g_object_set(G_OBJECT(source), "device", "/dev/hda", NULL);
+<br>&gt;
+<br>&gt; &nbsp; &nbsp; start_track_rip();
+<br>&gt;
+<br>&gt; &nbsp; &nbsp; g_print("starting main loop\n");
+<br>&gt;
+<br>&gt; &nbsp; &nbsp; GMainLoop *loop = g_main_loop_new(NULL, FALSE);
+<br>&gt; &nbsp; &nbsp; g_main_loop_run(loop);
+<br>&gt;
+<br>&gt; &nbsp; &nbsp; /* clean up */
+<br>&gt; &nbsp; &nbsp; gst_element_set_state(pipeline, GST_STATE_NULL);
+<br>&gt; &nbsp; &nbsp; gst_object_unref(pipeline);
+<br>&gt; &nbsp; &nbsp; g_main_loop_unref(loop);
+<br>&gt;
+<br>&gt; &nbsp; &nbsp; return (0);
+<br>&gt; }
+<br>&gt;
+<br>&gt; void start_track_rip()
+<br>&gt; {
+<br>&gt; &nbsp; &nbsp; gchar buf[2048];
+<br>&gt;
+<br>&gt; &nbsp; &nbsp; GstElement *sink = gst_bin_get_by_name(GST_BIN(pipeline), "myfilesink");
+<br>&gt; &nbsp; &nbsp; strcpy(buf, "/tmp/music_");
+<br>&gt; &nbsp; &nbsp; gchar buf2[10];
+<br>&gt; &nbsp; &nbsp; sprintf(buf2, "%02d", current_rip_track);
+<br>&gt; &nbsp; &nbsp; strcat(buf, buf2);
+<br>&gt; &nbsp; &nbsp; strcat(buf, ".mp3");
+<br>&gt; &nbsp; &nbsp; gst_element_set_state(sink, GST_STATE_NULL);
+<br>&gt; &nbsp; &nbsp; g_object_set(G_OBJECT(sink), "location", buf, NULL);
+<br>&gt;
+<br>&gt; &nbsp; &nbsp; // seek to track
+<br>&gt; &nbsp; &nbsp; GstElement *cd = gst_bin_get_by_name(GST_BIN(pipeline), "mycdparanoia");
+<br>&gt; &nbsp; &nbsp; g_object_set(G_OBJECT(cd), "track", current_rip_track, NULL);
+<br>&gt; &nbsp; &nbsp; GstStateChangeReturn state_ret =
+<br>&gt; &nbsp; &nbsp; &nbsp; &nbsp; gst_element_set_state(pipeline, GST_STATE_PLAYING);
+<br>&gt;
+<br>&gt; &nbsp; &nbsp; if (state_ret == GST_STATE_CHANGE_FAILURE) {
+<br>&gt; &nbsp; &nbsp; &nbsp; &nbsp; g_print("01 state change failed\n");
+<br>&gt; &nbsp; &nbsp; } else if (state_ret == GST_STATE_CHANGE_SUCCESS) {
+<br>&gt; &nbsp; &nbsp; &nbsp; &nbsp; g_print("02 state change successful\n");
+<br>&gt; &nbsp; &nbsp; } else if (state_ret == GST_STATE_CHANGE_ASYNC) {
+<br>&gt; &nbsp; &nbsp; &nbsp; &nbsp; // what am I supposed to do here?
+<br>&gt; &nbsp; &nbsp; &nbsp; &nbsp; g_print("seek async\n");
+<br>&gt; &nbsp; &nbsp; &nbsp; &nbsp; state_ret =
+<br>&gt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; gst_element_get_state(pipeline, NULL, NULL, GST_SECOND / 2);
+<br>&gt; &nbsp; &nbsp; }
+<br>&gt;
+<br>&gt; &nbsp; &nbsp; g_timeout_add_seconds(1, (GSourceFunc) cb_print_position, pipeline);
+<br>&gt; }
+<br>&gt; -------------- next part --------------
+<br>&gt; An HTML attachment was scrubbed...
+<br>&gt;
+<br>&gt; ------------------------------
+<br>&gt;
+<br>&gt; Message: 2
+<br>&gt; Date: Fri, 22 Jan 2010 15:12:30 -0600
+<br>&gt; From: pl bossart &lt;<a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=node&amp;node=1288197&amp;i=8" target="_top" rel="nofollow" link="external">[hidden email]</a>&gt;
+<br>&gt; Subject: Re: [gst-devel] render-delay base sink property for lip-sync?
+<br>&gt; To: Discussion of the development of GStreamer
+<br>&gt; 	&lt;<a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=node&amp;node=1288197&amp;i=9" target="_top" rel="nofollow" link="external">[hidden email]</a>&gt;
+<br>&gt; Message-ID:
+<br>&gt; 	&lt;<a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=node&amp;node=1288197&amp;i=10" target="_top" rel="nofollow" link="external">[hidden email]</a>&gt;
+<br>&gt; Content-Type: text/plain; charset=ISO-8859-1
+<br>&gt;
+<br>&gt;&gt; A sink subclassing basesink can call
+<br>&gt;&gt; gst_base_sink_set_render_delay() when the latency towards the backend has
+<br>&gt;&gt; changed. This posts a latency message to the application (bus) and updates
+<br>&gt;&gt; the sink latency.
+<br>&gt;&gt; The new latency is used in gst_base_sink_do_sync() which is used by
+<br>&gt;&gt; gst_base_sink_render_object() and that finaly is used from the chin
+<br>&gt;&gt; function.
+<br>&gt;&gt;
+<br>&gt;&gt; I think it should work fine :)
+<br>&gt;
+<br>&gt; Thanks Stefan. What I was thinking of is indeed to call
+<br>&gt; gst_base_sink_set_render_delay() when pulseaudio updates the latency
+<br>&gt; information in gst_pulsering_stream_latency_cb(). However I am not
+<br>&gt; sure the sink latency (the time needed for a new sample to be played)
+<br>&gt; is compatible with the gstreamer expectations at the pipeline level.
+<br>&gt; The latency reported by pulseaudio is initially zero in a prerolled
+<br>&gt; state, and it'll increase during the first seconds until the reported
+<br>&gt; latency oscillates around a stable value.
+<br>&gt;
+<br>&gt; Along the same line, pulseaudio updates the latency every second or
+<br>&gt; so, not sure what the effect is if the pipeline latency is changed too
+<br>&gt; often.
+<br>&gt;
+<br>&gt; Last, do video sinks update the render-delay information as well? If
+<br>&gt; only the audio sink updates the back-end delay, we might end-up with a
+<br>&gt; worse experience...
+<br>&gt; Thanks for your feedback
+<br>&gt; - Pierre
+<br>&gt;
+<br>&gt;
+<br>&gt;
+<br>&gt; ------------------------------
+<br>&gt;
+<br>&gt; Message: 3
+<br>&gt; Date: Fri, 22 Jan 2010 23:46:40 +0200
+<br>&gt; From: Stefan Kost &lt;<a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=node&amp;node=1288197&amp;i=11" target="_top" rel="nofollow" link="external">[hidden email]</a>&gt;
+<br>&gt; Subject: Re: [gst-devel] set same caps for all tee's branches
+<br>&gt; To: Miron Kunz &lt;<a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=node&amp;node=1288197&amp;i=12" target="_top" rel="nofollow" link="external">[hidden email]</a>&gt;, Discussion of the development of
+<br>&gt; 	GStreamer	&lt;<a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=node&amp;node=1288197&amp;i=13" target="_top" rel="nofollow" link="external">[hidden email]</a>&gt;
+<br>&gt; Message-ID: &lt;<a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=node&amp;node=1288197&amp;i=14" target="_top" rel="nofollow" link="external">[hidden email]</a>&gt;
+<br>&gt; Content-Type: text/plain; charset=ISO-8859-1
+<br>&gt;
+<br>&gt; Am 19.01.2010 21:35, schrieb Miron Kunz:
+<br>&gt;&gt;
+<br>&gt;&gt; Hi,
+<br>&gt;&gt;
+<br>&gt;&gt; I have a pipeline ...!rtpdepay! alawdec ! tee name=m ! queue
+<br>&gt;&gt; !audioconvert!audiosink m.!queue!audioconvert!monoscope!fakesink.
+<br>&gt;&gt;
+<br>&gt;&gt; Monoscope and audiosink are using different number of channles and this
+<br>&gt;&gt; leads to caps change while pushing data to alawdec's sink. Which in turn
+<br>&gt;&gt; results in "non-negotiated" and stop of data flow.
+<br>&gt;&gt;
+<br>&gt;&gt; How can I assure that 2 branches after the tee end up with the same
+<br>&gt;&gt; capabilities?
+<br>&gt;&gt;
+<br>&gt;&gt; I tried to use same caps filter before the queue element on each branch
+<br>&gt;&gt; but it did not help.
+<br>&gt;
+<br>&gt; How did you use it? Becasue thats exactly what you should do - use a
+<br>&gt; capsfilter
+<br>&gt; and fixate the properties that would otherwise be renegotiated.
+<br>&gt;
+<br>&gt; Stefan
+<br>&gt;
+<br>&gt;&gt;
+<br>&gt;&gt; Thanks,
+<br>&gt;&gt; Miron.
+<br>&gt;&gt;
+<br>&gt;&gt; ------------------------------------------------------------------------------
+<br>&gt;&gt; Throughout its 18-year history, RSA Conference consistently attracts the
+<br>&gt;&gt; world's best and brightest in the field, creating opportunities for
+<br>&gt;&gt; Conference
+<br>&gt;&gt; attendees to learn about information security's most important issues
+<br>&gt;&gt; through
+<br>&gt;&gt; interactions with peers, luminaries and emerging and established
+<br>&gt;&gt; companies.
+<br>&gt;&gt; <a href="http://p.sf.net/sfu/rsaconf-dev2dev" target="_top" rel="nofollow" link="external">http://p.sf.net/sfu/rsaconf-dev2dev</a><br>&gt;&gt; _______________________________________________
+<br>&gt;&gt; gstreamer-devel mailing list
+<br>&gt;&gt; <a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=node&amp;node=1288197&amp;i=15" target="_top" rel="nofollow" link="external">[hidden email]</a>
+<br>&gt;&gt; <a href="https://lists.sourceforge.net/lists/listinfo/gstreamer-devel" target="_top" rel="nofollow" link="external">https://lists.sourceforge.net/lists/listinfo/gstreamer-devel</a><br>&gt;
+<br>&gt;
+<br>&gt;
+<br>&gt;
+<br>&gt; ------------------------------
+<br>&gt;
+<br>&gt; Message: 4
+<br>&gt; Date: Fri, 22 Jan 2010 23:51:25 +0200
+<br>&gt; From: Stefan Kost &lt;<a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=node&amp;node=1288197&amp;i=16" target="_top" rel="nofollow" link="external">[hidden email]</a>&gt;
+<br>&gt; Subject: Re: [gst-devel] http sink element
+<br>&gt; To: arnabsamanta &lt;<a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=node&amp;node=1288197&amp;i=17" target="_top" rel="nofollow" link="external">[hidden email]</a>&gt;, 	Discussion of the
+<br>&gt; 	development of GStreamer	&lt;<a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=node&amp;node=1288197&amp;i=18" target="_top" rel="nofollow" link="external">[hidden email]</a>&gt;
+<br>&gt; Message-ID: &lt;<a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=node&amp;node=1288197&amp;i=19" target="_top" rel="nofollow" link="external">[hidden email]</a>&gt;
+<br>&gt; Content-Type: text/plain; charset=ISO-8859-1
+<br>&gt;
+<br>&gt; Am 21.01.2010 07:13, schrieb arnabsamanta:
+<br>&gt;&gt; Hello Developers,
+<br>&gt;&gt;
+<br>&gt;&gt; Do we have any Http sink plugin in Gstreamer ?
+<br>&gt;&gt; If so , in which package do we have it ?
+<br>&gt;&gt;
+<br>&gt;&gt; I guess we have a http src element from NEON and SOUP
+<br>&gt;&gt; But I could not find any sink element in HTTP.
+<br>&gt;
+<br>&gt; That would be a http server and that does not make sense so much as a
+<br>&gt; gstreamer
+<br>&gt; sink. You need to write a sever application. E.g. have a look at rygel (upnp
+<br>&gt; media server using gstreamer).
+<br>&gt;
+<br>&gt; stefan
+<br>&gt;
+</div><div class="shrink-quote"><span>...</span> [<a href="javascript:void(0)" collapsed="2">show rest of quote</a>]</div>HI,
+<br><br>Stefan, You mean we can give the input to rygel as a gstreamer
+<br>pipeline so that rygel will act as an http server?
+<br><div class="shrinkable-quote" style="height: 300px; overflow-y: hidden;"><br>&gt;&gt;
+<br>&gt;&gt; Regards,
+<br>&gt;&gt; Arnab
+<br>&gt;&gt;
+<br>&gt;&gt;
+<br>&gt;&gt;
+<br>&gt;&gt;
+<br>&gt;&gt;
+<br>&gt;&gt; ------------------------------------------------------------------------------
+<br>&gt;&gt; Throughout its 18-year history, RSA Conference consistently attracts the
+<br>&gt;&gt; world's best and brightest in the field, creating opportunities for
+<br>&gt;&gt; Conference
+<br>&gt;&gt; attendees to learn about information security's most important issues
+<br>&gt;&gt; through
+<br>&gt;&gt; interactions with peers, luminaries and emerging and established
+<br>&gt;&gt; companies.
+<br>&gt;&gt; <a href="http://p.sf.net/sfu/rsaconf-dev2dev" target="_top" rel="nofollow" link="external">http://p.sf.net/sfu/rsaconf-dev2dev</a><br>&gt;&gt; _______________________________________________
+<br>&gt;&gt; gstreamer-devel mailing list
+<br>&gt;&gt; <a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=node&amp;node=1288197&amp;i=20" target="_top" rel="nofollow" link="external">[hidden email]</a>
+<br>&gt;&gt; <a href="https://lists.sourceforge.net/lists/listinfo/gstreamer-devel" target="_top" rel="nofollow" link="external">https://lists.sourceforge.net/lists/listinfo/gstreamer-devel</a><br>&gt;
+<br>&gt;
+<br>&gt;
+<br>&gt;
+<br>&gt; ------------------------------
+<br>&gt;
+<br>&gt; Message: 5
+<br>&gt; Date: Fri, 22 Jan 2010 16:22:12 -0600
+<br>&gt; From: pl bossart &lt;<a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=node&amp;node=1288197&amp;i=21" target="_top" rel="nofollow" link="external">[hidden email]</a>&gt;
+<br>&gt; Subject: Re: [gst-devel] render-delay base sink property for lip-sync?
+<br>&gt; To: Discussion of the development of GStreamer
+<br>&gt; 	&lt;<a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=node&amp;node=1288197&amp;i=22" target="_top" rel="nofollow" link="external">[hidden email]</a>&gt;
+<br>&gt; Message-ID:
+<br>&gt; 	&lt;<a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=node&amp;node=1288197&amp;i=23" target="_top" rel="nofollow" link="external">[hidden email]</a>&gt;
+<br>&gt; Content-Type: text/plain; charset="iso-8859-1"
+<br>&gt;
+<br>&gt;&gt; Thanks Stefan. What I was thinking of is indeed to call
+<br>&gt;&gt; gst_base_sink_set_render_delay() when pulseaudio updates the latency
+<br>&gt;&gt; information in gst_pulsering_stream_latency_cb().
+<br>&gt;
+<br>&gt; This is what I had in mind. Seems to update the pipeline latency every
+<br>&gt; second or so.
+<br>&gt; -Pierre
+<br>&gt; -------------- next part --------------
+<br>&gt; A non-text attachment was scrubbed...
+<br>&gt; Name: 0001-pulsesink-fix-lip-sync-by-providing-sink-latency-to-.patch
+<br>&gt; Type: text/x-patch
+<br>&gt; Size: 1792 bytes
+<br>&gt; Desc: not available
+<br>&gt;
+<br>&gt; ------------------------------
+<br>&gt;
+<br>&gt; ------------------------------------------------------------------------------
+<br>&gt; Throughout its 18-year history, RSA Conference consistently attracts the
+<br>&gt; world's best and brightest in the field, creating opportunities for
+<br>&gt; Conference
+<br>&gt; attendees to learn about information security's most important issues
+<br>&gt; through
+<br>&gt; interactions with peers, luminaries and emerging and established companies.
+<br>&gt; <a href="http://p.sf.net/sfu/rsaconf-dev2dev" target="_top" rel="nofollow" link="external">http://p.sf.net/sfu/rsaconf-dev2dev</a><br>&gt;
+<br>&gt; ------------------------------
+<br>&gt;
+<br>&gt; _______________________________________________
+<br>&gt; gstreamer-devel mailing list
+<br>&gt; <a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=node&amp;node=1288197&amp;i=24" target="_top" rel="nofollow" link="external">[hidden email]</a>
+<br>&gt; <a href="https://lists.sourceforge.net/lists/listinfo/gstreamer-devel" target="_top" rel="nofollow" link="external">https://lists.sourceforge.net/lists/listinfo/gstreamer-devel</a><br>&gt;
+<br>&gt;
+<br>&gt; End of gstreamer-devel Digest, Vol 44, Issue 30
+<br>&gt; ***********************************************
+<br>&gt;
+</div><div class="shrink-quote"><span>...</span> [<a href="javascript:void(0)" collapsed="2">show rest of quote</a>]</div><br><br>-- 
+<br>Sreerenj B
+<br>Software engineer,Carinov Networks Pvt Ltd
+<br><a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=node&amp;node=1288197&amp;i=25" target="_top" rel="nofollow" link="external">[hidden email]</a>
+<br>mob: +91 9739469496
+<br><br>------------------------------------------------------------------------------
+<br>Throughout its 18-year history, RSA Conference consistently attracts the
+<br>world's best and brightest in the field, creating opportunities for Conference
+<br>attendees to learn about information security's most important issues through
+<br>interactions with peers, luminaries and emerging and established companies.
+<br><a href="http://p.sf.net/sfu/rsaconf-dev2dev" target="_top" rel="nofollow" link="external">http://p.sf.net/sfu/rsaconf-dev2dev</a><br>_______________________________________________
+<br>gstreamer-devel mailing list
+<br><a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=node&amp;node=1288197&amp;i=26" target="_top" rel="nofollow" link="external">[hidden email]</a>
+<br><a href="https://lists.sourceforge.net/lists/listinfo/gstreamer-devel" target="_top" rel="nofollow" link="external">https://lists.sourceforge.net/lists/listinfo/gstreamer-devel</a><br>
+
+	
+	
+	
+	</div>
+				</td>
+			</tr>
+		</tbody></table>
+	</div>
+	<div class="classic-row">
+		<div class="classic-header">
+			<div class="classic-bar shaded-bg-color rounded-top">
+				<div class="classic-author-name nowrap">
+					<a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=user_nodes&amp;user=109860">Zeeshan Ali (Khattak)-2</a>
+				</div>
+				<div class="classic-right-menu shaded-bg-color weak-color">
+					<a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=reply&amp;node=1288862" rel="nofollow">Reply</a> |
+					<a href="javascript:void(0)" onclick="Nabble.setView('threaded', '/http-sink-element-tt1047973.html#a1288862',1288862)">Threaded</a>
+	<div id="tooltip71451" class="nabble-tooltip" use_title="false">
+		Open this post in threaded view
+		<div class="nabble-tooltip-arrow">
+			<div class="d1">♦</div>
+			<div class="d2">♦</div>
+		</div>
+	</div>
+	 |
+					<span id="dd_postdropdown1288862"><span id="postdropdown1288862" class="dropdown"><a href="javascript:void(0)" title="Click for more options">More</a> <img src="more.png" width="10" height="10"><table class="light-bg-color medium-border-color drop-shadow" style="margin-top: 1px;"><tbody><tr id="_loadingpostdropdown1288862" style="display: none;"><td class="dropdown-simple-row"><span id="_loadingSpanpostdropdown1288862">Loading...</span></td></tr><tr id="replyToAuthor1288862" style="display: none;"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=pm&amp;post=1288862" rel="nofollow">Reply to author</a></td></tr><tr id="editPost1288862" style="display: none;"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=edit_post&amp;node=1288862" rel="nofollow">Edit post</a></td></tr><tr id="movePost1288862" style="display: none;"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=move_node&amp;node=1288862" rel="nofollow">Move post</a></td></tr><tr id="deletePost1288862" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deletePost(1288862)" rel="nofollow">Delete this post</a></td></tr><tr id="deleteRecursively1288862" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deleteFromSite(1288862)" rel="nofollow">Delete this post and replies</a></td></tr><tr id="changePostDate1288862" style="display: none;"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=change_post_date&amp;node=1288862" rel="nofollow">Change post date</a></td></tr><tr id="print1288862"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=print_post&amp;node=1288862" rel="nofollow">Print post</a></td></tr><tr id="permalink1288862"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="prompt('Copy this:','http://gstreamer-devel.966125.n4.nabble.com/http-sink-element-tp1047973p1288862.html')">Permalink</a></td></tr><tr id="rawMail1288862" style="display: none;"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=raw_mail&amp;node=1288862" rel="nofollow">Raw mail</a></td></tr><tr id="social1288862" style="white-space: nowrap;"><td style="border: medium none;"><a href="http://twitter.com/share?text=Re%3A+%5Bgst-devel%5D+http+sink+element&amp;related=GStreamer-devel&amp;url=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p1288862.html" title="Twitter" target="_top" ignore="y"> <img src="twitter.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.facebook.com/share.php?v=4&amp;src=bm&amp;u=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p1288862.html&amp;t=Re%3A+%5Bgst-devel%5D+http+sink+element" title="Facebook" target="_top" ignore="y"> <img src="facebook.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://del.icio.us/post?url=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p1288862.html&amp;title=Re%3A+%5Bgst-devel%5D+http+sink+element" title="Delicious" target="_top" ignore="y"> <img src="delicious.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.google.com/bookmarks/mark?op=add&amp;bkmk=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p1288862.html&amp;title=Re%3A+%5Bgst-devel%5D+http+sink+element" title="Google Bookmarks" target="_top" ignore="y"> <img src="google.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.stumbleupon.com/submit?url=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p1288862.html&amp;title=Re%3A+%5Bgst-devel%5D+http+sink+element" title="Stumble Upon" target="_top" ignore="y"> <img src="stumbleupon.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p1288862.html&amp;title=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p1288862.html&amp;source=GStreamer-devel" title="LinkedIn" target="_top" ignore="y"> <img src="linkedin.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://digg.com/submit?phase=2&amp;url=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p1288862.html&amp;title=Re%3A+%5Bgst-devel%5D+http+sink+element" title="Digg" target="_top" ignore="y"> <img src="digg.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a></td></tr></tbody></table></span></span>
+	
+				</div>
+				<div class="classic-subject-line">
+					<span id="red-arrow1288862" class="float-left invisible" style="margin-top: 0.2em;">
+		<img title="Selected post" src="arrow.png" alt="Selected post" width="15" height="15">
+	</span>
+					<span class="post-date float-left">
+		<span id="d1264366050000-130">Jan 25, 2010; 4:47am</span>
+	</span>
+					<h2 class="post-subject float-left adbayes-content" style="width: 30%; overflow: visible; font-family: inherit;">
+		Re: [gst-devel] http sink element
+	</h2>
+				</div>
+			</div>
+		</div>
+		<table class="classic-body">
+			<tbody><tr>
+				<td class="classic-author shaded-bg-color rounded-bottom">
+					<div class="avatar-outer">
+		<div class="avatar-inner">
+			<a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=user_nodes&amp;user=109860" rel="nofollow" title="View profile of Zeeshan Ali (Khattak)-2" class="nowrap no-decoration"><img class="avatar medium-border-color" src="avatar100.png" alt="Zeeshan Ali (Khattak)-2" title="Zeeshan Ali (Khattak)-2" width="100" height="100"><img src="online.png" class="online109860 online invisible" title="User is online" alt="online"></a>
+
+	
+	
+		</div>
+	</div>
+	
+	
+	<div class="post-count109860 avatar-label weak-color">6 posts</div>
+	
+				</td>
+				<td class="classic-message">
+					
+	
+	
+	<div id="message1288862" class="message-text adbayes-content">
+		Hi,
+<br><div class="shrinkable-quote"><br>&gt;&gt; That would be a http server and that does not make sense so much as a
+<br>&gt;&gt; gstreamer
+<br>&gt;&gt; sink. You need to write a sever application. E.g. have a look at rygel (upnp
+<br>&gt;&gt; media server using gstreamer).
+<br>&gt;&gt;
+<br>&gt;&gt; stefan
+<br>&gt;&gt;
+<br>&gt; HI,
+<br>&gt;
+<br>&gt; Stefan, You mean we can give the input to rygel as a gstreamer
+<br>&gt; pipeline so that rygel will act as an http server?
+</div><br>&nbsp; Rygel can stream media to HTTP clients from a GStreamer source
+<br>element (which could be a bin containing lots of elements). This
+<br>source element is either provided by the MediaServer plugin or created
+<br>by Rygel for transcoding.
+<br><br>&nbsp; Source code at: <a href="http://git.gnome.org/browse/rygel/tree/src/rygel/" target="_top" rel="nofollow" link="external">http://git.gnome.org/browse/rygel/tree/src/rygel/</a><br><br>-- 
+<br>Regards,
+<br><br>Zeeshan Ali (Khattak)
+<br>FSF member#5124
+<br><br>------------------------------------------------------------------------------
+<br>Throughout its 18-year history, RSA Conference consistently attracts the
+<br>world's best and brightest in the field, creating opportunities for Conference
+<br>attendees to learn about information security's most important issues through
+<br>interactions with peers, luminaries and emerging and established companies.
+<br><a href="http://p.sf.net/sfu/rsaconf-dev2dev" target="_top" rel="nofollow" link="external">http://p.sf.net/sfu/rsaconf-dev2dev</a><br>_______________________________________________
+<br>gstreamer-devel mailing list
+<br><a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=node&amp;node=1288862&amp;i=0" target="_top" rel="nofollow" link="external">[hidden email]</a>
+<br><a href="https://lists.sourceforge.net/lists/listinfo/gstreamer-devel" target="_top" rel="nofollow" link="external">https://lists.sourceforge.net/lists/listinfo/gstreamer-devel</a><br>
+
+	
+	
+	
+	</div>
+				</td>
+			</tr>
+		</tbody></table>
+	</div>
+	<div class="classic-row">
+		<div class="classic-header">
+			<div class="classic-bar shaded-bg-color rounded-top">
+				<div class="classic-author-name nowrap">
+					<a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=user_nodes&amp;user=375529">shafi12</a>
+				</div>
+				<div class="classic-right-menu shaded-bg-color weak-color">
+					<a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=reply&amp;node=4665344" rel="nofollow">Reply</a> |
+					<a href="javascript:void(0)" onclick="Nabble.setView('threaded', '/http-sink-element-tt1047973.html#a4665344',4665344)">Threaded</a>
+	<div id="tooltip39276" class="nabble-tooltip" use_title="false">
+		Open this post in threaded view
+		<div class="nabble-tooltip-arrow">
+			<div class="d1">♦</div>
+			<div class="d2">♦</div>
+		</div>
+	</div>
+	 |
+					<span id="dd_postdropdown4665344"><span id="postdropdown4665344" class="dropdown"><a href="javascript:void(0)" title="Click for more options">More</a> <img src="more.png" width="10" height="10"><table class="light-bg-color medium-border-color drop-shadow" style="margin-top: 1px;"><tbody><tr id="_loadingpostdropdown4665344" style="display: none;"><td class="dropdown-simple-row"><span id="_loadingSpanpostdropdown4665344">Loading...</span></td></tr><tr id="replyToAuthor4665344" style="display: none;"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=pm&amp;post=4665344" rel="nofollow">Reply to author</a></td></tr><tr id="editPost4665344" style="display: none;"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=edit_post&amp;node=4665344" rel="nofollow">Edit post</a></td></tr><tr id="movePost4665344" style="display: none;"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=move_node&amp;node=4665344" rel="nofollow">Move post</a></td></tr><tr id="deletePost4665344" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deletePost(4665344)" rel="nofollow">Delete this post</a></td></tr><tr id="deleteRecursively4665344" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deleteFromSite(4665344)" rel="nofollow">Delete this post and replies</a></td></tr><tr id="changePostDate4665344" style="display: none;"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=change_post_date&amp;node=4665344" rel="nofollow">Change post date</a></td></tr><tr id="print4665344"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=print_post&amp;node=4665344" rel="nofollow">Print post</a></td></tr><tr id="permalink4665344"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="prompt('Copy this:','http://gstreamer-devel.966125.n4.nabble.com/http-sink-element-tp1047973p4665344.html')">Permalink</a></td></tr><tr id="rawMail4665344" style="display: none;"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=raw_mail&amp;node=4665344" rel="nofollow">Raw mail</a></td></tr><tr id="social4665344" style="white-space: nowrap;"><td style="border: medium none;"><a href="http://twitter.com/share?text=Re%3A+%5Bgst-devel%5D+http+sink+element&amp;related=GStreamer-devel&amp;url=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p4665344.html" title="Twitter" target="_top" ignore="y"> <img src="twitter.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.facebook.com/share.php?v=4&amp;src=bm&amp;u=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p4665344.html&amp;t=Re%3A+%5Bgst-devel%5D+http+sink+element" title="Facebook" target="_top" ignore="y"> <img src="facebook.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://del.icio.us/post?url=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p4665344.html&amp;title=Re%3A+%5Bgst-devel%5D+http+sink+element" title="Delicious" target="_top" ignore="y"> <img src="delicious.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.google.com/bookmarks/mark?op=add&amp;bkmk=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p4665344.html&amp;title=Re%3A+%5Bgst-devel%5D+http+sink+element" title="Google Bookmarks" target="_top" ignore="y"> <img src="google.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.stumbleupon.com/submit?url=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p4665344.html&amp;title=Re%3A+%5Bgst-devel%5D+http+sink+element" title="Stumble Upon" target="_top" ignore="y"> <img src="stumbleupon.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p4665344.html&amp;title=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p4665344.html&amp;source=GStreamer-devel" title="LinkedIn" target="_top" ignore="y"> <img src="linkedin.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://digg.com/submit?phase=2&amp;url=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p4665344.html&amp;title=Re%3A+%5Bgst-devel%5D+http+sink+element" title="Digg" target="_top" ignore="y"> <img src="digg.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a></td></tr></tbody></table></span></span>
+	
+				</div>
+				<div class="classic-subject-line">
+					<span id="red-arrow4665344" class="float-left invisible" style="margin-top: 0.2em;">
+		<img title="Selected post" src="arrow.png" alt="Selected post" width="15" height="15">
+	</span>
+					<span class="post-date float-left">
+		<span id="d1392720876773-597">Feb 18, 2014; 6:54pm</span>
+	</span>
+					<h2 class="post-subject float-left adbayes-content" style="width: 30%; overflow: visible; font-family: inherit;">
+		Re: [gst-devel] http sink element
+	</h2>
+				</div>
+			</div>
+		</div>
+		<table class="classic-body">
+			<tbody><tr>
+				<td class="classic-author shaded-bg-color rounded-bottom">
+					<div class="avatar-outer">
+		<div class="avatar-inner">
+			<a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=user_nodes&amp;user=375529" rel="nofollow" title="View profile of shafi12" class="nowrap no-decoration"><img class="avatar medium-border-color" src="avatar100.png" alt="shafi12" title="shafi12" width="100" height="100"><img src="online.png" class="online375529 online invisible" title="User is online" alt="online"></a>
+
+	
+	
+		</div>
+	</div>
+	
+	
+	<div class="post-count375529 avatar-label weak-color">1 post</div>
+	
+				</td>
+				<td class="classic-message">
+					
+	
+	<div class="weak-color" style="font-size: 80%; padding-bottom: 1em;">
+				In reply to <a href="http://gstreamer-devel.966125.n4.nabble.com/http-sink-element-tp1047973p1288197.html" rel="nofollow">this post</a> by Sreerenj Balachandran
+			</div>
+	<div id="message4665344" class="message-text adbayes-content">
+		HI All 
+<br><br>I have come up with http-sink-plugin very similar to filesink plugin except through gst_http_sink_render data is written to the socket through send function rather then to file. 
+<br>Pipeline I use is filesrc-&gt;httpsink(base sink class) , and on the client side (VLCPlayer ) am able to play through the URL .
+<br><br>Am I in right direction ?
+<br><br>Regards 
+<br>Shafi Ahmed
+
+	
+	
+	
+	</div>
+				</td>
+			</tr>
+		</tbody></table>
+	</div>
+	<div class="classic-row">
+		<div class="classic-header">
+			<div class="classic-bar shaded-bg-color rounded-top">
+				<div class="classic-author-name nowrap">
+					<a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=user_nodes&amp;user=375630">Tim Müller</a>
+				</div>
+				<div class="classic-right-menu shaded-bg-color weak-color">
+					<a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=reply&amp;node=4665347" rel="nofollow">Reply</a> |
+					<a href="javascript:void(0)" onclick="Nabble.setView('threaded', '/http-sink-element-tt1047973.html#a4665347',4665347)">Threaded</a>
+	<div id="tooltip403" class="nabble-tooltip" use_title="false">
+		Open this post in threaded view
+		<div class="nabble-tooltip-arrow">
+			<div class="d1">♦</div>
+			<div class="d2">♦</div>
+		</div>
+	</div>
+	 |
+					<span id="dd_postdropdown4665347"><span id="postdropdown4665347" class="dropdown"><a href="javascript:void(0)" title="Click for more options">More</a> <img src="more.png" width="10" height="10"><table class="light-bg-color medium-border-color drop-shadow" style="margin-top: 1px;"><tbody><tr id="_loadingpostdropdown4665347" style="display: none;"><td class="dropdown-simple-row"><span id="_loadingSpanpostdropdown4665347">Loading...</span></td></tr><tr id="replyToAuthor4665347" style="display: none;"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=pm&amp;post=4665347" rel="nofollow">Reply to author</a></td></tr><tr id="editPost4665347" style="display: none;"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=edit_post&amp;node=4665347" rel="nofollow">Edit post</a></td></tr><tr id="movePost4665347" style="display: none;"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=move_node&amp;node=4665347" rel="nofollow">Move post</a></td></tr><tr id="deletePost4665347" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deletePost(4665347)" rel="nofollow">Delete this post</a></td></tr><tr id="deleteRecursively4665347" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deleteFromSite(4665347)" rel="nofollow">Delete this post and replies</a></td></tr><tr id="changePostDate4665347" style="display: none;"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=change_post_date&amp;node=4665347" rel="nofollow">Change post date</a></td></tr><tr id="print4665347"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=print_post&amp;node=4665347" rel="nofollow">Print post</a></td></tr><tr id="permalink4665347"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="prompt('Copy this:','http://gstreamer-devel.966125.n4.nabble.com/http-sink-element-tp1047973p4665347.html')">Permalink</a></td></tr><tr id="rawMail4665347" style="display: none;"><td style="border: medium none;"><a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=raw_mail&amp;node=4665347" rel="nofollow">Raw mail</a></td></tr><tr id="social4665347" style="white-space: nowrap;"><td style="border: medium none;"><a href="http://twitter.com/share?text=Re%3A+http+sink+element&amp;related=GStreamer-devel&amp;url=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p4665347.html" title="Twitter" target="_top" ignore="y"> <img src="twitter.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.facebook.com/share.php?v=4&amp;src=bm&amp;u=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p4665347.html&amp;t=Re%3A+http+sink+element" title="Facebook" target="_top" ignore="y"> <img src="facebook.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://del.icio.us/post?url=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p4665347.html&amp;title=Re%3A+http+sink+element" title="Delicious" target="_top" ignore="y"> <img src="delicious.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.google.com/bookmarks/mark?op=add&amp;bkmk=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p4665347.html&amp;title=Re%3A+http+sink+element" title="Google Bookmarks" target="_top" ignore="y"> <img src="google.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.stumbleupon.com/submit?url=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p4665347.html&amp;title=Re%3A+http+sink+element" title="Stumble Upon" target="_top" ignore="y"> <img src="stumbleupon.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p4665347.html&amp;title=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p4665347.html&amp;source=GStreamer-devel" title="LinkedIn" target="_top" ignore="y"> <img src="linkedin.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://digg.com/submit?phase=2&amp;url=http%3A%2F%2Fgstreamer-devel.966125.n4.nabble.com%2Fhttp-sink-element-tp1047973p4665347.html&amp;title=Re%3A+http+sink+element" title="Digg" target="_top" ignore="y"> <img src="digg.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a></td></tr></tbody></table></span></span>
+	
+				</div>
+				<div class="classic-subject-line">
+					<span id="red-arrow4665347" class="float-left invisible" style="margin-top: 0.2em;">
+		<img title="Selected post" src="arrow.png" alt="Selected post" width="15" height="15">
+	</span>
+					<span class="post-date float-left">
+		<span id="d1392728736000-156">Feb 18, 2014; 9:05pm</span>
+	</span>
+					<h2 class="post-subject float-left adbayes-content" style="width: 30%; overflow: visible; font-family: inherit;">
+		Re: http sink element
+	</h2>
+				</div>
+			</div>
+		</div>
+		<table class="classic-body">
+			<tbody><tr>
+				<td class="classic-author shaded-bg-color rounded-bottom">
+					<div class="avatar-outer">
+		<div class="avatar-inner">
+			<a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=user_nodes&amp;user=375630" rel="nofollow" title="View profile of Tim Müller" class="nowrap no-decoration"><img class="avatar medium-border-color" src="avatar100.png" alt="Tim Müller" title="Tim Müller" width="100" height="100"><img src="online.png" class="online375630 online invisible" title="User is online" alt="online"></a>
+
+	
+	
+		</div>
+	</div>
+	
+	
+	<div class="post-count375630 avatar-label weak-color">1013 posts</div>
+	
+				</td>
+				<td class="classic-message">
+					
+	
+	
+	<div id="message4665347" class="message-text adbayes-content">
+		<br>On Tue, 2014-02-18 at 02:54 -0800, shafi12 wrote:
+<br><br>Hi,
+<br><br>&gt; I have come up with http-sink-plugin very similar to filesink plugin except
+<br>&gt; through gst_http_sink_render data is written to the socket through send
+<br>&gt; function rather then to file. 
+<br>&gt; Pipeline I use is filesrc-&gt;httpsink(base sink class) , and on the client
+<br>&gt; side (VLCPlayer ) am able to play through the URL .
+<br>&gt; 
+<br>&gt; Am I in right direction ?
+<br><br>Are you writing an http server sink or an http client sink?
+<br><br>There's a http server sink element in bugzilla already, if you want to
+<br>have a look at that for comparison:
+<br><br>&nbsp; &nbsp;<a href="https://bugzilla.gnome.org/show_bug.cgi?id=711271" target="_top" rel="nofollow" link="external">https://bugzilla.gnome.org/show_bug.cgi?id=711271</a><br><br>Or you might find this useful as well if you haven't seen it yet:
+<br><br><a href="https://coaxion.net/blog/2013/10/streaming-gstreamer-pipelines-via-http/" target="_top" rel="nofollow" link="external">https://coaxion.net/blog/2013/10/streaming-gstreamer-pipelines-via-http/</a><br><br>Cheers
+<br>&nbsp;-Tim
+<br><br>-- 
+<br>Tim Müller, Centricular Ltd - <a href="http://www.centricular.com/" target="_top" rel="nofollow" link="external">http://www.centricular.com</a><br><br>-- 
+<br>Tim Müller, Centricular Ltd - <a href="http://www.centricular.com/" target="_top" rel="nofollow" link="external">http://www.centricular.com</a><br><br>_______________________________________________
+<br>gstreamer-devel mailing list
+<br><a href="http://gstreamer-devel.966125.n4.nabble.com/user/SendEmail.jtp?type=node&amp;node=4665347&amp;i=0" target="_top" rel="nofollow" link="external">[hidden email]</a>
+<br><a href="http://lists.freedesktop.org/mailman/listinfo/gstreamer-devel" target="_top" rel="nofollow" link="external">http://lists.freedesktop.org/mailman/listinfo/gstreamer-devel</a><br>
+
+	
+	
+	
+	</div>
+				</td>
+			</tr>
+		</tbody></table>
+	</div>
+	
+		
+	</div>
+	</div>
+			<div id="topic-footer" class="weak-color" style="padding-top: 1em;">
+		«
+		<a href="http://gstreamer-devel.966125.n4.nabble.com/">Return to GStreamer-devel</a>
+		&nbsp;|&nbsp;
+		<span id="v1047973" style="">2912 views</span>
+	
+	
+	</div>
+				
+			<table class="footer-table shaded-bg-color">
+		<tbody><tr>
+			<td class="footer-left weak-color">
+				<a href="http://www.nabble.com/" target="_top">Free forum by Nabble</a>
+				
+			</td>
+			<td class="footer-right"><span id="disablepop0"><a id="disablepop1" href="javascript:void(0)">Disable Popup Ads</a> | </span>
+				<a href="http://gstreamer-devel.966125.n4.nabble.com/template/NamlServlet.jtp?macro=macro_viewer&amp;id=classic_forum_topic%21nabble%3Atopic.naml&amp;base=nabble.view.web.template.ServletNamespace" rel="nofollow">Edit this page</a>
+			</td>
+		</tr>
+	</tbody></table>
+			
+
+					</div>
+					
+	
+					<!-- n4.nabble.com | Site ID = 966125 -->
+				
+			<div id="SL_balloon_obj" style="display: block;"><div id="SL_button" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 24px; height: 24px; position: absolute; cursor: pointer; opacity: 0; left: 352px; top: 892px; transition: visibility 2s ease 0s, opacity 2s linear 0s;"></div><div id="SL_shadow_translation_result2" style="display: none; margin-top: 30px; margin-left: 1px; direction: ltr; text-align: left; min-height: 40px;"><div></div></div><div id="SL_shadow_translator" style="display: none;"><div id="SL_providers"><div class="SL_BL_LABLE_ON" title="Google" id="SL_P0">G</div><div class="SL_BL_LABLE_ON" title="Microsoft" id="SL_P1">M</div><div class="SL_BL_LABLE_ON" title="Translator" id="SL_P2">T</div></div><div id="SL_planshet" style="background: rgb(244, 245, 245) url('undefined') repeat scroll 0% 0%;"><div id="SL_arrow_up"></div><div id="SL_TB"><div id="bubblelogo" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 24px; height: 24px; position: absolute;"></div><table id="SL_tables"><tr><td width="10%" align="right"><input id="SLloc" title="鎖定語言" type="checkbox"></td><td width="20%" align="left"><select id="SL_lng_from"><option value="auto">檢測語言</option><option value="sq">阿尔巴尼亚语</option><option value="ar">阿拉伯语</option><option value="az">阿塞拜疆语</option><option value="ga">爱尔兰语</option><option value="et">爱沙尼亚语</option><option value="eu">巴斯克语</option><option value="be">白俄罗斯语</option><option value="bg">保加利亚语</option><option value="is">冰岛语</option><option value="pl">波兰语</option><option value="bs">波斯尼亚语</option><option value="fa">波斯语</option><option value="af">布尔语(南非荷兰语)</option><option value="da">丹麦语</option><option value="de">德语</option><option value="ru">俄语</option><option value="fr">法语</option><option value="tl">菲律宾语</option><option value="fi">芬兰语</option><option value="km">高棉语</option><option value="ka">格鲁吉亚语</option><option value="gu">古吉拉特语</option><option value="kk">哈萨克语</option><option value="ht">海地克里奥尔语</option><option value="ko">韩语</option><option value="ha">豪萨语</option><option value="nl">荷兰语</option><option value="gl">加利西亚语</option><option value="ca">加泰罗尼亚语</option><option value="cs">捷克语</option><option value="kn">卡纳达语</option><option value="hr">克罗地亚语</option><option value="la">拉丁语</option><option value="lv">拉脱维亚语</option><option value="lo">老挝语</option><option value="lt">立陶宛语</option><option value="ro">罗马尼亚语</option><option value="mg">马尔加什语</option><option value="mt">马耳他语</option><option value="mr">马拉地语</option><option value="ml">马拉雅拉姆语</option><option value="ms">马来语</option><option value="mk">马其顿语</option><option value="mi">毛利语</option><option value="mn">蒙古语</option><option value="bn">孟加拉语</option><option value="my">缅甸语</option><option value="hmn">苗语</option><option value="zu">南非祖鲁语</option><option value="ne">尼泊尔语</option><option value="no">挪威语</option><option value="pa">旁遮普语</option><option value="pt">葡萄牙语</option><option value="ny">齐切瓦语</option><option value="ja">日语</option><option value="sv">瑞典语</option><option value="sr">塞尔维亚语</option><option value="st">塞索托语</option><option value="si">僧伽罗语</option><option value="eo">世界语</option><option value="sk">斯洛伐克语</option><option value="sl">斯洛文尼亚语</option><option value="sw">斯瓦希里语</option><option value="ceb">宿务语</option><option value="so">索马里语</option><option value="tg">塔吉克语</option><option value="te">泰卢固语</option><option value="ta">泰米尔语</option><option value="th">泰语</option><option value="tr">土耳其语</option><option value="cy">威尔士语</option><option value="ur">乌尔都语</option><option value="uk">乌克兰语</option><option value="uz">乌兹别克语</option><option value="iw">希伯来语</option><option value="el">希腊语</option><option value="es">西班牙语</option><option value="hu">匈牙利语</option><option value="hy">亚美尼亚语</option><option value="ig">伊博语</option><option value="it">意大利语</option><option value="yi">意第绪语</option><option value="hi">印地语</option><option value="su">印尼巽他语</option><option value="id">印尼语</option><option value="jw">印尼爪哇语</option><option value="en">英语</option><option value="yo">约鲁巴语</option><option value="vi">越南语</option><option value="zh-CN">中文简体</option><option value="zh-TW">中文繁体</option></select></td><td width="5%" align="center"><div id="SL_switch_b" title="切換語言" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 10px; height: 10px; cursor: pointer;" align="center"></div></td><td width="20%" align="left"><select id="SL_lng_to"><option value="sq">阿尔巴尼亚语</option><option value="ar">阿拉伯语</option><option value="az">阿塞拜疆语</option><option value="ga">爱尔兰语</option><option value="et">爱沙尼亚语</option><option value="eu">巴斯克语</option><option value="be">白俄罗斯语</option><option value="bg">保加利亚语</option><option value="is">冰岛语</option><option value="pl">波兰语</option><option value="bs">波斯尼亚语</option><option value="fa">波斯语</option><option value="af">布尔语(南非荷兰语)</option><option value="da">丹麦语</option><option value="de">德语</option><option value="ru">俄语</option><option value="fr">法语</option><option value="tl">菲律宾语</option><option value="fi">芬兰语</option><option value="km">高棉语</option><option value="ka">格鲁吉亚语</option><option value="gu">古吉拉特语</option><option value="kk">哈萨克语</option><option value="ht">海地克里奥尔语</option><option value="ko">韩语</option><option value="ha">豪萨语</option><option value="nl">荷兰语</option><option value="gl">加利西亚语</option><option value="ca">加泰罗尼亚语</option><option value="cs">捷克语</option><option value="kn">卡纳达语</option><option value="hr">克罗地亚语</option><option value="la">拉丁语</option><option value="lv">拉脱维亚语</option><option value="lo">老挝语</option><option value="lt">立陶宛语</option><option value="ro">罗马尼亚语</option><option value="mg">马尔加什语</option><option value="mt">马耳他语</option><option value="mr">马拉地语</option><option value="ml">马拉雅拉姆语</option><option value="ms">马来语</option><option value="mk">马其顿语</option><option value="mi">毛利语</option><option value="mn">蒙古语</option><option value="bn">孟加拉语</option><option value="my">缅甸语</option><option value="hmn">苗语</option><option value="zu">南非祖鲁语</option><option value="ne">尼泊尔语</option><option value="no">挪威语</option><option value="pa">旁遮普语</option><option value="pt">葡萄牙语</option><option value="ny">齐切瓦语</option><option value="ja">日语</option><option value="sv">瑞典语</option><option value="sr">塞尔维亚语</option><option value="st">塞索托语</option><option value="si">僧伽罗语</option><option value="eo">世界语</option><option value="sk">斯洛伐克语</option><option value="sl">斯洛文尼亚语</option><option value="sw">斯瓦希里语</option><option value="ceb">宿务语</option><option value="so">索马里语</option><option value="tg">塔吉克语</option><option value="te">泰卢固语</option><option value="ta">泰米尔语</option><option value="th">泰语</option><option value="tr">土耳其语</option><option value="cy">威尔士语</option><option value="ur">乌尔都语</option><option value="uk">乌克兰语</option><option value="uz">乌兹别克语</option><option value="iw">希伯来语</option><option value="el">希腊语</option><option value="es">西班牙语</option><option value="hu">匈牙利语</option><option value="hy">亚美尼亚语</option><option value="ig">伊博语</option><option value="it">意大利语</option><option value="yi">意第绪语</option><option value="hi">印地语</option><option value="su">印尼巽他语</option><option value="id">印尼语</option><option value="jw">印尼爪哇语</option><option value="en">英语</option><option value="yo">约鲁巴语</option><option value="vi">越南语</option><option value="zh-CN">中文简体</option><option value="zh-TW">中文繁体</option></select></td><td width="5%" align="center"> </td><td width="6%" align="center"><div id="SL_TTS_voice" title="聆聽" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="6%" align="center"><div id="SL_copy" title="複製譯文" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="6%" align="center"><div id="SL_bbl_font_patch" title="此功能在字典中禁用"></div><div id="SL_bbl_font" title="字體大小" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="6%" align="center"><div id="SL_TH" title="翻譯歷史" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="10%"></td><td width="6%" align="right"><div id="SL_pin" title="固定彈出窗口" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 16px; height: 16px; cursor: pointer;"></div></td></tr></table></div><div id="SL_alert_bbl" style="display: none;"><div id="SLHKclose"></div><div id="SL_alert_cont"></div></div></div><div id="SL_shadow_translation_result" style="background: rgb(255, 255, 255) url('undefined') repeat scroll 0% 0%; visibility: visible; min-height: 40px;"><div></div></div><div id="SL_loading" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; position: absolute; width: 35px; margin-left: 180px; margin-top: -40px; height: 35px;"></div><div id="SL_player2" style="display: none; height: 0px; width: 0px;"></div><div id="SL_alert100" style="display: none;">語言功能限200個字符</div><div id="SL_Balloon_options" style="background: rgb(255, 255, 255) none repeat scroll 0% 0%;"><div id="SL_arrow_down"></div><table width="100%"><tr><td width="18%" align="left" height="16"><div id="SL_bbl_donate" title="進行一點捐款" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="68%" align="center"><a href="#" id="OPlnk" title="顯示選項">選項</a> : <a href="#" id="HISTlnk" title="翻譯歷史">歷史</a> : <a href="http://about.imtranslator.net/tutorials/presentations/imtranslator-translator-for-firefox/popup-bubble-application/" target="_top" id="HELPlnk" title="幫助">幫助</a> : <a href="#" id="FBlnk" title="反饋">反饋</a></td><td width="15%" align="right"><a id="SL_Balloon_Close" href="#" title="關閉">關閉</a></td></tr></table></div></div></div></body>
+</html>

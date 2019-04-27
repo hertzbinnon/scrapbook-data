@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html class="js" lang="en-US">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="alexaVerifyID" content="qqxQUyWSeUfqZOencfEoRM9vrVk">
+<meta name="msvalidate.01" content="E8C9208AD2F47ED874ED18E35FC370CE">
+<meta name="google-translate-customization" content="c567e5d7624a883b-609bf053fa02c58b-g01de0b1961de0feb-f">
+<meta property="article:publisher" content="https://facebook.com/tecmint">
+<link rel="profile" href="https://gmpg.org/xfn/11">
+<link rel="pingback" href="https://www.tecmint.com/xmlrpc.php">
+<title>25 Useful Basic Commands of APT-GET and APT-CACHE for Package Management</title>
+
+
+<link rel="author" href="https://plus.google.com/u/0/107665449243972690526">
+<meta name="description" content="This article explains how quickly you can learn to install, remove, update and search software packages using apt-get and apt-cache commands from the command line.">
+<meta name="keywords" content="apt-get commands,apt-cache commands,install packages in ubuntu">
+<link rel="canonical" href="https://www.tecmint.com/useful-basic-commands-of-apt-get-and-apt-cache-for-package-management/">
+
+<link rel="dns-prefetch" href="https://s.w.org/">
+<link rel="alternate" type="application/rss+xml" title="Tecmint: Linux Howtos, Tutorials &amp; Guides » Feed" href="https://feeds.feedburner.com/tecmint">
+<link rel="alternate" type="application/rss+xml" title="Tecmint: Linux Howtos, Tutorials &amp; Guides » Comments Feed" href="https://www.tecmint.com/comments/feed/">
+
+<link rel="alternate" type="application/rss+xml" title="Tecmint: Linux Howtos, Tutorials &amp; Guides » 25 Useful Basic Commands of APT-GET and APT-CACHE for Package Management Comments Feed" href="https://www.tecmint.com/useful-basic-commands-of-apt-get-and-apt-cache-for-package-management/feed/">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="https://api.w.org/" href="https://www.tecmint.com/wp-json/">
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://www.tecmint.com/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://www.tecmint.com/wp-includes/wlwmanifest.xml">
+<link rel="prev" title="10 Useful “IP” Commands to Configure Network Interfaces" href="https://www.tecmint.com/ip-command-examples/">
+<link rel="next" title="CentOS 6.4 Released – Download DVD ISO Images" href="https://www.tecmint.com/download-centos-6-4-dvd-iso/">
+<meta name="generator" content="WordPress 4.9.9">
+<link rel="shortlink" href="https://www.tecmint.com/?p=2354">
+<link rel="alternate" type="application/json+oembed" href="https://www.tecmint.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fwww.tecmint.com%2Fuseful-basic-commands-of-apt-get-and-apt-cache-for-package-management%2F">
+<link rel="alternate" type="text/xml+oembed" href="https://www.tecmint.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fwww.tecmint.com%2Fuseful-basic-commands-of-apt-get-and-apt-cache-for-package-management%2F&amp;format=xml">
+
+<meta property="og:image" content="https://www.tecmint.com/wp-content/uploads/2013/03/Commands-for-APTGET-and-APTCACHE.jpg">
+
+
+<link rel="shortcut icon" href="favicon.ico">
+<!--[if lt IE 9]>
+<script src="https://www.tecmint.com/wp-content/themes/tecmint/js/ie/html5.js"></script>
+<script src="https://www.tecmint.com/wp-content/themes/tecmint/js/ie/selectivizr.js"></script>
+<![endif]-->
+<link rel="amphtml" href="https://www.tecmint.com/useful-basic-commands-of-apt-get-and-apt-cache-for-package-management/amp/"><link rel="icon" href="tecmint_square_logo.png" sizes="32x32">
+<link rel="icon" href="tecmint_square_logo.png" sizes="192x192">
+<link rel="apple-touch-icon-precomposed" href="https://www.tecmint.com/wp-content/uploads/2015/01/tecmint_square_logo.png">
+<meta name="msapplication-TileImage" content="https://www.tecmint.com/wp-content/uploads/2015/01/tecmint_square_logo.png">
+
+<link rel="author" href="https://plus.google.com/107665449243972690526/posts">
+
+
+
+
+
+
+<link rel="preload" href="https://adservice.google.com/adsid/integrator.js?domain=www.tecmint.com" as="script"><link rel="preload" href="https://pagead2.googlesyndication.com/pagead/js/r20181205/r20180604/show_ads_impl.js" as="script">
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body data-rsssl="1" class="post-template-default single single-post postid-2354 single-format-standard col-2cl full-width topbar-enabled gecko s1-collapse s2-collapse" style="padding-top: 40px;">
+<div id="wrapper">
+<header id="header">
+<nav class="nav-container group" id="nav-topbar">
+<div class="nav-toggle"><i class="fa fa-bars"></i></div>
+<div class="nav-text"></div>
+<div class="nav-wrap container"><ul id="menu-home" class="nav container-inner group"><li id="menu-item-334" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-334"><a href="https://www.tecmint.com/">Home</a></li>
+<li id="menu-item-10774" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-10774"><a target="_top" href="https://www.tecmint.com/who-we-are/">About</a></li>
+<li id="menu-item-3912" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3912"><a title="Free Linux eBooks" target="_top" href="http://tecmint.tradepub.com/category/information-technology-servers-and-linux-server-os/806/">Free eBooks</a></li>
+<li id="menu-item-17151" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-17151"><a title="Discover and save on the best gear, gadgets, and software" target="_top" href="https://deals.tecmint.com/">Deals</a></li>
+<li id="menu-item-18575" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-18575"><a title="Support Us" href="https://www.tecmint.com/donate-to-tecmint/">Donate</a></li>
+<li id="menu-item-10775" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-10775"><a target="_top" href="https://www.tecmint.com/submit-articles/">Join TecMint</a></li>
+<li id="menu-item-11736" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-11736"><a target="_top" href="https://www.tecmint.com/linux-online-training-courses/">Linux Online Courses</a></li>
+<li id="menu-item-11907" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-11907"><a title="Subscribe to Daily Updates" target="_top" href="https://www.tecmint.com/subscribe-to-blog/">Subscribe</a></li>
+<li id="menu-item-13338" class="hosting menu-item menu-item-type-custom menu-item-object-custom menu-item-13338"><a title="Best Web Hosting Companies" target="_top" href="https://www.tecmint.com/best-web-hosting-for-linux/">Linux Hosting</a></li>
+<li id="menu-item-24734" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-24734"><a title="Linux Commands – A Beginners Cheat Sheet" target="_top" href="https://www.tecmint.com/linux-commands-cheat-sheet/">A-Z Linux Commands</a></li>
+</ul></div>
+<div class="container">
+<div class="container-inner">
+<div class="toggle-search"><i class="fa fa-search"></i></div>
+<div class="search-expand">
+<div class="search-expand-inner">
+<form action="https://www.tecmint.com/search/" id="cse-search-box">
+<div>
+<input name="cx" value="partner-pub-2601749019656699:2173448976" type="hidden">
+<input name="cof" value="FORID:10" type="hidden">
+<input name="ie" value="UTF-8" type="hidden">
+<input class="search" name="q" size="20" value="" type="text">
+<input name="sa" value="Search" type="submit">
+</div>
+</form>
+
+</div>
+</div>
+</div>
+</div>
+</nav>
+<div class="container group">
+<div class="container-inner">
+<div class="group pad">
+<p class="site-title"><a href="https://www.tecmint.com/" rel="home"><img src="logo.png" alt="Tecmint: Linux Howtos, Tutorials &amp; Guides"></a></p>
+<div id="header-ads">
+<div id="text-17" class="widget widget_text"> <div class="textwidget">
+<ins class="adsbygoogle" style="display: inline-block; width: 728px; height: 90px;" data-ad-client="ca-pub-2601749019656699" data-ad-slot="8210224606" data-adsbygoogle-status="done"><ins id="aswift_1_expand" style="display: inline-table; border: medium none; height: 90px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 728px; background-color: transparent;"><ins id="aswift_1_anchor" style="display: block; border: medium none; height: 90px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 728px; background-color: transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" id="aswift_1" name="aswift_1" style="left: 0px; position: absolute; top: 0px; border: 0px none; width: 728px; height: 90px;" src="index_1.html" width="728" height="90" frameborder="0"></iframe></ins></ins></ins>
+
+</div>
+</div> </div>
+</div>
+<nav class="nav-container group" id="nav-header">
+<div class="nav-toggle"><i class="fa fa-bars"></i></div>
+<div class="nav-text"></div>
+<div class="nav-wrap container"><ul id="menu-header" class="nav container-inner group"><li id="menu-item-20410" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-20410"><a target="_top" href="https://www.fossmint.com/">Linux News</a></li>
+<li id="menu-item-10770" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-10770"><a href="https://www.tecmint.com/best-linux-distributions/">Linux Distro’s</a></li>
+<li id="menu-item-10771" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-10771"><a href="https://www.tecmint.com/category/interview-questions/">Interview Questions</a></li>
+<li id="menu-item-20869" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-has-children menu-item-20869"><a href="https://www.tecmint.com/#">Programming</a>
+<ul class="sub-menu" style="display: none;">
+<li id="menu-item-10772" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-10772"><a title="Learn Linux Shell Scripting" href="https://www.tecmint.com/category/bash-shell/">Shell Scripting</a></li>
+<li id="menu-item-20870" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-20870"><a href="https://www.tecmint.com/category/python/">Learn Python</a></li>
+<li id="menu-item-20871" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-20871"><a href="https://www.tecmint.com/category/awk-command/">Learn Awk</a></li>
+</ul>
+</li>
+<li id="menu-item-10773" class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-10773"><a href="https://www.tecmint.com/category/linux-commands/">Linux Commands</a></li>
+<li id="menu-item-14795" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-14795"><a href="https://www.tecmint.com/tag/linux-tricks/">Linux Tricks</a></li>
+<li id="menu-item-19684" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-19684"><a href="https://www.tecmint.com/category/top-tools/">Best Linux Tools</a></li>
+<li id="menu-item-10443" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-has-children menu-item-10443"><a target="_top" href="https://www.tecmint.com/#">Certifications</a>
+<ul class="sub-menu" style="display: none;">
+<li id="menu-item-14880" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-14880"><a href="https://www.tecmint.com/how-to-setup-and-configure-static-network-routing-in-rhel/">RHCE Exam</a></li>
+<li id="menu-item-11906" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-11906"><a target="_top" href="https://www.tecmint.com/rhcsa-exam-reviewing-essential-commands-system-documentation/">RHCSA Exam</a></li>
+<li id="menu-item-10444" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-10444"><a target="_top" href="https://www.tecmint.com/installing-network-services-and-configuring-services-at-system-boot/">LFCE Exam</a></li>
+<li id="menu-item-14793" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-14793"><a href="https://www.tecmint.com/sed-command-to-create-edit-and-manipulate-files-in-linux/">LFCS Exam</a></li>
+</ul>
+</li>
+<li id="menu-item-12399" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-has-children menu-item-12399"><a href="https://www.tecmint.com/#">Guides</a>
+<ul class="sub-menu" style="display: none;">
+<li id="menu-item-18564" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-18564"><a target="_top" href="https://www.tecmint.com/install-docker-and-learn-containers-in-centos-rhel-7-6/">Docker Series</a></li>
+<li id="menu-item-17150" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-17150"><a href="https://www.tecmint.com/setup-postfix-mail-server-and-dovecot-with-mariadb-in-centos/">Postfix Mail</a></li>
+<li id="menu-item-15041" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-15041"><a href="https://www.tecmint.com/citrix-xenserver-installation-and-network-configuration-in-linux/">XenServer Series</a></li>
+<li id="menu-item-14794" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-14794"><a href="https://www.tecmint.com/install-redhat-virtualization-rhev/">RHEV Series</a></li>
+<li id="menu-item-14805" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-14805"><a href="https://www.tecmint.com/what-is-clustering-and-advantages-disadvantages-of-clustering-in-linux/">Clustering Series</a></li>
+<li id="menu-item-12400" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-12400"><a href="https://www.tecmint.com/create-lvm-storage-in-linux/">LVM Series</a></li>
+<li id="menu-item-12402" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-12402"><a href="https://www.tecmint.com/understanding-raid-setup-in-linux/">RAID Series</a></li>
+<li id="menu-item-12403" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-12403"><a href="https://www.tecmint.com/install-and-configure-kvm-in-linux/">KVM Series</a></li>
+<li id="menu-item-12401" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-12401"><a href="https://www.tecmint.com/create-centralized-secure-storage-using-iscsi-targetin-linux/">iSCSI Series</a></li>
+<li id="menu-item-12406" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-12406"><a href="https://www.tecmint.com/install-zentyal-as-primary-domain-controller-and-integrate-windows-system/">Zentyal Series</a></li>
+<li id="menu-item-16084" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-16084"><a href="https://www.tecmint.com/install-and-configure-ansible-automation-tool-in-linux/">Ansible Series</a></li>
+<li id="menu-item-16395" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-16395"><a href="https://www.tecmint.com/install-and-configure-django-web-framework-in-centos-debian-ubuntu/">Django Series</a></li>
+<li id="menu-item-14603" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-14603"><a href="https://www.tecmint.com/create-gui-applications-in-linux/">Create GUI Apps</a></li>
+</ul>
+</li>
+<li id="menu-item-14796" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-14796"><a href="https://www.tecmint.com/command-line-tools-to-monitor-linux-performance/">Monitoring Tools</a>
+<ul class="sub-menu" style="display: none;">
+<li id="menu-item-14797" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-14797"><a href="https://www.tecmint.com/install-nagios-in-linux/">Nagios</a></li>
+<li id="menu-item-14798" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-14798"><a href="https://www.tecmint.com/install-and-configure-zabbix-monitoring-on-debian-centos-rhel/">Zabbix</a></li>
+<li id="menu-item-14799" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-14799"><a href="https://www.tecmint.com/install-cacti-network-monitoring-on-rhel-centos-6-3-5-8-and-fedora-17-12/">Cacti</a></li>
+<li id="menu-item-14800" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-14800"><a href="https://www.tecmint.com/install-observium-in-centos/">Observium</a></li>
+<li id="menu-item-14801" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-14801"><a href="https://www.tecmint.com/monitorix-a-lightweight-system-and-network-monitoring-tool-for-linux/">Monitorix</a></li>
+<li id="menu-item-14802" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-14802"><a href="https://www.tecmint.com/install-collectd-and-collectd-web-to-monitor-server-resources-in-linux/">Collectd</a></li>
+<li id="menu-item-14803" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-14803"><a href="https://www.tecmint.com/linux-performance-monitoring-with-collectl-tool/">Collectl</a></li>
+<li id="menu-item-14804" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-14804"><a href="https://www.tecmint.com/mysql-performance-monitoring/">MySQL Monitoring</a></li>
+</ul>
+</li>
+</ul></div>
+</nav>
+</div>
+</div>
+</header>
+<div class="container" id="page">
+<div class="container-inner">
+<div class="main">
+<div class="main-inner group">
+<section class="content">
+<div class="page-title pad group">
+<ul class="meta-single group">
+<li class="category"><a href="https://www.tecmint.com/category/linux-distros/debian/" rel="category tag">Debian</a> <span>/</span> <a href="https://www.tecmint.com/category/linux-commands/" rel="category tag">Linux Commands</a> <span>/</span> <a href="https://www.tecmint.com/category/linux-distros/linux-mint/" rel="category tag">Linux Mint</a> <span>/</span> <a href="https://www.tecmint.com/category/linux-distros/ubuntu/" rel="category tag">Ubuntu</a> <span>/</span> <a href="https://www.tecmint.com/category/linux-distros/xubuntu/" rel="category tag">Xubuntu</a></li>
+<li class="comments"><a href="https://www.tecmint.com/useful-basic-commands-of-apt-get-and-apt-cache-for-package-management/#comments"><i class="fa fa-comments-o"></i>62</a></li>
+</ul>
+</div>
+<div class="pad group">
+<article class="post-2354 post type-post status-publish format-standard has-post-thumbnail hentry category-debian category-linux-commands category-linux-mint category-ubuntu category-xubuntu">
+<div class="post-inner group">
+<h1 class="post-title">25 Useful Basic Commands of APT-GET and APT-CACHE for Package Management</h1>
+<p class="post-byline">by <a href="https://www.tecmint.com/author/admin/" title="Posts by Ravi Saive" rel="author">Ravi Saive</a> | Published: March 13, 2013 | 
+Last Updated: January 3, 2015 </p>
+<div class="add-box">
+
+<ins class="adsbygoogle" style="display: block; height: 90px;" data-ad-client="ca-pub-2601749019656699" data-ad-slot="2902592253" data-ad-format="link" data-adsbygoogle-status="done"><ins id="aswift_2_expand" style="display: inline-table; border: medium none; height: 90px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 862px; background-color: transparent;"><ins id="aswift_2_anchor" style="display: block; border: medium none; height: 90px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 862px; background-color: transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" id="aswift_2" name="aswift_2" style="left: 0px; position: absolute; top: 0px; border: 0px none; width: 862px; height: 90px;" src="index_3.html" width="862" height="90" frameborder="0"></iframe></ins></ins></ins>
+
+</div>
+<div class="clear"></div>
+<div id="exam_announcement">
+<i style="color: rgb(40, 85, 122); font-size: 20px;" class="fa fa-book"></i>
+<b>Download Your Free eBooks NOW</b> - <a target="_top" style="text-decoration: underline;" href="https://www.tecmint.com/10-useful-free-linux-ebooks-for-newbies-and-administrators/">10 Free Linux eBooks for Administrators</a> | <a style="text-decoration: underline;" target="_top" href="https://www.tecmint.com/free-linux-shell-scripting-books/">4 Free Shell Scripting eBooks</a>
+</div>
+<div class="clear"></div>
+<div class="ads-inner-mobile">
+<center>
+
+<ins class="adsbygoogle" style="display: inline-block; width: 300px; height: 250px;" data-ad-client="ca-pub-2601749019656699" data-ad-slot="9946480174" data-adsbygoogle-status="done"><ins id="aswift_3_expand" style="display: inline-table; border: medium none; height: 250px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 300px; background-color: transparent;"><ins id="aswift_3_anchor" style="display: block; border: medium none; height: 250px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 300px; background-color: transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" id="aswift_3" name="aswift_3" style="left: 0px; position: absolute; top: 0px; border: 0px none; width: 300px; height: 250px;" src="index_4.html" width="300" height="250" frameborder="0"></iframe></ins></ins></ins>
+
+</center>
+</div>
+<div class="clear"></div>
+<div class="entry share">
+<div class="entry-inner">
+<p>This article explains how quickly you can learn to <strong>install</strong>, <strong>remove</strong>, <strong>update</strong> and <strong>search</strong> software packages using <strong>apt-get</strong> and <strong>apt-cache</strong> commands from the command line. This article provides some useful commands that will help you to handle package management in <strong>Debian/Ubuntu</strong> based systems.</p>
+<div id="attachment_2356" style="width: 310px;" class="wp-caption aligncenter"><a href="https://www.tecmint.com/wp-content/uploads/2013/03/apt-get-commands.png"><img src="1x1.trans.gif" data-lazy-src="https://www.tecmint.com/wp-content/uploads/2013/03/apt-get-commands-300x215.png" class="size-medium wp-image-2356" alt="APT-GET and APT-CACHE Commands" srcset="https://www.tecmint.com/wp-content/uploads/2013/03/apt-get-commands-300x215.png 300w, https://www.tecmint.com/wp-content/uploads/2013/03/apt-get-commands.png 442w" sizes="(max-width: 300px) 100vw, 300px" width="300" height="215"></a><p class="wp-caption-text">APT-GET and APT-CACHE Commands</p></div>
+<h5>What is apt-get?</h5>
+<p>The <strong>apt-get</strong> utility is a powerful and free package management command line program, that is used to work with <strong>Ubuntu’s APT</strong> (<strong>Advanced Packaging Tool</strong>) library to perform installation of new software packages, removing existing software packages, upgrading of existing software packages and even used to upgrading the entire operating system.</p>
+<h5>What is apt-cache?</h5>
+<p>The <strong>apt-cache</strong> command line tool is used for searching apt software package cache. In simple words, this tool is used to search software packages, collects information of packages and also used to search for what available packages are ready for installation on <strong>Debian</strong> or <strong>Ubuntu</strong> based systems.</p>
+<div style="background: rgb(250, 255, 198) none repeat scroll 0% 0%; margin: 10px 0px; border: 1px solid rgb(222, 242, 0); padding: 20px 10px;" align="center"><strong><span style="color: rgb(51, 51, 51); font-size: large;">APT-CACHE – <strong style="color: red;">5 Useful Basic Commands</strong></span></strong></div>
+<h3>1. How Do I List All Available Packages?</h3>
+<p>To list all the available packages, type the following command.</p>
+<pre>$ apt-cache pkgnames</pre>
+<pre>esseract-ocr-epo
+pipenightdreams
+mumudvb
+tbb-examples
+libsvm-java
+libmrpt-hmtslam0.9
+libboost-timer1.50-dev
+kcm-touchpad
+g++-4.5-multilib
+...</pre>
+<h3>2. How Do I Find Out Package Name and Description of Software?</h3>
+<center style="padding-bottom: 20px; padding-top: 10px;"><ins class="adsbygoogle" style="display: block; height: 90px;" data-ad-client="ca-pub-2601749019656699" data-ad-slot="5590002574" data-ad-format="auto" data-adsbygoogle-status="done"><ins id="aswift_4_expand" style="display: inline-table; border: medium none; height: 90px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 780px; background-color: transparent;"><ins id="aswift_4_anchor" style="display: block; border: medium none; height: 90px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 780px; background-color: transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" id="aswift_4" name="aswift_4" style="left: 0px; position: absolute; top: 0px; border: 0px none; width: 780px; height: 90px;" src="index_5.html" width="780" height="90" frameborder="0"></iframe></ins></ins></ins></center><p>To find out the package name and with it description before installing, use the ‘<strong>search</strong>‘ flag. Using “<strong>search</strong>” with <strong>apt-cache</strong> will display a list of matched packages with short description. Let’s say you would like to find out description of package ‘<strong>vsftpd</strong>‘, then command would be.</p>
+<pre>$ apt-cache search vsftpd</pre>
+<pre>vsftpd - lightweight, efficient FTP server written for security
+ccze - A robust, modular log coloriser
+ftpd - File Transfer Protocol (FTP) server
+yasat - simple stupid audit tool</pre>
+<p>To find and list down all the packages starting with ‘<strong>vsftpd</strong>‘, you could use the following command.</p>
+<pre>$ apt-cache pkgnames vsftpd</pre>
+<pre>vsttpd</pre>
+<h3>3. How Do I Check Package Information?</h3>
+<p>For example, if you would like to check information of package along with it short description say (version number, check sums, size, installed size, category etc). Use ‘<strong>show</strong>‘ sub command as shown below.</p>
+<pre>$ apt-cache show netcat</pre>
+<pre>Package: netcat
+Priority: optional
+Section: universe/net
+Installed-Size: 30
+Maintainer: Ubuntu Developers &lt;ubuntu-devel-discuss@lists.ubuntu.com&gt;
+Original-Maintainer: Ruben Molina &lt;rmolina@udea.edu.co&gt;
+Architecture: all
+Version: 1.10-40
+Depends: netcat-traditional (&gt;= 1.10-39)
+Filename: pool/universe/n/netcat/netcat_1.10-40_all.deb
+Size: 3340
+MD5sum: 37c303f02b260481fa4fc9fb8b2c1004
+SHA1: 0371a3950d6967480985aa014fbb6fb898bcea3a
+SHA256: eeecb4c93f03f455d2c3f57b0a1e83b54dbeced0918ae563784e86a37bcc16c9
+Description-en: TCP/IP swiss army knife -- transitional package
+ This is a "dummy" package that depends on lenny's default version of
+ netcat, to ease upgrades. It may be safely removed.
+Description-md5: 1353f8c1d079348417c2180319bdde09
+Bugs: https://bugs.launchpad.net/ubuntu/+filebug
+Origin: Ubuntu</pre>
+<h3>4. How Do I Check Dependencies for Specific Packages?</h3>
+<p>Use the ‘<strong>showpkg</strong>‘ sub command to check the dependencies for particular software packages. whether those dependencies packages are installed or not. For example, use the ‘<strong>showpkg</strong>‘ command along with package-name.</p>
+<pre>$ apt-cache showpkg vsftpd</pre>
+<pre>Package: vsftpd
+Versions: 
+2.3.5-3ubuntu1 (/var/lib/apt/lists/in.archive.ubuntu.com_ubuntu_dists_quantal_main_binary-i386_Packages)
+ Description Language: 
+                 File: /var/lib/apt/lists/in.archive.ubuntu.com_ubuntu_dists_quantal_main_binary-i386_Packages
+                  MD5: 81386f72ac91a5ea48f8db0b023f3f9b
+ Description Language: en
+                 File: /var/lib/apt/lists/in.archive.ubuntu.com_ubuntu_dists_quantal_main_i18n_Translation-en
+                  MD5: 81386f72ac91a5ea48f8db0b023f3f9b
+
+Reverse Depends: 
+  ubumirror,vsftpd
+  harden-servers,vsftpd
+Dependencies: 
+2.3.5-3ubuntu1 - debconf (18 0.5) debconf-2.0 (0 (null)) upstart-job (0 (null)) libc6 (2 2.15) libcap2 (2 2.10) libpam0g (2 0.99.7.1) libssl1.0.0 (2 1.0.0) libwrap0 (2 7.6-4~) adduser (0 (null)) libpam-modules (0 (null)) netbase (0 (null)) logrotate (0 (null)) ftp-server (0 (null)) ftp-server (0 (null)) 
+Provides: 
+2.3.5-3ubuntu1 - ftp-server 
+Reverse Provides:</pre>
+<h3>5. How Do I Check statistics of Cache</h3>
+<p>The ‘<strong>stats</strong>‘ sub command will display overall statistics about the cache. For example, the following command will display Total package names is the number of packages have found in the cache.</p>
+<pre>$ apt-cache stats</pre>
+<pre>Total package names: 51868 (1,037 k)
+Total package structures: 51868 (2,490 k)
+  Normal packages: 39505
+  Pure virtual packages: 602
+  Single virtual packages: 3819
+  Mixed virtual packages: 1052
+  Missing: 6890
+Total distinct versions: 43015 (2,753 k)
+Total distinct descriptions: 81048 (1,945 k)
+Total dependencies: 252299 (7,064 k)
+Total ver/file relations: 45567 (729 k)
+Total Desc/File relations: 81048 (1,297 k)
+Total Provides mappings: 8228 (165 k)
+Total globbed strings: 286 (3,518 )
+Total dependency version space: 1,145 k
+Total slack space: 62.6 k
+Total space accounted for: 13.3 M</pre>
+<div style="background: rgb(250, 255, 198) none repeat scroll 0% 0%; margin: 10px 0px; border: 1px solid rgb(222, 242, 0); padding: 20px 10px;" align="center"><strong><span style="color: rgb(51, 51, 51); font-size: large;">APT-GET – <strong style="color: red;">20 Useful Basic Commands for Package Management</strong></span></strong></div>
+<h3>6. How to Update System Packages</h3>
+<p>The ‘<strong>update</strong>‘ command is used to resynchronize the package index files from the their sources specified in <strong>/etc/apt/sources.list</strong> file. The update command fetched the packages from their locations and update the packages to newer version.</p>
+<pre>$ sudo apt-get update</pre>
+<pre>[sudo] password for tecmint: 
+Ign http://security.ubuntu.com quantal-security InRelease                      
+Get:1 http://security.ubuntu.com quantal-security Release.gpg [933 B]          
+Get:2 http://security.ubuntu.com quantal-security Release [49.6 kB]            
+Ign http://in.archive.ubuntu.com quantal InRelease                             
+Ign http://in.archive.ubuntu.com quantal-updates InRelease                     
+Get:3 http://repo.varnish-cache.org precise InRelease [13.7 kB]                
+Ign http://in.archive.ubuntu.com quantal-backports InRelease                   
+Hit http://in.archive.ubuntu.com quantal Release.gpg                           
+Get:4 http://security.ubuntu.com quantal-security/main Sources [34.8 kB]       
+Get:5 http://in.archive.ubuntu.com quantal-updates Release.gpg [933 B]         
+...</pre>
+<h3>7. How to Upgrade Software Packages</h3>
+<p>The ‘<strong>upgrade</strong>‘ command is used to upgrade all the currently installed software packages on the system. Under any circumstances currently installed packages are not removed or packages which are not already installed neither retrieved and installed to satisfy upgrade dependencies.</p>
+<pre>$ sudo apt-get upgrade</pre>
+<pre>Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+The following packages have been kept back:
+  linux-headers-generic linux-image-generic wine1.5 wine1.5-i386
+The following packages will be upgraded:
+  activity-log-manager-common activity-log-manager-control-center adium-theme-ubuntu alacarte
+  alsa-base app-install-data-partner appmenu-gtk appmenu-gtk3 apport apport-gtk apt
+  apt-transport-https apt-utils aptdaemon aptdaemon-data at-spi2-core bamfdaemon base-files bind9-host
+   ...</pre>
+<p>However, if you want to upgrade, unconcerned of whether software packages will be added or removed to fulfill dependencies, use the ‘<strong>dist-upgrade</strong>‘ sub command.</p>
+<pre>$ sudo apt-get dist-upgrade</pre>
+<h3>8. How Do I Install or Upgrade Specific Packages?</h3>
+<p>The ‘<strong>install</strong>‘ sub command is tracked by one or more packages wish for installation or upgrading.</p>
+<pre>$ sudo apt-get install netcat</pre>
+<pre>Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+The following extra packages will be installed:
+  netcat-traditional
+The following NEW packages will be installed:
+  netcat netcat-traditional
+0 upgraded, 2 newly installed, 0 to remove and 328 not upgraded.
+Need to get 67.1 kB of archives.
+After this operation, 186 kB of additional disk space will be used.
+Do you want to continue [Y/n]? y
+Get:1 http://in.archive.ubuntu.com/ubuntu/ quantal/universe netcat-traditional i386 1.10-40 [63.8 kB]
+Get:2 http://in.archive.ubuntu.com/ubuntu/ quantal/universe netcat all 1.10-40 [3,340 B]
+Fetched 67.1 kB in 1s (37.5 kB/s)
+Selecting previously unselected package netcat-traditional.
+(Reading database ... 216118 files and directories currently installed.)
+Unpacking netcat-traditional (from .../netcat-traditional_1.10-40_i386.deb) ...
+Selecting previously unselected package netcat.
+Unpacking netcat (from .../netcat_1.10-40_all.deb) ...
+Processing triggers for man-db ...
+Setting up netcat-traditional (1.10-40) ...
+Setting up netcat (1.10-40) ...</pre>
+<h3>9. How I can Install Multiple Packages?</h3>
+<p>You can add more than one package name along with the command in order to install multiple packages at the same time. For example, the following command will install packages ‘<a href="https://www.tecmint.com/nethogs-monitor-per-process-network-bandwidth-usage-in-real-time/" target="_top">nethogs</a>‘ and ‘<a href="https://www.tecmint.com/goaccess-a-real-time-apache-and-nginx-web-server-log-analyzer/" target="_top">goaccess</a>‘.</p>
+<pre>$ sudo apt-get install nethogs goaccess</pre>
+<pre>Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+goaccess is already the newest version.
+nethogs is already the newest version.
+0 upgraded, 0 newly installed, 0 to remove and 328 not upgraded.</pre>
+<h3>10. How to Install Several Packages using Wildcard</h3>
+<p>With the help of regular expression you can add several packages with one string. For example, we use <strong>*</strong> wildcard to install several packages that contains the ‘<strong>*name*</strong>‘ string, name would be ‘package-name’.</p>
+<pre>$ sudo apt-get install '*name*'</pre>
+<h3>11. How to install Packages without Upgrading</h3>
+<p>Using sub ‘<strong>–no-upgrade</strong>‘ command will prevent already installed packages from upgrading.</p>
+<pre>$ sudo apt-get install packageName --no-upgrade</pre>
+<pre>Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+Skipping vsftpd, it is already installed and upgrade is not set.
+0 upgraded, 0 newly installed, 0 to remove and 328 not upgraded.</pre>
+<h3>12. How to Upgrade Only Specific Packages</h3>
+<p>The ‘<strong>–only-upgrade</strong>‘ command do not install new packages but it only upgrade the already installed packages and disables new installation of packages.</p>
+<pre>$ sudo apt-get install packageName --only-upgrade</pre>
+<pre>Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+vsftpd is already the newest version.
+0 upgraded, 0 newly installed, 0 to remove and 328 not upgraded.</pre>
+<h3>13. How Do I Install Specific Package Version?</h3>
+<p>Let’s say you wish to install only specific version of packages, simply use the ‘<strong>=</strong>‘ with the package-name and append desired version.</p>
+<pre>$ sudo apt-get install vsftpd=2.3.5-3ubuntu1</pre>
+<pre>Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+vsftpd is already the newest version.
+0 upgraded, 0 newly installed, 0 to remove and 328 not upgraded.</pre>
+<h3>14. How Do I Remove Packages Without Configuration</h3>
+<p>To un-install software packages without removing their configuration files (for later re-use the same configuration). Use the <strong>‘remove</strong>‘ command as shown.</p>
+<pre>$ sudo apt-get remove vsftpd</pre>
+<pre>[sudo] password for tecmint: 
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+The following packages will be REMOVED:
+  vsftpd
+0 upgraded, 0 newly installed, 1 to remove and 328 not upgraded.
+After this operation, 364 kB disk space will be freed.
+Do you want to continue [Y/n]? y
+(Reading database ... 216156 files and directories currently installed.)
+Removing vsftpd ...
+vsftpd stop/waiting
+Processing triggers for ureadahead ...
+Processing triggers for man-db ...</pre>
+<h3>15. How Do I Completely Remove Packages</h3>
+<p>To remove software packages including their configuration files, use the ‘<strong>purge</strong>‘ sub command as shown below.</p>
+<pre>$ sudo apt-get purge vsftpd</pre>
+<pre>Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+The following packages will be REMOVED:
+  vsftpd*
+0 upgraded, 0 newly installed, 1 to remove and 328 not upgraded.
+After this operation, 0 B of additional disk space will be used.
+Do you want to continue [Y/n]? y
+(Reading database ... 216107 files and directories currently installed.)
+Removing vsftpd ...
+Purging configuration files for vsftpd ...
+Processing triggers for ureadahead ...</pre>
+<p>Alternatively, you can combine both the commands together as shown below.</p>
+<pre>$ sudo apt-get remove --purge vsftpd</pre>
+<pre>Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+The following packages will be REMOVED:
+  vsftpd*
+0 upgraded, 0 newly installed, 1 to remove and 328 not upgraded.
+After this operation, 364 kB disk space will be freed.
+Do you want to continue [Y/n]? y
+(Reading database ... 216156 files and directories currently installed.)
+Removing vsftpd ...
+vsftpd stop/waiting
+Purging configuration files for vsftpd ...
+Processing triggers for ureadahead ...
+Processing triggers for man-db ...</pre>
+<h3>16. How I Can Clean Up Disk Space</h3>
+<p>The ‘<strong>clean</strong>‘ command is used to free up the disk space by cleaning retrieved (downloaded) <strong>.deb</strong> files (packages) from the local repository.</p>
+<pre>$ sudo apt-get clean</pre>
+<h3>17. How Do I Download Only Source Code of Package</h3>
+<p>To download only source code of particular package, use the option ‘<strong>–download-only source</strong>‘ with ‘package-name’ as shown.</p>
+<pre>$ sudo apt-get --download-only source vsftpd</pre>
+<pre>Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+Need to get 220 kB of source archives.
+Get:1 http://in.archive.ubuntu.com/ubuntu/ quantal/main vsftpd 2.3.5-3ubuntu1 (dsc) [1,883 B]
+Get:2 http://in.archive.ubuntu.com/ubuntu/ quantal/main vsftpd 2.3.5-3ubuntu1 (tar) [188 kB]
+Get:3 http://in.archive.ubuntu.com/ubuntu/ quantal/main vsftpd 2.3.5-3ubuntu1 (diff) [30.5 kB]
+Fetched 220 kB in 4s (49.1 kB/s)
+Download complete and in download only mode</pre>
+<h3>18. How Can I Download and Unpack a Package</h3>
+<p>To download and unpack source code of a package to a specific directory, type the following command.</p>
+<pre>$ sudo apt-get source vsftpd</pre>
+<pre>Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+Need to get 220 kB of source archives.
+Get:1 http://in.archive.ubuntu.com/ubuntu/ quantal/main vsftpd 2.3.5-3ubuntu1 (dsc) [1,883 B]
+Get:2 http://in.archive.ubuntu.com/ubuntu/ quantal/main vsftpd 2.3.5-3ubuntu1 (tar) [188 kB]
+Get:3 http://in.archive.ubuntu.com/ubuntu/ quantal/main vsftpd 2.3.5-3ubuntu1 (diff) [30.5 kB]
+Fetched 220 kB in 1s (112 kB/s)  
+gpgv: Signature made Thursday 24 May 2012 02:35:09 AM IST using RSA key ID 2C48EE4E
+gpgv: Can't check signature: public key not found
+dpkg-source: warning: failed to verify signature on ./vsftpd_2.3.5-3ubuntu1.dsc
+dpkg-source: info: extracting vsftpd in vsftpd-2.3.5
+dpkg-source: info: unpacking vsftpd_2.3.5.orig.tar.gz
+dpkg-source: info: unpacking vsftpd_2.3.5-3ubuntu1.debian.tar.gz
+dpkg-source: info: applying 01-builddefs.patch
+dpkg-source: info: applying 02-config.patch
+dpkg-source: info: applying 03-db-doc.patch
+dpkg-source: info: applying 04-link-local.patch
+dpkg-source: info: applying 05-whitespaces.patch
+dpkg-source: info: applying 06-greedy.patch
+dpkg-source: info: applying 07-utf8.patch
+dpkg-source: info: applying 08-manpage.patch
+dpkg-source: info: applying 09-s390.patch
+dpkg-source: info: applying 10-remote-dos.patch
+dpkg-source: info: applying 11-alpha.patch
+dpkg-source: info: applying 09-disable-anonymous.patch
+dpkg-source: info: applying 12-ubuntu-use-snakeoil-ssl.patch</pre>
+<h3>19. How Can I Download, Unpack and Compile a Package</h3>
+<p>You can also download, unpack and compile the source code at the same time, using option ‘<strong>–compile</strong>‘ as shown below.</p>
+<pre>$ sudo apt-get --compile source goaccess</pre>
+<pre>[sudo] password for tecmint: 
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+Need to get 130 kB of source archives.
+Get:1 http://in.archive.ubuntu.com/ubuntu/ quantal/universe goaccess 1:0.5-1 (dsc) [1,120 B]
+Get:2 http://in.archive.ubuntu.com/ubuntu/ quantal/universe goaccess 1:0.5-1 (tar) [127 kB]
+Get:3 http://in.archive.ubuntu.com/ubuntu/ quantal/universe goaccess 1:0.5-1 (diff) [2,075 B]
+Fetched 130 kB in 1s (68.0 kB/s)
+gpgv: Signature made Tuesday 26 June 2012 09:38:24 AM IST using DSA key ID A9FD4821
+gpgv: Can't check signature: public key not found
+dpkg-source: warning: failed to verify signature on ./goaccess_0.5-1.dsc
+dpkg-source: info: extracting goaccess in goaccess-0.5
+dpkg-source: info: unpacking goaccess_0.5.orig.tar.gz
+dpkg-source: info: unpacking goaccess_0.5-1.debian.tar.gz
+dpkg-buildpackage: source package goaccess
+dpkg-buildpackage: source version 1:0.5-1
+dpkg-buildpackage: source changed by Chris Taylor &lt;ctaylor@debian.org&gt;
+dpkg-buildpackage: host architecture i386
+ dpkg-source --before-build goaccess-0.5
+dpkg-checkbuilddeps: Unmet build dependencies: debhelper (&gt;= 9) autotools-dev libncurses5-dev libglib2.0-dev libgeoip-dev autoconf
+dpkg-buildpackage: warning: build dependencies/conflicts unsatisfied; aborting
+dpkg-buildpackage: warning: (Use -d flag to override.)
+...</pre>
+<h3>20. How Do I Download a Package Without Installing</h3>
+<p>Using ‘<strong>download</strong>‘ option, you can download any given package without installing it. For example, the following command will only download ‘<strong>nethogs</strong>‘ package to current working directory.</p>
+<pre>$ sudo apt-get download nethogs</pre>
+<pre>Get:1 Downloading nethogs 0.8.0-1 [27.1 kB]
+Fetched 27.1 kB in 3s (7,506 B/s)</pre>
+<h3>21. How Do I Check Change Log of Package?</h3>
+<p>The ‘<strong>changelog</strong>‘ flag downloads a package change-log and shows the package version that is installed.</p>
+<pre>$ sudo apt-get changelog vsftpd</pre>
+<pre>vsftpd (2.3.5-3ubuntu1) quantal; urgency=low
+
+  * Merge from Debian testing (LP: #1003644).  Remaining changes:
+    + debian/vsftpd.upstart: migrate vsftpd to upstart.
+    + Add apport hook (LP: #513978):
+      - debian/vsftpd.apport: Added.
+      - debian/control: Build-depends on dh-apport.
+      - debian/rules: Add --with apport.
+    + Add debian/watch file.
+    + debian/patches/09-disable-anonymous.patch: Disable anonymous login
+      by default. (LP: #528860)
+  * debian/patches/12-ubuntu-us-snakeoil-ssl.patch: Use snakeoil SSL
+    certificates and key.
+
+ -- Andres Rodriguez &lt;andreserl@ubuntu.com&gt;  Wed, 23 May 2012 16:59:36 -0400
+...</pre>
+<h3>22. How Do I Check Broken Dependencies?</h3>
+<p>The ‘<strong>check</strong>‘ command is a diagnostic tool. It used to update package cache and checks for broken dependencies.</p>
+<pre>$ sudo apt-get check</pre>
+<pre>[sudo] password for tecmint: 
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done</pre>
+<h3>23. How Do I Search and Build Dependencies?</h3>
+<p>This ‘<strong>build-dep</strong>‘ command searches the local repositories in the system and install the build dependencies for package. If the package does not exists in the local repository it will return an error code.</p>
+<pre>$ sudo apt-get build-dep netcat</pre>
+<pre>The following NEW packages will be installed:
+  debhelper dh-apparmor html2text po-debconf quilt
+0 upgraded, 5 newly installed, 0 to remove and 328 not upgraded.
+Need to get 1,219 kB of archives.
+After this operation, 2,592 kB of additional disk space will be used.
+Do you want to continue [Y/n]? y
+Get:1 http://in.archive.ubuntu.com/ubuntu/ quantal/main html2text i386 1.3.2a-15build1 [91.4 kB]
+Get:2 http://in.archive.ubuntu.com/ubuntu/ quantal/main po-debconf all 1.0.16+nmu2ubuntu1 [210 kB]
+Get:3 http://in.archive.ubuntu.com/ubuntu/ quantal/main dh-apparmor all 2.8.0-0ubuntu5 [9,846 B]
+Get:4 http://in.archive.ubuntu.com/ubuntu/ quantal/main debhelper all 9.20120608ubuntu1 [623 kB]
+Get:5 http://in.archive.ubuntu.com/ubuntu/ quantal/main quilt all 0.60-2 [285 kB]
+Fetched 1,219 kB in 4s (285 kB/s)
+...</pre>
+<h3>24. How I Can Auto clean Apt-Get Cache?</h3>
+<p>The ‘<strong>autoclean</strong>‘ command deletes all <strong>.deb</strong> files from <strong>/var/cache/apt/archives</strong> to free-up significant volume of disk space.</p>
+<pre>$ sudo apt-get autoclean</pre>
+<pre>Reading package lists... Done
+Building dependency tree       
+Reading state information... Done</pre>
+<h3>25. How I Can Auto remove Installed Packages?</h3>
+<p>The ‘<strong>autoremove</strong>‘ sub command is used to auto remove packages that were certainly installed to satisfy dependencies for other packages and but they were now no longer required. For example, the following command will remove an installed package with its dependencies.</p>
+<pre>$ sudo apt-get autoremove vsftpd</pre>
+<pre>Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+Package 'vsftpd' is not installed, so not removed
+0 upgraded, 0 newly installed, 0 to remove and 328 not upgraded.</pre>
+<p>I’ve covered most of the available options with <strong>apt-get</strong> and <strong>apt-cache</strong> commands, but still there are more options available, you can check them out using <strong>‘man apt-get</strong>‘ or ‘<strong>man apt-cache</strong>‘ from the terminal. I hope you enjoyed reading this article, If I’ve missed anything and you would like me to add to the list. Please feel free to mention in the comment below.</p>
+<p>Read Also : <a href="https://www.tecmint.com/20-linux-yum-yellowdog-updater-modified-commands-for-package-mangement/" target="_top">20 Useful Linux YUM Commands for Package Management</a></p>
+</div>
+<div class="sharrre-container">
+<span>Share</span>
+<div id="twitter" data-url="https://www.tecmint.com/useful-basic-commands-of-apt-get-and-apt-cache-for-package-management/" data-text="25 Useful Basic Commands of APT-GET and APT-CACHE for Package Management" data-title="Tweet" class="sharrre"><a class="box" href="#"><div class="count" href="#">+</div><div class="share"><i class="fa fa-twitter"></i></div></a></div>
+<div id="facebook" data-url="https://www.tecmint.com/useful-basic-commands-of-apt-get-and-apt-cache-for-package-management/" data-text="25 Useful Basic Commands of APT-GET and APT-CACHE for Package Management" data-title="Like" class="sharrre"><a class="box" href="#"><div class="count" href="#">+</div><div class="share"><i class="fa fa-facebook"></i></div></a></div>
+<div id="googleplus" data-url="https://www.tecmint.com/useful-basic-commands-of-apt-get-and-apt-cache-for-package-management/" data-text="25 Useful Basic Commands of APT-GET and APT-CACHE for Package Management" data-title="+1" class="sharrre"><a class="box" href="#"><div class="count" href="#">0</div><div class="share"><i class="fa fa-google-plus-square"></i></div></a></div>
+<div id="linkedin" data-url="https://www.tecmint.com/useful-basic-commands-of-apt-get-and-apt-cache-for-package-management/" data-text="25 Useful Basic Commands of APT-GET and APT-CACHE for Package Management" data-title="Share It" class="sharrre"><a class="box" href="#" rel="nofollow"><div class="count" href="#">0</div><div class="share"><i class="fa fa-linkedin"></i></div></a></div>
+<div style="font-weight: 600; padding-top: 10px; width: 55px;"><a href="#comments"><img alt="Ask Anything" src="help.png"></a></div>
+</div>
+
+<div class="clear"></div>
+</div>
+</div>
+</article>
+<div class="clear"></div>
+<div class="clear"></div>
+<div class="ads-inner-mobile">
+<center style="padding-top: 30px;">
+
+<ins class="adsbygoogle" style="display: inline-block; width: 300px; height: 250px;" data-ad-client="ca-pub-2601749019656699" data-ad-slot="7807254572" data-adsbygoogle-status="done"><ins id="aswift_5_expand" style="display: inline-table; border: medium none; height: 250px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 300px; background-color: transparent;"><ins id="aswift_5_anchor" style="display: block; border: medium none; height: 250px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 300px; background-color: transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" id="aswift_5" name="aswift_5" style="left: 0px; position: absolute; top: 0px; border: 0px none; width: 300px; height: 250px;" src="index_8.html" width="300" height="250" frameborder="0"></iframe></ins></ins></ins>
+
+</center>
+</div>
+<div class="clear"></div>
+<div class="after-post-box">
+<h2>If You Appreciate What We Do Here On TecMint, You Should Consider:</h2>
+<ol>
+<li>Stay Connected to: <strong><a target="_top" rel="nofollow" href="https://bit.ly/1TP6lcM" title="Follow TecMint on Twitter">Twitter</a></strong> | <strong><a target="_top" rel="nofollow" href="https://bit.ly/1rDYrdj" title="Like Us on Facebook">Facebook</a></strong> | <strong><a target="_top" rel="nofollow" href="https://bit.ly/24J6lna" title="Join Us On Google+">Google Plus</a></strong></li>
+<li>Subscribe to our email updates: <strong><a target="_top" rel="nofollow" href="https://bit.ly/2dhBpWQ" title="Subscribe to TecMint Email Updates">Sign Up Now</a></strong></li>
+<li>Get your own <strong><a target="_top" rel="nofollow" title="WordPress Hosting" href="https://www.bluehost.com/track/tecmint/">self-hosted blog with a Free Domain</a></strong> at (<strong>$3.45/month</strong>).</li>
+<li>Become a Supporter - <strong><a target="_top" href="https://www.tecmint.com/donate-to-tecmint/">Make a contribution via PayPal</a></strong></li>
+<li>Support us by <strong><a href="https://www.tecmint.com/linux-books-in-pdf-format/" target="_top">purchasing our premium books</a></strong> in PDF format.</li>
+<li>Support us by taking our <strong><a rel="nofollow" target="_top" href="https://deals.tecmint.com/search?utf8=%E2%9C%93&amp;query=linux">online Linux courses</a></strong></li>
+</ol>
+<p style="text-align: center;"><strong style="color: rgb(254, 51, 0); font-size: 20px;">We are thankful for your never ending support.</strong></p>
+</div>
+<div class="clear"></div>
+<div class="author-bio">
+<div class="bio-avatar"><img src="1x1.trans.gif" data-lazy-src="https://secure.gravatar.com/avatar/7badddbc53297b2e8ed7011cf45df0c0?s=128&amp;d=blank&amp;r=g" alt="" srcset="https://secure.gravatar.com/avatar/7badddbc53297b2e8ed7011cf45df0c0?s=256&amp;d=blank&amp;r=g 2x" class="avatar avatar-128 photo" width="128" height="128"></div>
+<p style="float: right; font-weight: 600;"><a target="_top" class="author-link" href="https://www.tecmint.com/author/admin/" rel="author">View all Posts</a></p>
+<p class="bio-name">Ravi Saive</p>
+<p class="bio-desc">I am Ravi Saive, creator of TecMint. A Computer Geek and Linux Guru who loves to share tricks and tips on Internet. Most Of My Servers runs on Open Source Platform called Linux. <b>Follow Me</b>: <b><a rel="nofollow" title="Follow Me on Twitter" href="https://twitter.com/ravisaive">Twitter</a></b>, <b><a rel="nofollow" title="Follow Me on Facebook" href="https://www.facebook.com/ravi.saive">Facebook</a></b> and <b><a rel="nofollow" title="Join Me on Google+" href="https://plus.google.com/u/0/+RaviSaive">Google+</a></b></p>
+<p><span style="font-size: 20px; font-weight: 400; color: rgb(162, 4, 46);">Your name can also be listed here. Got a tip? <a style="text-decoration: underline;" target="_top" href="https://www.tecmint.com/submit-articles/">Submit it here</a> to become an <b>TecMint</b> author.</span></p>
+<div class="clear"></div>
+</div>
+<div class="hr"></div>
+<div class="grid one-fourth">
+<a href="https://www.tecmint.com/red-hat-rhcsa-rhce-exam-certification-book/" target="_top"><img alt="RedHat RHCE and RHCSA Certification Book" src="redhat-rhcsa-rhce-exam-study-ebook.png" style="margin-right: 10px;" width="200"></a>
+</div>
+<div class="grid one-fourth">
+<a href="https://www.tecmint.com/linux-foundation-lfcs-lfce-certification-exam-book/" target="_top"><img alt="Linux Foundation LFCS and LFCE Certification Preparation Guide" src="linux-foundation-lfcs-lfce-certification-ebook.png" width="200"></a>
+</div>
+<div class="grid one-fourth">
+<a href="https://deals.tecmint.com/sales/complete-linux-crash-course-includes-topics-on-red-hat-unix-kali-python-and-opensuse?utm_source=tecmint.com&amp;utm_medium=referral&amp;utm_campaign=complete-linux-crash-course-includes-topics-on-red-hat-unix-kali-python-and-opensu" rel="nofollow" target="_top"><img src="linux-system-administrator-course.png" style="margin-right: 10px;" width="200"></a>
+</div>
+<div class="grid one-fourth last">
+<a href="https://deals.tecmint.com/sales/become-an-ethical-hacker-bonus-bundle?utm_source=tecmint.com&amp;utm_medium=referral&amp;utm_campaign=become-an-ethical-hacker-bonus-bundle_090216" rel="nofollow" target="_top"><img src="become-an-ethical-hacker.png" width="200"></a>
+</div>
+<div class="clear"></div>
+<div class="hr"></div>
+<ul class="post-nav group">
+<li class="next"><a href="https://www.tecmint.com/download-centos-6-4-dvd-iso/" rel="next"><i class="fa fa-chevron-right"></i><strong>Next story</strong> <span>CentOS 6.4 Released – Download DVD ISO Images</span></a></li>
+<li class="previous"><a href="https://www.tecmint.com/ip-command-examples/" rel="prev"><i class="fa fa-chevron-left"></i><strong>Previous story</strong> <span>10 Useful “IP” Commands to Configure Network Interfaces</span></a></li>
+</ul>
+<h4 class="heading">
+<i class="fa fa-hand-o-right"></i>You may also like...</h4>
+<ul class="related-posts group">
+<li class="related post-hover">
+<article class="post-12163 post type-post status-publish format-standard has-post-thumbnail hentry category-ubuntu tag-ubuntu-mate">
+<div class="post-thumbnail">
+<a href="https://www.tecmint.com/ubuntu-mate-14-04-02-installation-guide/" title="Ubuntu Mate 14.04.2 Released – Installation Guide with Screenshots">
+<img src="1x1.trans.gif" data-lazy-src="https://www.tecmint.com/wp-content/uploads/2015/03/Install-Ubuntu-Mate-520x245.jpeg" class="attachment-thumb-medium size-thumb-medium wp-post-image" alt="Install Ubuntu Mate" srcset="https://www.tecmint.com/wp-content/uploads/2015/03/Install-Ubuntu-Mate-520x245.jpeg 520w, https://www.tecmint.com/wp-content/uploads/2015/03/Install-Ubuntu-Mate-720x340.jpeg 720w" sizes="(max-width: 520px) 100vw, 520px" width="520" height="245"> </a>
+<a class="post-comments" href="https://www.tecmint.com/ubuntu-mate-14-04-02-installation-guide/#comments"><span><i class="fa fa-comments-o"></i>1</span></a>
+</div>
+<div class="related-inner">
+<h4 class="post-title">
+<a href="https://www.tecmint.com/ubuntu-mate-14-04-02-installation-guide/" rel="bookmark" title="Ubuntu Mate 14.04.2 Released – Installation Guide with Screenshots">Ubuntu Mate 14.04.2 Released – Installation Guide with Screenshots</a>
+</h4>
+<div class="post-meta group">
+<p class="post-date">25 Mar, 2015</p>
+</div>
+</div>
+</article>
+</li>
+<li class="related post-hover"><div style="text-align: center; width: 100%; height: auto; clear: none;" class="google-auto-placed"><ins style="display: block; margin: 10px auto; background-color: transparent; height: 600px;" data-ad-format="auto" class="adsbygoogle adsbygoogle-noablate" data-ad-client="ca-pub-2601749019656699" data-adsbygoogle-status="done"><ins id="aswift_8_expand" style="display: inline-table; border: medium none; height: 600px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 293px; background-color: transparent;"><ins id="aswift_8_anchor" style="display: block; border: medium none; height: 600px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 293px; background-color: transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" id="aswift_8" name="aswift_8" style="left: 0px; position: absolute; top: 0px; border: 0px none; width: 293px; height: 600px;" src="index_11.html" width="293" height="600" frameborder="0"></iframe></ins></ins></ins></div>
+<article class="post-16488 post type-post status-publish format-standard has-post-thumbnail hentry category-ubuntu tag-ubuntu-15-10">
+<div class="post-thumbnail">
+<a href="https://www.tecmint.com/upgrade-ubuntu-15-04-to-15-10/" title="How to Upgrade from 15.04 (Vivid Vervet) to 15.10 (Wily Werewolf)">
+<img src="1x1.trans.gif" data-lazy-src="https://www.tecmint.com/wp-content/uploads/2015/10/Upgrade-Ubuntu-15-04-to-Ubuntu-15-10.png" class="attachment-thumb-medium size-thumb-medium wp-post-image" alt="Upgrade Ubuntu 15.04 to Ubuntu 15.10" srcset="https://www.tecmint.com/wp-content/uploads/2015/10/Upgrade-Ubuntu-15-04-to-Ubuntu-15-10.png 719w, https://www.tecmint.com/wp-content/uploads/2015/10/Upgrade-Ubuntu-15-04-to-Ubuntu-15-10-620x295.png 620w" sizes="(max-width: 719px) 100vw, 719px" width="719" height="342"> </a>
+<a class="post-comments" href="https://www.tecmint.com/upgrade-ubuntu-15-04-to-15-10/#comments"><span><i class="fa fa-comments-o"></i>7</span></a>
+</div>
+<div class="related-inner">
+<h4 class="post-title">
+<a href="https://www.tecmint.com/upgrade-ubuntu-15-04-to-15-10/" rel="bookmark" title="How to Upgrade from 15.04 (Vivid Vervet) to 15.10 (Wily Werewolf)">How to Upgrade from 15.04 (Vivid Vervet) to 15.10 (Wily Werewolf)</a>
+</h4>
+<div class="post-meta group">
+<p class="post-date">23 Oct, 2015</p>
+</div>
+</div>
+</article>
+</li>
+<li class="related post-hover">
+<article class="post-6338 post type-post status-publish format-standard has-post-thumbnail hentry category-ubuntu tag-ubuntu-14-04">
+<div class="post-thumbnail">
+<a href="https://www.tecmint.com/ubuntu-14-04-installation-guide/" title="Ubuntu 14.04 (Trusty Tahr) LTS Released – Installation Guide and Few System Tweaks">
+<img src="1x1.trans.gif" data-lazy-src="https://www.tecmint.com/wp-content/uploads/2014/04/Ubuntu-14-04-Installation-Guide.jpeg" class="attachment-thumb-medium size-thumb-medium wp-post-image" alt="Ubuntu 14.04 Installation Guide" srcset="https://www.tecmint.com/wp-content/uploads/2014/04/Ubuntu-14-04-Installation-Guide.jpeg 700w, https://www.tecmint.com/wp-content/uploads/2014/04/Ubuntu-14-04-Installation-Guide-620x318.jpeg 620w" sizes="(max-width: 700px) 100vw, 700px" width="700" height="360"> </a>
+<a class="post-comments" href="https://www.tecmint.com/ubuntu-14-04-installation-guide/#comments"><span><i class="fa fa-comments-o"></i>26</span></a>
+</div>
+<div class="related-inner">
+<h4 class="post-title">
+<a href="https://www.tecmint.com/ubuntu-14-04-installation-guide/" rel="bookmark" title="Ubuntu 14.04 (Trusty Tahr) LTS Released – Installation Guide and Few System Tweaks">Ubuntu 14.04 (Trusty Tahr) LTS Released – Installation Guide and Few System Tweaks</a>
+</h4>
+<div class="post-meta group">
+<p class="post-date">19 Apr, 2014</p>
+</div>
+</div>
+</article>
+</li>
+</ul>
+<section id="comments" class="themeform">
+<h3 class="heading">62 Responses</h3>
+<ul class="comment-tabs group">
+<li class="active"><a href="#commentlist-container"><i class="fa fa-comments-o"></i>Comments<span>6</span></a></li>
+<li><a href="#pinglist-container"><i class="fa fa-share"></i>Pingbacks<span>0</span></a></li>
+</ul>
+<div id="commentlist-container" class="comment-tab">
+<ol class="commentlist">
+<li class="comment even thread-even depth-1 parent" id="comment-1022914">
+<div id="div-comment-1022914" class="comment-body">
+<div class="comment-author vcard">
+<img src="1x1.trans.gif" data-lazy-src="https://secure.gravatar.com/avatar/af74b6687eb009e673f72c9a8dbd4995?s=96&amp;d=blank&amp;r=g" alt="" srcset="https://secure.gravatar.com/avatar/af74b6687eb009e673f72c9a8dbd4995?s=192&amp;d=blank&amp;r=g 2x" class="avatar avatar-96 photo" width="96" height="96"> <cite class="fn">Sansu</cite> <span class="says">says:</span> </div>
+<div class="comment-meta commentmetadata"><a href="https://www.tecmint.com/useful-basic-commands-of-apt-get-and-apt-cache-for-package-management/comment-page-5/#comment-1022914">
+August 11, 2018 at 11:12 pm</a> </div>
+<p>Hi, How can i search through installed applications ? In particular I want to search with a keyword in both package name and description for installed package? <code>apt-cache search --installed</code> keyword does not work.</p>
+<div class="reply"><a rel="nofollow" class="comment-reply-link" href="https://www.tecmint.com/useful-basic-commands-of-apt-get-and-apt-cache-for-package-management/?replytocom=1022914#respond" onclick="return addComment.moveForm( &quot;div-comment-1022914&quot;, &quot;1022914&quot;, &quot;respond&quot;, &quot;2354&quot; )" aria-label="Reply to Sansu">Reply</a></div>
+</div>
+<ul class="children">
+<li class="comment byuser comment-author-admin bypostauthor odd alt depth-2 parent" id="comment-1023250">
+<div id="div-comment-1023250" class="comment-body">
+<div class="comment-author vcard">
+<img src="1x1.trans.gif" data-lazy-src="https://secure.gravatar.com/avatar/7badddbc53297b2e8ed7011cf45df0c0?s=96&amp;d=blank&amp;r=g" alt="" srcset="https://secure.gravatar.com/avatar/7badddbc53297b2e8ed7011cf45df0c0?s=192&amp;d=blank&amp;r=g 2x" class="avatar avatar-96 photo" width="96" height="96"> <cite class="fn">Ravi Saive</cite> <span class="says">says:</span> </div>
+<div class="comment-meta commentmetadata"><a href="https://www.tecmint.com/useful-basic-commands-of-apt-get-and-apt-cache-for-package-management/comment-page-5/#comment-1023250">
+August 13, 2018 at 10:44 am</a> </div>
+<p>@Sansu,</p>
+<p>You can use the following command to search for a particular packages, for example apache in this case.</p>
+<pre>$ sudo apt-cache search apache
+</pre>
+<div class="reply"><a rel="nofollow" class="comment-reply-link" href="https://www.tecmint.com/useful-basic-commands-of-apt-get-and-apt-cache-for-package-management/?replytocom=1023250#respond" onclick="return addComment.moveForm( &quot;div-comment-1023250&quot;, &quot;1023250&quot;, &quot;respond&quot;, &quot;2354&quot; )" aria-label="Reply to Ravi Saive">Reply</a></div>
+</div>
+<ul class="children">
+<li class="comment even depth-3 parent" id="comment-1025016">
+<div id="div-comment-1025016" class="comment-body">
+<div class="comment-author vcard">
+<img src="1x1.trans.gif" data-lazy-src="https://secure.gravatar.com/avatar/af74b6687eb009e673f72c9a8dbd4995?s=96&amp;d=blank&amp;r=g" alt="" srcset="https://secure.gravatar.com/avatar/af74b6687eb009e673f72c9a8dbd4995?s=192&amp;d=blank&amp;r=g 2x" class="avatar avatar-96 photo" width="96" height="96"> <cite class="fn">Sansu</cite> <span class="says">says:</span> </div>
+<div class="comment-meta commentmetadata"><a href="https://www.tecmint.com/useful-basic-commands-of-apt-get-and-apt-cache-for-package-management/comment-page-5/#comment-1025016">
+August 19, 2018 at 12:49 am</a> </div>
+<p>Sorry if I was not clear. I specifically need to look into list of packages that are installed in my system.</p>
+<pre>$ apt-cache search apache 
+</pre>
+<p>will list all the packages available but i need only those which are installed in my system.</p>
+<div class="reply"><a rel="nofollow" class="comment-reply-link" href="https://www.tecmint.com/useful-basic-commands-of-apt-get-and-apt-cache-for-package-management/?replytocom=1025016#respond" onclick="return addComment.moveForm( &quot;div-comment-1025016&quot;, &quot;1025016&quot;, &quot;respond&quot;, &quot;2354&quot; )" aria-label="Reply to Sansu">Reply</a></div>
+</div>
+<ul class="children">
+<li class="comment odd alt depth-4" id="comment-1033456">
+<div id="div-comment-1033456" class="comment-body">
+<div class="comment-author vcard">
+<img src="1x1.trans.gif" data-lazy-src="https://secure.gravatar.com/avatar/3354c3ef91240202bd13908d3ac53783?s=96&amp;d=blank&amp;r=g" alt="" srcset="https://secure.gravatar.com/avatar/3354c3ef91240202bd13908d3ac53783?s=192&amp;d=blank&amp;r=g 2x" class="avatar avatar-96 photo" width="96" height="96"> <cite class="fn">dragonmouth</cite> <span class="says">says:</span> </div>
+<div class="comment-meta commentmetadata"><a href="https://www.tecmint.com/useful-basic-commands-of-apt-get-and-apt-cache-for-package-management/comment-page-5/#comment-1033456">
+September 7, 2018 at 7:02 pm</a> </div>
+<p>Instead of using the CLI tool <strong>‘apt-cache’</strong>. use the GUI tool, Synaptic. When you search for <strong>‘apache’</strong>, Synaptic will display on one screen all packages with <strong>‘apache’</strong> in the name or the description, and whether they are installed or not.</p>
+<div class="reply"><a rel="nofollow" class="comment-reply-link" href="https://www.tecmint.com/useful-basic-commands-of-apt-get-and-apt-cache-for-package-management/?replytocom=1033456#respond" onclick="return addComment.moveForm( &quot;div-comment-1033456&quot;, &quot;1033456&quot;, &quot;respond&quot;, &quot;2354&quot; )" aria-label="Reply to dragonmouth">Reply</a></div>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="comment even thread-odd thread-alt depth-1 parent" id="comment-982942">
+<div id="div-comment-982942" class="comment-body">
+<div class="comment-author vcard">
+<img src="1x1.trans.gif" data-lazy-src="https://secure.gravatar.com/avatar/212bd004e96ca4cfeaeb36e39c541270?s=96&amp;d=blank&amp;r=g" alt="" srcset="https://secure.gravatar.com/avatar/212bd004e96ca4cfeaeb36e39c541270?s=192&amp;d=blank&amp;r=g 2x" class="avatar avatar-96 photo" width="96" height="96"> <cite class="fn">John BR</cite> <span class="says">says:</span> </div>
+<div class="comment-meta commentmetadata"><a href="https://www.tecmint.com/useful-basic-commands-of-apt-get-and-apt-cache-for-package-management/comment-page-5/#comment-982942">
+April 16, 2018 at 1:49 am</a> </div>
+<p>I work in many places offline (no Internet access). I had to use <strong>apt clean</strong> to fix a bad installation issue, and don’t know how to download again all the <code>.deb</code> files again, which I used in my installation, since I usually need to reinstall packages that I need from offline places. </p>
+<p>So how do I re-download all <code>.deb</code> files that were installed on my system (official and ppa repositories) ?</p>
+<p>If there a <strong>apt-cache –only-download “all-installed”</strong> type of command ?</p>
+<p>I am still using trusty 14.04.5 (64 bits) here.</p>
+<div class="reply"><a rel="nofollow" class="comment-reply-link" href="https://www.tecmint.com/useful-basic-commands-of-apt-get-and-apt-cache-for-package-management/?replytocom=982942#respond" onclick="return addComment.moveForm( &quot;div-comment-982942&quot;, &quot;982942&quot;, &quot;respond&quot;, &quot;2354&quot; )" aria-label="Reply to John BR">Reply</a></div>
+</div>
+<ul class="children">
+<li class="comment byuser comment-author-admin bypostauthor odd alt depth-2" id="comment-983081">
+<div id="div-comment-983081" class="comment-body">
+<div class="comment-author vcard">
+<img src="1x1.trans.gif" data-lazy-src="https://secure.gravatar.com/avatar/7badddbc53297b2e8ed7011cf45df0c0?s=96&amp;d=blank&amp;r=g" alt="" srcset="https://secure.gravatar.com/avatar/7badddbc53297b2e8ed7011cf45df0c0?s=192&amp;d=blank&amp;r=g 2x" class="avatar avatar-96 photo" width="96" height="96"> <cite class="fn">Ravi Saive</cite> <span class="says">says:</span> </div>
+<div class="comment-meta commentmetadata"><a href="https://www.tecmint.com/useful-basic-commands-of-apt-get-and-apt-cache-for-package-management/comment-page-5/#comment-983081">
+April 16, 2018 at 10:59 am</a> </div>
+<p>@John,</p>
+<p>This following command will download all installed packages to directory <strong>/var/cache/apt/archives</strong>.<br>
+<code><br>
+$ sudo dpkg -l | grep "^ii"| awk ' {print $2} ' | xargs sudo apt-get -y install --reinstall --download-only<br>
+</code></p>
+<div class="reply"><a rel="nofollow" class="comment-reply-link" href="https://www.tecmint.com/useful-basic-commands-of-apt-get-and-apt-cache-for-package-management/?replytocom=983081#respond" onclick="return addComment.moveForm( &quot;div-comment-983081&quot;, &quot;983081&quot;, &quot;respond&quot;, &quot;2354&quot; )" aria-label="Reply to Ravi Saive">Reply</a></div>
+</div>
+</li>
+</ul>
+</li>
+</ol>
+<nav class="comments-nav group">
+<div class="nav-previous"><a href="https://www.tecmint.com/useful-basic-commands-of-apt-get-and-apt-cache-for-package-management/comment-page-4/#comments">« Older Comments</a></div>
+<div class="nav-next"></div>
+</nav>
+</div>
+<div id="respond" class="comment-respond">
+<h3 id="reply-title" class="comment-reply-title">Got something to say? Join the discussion. <small><a rel="nofollow" id="cancel-comment-reply-link" href="https://www.tecmint.com/useful-basic-commands-of-apt-get-and-apt-cache-for-package-management/#respond" style="display: none;">Cancel reply</a></small></h3> <form action="https://www.tecmint.com/wp-comments-post.php" method="post" id="commentform" class="comment-form">
+<p class="comment-notes"><span id="email-notes">Your email address will not be published.</span> Required fields are marked <span class="required">*</span></p><p class="comment-form-comment"><label for="comment">Comment</label> <textarea id="comment" name="comment" cols="45" rows="8" maxlength="65525" required="required"></textarea></p><p class="comment-form-author"><label for="author">Name <span class="required">*</span></label> <input id="author" name="author" value="" size="30" maxlength="245" required="required" type="text"></p>
+<p class="comment-form-email"><label for="email">Email <span class="required">*</span></label> <input id="email" name="email" value="" size="30" maxlength="100" aria-describedby="email-notes" required="required" type="text"></p>
+<p class="comment-form-url"><label for="url">Website</label> <input id="url" name="url" value="" size="30" maxlength="200" type="text"></p>
+<p class="comment-form-subscriptions"><label for="subscribe-reloaded"><input style="width: 30px;" name="subscribe-reloaded" id="subscribe-reloaded" value="yes" type="checkbox"> Notify me of followup comments via e-mail. You can also <a href="https://www.tecmint.com/comment-subscriptions/?srp=2354&amp;srk=dfad03934223c77dc11fd848a92dc080&amp;sra=s&amp;srsrc=f">subscribe</a> without commenting.</label></p><p class="form-submit"><input name="submit" id="submit" class="submit" value="Post Comment" type="submit"> <input name="comment_post_ID" value="2354" id="comment_post_ID" type="hidden">
+<input name="comment_parent" id="comment_parent" value="0" type="hidden">
+</p><p style="display: none;"><input id="akismet_comment_nonce" name="akismet_comment_nonce" value="2ac00961eb" type="hidden"></p><p style="display: none;"></p> <input id="ak_js" name="ak_js" value="1545379852546" type="hidden"></form>
+</div>
+<p class="akismet_comment_form_privacy_notice">This site uses Akismet to reduce spam. <a href="https://akismet.com/privacy/" target="_top" rel="nofollow noopener">Learn how your comment data is processed</a>.</p>
+</section>
+</div>
+</section>
+<div class="sidebar s1">
+<a class="sidebar-toggle" title="Expand Sidebar"><i class="fa icon-sidebar-toggle"></i></a>
+<div class="sidebar-content">
+<div class="sidebar-top group">
+<span style="color: rgb(0, 40, 115); font-weight: 600; font-size: 20px;">I <i class="fa fa-heart col-love-l"></i> TecMint :</span>
+<ul class="social-links"><li><a rel="nofollow" class="social-tooltip" title="twitter" href="https://twitter.com/tecmint" target="Array"><i class="fa fa-twitter" style="color: rgb(51, 204, 255);"></i></a></li><li><a rel="nofollow" class="social-tooltip" title="facebook" href="https://www.facebook.com/TecMint" target="Array"><i class="fa fa-facebook" style="color: rgb(59, 89, 152);"></i></a></li><li><a rel="nofollow" class="social-tooltip" title="Google+" href="https://plus.google.com/101049688653487009744" target="Array"><i class="fa fa-google-plus" style="color: rgb(219, 74, 57);"></i></a></li><li><a rel="nofollow" class="social-tooltip" title="Feedly" href="https://feedly.com/i/subscription/feed/https://www.tecmint.com/feed/" target="Array"><i class="fa fa-rss" style="color: rgb(135, 192, 64);"></i></a></li><li><a rel="nofollow" class="social-tooltip" title="Youtube" href="https://www.youtube.com/channel/UCkiRkzdLvoGBtW_YArytJlQ" target="Array"><i class="fa fa fa-youtube-square" style="color: rgb(196, 48, 43);"></i></a></li></ul> </div>
+<div id="text-23" class="widget widget_text"> <div class="textwidget"> <div style="background: rgb(219, 68, 85) none repeat scroll 0% 0%;" class="message">
+<center><a href="https://www.tecmint.com/free-online-linux-learning-guide-for-beginners/" target="_top"><span style="font-weight: bold; font-size: 18px;"><i class="fa fa-linux"></i> BEGINNER'S GUIDE FOR LINUX <i class="fa fa-linux"></i></span> <span style="font-weight: bold; font-size: 16px;">Start learning Linux in minutes</span> <i class="fa fa-arrow-right"></i></a>
+</center>
+</div></div>
+</div><div id="text-21" class="widget widget_text"> <div class="textwidget"><center>
+
+<ins class="adsbygoogle" style="display: inline-block; width: 300px; height: 250px;" data-ad-client="ca-pub-2601749019656699" data-ad-slot="7270921771" data-adsbygoogle-status="done"><ins id="aswift_6_expand" style="display: inline-table; border: medium none; height: 250px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 300px; background-color: transparent;"><ins id="aswift_6_anchor" style="display: block; border: medium none; height: 250px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 300px; background-color: transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" id="aswift_6" name="aswift_6" style="left: 0px; position: absolute; top: 0px; border: 0px none; width: 300px; height: 250px;" src="index_16.html" width="300" height="250" frameborder="0"></iframe></ins></ins></ins>
+
+</center></div>
+</div><div id="text-25" class="widget widget_text"> <div class="textwidget"><div class="message"><center><a href="https://www.tecmint.com/vi-editor-usage/" target="_top"><span style="font-weight: bold; font-size: 17px;"><i class="fa fa-linux"></i> Vi/Vim Editor BEGINNER'S GUIDE <i class="fa fa-linux"></i></span> <span style="font-weight: bold; font-size: 16px;">Learn vi/vim as a Full Text Editor</span> <i class="fa fa-file-text"></i>
+</a></center></div></div>
+</div><div id="text-24" class="widget widget_text"> <div class="textwidget">
+<ins class="adsbygoogle" style="display: inline-block; width: 300px; height: 250px;" data-ad-client="ca-pub-2601749019656699" data-ad-slot="8362602806" data-adsbygoogle-status="done"><ins id="aswift_7_expand" style="display: inline-table; border: medium none; height: 250px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 300px; background-color: transparent;"><ins id="aswift_7_anchor" style="display: block; border: medium none; height: 250px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 300px; background-color: transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" id="aswift_7" name="aswift_7" style="left: 0px; position: absolute; top: 0px; border: 0px none; width: 300px; height: 250px;" src="index_22.html" width="300" height="250" frameborder="0"></iframe></ins></ins></ins>
+</div>
+</div><div id="text-26" class="widget widget_text"> <div class="textwidget"><div class="message" style="background-color: rgb(171, 6, 25);"><center><span style="font-weight: bold; font-size: 17px;"><i class="fa fa-linux"></i> Linux Foundation Certification <i class="fa fa-linux"></i></span> <span style="font-weight: bold; font-size: 16px;">Exam Study Guide to <a style="text-decoration: underline;" target="_top" href="https://www.tecmint.com/linux-foundation-lfcs-lfce-certification-exam-book/">LFCS and LFCE</a></span></center></div></div>
+</div><div id="alxtabs-3" class="widget widget_alx_tabs">
+<ul class="alx-tabs-nav group tab-count-2"><li class="alx-tab tab-popular active"><a href="#tab-popular" title="Popular Posts"><i class="fa fa-star"></i><span>Popular Posts</span></a></li><li class="alx-tab tab-comments"><a href="#tab-comments" title="Recent Comments"><i class="fa fa-comments-o"></i><span>Recent Comments</span></a></li></ul>
+<div class="alx-tabs-container">
+<ul id="tab-popular" class="alx-tab group " style="display: block;">
+<li>
+<div class="tab-item-inner group">
+<p class="tab-item-title"><a href="https://www.tecmint.com/how-to-add-linux-host-to-nagios-monitoring-server/" rel="bookmark" title="How to Add Linux Host to Nagios Monitoring Server Using NRPE Plugin">How to Add Linux Host to Nagios Monitoring Server Using NRPE Plugin</a></p>
+</div>
+</li>
+<li>
+<div class="tab-item-inner group">
+<p class="tab-item-title"><a href="https://www.tecmint.com/install-nagios-in-linux/" rel="bookmark" title="How to Install Nagios 4.3.4 on RHEL, CentOS and Fedora">How to Install Nagios 4.3.4 on RHEL, CentOS and Fedora</a></p>
+</div>
+</li>
+<li>
+<div class="tab-item-inner group">
+<p class="tab-item-title"><a href="https://www.tecmint.com/install-cacti-network-monitoring-on-rhel-centos-6-3-5-8-and-fedora-17-12/" rel="bookmark" title="Install Cacti (Network Monitoring) on RHEL/CentOS 7.x/6.x/5.x and Fedora 24-12">Install Cacti (Network Monitoring) on RHEL/CentOS 7.x/6.x/5.x and Fedora 24-12</a></p>
+</div>
+</li>
+<li>
+<div class="tab-item-inner group">
+<p class="tab-item-title"><a href="https://www.tecmint.com/install-google-chrome-on-redhat-centos-fedora-linux/" rel="bookmark" title="Google Chrome 70 Released – Install on RHEL/CentOS and Fedora">Google Chrome 70 Released – Install on RHEL/CentOS and Fedora</a></p>
+</div>
+</li>
+<li>
+<div class="tab-item-inner group">
+<p class="tab-item-title"><a href="https://www.tecmint.com/install-ubuntu-16-04-alongside-with-windows-10-or-8-in-dual-boot/" rel="bookmark" title="How to Install Ubuntu 16.10/16.04 Alongside With Windows 10 or 8 in Dual-Boot">How to Install Ubuntu 16.10/16.04 Alongside With Windows 10 or 8 in Dual-Boot</a></p>
+</div>
+</li>
+</ul>
+<ul id="tab-comments" class="alx-tab group avatars-enabled" style="display: none;">
+<li>
+<div class="tab-item-avatar">
+<a href="https://www.tecmint.com/install-gimp-in-ubuntu/comment-page-1/#comment-1084758">
+<img src="1x1.trans.gif" data-lazy-src="https://secure.gravatar.com/avatar/7badddbc53297b2e8ed7011cf45df0c0?s=96&amp;d=blank&amp;r=g" alt="" srcset="https://secure.gravatar.com/avatar/7badddbc53297b2e8ed7011cf45df0c0?s=192&amp;d=blank&amp;r=g 2x" class="avatar avatar-96 photo" width="96" height="96"> </a>
+</div>
+<div class="tab-item-inner group">
+<div class="tab-item-name">Ravi Saive says:</div>
+<div class="tab-item-comment"><a href="https://www.tecmint.com/install-gimp-in-ubuntu/comment-page-1/#comment-1084758">@Jam, You need to Upgrade your Linux Mint to latest...</a></div>
+</div>
+</li>
+<li>
+<div class="tab-item-avatar">
+<a href="https://www.tecmint.com/open-source-lightweight-linux-desktops/comment-page-1/#comment-1084676">
+<img src="1x1.trans.gif" data-lazy-src="https://secure.gravatar.com/avatar/eb303b76accd9c5260a19f5d88457101?s=96&amp;d=blank&amp;r=g" alt="" srcset="https://secure.gravatar.com/avatar/eb303b76accd9c5260a19f5d88457101?s=192&amp;d=blank&amp;r=g 2x" class="avatar avatar-96 photo" width="96" height="96"> </a>
+</div>
+<div class="tab-item-inner group">
+<div class="tab-item-name">evelyn bonbon says:</div>
+<div class="tab-item-comment"><a href="https://www.tecmint.com/open-source-lightweight-linux-desktops/comment-page-1/#comment-1084676">That's your opinion. my opinion is XFCE still good to be...</a></div>
+</div>
+</li>
+<li>
+<div class="tab-item-avatar">
+<a href="https://www.tecmint.com/fdupes-find-and-delete-duplicate-files-in-linux/comment-page-2/#comment-1084637">
+<img src="1x1.trans.gif" data-lazy-src="https://secure.gravatar.com/avatar/8ef65ecc44a33c257abb634c3570f0f2?s=96&amp;d=blank&amp;r=g" alt="" srcset="https://secure.gravatar.com/avatar/8ef65ecc44a33c257abb634c3570f0f2?s=192&amp;d=blank&amp;r=g 2x" class="avatar avatar-96 photo" width="96" height="96"> </a>
+</div>
+<div class="tab-item-inner group">
+<div class="tab-item-name">tony says:</div>
+<div class="tab-item-comment"><a href="https://www.tecmint.com/fdupes-find-and-delete-duplicate-files-in-linux/comment-page-2/#comment-1084637">Fdupes is a great tool. Is it possible to specify...</a></div>
+</div>
+</li>
+<li>
+<div class="tab-item-avatar">
+<a href="https://www.tecmint.com/create-partitions-and-filesystems-in-linux/comment-page-2/#comment-1084599">
+<img src="1x1.trans.gif" data-lazy-src="https://secure.gravatar.com/avatar/71bee6734370578e02908c4df089079d?s=96&amp;d=blank&amp;r=g" alt="" srcset="https://secure.gravatar.com/avatar/71bee6734370578e02908c4df089079d?s=192&amp;d=blank&amp;r=g 2x" class="avatar avatar-96 photo" width="96" height="96"> </a>
+</div>
+<div class="tab-item-inner group">
+<div class="tab-item-name">CHIADI says:</div>
+<div class="tab-item-comment"><a href="https://www.tecmint.com/create-partitions-and-filesystems-in-linux/comment-page-2/#comment-1084599">When I ran the following command on Centos 7 running on...</a></div>
+</div>
+</li>
+<li>
+<div class="tab-item-avatar">
+<a href="https://www.tecmint.com/setup-high-availability-clustering-in-centos-ubuntu/comment-page-1/#comment-1084598">
+<img src="1x1.trans.gif" data-lazy-src="https://secure.gravatar.com/avatar/4e444ab611c7b8c7bcb76e58d2e82ae0?s=96&amp;d=blank&amp;r=g" alt="" srcset="https://secure.gravatar.com/avatar/4e444ab611c7b8c7bcb76e58d2e82ae0?s=192&amp;d=blank&amp;r=g 2x" class="avatar avatar-96 photo" width="96" height="96"> </a>
+</div>
+<div class="tab-item-inner group">
+<div class="tab-item-name">Aaron Kili says:</div>
+<div class="tab-item-comment"><a href="https://www.tecmint.com/setup-high-availability-clustering-in-centos-ubuntu/comment-page-1/#comment-1084598">@Matt We will do a little research on...</a></div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div id="text-27" class="widget widget_text"> <div class="textwidget"><center>
+<a target="_top" href="https://www.tecmint.com/red-hat-rhcsa-rhce-exam-certification-book/"><img alt="RedHat RHCSA and RHCE Certification Exam Study Ebook" src="redhat-rhcsa-rhce-exam.png"></a>
+</center></div>
+</div><div id="text-28" class="widget widget_text"> <div class="textwidget"><div class="message" style="background-color: rgb(13, 124, 57);"><center><p style="font-weight: bold; font-size: 18px;">Linux System Administrator Bundle with 7-Courses (96% off)</p>
+<p style="background-color: rgb(3, 68, 29); margin: 6px 35px; padding: 10px;"><a rel="nofollow" target="_top" href="https://deals.tecmint.com/sales/complete-linux-crash-course-includes-topics-on-red-hat-unix-kali-python-and-opensuse?utm_source=tecmint.com&amp;utm_medium=referral&amp;utm_campaign=complete-linux-crash-course-includes-topics-on-red-hat-unix-kali-python-and-opensu&amp;_ga=1.95416024.550662903.1451974395" style="font-size: 25px; font-weight: bold;">Add to Cart - $69</a></p>
+<p style="font-size: 14px; font-weight: bold;"><i aria-hidden="true" class="fa fa-clock-o"></i> Ending In: 3 days
+</p></center></div>
+<div style="background-color: rgb(244, 64, 59);" class="message"><center><p style="font-weight: bold; font-size: 18px;">Computer Hacker Professional Certification Course (96% Off)</p>
+<p style="background-color: rgb(157, 24, 21); margin: 6px 35px; padding: 10px;"><a style="font-size: 25px; font-weight: bold;" href="https://deals.tecmint.com/sales/computer-hacker-professional-certification-package-2" target="_top" rel="nofollow">Add to Cart - $59</a></p>
+<p style="font-size: 14px; font-weight: bold;"><i class="fa fa-clock-o" aria-hidden="true"></i> Ending In: 4 days
+</p></center></div></div>
+</div><div id="text-4" class="widget widget_text"><h3>Linux eBooks</h3> <div class="textwidget"><ol class="custom-counter">
+<li><a onclick="ga('send','event','Learn Linux in One Week','TecMint')" href="https://www.tecmint.com/learn-linux-in-one-week/" target="_top">Introducing Learn Linux In One Week and Go from Zero to Hero</a></li>
+<li><a onclick="ga('send','event','RedHat RHCE/RHCSA Guide','TecMint')" href="https://www.tecmint.com/red-hat-rhcsa-rhce-exam-certification-book/" target="_top">RedHat RHCE/RHCSA Certification Preparation Guide</a></li>
+<li><a onclick="ga('send','event','Linux Foundation LFCS/LFCE Guide','TecMint')" href="https://www.tecmint.com/linux-foundation-lfcs-lfce-certification-exam-book/" target="_top">Linux Foundations LFCS/LFCE Certification Guide</a></li>
+<li><a onclick="ga('send','event','Postfix Mail Server Setup','TecMint')" href="https://www.tecmint.com/postfix-mail-server-setup-linux-book/" target="_top">Postfix Mail Server Setup Guide for Linux</a></li>
+<li><a onclick="ga('send','event','Ansible Setup Guide','TecMint')" href="https://www.tecmint.com/ansible-book-guide-for-linux/" target="_top">Ansible Setup Guide for Linux</a></li>
+<li><a onclick="ga('send','event','Django Setup Guide','TecMint')" href="https://www.tecmint.com/django-web-framework-book/" target="_top">Django Setup Guide for Linux</a></li>
+<li><a onclick="ga('send','event','Awk Guide for Beginners','TecMint')" href="https://www.tecmint.com/linux-awk-command-book-for-beginners/" target="_top">Awk Getting Started Guide for Beginners</a></li>
+<li><a onclick="ga('send','event','Citrix XenServer Setup Guide','TecMint')" href="https://www.tecmint.com/citrix-xenserver-book-for-linux/" target="_top">Citrix XenServer Setup Guide for Linux</a></li>
+</ol></div>
+</div><div id="text-29" class="widget widget_text"> <div class="textwidget"><div style="background-color: rgb(25, 67, 87); color: rgb(255, 255, 255); border-radius: 5px; text-align: center; padding: 10px;">
+<div class="follow-subscribe-social">
+<ul>
+<li><a href="https://twitter.com/tecmint" target="_top"><i class="fa fa-twitter"></i></a></li>
+<li><a href="https://www.facebook.com/TecMint" target="_top"><i class="fa fa-facebook"></i></a></li>
+<li><a href="https://plus.google.com/101049688653487009744" target="_top"><i class="fa fa-google"></i></a></li>
+<li><a href="https://www.youtube.com/channel/UCkiRkzdLvoGBtW_YArytJlQ" target="_top"><i class="fa fa-youtube"></i></a></li>
+<li><a href="https://www.linkedin.com/company/tecmint" target="_top"><i class="fa fa-linkedin"></i></a></li>
+</ul>
+</div>
+<p style="font-weight: bold; font-size: 20px; margin-bottom: 10px; margin-top: 10px;">Never Miss Any Linux Tutorials, Guides, Tips and Free eBooks</p>
+<p>Join Our Community Of <strong style="color: rgb(255, 255, 255); font-weight: bold;">150,000+ Linux Lovers</strong> and get a weekly newsletter in your inbox</p>
+<p style="background-color: rgb(0, 0, 0); border-radius: 5px; padding: 6px;"><a style="font-size: 20px; font-weight: bold; color: rgb(255, 255, 255);" href="http://subscribe.tecmint.com/newsletter" target="_top" rel="nofollow">YES! SIGN ME UP</a></p></div></div>
+</div><div id="text-32" class="widget widget_text"> <div class="textwidget"><p><br>
+<ins class="adsbygoogle" style="display: inline-block; width: 300px; height: 250px;" data-ad-client="ca-pub-2601749019656699" data-ad-slot="9838765188"></ins><br>
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<footer id="footer">
+<section class="container" id="footer-ads">
+<div class="container-inner">
+<div id="text-30" class="widget widget_text"> <div class="textwidget"><p></p><center><a target="_top" rel="nofollow" href="https://shareasale.com/r.cfm?b=1226424&amp;u=1260899&amp;m=59485&amp;urllink=&amp;afftrack="><img src="linux-foundation-lfce-certification.png"></a></center><p></p>
+</div>
+</div> </div>
+</section>
+<section class="container" id="footer-widgets">
+<div class="container-inner">
+<div class="pad group">
+<div class="footer-widget-1 grid one-third ">
+<div id="alxposts-3" class="widget widget_alx_posts">
+<h3>Linux Monitoring Tools</h3>
+<ul class="alx-posts group ">
+<li>
+<div class="post-item-inner group">
+<p class="post-item-title"><a href="https://www.tecmint.com/glances-an-advanced-real-time-system-monitoring-tool-for-linux/" rel="bookmark" title="Glances – An Advanced Real Time System Monitoring Tool for Linux">Glances – An Advanced Real Time System Monitoring Tool for Linux</a></p>
+</div>
+</li>
+<li>
+<div class="post-item-inner group">
+<p class="post-item-title"><a href="https://www.tecmint.com/set-linux-process-priority-using-nice-and-renice-commands/" rel="bookmark" title="How to Set Linux Process Priority Using nice and renice Commands">How to Set Linux Process Priority Using nice and renice Commands</a></p>
+</div>
+</li>
+<li>
+<div class="post-item-inner group">
+<p class="post-item-title"><a href="https://www.tecmint.com/install-mtop-mysql-database-server-monitoring-in-rhel-centos-6-5-4-fedora-17-12/" rel="bookmark" title="Install Mtop (MySQL Database Server Monitoring) in RHEL/CentOS 6/5/4, Fedora 17-12">Install Mtop (MySQL Database Server Monitoring) in RHEL/CentOS 6/5/4, Fedora 17-12</a></p>
+</div>
+</li>
+<li>
+<div class="post-item-inner group">
+<p class="post-item-title"><a href="https://www.tecmint.com/install-conky-in-ubuntu-debian-fedora/" rel="bookmark" title="Conky – The Ultimate X Based System Monitor Application">Conky – The Ultimate X Based System Monitor Application</a></p>
+</div>
+</li>
+<li>
+<div class="post-item-inner group">
+<p class="post-item-title"><a href="https://www.tecmint.com/monitors-linux-server-performance-remotely-using-web-browser/" rel="bookmark" title="linux-dash: Monitors “Linux Server Performance” Remotely Using Web Browser">linux-dash: Monitors “Linux Server Performance” Remotely Using Web Browser</a></p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="footer-widget-2 grid one-third ">
+<div id="alxposts-4" class="widget widget_alx_posts">
+<h3>Linux Interview Questions</h3>
+<ul class="alx-posts group ">
+<li>
+<div class="post-item-inner group">
+<p class="post-item-title"><a href="https://www.tecmint.com/10-advance-vsftp-interview-questions-and-answers-part-ii/" rel="bookmark" title="10 Advance VsFTP Interview Questions and Answers – Part II">10 Advance VsFTP Interview Questions and Answers – Part II</a></p>
+</div>
+</li>
+<li>
+<div class="post-item-inner group">
+<p class="post-item-title"><a href="https://www.tecmint.com/practical-interview-questions-on-linux-shell-scripting/" rel="bookmark" title="Practical Interview Questions and Answers on Linux Shell Scripting">Practical Interview Questions and Answers on Linux Shell Scripting</a></p>
+</div>
+</li>
+<li>
+<div class="post-item-inner group">
+<p class="post-item-title"><a href="https://www.tecmint.com/interview-questions-on-shell-scripting/" rel="bookmark" title="10 Useful ‘Interview Questions and Answers’ on Linux Shell Scripting">10 Useful ‘Interview Questions and Answers’ on Linux Shell Scripting</a></p>
+</div>
+</li>
+<li>
+<div class="post-item-inner group">
+<p class="post-item-title"><a href="https://www.tecmint.com/networking-interview-questions/" rel="bookmark" title="10 Basic Interview Questions and Answers on Linux Networking – Part 1">10 Basic Interview Questions and Answers on Linux Networking – Part 1</a></p>
+</div>
+</li>
+<li>
+<div class="post-item-inner group">
+<p class="post-item-title"><a href="https://www.tecmint.com/ls-command-interview-questions/" rel="bookmark" title="15 Interview Questions on Linux “ls” Command – Part 1">15 Interview Questions on Linux “ls” Command – Part 1</a></p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="footer-widget-3 grid one-third last">
+<div id="alxposts-5" class="widget widget_alx_posts">
+<h3>Open Source Tools</h3>
+<ul class="alx-posts group ">
+<li>
+<div class="post-item-inner group">
+<p class="post-item-title"><a href="https://www.tecmint.com/linux-pdf-viewers-and-readers-tools/" rel="bookmark" title="8 Best PDF Document Viewers for Linux Systems">8 Best PDF Document Viewers for Linux Systems</a></p>
+</div>
+</li>
+<li>
+<div class="post-item-inner group">
+<p class="post-item-title"><a href="https://www.tecmint.com/best-linux-twitter-clients/" rel="bookmark" title="9 Best Twitter Clients for Linux That You Will Love to Use">9 Best Twitter Clients for Linux That You Will Love to Use</a></p>
+</div>
+</li>
+<li>
+<div class="post-item-inner group">
+<p class="post-item-title"><a href="https://www.tecmint.com/open-source-artificial-intelligence-tools-softwares-linux/" rel="bookmark" title="10 Top Open Source Artificial Intelligence Tools for Linux">10 Top Open Source Artificial Intelligence Tools for Linux</a></p>
+</div>
+</li>
+<li>
+<div class="post-item-inner group">
+<p class="post-item-title"><a href="https://www.tecmint.com/best-markdown-editors-for-linux/" rel="bookmark" title="10 Best Markdown Editors for Linux">10 Best Markdown Editors for Linux</a></p>
+</div>
+</li>
+<li>
+<div class="post-item-inner group">
+<p class="post-item-title"><a href="https://www.tecmint.com/best-antivirus-programs-for-linux/" rel="bookmark" title="The 8 Best Free Anti-Virus Programs for Linux">The 8 Best Free Anti-Virus Programs for Linux</a></p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</section>
+<nav class="nav-container group" id="nav-footer">
+<div class="nav-toggle"><i class="fa fa-bars"></i></div>
+<div class="nav-text"></div>
+<div class="nav-wrap"><ul id="menu-footer" class="nav container group"><li id="menu-item-18572" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-18572"><a href="https://www.tecmint.com/donate-to-tecmint/">Donate to TecMint</a></li>
+<li id="menu-item-10437" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-10437"><a href="https://www.tecmint.com/contact-us/">Contact Us</a></li>
+<li id="menu-item-10442" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-10442"><a href="https://www.tecmint.com/advertise/">Advertise on TecMint</a></li>
+<li id="menu-item-10441" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-10441"><a href="https://www.tecmint.com/services/">Linux Services</a></li>
+<li id="menu-item-10435" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-10435"><a href="https://www.tecmint.com/copyright-policy/">Copyright Policy</a></li>
+<li id="menu-item-10436" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-10436"><a href="https://www.tecmint.com/privacy-policy/">Privacy Policy</a></li>
+<li id="menu-item-13339" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-13339"><a href="https://www.tecmint.com/career/">Career</a></li>
+<li id="menu-item-24288" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-24288"><a href="https://www.tecmint.com/sponsored-post-guidelines-tecmint/">Sponsored Post</a></li>
+</ul></div>
+</nav>
+<section class="container" id="footer-bottom">
+<div class="container-inner">
+<a id="back-to-top" href="#"><i class="fa fa-angle-up"></i></a>
+<div class="pad group">
+<div class="grid one-half">
+<div id="copyright">
+<p>Tecmint: Linux Howtos, Tutorials &amp; Guides © 2018. All Rights Reserved.</p>
+<p>The material in this site cannot be republished either online or offline, without our permission.</p>
+</div>
+</div>
+<div class="grid one-half last">
+<ul class="social-links"><li><a rel="nofollow" class="social-tooltip" title="twitter" href="https://twitter.com/tecmint" target="Array"><i class="fa fa-twitter" style="color: rgb(51, 204, 255);"></i></a></li><li><a rel="nofollow" class="social-tooltip" title="facebook" href="https://www.facebook.com/TecMint" target="Array"><i class="fa fa-facebook" style="color: rgb(59, 89, 152);"></i></a></li><li><a rel="nofollow" class="social-tooltip" title="Google+" href="https://plus.google.com/101049688653487009744" target="Array"><i class="fa fa-google-plus" style="color: rgb(219, 74, 57);"></i></a></li><li><a rel="nofollow" class="social-tooltip" title="Feedly" href="https://feedly.com/i/subscription/feed/https://www.tecmint.com/feed/" target="Array"><i class="fa fa-rss" style="color: rgb(135, 192, 64);"></i></a></li><li><a rel="nofollow" class="social-tooltip" title="Youtube" href="https://www.youtube.com/channel/UCkiRkzdLvoGBtW_YArytJlQ" target="Array"><i class="fa fa fa-youtube-square" style="color: rgb(196, 48, 43);"></i></a></li></ul> </div>
+</div>
+</div>
+</section>
+</footer>
+</div>
+
+
+
+
+
+
+
+
+<!--[if lt IE 9]>
+<script src="https://www.tecmint.com/wp-content/themes/tecmint/js/ie/respond.js"></script>
+<![endif]-->
+<div class="fixedBar">
+<div class="boxfloat">
+<ul id="tips">
+<li><a href="https://www.tecmint.com/51-useful-lesser-known-commands-for-linux-users/">51 Useful Lesser Known Commands for Linux Users</a></li>
+<li><a href="https://www.tecmint.com/linux-server-hardening-security-tips/">25 Hardening Security Tips for Linux Servers</a></li>
+<li><a href="https://www.tecmint.com/60-commands-of-linux-a-guide-from-newbies-to-system-administrator/">60 Commands of Linux : A Guide from Newbies to System Administrator</a></li>
+<li><a href="https://www.tecmint.com/command-line-tools-to-monitor-linux-performance/">20 Command Line Tools to Monitor Linux Performance</a></li>
+<li style="display: list-item;"><a href="https://www.tecmint.com/18-tar-command-examples-in-linux/">18 Tar Command Examples in Linux</a></li>
+<li><a href="https://www.tecmint.com/20-linux-yum-yellowdog-updater-modified-commands-for-package-mangement/">20 Linux YUM (Yellowdog Updater, Modified) Commands</a></li>
+<li><a href="https://www.tecmint.com/useful-basic-commands-of-apt-get-and-apt-cache-for-package-management/">25 Useful Basic Commands of APT-GET and APT-CACHE</a></li>
+<li><a href="https://www.tecmint.com/20-funny-commands-of-linux-or-linux-is-fun-in-terminal/">20 Funny Commands of Linux or Linux is Fun in Terminal</a></li>
+<li><a href="https://www.tecmint.com/red-hat-rhcsa-rhce-exam-certification-book/">Ebook: Introducing the RHCSA and RHCE Exam Preparation Guide</a></li>
+<li><a href="https://www.tecmint.com/sed-command-to-create-edit-and-manipulate-files-in-linux/">Preparation for the LFCS (Linux Foundation Certified SysAdmin) Exam</a></li>
+<li><a href="https://www.tecmint.com/installing-network-services-and-configuring-services-at-system-boot/">Preparation for the LFCE (Linux Foundation Certified Engineer) Exam</a></li>
+<li><a href="https://www.tecmint.com/10-useful-free-linux-ebooks-for-newbies-and-administrators/">10 Useful Free Linux eBooks for Newbies and Administrators</a></li>
+<li><a href="https://www.tecmint.com/free-linux-shell-scripting-books/">4 Free Shell Scripting eBooks for Newbies and Administrators</a></li>
+</ul>
+</div>
+</div>
+
+<ins class="adsbygoogle adsbygoogle-noablate" style="display: none !important;" data-adsbygoogle-status="done"><ins id="aswift_0_expand" style="display: inline-table; border: medium none; height: 0px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 0px; background-color: transparent;"><ins id="aswift_0_anchor" style="display: block; border: medium none; height: 0px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 0px; background-color: transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" id="aswift_0" name="aswift_0" style="left: 0px; position: absolute; top: 0px; border: 0px none; width: 0px; height: 0px;" src="index_26.html" frameborder="0"></iframe></ins></ins></ins><iframe id="google_osd_static_frame_5789945724057" name="google_osd_static_frame" style="display: none; width: 0px; height: 0px;" src="index_32.html"></iframe></body>
+</html>

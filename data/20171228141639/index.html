@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    <link rel="canonical" href="http://blog.csdn.net/xuanwolanxue/article/details/66968578"> 
+    
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    
+    
+    
+    
+    
+
+    
+    
+    
+
+    
+    
+    <meta name="description" content="注：本篇笔记以gstreamer 1.8.1 版本为蓝本，若有出入的地方，请确认版本信息
+message在gstreamer中，message或者说Bus message（因为message都是在GSTBus上传递的），是用于gstreamer和application之间交互用的，比如当一个文件播放结束的时候，gstreamer会发一个EOS的message到GstBus上，如果app有去侦听(函数">
+    <meta name="keywords" content="message,event">
+    <meta http-equiv="Cache-Control" content="no-siteapp"><link rel="alternate" media="handheld" href="http://blog.csdn.net/xuanwolanxue/article/details/66968578#">
+    <meta name="shenma-site-verification" content="5a59773ab8077d4a62bf469ab966a63b_1497598848">
+    <title>gstreamer学习笔记(3):message,event,signal区别 - CSDN博客</title>
+    <link href="favicon.ico" rel="SHORTCUT ICON">
+
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body><div id="BAIDU_DUP_fp_wrapper" style="position: absolute; left: -1px; bottom: -1px; z-index: 0; width: 0px; height: 0px; overflow: hidden; visibility: hidden; display: none;"><iframe id="BAIDU_DUP_fp_iframe" src="index_1.html" style="width: 0px; height: 0px; visibility: hidden; display: none;"></iframe></div>
+
+<div class="container clearfix">
+  <main>
+    <article>
+        <h1 class="csdn_top">gstreamer学习笔记(3):message,event,signal区别</h1>
+        <div class="article_bar clearfix">
+            <div class="artical_tag">
+                <span class="original">
+                原创                </span>
+                <span class="time">2017年03月27日 10:16:38</span>
+            </div>
+
+            <ul class="article_tags clearfix csdn-tracking-statistics tracking-click" data-mod="popu_377">
+                <li class="tit">标签：</li>
+
+<!--          [startarticletags]-->
+                                                            <li><a href="http://so.csdn.net/so/search/s.do?q=message&amp;t=blog" target="_top">message</a> <span>/</span></li>
+                                            <li><a href="http://so.csdn.net/so/search/s.do?q=event&amp;t=blog" target="_top">event</a> <span>/</span></li>
+                                            <li><a href="http://so.csdn.net/so/search/s.do?q=signal&amp;t=blog" target="_top">signal</a> <span>/</span></li>
+                                            <li><a href="http://so.csdn.net/so/search/s.do?q=bus&amp;t=blog" target="_top">bus</a> <span>/</span></li>
+                                    <!--          [endarticletags]-->
+            </ul>
+            <ul class="right_bar">
+                <li><button class="btn-noborder"><i class="icon iconfont icon-read"></i><span class="txt">694</span></button></li>
+                <li class="edit">
+                    <a class="btn-noborder" href="http://blog.csdn.net/xuanwolanxue/article/details/66968578">
+                        <i class="icon iconfont icon-bianji"></i><span class="txt">编辑</span>
+                    </a>
+                </li>
+                <li class="del">
+                    <a class="btn-noborder" onclick="javascript:deleteArticle(fileName);return false;">
+                        <i class="icon iconfont icon-shanchu"></i><span class="txt">删除</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div id="article_content" class="article_content csdn-tracking-statistics tracking-click" data-mod="popu_519" data-dsm="post">
+                            <div class="markdown_views">
+                        <blockquote>
+<pre><code> 注：本篇笔记以gstreamer 1.8.1 版本为蓝本，若有出入的地方，请确认版本信息
+</code></pre>
+</blockquote>
+
+<ul>
+<li><p>message</p>
+
+<p>在gstreamer中，message或者说Bus message（因为message都是在GSTBus上传递的），是用于gstreamer和application之间交互用的，比如当一个文件播放结束的时候，gstreamer会发一个EOS的message到GstBus上，如果app有去侦听(函数gst_bus_add_watch)，那么在处理消息的callback函数中就可以收到这个消息。</p></li>
+<li><p>event</p></li>
+</ul>
+
+<p>Most of the event API is used inside plugins. Applications usually only construct and use seek events. To do that gst_event_new_seek() is used to create a seek event. It takes the needed parameters to specify seeking time and mode.</p>
+
+<p>以上是关于GstEvent描述的一部分内容，也就是说，一般来说event是用于gstreamer内部element与element之间（或者说pad与pad之间）传递事件的，比如source element的数据已经结束了，那么他就会发出一个EOS event，然后顺着pipeline依次向down stream的方向传递， 这些elements可以得到通知，从而做一些cleanup的工作，当最终所有的sink element都收到并处理了这个EOS event之后，gstreamer内部就是产生一条GSTMessage，并post至GstBus，如果APP有监听，那么它就能知道当前播放已经结束了。 <br>
+而对于APP能用的就只有一个seek event。</p>
+
+<ul>
+<li><p>signal</p>
+
+<p>signal不是gstreamer特有的东西，它是来自于GObject体系，是用于app和GObject之间进行交互的一种机制。在gstreamer中，element本身也是gobject，所以，通过signal，就可以将app和element联系起来。 <br>
+当element发生了一些事情相让app知道时，就可以用signal的方式来通知app比如动态创建了一个Pad。当然也可以在element与element之间使用， 比如在Gstplaybin当中就会侦听uridecoderbin发出来的autoplug-factories，autoplug-select等信号。</p></li>
+</ul>
+
+<p>signal和Bus message不同，bus message是pipeline上的，一般是app和pipeline交互的一种方法。signal则具体到了每个element。</p>
+
+<p>整体框图如（此图来自网络）： <br>
+<img src="20170327101440890" alt="这里写图片描述" title=""></p>                            </div>
+                
+                    </div>
+    </article>
+      <div class="readall_box csdn-tracking-statistics tracking-click" data-mod="popu_376">
+          <div class="read_more_mask"></div>
+          <a class="btn btn-large btn-gray-fred read_more_btn" target="_self">阅读全文</a>
+      </div>
+      <div class="article_copyright">
+              </div>
+      <ul class="article_collect clearfix csdn-tracking-statistics tracking-click" data-mod="popu_378">
+          <li class="tit">本文已收录于以下专栏：</li>
+<!--          [startarticlecolumns]-->
+                                <!--          [endarticlecolumns]-->
+      </ul>
+      <div class="comment_box clearfix">
+          <div id="comment_form">
+              <div id="commentsbmitarear">
+                              </div>
+          </div>
+      </div>
+      <div class="comment_li_outbox">
+          <div id="comment_list"></div>
+      </div>
+
+      <div class="more_comment">
+          <div id="comment_bar" class="trackgin-ad" data-mod="popu_385"></div>
+      </div>
+
+      <!-- <h3 class="recommend_tit" id="related">相关文章推荐</h3> -->
+      <div class="recommend_list clearfix" id="rasss">
+                                                                                      <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/a125930123/article/details/48179091" target="_top" strategy="BlogCommendFromCsdn_0">Linux 学习笔记３----Gstreamer 编写播放mp3程序。</a></h2>
+                          <div class="summary">
+                              １、gst_element_factory_find找到一个工厂对象（factory&nbsp;object）。比如说“mad”是用于mp3的工厂对象，工长对象主要用于生成元件。我们这里用的mad工厂主要是使用...                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/a125930123" target="_top" strategy="BlogCommendFromCsdn_0"><img src="3_a125930123.jpg" alt="a125930123" title="a125930123"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/a125930123">a125930123</a></li>
+                              <li class="time">2015年09月02日 15:32</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>698</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                                                                    <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/u011329488/article/details/50618519" target="_top" strategy="BlogCommendFromCsdn_1">JavaScrip学习笔记3--event事件、拖拽</a></h2>
+                          <div class="summary">
+                              1、document
+如果想要给整个页面添加事件，可以给document加事件。
+document.onclick=function()
+{
+
+}
+2、什么是event对象？
+用来获取事件的详细信息：...                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/u011329488" target="_top" strategy="BlogCommendFromCsdn_1"><img src="3_u011329488.jpg" alt="u011329488" title="u011329488"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/u011329488">u011329488</a></li>
+                              <li class="time">2016年02月01日 14:37</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>163</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                                                      <div id="_uy5fic8gr6"></div><a href="http://www.baidu.com/cb.php?c=IgF_pyfqnHmknj0dP1f0IZ0qnfK9ujYzP1ndPWb10Aw-5Hc3rHnYnHb0TAq15HfLPWRznjb0T1dWPj6zP1RvPjfsmyRLm16k0AwY5HDdnHfYPjDLrHc0IgF_5y9YIZ0lQzq-uZR8mLPbUB48ugfEIAqspynEIvNBnHqdIAdxTvqdThP-5yF_UvTkn0KzujYk0AFV5H00TZcqn0KdpyfqnHRLPjnvnfKEpyfqnHc4rj6kP0KWpyfqP1cvrHnz0AqLUWYs0ZK45HcsP6KWThnqnHR1njf" target="_top">
+	<dl class="clearfix csdn-tracking-statistics" data-mod="popu_393">
+		<dt><img class="maxwidth" src="0f000puo_dblghsbpobwvs.jpg" alt="" title=""></dt>
+		<dd>
+			<div class="summary">
+				<h2>【前端逆袭记】我是怎么从月薪4k到40k的！</h2>  <div class="summary">谨以此篇文章献给我奋斗过的程序人生！我第一次编码是在我大一的时候....</div> 
+			</div>
+		</dd>
+	</dl>
+</a>
+                                                                <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/pigpigpig4587/article/details/38013945" target="_top" strategy="BlogCommendFromCsdn_2">Node.js学习笔记3【核心模块--event】</a></h2>
+                          <div class="summary">
+                              events是Node.js最重要的模块，没有“之一”，原因是Node.js本身架构就是事件式的，而它提供唯一 的接口，所以堪称Node.js事件编程的基石。events模块不仅用于用户代码与Node...                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/pigpigpig4587" target="_top" strategy="BlogCommendFromCsdn_2"><img src="3_pigpigpig4587.jpg" alt="pigpigpig4587" title="pigpigpig4587"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/pigpigpig4587">pigpigpig4587</a></li>
+                              <li class="time">2014年07月21日 11:43</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>1858</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                                                                    <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/fuyizhonhong/article/details/50723753" target="_top" strategy="BlogCommendFromCsdn_3">韩顺平 javascript教学视频_学习笔记27_dom对象（window对象3.history.location.navigator.screen.event）_js事件驱动编程</a></h2>
+                          <div class="summary">
+                              dom对象详解----window对象3
+
+window 的 status 属性可以控制状态栏的信息
+
+实现下面的案例：
+
+
+
+
+
+
+
+
+
+
+
+
+
+案例代码：
+
+
+
+
+
+
+
+		
+		var spac...                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/fuyizhonhong" target="_top" strategy="BlogCommendFromCsdn_3"><img src="3_fuyizhonhong.jpg" alt="fuyizhonhong" title="fuyizhonhong"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/fuyizhonhong">fuyizhonhong</a></li>
+                              <li class="time">2016年02月23日 15:59</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>1036</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                                                                    <dl class="clearfix csdn-tracking-statistics downloadElement" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dt><a href="http://download.csdn.net/download/jiangbo1984/2637571" target="_top" strategy="BlogCommendFromCsdn_4"><img class="maxwidth" src="doc.svg" alt="" title=""></a></dt>
+                      <dd>
+                          <div class="summary">
+                              <h2><a href="http://download.csdn.net/download/jiangbo1984/2637571" target="_top" strategy="BlogCommendFromCsdn_4">message broker 学习笔记1</a></h2>
+                              <div class="summary">
+                                  <ul>
+                                      <li class="time">2010年08月21日 21:48</li>
+                                      <li class="visited_num fileSize">49KB</li>
+                                      <li class="download_btn"><a href="http://download.csdn.net/download/jiangbo1984/2637571" target="_top">下载</a></li>
+                                  </ul>
+                              </div>
+                          </div>
+                      </dd>
+                  </dl>
+                                                                        <!-- 广告位：PC端-博客详情通栏7（feed流）-808*120 -->
+                  <div id="_socs0bxa9ee"></div><div><iframe scrolling="no" src="index_3.html" width="760" height="90" frameborder="0"></iframe></div>
+                                                                              <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/chicher123/article/details/67640549" target="_top" strategy="BlogCommendFromCsdn_5">gstreamer学习笔记    之   同步</a></h2>
+                          <div class="summary">
+                              1、gstreamer 的同步机制由如下几个组件组成
+
+
+
+
+GstClock，是全局的，用于pipeline中的所有elements。GstBuffer的timestamps。buffers之前的N...                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/chicher123" target="_top" strategy="BlogCommendFromCsdn_5"><img src="3_chicher123.jpg" alt="chicher123" title="chicher123"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/chicher123">chicher123</a></li>
+                              <li class="time">2017年03月28日 21:31</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>334</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                                                                    <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/xuanwolanxue/article/details/62236413" target="_top" strategy="BlogCommendFromCsdn_6">gstreamer学习笔记(1): 调试相关</a></h2>
+                          <div class="summary">
+                              注：本篇笔记以gstreamer 1.8.1 版本为蓝本，若有出入的地方，请确认版本信息1. log调试信息的函数在 gstreamer 1.8.1版本中定义了如下的log输出宏:1.1 最基本的lo...                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/xuanwolanxue" target="_top" strategy="BlogCommendFromCsdn_6"><img src="3_xuanwolanxue.jpg" alt="xuanwolanxue" title="xuanwolanxue"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/xuanwolanxue">xuanwolanxue</a></li>
+                              <li class="time">2017年03月15日 19:59</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>831</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                                                                    <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/LG1259156776/article/details/53422768" target="_top" strategy="BlogCommendFromCsdn_7">【miscellaneous】 GStreamer应用开发手册学习笔记之基础概念介绍</a></h2>
+                          <div class="summary">
+                              第3章. 基础概念介绍
+本章将介绍GStreamer的基本概念。
+理解这些概念对于你后续的学习非常重要,因为后续深入的讲解我们都假定你已经完全理解了这些概念。
+
+3.1. 元件(Element...                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/LG1259156776" target="_top" strategy="BlogCommendFromCsdn_7"><img src="3_lg1259156776.jpg" alt="LG1259156776" title="LG1259156776"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/LG1259156776">LG1259156776</a></li>
+                              <li class="time">2016年12月01日 16:09</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>344</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                                                                    <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/maikforever/article/details/16987909" target="_top" strategy="BlogCommendFromCsdn_8">GStreamer学习笔记（一）</a></h2>
+                          <div class="summary">
+                              本文介绍如何使用GStreamer&nbsp;编写一个简单的MP3播放器。
+1,需要使用mad解码插件，因此需要先安装gstreamer0.10-plugins-ugly
+2，编写mp3播放器
+下面来看看...                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/maikforever" target="_top" strategy="BlogCommendFromCsdn_8"><img src="3_maikforever.jpg" alt="maikforever" title="maikforever"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/maikforever">maikforever</a></li>
+                              <li class="time">2013年11月27日 16:40</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>651</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                                                                    <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/wesleyluo/article/details/6191170" target="_top" strategy="BlogCommendFromCsdn_9">GStreamer学习笔记（一） </a></h2>
+                          <div class="summary">
+                              GStreamer学习笔记（一）                           </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/wesleyluo" target="_top" strategy="BlogCommendFromCsdn_9"><img src="3_wesleyluo.jpg" alt="wesleyluo" title="wesleyluo"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/wesleyluo">wesleyluo</a></li>
+                              <li class="time">2011年02月17日 11:46</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>824</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                    </div>
+  </main>
+<aside>
+  <div class="right_box user_info">
+      <dl class="inf_bar clearfix">
+          <dt class="csdn-tracking-statistics tracking-click" data-mod="popu_381">
+              <a href="http://blog.csdn.net/xuanwolanxue" target="_top">
+                  <img src="3_xuanwolanxue.jpg" class="avatar_pic">
+              </a>
+              <span class="medals" title="">
+                  </span>
+          </dt>
+          <dd>
+              <h3 class="csdn-tracking-statistics tracking-click" data-mod="popu_380"><a href="http://blog.csdn.net/xuanwolanxue" target="_top" id="uid">xuanwolanxue</a></h3>
+              <span class="csdn-tracking-statistics tracking-click" data-mod="popu_379"><a class="btn btn-redborder-small " id="span_add_follow" target="_self">＋关注</a></span>
+          </dd>
+      </dl>
+      <div class="inf_number_box clearfix">
+          <dl>
+              <dt>原创</dt>
+              <dd>29</dd>
+          </dl>
+          <dl>
+              <dt>粉丝</dt>
+              <dd id="fan">10</dd>
+          </dl>
+          <dl>
+              <dt>喜欢</dt>
+              <dd>1</dd>
+          </dl>
+          <dl>
+        <dt>码云</dt>
+        <dd>&nbsp;</dd>
+      </dl>
+
+      </div>
+  <div class="writings">
+        <div class="public_signal clearfix">
+          <h3>他的最新文章</h3>
+          <a href="http://blog.csdn.net/xuanwolanxue" target="_top" class="more"><span>更多文章</span></a>
+        </div>
+          <ul class="inf_list clearfix csdn-tracking-statistics tracking-click" data-mod="popu_382">
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/xuanwolanxue/article/details/73498744" target="_top">avformat的简单应用</a>
+              </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/xuanwolanxue/article/details/73379825" target="_top">从高考到吃“软”饭</a>
+              </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/xuanwolanxue/article/details/73187717" target="_top">再谈神经网络反向传播原理</a>
+              </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/xuanwolanxue/article/details/72926878" target="_top">配置visual studio中的ffmpeg开发环境</a>
+              </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/xuanwolanxue/article/details/72844577" target="_top">ffmpeg简介</a>
+              </li>
+                        </ul>
+      </div>
+  </div>
+    <div class="user-hotArticle">
+        <h3><a href="#related">相关推荐</a></h3>
+        <ul class="hotArticle-list csdn-tracking-statistics tracking-click" data-mod="popu_563">
+<!--           [StartRelatedArticles]-->
+                                                <li>
+                        <a href="http://blog.csdn.net/a125930123/article/details/48179091" target="_top" strategy="BlogRightReleated_0">Linux 学习笔记３----Gstreamer 编写播放mp3程序。</a>
+                                            </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/u011329488/article/details/50618519" target="_top" strategy="BlogRightReleated_1">JavaScrip学习笔记3--event事件、拖拽</a>
+                                            </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/pigpigpig4587/article/details/38013945" target="_top" strategy="BlogRightReleated_2">Node.js学习笔记3【核心模块--event】</a>
+                                            </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/fuyizhonhong/article/details/50723753" target="_top" strategy="BlogRightReleated_3">韩顺平 javascript教学视频_学习笔记27_dom对象（window对象3.history.location.navigator.screen.event）_js事件驱动编程</a>
+                                            </li>
+                            <!--            [EndRelatedArticles]-->
+        </ul>
+    </div>
+  <div class="extension_other csdn-tracking-statistics tracking-click" data-mod="popu_389">
+     <!--u3032528-->
+    <div class="flashrecommend">
+        <div id="_6tg0vcw55xd"><iframe scrolling="no" src="index_4.html" width="300" height="250" frameborder="0"></iframe><em style="width: 0px; height: 0px; padding: 0px;"></em></div>
+    </div>
+  </div>
+
+<!--    [StartShowSelfColumn]-->
+    <!--    [EndShowSelfColumn]-->
+    <div class="fixRight">
+        <!-- 广告位：PC端-博客详情右侧视窗2（feed流）-300*300 -->
+        <div id="_y0d1gbo82f9"></div><div id="_fgtepo61m5o"><iframe scrolling="no" src="index_5.html" width="300" height="250" frameborder="0"></iframe></div>
+        <div class="extension_other csdn-tracking-statistics tracking-click bottomRcom" data-mod="popu_389" style="position: absolute; z-index: -5; opacity: 0; pointer-events: none;">
+            <!--u3032528-->
+            <div class="flashrecommend">
+                <!-- 请置于所有广告位代码之前 -->
+                
+
+                <!-- 广告位：PC端-博客详情页右侧视窗1（feed流）-300*250 -->
+                <div id="_nf9uy41nb4f"></div><div id="_o5y2scxca29"><iframe scrolling="no" src="index_6.html" width="300" height="250" frameborder="0"></iframe><em style="display: none;"></em></div>
+            </div>
+        </div>
+
+    </div>
+    <div class="user-hotArticle">
+        <h3>他的热门文章</h3>
+        <ul class="hotArticle-list csdn-tracking-statistics tracking-click" data-mod="popu_521">
+<!--            [StartHotArticles]-->
+                                                <li>
+                        <a href="http://blog.csdn.net/xuanwolanxue/article/details/70759806">使用遗传算法实现迷宫游戏(genetic maze)</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>2323</span></div>
+                    </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/xuanwolanxue/article/details/51264415">c印记(六): 数组与递归联合应用的小游戏</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>2072</span></div>
+                    </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/xuanwolanxue/article/details/71565934">神经网络实现手写数字识别（MNIST）</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>1945</span></div>
+                    </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/xuanwolanxue/article/details/62416706">gstreamer 学习笔记(2): GstElement状态</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>948</span></div>
+                    </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/xuanwolanxue/article/details/62236413">gstreamer学习笔记(1): 调试相关</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>827</span></div>
+                    </li>
+                            <!--            [EndHotArticles]-->
+        </ul>
+    </div>
+<!--    [startcustom]-->
+    <!--    [endcustom]-->
+</aside></div>
+
+<div class="left_fixed">
+    <div class="left_show_button">
+        <span>
+          <i class="icon iconfont icon-youjiantou"></i>
+        </span>
+    </div>
+    <ul class="left_menu" id="share_box">
+        <li>
+            <button class="left-fixed-btn btn-like csdn-tracking-statistics tracking-click" data-mod="popu_373" target="_self" title="点赞">
+                <a href="javascript:void(0);" class="iconbox border_red"><i class="icon iconfont icon-dianzan"></i></a>
+                <a class="txt" href="javascript:void(0);">0</a>
+            </button>
+        </li>
+        <li id="blog_artical_directory">
+            <button class="left-fixed-btn left_menu_btn csdn-tracking-statistics tracking-click" data-mod="popu_372" target="_self" title="目录">
+                <a href="javascript:void(0);" class="iconbox border_black"><i class="icon iconfont icon-mulu"></i></a>
+            </button>
+        </li>
+        <li class="menu_con">
+            <div class="list_father">
+                <div class="arr_box">
+                    <button class="btn-noborder arr-btn scroll-down  left_scroll_down"><i class="icon iconfont icon-xiajiantou"></i></button>
+                    <button class="btn-noborder arr-btn scroll-up left_scroll_top"><i class="icon iconfont icon-shangjiantou"></i></button>
+                </div>
+                <div class="arr"></div>
+                <div id="csdnBlogDir"></div>
+            </div>
+        </li>
+        <!--        <li>-->
+        <!--            <button class="left-fixed-btn btn-like tracking-ad" data-mod="popu_373" target="_self">-->
+        <!--                <span class="iconbox border_red"><i class="icon iconfont icon-xihuan-"></i></span>-->
+        <!--                <span class="txt">喜欢</span>-->
+        <!--                <span class="untxt">取消喜欢</span>-->
+        <!--            </button>-->
+        <!--        </li>-->
+        <li>
+            <button class="left-fixed-btn csdn-tracking-statistics tracking-click" data-mod="popu_374" id="com-quick-collect" target="_self" title="收藏">
+                <a href="javascript:void(0);" class="iconbox border_purple"><i class="icon iconfont icon-shoucang"></i></a>
+            </button>
+        </li>
+        <li>
+            <button class="left-fixed-btn btn-pinglun csdn-tracking-statistics tracking-click" data-mod="popu_544" title="评论">
+                <a href="javascript:void(0);" class="iconbox border_purple"><i class="icon iconfont icon-pinglun"></i></a>
+            </button>
+        </li>
+        <li class="bdsharebuttonbox bdshare-button-style0-16" data-bd-bind="1514441793129">
+          <button class="outside left-fixed-btn csdn-tracking-statistics tracking-click" data-mod="popu_172" title="分享到新浪微博">
+                <span class="iconbox border_red2"><i class="icon iconfont icon-xinlang"></i></span>
+                <a href="#" class="bds_tsina" data-cmd="tsina"> </a>
+          </button>
+        </li>
+        <li class="bdsharebuttonbox bdshare-button-style0-16" data-bd-bind="1514441793129">
+          <button class="outside left-fixed-btn csdn-tracking-statistics tracking-click" data-mod="popu_172" title="分享到微信">
+              <span class="iconbox border_green"><i class="icon iconfont icon-weixin"></i></span>
+              <a href="#" class="bds_weixin" data-cmd="weixin"> </a>
+          </button>
+        </li>
+        <li class="bdsharebuttonbox bdshare-button-style0-16" data-bd-bind="1514441793129">
+          <button class="outside left-fixed-btn csdn-tracking-statistics tracking-click" data-mod="popu_172" title="分享到QQ空间">
+              <span class="iconbox border_blue"><i class="icon iconfont icon-QQ"></i></span>
+              <a href="#" class="bds_qzone" data-cmd="qzone"> </a>
+          </button>
+        </li>
+        <li id="share_box">
+            
+            <div class="bdsharebuttonbox csdn-tracking-statistics tracking-click bdshare-button-style0-16" data-mod="popu_172" data-bd-bind="1514441793129">
+                
+                
+                
+            </div>
+        </li>
+    </ul>
+</div>
+<div class="right_fixed">
+    <div class="r_ico">
+        <i class="icon iconfont icon-jubao"></i>
+        <span class="txt" id="reportBtn">内容举报</span>
+    </div>
+    <div class="returnTop">
+        <i class="icon iconfont icon-fanhuidingbu"></i>
+        <span>返回顶部</span>
+    </div>
+</div>
+<div id="pop_win"></div>
+<div id="popup_mask"></div>
+<div class="pop_CA_cover"></div>
+<div class="pop pop_CA">
+    <div class="CA_header">
+        收藏助手
+        <span class="cancel_icon" id="fapancle"></span>
+    </div>
+    <iframe src="index_7.html" id="collectIframe" scrolling="no" width="100%" height="360" frameborder="0"></iframe>
+</div>
+<!--举报-->
+<div id="report_dialog" style="top: 250px; left: 343.5px;"><div id="panel_report">
+    <div class="panel_head">不良信息举报</div>
+    <form method="post" id="frmReport" class="panel_body" action="http://blog.csdn.net/xuanwolanxue/article/details/66968578">
+        <table class="pop_table" cellspacing="4" cellpadding="0" border="0">
+            <tbody><tr><td colspan="2">您举报文章：<a href="http://blog.csdn.net/xuanwolanxue/article/details/66968578" target="_top">gstreamer学习笔记(3):message,event,signal区别</a></td></tr>
+            <tr>
+                <th style="width: 60px;">举报原因：</th>
+                <td id="panel_reporttype">
+                    <label><input class="report_type" id="report_sex" name="report_type" value="1" type="radio">色情</label>
+                    <label><input class="report_type" id="report_Politics" name="report_type" value="2" type="radio">政治</label>
+                    <label><input class="report_type" id="report_copy" name="report_type" value="3" type="radio">抄袭</label>
+                    <label><input class="report_type" id="report_ad" name="report_type" value="4" type="radio">广告</label>
+                    <label><input class="report_type" id="report_want" name="report_type" value="5" type="radio">招聘</label>
+                    <label><input class="report_type" id="report_call" name="report_type" value="6" type="radio">骂人</label>
+                    <br>
+                    <label><input class="report_type" id="report_other" name="report_type" value="7" type="radio">其他</label>
+                    <input name="report_other_content" id="report_other_content" maxlength="30" style="display: none;" value="" type="text">
+                </td>
+            </tr>
+            <tr id="panel_originalurl" style="display: none;">
+                <th>原文地址：</th>
+                <td>
+                    <input id="originalurl" value="http://" name="originalurl" style="width: 90%;" type="text">
+                </td>
+            </tr>
+            <tr>
+                <th id="sp_reason">原因补充：</th>
+                <td>
+                    <textarea id="report_description" style="width: 300px;" rows="3" name="report_description"></textarea>
+                    <p id="sp_n" style="color: rgb(153, 153, 153); margin: 0px; padding: 0px;">(最多只允许输入30个字)</p>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input id="btnSubmitReport" name="submit" class="btn_1" src="btn_submit.jpg" type="image" align="middle">
+                    <span style="padding-left: 20px;"></span>
+                    <img id="btnCloseReportDialog" src="btn_cancel.jpg" align="middle">
+                    <div id="error" style="color: red;">
+                    </div>
+                </td>
+            </tr>
+            </tbody></table>
+    </form>
+</div>
+    
+</div>
+<!--  fixme 后期清理掉  -->
+<div id="a52b5334d" style="width: 1px; height: 1px; display: none;">
+    
+    
+</div>
+
+
+<!-- <script type="text/javascript" src="http://passport.csdn.net/content/loginbox/login.js"></script> -->
+
+
+
+
+<div class="" id="loginWrap"></div>
+<div class="" id="dlMask"></div>
+
+</body>
+</html>

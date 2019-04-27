@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html class="v2" dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xmlns:b="http://www.google.com/2005/gml/b" xmlns:data="http://www.google.com/2005/gml/data" xmlns:expr="http://www.google.com/2005/gml/expr">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+
+<meta content="Curious Putorius" name="Title"><meta content="Laerning linux through tutorials and articles." name="Description">
+<meta content="linux,learn,fedora,redhat,centos,tutorials,articles,learning,how-to,security,help,articles,questions" name="Keywords">
+<meta content="Steven Vona" name="Author"><meta content="English" name="Language">
+<meta content="All information © Steven Vona" name="Copyright"><meta content="1 Days" name="Revisit-After"><meta content="All" name="Robots">
+<meta content="IE=EmulateIE7" http-equiv="X-UA-Compatible">
+<meta content="width=1100" name="viewport">
+
+<meta content="blogger" name="generator">
+<link href="favicon.ico" rel="icon" type="image/x-icon">
+<link href="https://www.putorius.net/2015/04/how-to-create-enrcypted-password.html" rel="canonical">
+<link rel="alternate" type="application/atom+xml" title="Putorius - Linux Questions, Answers, How-tos, and General Information. - Atom" href="https://www.putorius.net/feeds/posts/default">
+<link rel="alternate" type="application/rss+xml" title="Putorius - Linux Questions, Answers, How-tos, and General Information. - RSS" href="https://www.putorius.net/feeds/posts/default?alt=rss">
+<link rel="service.post" type="application/atom+xml" title="Putorius - Linux Questions, Answers, How-tos, and General Information. - Atom" href="https://www.blogger.com/feeds/4150971124979988745/posts/default">
+
+<link rel="alternate" type="application/atom+xml" title="Putorius - Linux Questions, Answers, How-tos, and General Information. - Atom" href="https://www.putorius.net/feeds/4209401553166578464/comments/default">
+<!--[if IE]><script type="text/javascript" src="https://www.blogger.com/static/v1/jsbin/3762807459-ieretrofit.js"></script>
+<![endif]-->
+<meta content="How to create encrypted, password protected tar and zip archives on the command line." name="description">
+<meta content="https://www.putorius.net/2015/04/how-to-create-enrcypted-password.html" property="og:url">
+<meta content="How to Create an Encrypted (Password Protected) Tar or Zip Archive in Linux" property="og:title">
+<meta content="How to create encrypted, password protected tar and zip archives on the command line." property="og:description">
+<!--[if IE]> <script> (function() { var html5 = ("abbr,article,aside,audio,canvas,datalist,details," + "figure,footer,header,hgroup,mark,menu,meter,nav,output," + "progress,section,time,video").split(','); for (var i = 0; i < html5.length; i++) { document.createElement(html5[i]); } try { document.execCommand('BackgroundImageCache', false, true); } catch(e) {} })(); </script> <![endif]-->
+<title>How to Create an Encrypted (Password Protected) Tar or Zip Archive in Linux</title>
+
+
+<link alt="Favicon" href="favicon_001.ico" rel="shortcut icon" type="image/x-icon">
+<link alt="Favixcon" href="favicon_002.ico" rel="icon" type="image/x-icon">
+
+
+<link rel="preload" href="https://adservice.google.com/adsid/integrator.js?domain=www.putorius.net" as="script">
+
+
+<link rel="preload" href="https://adservice.google.com/adsid/integrator.js?domain=www.putorius.net" as="script">
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body class="">
+<div class="body-fauxcolumns">
+<div class="fauxcolumn-outer body-fauxcolumn-outer">
+<div class="cap-top">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+<div class="fauxborder-left">
+<div class="fauxborder-right"></div>
+<div class="fauxcolumn-inner">
+</div>
+</div>
+<div class="cap-bottom">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+</div>
+</div>
+<div class="content">
+<div class="content-fauxcolumns">
+<div class="fauxcolumn-outer content-fauxcolumn-outer">
+<div class="cap-top">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+<div class="fauxborder-left">
+<div class="fauxborder-right"></div>
+<div class="fauxcolumn-inner">
+</div>
+</div>
+<div class="cap-bottom">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+</div>
+</div>
+<div class="content-outer">
+<div class="content-cap-top cap-top">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+<div class="fauxborder-left content-fauxborder-left">
+<div class="fauxborder-right content-fauxborder-right"></div>
+<div class="content-inner">
+<header>
+<div class="header-outer">
+<div class="header-cap-top cap-top">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+<div class="fauxborder-left header-fauxborder-left">
+<div class="fauxborder-right header-fauxborder-right"></div>
+<div class="region-inner header-inner">
+<div class="header section" id="header"><div class="widget Header" data-version="1" id="Header1">
+<div id="header-inner">
+<a href="https://www.putorius.net/" style="display: block;">
+<img alt="Putorius - Linux Questions, Answers, How-tos, and General Information." id="Header1_headerimg" src="-pve-g6xkpzkhhr8aqpjyvv8vlinpvrblr0kx5eb51znbym4edtibgxl3zdtvpvilgufi6ttlf4jbbl8=s0-d" style="display: block;" width="208px; " height="52px; ">
+</a>
+<div class="descriptionwrapper">
+<p class="description"><span><a href="http://www.putorius.net/">Home</a>   ᐧ   <a href="http://www.putorius.net/p/wallpapers.html">Wallpapers</a>   ᐧ   <a href="http://www.putorius.net/p/random.html">Random</a>   ᐧ   <a href="http://www.putorius.net/p/get-answers-to-your-linux-questions.html">Have a Linux Question?</a></span></p>
+</div>
+</div>
+</div></div>
+</div>
+</div>
+<div class="header-cap-bottom cap-bottom">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+</div>
+</header>
+<div class="tabs-outer">
+<div class="tabs-cap-top cap-top">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+<div class="fauxborder-left tabs-fauxborder-left">
+<div class="fauxborder-right tabs-fauxborder-right"></div>
+<div class="region-inner tabs-inner">
+<div class="tabs section" id="crosscol"><div class="widget HTML" data-version="1" id="HTML1">
+<h2 class="title">Leaderboard ad</h2>
+<div class="widget-content">
+
+<!-- Leaderboard Responsive -->
+<ins class="adsbygoogle" style="display: block; height: 90px;" data-ad-client="ca-pub-8729877671232535" data-ad-slot="4792843053" data-ad-format="auto" data-full-width-responsive="true" data-adsbygoogle-status="done"><ins id="aswift_0_expand" style="display: inline-table; border: medium none; height: 90px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 1020px; background-color: transparent;"><ins id="aswift_0_anchor" style="display: block; border: medium none; height: 90px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 1020px; background-color: transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" id="aswift_0" name="aswift_0" style="left: 0px; position: absolute; top: 0px; width: 1020px; height: 90px;" src="index_1.html" width="1020" height="90" frameborder="0"></iframe></ins></ins></ins>
+
+</div>
+<div class="clear"></div>
+<span class="widget-item-control">
+<span class="item-control blog-admin">
+<a class="quickedit" href="https://www.blogger.com/rearrange?blogID=4150971124979988745&amp;widgetType=HTML&amp;widgetId=HTML1&amp;action=editWidget&amp;sectionId=crosscol" onclick="return _WidgetManager._PopupConfig(document.getElementById(&quot;HTML1&quot;));" target="configHTML1" title="Edit">
+<img alt="" src="icon18_wrench_allbkg.png" width="18" height="18">
+</a>
+</span>
+</span>
+<div class="clear"></div>
+</div></div>
+<div class="tabs no-items section" id="crosscol-overflow"></div>
+</div>
+</div>
+<div class="tabs-cap-bottom cap-bottom">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+</div>
+<div class="main-outer">
+<div class="main-cap-top cap-top">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+<div class="fauxborder-left main-fauxborder-left">
+<div class="fauxborder-right main-fauxborder-right"></div>
+<div class="region-inner main-inner">
+<div class="columns fauxcolumns">
+<div class="fauxcolumn-outer fauxcolumn-center-outer">
+<div class="cap-top">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+<div class="fauxborder-left">
+<div class="fauxborder-right"></div>
+<div class="fauxcolumn-inner">
+</div>
+</div>
+<div class="cap-bottom">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+</div>
+<div class="fauxcolumn-outer fauxcolumn-left-outer">
+<div class="cap-top">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+<div class="fauxborder-left">
+<div class="fauxborder-right"></div>
+<div class="fauxcolumn-inner">
+</div>
+</div>
+<div class="cap-bottom">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+</div>
+<div class="fauxcolumn-outer fauxcolumn-right-outer">
+<div class="cap-top">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+<div class="fauxborder-left">
+<div class="fauxborder-right"></div>
+<div class="fauxcolumn-inner">
+</div>
+</div>
+<div class="cap-bottom">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+</div>
+<!-- corrects IE6 width calculation -->
+<div class="columns-inner">
+<div class="column-center-outer">
+<div class="column-center-inner">
+<div class="main section" id="main"><div class="widget Blog" data-version="1" id="Blog1">
+<div class="blog-posts hfeed">
+<!--Can't find substitution for tag [defaultAdStart]-->
+
+          <div class="date-outer">
+        
+<h2 class="date-header"><span>4.02.2015</span></h2>
+
+          <div class="date-posts">
+        
+<div class="post-outer">
+<div class="post hentry">
+<a name="4209401553166578464"></a>
+<h3 class="post-title entry-title">
+How to Create an Encrypted (Password Protected) Tar or Zip Archive in Linux
+</h3>
+<div class="post-header">
+<div class="post-header-line-1"></div>
+</div>
+<div class="post-body entry-content">
+<span style="font-size: x-small;">Question sent in by Stephen from Pennsylvania.</span><br>
+<br>
+<b>Q:</b> Without going into too much detail, I need to tar or zip some data files, have them encrypted and password protected.&nbsp; Any ideas?<br>
+<br>
+<b>A:</b> There are several ways to accomplish this task.&nbsp; Some are easier than others.&nbsp; Let's start with the most secure way, since that is my preferred method.<br>
+<br>
+<i><b>1) Using tar and gpg to create a secured tar archive.</b></i><br>
+<br>
+This is the most secure way of creating an encrypted / password protected compressed archive, it is also one of the more complicated.&nbsp; This example use AES-256 encryption algorithm.<br>
+<br>
+<code>
+tar czvpf - file1.txt file2.pdf file3.jpg | gpg --symmetric --cipher-algo aes256 -o myarchive.tar.gz.gpg</code>
+<br>
+After entering the above command you will be prompted for a passphrase: &nbsp; <br>
+<br>
+Example output:<br>
+<br>
+<code>
+$ tar czvpf - file1.txt file2.pdf file3.jpg | gpg --symmetric --cipher-algo aes256 -o myarchive.tar.gz.gpg<br>
+file1.txt<br>
+file2.pdf<br>
+Enter passphrase:&nbsp; </code>
+<br>
+After entering the passphrase you will be asked to repeat it.&nbsp; Then the archive will be created as an encrypted archive, using a secure algorithm and protected by your custom passphrase.<br>
+<br>
+To extract the archive use the following command:<br>
+<br>
+<code>
+gpg -d myarchive.tar.gz.gpg | tar xzvf -</code>
+<br>
+You will be prompted for the passphrase before the archive is extracted.<br>
+<br>
+NOTE: I like to always name these types of archives .tar.gz.gpg so I know how they were created.&nbsp; For this example we used tar, gzip and gpg.&nbsp; Also, it is important that you DO NOT forget the passphrase.<br>
+<br>
+Check the tar and GnuPG manpages for more information. <br>
+<br>
+<i><b>2) Use 7zip to create zip format archives with secure algorithms.&nbsp;</b></i><br>
+<br>
+This is just as secure as the first option since it supports the same AES-256 encryption algorithm, although it does require you put the passphrase or "secret" on the command line, which I am not a fan of.&nbsp; It is also not as convenient because most systems do not come with the P7zip package installed.<br>
+<br>
+To install P7zip on Red Hat, or RH variants like CentOS or Fedora:<br>
+<br>
+<code>
+sudo yum -y install p7zip</code>
+<br>
+On debian based systems such as Ubuntu:<br>
+<br>
+<code>
+sudo apt-get install p7zip-full</code>
+<br>
+To create the&nbsp; archive, use the command below, replace "PASSPHRASE" with your own secret passphrase.<br>
+<br>
+<code>
+&nbsp;7za a -tzip -pPASSPHRASE -mem=AES256 secure.zip file1.txt file2.pdf file3.jpg </code>
+<br>
+Example output:<br>
+<br>
+<code>
+$ 7za a -tzip -pPASSPHRASE -mem=AES256 myarchive.zip file1.txt file2.pdf file3.jpg <br>
+<br>
+7-Zip (A) [64] 9.20&nbsp; Copyright (c) 1999-2010 Igor Pavlov&nbsp; 2010-11-18<br>
+p7zip Version 9.20 (locale=en_US.UTF-8,Utf16=on,HugeFiles=on,8 CPUs)<br>
+Scanning<br>
+<br>
+Creating archive myarchive.zip<br>
+<br>
+Compressing&nbsp; file1.txt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+Compressing&nbsp; file2.pdf&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+Compressing&nbsp; file3.jpg&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+<br>
+Everything is Ok</code>
+<br>
+To extract the zip archive use the following:<br>
+<br>
+<code>
+7za e myarchive.zip</code>
+<br>
+<b><i>3) Use the zip command to create an encrypted archive.</i></b><br>
+<br>
+The zip command provides options to allow you to encrypt archives. It uses a known insecure PKZIP algorithm and also requires you to add your passphrase on the command line.&nbsp; The benefit of this method is both Linux and Windows folks can extract the archive without any additional software.<br>
+<br>
+<code>
+zip --password PASSPHRASE myarchive.zip file1.txt file2.pdf file3.jpg</code>
+<br>
+Example output:<br>
+<br>
+<code>
+$ zip --password PASSPHRASE myarchive.zip file1.txt file2.pdf file3.jpg <br>
+&nbsp; adding: file1.txt (deflated 75%)<br>
+&nbsp; adding: file2.pdf (deflated 7%)<br>
+&nbsp; adding: file3.jpg (deflated 4%)</code>
+<br>
+<br>
+To extract the archive, use the normal unzip utility.&nbsp; The only difference is you will be asked for a password.<br>
+<br>
+<code>
+unzip myarchive.zip </code>
+<br>
+Example output: <br>
+<br>
+<code>
+$ unzip myarchive.zip <br>
+Archive:&nbsp; myarchive.zip<br>
+[myarchive.zip] password: <br>
+&nbsp; inflating: file1.txt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp; inflating: file2.pdf&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp; inflating: file3.jpg</code>
+<br>
+So there you have my three favorite ways to created encrypted archives.&nbsp; There are plenty more ways to accomplish this (openssl, gpg-zip, bcrypt) and some are better than others.&nbsp; If you data is really important, I suggest you read up on the different algorithms and signing methods that are out there and decide for yourself which is right.<br>
+<br>
+Whatever method you use it is important to NOT forget your passphrase. 
+<div style="clear: both;"></div>
+</div>
+<div class="post-footer">
+<div class="post-footer-line post-footer-line-1"><span class="post-author vcard">
+Posted by
+<span class="fn">Anonymous</span>
+</span>
+<span class="post-timestamp">
+at
+<a class="timestamp-link" href="https://www.putorius.net/2015/04/how-to-create-enrcypted-password.html" rel="bookmark" title="permanent link"><abbr class="published" title="2015-04-02T16:42:00-04:00">4:42 PM</abbr></a>
+</span>
+<span class="post-comment-link">
+</span>
+<span class="post-icons">
+<span class="item-control blog-admin pid-964413074">
+<a href="https://www.blogger.com/post-edit.g?blogID=4150971124979988745&amp;postID=4209401553166578464&amp;from=pencil" title="Edit Post">
+<img alt="" class="icon-action" src="icon18_edit_allbkg.gif" width="18" height="18">
+</a>
+</span>
+</span>
+<div class="post-share-buttons">
+<a class="goog-inline-block share-button sb-email" href="https://www.blogger.com/share-post.g?blogID=4150971124979988745&amp;postID=4209401553166578464&amp;target=email" target="_top" title="Email This"><span class="share-button-link-text">Email This</span></a><a class="goog-inline-block share-button sb-blog" href="https://www.blogger.com/share-post.g?blogID=4150971124979988745&amp;postID=4209401553166578464&amp;target=blog" onclick="window.open(this.href, &quot;_blank&quot;, &quot;height=270,width=475&quot;); return false;" target="_top" title="BlogThis!"><span class="share-button-link-text">BlogThis!</span></a><a class="goog-inline-block share-button sb-twitter" href="https://www.blogger.com/share-post.g?blogID=4150971124979988745&amp;postID=4209401553166578464&amp;target=twitter" target="_top" title="Share to Twitter"><span class="share-button-link-text">Share to Twitter</span></a><a class="goog-inline-block share-button sb-facebook" href="https://www.blogger.com/share-post.g?blogID=4150971124979988745&amp;postID=4209401553166578464&amp;target=facebook" onclick="window.open(this.href, &quot;_blank&quot;, &quot;height=430,width=640&quot;); return false;" target="_top" title="Share to Facebook"><span class="share-button-link-text">Share to Facebook</span></a><a class="goog-inline-block share-button sb-pinterest" href="https://www.blogger.com/share-post.g?blogID=4150971124979988745&amp;postID=4209401553166578464&amp;target=pinterest" target="_top" title="Share to Pinterest"><span class="share-button-link-text">Share to Pinterest</span></a><div class="goog-inline-block dummy-container"><g:plusone source="blogger:blog:plusone" href="http://www.putorius.net/2015/04/how-to-create-enrcypted-password.html" size="medium" width="300" annotation="inline"></g:plusone></div>
+</div>
+</div>
+<div class="post-footer-line post-footer-line-2"><span class="post-labels">
+Labels:
+<a href="https://www.putorius.net/search/label/aes256" rel="tag">aes256</a>,
+<a href="https://www.putorius.net/search/label/algorithm" rel="tag">algorithm</a>,
+<a href="https://www.putorius.net/search/label/archive" rel="tag">archive</a>,
+<a href="https://www.putorius.net/search/label/command" rel="tag">command</a>,
+<a href="https://www.putorius.net/search/label/decrypt" rel="tag">decrypt</a>,
+<a href="https://www.putorius.net/search/label/encrypt" rel="tag">encrypt</a>,
+<a href="https://www.putorius.net/search/label/encryption" rel="tag">encryption</a>,
+<a href="https://www.putorius.net/search/label/gpg" rel="tag">gpg</a>,
+<a href="https://www.putorius.net/search/label/gpg-zip" rel="tag">gpg-zip</a>,
+<a href="https://www.putorius.net/search/label/line" rel="tag">line</a>,
+<a href="https://www.putorius.net/search/label/password" rel="tag">password</a>,
+<a href="https://www.putorius.net/search/label/protect" rel="tag">protect</a>,
+<a href="https://www.putorius.net/search/label/protected" rel="tag">protected</a>,
+<a href="https://www.putorius.net/search/label/tar" rel="tag">tar</a>,
+<a href="https://www.putorius.net/search/label/zip" rel="tag">zip</a>
+</span>
+</div>
+<div class="post-footer-line post-footer-line-3"><span class="post-location">
+</span>
+</div>
+</div><div style="text-align: center; width: 100%; height: auto; clear: both;" class="google-auto-placed"><ins style="display: block; margin: 10px auto; background-color: transparent; height: 90px;" data-ad-format="auto" class="adsbygoogle adsbygoogle-noablate" data-ad-client="ca-pub-8729877671232535" data-adsbygoogle-status="done"><ins id="aswift_2_expand" style="display: inline-table; border: medium none; height: 90px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 736px; background-color: transparent;"><ins id="aswift_2_anchor" style="display: block; border: medium none; height: 90px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 736px; background-color: transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" id="aswift_2" name="aswift_2" style="left: 0px; position: absolute; top: 0px; width: 736px; height: 90px;" src="index_5.html" width="736" height="90" frameborder="0"></iframe></ins></ins></ins></div>
+</div>
+<div class="comments" id="comments">
+<a name="comments"></a>
+<h4>1 comment:</h4>
+<div class="comments-content">
+
+
+<div id="comment-holder">
+<div id="bc_0_2C" kind="c"><div id="bc_0_2CT"><div id="bc_0_1T" class="comment-thread" kind="r" t="0" u="0"><ol id="bc_0_1TB"><li id="bc_0_0B" class="comment" kind="b"><div class="avatar-image-container"><img src="photo.jpg"></div><div id="c3527534538267248209" class="comment-block"><div id="bc_0_0M" class="comment-header" kind="m"><cite class="user"><a rel="nofollow" href="https://www.blogger.com/profile/09845232582308293129">Estella Herman</a></cite><span class="icon user"></span><span class="datetime secondary-text"><a rel="nofollow" href="https://www.putorius.net/2015/04/how-to-create-enrcypted-password.html?showComment=1524115028461#c3527534538267248209">April 19, 2018 at 1:17 AM</a></span></div><p id="bc_0_0MC" class="comment-content">Thank you for this article!</p><span id="bc_0_0MN" class="comment-actions secondary-text" kind="m"><a kind="i" href="javascript:;" target="_self" o="r">Reply</a><span class="item-control blog-admin pid-1419738299"><a o="d" target="_self" href="https://www.blogger.com/delete-comment.g?blogID=4150971124979988745&amp;postID=3527534538267248209">Delete</a></span></span></div><div id="bc_0_0BR" class="comment-replies"></div><div id="bc_0_0B_box" class="comment-replybox-single"></div></li></ol><div id="bc_0_1I" class="continue" kind="ci"><a href="javascript:;" target="_self">Add comment</a></div><div id="bc_0_1T_box" class="comment-replybox-thread"></div><div id="bc_0_1L" class="loadmore loaded" kind="rb"><a href="javascript:;" target="_self">Load more...</a></div></div></div></div>
+</div>
+</div>
+<p class="comment-footer">
+</p><div class="comment-form">
+<a name="comment-form"></a>
+<p>
+</p>
+<a href="https://www.blogger.com/comment-iframe.g?blogID=4150971124979988745&amp;postID=4209401553166578464" id="comment-editor-src"></a>
+<iframe allowtransparency="true" class="blogger-iframe-colorize blogger-comment-from-post" id="comment-editor" name="comment-editor" src="index_6.html" width="100%" height="410px" frameborder="0"></iframe>
+
+
+</div>
+<p></p>
+<div id="backlinks-container">
+<div id="Blog1_backlinks-container">
+</div>
+</div>
+</div>
+</div>
+
+        </div></div>
+      
+<!--Can't find substitution for tag [adEnd]-->
+</div>
+<div class="blog-pager" id="blog-pager">
+<span id="blog-pager-newer-link">
+<a class="blog-pager-newer-link" href="https://www.putorius.net/2015/04/how-to-install-vnc-server-in-red-hat-7.html" id="Blog1_blog-pager-newer-link" title="Newer Post">Newer Post</a>
+</span>
+<span id="blog-pager-older-link">
+<a class="blog-pager-older-link" href="https://www.putorius.net/2015/04/how-to-change-system-hostname-in-red.html" id="Blog1_blog-pager-older-link" title="Older Post">Older Post</a>
+</span>
+<a class="home-link" href="https://www.putorius.net/">Home</a>
+</div>
+<div class="clear"></div>
+<div class="post-feeds">
+<div class="feed-links">
+Subscribe to:
+<a class="feed-link" href="https://www.putorius.net/feeds/4209401553166578464/comments/default" target="_top" type="application/atom+xml">Post Comments (Atom)</a>
+</div>
+</div>
+
+</div></div>
+</div>
+</div>
+<div class="column-left-outer">
+<div class="column-left-inner">
+<aside>
+</aside>
+</div>
+</div>
+<div class="column-right-outer">
+<div class="column-right-inner">
+<aside>
+<div class="sidebar section" id="sidebar-right-1"><div class="widget BlogSearch" data-version="1" id="BlogSearch1">
+<h2 class="title">Search</h2>
+<div class="widget-content">
+<div id="BlogSearch1_form">
+<form action="https://www.putorius.net/search" class="gsc-search-box" target="_top">
+<table class="gsc-search-box" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td class="gsc-input">
+<input autocomplete="off" class="gsc-input" name="q" size="10" title="search" value="" type="text">
+</td>
+<td class="gsc-search-button">
+<input class="gsc-search-button" title="search" value="Search" type="submit">
+</td>
+</tr>
+</tbody>
+</table>
+</form>
+</div><div style="text-align: center; width: 100%; height: auto; clear: none;" class="google-auto-placed"><ins style="display: block; margin: 10px auto; background-color: transparent; height: 600px;" data-ad-format="auto" class="adsbygoogle adsbygoogle-noablate" data-ad-client="ca-pub-8729877671232535" data-adsbygoogle-status="done"><ins id="aswift_3_expand" style="display: inline-table; border: medium none; height: 600px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 260px; background-color: transparent;"><ins id="aswift_3_anchor" style="display: block; border: medium none; height: 600px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 260px; background-color: transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" id="aswift_3" name="aswift_3" style="left: 0px; position: absolute; top: 0px; width: 260px; height: 600px;" src="index_7.html" width="260" height="600" frameborder="0"></iframe></ins></ins></ins></div>
+</div>
+<div class="clear"></div>
+<span class="widget-item-control">
+<span class="item-control blog-admin">
+<a class="quickedit" href="https://www.blogger.com/rearrange?blogID=4150971124979988745&amp;widgetType=BlogSearch&amp;widgetId=BlogSearch1&amp;action=editWidget&amp;sectionId=sidebar-right-1" onclick="return _WidgetManager._PopupConfig(document.getElementById(&quot;BlogSearch1&quot;));" target="configBlogSearch1" title="Edit">
+<img alt="" src="icon18_wrench_allbkg.png" width="18" height="18">
+</a>
+</span>
+</span>
+<div class="clear"></div>
+</div><div class="widget PopularPosts" data-version="1" id="PopularPosts1">
+<h2>Popular Posts</h2>
+<div class="widget-content popular-posts">
+<ul>
+<li>
+<div class="item-content">
+<div class="item-thumbnail">
+<a href="https://www.putorius.net/2012/06/how-to-configure-system-proxy-settings.html" target="_top">
+<img alt="" src="ss1.png" border="0">
+</a>
+</div>
+<div class="item-title"><a href="https://www.putorius.net/2012/06/how-to-configure-system-proxy-settings.html">How to configure system proxy settings in Red Hat Enterprise Linux</a></div>
+<div class="item-snippet">   Here we will examine how to set proxy settings in RHEL 5 or 6.&nbsp; This will also work for centOS 5 and 6 as well as most versions of Fedora...</div>
+</div>
+<div style="clear: both;"></div>
+</li>
+<li>
+<div class="item-content">
+<div class="item-title"><a href="https://www.putorius.net/2013/09/how-to-change-machines-hostname-in.html">How to change a machines hostname in Red Hat 6</a></div>
+<div class="item-snippet">There are several ways to change the hostname of a machine running Redhat 6. &nbsp;These also works on CentOS, Fedora and older/other Redhat vari...</div>
+</div>
+<div style="clear: both;"></div>
+</li>
+<li>
+<div class="item-content">
+<div class="item-title"><a href="https://www.putorius.net/2012/10/how-to-configure-static-ip-address-in.html">How to Configure a Static IP Address in Red Hat, CentOS and Fedora</a></div>
+<div class="item-snippet">Question sent in by Demarco from New York: Q: I have come across a few how-to article on setting a static IP address but I always seem to ge...</div>
+</div>
+<div style="clear: both;"></div>
+</li>
+</ul>
+<div class="clear"></div>
+<span class="widget-item-control">
+<span class="item-control blog-admin">
+<a class="quickedit" href="https://www.blogger.com/rearrange?blogID=4150971124979988745&amp;widgetType=PopularPosts&amp;widgetId=PopularPosts1&amp;action=editWidget&amp;sectionId=sidebar-right-1" onclick="return _WidgetManager._PopupConfig(document.getElementById(&quot;PopularPosts1&quot;));" target="configPopularPosts1" title="Edit">
+<img alt="" src="icon18_wrench_allbkg.png" width="18" height="18">
+</a>
+</span>
+</span>
+<div class="clear"></div>
+</div>
+</div><div class="widget Subscribe" data-version="1" id="Subscribe1">
+<div style="white-space: nowrap;">
+<h2 class="title">Subscribe To</h2>
+<div class="widget-content">
+<div class="subscribe-wrapper subscribe-type-POST">
+<div class="subscribe expanded subscribe-type-POST" id="SW_READER_LIST_Subscribe1POST" style="display: none;">
+<div class="top">
+<span class="inner" onclick="return(_SW_toggleReaderList(event, &quot;Subscribe1POST&quot;));">
+<img class="subscribe-dropdown-arrow" src="arrow_dropdown.gif">
+<img alt="" class="feed-icon" src="icon_feed12.png" border="0" align="absmiddle">
+Posts
+</span>
+<div class="feed-reader-links">
+<a class="feed-reader-link" href="https://www.netvibes.com/subscribe.php?url=https%3A%2F%2Fwww.putorius.net%2Ffeeds%2Fposts%2Fdefault" target="_top">
+<img src="subscribe-netvibes.png">
+</a>
+<a class="feed-reader-link" href="https://add.my.yahoo.com/content?url=https%3A%2F%2Fwww.putorius.net%2Ffeeds%2Fposts%2Fdefault" target="_top">
+<img src="subscribe-yahoo.png">
+</a>
+<a class="feed-reader-link" href="https://www.putorius.net/feeds/posts/default" target="_top">
+<img class="feed-icon" src="icon_feed12.png" align="absmiddle">
+                  Atom
+                </a>
+</div>
+</div>
+<div class="bottom"></div>
+</div>
+<div class="subscribe" id="SW_READER_LIST_CLOSED_Subscribe1POST" onclick="return(_SW_toggleReaderList(event, &quot;Subscribe1POST&quot;));">
+<div class="top">
+<span class="inner">
+<img class="subscribe-dropdown-arrow" src="arrow_dropdown.gif">
+<span onclick="return(_SW_toggleReaderList(event, &quot;Subscribe1POST&quot;));">
+<img alt="" class="feed-icon" src="icon_feed12.png" border="0" align="absmiddle">
+Posts
+</span>
+</span>
+</div>
+<div class="bottom"></div>
+</div>
+</div>
+<div class="subscribe-wrapper subscribe-type-PER_POST">
+<div class="subscribe expanded subscribe-type-PER_POST" id="SW_READER_LIST_Subscribe1PER_POST" style="display: none;">
+<div class="top">
+<span class="inner" onclick="return(_SW_toggleReaderList(event, &quot;Subscribe1PER_POST&quot;));">
+<img class="subscribe-dropdown-arrow" src="arrow_dropdown.gif">
+<img alt="" class="feed-icon" src="icon_feed12.png" border="0" align="absmiddle">
+Comments
+</span>
+<div class="feed-reader-links">
+<a class="feed-reader-link" href="https://www.netvibes.com/subscribe.php?url=https%3A%2F%2Fwww.putorius.net%2Ffeeds%2F4209401553166578464%2Fcomments%2Fdefault" target="_top">
+<img src="subscribe-netvibes.png">
+</a>
+<a class="feed-reader-link" href="https://add.my.yahoo.com/content?url=https%3A%2F%2Fwww.putorius.net%2Ffeeds%2F4209401553166578464%2Fcomments%2Fdefault" target="_top">
+<img src="subscribe-yahoo.png">
+</a>
+<a class="feed-reader-link" href="https://www.putorius.net/feeds/4209401553166578464/comments/default" target="_top">
+<img class="feed-icon" src="icon_feed12.png" align="absmiddle">
+                  Atom
+                </a>
+</div>
+</div>
+<div class="bottom"></div>
+</div>
+<div class="subscribe" id="SW_READER_LIST_CLOSED_Subscribe1PER_POST" onclick="return(_SW_toggleReaderList(event, &quot;Subscribe1PER_POST&quot;));">
+<div class="top">
+<span class="inner">
+<img class="subscribe-dropdown-arrow" src="arrow_dropdown.gif">
+<span onclick="return(_SW_toggleReaderList(event, &quot;Subscribe1PER_POST&quot;));">
+<img alt="" class="feed-icon" src="icon_feed12.png" border="0" align="absmiddle">
+Comments
+</span>
+</span>
+</div>
+<div class="bottom"></div>
+</div>
+</div>
+<div style="clear: both;"></div>
+</div>
+</div>
+<div class="clear"></div>
+<span class="widget-item-control">
+<span class="item-control blog-admin">
+<a class="quickedit" href="https://www.blogger.com/rearrange?blogID=4150971124979988745&amp;widgetType=Subscribe&amp;widgetId=Subscribe1&amp;action=editWidget&amp;sectionId=sidebar-right-1" onclick="return _WidgetManager._PopupConfig(document.getElementById(&quot;Subscribe1&quot;));" target="configSubscribe1" title="Edit">
+<img alt="" src="icon18_wrench_allbkg.png" width="18" height="18">
+</a>
+</span>
+</span>
+<div class="clear"></div>
+</div><div class="widget BlogArchive" data-version="1" id="BlogArchive1">
+<h2>Blog Archive</h2>
+<div class="widget-content">
+<div id="ArchiveList">
+<div id="BlogArchive1_ArchiveList">
+<select id="BlogArchive1_ArchiveMenu">
+<option value="">Blog Archive</option>
+<option value="https://www.putorius.net/2018/01/">January (1)</option>
+<option value="https://www.putorius.net/2017/12/">December (1)</option>
+<option value="https://www.putorius.net/2017/11/">November (5)</option>
+<option value="https://www.putorius.net/2017/03/">March (1)</option>
+<option value="https://www.putorius.net/2017/02/">February (1)</option>
+<option value="https://www.putorius.net/2016/12/">December (1)</option>
+<option value="https://www.putorius.net/2016/04/">April (2)</option>
+<option value="https://www.putorius.net/2016/01/">January (3)</option>
+<option value="https://www.putorius.net/2015/07/">July (3)</option>
+<option value="https://www.putorius.net/2015/04/">April (4)</option>
+<option value="https://www.putorius.net/2015/03/">March (5)</option>
+<option value="https://www.putorius.net/2015/01/">January (5)</option>
+<option value="https://www.putorius.net/2014/12/">December (4)</option>
+<option value="https://www.putorius.net/2014/09/">September (1)</option>
+<option value="https://www.putorius.net/2014/08/">August (2)</option>
+<option value="https://www.putorius.net/2014/07/">July (4)</option>
+<option value="https://www.putorius.net/2014/03/">March (1)</option>
+<option value="https://www.putorius.net/2013/12/">December (1)</option>
+<option value="https://www.putorius.net/2013/11/">November (1)</option>
+<option value="https://www.putorius.net/2013/10/">October (1)</option>
+<option value="https://www.putorius.net/2013/09/">September (1)</option>
+<option value="https://www.putorius.net/2013/07/">July (1)</option>
+<option value="https://www.putorius.net/2013/04/">April (1)</option>
+<option value="https://www.putorius.net/2013/03/">March (3)</option>
+<option value="https://www.putorius.net/2012/11/">November (1)</option>
+<option value="https://www.putorius.net/2012/10/">October (5)</option>
+<option value="https://www.putorius.net/2012/09/">September (8)</option>
+<option value="https://www.putorius.net/2012/08/">August (2)</option>
+<option value="https://www.putorius.net/2012/06/">June (2)</option>
+<option value="https://www.putorius.net/2012/01/">January (2)</option>
+<option value="https://www.putorius.net/2011/12/">December (2)</option>
+<option value="https://www.putorius.net/2011/11/">November (1)</option>
+<option value="https://www.putorius.net/2011/10/">October (1)</option>
+<option value="https://www.putorius.net/2011/09/">September (1)</option>
+<option value="https://www.putorius.net/2011/05/">May (1)</option>
+<option value="https://www.putorius.net/2011/04/">April (2)</option>
+<option value="https://www.putorius.net/2011/03/">March (4)</option>
+<option value="https://www.putorius.net/2010/07/">July (1)</option>
+<option value="https://www.putorius.net/2009/08/">August (1)</option>
+</select>
+</div>
+</div>
+<div class="clear"></div>
+<span class="widget-item-control">
+<span class="item-control blog-admin">
+<a class="quickedit" href="https://www.blogger.com/rearrange?blogID=4150971124979988745&amp;widgetType=BlogArchive&amp;widgetId=BlogArchive1&amp;action=editWidget&amp;sectionId=sidebar-right-1" onclick="return _WidgetManager._PopupConfig(document.getElementById(&quot;BlogArchive1&quot;));" target="configBlogArchive1" title="Edit">
+<img alt="" src="icon18_wrench_allbkg.png" width="18" height="18">
+</a>
+</span>
+</span>
+<div class="clear"></div>
+</div>
+</div><div class="widget Translate" data-version="1" id="Translate1">
+<h2 class="title">Translate</h2>
+<div id="google_translate_element"></div>
+
+
+<div class="clear"></div>
+<span class="widget-item-control">
+<span class="item-control blog-admin">
+<a class="quickedit" href="https://www.blogger.com/rearrange?blogID=4150971124979988745&amp;widgetType=Translate&amp;widgetId=Translate1&amp;action=editWidget&amp;sectionId=sidebar-right-1" onclick="return _WidgetManager._PopupConfig(document.getElementById(&quot;Translate1&quot;));" target="configTranslate1" title="Edit">
+<img alt="" src="icon18_wrench_allbkg.png" width="18" height="18">
+</a>
+</span>
+</span>
+<div class="clear"></div>
+</div>
+<div class="widget PlusOne" data-version="1" id="PlusOne1">
+<div class="widget-content">
+<g:plusone annotation="bubble" href="http://www.putorius.net/" size="standard" source="blogger:blog:plusone" width="250"></g:plusone>
+
+</div>
+</div><div class="widget Navbar" data-version="1" id="Navbar1">
+<div id="navbar-iframe-container"></div>
+
+
+</div></div>
+</aside>
+</div>
+</div>
+</div>
+<div style="clear: both;"></div>
+<!-- columns -->
+</div>
+<!-- main -->
+</div>
+</div>
+<div class="main-cap-bottom cap-bottom">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+</div>
+<footer>
+<div class="footer-outer">
+<div class="footer-cap-top cap-top">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+<div class="fauxborder-left footer-fauxborder-left">
+<div class="fauxborder-right footer-fauxborder-right"></div>
+<div class="region-inner footer-inner">
+<div class="foot no-items section" id="footer-1"></div>
+<!-- outside of the include in order to lock Attribution widget -->
+<div class="foot no-items section" id="footer-3"></div>
+</div>
+</div>
+<div class="footer-cap-bottom cap-bottom">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+</div>
+</footer>
+<!-- content -->
+</div>
+</div>
+<div class="content-cap-bottom cap-bottom">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+</div>
+</div><iframe id="google_osd_static_frame_2581048886418" name="google_osd_static_frame" style="display: none; width: 0px; height: 0px;" src="index_9.html"></iframe>
+
+
+
+
+
+
+<ins class="adsbygoogle adsbygoogle-noablate" style="display: none;" data-adsbygoogle-status="done"><ins id="aswift_1_expand" style="display: inline-table; border: medium none; margin: 0px; padding: 0px; position: relative; visibility: visible; background-color: transparent;"><ins id="aswift_1_anchor" style="display: block; border: medium none; margin: 0px; padding: 0px; position: relative; visibility: visible; background-color: transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" id="aswift_1" name="aswift_1" style="left: 0px; position: absolute; top: 0px;" src="index_13.html" frameborder="0"></iframe></ins></ins></ins></body>
+</html>

@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="canonical" href="http://blog.csdn.net/larryliuqing/article/details/7695818"/> 
+    <script type="text/javascript">
+        var username = "larryliuqing";
+        var _blogger = username;
+        var blog_address = "http://blog.csdn.net/larryliuqing";
+        var static_host = "http://csdnimg.cn/release/phoenix/";
+        var currentUserName = ""; 
+        var fileName = '7695818';
+        var commentscount = 0;
+        var islock = false;
+        window.quickReplyflag = true;
+        var totalFloor = 0;
+        var isBole = false;
+        var isDigg = false;
+        var isExpert = false;
+        var isAdm = false;
+        var baiduKey = "trafficserver";
+        var needInsertBaidu = false;
+        var isShowAds = true;
+    </script>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <script src="http://c.csdnimg.cn/public/common/libs/jquery/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="http://c.csdnimg.cn/public/static/css/avatar.css">
+                <link rel="stylesheet" href="http://csdnimg.cn/release/phoenix/production/main-aa20801f57.css">
+          <link rel="stylesheet" href="http://c.csdnimg.cn/public/common/toolbar/content_toolbar_css/content_toolbar.css">
+
+    <script src="http://csdnimg.cn/rabbit/exposure-click/main-1.0.5.js"></script>
+    <script type="text/javascript" src="http://csdnimg.cn/pubfooter/js/tracking-1.0.2.js" charset="utf-8"></script>
+    <script type="text/javascript" src="http://csdnimg.cn/release/phoenix/production/main-8faf05cfc6.js"></script>
+
+    <script src="http://dup.baidustatic.com/js/ds.js"></script>
+    <script type="text/javascript">
+        // Traffic Stats of the entire Web site By baidu
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?6bcd52f51e9b3dce32bec4a3997715ac";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+        // Traffic Stats of the entire Web site By baidu end
+    </script>
+    <meta name="description" content="http://people.apache.org/~zym/trafficserver/FAQ.html
+
+第一次用TS？
+
+如何单机节点搭建reverse proxy模式的服务？
+
+修改records.config文件
+
+CONFIG proxy.config.cluster.ethernet_interface STRING eth0， 根据机器的配置将eth0修改为实际的网络" />
+    <meta name="keywords" content="server,apache" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" /><link rel="alternate" media="handheld" href="#" />
+    <meta name="shenma-site-verification" content="5a59773ab8077d4a62bf469ab966a63b_1497598848">
+    <title>整理的一些关于apache traffic server的FAQ条目 - CSDN博客</title>
+    <link href="http://csdnimg.cn/public/favicon.ico" rel="SHORTCUT ICON">
+              <script src="//csdnimg.cn/search/baidu_search-1.0.0.js?v=201802071056&autorun=true&install=true&keyword=trafficserver"  type="text/javascript"></script>
+                      <link rel="stylesheet" href="http://csdnimg.cn/release/phoenix/production/htmledit_views-b569b0e3ef.css">
+      </head>
+<body>
+<script id="toolbar-tpl-scriptId" prod="download" skin="black" src="http://c.csdnimg.cn/public/common/toolbar/js/content_toolbar.js" type="text/javascript" domain="http://blog.csdn.net/"></script>
+<div class="container clearfix">
+  <main>
+    <div style="display:none;">
+      <img src="" onerror='setTimeout(function(){if(top!==self){window.top.location.href=window.location.href}if(!/(csdn.net|iteye.com|baiducontent.com|googleusercontent.com|360webcache.com|sogoucdn.com|bingj.com)$/.test(window.location.hostname)){window.location.href="\x68\x74\x74\x70\x73\x3a\x2f\x2f\x77\x77\x77\x2e\x63\x73\x64\x6e\x2e\x6e\x65\x74"}},3000);'>
+    </div>
+    <article>
+        <h1 class="csdn_top">整理的一些关于apache traffic server的FAQ条目</h1>
+        <div class="article_bar clearfix">
+            <div class="artical_tag">
+                <span class="original">
+                转载                </span>
+                <span class="time">2012年06月27日 13:14:09</span>
+            </div>
+
+            <ul class="article_tags clearfix csdn-tracking-statistics tracking-click" data-mod="popu_377" >
+                <li class="tit">标签：</li>
+
+<!--          [startarticletags]-->
+                                                            <li><a href="http://so.csdn.net/so/search/s.do?q=server&t=blog" target="_blank">server</a> <span>/</span></li>
+                                            <li><a href="http://so.csdn.net/so/search/s.do?q=apache&t=blog" target="_blank">apache</a> <span>/</span></li>
+                                            <li><a href="http://so.csdn.net/so/search/s.do?q=dns服务器&t=blog" target="_blank">dns服务器</a> <span>/</span></li>
+                                            <li><a href="http://so.csdn.net/so/search/s.do?q=服务器&t=blog" target="_blank">服务器</a> <span>/</span></li>
+                                            <li><a href="http://so.csdn.net/so/search/s.do?q=cache&t=blog" target="_blank">cache</a> <span>/</span></li>
+                                            <li><a href="http://so.csdn.net/so/search/s.do?q=sun&t=blog" target="_blank">sun</a> <span>/</span></li>
+                                    <!--          [endarticletags]-->
+            </ul>
+            <ul class="right_bar">
+                <li><button class="btn-noborder"><i class="icon iconfont icon-read"></i><span class="txt">3867</span></button></li>
+                <li class="edit">
+                    <a class="btn-noborder" href="" >
+                        <i class="icon iconfont icon-bianji"></i><span class="txt">编辑</span>
+                    </a>
+                </li>
+                <li class="del">
+                    <a class="btn-noborder" onclick="javascript:deleteArticle(fileName);return false;">
+                        <i class="icon iconfont icon-shanchu"></i><span class="txt">删除</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div id="article_content" class="article_content csdn-tracking-statistics tracking-click" data-mod="popu_519" data-dsm="post">
+                            <div class="htmledit_views">
+                        
+<h4 style="font-family:Simsun; font-size:16px"><a href="http://people.apache.org/~zym/trafficserver/FAQ.html">http://people.apache.org/~zym/trafficserver/FAQ.html</a><br>
+</h4>
+<h4 style="font-family:Simsun; font-size:16px">第一次用TS？</h4>
+<ul style="font-family:Simsun; font-size:16px">
+<li>如何单机节点搭建reverse proxy模式的服务？
+<ol>
+<li>修改records.config文件
+<ul>
+<li>CONFIG proxy.config.cluster.ethernet_interface STRING eth0， 根据机器的配置将eth0修改为实际的网络接口（后续版本或RPM包中已经改为lo， 如不用到cluster模式，将不再需要单独再改）。</li><li>CONFIG proxy.config.http.server_port INT 8080，根据自己环境将 8080改为80或3128等端口。</li><li>CONFIG proxy.config.url_remap.pristine_host_hdr INT 1，&#20540;改 为0，这样可以释放对外域名的自由度。--这个修改视个人需要。</li></ul>
+</li><li>修改storage.config文件
+<ul>
+<li>ts可以使用文件或者raw disk作为cache storage，具体操作请参见 storage.config文件中的注释</li></ul>
+</li><li>修改remap.config文件
+<ul>
+<li>根据需求在remap.config文件中添加rule，具体操作请参见remap.config 文件的注释</li></ul>
+</li><li>通过命令&nbsp;<em>service trafficserver start</em>&nbsp;或&nbsp;<em>trafficserver start</em>&nbsp;启动ts。&nbsp;<em>ps aux | grep traffic</em>&nbsp;如果启动成功应该显示三个进程 traffic_cop，traffic_manager和traffic_server</li></ol>
+</li><li>如何搭建TS的正向代理服务器？
+<ul>
+<li>默认安装服务器后，执行：
+<ul>
+<li><em>traffic_line -s proxy.config.reverse_proxy.enabled -v 0</em></li><li><em>traffic_line -s proxy.config.url_remap.remap_required -v 0</em></li></ul>
+</li><li>执行配置reload:&nbsp;<em>traffic_line -x</em>&nbsp;即可将TS从反向代理服务器改为正向代理服务器。</li></ul>
+</li><li>如何搭建full clustering模式的ts集群？
+<ol>
+<li>在搭建集群前，首先需要确认每个节点环境相同：
+<ol>
+<li>安装的系统是相同的：
+<ul>
+<li>发行版本相同，如都是RHEL 5.4</li><li>内核版本相同，如都是2.6.18-194.8.1.el5</li><li>ARCH相同，如都是x86_64</li></ul>
+</li><li>而且使用的ts版本是相同的，如用同一个rpm包安装</li></ol>
+</li><li>针对每个节点修改配置文件records.config，remap.config，storage.config， 除了将proxy.local.custer.type&#20540;取3选择full clustering模式外，其他操作 与&quot;单机节点搭建reverse proxy模式的ts&quot;操作是相同的</li><li>通过命令&nbsp;<em>trafficserver start</em>&nbsp;启动每个节点上的ts</li></ol>
+</li><li>ts常用操作命令
+<ul>
+<li>启动|停止|重启动ts：trafficserver {start|stop|restart}</li><li>清空cache：&nbsp;<em>traffic_server -Cclear</em>&nbsp;(&nbsp;<em>该命令在ts停止时执行</em>&nbsp;)</li><li>查看cache是否清空：&nbsp;<em>traffic_line -r proxy.process.cache.bytes_used</em></li><li>查看配置的cache大小：&nbsp;<em>traffic_line -r proxy.process.cache.bytes_total</em></li><li>查看集群中的节点数：&nbsp;<em>traffic_line -r proxy.process.cluster.nodes</em></li></ul>
+</li></ul>
+<h4 style="font-family:Simsun; font-size:16px">安全与认证方面</h4>
+<ul style="font-family:Simsun; font-size:16px">
+<li>为什么TS不支持用户认证？
+<ul>
+<li>Apache Traffic Server在雅虎贡献给Apache之前，是商业软件，因此其认证模块 涉及了很多相关的许可与知识产权，这些属于无法在短期内解决的问题，因此其用户认 证模块被完全放弃。</li><li>开发团队会在适当的时候重建认证模块</li></ul>
+</li></ul>
+<h4 style="font-family:Simsun; font-size:16px">配置与使用</h4>
+<ul style="font-family:Simsun; font-size:16px">
+<li>
+<p>如何防止图片盗链：</p>
+<ul>
+<li>
+<p>图片盗链可以在remap.config中使用map_with_referer的方式来控制，默认的配置 文件中有关于map_with_referer的详细说明，并配有例子。我们常用的正则匹配&#26684;式 为：</p>
+<p>http://pics.taobaocdn.com/bao/album/wp/pic_fobbiden.png ~* ^http://[^/]&#43;.(baidu|taobao|alibaba|alipay|google|search.msn).com(.cn|)/</p>
+<p>代表的意义为：如来源请求不是从后面这些网站来的，则给它返回一个禁止使用的图片。</p>
+</li><li>
+<p>需要全局启用refer检查： traffic_line -s proxy.config.http.referer_filter -v 1</p>
+</li><li>如何在remap中使用基于IP地址的ACL控制?</li><li>TBD</li></ul>
+</li></ul>
+<h4 style="font-family:Simsun; font-size:16px">功能与特性方面</h4>
+<ul style="font-family:Simsun; font-size:16px">
+<li>Apache Traffic Server支持Socket5代理吗？
+<ul>
+<li>Apache Traffic Server设计有支持Socket4和Socket5代理的模块，并且能够在 代理中使用本地的http缓存服务。</li><li>目前功能并没有得到任何测试，代码没人关心。如需要可需要做点工作才好， Apache Traffic Server是一个极好的Socket代理服务器料。</li></ul>
+</li><li>FTP代理能支持吗？
+<ul>
+<li>Apache Traffic Server目前不支持FTP代理。</li><li>老代码中有FTP转为HTTP服务的设计，可以用HTTP协议反向代理FTP内容。</li></ul>
+</li><li>Apache Traffic Server能对流媒体作cache吗？
+<ul>
+<li>目前不能。</li><li>Inktomi设计TrafficServer之初，系统是为能够同时支持流媒体和HTTP服务而设计 的，产品也完整的实现了Quicktime、Real、MMS为主的流媒体协议，但是由于这些 协议支持的相关的代码都需要其他公司的商业授权，无法开源，同时也因为代码都是10年 前的，支持的协议版本已经完全赶不上时代了，因此也在开源的时候整个模块砍掉了。</li><li>目前核心代码仍然能够支持流媒体协议，即Apache Traffic Server的核心系统层， 具备同时支撑2种主要协议（HTTP协议和MIXT协议，MIXT协议即为流媒体的抽象协议） 的能力。因此重建流媒体也是有可能的，欢迎有志之士参与。</li></ul>
+</li><li>
+<p>如何启用http_ui：</p>
+<ol>
+<li>
+<p>修改remap.config，增加如下配置：（使用localhost是因为大多数情况下， localhost不会成为正向和反向代理服务器的对外域名）</p>
+<pre><code>map http://localhost/cache-internal/ http://{cache-internal}
+map http://localhost/cache/ http://{cache}
+map http://localhost/stat/ http://{stat}
+map http://localhost/test/ http://{test}
+map http://localhost/hostdb/ http://{hostdb}
+map http://localhost/net/ http://{net}
+map http://localhost/http/ http://{http}
+</code></pre>
+</li><li>
+<p>执行如下命令，启用http_ui的选项：</p>
+<ul>
+<li><em>traffic_line -s proxy.config.http_ui_enabled -v 3</em></li><li><em>traffic_line -s proxy.config.http.enable_http_info -v 1</em></li></ul>
+</li><li>让配置生效：
+<ul>
+<li><em>traffic_line -x</em></li></ul>
+</li><li>测试：
+<ul>
+<li><em>echo -e &quot;GET http://localhost/stat/ HTTP/1.0\r\n\r\n&quot; | nc -i 1 localhost 8080</em></li></ul>
+</li></ol>
+</li><li>
+<p>如何启用PUSH方法：</p>
+<pre><code>PUSH方法是一种直接往TS中注入内容的方法，其为标准的HTTP协议。TS支持PUSH，
+ 但是出于安全等的考虑，默认关闭了PUSH方法，下面是如何启用并测试的步骤。请
+ 注意，如不严&#26684;限制对PUSH方法的使用，将会产生严重的安全隐患，请务必在acl
+ 层面进行对PUSH发起端的控制。
+</code></pre>
+<ol>
+<li>启用PUSH方法：
+<ul>
+<li><em>traffic_line -s proxy.config.http.push_method_enabled -v 1</em></li></ul>
+</li><li>修改默认的quick_filter，允许PUSH协议。quick_filter作为一个超级ACL，具有 很高的控制级别，所有其他控制都在其之后实施，因此必须放开才能够将放开PUSH方法。 去掉对PUSH的全局限制：
+<ul>
+<li>=traffic_line -s proxy.config.http.quick_filter.mask -v 130=</li></ul>
+</li><li>让配置生效：
+<ul>
+<li>=traffic_line -x=</li></ul>
+</li><li>
+<p>测试，测试之前，应该配置好代理的map等其他功能，确保正确的访问没有问题，然后再测 试PUSH功能，以利于分析问题。TS代码中的tools目录下，有个push.pl可以用来 向TS 服务器push文件，也可以使用类&#20284;如下telnet方法测试：</p>
+<pre><code>zym6400 trafficserver # telnet localhost 80
+Trying 127.0.0.1...
+Connected to localhost.localdomain.
+Escape character is '^]'.
+PUSH http://cdn.zymlinux.net/trafficserver/2 HTTP/1.0
+Content-length: 217
+
+HTTP/1.0 200 OK
+Content-type: text/plain
+Content-length: 1
+Date: Sun, 13 Mar 2011 02:20:26 GMT
+Last-Modified: Sun, 13 Mar 2011 02:20:26 GMT
+Cache-Control: max-age=3600
+Expires: Sun, 13 Mar 2011 03:20:26 GMT
+
+1
+HTTP/1.0 201 Created
+Date: Sun, 13 Mar 2011 03:10:01 GMT
+Via: http/1.1 zymtest1.corp.aliyk.com (ApacheTrafficServer/2.1.7-unstable [c s f ])
+Server: ATS/2.1.7-unstable
+Content-Length: 0
+
+Connection closed by foreign host.
+zym6400 trafficserver # telnet localhost 80
+Trying 127.0.0.1...
+Connected to localhost.localdomain.
+Escape character is '^]'.
+GET http://cdn.zymlinux.net/trafficserver/2 HTTP/1.0
+
+HTTP/1.0 200 OK
+Content-type: text/plain
+Content-length: 1
+Date: Sun, 13 Mar 2011 02:20:26 GMT
+Last-Modified: Sun, 13 Mar 2011 02:20:26 GMT
+Cache-Control: max-age=3600
+Expires: Sun, 13 Mar 2011 03:20:26 GMT
+Age: 3001
+Via: http/1.0 zymtest1.corp.aliyk.com (ApacheTrafficServer/2.1.7-unstable [cHs f ])
+Server: ATS/2.1.7-unstable
+
+1Connection closed by foreign host.
+</code></pre>
+</li></ol>
+</li><li>
+<p>SplitDNS：</p>
+<pre><code>SplitDNS 是一个很好的工具，其本意是根据hostname不同，对dns解析服务
+分情况处理。其基本原理是设置个hostname匹配规则，指定相应的dns server。
+使用这个方式，配合dns server的一些设置，将可以实现很多有意思的效果：
+</code></pre>
+<ul>
+<li>
+<p>有些公司有所谓的内外网的网络结构，以对一些关键的服务进行区分。TS可以配合这种模式， 使用SplitDNS完成源服务器的配置，更好的利用这种环境。这样的环境中，服务域名被外网 DNS服务器解析到TS服务器，被内网DNS服务器解析到源服务器，这样外部用户将可以用TS的 高效cache，内部开发维护人员可以屏蔽cache，直接使用源服务器。这样在TS作网站加速时， 设置TS使用内网DNS服务器就可以了：</p>
+<ul>
+<li>假设我们有一个域名www.example.com，我们对外解析服务是通过dns服务器1.2.3.1-3 完成的。域名解析为1.2.4.1。1.2.4.1即为我们的TS服务器。</li><li>而假设我们源服务器为1.2.5.1，并且也需要用www.example.com来访问，则</li><li>我们需要remap: map http://www.example.com/ http://www.example.com</li><li>则我们需要在TS上对www.example.com的IP地址进行配置，需要引导TS找到真正的源 服务器。假设我们有2个内部dns服务器，如1.2.3.10-11，作为开发测试等内部服务器的 dns解析服务器，其解析www.example.com到1.2.5.1，www.example.com的源服务器。</li><li>则我们可以在TS上启用SplitDNS，让TS使用1.2.3.10-11来解析www.example.com。</li><li>配置如下：
+<ul>
+<li><em>traffic_line -s proxy.config.dns.splitDNS.enabled -v 1</em></li><li>
+<p>修改splitdns.config，添加如下内容：</p>
+<p><code>dest_domain=www.example.com named=&quot;1.2.3.10;1.2.3.11&quot;</code></p>
+</li></ul>
+</li></ul>
+</li><li>
+<p>精确定义相关的dns服务器设置，避免经过本地的dns resolver的cache/过滤。</p>
+<p>dns的cache后，其dns条目的ttl等，都会受到本地cache的影响。而TS的内部有hostdb 用来作为dns缓存，其最佳处理是能够直接接受授权服务器的dns解析，这样能够屏蔽一些 问题，并能够比较好的控制ttl等。使用SplitDNS，可以将example.com的解析服务器 指向到其授权域服务器192.0.34.43与193.0.0.236。这种用法的效果就是把TS自身的普通 dns解析服务变成了快速的递归解析服务器。</p>
+<ul>
+<li>配置如下：
+<ul>
+<li>=traffic_line -s proxy.config.dns.splitDNS.enabled -v 1=</li><li>
+<p>修改splitdns.config，添加如下内容：</p>
+<p>dest_domain=example.com named=&quot;192.0.34.43;193.0.0.236&quot;</p>
+<p>dest_domain=google.com named=&quot;216.239.32.10;216.239.34.10;216.239.36.10;216.239.38.10&quot;</p>
+</li></ul>
+</li></ul>
+</li></ul>
+</li><li>
+<p>prefetch用法</p>
+<pre><code>PreFetch是思想是，在特定用户访问特定网站的时候，解析其html文档，提取其
+中的image js ccs的资源文件，并立即回源fetch。一般来讲，这个过程应先
+于用户端发起连接，所以定名prefetch。
+</code></pre>
+<ul>
+<li>使用场景：
+<ul>
+<li>内部访问url后，然TS将网站所有的url进行重新提前发布。</li><li>可以编造一个特意的URL，给ts作为prefetch的目标，成为类&#20284;cache推送的功能。</li></ul>
+</li><li>使用限制：
+<ul>
+<li>prefetch只能对发起端ip进行选择，无法同时控制目的网站，因此要控制好你的child ip。</li><li>只能对不进行encode的html文件进行解析，因此如压缩的网页就不能解析了。</li></ul>
+</li><li>启用方法：
+<ul>
+<li>TS目前的发布里，并没有将默认的prefetch.config带上，因此你需要从TS的源码 里找一个这个文件，并放在TS的配置文件目录里。</li><li>修改prefetch.config，设定你的prefetch_children，即发起端的ip地址。</li><li>设置设置records.config中 proxy.config.prefetch.prefetch_enabled = 1 （这个应该是新建，建议用traffic_line -s操作）</li><li>重启服务</li></ul>
+</li><li>debug方法：
+<ul>
+<li>prefetch代码使用的debug regex可以用：Prefetch.*</li><li>
+<p>访问日志中可以看到类&#20284;的127.0.0.1发起的连接：</p>
+<pre><code>1307196090.325 516 10.62.241.5 TCP_MISS/200 4851 GET http://zymlinux.net/ - DIRECT/zymlinux.net text/html -
+1307196090.356 24 127.0.0.1 TCP_MISS/200 617 GET http://zymlinux.net/icons/text.gif - DIRECT/zymlinux.net image/gif -
+1307196090.378 26 127.0.0.1 TCP_MISS/200 633 GET http://zymlinux.net/icons/unknown.gif - DIRECT/zymlinux.net image/gif -
+1307196090.382 61 127.0.0.1 TCP_MISS/200 536 GET http://zymlinux.net/icons/blank.gif - DIRECT/zymlinux.net image/gif -
+1307196090.407 66 127.0.0.1 TCP_MISS/200 613 GET http://zymlinux.net/icons/folder.gif - DIRECT/zymlinux.net image/gif -
+</code></pre>
+</li></ul>
+</li></ul>
+</li><li>
+<p>如何使用logs_xml.config来定制日志：</p>
+<ul>
+<li>标准的squid日志可以采用直接修改records.config的方式来启用和停用，而如果 需要定制日志&#26684;式，则需要启用custom log：
+<ul>
+<li>traffic_line -s proxy.config.log.custom_logs_enabled -v 1</li></ul>
+</li><li>
+<p>logs_xml.config的&#26684;式在文件中有例子，并且在admin guide中有详细的说明， 我们以线上需要记录非淘宝的所有请求为例：</p>
+<pre><code>&lt;LogFormat&gt;
+  &lt;Name = &quot;taobao&quot;/&gt;
+  &lt;Format = &quot;combined [%&lt;cqtn&gt;] %&lt;chi&gt; %&lt;phi&gt; 81 %&lt;ttms&gt; \&quot;%&lt;{Referer}cqh&gt;\&quot; \&quot;%&lt;cqtx&gt;\&quot; %&lt;pssc&gt; %&lt;cqhl&gt; %&lt;psql&gt; %&lt;psct&gt; %&lt;crc&gt; \&quot;%&lt;{User-Agent}cqh&gt;\&quot;&quot; /&gt;
+&lt;/LogFormat&gt;
+
+&lt;LogFilter&gt;
+    &lt;Name = &quot;not_taobaocdn.com&quot;/&gt;
+    &lt;Condition = &quot;shn CASE_INSENSITIVE_CONTAIN taobaocdn.com&quot;/&gt;
+    &lt;Action = &quot;REJECT&quot;/&gt;
+&lt;/LogFilter&gt;
+
+&lt;LogFilter&gt;
+    &lt;Name = &quot;not_taobao.com&quot;/&gt;
+    &lt;Condition = &quot;shn CASE_INSENSITIVE_CONTAIN taobao.com&quot;/&gt;
+    &lt;Action = &quot;REJECT&quot;/&gt;
+&lt;/LogFilter&gt;
+
+&lt;LogObject&gt;
+  &lt;Format = &quot;taobao&quot;/&gt;
+  &lt;Filename = &quot;tb_squid&quot;/&gt;
+  &lt;Filters = &quot;not_taobaocdn.com,not_taobao.com&quot;/&gt;
+  &lt;CollationHosts = &quot;console1.cn63:8085&quot;/&gt;
+&lt;/LogObject&gt;
+</code></pre>
+</li><li>
+<p>我们定义了一个自定义的日志&#26684;式taobao</p>
+</li><li>我们定义了2个反的过滤条件</li><li>定义了一个日志收集方式：将满足非taobao.com非taobaocdn.com的访问日志记录 到远程机器console1.cn63上的tb_squid.log中</li></ul>
+</li><li>
+<p>小问题</p>
+<ul>
+<li>
+<p>在Red Hat手工配置ts stable 3.0版本时，启动时通过ps aux | grep traf查看， 发现只有traffic_cop进程，其他两个进程没有启动成功？</p>
+<ul>
+<li>这个问题因版本而异，对于ts stable 3.0版本，需要在records.config中正确 指定网络接口，即修改proxy.config.cluster.ethernet_interface为自己机 器配置的网络接口。开发版不存在这个问题，配置时不需要正确指定网络接口。</li></ul>
+</li><li>
+<p>redhat 5下，为什么无法直接在storage.config下使用物理设备如/dev/sdb？</p>
+<ul>
+<li>使用ls -l /dev/sdb查看相应的权限位，可以看到brw------- root root，而 trafffic_server进程是以nobody的用户执行的，其附加用户组中有root，可见 以trafficserver权限不能够读写/dev/sdb。解决方法可以用 =chmod g&#43;rw /dev/sdb= 赋予root组以读写权限即可。</li><li>
+<p>/etc/udev/rules.d下，配置一个文件 99-trafficserver.rules，内容如下：</p>
+<p>KERNEL==&quot;sd[b-z]*&quot;, MODE=&quot;0660&quot;,OWNER=&quot;root&quot;, GROUP=&quot;root&quot;</p>
+</li></ul>
+</li><li>
+<p>如何限制某些敏感信息的访问，防止信息泄漏，如http_ui接口只对公司网络开放：</p>
+<ul>
+<li>在remap.config中，相应的map规则后面追加类&#20284;内容 @action=allow @src_ip=10.13.43.23 @method=PUT @method=GET， 则只有10.13.43.23地址发送过来的PUT/GET类型的http请求，请求这个规则中的内 容，才会允许，其他任何例外请求，都会返回一个类&#20284;”You are not allowed to access the document.“内容的403禁止访问错误。</li><li>完整例子如：map http://cdn.zymlinux.net/stat/ http://{stat} @action=allow @src_ip=10.13.43.23 @method=PUT @method=GET</li><li>详细参考见 remap.config中的注释说明</li></ul>
+</li><li>
+<p>如何确定文件是被ts缓存？</p>
+<ul>
+<li>网络分析：
+<ol>
+<li>使用两台机子ts1和ts2。在ts1上配置apache，并在/var/www.html/上编 辑得到几个文件如b.html，test.jpg等等。之后使用tcpdump监听ts1 80 端口的tcp通讯。在ts2配置ts，清空cache并以反向代理模式启动ts，配置 remap.config文件，添加规则“map ts1_url ts1_url” (ts1_url代表ts1提供的外部访问的链接)。</li><li>配置客户端，编辑hosts文件，添加一条记录使得对ts1的访问转向ts2，并保 证浏览器不使用缓存。</li><li>使用客户端浏览器访问ts1上的文件b.html两次，通过wireshark分析tcpdump 从ts1上抓的包。如果ts2只从ts1上取了一次b.html，则说明文件被ts2缓存。</li></ol>
+</li><li>分析ts的返回密码：
+<ul>
+<li>配置TS让返回的头里带via：traffic_line -s proxy.config.http.insert_response_via_str -v 1</li><li><a href="http://trafficserver.apache.org/docs/v2/admin/trouble.htm#interpret_via_header">解密</a></li><li>返回via密码中含有cH即为缓存命中。</li></ul>
+</li></ul>
+</li><li>
+<p>如何删除被ts缓存的特定文件？</p>
+<ul>
+<li>trafficserver的文档中接受删除指定文档时在其提供的web界面接口中进行的。 当然也可以使用curl工具来发送PURGE请求来进行删除</li></ul>
+</li><li>
+<p>如何确定Apache Traffic Server正常工作在全HASH的cluster模式下？</p>
+<ul>
+<li>netstat 看网络连接：netstat -lant | grep 8086，本机应有8086端口处于 监听状态，同时如有其他cluster 成员，会有成员连接到本机的8086或本机连接到 成员8086端口的tcp连接已经建立。</li><li>显示成员数量：&nbsp;traffic_line -r proxy.process.cluster.nodes</li></ul>
+</li><li>
+<p>如何启用debug模式？</p>
+<ul>
+<li>
+<p>修改records.config的如下2行，可以启用ts的debug模式用以调试模块：</p>
+<pre><code>CONFIG proxy.config.diags.debug.enabled INT 0
+CONFIG proxy.config.diags.debug.tags STRING cache.*|cluster.*|chan.*
+</code></pre>
+<p>如改为：</p>
+<pre><code>CONFIG proxy.config.diags.debug.enabled INT 1
+CONFIG proxy.config.diags.debug.tags STRING dns*
+</code></pre>
+<p>即可调试dns相关模块的情况。</p>
+</li><li>
+<p>有多少模块？很多，在源代码里执行：&nbsp;<em>grep -ioR 'Debug([a-zA-Z</em>-&quot;]*\,' * | awk -F ( '{print $2}' | sed 's/&quot;//g' | sed 's/,//' | sort -u_ 可以看到</p>
+</li></ul>
+</li><li>
+<p>TS与Squid有什么异同？</p>
+<ul>
+<li>TS是面向ISP的企业级cache/proxy系统，而squid作为一个全功能的proxy/cache 系统，2者在定位上有不同，因此产生很大的分歧：
+<ul>
+<li>TS核心功能将趋向于简化，如目前已经砍掉了认证模块。Squid趋向于功能越 来越多、配置越来越复杂。</li><li>TS的开发开始就为大规模运维考虑，因此有很多高效运维方面的设计，如能够 使用traffic_shell来像管理交换机一样管理ts等。squid趋向于完善自己 的cache功能，在营运方面并没有投入太多。</li><li><a href="https://cwiki.apache.org/TS/squidconfigtranslation.html">https://cwiki.apache.org/TS/squidconfigtranslation.html</a>&nbsp;是官方的squid到ts的配置转换文档。</li></ul>
+</li></ul>
+</li></ul>
+</li></ul>
+                </div>
+                    </div>
+    </article>
+      <div class="readall_box csdn-tracking-statistics tracking-click" data-mod="popu_376">
+          <div class="read_more_mask"></div>
+          <a class="btn btn-large btn-gray-fred read_more_btn" target="_self">阅读全文</a>
+      </div>
+      <div class="article_copyright">
+         
+              </div>
+      <ul class="article_collect clearfix csdn-tracking-statistics tracking-click"  data-mod="popu_378">
+          <li class="tit">本文已收录于以下专栏：</li>
+<!--          [startarticlecolumns]-->
+                                <!--          [endarticlecolumns]-->
+      </ul>
+      <div class="comment_box clearfix" id="comments">
+          <div id="comment_form">
+              <div id="commentsbmitarear">
+                              </div>
+          </div>
+      </div>
+      <div class="comment_li_outbox">
+          <div id="comment_list"></div>
+      </div>
+
+      <div class="more_comment">
+          <div id="comment_bar" class="trackgin-ad" data-mod="popu_385"></div>
+      </div>
+
+      <!-- <h3 class="recommend_tit" id="related">相关文章推荐</h3> -->
+      <div class="recommend_list clearfix" id="rasss">
+                                          <dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_387" data-poputype="feed"  data-feed-show="false"  data-dsm="post">
+                <a href="http://blog.csdn.net/tiantiandjava/article/details/50327855"  target="_blank" strategy="BlogCommendFromBaidu_0">
+                    <dd>
+                        <h2>Apache Traffic Server安装配置指南</h2>
+                        <div class="summary">
+                            原文地址：https://www.oldyang.net/archives/168
+
+
+介绍
+
+
+Apache Traffic Server（ATS或TS）是一个高性能的、模块化的 HTTP 代理和缓...                        </div>
+
+                        <ul>
+                            <li class="avatar_img"><img src="http://avatar.csdn.net/7/0/9/3_tiantiandjava.jpg" alt="tiantiandjava" title="tiantiandjava"></li>
+                            <li class="user_name">tiantiandjava</li>
+                            <li class="time">2015年12月16日 14:55</li>
+                            <li class="visited_num"><i class="icon iconfont icon-read"></i><span>8771</span></li>
+                        </ul>
+                    </dd>
+                </a>
+            </dl>
+                                                    <dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_387" data-poputype="feed"  data-feed-show="false"  data-dsm="post">
+                <a href="http://blog.csdn.net/wjg_ww/article/details/52268324"  target="_blank" strategy="BlogCommendFromBaidu_1">
+                    <dd>
+                        <h2>trafficserver安装配置</h2>
+                        <div class="summary">
+                            Apache Trafficserver
+        介绍：ISP级别的高性能反向和缓存服务器，支持集群，缓存效率高，响应快，代理支持长连接，连接复用，过滤规则，映射，甚至7层hash,负载均衡...                        </div>
+
+                        <ul>
+                            <li class="avatar_img"><img src="http://avatar.csdn.net/5/3/F/3_wjg_ww.jpg" alt="wjg_ww" title="wjg_ww"></li>
+                            <li class="user_name">wjg_ww</li>
+                            <li class="time">2016年08月21日 17:35</li>
+                            <li class="visited_num"><i class="icon iconfont icon-read"></i><span>2404</span></li>
+                        </ul>
+                    </dd>
+                </a>
+            </dl>
+                                          <dl class="">
+            <script>
+            (function() {
+              var s = "_" + Math.random().toString(36).slice(2);
+              document.write('<div id="' + s + '"></div>');
+              (window.slotbydup=window.slotbydup || []).push({
+                id: '4765209',
+                container: s,
+                size: '808,120',
+                display: 'inlay-fix'
+              });
+            })();
+            </script>
+          </dl>
+                                        <dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_387" data-poputype="feed"  data-feed-show="false"  data-dsm="post">
+                <a href="http://blog.csdn.net/ljy1988123/article/details/50386458"  target="_blank" strategy="BlogCommendFromBaidu_2">
+                    <dd>
+                        <h2>apache traffic server架构</h2>
+                        <div class="summary">
+                            功能：         Trafficserver的主要功能是缓存，当然你也可以用它来做纯粹的反向代理（像通常用nginx那样）。通常切入一个庞大的系统的最好方式是看如何使用，使用traffic se...                        </div>
+
+                        <ul>
+                            <li class="avatar_img"><img src="http://avatar.csdn.net/8/7/1/3_ljy1988123.jpg" alt="ljy1988123" title="ljy1988123"></li>
+                            <li class="user_name">ljy1988123</li>
+                            <li class="time">2016年02月17日 21:50</li>
+                            <li class="visited_num"><i class="icon iconfont icon-read"></i><span>7934</span></li>
+                        </ul>
+                    </dd>
+                </a>
+            </dl>
+                                                    <dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_387" data-poputype="feed"  data-feed-show="false"  data-dsm="post">
+                <a href="http://blog.csdn.net/a731062834/article/details/51165722"  target="_blank" strategy="BlogCommendFromBaidu_3">
+                    <dd>
+                        <h2>入门TrafficServer插件开发的正确姿势</h2>
+                        <div class="summary">
+                            入门TrafficServer插件开发的正确姿势–本文转自：纸鸢-可道 可道技术前言　普及文章，高手飘过。 
+发现不少同学刚搞ats插件开发时候经常找不着道。　举个栗子： 
+ 
+ 
+　通过阅读插件代码...                        </div>
+
+                        <ul>
+                            <li class="avatar_img"><img src="http://avatar.csdn.net/0/4/6/3_a731062834.jpg" alt="a731062834" title="a731062834"></li>
+                            <li class="user_name">a731062834</li>
+                            <li class="time">2016年04月16日 00:08</li>
+                            <li class="visited_num"><i class="icon iconfont icon-read"></i><span>1610</span></li>
+                        </ul>
+                    </dd>
+                </a>
+            </dl>
+                                                    <dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_387" data-poputype="feed"  data-feed-show="false"  data-dsm="post">
+                <a href="http://blog.csdn.net/chinainvent/article/details/11528429"  target="_blank" strategy="BlogCommendFromBaidu_4">
+                    <dd>
+                        <h2>TrafficServer日志系统配置指南</h2>
+                        <div class="summary">
+                            TrafficServer日志系统配置指南淘仇恕（张云开）原文放在Google Doc里，这里只做镜像不更新一、TS日志系统简介在中大规模的软件系统中，日志系统（logging system），已经成...                        </div>
+
+                        <ul>
+                            <li class="avatar_img"><img src="http://avatar.csdn.net/A/2/4/3_chinainvent.jpg" alt="chinainvent" title="chinainvent"></li>
+                            <li class="user_name">chinainvent</li>
+                            <li class="time">2013年09月10日 16:06</li>
+                            <li class="visited_num"><i class="icon iconfont icon-read"></i><span>4311</span></li>
+                        </ul>
+                    </dd>
+                </a>
+            </dl>
+                                                    <dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_387" data-poputype="feed"  data-feed-show="false"  data-dsm="post">
+                <a href="http://blog.csdn.net/larryliuqing/article/details/7384098"  target="_blank" strategy="BlogCommendFromBaidu_5">
+                    <dd>
+                        <h2>TrafficServer源码初体验</h2>
+                        <div class="summary">
+                            http://skysbird.bsdchina.org/?p=207
+
+
+最近在研究TrafficServer的源码，将一些心得体会分享出来。先上一张主程序(proxy/Main.cc)流程图...                        </div>
+
+                        <ul>
+                            <li class="avatar_img"><img src="http://avatar.csdn.net/3/0/F/3_larryliuqing.jpg" alt="larryliuqing" title="larryliuqing"></li>
+                            <li class="user_name">larryliuqing</li>
+                            <li class="time">2012年03月22日 17:32</li>
+                            <li class="visited_num"><i class="icon iconfont icon-read"></i><span>2875</span></li>
+                        </ul>
+                    </dd>
+                </a>
+            </dl>
+                                                    <dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_387" data-poputype="feed"  data-feed-show="false"  data-dsm="post">
+                <a href="http://blog.csdn.net/joeyon/article/details/47272681"  target="_blank" strategy="searchFromBaidu_6">
+                    <dd>
+                        <h2>Apache Traffic Server 简介</h2>
+                        <div class="summary">
+                            一 介绍
+
+Apache Traffic Server（ATS或TS）是一个高性能的、模块化的 HTTP 代理和缓存服务器。Traffic
+ Server 最初是 Inktomi 公司的商业产品...                        </div>
+
+                        <ul>
+                            <li class="avatar_img"><img src="http://avatar.csdn.net/1/3/F/3_joeyon.jpg" alt="joeyon" title="joeyon"></li>
+                            <li class="user_name">joeyon</li>
+                            <li class="time">2015年08月04日 10:05</li>
+                            <li class="visited_num"><i class="icon iconfont icon-read"></i><span>1362</span></li>
+                        </ul>
+                    </dd>
+                </a>
+            </dl>
+                                                    <dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_387" data-poputype="feed"  data-feed-show="false"  data-dsm="post">
+                <a href="http://blog.csdn.net/hitkid/article/details/5990232"  target="_blank" strategy="searchFromBaidu_7">
+                    <dd>
+                        <h2>Traffic Server 管理员指南v1.0</h2>
+                        <div class="summary">
+                            Traffic Server 管理员指南v1.0                        </div>
+
+                        <ul>
+                            <li class="avatar_img"><img src="http://avatar.csdn.net/A/0/D/3_hitkid.jpg" alt="hitkid" title="hitkid"></li>
+                            <li class="user_name">hitkid</li>
+                            <li class="time">2010年11月05日 16:46</li>
+                            <li class="visited_num"><i class="icon iconfont icon-read"></i><span>475</span></li>
+                        </ul>
+                    </dd>
+                </a>
+            </dl>
+                                                    <dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_387" data-poputype="feed"  data-feed-show="false"  data-dsm="post">
+                <a href="http://blog.csdn.net/larryliuqing/article/details/7695818"  target="_blank" strategy="searchFromBaidu_8">
+                    <dd>
+                        <h2>整理的一些关于apache traffic server的FAQ条目</h2>
+                        <div class="summary">
+                            http://people.apache.org/~zym/trafficserver/FAQ.html
+
+第一次用TS？
+
+如何单机节点搭建reverse proxy模式的服务？
+
+修改...                        </div>
+
+                        <ul>
+                            <li class="avatar_img"><img src="http://avatar.csdn.net/3/0/F/3_larryliuqing.jpg" alt="larryliuqing" title="larryliuqing"></li>
+                            <li class="user_name">larryliuqing</li>
+                            <li class="time">2012年06月27日 13:14</li>
+                            <li class="visited_num"><i class="icon iconfont icon-read"></i><span>3867</span></li>
+                        </ul>
+                    </dd>
+                </a>
+            </dl>
+                                                    <dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_387" data-poputype="feed"  data-feed-show="false"  data-dsm="post">
+                <a href="http://blog.csdn.net/peckjerry/article/details/49126229"  target="_blank" strategy="BlogCommendFromQuerySearch_9">
+                    <dd>
+                        <h2>Apache Traffic Server编译安装</h2>
+                        <div class="summary">
+                            1.安装依赖包
+
+yum install tcl-devel libxml2-devel openssl-devel pcre-devel
+ gcc-c++
+
+
+2.下载解压压缩包，编译
+wget 
+...                        </div>
+
+                        <ul>
+                            <li class="avatar_img"><img src="http://avatar.csdn.net/9/B/A/3_peckjerry.jpg" alt="peckjerry" title="peckjerry"></li>
+                            <li class="user_name">peckjerry</li>
+                            <li class="time">2015年10月14日 16:08</li>
+                            <li class="visited_num"><i class="icon iconfont icon-read"></i><span>2429</span></li>
+                        </ul>
+                    </dd>
+                </a>
+            </dl>
+                              </div>
+  </main>
+<aside>
+    <div class="right_box user_info">
+    <dl class="inf_bar clearfix">
+        <dt class="csdn-tracking-statistics tracking-click" data-mod="popu_381">
+                <a href="http://blog.csdn.net/larryliuqing" target="_blank">
+                    <img src="http://avatar.csdn.net/3/0/F/3_larryliuqing.jpg" class="avatar_pic">
+        </a>
+      </dt><dd>
+            <h3 class="csdn-tracking-statistics tracking-click"  data-mod="popu_380"><a href="http://blog.csdn.net/larryliuqing" target="_blank" id="uid">larryliuqing</a></h3>
+            <div class="medals" title="">
+                      </div>
+                    </dd>
+    </dl>
+    <div class="inf_number_box clearfix">
+        <dl title="36">
+            <dt>原创</dt>
+            <dd>36</dd>
+        </dl>
+        <dl title="67">
+            <dt>粉丝</dt>
+            <dd id='fan'>67</dd>
+        </dl>
+        <dl title="12">
+            <dt>喜欢</dt>
+            <dd>12</dd>
+        </dl>
+        <dl title="43">
+          <dt>评论</dt>
+          <dd>43</dd>
+        </dl>
+    </div>
+
+</div>
+<div class="interflow clearfix">
+      <div class="grade gradeAndbadge gradewidths">
+      <span>等级：</span>
+      <div>
+        <a href="http://blog.csdn.net/home/help.html#level" title="6级,点击查看等级说明" target="_blank">
+          <img class="grade-img" src="http://c.csdnimg.cn/jifen/images/xunzhang/jianzhang/blog6.png" alt="6级,点击查看等级说明">
+        </a>
+      </div>
+    </div>
+    <div class="gradeAndbadge gradewidths" title="471058">
+        <span>访问量：</span>
+        <span class="num odd-overhidden">47万+</span>
+    </div>
+
+    <div class="gradeAndbadge gradewidths" title="6965">
+      <span>积分：</span>
+      <span  class="num odd-overhidden">6965</span>
+    </div>
+    <div class="gradeAndbadge gradewidths" title="3984">
+        <span>排名：</span>
+        <span class="num odd-overhidden">3984</span>
+    </div>
+
+</div>
+          <div class="extension_other csdn-tracking-statistics tracking-click" data-mod="popu_389">
+          <!--u3032528-->
+        <div class="flashrecommend">
+                        <script type="text/javascript" src="//cee1.iteye.com/bwocoltly.js"></script>
+                    </div>
+      </div>
+            <div class="writings">
+      <div class="public_signal clearfix">
+        <h3>他的最新文章</h3>
+        <a href="http://blog.csdn.net/larryliuqing" target="_blank" class="more"><span>更多文章</span></a>
+      </div>
+        <ul class="inf_list clearfix csdn-tracking-statistics tracking-click" data-mod="popu_382">
+                        <li class="clearfix">
+                <a href="http://blog.csdn.net/larryliuqing/article/details/79149993" target="_blank">Actor的原理</a>
+            </li>
+                        <li class="clearfix">
+                <a href="http://blog.csdn.net/larryliuqing/article/details/43198831" target="_blank">Nmap从探测到漏洞利用备忘录</a>
+            </li>
+                        <li class="clearfix">
+                <a href="http://blog.csdn.net/larryliuqing/article/details/40394479" target="_blank">PDP上下文和PDP地址</a>
+            </li>
+                        <li class="clearfix">
+                <a href="http://blog.csdn.net/larryliuqing/article/details/39401353" target="_blank">dpdk l2fwd (2)</a>
+            </li>
+                        <li class="clearfix">
+                <a href="http://blog.csdn.net/larryliuqing/article/details/39401347" target="_blank">dpdk l2fwd</a>
+            </li>
+                    </ul>
+    </div>
+                <div class="user-hotArticle sort ClassSort">
+            <h3>文章分类</h3>
+            <ul class="hotArticle-list sort-list ClassSort-list">
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1063125" class="odd-overhidden floatL">squid</a>
+                        <div class="read list-left floatR"><span>45篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1064742" class="odd-overhidden floatL">mongodb</a>
+                        <div class="read list-left floatR"><span>3篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1065059" class="odd-overhidden floatL">linux</a>
+                        <div class="read list-left floatR"><span>67篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1066915" class="odd-overhidden floatL">http</a>
+                        <div class="read list-left floatR"><span>44篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1064743" class="odd-overhidden floatL">apache</a>
+                        <div class="read list-left floatR"><span>3篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1064744" class="odd-overhidden floatL">sqlite</a>
+                        <div class="read list-left floatR"><span>7篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1067181" class="odd-overhidden floatL">其他杂项</a>
+                        <div class="read list-left floatR"><span>101篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1067144" class="odd-overhidden floatL">libevent</a>
+                        <div class="read list-left floatR"><span>1篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1067211" class="odd-overhidden floatL">openssl</a>
+                        <div class="read list-left floatR"><span>6篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1067685" class="odd-overhidden floatL">chromium</a>
+                        <div class="read list-left floatR"><span>26篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1069419" class="odd-overhidden floatL">valgrind</a>
+                        <div class="read list-left floatR"><span>4篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1071114" class="odd-overhidden floatL">reactos</a>
+                        <div class="read list-left floatR"><span>4篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1071362" class="odd-overhidden floatL">varnish</a>
+                        <div class="read list-left floatR"><span>2篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1072460" class="odd-overhidden floatL">database</a>
+                        <div class="read list-left floatR"><span>11篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1074611" class="odd-overhidden floatL">nginx</a>
+                        <div class="read list-left floatR"><span>50篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1073032" class="odd-overhidden floatL">game</a>
+                        <div class="read list-left floatR"><span>3篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1079078" class="odd-overhidden floatL">cmake</a>
+                        <div class="read list-left floatR"><span>3篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1088894" class="odd-overhidden floatL">lua</a>
+                        <div class="read list-left floatR"><span>7篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1099039" class="odd-overhidden floatL">c#</a>
+                        <div class="read list-left floatR"><span>11篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1100389" class="odd-overhidden floatL">Apache Traffic Server</a>
+                        <div class="read list-left floatR"><span>41篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1141530" class="odd-overhidden floatL">Mongoose</a>
+                        <div class="read list-left floatR"><span>17篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1142033" class="odd-overhidden floatL">thread&amp;process</a>
+                        <div class="read list-left floatR"><span>6篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1144141" class="odd-overhidden floatL">Thrift</a>
+                        <div class="read list-left floatR"><span>2篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1153921" class="odd-overhidden floatL">javascript</a>
+                        <div class="read list-left floatR"><span>1篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1169376" class="odd-overhidden floatL">perl</a>
+                        <div class="read list-left floatR"><span>3篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1173995" class="odd-overhidden floatL">shell</a>
+                        <div class="read list-left floatR"><span>13篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1174094" class="odd-overhidden floatL">network</a>
+                        <div class="read list-left floatR"><span>3篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1175608" class="odd-overhidden floatL">test</a>
+                        <div class="read list-left floatR"><span>6篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1179740" class="odd-overhidden floatL">Qpid</a>
+                        <div class="read list-left floatR"><span>3篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1196074" class="odd-overhidden floatL">algorithm</a>
+                        <div class="read list-left floatR"><span>2篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1202910" class="odd-overhidden floatL">android</a>
+                        <div class="read list-left floatR"><span>2篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1207197" class="odd-overhidden floatL">ffmpeg</a>
+                        <div class="read list-left floatR"><span>3篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1226467" class="odd-overhidden floatL">linux kernel</a>
+                        <div class="read list-left floatR"><span>83篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1231674" class="odd-overhidden floatL">cloud</a>
+                        <div class="read list-left floatR"><span>1篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1322454" class="odd-overhidden floatL">分布式</a>
+                        <div class="read list-left floatR"><span>1篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1348893" class="odd-overhidden floatL">tcp-ip</a>
+                        <div class="read list-left floatR"><span>9篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1379057" class="odd-overhidden floatL">wince</a>
+                        <div class="read list-left floatR"><span>1篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1434134" class="odd-overhidden floatL">automake</a>
+                        <div class="read list-left floatR"><span>11篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/1925593" class="odd-overhidden floatL">ruby</a>
+                        <div class="read list-left floatR"><span>8篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/2093979" class="odd-overhidden floatL">tcl/tk</a>
+                        <div class="read list-left floatR"><span>1篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/2128533" class="odd-overhidden floatL">design pattern</a>
+                        <div class="read list-left floatR"><span>3篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/2281409" class="odd-overhidden floatL">lvs</a>
+                        <div class="read list-left floatR"><span>2篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/2394351" class="odd-overhidden floatL">virtualization</a>
+                        <div class="read list-left floatR"><span>7篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/2550003" class="odd-overhidden floatL">DPDK</a>
+                        <div class="read list-left floatR"><span>6篇</span></div>
+                    </li>
+                                    <li class="clearfix">
+                        <a href="http://blog.csdn.net/larryliuqing/article/category/2654529" class="odd-overhidden floatL">LTE</a>
+                        <div class="read list-left floatR"><span>1篇</span></div>
+                    </li>
+                            </ul>
+            <div class="unfold-btn">
+              <span>展开</span><i class="icon iconfont icon-xiajiantou"></i>
+            </div>
+        </div>
+    <!--    [StartShowSelfColumn]-->
+    <!--    [EndShowSelfColumn]-->
+            <div class="user-hotArticle sort timeSort">
+          <h3>文章存档</h3>
+          <ul class="hotArticle-list timeSort-list">
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/larryliuqing/article/month/2018/01" class="odd-overhidden floatL">2018年1月</a>
+                  <div class="read list-left floatR"><span>1篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/larryliuqing/article/month/2015/01" class="odd-overhidden floatL">2015年1月</a>
+                  <div class="read list-left floatR"><span>1篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/larryliuqing/article/month/2014/10" class="odd-overhidden floatL">2014年10月</a>
+                  <div class="read list-left floatR"><span>1篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/larryliuqing/article/month/2014/09" class="odd-overhidden floatL">2014年9月</a>
+                  <div class="read list-left floatR"><span>10篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/larryliuqing/article/month/2014/08" class="odd-overhidden floatL">2014年8月</a>
+                  <div class="read list-left floatR"><span>5篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/larryliuqing/article/month/2014/07" class="odd-overhidden floatL">2014年7月</a>
+                  <div class="read list-left floatR"><span>27篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/larryliuqing/article/month/2014/06" class="odd-overhidden floatL">2014年6月</a>
+                  <div class="read list-left floatR"><span>8篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/larryliuqing/article/month/2014/05" class="odd-overhidden floatL">2014年5月</a>
+                  <div class="read list-left floatR"><span>11篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/larryliuqing/article/month/2014/04" class="odd-overhidden floatL">2014年4月</a>
+                  <div class="read list-left floatR"><span>16篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/larryliuqing/article/month/2014/03" class="odd-overhidden floatL">2014年3月</a>
+                  <div class="read list-left floatR"><span>7篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/larryliuqing/article/month/2014/02" class="odd-overhidden floatL">2014年2月</a>
+                  <div class="read list-left floatR"><span>13篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/larryliuqing/article/month/2014/01" class="odd-overhidden floatL">2014年1月</a>
+                  <div class="read list-left floatR"><span>3篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/larryliuqing/article/month/2013/12" class="odd-overhidden floatL">2013年12月</a>
+                  <div class="read list-left floatR"><span>29篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/larryliuqing/article/month/2013/11" class="odd-overhidden floatL">2013年11月</a>
+                  <div class="read list-left floatR"><span>8篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/larryliuqing/article/month/2013/10" class="odd-overhidden floatL">2013年10月</a>
+                  <div class="read list-left floatR"><span>3篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/larryliuqing/article/month/2013/09" class="odd-overhidden floatL">2013年9月</a>
+                  <div class="read list-left floatR"><span>1篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/larryliuqing/article/month/2013/08" class="odd-overhidden floatL">2013年8月</a>
+                  <div class="read list-left floatR"><span>9篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/larryliuqing/article/month/2013/07" class="odd-overhidden floatL">2013年7月</a>
+                  <div class="read list-left floatR"><span>9篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/larryliuqing/article/month/2013/06" class="odd-overhidden floatL">2013年6月</a>
+                  <div class="read list-left floatR"><span>2篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/larryliuqing/article/month/2013/05" class="odd-overhidden floatL">2013年5月</a>
+                  <div class="read list-left floatR"><span>7篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/larryliuqing/article/month/2013/04" class="odd-overhidden floatL">2013年4月</a>
+                  <div class="read list-left floatR"><span>5篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/larryliuqing/article/month/2013/03" class="odd-overhidden floatL">2013年3月</a>
+                  <div class="read list-left floatR"><span>6篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/larryliuqing/article/month/2013/02" class="odd-overhidden floatL">2013年2月</a>
+                  <div class="read list-left floatR"><span>10篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/larryliuqing/article/month/2013/01" class="odd-overhidden floatL">2013年1月</a>
+                  <div class="read list-left floatR"><span>3篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/larryliuqing/article/month/2012/12" class="odd-overhidden floatL">2012年12月</a>
+                  <div class="read list-left floatR"><span>4篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/larryliuqing/article/month/2012/11" class="odd-overhidden floatL">2012年11月</a>
+                  <div class="read list-left floatR"><span>11篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/larryliuqing/article/month/2012/10" class="odd-overhidden floatL">2012年10月</a>
+                  <div class="read list-left floatR"><span>6篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/larryliuqing/article/month/2012/09" class="odd-overhidden floatL">2012年9月</a>
+                  <div class="read list-left floatR"><span>8篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/larryliuqing/article/month/2012/08" class="odd-overhidden floatL">2012年8月</a>
+                  <div class="read list-left floatR"><span>20篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/larryliuqing/article/month/2012/07" class="odd-overhidden floatL">2012年7月</a>
+                  <div class="read list-left floatR"><span>19篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/larryliuqing/article/month/2012/06" class="odd-overhidden floatL">2012年6月</a>
+                  <div class="read list-left floatR"><span>37篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/larryliuqing/article/month/2012/05" class="odd-overhidden floatL">2012年5月</a>
+                  <div class="read list-left floatR"><span>72篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/larryliuqing/article/month/2012/04" class="odd-overhidden floatL">2012年4月</a>
+                  <div class="read list-left floatR"><span>18篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/larryliuqing/article/month/2012/03" class="odd-overhidden floatL">2012年3月</a>
+                  <div class="read list-left floatR"><span>47篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/larryliuqing/article/month/2012/02" class="odd-overhidden floatL">2012年2月</a>
+                  <div class="read list-left floatR"><span>59篇</span></div>
+                </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/larryliuqing/article/month/2012/01" class="odd-overhidden floatL">2012年1月</a>
+                  <div class="read list-left floatR"><span>64篇</span></div>
+                </li>
+                      </ul>
+          <div class="unfold-btn">
+            <span>展开</span><i class="icon iconfont icon-xiajiantou"></i>
+          </div>
+        </div>
+            <div class="user-hotArticle">
+        <h3>他的热门文章</h3>
+        <ul class="hotArticle-list csdn-tracking-statistics tracking-click" data-mod="popu_521">
+<!--        [StartHotArticles]-->
+                            <li>
+                    <a href="http://blog.csdn.net/larryliuqing/article/details/7248532">aufs 存储机制</a>
+                    <div class="read list-left"><i class="icon iconfont icon-read"></i><span>9506</span></div>
+                </li>
+                            <li>
+                    <a href="http://blog.csdn.net/larryliuqing/article/details/7224672">内存分配器dlmalloc 2.8.3源码浅析</a>
+                    <div class="read list-left"><i class="icon iconfont icon-read"></i><span>5882</span></div>
+                </li>
+                            <li>
+                    <a href="http://blog.csdn.net/larryliuqing/article/details/39180451">英特尔DPDK开发者指南 – 开发环境</a>
+                    <div class="read list-left"><i class="icon iconfont icon-read"></i><span>5712</span></div>
+                </li>
+                            <li>
+                    <a href="http://blog.csdn.net/larryliuqing/article/details/7695818">整理的一些关于apache traffic server的FAQ条目</a>
+                    <div class="read list-left"><i class="icon iconfont icon-read"></i><span>3864</span></div>
+                </li>
+                            <li>
+                    <a href="http://blog.csdn.net/larryliuqing/article/details/7668319">apache traffic server官网的几张图片</a>
+                    <div class="read list-left"><i class="icon iconfont icon-read"></i><span>3510</span></div>
+                </li>
+                            <li>
+                    <a href="http://blog.csdn.net/larryliuqing/article/details/7360222">Traffic Server 正向代理(透明代理)</a>
+                    <div class="read list-left"><i class="icon iconfont icon-read"></i><span>3183</span></div>
+                </li>
+                            <li>
+                    <a href="http://blog.csdn.net/larryliuqing/article/details/7219395">Build chromium(Windows)</a>
+                    <div class="read list-left"><i class="icon iconfont icon-read"></i><span>3076</span></div>
+                </li>
+                            <li>
+                    <a href="http://blog.csdn.net/larryliuqing/article/details/7360482">在redhat-64编译trafficserver-3.0.2.tar.bz2</a>
+                    <div class="read list-left"><i class="icon iconfont icon-read"></i><span>2891</span></div>
+                </li>
+                            <li>
+                    <a href="http://blog.csdn.net/larryliuqing/article/details/7384098">TrafficServer源码初体验</a>
+                    <div class="read list-left"><i class="icon iconfont icon-read"></i><span>2870</span></div>
+                </li>
+                            <li>
+                    <a href="http://blog.csdn.net/larryliuqing/article/details/8178969">利用UML调试内核</a>
+                    <div class="read list-left"><i class="icon iconfont icon-read"></i><span>2769</span></div>
+                </li>
+            <!--        [EndHotArticles]-->
+        </ul>
+    </div>
+    
+<!--    [startcustom]-->
+    <!--    [endcustom]-->
+  <div class="fixRight_box" style="height:256px">
+    <div class="fixRight">
+                    <!--u3163270-->
+                        <script type="text/javascript" src="//cee1.iteye.com/avneunkwb.js"></script>
+                          <div class="persion_article"></div>
+    </div>
+  </div>
+</aside>
+</div>
+
+<div class="left_fixed">
+    <div class="left_show_button">
+        <span>
+          <i class="icon iconfont icon-youjiantou"></i>
+        </span>
+    </div>
+    <ul class="left_menu" id="share_box">
+        <li>
+            <button class="left-fixed-btn btn-like csdn-tracking-statistics tracking-click" data-mod="popu_373" target="_self" title="点赞">
+                <a href="javascript:void(0);" class="iconbox border_red" ><i class="icon iconfont icon-dianzan"></i></a>
+                <a class="txt" href="javascript:void(0);">0</a>
+            </button>
+        </li>
+        <li id="blog_artical_directory">
+            <button class="left-fixed-btn left_menu_btn csdn-tracking-statistics tracking-click" data-mod="popu_372" target="_self" title="目录">
+                <a href="javascript:void(0);" class="iconbox border_black" ><i class="icon iconfont icon-mulu"></i></a>
+            </button>
+        </li>
+        <li class="menu_con">
+            <div class="list_father">
+                <div class="arr_box">
+                    <button class="btn-noborder arr-btn scroll-down  left_scroll_down"><i class="icon iconfont icon-xiajiantou"></i></button>
+                    <button class="btn-noborder arr-btn scroll-up left_scroll_top"><i class="icon iconfont icon-shangjiantou"></i></button>
+                </div>
+                <div class="arr"></div>
+                <div id="csdnBlogDir"></div>
+            </div>
+        </li>
+        <!--        <li>-->
+        <!--            <button class="left-fixed-btn btn-like tracking-ad" data-mod="popu_373" target="_self">-->
+        <!--                <span class="iconbox border_red"><i class="icon iconfont icon-xihuan-"></i></span>-->
+        <!--                <span class="txt">喜欢</span>-->
+        <!--                <span class="untxt">取消喜欢</span>-->
+        <!--            </button>-->
+        <!--        </li>-->
+        <li>
+            <button class="left-fixed-btn csdn-tracking-statistics tracking-click" data-mod="popu_374"  id="com-quick-collect" target="_self" title="收藏">
+                <a href="javascript:void(0);" class="iconbox border_purple" ><i class="icon iconfont icon-shoucang"></i></a>
+            </button>
+        </li>
+        <li>
+            <button class="left-fixed-btn btn-pinglun csdn-tracking-statistics tracking-click" data-mod="popu_544" title="评论">
+                <a href="javascript:void(0);" class="iconbox border_purple" ><i class="icon iconfont icon-pinglun"></i></a>
+            </button>
+        </li>
+        <li class="bdsharebuttonbox csdn-tracking-statistics tracking-click" data-mod="popu_172">
+            <a class="bds_tsina outside left-fixed-btn" data-cmd="tsina" title="分享到新浪微博"></a>
+            <span class="iconbox border_red2"><i class="icon iconfont icon-xinlang"></i></span>
+        </li>
+        <li class="bdsharebuttonbox csdn-tracking-statistics tracking-click" data-mod="popu_172">
+            <a class="bds_weixin outside left-fixed-btn" data-cmd="weixin" title="分享到微信"></a>
+            <span class="iconbox border_green"><i class="icon iconfont icon-weixin"></i></span>
+        </li>
+        <li class="bdsharebuttonbox csdn-tracking-statistics tracking-click" data-mod="popu_172">
+            <a class="bds_qzone outside left-fixed-btn" data-cmd="qzone" title="分享到QQ空间"></a>
+            <span class="iconbox border_blue"><i class="icon iconfont icon-QQ"></i></span>
+        </li>
+        <li id="share_box">
+            
+            <div class="bdsharebuttonbox csdn-tracking-statistics tracking-click" data-mod="popu_172">
+                
+                
+                
+            </div>
+        </li>
+    </ul>
+</div>
+<div id="pop_win"></div>
+<div id="popup_mask"></div>
+<div class="pop_CA_cover" ></div>
+<div class="pop pop_CA" >
+    <div class="CA_header">
+        收藏助手
+        <span class="cancel_icon"  id="fapancle" ></span>
+    </div>
+    <iframe src="" id="collectIframe" frameborder="0" width="100%" height="360"  scrolling="no" ></iframe>
+</div>
+<!--举报-->
+<div id="report_dialog" style="top: 250px; left: 343.5px;"><div id="panel_report">
+    <div class="panel_head">不良信息举报</div>
+    <form method="post" id="frmReport" class="panel_body">
+        <table border="0" cellpadding="0" cellspacing="4" class="pop_table">
+            <tbody><tr><td colspan="2">您举报文章：<a href="http://blog.csdn.net/larryliuqing/article/details/7695818" target="_blank">整理的一些关于apache traffic server的FAQ条目</a></td></tr>
+            <tr>
+                <th style="width:60px;">举报原因：</th>
+                <td id="panel_reporttype">
+                    <label><input type="radio" class="report_type" id="report_sex" name="report_type" value="1">色情</label>
+                    <label><input type="radio" class="report_type" id="report_Politics" name="report_type" value="2">政治</label>
+                    <label><input type="radio" class="report_type" id="report_copy" name="report_type" value="3">抄袭</label>
+                    <label><input type="radio" class="report_type" id="report_ad" name="report_type" value="4">广告</label>
+                    <label><input type="radio" class="report_type" id="report_want" name="report_type" value="5">招聘</label>
+                    <label><input type="radio" class="report_type" id="report_call" name="report_type" value="6">骂人</label>
+                    <br>
+                    <label><input type="radio" class="report_type" id="report_other" name="report_type" value="7">其他</label>
+                    <input type="text" name="report_other_content" id="report_other_content" maxlength="30" style="display: none;">
+                </td>
+            </tr>
+            <tr id="panel_originalurl" style="display: none;">
+                <th>原文地址：</th>
+                <td>
+                    <input id="originalurl" value="http://" name="originalurl" type="text" style="width: 90%;">
+                </td>
+            </tr>
+            <tr>
+                <th id="sp_reason">原因补充：</th>
+                <td>
+                    <textarea id="report_description" style="width: 300px;" rows="3" name="report_description"></textarea>
+                    <p id="sp_n" style="color:#999;margin:0px;padding:0px;">(最多只允许输入30个字)</p>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input id="btnSubmitReport" name="submit" type="image" align="middle" class="btn_1" src="http://csdnimg.cn/release/phoenix/images/btn_submit.jpg">
+                    <span style="padding-left:20px;"></span>
+                    <img id="btnCloseReportDialog" src="http://csdnimg.cn/release/phoenix/images/btn_cancel.jpg" align="middle">
+                    <div id="error" style="color: Red">
+                    </div>
+                </td>
+            </tr>
+            </tbody></table>
+    </form>
+</div>
+    <script language="javascript" type="text/javascript">
+        var isComment=0;
+        //显示隐藏地址
+        $(function () {
+          console.log("version:phoenix");
+            if(isComment){
+                $("#report_description").attr("disabled",true);
+                $("#sp_n").hide();
+                $("#sp_reason").html("评论内容：");
+            }
+            $(".report_type").click(function () {
+                $("#panel_originalurl,#report_other_content").hide();
+                switch ($(this).val()) {
+                    case '3':
+                        $("#panel_originalurl").show();
+                        $("#originalurl").focus();
+                        break;
+                    case '7':
+                        if(isComment){
+                            $("#report_other_content").show().focus();
+                        }
+                        break;
+                }
+
+            });
+
+            $("#frmReport").submit(function () {
+                if (!currentUserName) {
+
+                    if (confirm("您的操作必须登录，是否登录？")) {
+                        location.href = "http://passport.csdn.net/account/login?from=" + encodeURIComponent(location.href);
+                        return false;
+                    }
+                    return false;
+                }
+
+                var reportType = $("input[name=report_type]:checked").val();
+                if(!reportType){
+                    alert("请选择举报原因！");
+                    return false;
+                }
+                var otherInfo = "";
+                switch (reportType) {
+                    case '3':
+                        otherInfo = $("#originalurl").val();
+                        if (otherInfo == ""||otherInfo=="http://") {
+                            alert("举报抄袭必须提供原创文章地址！");
+                            $("#originalurl").focus();
+                            return false;
+                        } else if(!checkeURL(otherInfo)) {
+                            alert("请输入正确的原创文章地址！");
+                            $("#originalurl").focus();
+                            return false;
+                        }
+                        break;
+                    case '7':
+                        otherInfo = $("#report_other_content").val();
+                        if (isComment && !otherInfo) {
+                            alert("请填写举报的具体原因！");
+                            $("#report_other_content").focus();
+                            return false;
+                        }
+                        if(!isComment){
+                            if(!$("#report_description").val()){
+                                alert("请填写举报的具体原因！");
+                                $("#report_description").focus();
+                                return false;
+                            }
+                        }
+                        break;
+                }
+                if(!isComment){
+                    if($("#report_description").val().length>30){
+                        alert("举报原因最多只允许输入30个字！");
+                        return false;
+                    }
+                }
+	            nowTime = {
+		            year: new Date().getFullYear(),
+		            month: parseInt(new Date().getMonth())+1,
+		            day: new Date().getDate(),
+		            hours: parseInt(new Date().getHours())+1,
+		            minutes: parseInt(new Date().getMinutes())+1,
+		            seconds: parseInt(new Date().getSeconds())+1
+	            };
+	            var data = {
+		            articleId: fileName,
+		            commentId: 0,
+		            reportType: reportType,
+		            originalurl: $("#originalurl").val(),
+		            report_other_content: $("#report_other_content").val(),
+		            report_description: $("#report_description").val(),
+		            currentUserName: currentUserName,
+		            updatetime: nowTime.year+'/'+nowTime.month+'/'+nowTime.day+' '+ nowTime.hours+':'+nowTime.minutes+':'+seconds,
+		            blogUser: username
+	            };
+	            if(!isComment){//如果是举报文章
+		            data.report_other_content = data.report_description;
+		            // data.report_description = "1. 神经网络这是一个常见的神经网络的图：这是一个常见的三层神经网络的基本构成，Layer L1是输入层，Layer L2是隐含层";
+	            }
+
+	            $.post(blog_address + "/common/report?id="+fileName+"&t=2", data, function (data) {
+		            if (data.result == 1){
+			            SetError("感谢您的举报，我们会尽快审核！");
+		            }else{
+			            if (data.content) alert(data.content);
+		            }
+
+	            });
+                return false;
+            });
+
+            $("#btnCloseReportDialog").click(function () {
+                CloseDiv();
+            });
+
+        });
+
+        //提示后关闭方法
+        function SetError(error) {
+            $("#btnCloseReportDialog").trigger("click");
+            alert(error);
+            CloseDiv();
+        }
+
+        //关闭方法
+        function CloseDiv() {
+
+            $.removeMask();
+            $("#report_dialog").hide();
+            return false;
+        }
+
+        //验证url
+        function checkeURL(url){
+            return /^http(s)?:\/\/([\w-]+\.)+[\w-]+/i.test(url);
+        }
+    </script>
+</div>
+<!--  fixme 后期清理掉  -->
+<div id="a52b5334d" style="width: 1px; height: 1px; display: none;">
+    <script id="adJs52b5334"></script>
+    <script>document.getElementById("adJs52b5334").src = "http://ads.csdn.net/js/opt/52b5334.js?t=" + Math.random();</script>
+</div>
+<script>
+    $(".MathJax").remove();
+</script>
+<script type="text/javascript" src="//static.blog.csdn.net/mdeditor/public/res/bower-libs/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<!-- <script type="text/javascript" src="http://passport.csdn.net/content/loginbox/login.js"></script> -->
+<script>window._bd_share_config = { "common": { "bdSnsKey": {}, "bdText": "", "bdMini": "1", "bdMiniList": false, "bdPic": "", "bdStyle": "0", "bdSize": "16" }, "share": {} }; with (document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];</script>
+<script type="text/javascript" >
+    if($(".article_collect li").length==1){$(".article_collect").hide();}
+    if($(".article_tags li").length==1){$(".article_tags").hide();}
+    $(".edit a").attr("href","http://mp.blog.csdn.net/postedit/"+fileName);
+    $.each($(".edu_li a"),function(){$(this).attr("href",$(this).attr("href").replace("blog7","blog9"))});
+    new CNick('#uid').showNickname();
+
+    if($("#fan").html()=="")
+    {
+	    $("#fan").html(0);
+    }
+</script>
+<script src="http://c.csdnimg.cn/public/common/append_mark/appendMark.min.js?v=5.00.43" type="text/javascript"></script>
+<script type="text/javascript">
+    appendMark($('.recommend_list').children('a').find('dt'),$('.extension_other'),$('.yd_a_d_feed_cla'))
+</script>
+<script src='http://csdnimg.cn/pubfooter/js/publib_footer-1.0.3.js?v201802051726' data-isfootertrack="false"></script>
+<script src='http://csdnimg.cn/public/common/gotop/js/goTop-v1.0.min.js?v20180305174820'></script>
+<script>
+    GoTop({
+        right: 8,
+        hasReport: true,
+        reportFun: function() {
+            $.createMask();
+            var r = blog_address + "/common/report?id=" + fileName + "&t=" + 2;
+            if (3 == 2) {
+                var s = n.parentNode.parentNode.parentNode.getAttribute("floor");
+                r += "&floor=" + s
+            }
+            var i = (document.documentElement.clientHeight - 400) / 2 + (document.documentElement.scrollTop || document.body.scrollTop),
+                a = (document.documentElement.clientWidth - 400) / 2;
+
+            $("#report_dialog").load(r).css({
+                //top: i + "px",
+                top: '20%',
+                left: a
+            }).show()
+        }
+    })
+</script>
+<div id="loginWrap"></div>
+<div id="dlMask"></div>
+</body>

@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    <link rel="canonical" href="http://blog.csdn.net/ppdouble/article/details/52894271"> 
+    
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    
+    
+    
+    
+    
+
+          
+      
+        
+    
+
+    
+    
+    <meta name="description" content="CentOS 6.4 使用C++11，需要安装 devtools2">
+    <meta name="keywords" content="centos,c++11">
+    <meta http-equiv="Cache-Control" content="no-siteapp"><link rel="alternate" media="handheld" href="http://blog.csdn.net/ppdouble/article/details/52894271#">
+    <meta name="shenma-site-verification" content="5a59773ab8077d4a62bf469ab966a63b_1497598848">
+    <title>centos6使用c++11 - CSDN博客</title>
+    <link href="favicon.ico" rel="SHORTCUT ICON">
+
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body><div id="BAIDU_DUP_fp_wrapper" style="position: absolute; left: -1px; bottom: -1px; z-index: 0; width: 0px; height: 0px; overflow: hidden; visibility: hidden; display: none;"><iframe id="BAIDU_DUP_fp_iframe" src="index_1.html" style="width: 0px; height: 0px; visibility: hidden; display: none;"></iframe></div>
+
+<div class="container clearfix">
+  <main>
+    <article>
+        <h1 class="csdn_top">centos6使用c++11</h1>
+        <div class="article_bar clearfix">
+            <div class="artical_tag">
+                <span class="original">
+                原创                </span>
+                <span class="time">2016年10月22日 19:32:26</span>
+            </div>
+
+            <ul class="article_tags clearfix csdn-tracking-statistics" data-mod="popu_377">
+                <li class="tit">标签：</li>
+
+<!--          [startarticletags]-->
+                                                            <li><a href="http://so.csdn.net/so/search/s.do?q=centos&amp;t=blog" target="_top">centos</a> <span>/</span></li>
+                                            <li><a href="http://so.csdn.net/so/search/s.do?q=c++11&amp;t=blog" target="_top">c++11</a> <span>/</span></li>
+                                    <!--          [endarticletags]-->
+            </ul>
+            <ul class="right_bar">
+                <li><button class="btn-noborder"><i class="icon iconfont icon-read"></i><span class="txt">2401</span></button></li>
+                <li class="edit">
+                    <a class="btn-noborder" href="http://blog.csdn.net/ppdouble/article/details/52894271">
+                        <i class="icon iconfont icon-bianji"></i><span class="txt">编辑</span>
+                    </a>
+                </li>
+                <li class="del">
+                    <a class="btn-noborder" onclick="javascript:deleteArticle(fileName);return false;">
+                        <i class="icon iconfont icon-shanchu"></i><span class="txt">删除</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div id="article_content" class="article_content csdn-tracking-statistics" data-mod="popu_519" data-dsm="post">
+                            <div class="markdown_views">
+                        <p>CentOS 6.4 使用C++11，需要安装 devtools2</p>
+
+<p>1.下载 repo 到本地</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs avrasm">wget http://people<span class="hljs-preprocessor">.centos</span><span class="hljs-preprocessor">.org</span>/tru/devtools-<span class="hljs-number">2</span>/devtools-<span class="hljs-number">2.</span>repo -O /etc/yum<span class="hljs-preprocessor">.repos</span><span class="hljs-preprocessor">.d</span>/devtools-<span class="hljs-number">2.</span>repo</code></pre>
+
+<p>2.安装</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs lasso">yum install devtoolset<span class="hljs-subst">-</span><span class="hljs-number">2</span><span class="hljs-attribute">-gcc</span> devtoolset<span class="hljs-subst">-</span><span class="hljs-number">2</span><span class="hljs-attribute">-binutils</span> devtoolset<span class="hljs-subst">-</span><span class="hljs-number">2</span><span class="hljs-attribute">-gcc</span><span class="hljs-attribute">-c</span><span class="hljs-subst">++</span></code></pre>
+
+<p>3.创建链接</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs ruby">ln -s /opt/rh/devtoolset-<span class="hljs-number">2</span>/root/usr/bin/* <span class="hljs-regexp">/usr/local</span><span class="hljs-regexp">/bin/</span></code></pre>
+
+<p>4.设置优先级</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs brainfuck"><span class="hljs-comment">update</span><span class="hljs-literal">-</span><span class="hljs-comment">alternatives</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">install</span> <span class="hljs-comment">/usr/bin/gcc</span> <span class="hljs-comment">gcc</span> <span class="hljs-comment">/usr/local/bin/gcc</span> <span class="hljs-comment">100</span>
+<span class="hljs-comment">update</span><span class="hljs-literal">-</span><span class="hljs-comment">alternatives</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">install</span> <span class="hljs-comment">/usr/bin/g</span><span class="hljs-literal">+</span><span class="hljs-literal">+</span> <span class="hljs-comment">g</span><span class="hljs-literal">+</span><span class="hljs-literal">+</span> <span class="hljs-comment">/usr/local/bin/g</span><span class="hljs-literal">+</span><span class="hljs-literal">+</span> <span class="hljs-comment">100</span></code></pre>
+
+<p>5.或者用下面的方法启用</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs bash"><span class="hljs-built_in">echo</span> <span class="hljs-string">'source /opt/centos/devtoolset-1.1/enable'</span> &gt;&gt; /etc/profile 
+<span class="hljs-built_in">source</span> /opt/centos/devtoolset-<span class="hljs-number">1.1</span>/enable</code></pre>
+
+<p>其中 3,4,5是保证生效，任选一个应该都可以，我依次做了三个。 <br>
+ 还有其它生效方法，如：</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs livecodeserver">scl enable devtoolset-<span class="hljs-number">2</span> bash
+
+In your .bash_profile , <span class="hljs-built_in">add</span> <span class="hljs-keyword">at</span> <span class="hljs-operator">the</span> bottom:
+echo <span class="hljs-string">"WARNING: devtoolset-2 is enabled!"</span>
+. /opt/rh/devtoolset-<span class="hljs-number">2</span>/enable</code></pre>
+
+<p>可以新打开一个终端，gcc -v 和　g++ -v 来查看版本变化</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs brainfuck"><span class="hljs-title">[</span><span class="hljs-comment">me@localhost</span> <span class="hljs-comment">~</span><span class="hljs-title">]</span><span class="hljs-comment">$</span> <span class="hljs-comment">gcc</span> <span class="hljs-literal">-</span><span class="hljs-comment">v</span>
+<span class="hljs-comment">Using</span> <span class="hljs-comment">built</span><span class="hljs-literal">-</span><span class="hljs-comment">in</span> <span class="hljs-comment">specs</span><span class="hljs-string">.</span>
+<span class="hljs-comment">COLLECT_GCC=gcc</span>
+<span class="hljs-comment">COLLECT_LTO_WRAPPER=/opt/rh/devtoolset</span><span class="hljs-literal">-</span><span class="hljs-comment">2/root/usr/libexec/gcc/x86_64</span><span class="hljs-literal">-</span><span class="hljs-comment">redhat</span><span class="hljs-literal">-</span><span class="hljs-comment">linux/4</span><span class="hljs-string">.</span><span class="hljs-comment">8</span><span class="hljs-string">.</span><span class="hljs-comment">2/lto</span><span class="hljs-literal">-</span><span class="hljs-comment">wrapper</span>
+<span class="hljs-comment">Target:</span> <span class="hljs-comment">x86_64</span><span class="hljs-literal">-</span><span class="hljs-comment">redhat</span><span class="hljs-literal">-</span><span class="hljs-comment">linux</span>
+<span class="hljs-comment">Configured</span> <span class="hljs-comment">with:</span> <span class="hljs-string">.</span><span class="hljs-string">.</span><span class="hljs-comment">/configure</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">prefix=/opt/rh/devtoolset</span><span class="hljs-literal">-</span><span class="hljs-comment">2/root/usr</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">mandir=/opt/rh/devtoolset</span><span class="hljs-literal">-</span><span class="hljs-comment">2/root/usr/share/man</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">infodir=/opt/rh/devtoolset</span><span class="hljs-literal">-</span><span class="hljs-comment">2/root/usr/share/info</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">with</span><span class="hljs-literal">-</span><span class="hljs-comment">bugurl=http://bugzilla</span><span class="hljs-string">.</span><span class="hljs-comment">redhat</span><span class="hljs-string">.</span><span class="hljs-comment">com/bugzilla</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">enable</span><span class="hljs-literal">-</span><span class="hljs-comment">bootstrap</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">enable</span><span class="hljs-literal">-</span><span class="hljs-comment">shared</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">enable</span><span class="hljs-literal">-</span><span class="hljs-comment">threads=posix</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">enable</span><span class="hljs-literal">-</span><span class="hljs-comment">checking=release</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">with</span><span class="hljs-literal">-</span><span class="hljs-comment">system</span><span class="hljs-literal">-</span><span class="hljs-comment">zlib</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">enable</span><span class="hljs-literal">-</span><span class="hljs-comment">__cxa_atexit</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">disable</span><span class="hljs-literal">-</span><span class="hljs-comment">libunwind</span><span class="hljs-literal">-</span><span class="hljs-comment">exceptions</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">enable</span><span class="hljs-literal">-</span><span class="hljs-comment">gnu</span><span class="hljs-literal">-</span><span class="hljs-comment">unique</span><span class="hljs-literal">-</span><span class="hljs-comment">object</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">enable</span><span class="hljs-literal">-</span><span class="hljs-comment">linker</span><span class="hljs-literal">-</span><span class="hljs-comment">build</span><span class="hljs-literal">-</span><span class="hljs-comment">id</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">enable</span><span class="hljs-literal">-</span><span class="hljs-comment">languages=c</span><span class="hljs-string">,</span><span class="hljs-comment">c</span><span class="hljs-literal">+</span><span class="hljs-literal">+</span><span class="hljs-string">,</span><span class="hljs-comment">fortran</span><span class="hljs-string">,</span><span class="hljs-comment">lto</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">enable</span><span class="hljs-literal">-</span><span class="hljs-comment">plugin</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">with</span><span class="hljs-literal">-</span><span class="hljs-comment">linker</span><span class="hljs-literal">-</span><span class="hljs-comment">hash</span><span class="hljs-literal">-</span><span class="hljs-comment">style=gnu</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">enable</span><span class="hljs-literal">-</span><span class="hljs-comment">initfini</span><span class="hljs-literal">-</span><span class="hljs-comment">array</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">disable</span><span class="hljs-literal">-</span><span class="hljs-comment">libgcj</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">with</span><span class="hljs-literal">-</span><span class="hljs-comment">isl=/dev/shm/home/centos/rpm/BUILD/gcc</span><span class="hljs-literal">-</span><span class="hljs-comment">4</span><span class="hljs-string">.</span><span class="hljs-comment">8</span><span class="hljs-string">.</span><span class="hljs-comment">2</span><span class="hljs-literal">-</span><span class="hljs-comment">20140120/obj</span><span class="hljs-literal">-</span><span class="hljs-comment">x86_64</span><span class="hljs-literal">-</span><span class="hljs-comment">redhat</span><span class="hljs-literal">-</span><span class="hljs-comment">linux/isl</span><span class="hljs-literal">-</span><span class="hljs-comment">install</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">with</span><span class="hljs-literal">-</span><span class="hljs-comment">cloog=/dev/shm/home/centos/rpm/BUILD/gcc</span><span class="hljs-literal">-</span><span class="hljs-comment">4</span><span class="hljs-string">.</span><span class="hljs-comment">8</span><span class="hljs-string">.</span><span class="hljs-comment">2</span><span class="hljs-literal">-</span><span class="hljs-comment">20140120/obj</span><span class="hljs-literal">-</span><span class="hljs-comment">x86_64</span><span class="hljs-literal">-</span><span class="hljs-comment">redhat</span><span class="hljs-literal">-</span><span class="hljs-comment">linux/cloog</span><span class="hljs-literal">-</span><span class="hljs-comment">install</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">with</span><span class="hljs-literal">-</span><span class="hljs-comment">mpc=/dev/shm/home/centos/rpm/BUILD/gcc</span><span class="hljs-literal">-</span><span class="hljs-comment">4</span><span class="hljs-string">.</span><span class="hljs-comment">8</span><span class="hljs-string">.</span><span class="hljs-comment">2</span><span class="hljs-literal">-</span><span class="hljs-comment">20140120/obj</span><span class="hljs-literal">-</span><span class="hljs-comment">x86_64</span><span class="hljs-literal">-</span><span class="hljs-comment">redhat</span><span class="hljs-literal">-</span><span class="hljs-comment">linux/mpc</span><span class="hljs-literal">-</span><span class="hljs-comment">install</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">with</span><span class="hljs-literal">-</span><span class="hljs-comment">tune=generic</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">with</span><span class="hljs-literal">-</span><span class="hljs-comment">arch_32=i686</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">build=x86_64</span><span class="hljs-literal">-</span><span class="hljs-comment">redhat</span><span class="hljs-literal">-</span><span class="hljs-comment">linux</span>
+<span class="hljs-comment">Thread</span> <span class="hljs-comment">model:</span> <span class="hljs-comment">posix</span>
+<span class="hljs-comment">gcc</span> <span class="hljs-comment">version</span> <span class="hljs-comment">4</span><span class="hljs-string">.</span><span class="hljs-comment">8</span><span class="hljs-string">.</span><span class="hljs-comment">2</span> <span class="hljs-comment">20140120</span> <span class="hljs-comment">(Red</span> <span class="hljs-comment">Hat</span> <span class="hljs-comment">4</span><span class="hljs-string">.</span><span class="hljs-comment">8</span><span class="hljs-string">.</span><span class="hljs-comment">2</span><span class="hljs-literal">-</span><span class="hljs-comment">15)</span> <span class="hljs-comment">(GCC)</span> 
+
+<span class="hljs-title">[</span><span class="hljs-comment">me@localhost</span> <span class="hljs-comment">~</span><span class="hljs-title">]</span><span class="hljs-comment">$</span> <span class="hljs-comment">g</span><span class="hljs-literal">+</span><span class="hljs-literal">+</span> <span class="hljs-literal">-</span><span class="hljs-comment">v</span>
+<span class="hljs-comment">Using</span> <span class="hljs-comment">built</span><span class="hljs-literal">-</span><span class="hljs-comment">in</span> <span class="hljs-comment">specs</span><span class="hljs-string">.</span>
+<span class="hljs-comment">COLLECT_GCC=g</span><span class="hljs-literal">+</span><span class="hljs-literal">+</span>
+<span class="hljs-comment">COLLECT_LTO_WRAPPER=/opt/rh/devtoolset</span><span class="hljs-literal">-</span><span class="hljs-comment">2/root/usr/libexec/gcc/x86_64</span><span class="hljs-literal">-</span><span class="hljs-comment">redhat</span><span class="hljs-literal">-</span><span class="hljs-comment">linux/4</span><span class="hljs-string">.</span><span class="hljs-comment">8</span><span class="hljs-string">.</span><span class="hljs-comment">2/lto</span><span class="hljs-literal">-</span><span class="hljs-comment">wrapper</span>
+<span class="hljs-comment">Target:</span> <span class="hljs-comment">x86_64</span><span class="hljs-literal">-</span><span class="hljs-comment">redhat</span><span class="hljs-literal">-</span><span class="hljs-comment">linux</span>
+<span class="hljs-comment">Configured</span> <span class="hljs-comment">with:</span> <span class="hljs-string">.</span><span class="hljs-string">.</span><span class="hljs-comment">/configure</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">prefix=/opt/rh/devtoolset</span><span class="hljs-literal">-</span><span class="hljs-comment">2/root/usr</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">mandir=/opt/rh/devtoolset</span><span class="hljs-literal">-</span><span class="hljs-comment">2/root/usr/share/man</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">infodir=/opt/rh/devtoolset</span><span class="hljs-literal">-</span><span class="hljs-comment">2/root/usr/share/info</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">with</span><span class="hljs-literal">-</span><span class="hljs-comment">bugurl=http://bugzilla</span><span class="hljs-string">.</span><span class="hljs-comment">redhat</span><span class="hljs-string">.</span><span class="hljs-comment">com/bugzilla</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">enable</span><span class="hljs-literal">-</span><span class="hljs-comment">bootstrap</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">enable</span><span class="hljs-literal">-</span><span class="hljs-comment">shared</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">enable</span><span class="hljs-literal">-</span><span class="hljs-comment">threads=posix</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">enable</span><span class="hljs-literal">-</span><span class="hljs-comment">checking=release</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">with</span><span class="hljs-literal">-</span><span class="hljs-comment">system</span><span class="hljs-literal">-</span><span class="hljs-comment">zlib</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">enable</span><span class="hljs-literal">-</span><span class="hljs-comment">__cxa_atexit</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">disable</span><span class="hljs-literal">-</span><span class="hljs-comment">libunwind</span><span class="hljs-literal">-</span><span class="hljs-comment">exceptions</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">enable</span><span class="hljs-literal">-</span><span class="hljs-comment">gnu</span><span class="hljs-literal">-</span><span class="hljs-comment">unique</span><span class="hljs-literal">-</span><span class="hljs-comment">object</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">enable</span><span class="hljs-literal">-</span><span class="hljs-comment">linker</span><span class="hljs-literal">-</span><span class="hljs-comment">build</span><span class="hljs-literal">-</span><span class="hljs-comment">id</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">enable</span><span class="hljs-literal">-</span><span class="hljs-comment">languages=c</span><span class="hljs-string">,</span><span class="hljs-comment">c</span><span class="hljs-literal">+</span><span class="hljs-literal">+</span><span class="hljs-string">,</span><span class="hljs-comment">fortran</span><span class="hljs-string">,</span><span class="hljs-comment">lto</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">enable</span><span class="hljs-literal">-</span><span class="hljs-comment">plugin</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">with</span><span class="hljs-literal">-</span><span class="hljs-comment">linker</span><span class="hljs-literal">-</span><span class="hljs-comment">hash</span><span class="hljs-literal">-</span><span class="hljs-comment">style=gnu</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">enable</span><span class="hljs-literal">-</span><span class="hljs-comment">initfini</span><span class="hljs-literal">-</span><span class="hljs-comment">array</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">disable</span><span class="hljs-literal">-</span><span class="hljs-comment">libgcj</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">with</span><span class="hljs-literal">-</span><span class="hljs-comment">isl=/dev/shm/home/centos/rpm/BUILD/gcc</span><span class="hljs-literal">-</span><span class="hljs-comment">4</span><span class="hljs-string">.</span><span class="hljs-comment">8</span><span class="hljs-string">.</span><span class="hljs-comment">2</span><span class="hljs-literal">-</span><span class="hljs-comment">20140120/obj</span><span class="hljs-literal">-</span><span class="hljs-comment">x86_64</span><span class="hljs-literal">-</span><span class="hljs-comment">redhat</span><span class="hljs-literal">-</span><span class="hljs-comment">linux/isl</span><span class="hljs-literal">-</span><span class="hljs-comment">install</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">with</span><span class="hljs-literal">-</span><span class="hljs-comment">cloog=/dev/shm/home/centos/rpm/BUILD/gcc</span><span class="hljs-literal">-</span><span class="hljs-comment">4</span><span class="hljs-string">.</span><span class="hljs-comment">8</span><span class="hljs-string">.</span><span class="hljs-comment">2</span><span class="hljs-literal">-</span><span class="hljs-comment">20140120/obj</span><span class="hljs-literal">-</span><span class="hljs-comment">x86_64</span><span class="hljs-literal">-</span><span class="hljs-comment">redhat</span><span class="hljs-literal">-</span><span class="hljs-comment">linux/cloog</span><span class="hljs-literal">-</span><span class="hljs-comment">install</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">with</span><span class="hljs-literal">-</span><span class="hljs-comment">mpc=/dev/shm/home/centos/rpm/BUILD/gcc</span><span class="hljs-literal">-</span><span class="hljs-comment">4</span><span class="hljs-string">.</span><span class="hljs-comment">8</span><span class="hljs-string">.</span><span class="hljs-comment">2</span><span class="hljs-literal">-</span><span class="hljs-comment">20140120/obj</span><span class="hljs-literal">-</span><span class="hljs-comment">x86_64</span><span class="hljs-literal">-</span><span class="hljs-comment">redhat</span><span class="hljs-literal">-</span><span class="hljs-comment">linux/mpc</span><span class="hljs-literal">-</span><span class="hljs-comment">install</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">with</span><span class="hljs-literal">-</span><span class="hljs-comment">tune=generic</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">with</span><span class="hljs-literal">-</span><span class="hljs-comment">arch_32=i686</span> <span class="hljs-literal">-</span><span class="hljs-literal">-</span><span class="hljs-comment">build=x86_64</span><span class="hljs-literal">-</span><span class="hljs-comment">redhat</span><span class="hljs-literal">-</span><span class="hljs-comment">linux</span>
+<span class="hljs-comment">Thread</span> <span class="hljs-comment">model:</span> <span class="hljs-comment">posix</span>
+<span class="hljs-comment">gcc</span> <span class="hljs-comment">version</span> <span class="hljs-comment">4</span><span class="hljs-string">.</span><span class="hljs-comment">8</span><span class="hljs-string">.</span><span class="hljs-comment">2</span> <span class="hljs-comment">20140120</span> <span class="hljs-comment">(Red</span> <span class="hljs-comment">Hat</span> <span class="hljs-comment">4</span><span class="hljs-string">.</span><span class="hljs-comment">8</span><span class="hljs-string">.</span><span class="hljs-comment">2</span><span class="hljs-literal">-</span><span class="hljs-comment">15)</span> <span class="hljs-comment">(GCC)</span> </code></pre>
+
+<p>参考： <br>
+[1] <a href="http://blog.csdn.net/superye1983/article/details/48263811">http://blog.csdn.net/superye1983/article/details/48263811</a> <br>
+[2] <a href="https://people.centos.org/tru/devtools-2/readme">https://people.centos.org/tru/devtools-2/readme</a> <br>
+[3] <a href="http://qgjie456.blog.163.com/blog/static/354513672014773716756/">http://qgjie456.blog.163.com/blog/static/354513672014773716756/</a> <br>
+[4] <a href="http://blog.csdn.net/dqjyong/article/details/20474883">http://blog.csdn.net/dqjyong/article/details/20474883</a> <br>
+[5] <a href="http://hiltmon.com/blog/2015/08/09/c-plus-plus-11-on-centos-6-dot-6/">http://hiltmon.com/blog/2015/08/09/c-plus-plus-11-on-centos-6-dot-6/</a> <br>
+[6] <a href="http://www.tuicool.com/articles/7JrMJzj">http://www.tuicool.com/articles/7JrMJzj</a></p>                            </div>
+                
+                    </div>
+    </article>
+      <div class="readall_box csdn-tracking-statistics" data-mod="popu_376">
+          <div class="read_more_mask"></div>
+          <a class="btn btn-large btn-gray-fred read_more_btn" target="_self">阅读全文</a>
+      </div>
+      <div class="article_copyright">
+        版权声明：本文为博主原创文章，未经博主允许不得转载。      </div>
+      <ul class="article_collect clearfix csdn-tracking-statistics" data-mod="popu_378">
+          <li class="tit">本文已收录于以下专栏：</li>
+<!--          [startarticlecolumns]-->
+                                <!--          [endarticlecolumns]-->
+      </ul>
+      <div class="comment_box clearfix">
+          <div id="comment_form">
+              <div id="commentsbmitarear">
+                              </div>
+          </div>
+      </div>
+      <div class="comment_li_outbox">
+          <div id="comment_list"></div>
+      </div>
+
+      <div class="more_comment">
+          <div id="comment_bar" class="trackgin-ad" data-mod="popu_385"></div>
+      </div>
+
+      <h3 class="recommend_tit" id="related">相关文章推荐</h3>
+      <div class="recommend_list clearfix" id="rasss">
+                                                                                      <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/qq_14821541/article/details/52297859" target="_top" strategy="BlogCommendFromBaidu_0">安装devtoolset来满足gcc不同版本的要求</a></h2>
+                          <div class="summary">
+                              在运维的工作内，经常要编译安装各种开源组件，以CentOS 6的用户来说，大部分时候用到gcc的时候都是4.4.7版本的，在绝大多数情况下编译一些东西还是够用的，但还是有个别软件对gcc的版本是有要求...                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/qq_14821541" target="_top" strategy="BlogCommendFromBaidu_0"><img src="3_qq_14821541.jpg" alt="qq_14821541" title="qq_14821541"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/qq_14821541">qq_14821541</a></li>
+                              <li class="time">2016年08月24日 10:36</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>4204</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                                                                    <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/Hot_VC/article/details/51583315" target="_top" strategy="BlogCommendFromBaidu_1">CentOS6一键升级GCC4.8</a></h2>
+                          <div class="summary">
+                              脚本内容如下：
+#!/bin/sh
+sudo rpm --import http://ftp.scientificlinux.org/linux/scientific/5x/x86_64/RPM-GP...                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/Hot_VC" target="_top" strategy="BlogCommendFromBaidu_1"><img src="3_hot_vc.jpg" alt="Hot_VC" title="Hot_VC"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/Hot_VC">Hot_VC</a></li>
+                              <li class="time">2016年06月04日 10:52</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>528</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                                                      <div id="_grv20dz29ff"></div><a href="http://www.baidu.com/cb.php?c=IgF_pyfqnHmknj0dP1f0IZ0qnfK9ujYzP1nYPH0k0Aw-5Hc3rHnYnHb0TAq15HfLPWRznjb0T1YvuhNhPvwbnW-bnjczuHfv0AwY5HDdnHndrj0LrHR0IgF_5y9YIZ0lQzq-uZR8mLPbUB48ugfEIAqspynEIvNBnHqdIAdxTvqdThP-5yF_UvTkn0KzujYk0AFV5H00TZcqn0KdpyfqnHRLPjnvnfKEpyfqnHc4rj6kP0KWpyfqP1cvrHnz0AqLUWYs0ZK45HcsP6KWThnqnHfYrHf" target="_top">
+	<dl class="clearfix csdn-tracking-statistics" data-mod="popu_393">
+		<dt><img class="maxwidth" src="0f000rbmlzducfnwxbnbls.jpg" alt="" title=""></dt>
+		<dd>
+			<div class="summary">
+				<h2>2017年前端报告：程序员薪酬上涨70%！</h2>  <div class="summary">前端程序员的薪酬曝光，2017年，平均上涨70%，月薪20的人最为常见！以下为详细数据.....</div> 
+			</div>
+		</dd>
+	</dl>
+</a>
+                                                                <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/superye1983/article/details/48263811" target="_top" strategy="BlogCommendFromBaidu_2">centos6.4安装GCC4.8 Ｃ＋＋１１</a></h2>
+                          <div class="summary">
+                              参考资料
+http://superuser.com/questions/381160/how-to-install-gcc-4-7-x-4-8-x-on-centos/542091#542091
+...                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/superye1983" target="_top" strategy="BlogCommendFromBaidu_2"><img src="3_superye1983.jpg" alt="superye1983" title="superye1983"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/superye1983">superye1983</a></li>
+                              <li class="time">2015年09月07日 12:08</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>3293</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                                                                    <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/hificamera/article/details/50474665" target="_top" strategy="BlogCommendFromBaidu_3">centos6 部署c++11</a></h2>
+                          <div class="summary">
+                              要在新的两台服务器上部署c++11代码，需要在centos6上安装 g++ gcc 4.8+
+选择了 &nbsp;安装&nbsp;devtoolset-2，总是提示mirror不行，安装一直失败，不是是服务器网络的原因还...                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/hificamera" target="_top" strategy="BlogCommendFromBaidu_3"><img src="3_hificamera.jpg" alt="hificamera" title="hificamera"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/hificamera">hificamera</a></li>
+                              <li class="time">2016年01月07日 10:49</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>1295</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                                                                    <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/u012317833/article/details/24344019" target="_top" strategy="BlogCommendFromBaidu_4">centos升级gcc到4.8.1(支持c++11)步骤</a></h2>
+                          <div class="summary">
+                              下载gcc最新版
+
+wget 
+http://ftp.gnu.org/gnu/gcc/gcc-4.8.1/gcc-4.8.1.tar.gz
+
+然后解压到文件夹
+
+cd /home/mac...                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/u012317833" target="_top" strategy="BlogCommendFromBaidu_4"><img src="3_u012317833.jpg" alt="u012317833" title="u012317833"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/u012317833">u012317833</a></li>
+                              <li class="time">2014年04月23日 12:30</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>1278</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                                        <!-- 广告位：PC端-博客详情通栏7（feed流）-808*120 -->
+                  <div id="_wvlb8trh5o"></div><a href="http://www.baidu.com/cb.php?c=IgF_pyfqnHmknjfzrjD0IZ0qnfK9ujYzP1f4PjnY0Aw-5Hc4nj6vPjm0TAq15Hf4rjn1n1b0T1d-nycdP1DduHbLnhu9rH0d0AwY5HDdnHndrj0LrHR0IgF_5y9YIZ0lQzqMpgwBUvqoQhP8QvIGIAPCmgfEmvq_Iyd8Q1R4uWc4uHf3uAckPHRkPWN9PhcsmW9huWqdIAdxTvqdThP-5HDknWFBmhkEusKzujYk0AFV5H00TZcqn0KdpyfqnHRLPjnvnfKEpyfqnHnsnj0YnsKWpyfqP1cvrHnz0AqLUWYs0ZK45HcsP6KWThnqnH6snH0" target="_top">
+	<dl class="clearfix csdn-tracking-statistics" data-mod="popu_393">
+		<dt><img class="maxwidth" src="0f0000i31l-9etjhmnwglf.jpg" alt="" title=""></dt>
+		<dd>
+			<div class="summary">
+				<h2>程序员跨越式成长指南</h2>  <div class="summary">完成第一次跨越，你会成为具有一技之长的开发者，月薪可能翻上几番； 完成第二次跨越，你将成为拥有局部优势或行业优势的专业人士，获得个人内在价值的有效提升和外在收入的大幅跃迁……</div> 
+			</div>
+		</dd>
+	</dl>
+</a>
+                                                                              <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/abcd1f2/article/details/49760365" target="_top" strategy="BlogCommendFromBaidu_5">centos升级gcc到4.8.1(支持c++11)步骤</a></h2>
+                          <div class="summary">
+                              centos升级gcc到4.8.1(支持c++11)步骤
+
+下载gcc最新版
+wget http://ftp.gnu.org/gnu/gcc/gcc-4.8.1/gcc-4.8.1.tar.gz...                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/abcd1f2" target="_top" strategy="BlogCommendFromBaidu_5"><img src="3_abcd1f2.jpg" alt="abcd1f2" title="abcd1f2"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/abcd1f2">abcd1f2</a></li>
+                              <li class="time">2015年11月10日 15:15</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>2790</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                                                                    <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/zhaoxiatengkong_1/article/details/47708913" target="_top" strategy="BlogCommendFromBaidu_6">centos6.6 安装gcc 5.2.0 设置g++ 支持c++ 11特性</a></h2>
+                          <div class="summary">
+                              1.检查gcc是否安装，并安装相对应的编译工具
+centos6.6 系统自带的 gcc是4.4.7版本，如果没有可以通过以下命令安装
+yum install gcc
+yum install gcc-c...                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/zhaoxiatengkong_1" target="_top" strategy="BlogCommendFromBaidu_6"><img src="3_zhaoxiatengkong_1.jpg" alt="zhaoxiatengkong_1" title="zhaoxiatengkong_1"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/zhaoxiatengkong_1">zhaoxiatengkong_1</a></li>
+                              <li class="time">2015年08月16日 23:05</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>2917</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                                                                    <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/typ2004/article/details/59191330" target="_top" strategy="BlogCommendFromBaidu_7">gcc/g++ 如何支持c11 / c++11标准编译</a></h2>
+                          <div class="summary">
+                              gcc/g++ 如何支持c11 / c++11标准编译
+
+
+
+
+linux中的编译环境默认可能不支持C++11语法，如R“（abc）”原始字符串。
+
+
+
+那么如果一定要编译呢？
+
+...                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/typ2004" target="_top" strategy="BlogCommendFromBaidu_7"><img src="3_typ2004.jpg" alt="typ2004" title="typ2004"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/typ2004">typ2004</a></li>
+                              <li class="time">2017年03月01日 23:17</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>4061</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                                                                    <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/arithu/article/details/8214384" target="_top" strategy="BlogCommendFromBaidu_8">centos 安装 gcc4.7 以支持 c++ 11</a></h2>
+                          <div class="summary">
+                              最近心血来潮，想学习C++11
+于是先整个支持C++11的编译器先
+
+
+以下转载自：http://www.cnblogs.com/linbc/archive/2012/08/03/262116...                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/arithu" target="_top" strategy="BlogCommendFromBaidu_8"><img src="3_arithu.jpg" alt="arithu" title="arithu"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/arithu">arithu</a></li>
+                              <li class="time">2012年11月22日 22:25</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>1961</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                                                                    <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/xiaofei0859/article/details/54140926" target="_top" strategy="BlogCommendFromBaidu_9">CentOS yum升级GCC到4.8</a></h2>
+                          <div class="summary">
+                              wget http://people.centos.org/tru/devtools-2/devtools-2.repo
+mv devtools-2.repo /etc/yum.repos.d
+yum...                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/xiaofei0859" target="_top" strategy="BlogCommendFromBaidu_9"><img src="3_xiaofei0859.jpg" alt="xiaofei0859" title="xiaofei0859"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/xiaofei0859">xiaofei0859</a></li>
+                              <li class="time">2017年01月06日 18:05</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>2238</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                    </div>
+  </main>
+<aside>
+  <div class="right_box user_info">
+      <dl class="inf_bar clearfix">
+          <dt class="csdn-tracking-statistics" data-mod="popu_381">
+              <a href="http://blog.csdn.net/ppdouble" target="_top">
+                  <img src="3_ppdouble.jpg" class="avatar_pic">
+              </a>
+              <span class="medals" title="">
+                  </span>
+          </dt>
+          <dd>
+              <h3 class="csdn-tracking-statistics" data-mod="popu_380"><a href="http://blog.csdn.net/ppdouble" target="_top" id="uid">ppdouble</a></h3>
+              <span class="csdn-tracking-statistics" data-mod="popu_379"><a class="btn btn-redborder-small " id="span_add_follow" target="_self">＋关注</a></span>
+          </dd>
+      </dl>
+      <div class="inf_number_box clearfix">
+          <dl>
+              <dt>原创</dt>
+              <dd>116</dd>
+          </dl>
+          <dl>
+              <dt>粉丝</dt>
+              <dd id="fan">10</dd>
+          </dl>
+          <dl>
+              <dt>喜欢</dt>
+              <dd>0</dd>
+          </dl>
+          <dl>
+        <dt>码云</dt>
+        <dd>&nbsp;</dd>
+      </dl>
+
+      </div>
+  <div class="writings">
+        <div class="public_signal clearfix">
+          <h3>他的最新文章</h3>
+          <a href="http://blog.csdn.net/ppdouble" target="_top" class="more"><span>更多文章</span></a>
+        </div>
+          <ul class="inf_list clearfix csdn-tracking-statistics" data-mod="popu_382">
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/ppdouble/article/details/72784211" target="_top">MPI安装配置</a>
+              </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/ppdouble/article/details/72567700" target="_top">gnu-c 对浮点型数据除0.0的处理</a>
+              </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/ppdouble/article/details/65745226" target="_top">neo4j 启动脚本 centos 7 x64</a>
+              </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/ppdouble/article/details/63034848" target="_top">centos 7 配置防火墙 firewalld</a>
+              </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/ppdouble/article/details/62894193" target="_top">maple 求特征值</a>
+              </li>
+                        </ul>
+      </div>
+  </div>
+    <div class="user-hotArticle">
+        <h3><a href="#related">相关推荐</a></h3>
+        <ul class="hotArticle-list csdn-tracking-statistics" data-mod="popu_563">
+<!--           [StartRelatedArticles]-->
+                                                <li>
+                        <a href="http://blog.csdn.net/qq_14821541/article/details/52297859" target="_top" strategy="BlogRightReleated_0">安装devtoolset来满足gcc不同版本的要求</a>
+                                            </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/Hot_VC/article/details/51583315" target="_top" strategy="BlogRightReleated_1">CentOS6一键升级GCC4.8</a>
+                                            </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/superye1983/article/details/48263811" target="_top" strategy="BlogRightReleated_2">centos6.4安装GCC4.8 Ｃ＋＋１１</a>
+                                            </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/hificamera/article/details/50474665" target="_top" strategy="BlogRightReleated_3">centos6 部署c++11</a>
+                                            </li>
+                            <!--            [EndRelatedArticles]-->
+        </ul>
+    </div>
+  <div class="extension_other csdn-tracking-statistics" data-mod="popu_389">
+     <!--u3032528-->
+    <div class="flashrecommend">
+        <div id="_1ztw8bu4fil"><iframe scrolling="no" src="index_2.html" width="300" height="250" frameborder="0"></iframe></div>
+    </div>
+  </div>
+
+<!--    [StartShowSelfColumn]-->
+    <!--    [EndShowSelfColumn]-->
+    <div class="fixRight">
+        <!-- 广告位：PC端-博客详情右侧视窗2（feed流）-300*300 -->
+        <div id="_dlfxf1qbkh"></div>            <div class="right_box padb0 csdn-tracking-statistics" data-mod="popu_391">
+                <h3 class="tit"><span><em>在线课程</em></span></h3>
+                <ul class="edu_li clearfix">
+                  <li>
+                    <div>
+                      <a href="http://www.baidu.com/cb.php?c=IgF_pyfqnHmknjmsnjD0IZ0qnfK9ujYzP1mznWR10Aw-5Hc4n1RLPWT0TAq15HR1rjfkn100T1YvPj7WuW0dmvNWPyc3PHTv0AwY5HDdnHndrj0LrHR0IgF_5y9YIZ0lQzq-uZR8mLPbUB48ugfEIAqspynETZ-YpAq8n6KzujYk0AFV5H00TZcqn0KdpyfqnHRLPjnvnfKEpyfqnHc4rj6kP0KWpyfqP1cvrHnz0AqLUWYs0ZK45HcsP6KWThnqn16zn6" target="_top">
+                        <img src="0f000zo-9igwsxotl0-yj6.png" alt="Python全栈工程师" title="Python全栈工程师">
+                      </a>
+                    </div>
+                    <div>
+                      <p><a href="http://www.baidu.com/cb.php?c=IgF_pyfqnHmknjmsnjD0IZ0qnfK9ujYzP1mznWR10Aw-5Hc4n1RLPWT0TAq15HR1rjfkn100T1YvPj7WuW0dmvNWPyc3PHTv0AwY5HDdnHndrj0LrHR0IgF_5y9YIZ0lQzq-uZR8mLPbUB48ugfEIAqspynETZ-YpAq8n6KzujYk0AFV5H00TZcqn0KdpyfqnHRLPjnvnfKEpyfqnHc4rj6kP0KWpyfqP1cvrHnz0AqLUWYs0ZK45HcsP6KWThnqn16zn6" target="_top">Python全栈工程师</a></p>
+                      <p>作者：韦玮</p>
+                    </div>
+                  </li>
+				  <li>
+                    <div>
+                      <a href="http://www.baidu.com/cb.php?c=IgF_pyfqnHmknjmsnjc0IZ0qnfK9ujYzP1mznWR10Aw-5Hc4n1RLPWT0TAq15HR1rjfkn100T1YvPj7WuW0dmvNWPyc3PHTv0AwY5HDdnHndrj0LrHR0IgF_5y9YIZ0lQzq-uZR8mLPbUB48ugfEIAqspynEmybz0ZFb5HD0mhYqn0KsTWYs0ZNGujYkPHTYn1mk0AqGujYknWb3rjDY0APGujYLnWm4n1c0ULI85H00TZbqnW0v0APzm1Yznjcdn6" target="_top">
+                        <img src="0f000q1dkvi2dlp0haa6ms.png" alt="人工智能工程师直通车" title="人工智能工程师直通车">
+                      </a>
+                    </div>
+                    <div>
+                      <p><a href="http://www.baidu.com/cb.php?c=IgF_pyfqnHmknjmsnjc0IZ0qnfK9ujYzP1mznWR10Aw-5Hc4n1RLPWT0TAq15HR1rjfkn100T1YvPj7WuW0dmvNWPyc3PHTv0AwY5HDdnHndrj0LrHR0IgF_5y9YIZ0lQzq-uZR8mLPbUB48ugfEIAqspynEmybz0ZFb5HD0mhYqn0KsTWYs0ZNGujYkPHTYn1mk0AqGujYknWb3rjDY0APGujYLnWm4n1c0ULI85H00TZbqnW0v0APzm1Yznjcdn6" target="_top">人工智能工程师直通车</a></p>
+                      <p>作者：卿来云</p>
+                    </div>
+                  </li>
+				  <li>
+                    <div>
+                      <a href="http://www.baidu.com/cb.php?c=IgF_pyfqnHmknjmsnjn0IZ0qnfK9ujYzP1mznWR10Aw-5Hc4n1RLPWT0TAq15HR1rjfkn100T1YvPj7WuW0dmvNWPyc3PHTv0AwY5HDdnHndrj0LrHR0IgF_5y9YIZ0lQzq-uZR8mLPbUB48ugfEIAqspynEIvNBn6KzujYk0AFV5H00TZcqn0KdpyfqnHRLPjnvnfKEpyfqnHc4rj6kP0KWpyfqP1cvrHnz0AqLUWYs0ZK45HcsP6KWThnqnHbsPHn" target="_top">
+                        <img src="0f0005yyiskkb4ncfpudg6.png" alt="Web前端工程师" title="Web前端工程师">
+                      </a>
+                    </div>
+                    <div>
+                      <p><a href="http://www.baidu.com/cb.php?c=IgF_pyfqnHmknjmsnjn0IZ0qnfK9ujYzP1mznWR10Aw-5Hc4n1RLPWT0TAq15HR1rjfkn100T1YvPj7WuW0dmvNWPyc3PHTv0AwY5HDdnHndrj0LrHR0IgF_5y9YIZ0lQzq-uZR8mLPbUB48ugfEIAqspynEIvNBn6KzujYk0AFV5H00TZcqn0KdpyfqnHRLPjnvnfKEpyfqnHc4rj6kP0KWpyfqP1cvrHnz0AqLUWYs0ZK45HcsP6KWThnqnHbsPHn" target="_top">Web前端工程师</a></p>
+                      <p>作者：曾亮</p>
+                    </div>
+                  </li>
+                </ul>
+            </div>
+        <div class="extension_other csdn-tracking-statistics bottomRcom" data-mod="popu_389" style="position: absolute; z-index: -5; opacity: 0; pointer-events: none;">
+            <!--u3032528-->
+            <div class="flashrecommend">
+                <!-- 请置于所有广告位代码之前 -->
+                
+
+                <!-- 广告位：PC端-博客详情页右侧视窗1（feed流）-300*250 -->
+                <div id="_ho9te8bsob9"></div><div><iframe scrolling="no" src="index_3.html" width="300" height="250" frameborder="0"></iframe></div>
+            </div>
+        </div>
+
+    </div>
+    <div class="user-hotArticle">
+        <h3>他的热门文章</h3>
+        <ul class="hotArticle-list csdn-tracking-statistics" data-mod="popu_521">
+<!--            [StartHotArticles]-->
+                                                <li>
+                        <a href="http://blog.csdn.net/ppdouble/article/details/7721301">mysql重装出错InnoDB: Unable to lock ./ibdata1, error: 11</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>11367</span></div>
+                    </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/ppdouble/article/details/51139887">sed 替换文件中的字符串</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>10126</span></div>
+                    </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/ppdouble/article/details/24656879">adb 命令行模拟GPS位置信息</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>8269</span></div>
+                    </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/ppdouble/article/details/30512555">Python-django中ajax使用POST时使用csrf_token</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>7175</span></div>
+                    </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/ppdouble/article/details/22294479">Java发送http请求</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>6104</span></div>
+                    </li>
+                            <!--            [EndHotArticles]-->
+        </ul>
+    </div>
+<!--    [startcustom]-->
+    <!--    [endcustom]-->
+</aside></div>
+
+<div class="left_fixed">
+    <div class="left_show_button">
+        <span>
+          <i class="icon iconfont icon-youjiantou"></i>
+        </span>
+    </div>
+    <ul class="left_menu">
+        <li>
+            <button class="left-fixed-btn btn-like csdn-tracking-statistics" data-mod="popu_373" target="_self">
+                <a href="javascript:void(0);" class="iconbox border_red"><i class="icon iconfont icon-dianzan"></i></a>
+                <a class="txt" href="javascript:void(0);">1</a>
+            </button>
+        </li>
+        <li id="blog_artical_directory">
+            <button class="left-fixed-btn left_menu_btn csdn-tracking-statistics" data-mod="popu_372" target="_self">
+                <a href="javascript:void(0);" class="iconbox border_black"><i class="icon iconfont icon-mulu"></i></a>
+            </button>
+        </li>
+        <li class="menu_con">
+            <div class="list_father">
+                <div class="arr_box">
+                    <button class="btn-noborder arr-btn scroll-down  left_scroll_down"><i class="icon iconfont icon-xiajiantou"></i></button>
+                    <button class="btn-noborder arr-btn scroll-up left_scroll_top"><i class="icon iconfont icon-shangjiantou"></i></button>
+                </div>
+                <div class="arr"></div>
+                <div id="csdnBlogDir"></div>
+            </div>
+        </li>
+        <!--        <li>-->
+        <!--            <button class="left-fixed-btn btn-like tracking-ad" data-mod="popu_373" target="_self">-->
+        <!--                <span class="iconbox border_red"><i class="icon iconfont icon-xihuan-"></i></span>-->
+        <!--                <span class="txt">喜欢</span>-->
+        <!--                <span class="untxt">取消喜欢</span>-->
+        <!--            </button>-->
+        <!--        </li>-->
+        <li>
+            <button class="left-fixed-btn csdn-tracking-statistics" data-mod="popu_374" id="com-quick-collect" target="_self">
+                <a href="javascript:void(0);" class="iconbox border_purple"><i class="icon iconfont icon-shoucang"></i></a>
+            </button>
+        </li>
+        <li>
+            <button class="left-fixed-btn btn-pinglun csdn-tracking-statistics" data-mod="popu_544">
+                <a href="javascript:void(0);" class="iconbox border_purple"><i class="icon iconfont icon-pinglun"></i></a>
+            </button>
+        </li>
+        <li id="share_box">
+            <button class="left-fixed-btn  csdn-tracking-statistics" data-mod="popu_375" target="_self">
+                <a href="javascript:void(0);" class="iconbox border_orange"><i class="icon iconfont icon-fenxiang"></i></a>
+            </button>
+            <div class="bdsharebuttonbox csdn-tracking-statistics bdshare-button-style0-16" data-mod="popu_172" data-bd-bind="1513580803524">
+                <div class="outside">
+                    <span class="iconbox border_red2"><i class="icon iconfont icon-xinlang"></i></span>
+                    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"> </a>
+                </div>
+                <div class="outside">
+                    <span class="iconbox border_green"><i class="icon iconfont icon-weixin"></i></span>
+                    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"> </a>
+                </div>
+                <div class="outside">
+                    <span class="iconbox border_blue"><i class="icon iconfont icon-QQ"></i></span>
+                    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"> </a>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>
+<div class="right_fixed">
+    <div class="r_ico">
+        <i class="icon iconfont icon-jubao"></i>
+        <span class="txt" id="reportBtn">内容举报</span>
+    </div>
+    <div class="returnTop">
+        <i class="icon iconfont icon-fanhuidingbu"></i>
+        <span>返回顶部</span>
+    </div>
+</div>
+<div id="pop_win"></div>
+<div id="popup_mask"></div>
+<div class="pop_CA_cover"></div>
+<div class="pop pop_CA">
+    <div class="CA_header">
+        收藏助手
+        <span class="cancel_icon" id="fapancle"></span>
+    </div>
+    <iframe src="index_4.html" id="collectIframe" scrolling="no" width="100%" height="360" frameborder="0"></iframe>
+</div>
+<!--举报-->
+<div id="report_dialog" style="top: 250px; left: 343.5px;"><div id="panel_report">
+    <div class="panel_head">不良信息举报</div>
+    <form method="post" id="frmReport" class="panel_body" action="http://blog.csdn.net/ppdouble/article/details/52894271">
+        <table class="pop_table" cellspacing="4" cellpadding="0" border="0">
+            <tbody><tr><td colspan="2">您举报文章：<a href="http://blog.csdn.net/ppdouble/article/details/52894271" target="_top">centos6使用c++11</a></td></tr>
+            <tr>
+                <th style="width: 60px;">举报原因：</th>
+                <td id="panel_reporttype">
+                    <label><input class="report_type" id="report_sex" name="report_type" value="1" type="radio">色情</label>
+                    <label><input class="report_type" id="report_Politics" name="report_type" value="2" type="radio">政治</label>
+                    <label><input class="report_type" id="report_copy" name="report_type" value="3" type="radio">抄袭</label>
+                    <label><input class="report_type" id="report_ad" name="report_type" value="4" type="radio">广告</label>
+                    <label><input class="report_type" id="report_want" name="report_type" value="5" type="radio">招聘</label>
+                    <label><input class="report_type" id="report_call" name="report_type" value="6" type="radio">骂人</label>
+                    <br>
+                    <label><input class="report_type" id="report_other" name="report_type" value="7" type="radio">其他</label>
+                    <input name="report_other_content" id="report_other_content" maxlength="30" style="display: none;" value="" type="text">
+                </td>
+            </tr>
+            <tr id="panel_originalurl" style="display: none;">
+                <th>原文地址：</th>
+                <td>
+                    <input id="originalurl" value="http://" name="originalurl" style="width: 90%;" type="text">
+                </td>
+            </tr>
+            <tr>
+                <th id="sp_reason">原因补充：</th>
+                <td>
+                    <textarea id="report_description" style="width: 300px;" rows="3" name="report_description"></textarea>
+                    <p id="sp_n" style="color: rgb(153, 153, 153); margin: 0px; padding: 0px;">(最多只允许输入30个字)</p>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input id="btnSubmitReport" name="submit" class="btn_1" src="btn_submit.jpg" type="image" align="middle">
+                    <span style="padding-left: 20px;"></span>
+                    <img id="btnCloseReportDialog" src="btn_cancel.jpg" align="middle">
+                    <div id="error" style="color: red;">
+                    </div>
+                </td>
+            </tr>
+            </tbody></table>
+    </form>
+</div>
+    
+</div>
+<!--  fixme 后期清理掉  -->
+<div id="a52b5334d" style="width: 1px; height: 1px; display: none;">
+    
+    
+<div><iframe style="width: 1px; height: 1px; position: absolute; visibility: hidden;" src="index_5.html"></iframe></div></div>
+
+
+<!-- <script type="text/javascript" src="http://passport.csdn.net/content/loginbox/login.js"></script> -->
+
+
+
+
+<div class="" id="loginWrap"></div>
+<div class="" id="dlMask"></div>
+
+</body>
+</html>

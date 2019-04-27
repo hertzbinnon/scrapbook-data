@@ -1,0 +1,1647 @@
+<!DOCTYPE html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<head >
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>What do the Parameters in webrtc-internals Really Mean? &bull; testRTC</title>
+<!-- Google Tag Manager for WordPress by gtm4wp.com -->
+<script data-cfasync="false" type="text/javascript">//<![CDATA[
+	var gtm4wp_datalayer_name = "dataLayer";
+	var dataLayer = dataLayer || [];
+//]]>
+</script>
+<!-- End Google Tag Manager for WordPress by gtm4wp.com -->
+<!-- This site is optimized with the Yoast SEO plugin v9.0.3 - https://yoast.com/wordpress/plugins/seo/ -->
+<meta name="description" content="All you wanted to ask about the parameters in webrtc-internals and had no one to ask - an in-depth look at the webrtc-internals dump and what to do with all that goodness."/>
+<link rel="canonical" href="https://testrtc.com/webrtc-internals-parameters/" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="What do the Parameters in webrtc-internals Really Mean? &bull; testRTC" />
+<meta property="og:description" content="All you wanted to ask about the parameters in webrtc-internals and had no one to ask - an in-depth look at the webrtc-internals dump and what to do with all that goodness." />
+<meta property="og:url" content="https://testrtc.com/webrtc-internals-parameters/" />
+<meta property="og:site_name" content="testRTC" />
+<meta property="article:tag" content="analysis" />
+<meta property="article:tag" content="debugging" />
+<meta property="article:tag" content="webrtc-internals" />
+<meta property="article:section" content="How to" />
+<meta property="article:published_time" content="2016-12-07T10:00:00+00:00" />
+<meta property="article:modified_time" content="2017-04-17T08:15:31+00:00" />
+<meta property="og:updated_time" content="2017-04-17T08:15:31+00:00" />
+<meta property="og:image" content="https://testrtc.com/wp-content/uploads/2016/12/201612-getstats.jpg" />
+<meta property="og:image:secure_url" content="https://testrtc.com/wp-content/uploads/2016/12/201612-getstats.jpg" />
+<meta property="og:image:width" content="799" />
+<meta property="og:image:height" content="420" />
+<!-- / Yoast SEO plugin. -->
+<link rel='dns-prefetch' href='//fonts.googleapis.com' />
+<link rel='dns-prefetch' href='//s.w.org' />
+<link rel="alternate" type="application/rss+xml" title="testRTC &raquo; Feed" href="https://testrtc.com/feed/" />
+<link rel="alternate" type="application/rss+xml" title="testRTC &raquo; Comments Feed" href="https://testrtc.com/comments/feed/" />
+<link rel="alternate" type="application/rss+xml" title="testRTC &raquo; What do the Parameters in webrtc-internals Really Mean? Comments Feed" href="https://testrtc.com/webrtc-internals-parameters/feed/" />
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/11\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/11\/svg\/","svgExt":".svg","source":{"concatemoji":"https:\/\/testrtc.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=4.9.8"}};
+			!function(a,b,c){function d(a,b){var c=String.fromCharCode;l.clearRect(0,0,k.width,k.height),l.fillText(c.apply(this,a),0,0);var d=k.toDataURL();l.clearRect(0,0,k.width,k.height),l.fillText(c.apply(this,b),0,0);var e=k.toDataURL();return d===e}function e(a){var b;if(!l||!l.fillText)return!1;switch(l.textBaseline="top",l.font="600 32px Arial",a){case"flag":return!(b=d([55356,56826,55356,56819],[55356,56826,8203,55356,56819]))&&(b=d([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]),!b);case"emoji":return b=d([55358,56760,9792,65039],[55358,56760,8203,9792,65039]),!b}return!1}function f(a){var c=b.createElement("script");c.src=a,c.defer=c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var g,h,i,j,k=b.createElement("canvas"),l=k.getContext&&k.getContext("2d");for(j=Array("flag","emoji"),c.supports={everything:!0,everythingExceptFlag:!0},i=0;i<j.length;i++)c.supports[j[i]]=e(j[i]),c.supports.everything=c.supports.everything&&c.supports[j[i]],"flag"!==j[i]&&(c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&c.supports[j[i]]);c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&!c.supports.flag,c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.everything||(h=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",h,!1),a.addEventListener("load",h,!1)):(a.attachEvent("onload",h),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),g=c.source||{},g.concatemoji?f(g.concatemoji):g.wpemoji&&g.twemoji&&(f(g.twemoji),f(g.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+<link rel='stylesheet' id='crayon-css'  href='https://testrtc.com/wp-content/plugins/crayon-syntax-highlighter/css/min/crayon.min.css?ver=_2.7.2_beta' type='text/css' media='all' />
+<link rel='stylesheet' id='crayon-theme-github-css'  href='https://testrtc.com/wp-content/plugins/crayon-syntax-highlighter/themes/github/github.css?ver=_2.7.2_beta' type='text/css' media='all' />
+<link rel='stylesheet' id='crayon-font-monaco-css'  href='https://testrtc.com/wp-content/plugins/crayon-syntax-highlighter/fonts/monaco.css?ver=_2.7.2_beta' type='text/css' media='all' />
+<link rel='stylesheet' id='child-theme-css'  href='https://testrtc.com/wp-content/themes/testrtc-genesis/style.css?ver=2.6.1' type='text/css' media='all' />
+<link rel='stylesheet' id='woocommerce-layout-css'  href='https://testrtc.com/wp-content/plugins/woocommerce/assets/css/woocommerce-layout.css?ver=3.5.0' type='text/css' media='all' />
+<link rel='stylesheet' id='woocommerce-smallscreen-css'  href='https://testrtc.com/wp-content/plugins/woocommerce/assets/css/woocommerce-smallscreen.css?ver=3.5.0' type='text/css' media='only screen and (max-width: 768px)' />
+<link rel='stylesheet' id='woocommerce-general-css'  href='https://testrtc.com/wp-content/plugins/woocommerce/assets/css/woocommerce.css?ver=3.5.0' type='text/css' media='all' />
+<style id='woocommerce-inline-inline-css' type='text/css'>
+.woocommerce form .form-row .required { visibility: visible; }
+</style>
+<link rel='stylesheet' id='dlm-frontend-css'  href='https://testrtc.com/wp-content/plugins/download-monitor/assets/css/frontend.css?ver=4.9.8' type='text/css' media='all' />
+<link rel='stylesheet' id='slick-css-css'  href='https://testrtc.com/wp-content/themes/testrtc-genesis/core/slick/slick.css?ver=4.9.8' type='text/css' media='all' />
+<link rel='stylesheet' id='slick-theme-css'  href='https://testrtc.com/wp-content/themes/testrtc-genesis/core/slick/slick-theme.css?ver=4.9.8' type='text/css' media='all' />
+<link rel='stylesheet' id='style-font-awesome-css'  href='https://testrtc.com/wp-content/themes/testrtc-genesis/core/font-awesome-4.7.0/css/font-awesome.min.css?ver=4.9.8' type='text/css' media='all' />
+<link rel='stylesheet' id='tf-compiled-options-mobmenu-css'  href='https://testrtc.com/wp-content/uploads/titan-framework-mobmenu-css.css?ver=4.9.8' type='text/css' media='all' />
+<link rel='stylesheet' id='tf-google-webfont-dosis-css'  href='//fonts.googleapis.com/css?family=Dosis%3Ainherit%2C400&#038;subset=latin%2Clatin-ext&#038;ver=4.9.8' type='text/css' media='all' />
+<link rel='stylesheet' id='cssmobmenu-icons-css'  href='https://testrtc.com/wp-content/plugins/mobile-menu/includes/css/mobmenu-icons.css?ver=4.9.8' type='text/css' media='all' />
+<script type='text/javascript' src='https://testrtc.com/wp-includes/js/jquery/jquery.js?ver=1.12.4'></script>
+<script type='text/javascript' src='https://testrtc.com/wp-includes/js/jquery/jquery-migrate.min.js?ver=1.4.1'></script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var CrayonSyntaxSettings = {"version":"_2.7.2_beta","is_admin":"0","ajaxurl":"https:\/\/testrtc.com\/wp-admin\/admin-ajax.php","prefix":"crayon-","setting":"crayon-setting","selected":"crayon-setting-selected","changed":"crayon-setting-changed","special":"crayon-setting-special","orig_value":"data-orig-value","debug":""};
+var CrayonSyntaxStrings = {"copy":"Press %s to Copy, %s to Paste","minimize":"Click To Expand Code"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://testrtc.com/wp-content/plugins/crayon-syntax-highlighter/js/min/crayon.min.js?ver=_2.7.2_beta'></script>
+<script type='text/javascript' src='https://testrtc.com/wp-content/plugins/duracelltomi-google-tag-manager/js/gtm4wp-form-move-tracker.js?ver=1.9'></script>
+<!--[if lt IE 9]>
+<script type='text/javascript' src='https://testrtc.com/wp-content/themes/genesis/lib/js/html5shiv.min.js?ver=3.7.3'></script>
+<![endif]-->
+<script type='text/javascript' src='https://testrtc.com/wp-content/plugins/mobile-menu/includes/js/mobmenu.js?ver=4.9.8'></script>
+<link rel='https://api.w.org/' href='https://testrtc.com/wp-json/' />
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://testrtc.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://testrtc.com/wp-includes/wlwmanifest.xml" />
+<link rel='shortlink' href='https://testrtc.com/?p=385' />
+<link rel="alternate" type="application/json+oembed" href="https://testrtc.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Ftestrtc.com%2Fwebrtc-internals-parameters%2F" />
+<link rel="alternate" type="text/xml+oembed" href="https://testrtc.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Ftestrtc.com%2Fwebrtc-internals-parameters%2F&#038;format=xml" />
+<!-- start Simple Custom CSS and JS -->
+<style type="text/css">
+/* Add your CSS code here.
+For example:
+.example {
+    color: red;
+}
+For brushing up on your CSS knowledge, check out http://www.w3schools.com/css/css_syntax.asp
+End of comment */
+#pg-426-1, #pg-426-3, #pg-426-5{
+    background: #f9f7f9;
+    border-top: solid 1px #dedede;
+}
+#pg-426-4, #pg-426-6{
+	background: #329c60;
+}
+.page-id-307 h1, .page-id-307 h2{
+  /*font-size:40pt !important;*/
+ /* font-weight: 300 !important;*/
+}
+#end_to_list{
+  /*list-style-image: url('http://testrtc.staging.wpengine.com/wp-content/uploads/2017/03/arrow_black.png');*/
+  list-style:none;
+  padding: 0px;
+  line-height: 23px;
+}
+#end_to_list li img{
+  position: relative;
+  top: 2px;
+  margin-right: 10px;
+}
+#list_global{
+   /*list-style-image: url('http://testrtc.staging.wpengine.com/wp-content/uploads/2017/02/white_arrow.png');*/
+  list-style:none;
+  padding: 0px;
+  line-height: 23px;
+}
+#list_global li img{
+  position: relative;
+  top: 2px;
+  margin-right: 10px;
+}
+#pg-307-4, #pg-307-1{
+ background: #f9f7f9;
+  border-top:solid 1px #dedede;
+}
+div#pg-w586be63fb3939-1{
+  margin-top: -40px !important;
+}
+.home .site-inner>.content-sidebar-wrap h3.widget-title{
+  font-weight: 500;
+}
+#pgc-w586208623f813-0-0 .panel-widget-style h3{
+  margin-top:25px;
+}
+#pgc-w586be63fb3939-0-0 .so-widget-sow-editor-base h3{
+  font-size: 30pt !important;
+  font-weight: 100;
+}
+.siteorigin-widget-tinymce{
+  /*margin-top: -20px;*/
+}
+#pg-293-4 .panel-row-style{
+  /*padding-bottom: 232px !important;*/
+}
+#pg-w586208623f813-0{
+  height: 170px;
+}
+.footer-widgets ul{
+margin-top:0px !important;
+}
+#html5-watermark{
+  display:none !important;
+}
+.play-desktop{
+  margin: 15px;
+}
+.blog img.attachment-post-thumbnail.size-post-thumbnail.wp-post-image{
+  border-bottom:none;
+}
+.person-name{
+ font-style:italic;
+}
+#sow-editor-6 .widget-title{
+ position: relative;
+ left: 1px;
+}
+.panel-widget-style h4{
+  font-size:20px !important;
+}
+.slick-slider:nth-child(1) .slick-slide{
+}
+.blog img.attachment-post-thumbnail.size-post-thumbnail.wp-post-image{
+  border-bottom:5px solid #bdbdbd;
+}
+.postid-185 .content{
+ 	border-right: solid 1px gainsboro !important;
+    width: 800px !important;
+}
+.site-header{
+ border-bottom:solid 1px gainsboro;
+}
+.error404 .content{
+  width: 1200px;
+  margin: auto;
+}
+.error404  .entry-content{
+     width: 800px;
+    float: left;
+}
+.error404 .sidebar{
+ width:30%;
+}
+.error404 .sidebar .widgettitle{
+      text-align: center;
+    background-color: #3dad6d;
+    color: white;
+    padding: 10px 0px;
+    text-transform: uppercase;
+    margin: 0px;
+    font-weight: lighter;
+    font-size: 17pt !important;
+}
+.error404 aside li{
+      list-style: none;
+}
+.page-id-149 .content, .page-id-150 .content{
+ 	width:100% !important;
+    border-right:none !important;
+}
+.page-id-149 .sidebar{
+  display:none  !important;
+}
+aside.sidebar.sidebar-primary.widget-area{
+ 	display:inline-flex !important;
+}
+.blog  main.content, .page-id-21 main.content, .page-id-149  main.content, .page-id-150 main.content, .tag main.content{
+  padding:10px 0px 10px 10px !important;
+}
+.single-post main{
+   position: relative !important;
+  top: -50px !important;
+  padding-top: 57px !important;
+}
+@media (max-width: 360px) {
+  	.slick-slide p{
+  		position: relative !important;
+        bottom: 0px !important;
+        right: 0;
+  		font-size: 12px !important;
+	}
+	#pg-w58c3034f3fb8f-0 .panel-grid-cell{
+  		padding-left: 0px;
+		padding-right: 0px;
+	}
+	#panel-w58c3034f3fb8f-0-0-0 > .panel-widget-style{
+  		padding:0px !important;
+	}
+	.drawing_person{
+  		margin-top:20px;
+	}
+    .slick-list{
+    }
+}
+.blog .post-meta{
+  line-height:35px;
+}
+@media only screen and (max-width: 1024px){
+.mobmenu_content #mobmenuright .sub-menu{
+  background-color:#38404c !important;
+}
+}
+.page-id-149 aside.sidebar{
+ 	display:none !important;
+}
+main.content{
+  padding:0px !important;
+}
+.blog .gform_wrapper span.gform_description{
+  margin-bottom:0px;
+}
+.blog .gform_wrapper .gform_heading{
+  margin-bottom:0px;
+}
+.blog .gform_wrapper ul li.gfield{
+  margin-top:0px;
+}
+.blog .gform_wrapper .top_label div.ginput_container{
+  margin-top:0px;
+}
+.blog .gform_wrapper .gform_footer{
+  padding: 10px 0 10px;
+  margin: 10px 0 0;
+  text-align:center;
+}
+.blog .validation_error{
+  display:none;
+}
+.blog .gform_wrapper li.gfield.gfield_error.gfield_contains_required div.ginput_container, .gform_wrapper li.gfield.gfield_error.gfield_contains_required label.gfield_label{
+  margin-top:0px;
+}
+.blog .gform_wrapper li.gfield.gfield_error{
+  background-color:rgba(247, 247, 247, 0);
+  border-top:none;
+}
+.single-format-standard article.status-publish {
+  display:none;
+}
+.single-format-standard .comment-respond{
+  display:none;
+}
+.comments-wrapper .comment-respond{
+  display:block !important;
+}
+.page-title{
+ margin-top:80px !important;
+}
+.single-format-standard aside.sidebar.sidebar-primary.widget-area{
+ margin-top:30px !important;
+}</style>
+<!-- end Simple Custom CSS and JS -->
+<meta name="generator" content="Heroic Knowledge Base v2.15.0" />
+<!-- Google Tag Manager for WordPress by gtm4wp.com -->
+<script data-cfasync="false" type="text/javascript">//<![CDATA[
+	dataLayer.push({"pagePostType":"post","pagePostType2":"single-post","pageCategory":["how-to"],"pageAttributes":["analysis","debugging","webrtc-internals"]});//]]>
+</script>
+<script data-cfasync="false">//<![CDATA[
+(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.'+'js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-PM8DCRQ');//]]>
+</script>
+<!-- End Google Tag Manager -->
+<!-- End Google Tag Manager for WordPress by gtm4wp.com --><link rel="pingback" href="https://testrtc.com/xmlrpc.php" />
+	<noscript><style>.woocommerce-product-gallery{ opacity: 1 !important; }</style></noscript>
+<style>
+/* Hide WP Mobile Menu outside the width of trigger */
+@media only screen and (min-width:1025px) {
+	.mob_menu, .mob_menu_left_panel, .mob_menu_right_panel, .mobmenu {
+		display: none!important;
+	}
+}
+/* Our css Custom Options values */
+@media only screen and (max-width:1025px) {
+	 {
+		display:none !important;
+	}
+		.mob-menu-left-panel .mobmenu-left-bt, .mob-menu-right-panel .mobmenu-right-bt {
+		position: absolute;
+		right: 0px;
+		top: 10px;
+		font-size: 30px;
+	}
+	.mob-menu-slideout  .mob-cancel-button{
+		display: none;
+	}
+	.mobmenu, .mob-menu-left-panel, .mob-menu-right-panel {
+		display: block;
+	}
+	.mobmenur-container i {
+		color: #38404c;
+	}
+	.mobmenul-container i {
+		color: #ffffff;
+	}
+	.mobmenul-container img {
+		max-height:  70px;
+		float: left;
+	}
+		.mobmenur-container img {
+		max-height:  70px;
+		float: right;
+	}
+	#mobmenuleft li a , #mobmenuleft li a:visited {
+		color: #fff;
+	}
+	.mobmenu_content h2, .mobmenu_content h3, .show-nav-left .mob-menu-copyright, .show-nav-left .mob-expand-submenu i {
+		color: #fff;
+	}
+	.mobmenu_content #mobmenuleft li:hover, .mobmenu_content #mobmenuright li:hover  {
+		background-color: #8dacba;
+	}
+	.mobmenu_content #mobmenuright li:hover  {
+		background-color: #8dacba;
+	}
+	.mobmenu_content #mobmenuleft .sub-menu {
+		background-color: #3a3a3a;
+		margin: 0;
+		color: #fff;
+		width: 100%;
+		position: initial;
+	}
+	.mob-menu-left-panel .mob-cancel-button {
+		color: #000;
+	}
+	.mob-menu-right-panel .mob-cancel-button {
+		color: #000;
+	}
+	.mob-menu-slideout-over .mobmenu_content {
+		padding-top: 40px;
+	}
+	.mob-menu-left-bg-holder {
+				opacity: 1;
+		background-attachment: fixed ;
+		background-position: center top ;
+		-webkit-background-size:  cover;
+		-moz-background-size: cover;
+		background-size: cover;
+	}
+	.mob-menu-right-bg-holder {
+				opacity: 1;
+		background-attachment: fixed ;
+		background-position: center top ;
+		-webkit-background-size: cover;
+		-moz-background-size: cover;
+		background-size:  cover;
+	}
+	.mobmenu_content #mobmenuleft .sub-menu a {
+		color: #fff;
+	}
+	.mobmenu_content #mobmenuright .sub-menu  a{
+		color: #fff;
+	}
+	.mobmenu_content #mobmenuright .sub-menu .sub-menu {
+		background-color: inherit;
+	}
+	.mobmenu_content #mobmenuright .sub-menu  {
+		background-color: #3a3a3a;
+		margin: 0;
+		color: #fff ;
+		position: initial;
+		width: 100%;
+	}
+	#mobmenuleft li a:hover {
+		color: #fff ;
+	}
+	#mobmenuright li a , #mobmenuright li a:visited, .show-nav-right .mob-menu-copyright, .show-nav-right .mob-expand-submenu i {
+		color: #fff;
+	}
+	#mobmenuright li a:hover {
+		color: #fff;
+	}
+	.mobmenul-container {
+		top: 5px;
+		margin-left: 5px;
+	}
+	.mobmenur-container {
+		top: 25px;
+		margin-right: 5px;
+	}
+	/* 2nd Level Menu Items Padding */
+	.mobmenu .sub-menu li a {
+		padding-left: 50px;
+	}
+	/* 3rd Level Menu Items Padding */
+	.mobmenu .sub-menu .sub-menu li a {
+		padding-left: 75px;
+	}
+	.mob-menu-logo-holder {
+		padding-top: 5px;
+		text-align: center;
+		;
+		;
+	}
+	.mob-menu-header-holder {
+		background-color: #ffffff;
+		height: 70px;
+		width: 100%;
+		font-weight:bold;
+		position:fixed;
+		top:0px;
+		right: 0px;
+		z-index: 99998;
+		color:#000;
+		display: block;
+	}
+	.mobmenu-push-wrap, body.mob-menu-slideout-over {
+		padding-top: 70px;
+	}
+		.mob-menu-slideout 	.mob-menu-left-panel {
+		background-color:#0a0a0a;;
+		width: 270px;
+		-webkit-transform: translateX(-270px);
+		-moz-transform: translateX(-270px);
+		-ms-transform: translateX(-270px);
+		-o-transform: translateX(-270px);
+		transform: translateX(-270px);
+	}
+	.mob-menu-slideout .mob-menu-right-panel {
+		background-color:#38404c;		width: 270px;
+		-webkit-transform: translateX( 270px );
+		-moz-transform: translateX( 270px );
+		-ms-transform: translateX( 270px );
+		-o-transform: translateX( 270px );
+		transform: translateX( 270px );
+	}
+	/* Will animate the content to the right 275px revealing the hidden nav */
+	.mob-menu-slideout.show-nav-left .mobmenu-push-wrap, .mob-menu-slideout.show-nav-left .mob-menu-header-holder {
+		-webkit-transform: translate(270px, 0);
+		-moz-transform: translate(270px, 0);
+		-ms-transform: translate(270px, 0);
+		-o-transform: translate(270px, 0);
+		transform: translate(270px, 0);
+		-webkit-transform: translate3d(270px, 0, 0);
+		-moz-transform: translate3d(270px, 0, 0);
+		-ms-transform: translate3d(270px, 0, 0);
+		-o-transform: translate3d(270px, 0, 0);
+		transform: translate3d(270px, 0, 0);
+	}
+	.mob-menu-slideout.show-nav-right .mobmenu-push-wrap , .mob-menu-slideout.show-nav-right .mob-menu-header-holder {
+		-webkit-transform: translate(-270px, 0);
+		-moz-transform: translate(-270px, 0);
+		-ms-transform: translate(-270px, 0);
+		-o-transform: translate(-270px, 0);
+		transform: translate(-270px, 0);
+		-webkit-transform: translate3d(-270px, 0, 0);
+		-moz-transform: translate3d(-270px, 0, 0);
+		-ms-transform: translate3d(-270px, 0, 0);
+		-o-transform: translate3d(-270px, 0, 0);
+		transform: translate3d(-270px, 0, 0);
+	}
+	/* Mobmenu Slide Over */
+	.mobmenu-overlay {
+		opacity: 0;
+	}
+	.mob-menu-slideout-top .mobmenu-overlay, .mob-menu-slideout .mob-menu-right-panel .mob-cancel-button, .mob-menu-slideout .mob-menu-left-panel .mob-cancel-button {
+		display: none!important;
+	}
+	.show-nav-left .mobmenu-overlay, .show-nav-right .mobmenu-overlay {
+		width: 100%;
+		height: 100%;
+		background: rgba(0, 0, 0, 0.83);
+		z-index: 99999;
+		position: absolute;
+		left: 0;
+		top: 0;
+		opacity: 1;
+		-webkit-transition: .5s ease;
+		-moz-transition: .5s ease;
+		-ms-transition: .5s ease;
+		-o-transition: .5s ease;
+		transition: .5s ease;
+		position: fixed;
+		cursor: pointer;
+	}
+	.mob-menu-slideout-over .mob-menu-left-panel {
+		display: block!important;
+		background-color:#0a0a0a;;
+		width: 270px;
+		-webkit-transform: translateX(-270px);
+		-moz-transform: translateX(-270px);
+		-ms-transform: translateX(-270px);
+		-o-transform: translateX(-270px);
+		transform: translateX(-270px);
+		-webkit-transition: -webkit-transform .5s;
+		-moz-transition: -moz-transform .5s;
+		-ms-transition: -ms-transform .5s;
+		-o-transition: -o-transform .5s;
+		transition: transform .5s;
+	}
+	.mob-menu-slideout-over .mob-menu-right-panel {
+		display: block!important;
+		background-color:#38404c;;
+		width:  270px;
+		-webkit-transform: translateX(270px);
+		-moz-transform: translateX(270px);
+		-ms-transform: translateX(270px);
+		-o-transform: translateX(270px);
+		transform: translateX(270px);
+		-webkit-transition: -webkit-transform .5s;
+		-moz-transition: -moz-transform .5s;
+		-ms-transition: -ms-transform .5s;
+		-o-transition: -o-transform .5s;
+		transition: transform .5s;
+	}
+	.mob-menu-slideout-over.show-nav-left .mob-menu-left-panel {
+		display: block!important;
+		background-color:#0a0a0a;;
+		width:  270px;
+		-webkit-transform: translateX(0);
+		-moz-transform: translateX(0);
+		-ms-transform: translateX(0);
+		-o-transform: translateX(0);
+		transform: translateX(0);
+		-webkit-transition: -webkit-transform .5s;
+		-moz-transition: -moz-transform .5s;
+		-ms-transition: -ms-transform .5s;
+		-o-transition: -o-transform .5s;
+		transition: transform .5s;
+	}
+	.show-nav-right.mob-menu-slideout-over .mob-menu-right-panel {
+		display: block!important;
+		background-color:#38404c;		width:  270px;
+		-webkit-transform: translateX( 0 );
+		-moz-transform: translateX( 0 );
+		-ms-transform: translateX( 0 );
+		-o-transform: translateX(0 );
+		transform: translateX( 0 );
+	}
+	/* Hides everything pushed outside of it */
+	.mob-menu-slideout .mob-menu-left-panel, .mob-menu-slideout-over .mob-menu-left-panel  {
+		position: fixed;
+		top: 0;
+		height: 100%;
+		z-index: 300000;
+		overflow-y: auto;
+		overflow-x: hidden;
+		opacity: 1;
+	}
+	.mob-menu-slideout .mob-menu-right-panel, .mob-menu-slideout-over .mob-menu-right-panel {
+		position: fixed;
+		top: 0;
+		right: 0;
+		height: 100%;
+		z-index: 300000;
+		overflow-y: auto;
+		overflow-x: hidden;
+		opacity: 1;
+	}
+	/*End of Mobmenu Slide Over */
+	.mobmenu .headertext {
+		color: #0a0a0a;
+	}
+	.headertext span {
+		position: initial;
+		line-height: 70px;
+	}
+	/* Adds a transition and the resting translate state */
+	.mob-menu-slideout .mobmenu-push-wrap, .mob-menu-slideout .mob-menu-header-holder {
+		-webkit-transition: -webkit-transform .5s;
+		-moz-transition: -moz-transform .5s;
+		-ms-transition: -ms-transform .5s;
+		-o-transition: -o-transform .5s;
+		transition: transform .5s;
+		-webkit-transform: translate(0, 0);
+		-moz-transform: translate(0, 0);
+		-ms-transform: translate(0, 0);
+		-o-transform: translate(0, 0);
+		transform: translate(0, 0);
+		-webkit-transform: translate3d(0, 0, 0);
+		-moz-transform: translate3d(0, 0, 0);
+		-ms-transform: translate3d(0, 0, 0);
+		-o-transform: translate3d(0, 0, 0);
+		transform: translate3d(0, 0, 0);
+	}
+	/* Mobile Menu Frontend CSS Style*/
+	html, body {
+		overflow-x: hidden;
+	}
+	.hidden-overflow {
+		overflow: hidden!important;
+	}
+	/* Hides everything pushed outside of it */
+	.mob-menu-slideout .mob-menu-left-panel {
+		position: fixed;
+		top: 0;
+		height: 100%;
+		z-index: 300000;
+		overflow-y: auto;
+		overflow-x: hidden;
+		opacity: 1;
+		-webkit-transition: -webkit-transform .5s;
+		-moz-transition: -moz-transform .5s;
+		-ms-transition: -ms-transform .5s;
+		-o-transition: -o-transform .5s;
+		transition: transform .5s;
+	}
+	.mob-menu-slideout.show-nav-left .mob-menu-left-panel {
+		transition: transform .5s;
+		-webkit-transform: translateX(0);
+		-moz-transform: translateX(0);
+		-ms-transform: translateX(0);
+		-o-transform: translateX(0);
+		transform: translateX(0);
+	}
+	body.admin-bar .mobmenu {
+		top: 32px;
+	}
+	@media screen and ( max-width: 782px ){
+		body.admin-bar .mobmenu {
+			top: 46px;
+		}
+	}
+	.mob-menu-slideout .mob-menu-right-panel {
+		position: fixed;
+		top: 0;
+		right: 0;
+		height: 100%;
+		z-index: 300000;
+		overflow-y: auto;
+		overflow-x: hidden;
+		opacity: 1;
+		-webkit-transition: -webkit-transform .5s;
+		-moz-transition: -moz-transform .5s;
+		-ms-transition: -ms-transform .5s;
+		-o-transition: -o-transform .5s;
+		transition: transform .5s;
+	}
+	.mob-menu-slideout.show-nav-right .mob-menu-right-panel {
+		transition: transform .5s;
+		-webkit-transform: translateX(0);
+		-moz-transform: translateX(0);
+		-ms-transform: translateX(0);
+		-o-transform: translateX(0);
+		transform: translateX(0);
+	}
+	.show-nav-left .mobmenu-push-wrap {
+		height: 100%;
+	}
+	/* Will animate the content to the right 275px revealing the hidden nav */
+	.mob-menu-slideout.show-nav-left .mobmenu-push-wrap, .show-nav-left .mob-menu-header-holder {
+		-webkit-transition: -webkit-transform .5s;
+		-moz-transition: -moz-transform .5s;
+		-ms-transition: -ms-transform .5s;
+		-o-transition: -o-transform .5s;
+		transition: transform .5s;
+	}
+	.show-nav-right .mobmenu-push-wrap {
+		height: 100%;
+	}
+	/* Will animate the content to the right 275px revealing the hidden nav */
+	.mob-menu-slideout.show-nav-right .mobmenu-push-wrap , .mob-menu-slideout.show-nav-right .mob-menu-header-holder{
+		-webkit-transition: -webkit-transform .5s;
+		-moz-transition: -moz-transform .5s;
+		-ms-transition: -ms-transform .5s;
+		-o-transition: -o-transform .5s;
+		transition: transform .5s;
+	}
+	.widget img {
+		max-width: 100%;
+	}
+	#mobmenuleft, #mobmenuright {
+		margin: 0;
+		padding: 0;
+	}
+	#mobmenuleft li > ul {
+		display:none;
+		left: 15px;
+	}
+	.mob-expand-submenu {
+		position: relative;
+		right: 0px;
+		float: right;
+		margin-top: -50px;
+	}
+	.mob-expand-submenu i {
+		padding: 12px;
+	}
+	#mobmenuright  li > ul {
+		display:none;
+		left: 15px;
+	}
+	.rightmbottom, .rightmtop {
+		padding-left: 10px;
+		padding-right: 10px;
+	}
+	.mobmenu_content {
+		z-index: 1;
+		height: 100%;
+		overflow: auto;
+	}
+	.mobmenu_content li a {
+		display: block;
+		letter-spacing: 1px;
+		padding: 10px 20px;
+		text-decoration: none;
+	}
+	.mobmenu_content li {
+		list-style: none;
+	}
+	.mob-menu-left-panel li, .leftmbottom, .leftmtop{
+		padding-left: 0%;
+		padding-right: 0%;
+	}
+	.mob-menu-right-panel li, .rightmbottom, .rightmtop{
+		padding-left: 0%;
+		padding-right: 0%;
+	}
+	.mob-menu-slideout .mob_menu_left_panel_anim {
+		-webkit-transition: all .30s ease-in-out !important;
+		transition: all .30s ease-in-out !important;
+		transform: translate(0px) !important;
+		-ms-transform: translate(0px) !important;
+		-webkit-transform: translate(0px) !important;
+	}
+	.mob-menu-slideout .mob_menu_right_panel_anim {
+		-webkit-transition: all .30s ease-in-out !important;
+		transition: all .30s ease-in-out !important;
+		transform: translate(0px) !important;
+		-ms-transform: translate(0px) !important;
+		-webkit-transform: translate(0px) !important;
+	}
+	.mobmenul-container {
+		position: absolute;
+	}
+	.mobmenur-container {
+		position: absolute;
+		right: 0px;
+	}
+	.mob-menu-slideout .mob_menu_left_panel {
+		width: 230px;
+		height: 100%;
+		position: fixed;
+		top: 0px;
+		left: 0px;
+		z-index: 99999999;
+		transform: translate(-230px);
+		-ms-transform: translate(-230px);
+		-webkit-transform: translate(-230px);
+		transition: all .30s ease-in-out !important;
+		-webkit-transition: all .30s ease-in-out !important;
+		overflow:hidden;
+	}
+	.leftmbottom h2 {
+		font-weight: bold;
+		background-color: transparent;
+		color: inherit;
+	}
+	.show-nav-right .mobmenur-container img, .show-nav-left .mobmenul-container img,  .mobmenu .mob-cancel-button, .show-nav-left .mobmenu .mob-menu-icon, .show-nav-right .mobmenu .mob-menu-icon, .mob-menu-slideout-over.show-nav-left .mobmenur-container, .mob-menu-slideout-over.show-nav-right .mobmenul-container  {
+		display:none;
+	}
+	.show-nav-left .mobmenu .mob-cancel-button,  .mobmenu .mob-menu-icon, .show-nav-right .mobmenu .mob-cancel-button {
+		display:block;
+	}
+	.mobmenul-container i {
+		line-height: 30px;
+		font-size: 30px;
+		float: left;
+	}
+	.left-menu-icon-text {
+		float: left;
+		line-height: 30px;
+		color: #222;
+	}
+	.right-menu-icon-text {
+		float: right;
+		line-height: 30px;
+		color: #222;
+	}
+	.mobmenur-container i {
+		line-height: 30px;
+		font-size: 30px;
+		float: right;
+	}
+	.mobmenu_content .widget {
+		padding-bottom: 0px;
+		padding: 20px;
+	}
+	.mobmenu input[type="text"]:focus, .mobmenu input[type="email"]:focus, .mobmenu textarea:focus, .mobmenu input[type="tel"]:focus, .mobmenu input[type="number"]:focus {
+		border-color: rgba(0, 0, 0, 0)!important;
+	}
+	.mob-expand-submenu i {
+		padding: 12px;
+		top: 10px;
+		position: relative;
+		font-weight: 600;
+		cursor: pointer;
+	}
+	.nav, .main-navigation, .genesis-nav-menu, #main-header, #et-top-navigation, .site-header, .site-branding, .ast-mobile-menu-buttons, .hide {
+		display: none!important;
+	}
+	.mob-menu-left-bg-holder, .mob-menu-right-bg-holder {
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		z-index: -50;
+		background-repeat: no-repeat;
+		top: 0;
+		left: 0;
+	}
+	.mobmenu_content .sub-menu {
+		display: none;
+	}
+	.mob-standard-logo {
+		display: inline-block;
+		height:70px!important;	}
+	.mob-retina-logo {
+		height:70px!important;	}
+}
+.mobmenu-push-wrap {
+	height:100%;
+}
+.no-menu-assigned {
+	font-size: 12px;
+	padding-left: 10px;
+	margin-top: 20px;
+	position: absolute;
+}
+</style>
+<link rel="icon" href="https://testrtc.com/wp-content/uploads/2015/11/cropped-testRTC_logo_512x512-32x32.png" sizes="32x32" />
+<link rel="icon" href="https://testrtc.com/wp-content/uploads/2015/11/cropped-testRTC_logo_512x512-192x192.png" sizes="192x192" />
+<link rel="apple-touch-icon-precomposed" href="https://testrtc.com/wp-content/uploads/2015/11/cropped-testRTC_logo_512x512-180x180.png" />
+<meta name="msapplication-TileImage" content="https://testrtc.com/wp-content/uploads/2015/11/cropped-testRTC_logo_512x512-270x270.png" />
+</head>
+<body class="post-template-default single single-post postid-385 single-format-standard wp-custom-logo woocommerce-no-js header-full-width content-sidebar enterprise-pro-orange mob-menu-slideout-over" itemscope itemtype="https://schema.org/WebPage"><div class="site-container"><header class="site-header" itemscope itemtype="https://schema.org/WPHeader"><div class="wrap">    <div class='testrtc-logo-wrapper'>
+        <a class='testrtc-logo' href='https://testrtc.com'>
+            <img src='https://testrtc.com/wp-content/uploads/2017/04/testRTC_logo.png'>
+        </a>
+    </div>
+    <nav class="nav-primary" aria-label="Main" itemscope itemtype="https://schema.org/SiteNavigationElement"><div class="wrap"><ul id="menu-main-menu" class="menu genesis-nav-menu menu-primary"><li id="menu-item-527" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-527"><a href="#" itemprop="url"><span itemprop="name">Product</span></a>
+<ul class="sub-menu">
+	<li id="menu-item-594" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-594"><a href="https://testrtc.com/monitoring/" itemprop="url"><span itemprop="name">Monitoring</span></a></li>
+	<li id="menu-item-534" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-534"><a href="https://testrtc.com/stress-testing/" itemprop="url"><span itemprop="name">Stress Testing</span></a></li>
+	<li id="menu-item-535" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-535"><a href="https://testrtc.com/functional-testing/" itemprop="url"><span itemprop="name">Functional Testing</span></a></li>
+</ul>
+</li>
+<li id="menu-item-536" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-536"><a href="https://testrtc.com/contact/" itemprop="url"><span itemprop="name">Contact</span></a></li>
+<li id="menu-item-537" class="menu-item menu-item-type-post_type menu-item-object-page current_page_parent menu-item-537"><a href="https://testrtc.com/blog/" itemprop="url"><span itemprop="name">Blog</span></a></li>
+<li id="menu-item-539" class="button menu-item menu-item-type-custom menu-item-object-custom menu-item-539"><a href="https://app.testrtc.com/" itemprop="url"><span itemprop="name">Get Started</span></a></li>
+</ul></div></nav></div></header><div class="site-inner"><div class="content-sidebar-wrap"><main class="content">
+	<h2 class='page-title'><a href="https://testrtc.com/webrtc-internals-parameters/">What do the Parameters in webrtc-internals Really Mean?</a></h2>
+	<p class="post-meta">
+		<label class="date">
+			<img width="20px" src="https://testrtc.com/wp-content/themes/testrtc-genesis/images/dateicon.png">
+			<span>December 7, 2016</span>
+		</label>
+		<span class="meta-seperator">|</span>
+		<label class="author">
+			<img width="20px" src="https://testrtc.com/wp-content/themes/testrtc-genesis/images/Author.png ">
+			<span>Tsahi Levent-Levi</span>
+		</label>
+		<span class="meta-seperator">|</span><label class="tags"><img width="20px" src="https://testrtc.com/wp-content/themes/testrtc-genesis/images/tagicon.png"><span><a href="https://testrtc.com/category/how-to/" alt="View all posts in How to">How to</a></span></label>	</p>
+	<img width="799" height="420" src="https://testrtc.com/wp-content/uploads/2016/12/201612-getstats.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" srcset="https://testrtc.com/wp-content/uploads/2016/12/201612-getstats.jpg 799w, https://testrtc.com/wp-content/uploads/2016/12/201612-getstats-300x158.jpg 300w, https://testrtc.com/wp-content/uploads/2016/12/201612-getstats-768x404.jpg 768w" sizes="(max-width: 799px) 100vw, 799px" />	<div class='page-content-wrapper'><p><i>To make this one as accurate as possible, I decided to go to my source of truth for the low level stuff related to WebRTC &#8211; <a href="https://twitter.com/hcornflower">Philipp Hancke</a>, also known as fippo or hcornflower. This in a way, is a joint article we’ve put together.</i></p>
+<p>webrtc-internals is a great tool when you need to find issues with your WebRTC product. Be it because you are trying to test WebRTC and need to debug an issue or because you’re trying to tweak with your configuration.</p>
+<h3>How to obtain a webrtc-internals stats dump?</h3>
+<p>If you aren’t familiar with this tool, then open a WebRTC session in your Chrome browser, and while in that session, open another tab and direct it to this “internal” URL: chrome://webrtc-internals/</p>
+<p><img class="aligncenter size-full wp-image-442" src="https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-internals-view.png" alt="WebRTC Internals screenshot" width="800" height="452" srcset="https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-internals-view.png 800w, https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-internals-view-300x170.png 300w, https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-internals-view-768x434.png 768w" sizes="(max-width: 800px) 100vw, 800px" /></p>
+<p>Do it. We will be here waiting.</p>
+<p>webrtc-internals allows downloading the trace as a large JSON thingy that you can layer look at, but when you do, you’ll see something like this:</p>
+<p><img class="aligncenter size-full wp-image-443" src="https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-internals-dump.png" alt="WebRTC internals downloaded as JSON" width="800" height="888" srcset="https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-internals-dump.png 800w, https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-internals-dump-270x300.png 270w, https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-internals-dump-768x852.png 768w" sizes="(max-width: 800px) 100vw, 800px" /></p>
+<h3>Visualizing webrtc-internals stats</h3>
+<p>One of the first thing people start asking is &#8211; what exactly do these numbers say? It is what one of our own testers said the moment we’ve taken <a href="https://github.com/fippo/webrtc-dump-importer">the code Fippo contributed</a> to the community that enables shoving all these values into a time series graph and filtering them out.</p>
+<p>This gives us graphs which are much larger than the 300&#215;140 pixels from webrtc-internals:</p>
+<p><img class="aligncenter size-full wp-image-444" src="https://testrtc.com/wp-content/uploads/2016/12/201612-getstats-sample-graph.png" alt="Sample graph of WebRTC stats" width="800" height="170" srcset="https://testrtc.com/wp-content/uploads/2016/12/201612-getstats-sample-graph.png 800w, https://testrtc.com/wp-content/uploads/2016/12/201612-getstats-sample-graph-300x64.png 300w, https://testrtc.com/wp-content/uploads/2016/12/201612-getstats-sample-graph-768x163.png 768w" sizes="(max-width: 800px) 100vw, 800px" /></p>
+<p>The graphs are made using the <a href="http://www.highcharts.com/">HighCharts</a> library and offer quite a number of handy features such as hiding lines, zooming into an area of interest or hovering to find out the exact value. This makes it much easier to reason about the data than the JSON dump shown above.</p>
+<p>Back to the basic webrtc-internals page. At the top of this page we can see a number of tabs, one for all getUserMedia calls and one tab for each RTCPeerConnection.</p>
+<p><img class="aligncenter size-full wp-image-445" src="https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-internals-tabs.png" alt="Tabs in webrtc-internals" width="800" height="479" srcset="https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-internals-tabs.png 800w, https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-internals-tabs-300x180.png 300w, https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-internals-tabs-768x460.png 768w" sizes="(max-width: 800px) 100vw, 800px" /></p>
+<p>On the GetUserMedia Requests tab we can see each call to getUserMedia and the constraints passed to it. We don’t get to see the results unfortunately or the ids of the MediaStreams acquired.</p>
+<h3>RTCPeerConnection stats</h3>
+<p>For each peerconnection, we can see four things here:</p>
+<p><img class="aligncenter size-full wp-image-450" src="https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-internals-structure.png" alt="webrtc-internals page structure" width="800" height="460" srcset="https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-internals-structure.png 800w, https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-internals-structure-300x173.png 300w, https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-internals-structure-768x442.png 768w" sizes="(max-width: 800px) 100vw, 800px" /></p>
+<ol>
+<li style="font-weight: 400;">How the RTCPeerConnection was configured, i.e. what STUN and TURN servers are used and what options are set</li>
+<li style="font-weight: 400;">A trace of the PeerConnection API calls on the left side. These API traces show all the calls to the RTCPeerConnection object and their arguments (e.g. createOffer) as well as the callbacks and event emitters like onicecandidate.</li>
+<li style="font-weight: 400;">The statistics gathered from the getStats() API on the right side</li>
+<li style="font-weight: 400;">Graphs generated from the getStats() API at the bottom</li>
+</ol>
+<p>The RTCPeerConnection API traces are a very powerful tool that allows for example <a href="https://www.youtube.com/watch?v=_OE-4woHv2E&amp;t=1s">reasoning about the cause of ICE failures</a> or can give you insights <a href="https://medium.com/the-making-of-appear-in/where-to-deploy-turn-or-other-relay-servers-2dab2e8157ea#.kbgvxbiyq">where to deploy TURN servers</a>. We will cover this at length in a future blog post.</p>
+<p>The statistics shown on webrtc-internals are the internal format of Chrome. Which means they are a bit out of sync with the <a href="https://w3c.github.io/webrtc-stats/">current specification</a>, some names have changed as well as the structure. At a high level, what we see on the webrtc-internals page is similar to the result we get from calling</p><!-- Crayon Syntax Highlighter v_2.7.2_beta -->
+		<div id="crayon-5be29f4810a5a226351711" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important;">
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button" title="Toggle Line Numbers"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="Expand Code"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="Copy"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="Open Code In New Window"><div class="crayon-button-icon"></div></div><span class="crayon-language">JavaScript</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 12px !important; line-height: 15px !important;">
+RTCPeerConnection.getStats(function(stats) { console.log(stats.result()); )};</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table">
+					<tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-5be29f4810a5a226351711-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-5be29f4810a5a226351711-1"><span class="crayon-v">RTCPeerConnection</span><span class="crayon-sy">.</span><span class="crayon-e">getStats</span><span class="crayon-sy">(</span><span class="crayon-t">function</span><span class="crayon-sy">(</span><span class="crayon-v">stats</span><span class="crayon-sy">)</span><span class="crayon-h"> </span><span class="crayon-sy">{</span><span class="crayon-h"> </span><span class="crayon-v">console</span><span class="crayon-sy">.</span><span class="crayon-e">log</span><span class="crayon-sy">(</span><span class="crayon-v">stats</span><span class="crayon-sy">.</span><span class="crayon-e">result</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span><span class="crayon-h"> </span><span class="crayon-sy">)</span><span class="crayon-sy">}</span><span class="crayon-sy">;</span></div></div></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0009 seconds] -->
+<p>This is an array of (legacy) RTCStatsReport objects which have a number of keys and values which can be accessed like this:</p><!-- Crayon Syntax Highlighter v_2.7.2_beta -->
+		<div id="crayon-5be29f4810a62701553610" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important;">
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button" title="Toggle Line Numbers"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="Expand Code"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="Copy"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="Open Code In New Window"><div class="crayon-button-icon"></div></div><span class="crayon-language">JavaScript</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 12px !important; line-height: 15px !important;">
+RTCPeerConnection.getStats(function(stats) {
+   var report = stats.result()[0];
+   report.names().forEach(function(name) {
+       console.log(name, report.stat(name));
+   });
+)}</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table">
+					<tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-5be29f4810a62701553610-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-5be29f4810a62701553610-2">2</div><div class="crayon-num" data-line="crayon-5be29f4810a62701553610-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-5be29f4810a62701553610-4">4</div><div class="crayon-num" data-line="crayon-5be29f4810a62701553610-5">5</div><div class="crayon-num crayon-striped-num" data-line="crayon-5be29f4810a62701553610-6">6</div><div class="crayon-num" data-line="crayon-5be29f4810a62701553610-7">7</div><div class="crayon-num crayon-striped-num" data-line="crayon-5be29f4810a62701553610-8">8</div><div class="crayon-num" data-line="crayon-5be29f4810a62701553610-9">9</div><div class="crayon-num crayon-striped-num" data-line="crayon-5be29f4810a62701553610-10">10</div><div class="crayon-num" data-line="crayon-5be29f4810a62701553610-11">11</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-5be29f4810a62701553610-1"><span class="crayon-v">RTCPeerConnection</span><span class="crayon-sy">.</span><span class="crayon-e">getStats</span><span class="crayon-sy">(</span><span class="crayon-t">function</span><span class="crayon-sy">(</span><span class="crayon-v">stats</span><span class="crayon-sy">)</span><span class="crayon-h"> </span><span class="crayon-sy">{</span></div><div class="crayon-line crayon-striped-line" id="crayon-5be29f4810a62701553610-2">&nbsp;</div><div class="crayon-line" id="crayon-5be29f4810a62701553610-3">   <span class="crayon-t">var</span><span class="crayon-h"> </span><span class="crayon-v">report</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-v">stats</span><span class="crayon-sy">.</span><span class="crayon-e">result</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">[</span><span class="crayon-cn">0</span><span class="crayon-sy">]</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-5be29f4810a62701553610-4">&nbsp;</div><div class="crayon-line" id="crayon-5be29f4810a62701553610-5">   <span class="crayon-v">report</span><span class="crayon-sy">.</span><span class="crayon-e">names</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-st">forEach</span><span class="crayon-sy">(</span><span class="crayon-t">function</span><span class="crayon-sy">(</span><span class="crayon-r">name</span><span class="crayon-sy">)</span><span class="crayon-h"> </span><span class="crayon-sy">{</span></div><div class="crayon-line crayon-striped-line" id="crayon-5be29f4810a62701553610-6">&nbsp;</div><div class="crayon-line" id="crayon-5be29f4810a62701553610-7">       <span class="crayon-v">console</span><span class="crayon-sy">.</span><span class="crayon-e">log</span><span class="crayon-sy">(</span><span class="crayon-r">name</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-v">report</span><span class="crayon-sy">.</span><span class="crayon-e">stat</span><span class="crayon-sy">(</span><span class="crayon-r">name</span><span class="crayon-sy">)</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-5be29f4810a62701553610-8">&nbsp;</div><div class="crayon-line" id="crayon-5be29f4810a62701553610-9">   <span class="crayon-sy">}</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-5be29f4810a62701553610-10">&nbsp;</div><div class="crayon-line" id="crayon-5be29f4810a62701553610-11"><span class="crayon-sy">)</span><span class="crayon-sy">}</span></div></div></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0014 seconds] -->
+<p>Keep in mind that there are quite a few differences between these statistics (which chrome currently exposes in getStats) and the specification. As a rule of thumb, any key name that ends with “Id” contains a pointer to a different report whose id attribute matches the value of the key. So all of these reports are connected to each other. Also note that most values are string even if they look like numbers of boolean values.</p>
+<p>The most important attribute of the RTCStatsReport is the type of the report. There are quite a few of them:</p>
+<ul>
+<li style="font-weight: 400;">googTrack</li>
+<li style="font-weight: 400;">googLibjingleSession</li>
+<li style="font-weight: 400;">googCertificate</li>
+<li style="font-weight: 400;">googComponent</li>
+<li style="font-weight: 400;">googCandidatePair</li>
+<li style="font-weight: 400;">localCandidate</li>
+<li style="font-weight: 400;">remoteCandidate</li>
+<li style="font-weight: 400;">ssrc</li>
+<li style="font-weight: 400;">VideoBWE</li>
+</ul>
+<p>Lets drill down into these reports.</p>
+<h3>googTrack and googLibjingleSession reports</h3>
+<p>The <b>googTrack</b> and <b>googLibjingleSession</b> don’t contain much information so we’ll skip them.</p>
+<h3>googCertificate report</h3>
+<p>The <b>googCertificate</b> report contains some information about the DTLS certificate used by the local side and the peer such as the certificate itself (encoded as DER and wrapped in base64 which means you can decode it using openssls x509 command if you want to), the fingerprint and the hash algorithm. This is mostly as specified in the <a href="https://w3c.github.io/webrtc-stats/#certificatestats-dict*">RTCCertificateStats dictionary</a>.</p>
+<h3>googComponent report</h3>
+<p>The <b>googComponent</b> report is acting as a glue between the certificate statistics and the connection. It contains a pointer to the currently active candidate pair (described in the next section) as well as information about the ciphersuite used for DTLS and the SRTP cipher.</p>
+<h3>googCandidatePair report</h3>
+<p>A report with a type of <b>googCandidatePair</b> describes a pair of ICE candidates, i.e. the low-level connection. From this report you can get quite some information such as:</p>
+<ul>
+<li style="font-weight: 400;">The overall number of packets and bytes sent and received (bytesSent, bytesReceived, packetsSent; packetsReceived is missing for unknown reasons). This is the raw UDP or TCP bytes including RTP headers</li>
+<li style="font-weight: 400;">Whether this is the active connection (<b>googActiveConnection </b>is “true” in that case and “false” otherwise). Most of the time you will be interested only in the statistics of the active candidate pair. The spec equivalent can be found <a href="https://w3c.github.io/webrtc-stats/#transportstats-dict*">here</a></li>
+<li style="font-weight: 400;">The number of STUN request and responses sent and received (<b>requestsSent </b>and <b>responsesReceived</b>; <b>requestsReceived </b>and <b>responsesSent</b>) which <a href="https://w3c.github.io/webrtc-stats/#dom-rtcicecandidatepairstats-requestsreceived">count the number of incoming and outgoing STUN requests</a> that are used in the ICE process</li>
+<li style="font-weight: 400;">The round trip time of the last STUN request, <b>googRtt</b>. This is different from the <b>googRtt</b> on the <b>ssrc </b>report as we will see later</li>
+<li style="font-weight: 400;">The <b>localCandidateId </b>and <b>remoteCandidateId </b>which point to reports of type <b>localCandidate </b>and <b>remoteCandidate </b>which describe the local and remote ICE candidates. You can still see most of the information in the <b>googLocalAddress</b>, <b>googLocalCandidateType </b>etc values</li>
+<li style="font-weight: 400;"><b>googTransportType </b>specifies the transport type. Note that the value of this statistics will usually be ‘udp’, even in cases where TURN over TCP is used to connect to a TURN server. This will be ‘tcp’ only when <a href="https://webrtcglossary.com/ice-tcp/">ICE-TCP</a> is used</li>
+</ul>
+<p>There are a couple of things which are easily visualized here, like the number of bytes sent and received:</p>
+<p><img class="aligncenter size-full wp-image-446" src="https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-bytes-graph.png" alt="Bytes graph derived from WebRTC getstats data" width="800" height="180" srcset="https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-bytes-graph.png 800w, https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-bytes-graph-300x68.png 300w, https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-bytes-graph-768x173.png 768w" sizes="(max-width: 800px) 100vw, 800px" /></p>
+<h3>localCandidate and remoteCandidate reports</h3>
+<p>The <b>localCandidate</b> and <b>remoteCandidate</b> are thankfully as <a href="https://w3c.github.io/webrtc-stats/#icecandidate-dict*">described in the specification</a>, telling us the ip address, port number and type of the candidate. For TURN candidates this will soon also tell us <a href="https://github.com/w3c/webrtc-stats/issues/83">over which transport the candidate was allocated</a>.</p>
+<h3>Ssrc report</h3>
+<p>The <b>ssrc</b> report is one of the most important ones. There is one for each audio or video track sent or received over the peerconnection. It is the old version of what the specification calls <a href="https://w3c.github.io/webrtc-stats/#mststats-dict*">MediaStreamTrackStats</a> and <a href="https://w3c.github.io/webrtc-stats/#streamstats-dict*">RTPStreamStats</a>. The content depends quite a bit on whether this is an audio or video track and whether it is sent or received. Let us describe some common elements first:</p>
+<ul>
+<li style="font-weight: 400;">The <b>mediaType</b> describes whether we are looking at audio or video statistics</li>
+<li style="font-weight: 400;">The <b>ssrc </b>attribute specifies the ssrc that media is sent or received on</li>
+<li style="font-weight: 400;"><b>googTrackId</b> identifies the track that these statistics describe. This id can be found both in the SDP as well as the local or remote media stream tracks. Actually this is violating the rule that anything named “&#8230;Id” is a pointer to another report. Google got the goog stats wrong 😉</li>
+<li style="font-weight: 400;"><b>googRtt</b> describes the round-trip time. Unlike the earlier round trip time, this is measured from RTCP</li>
+<li style="font-weight: 400;"><b>transportId </b>is a pointer to the component used to transport this RTP stream. Usually (when BUNDLE) is used this will be the same for both audio and video streams</li>
+<li style="font-weight: 400;"><b>googCodecName </b>specifies the codec name. For audio this will typically be opus, for video this will be either VP8, VP9 or H264. You can also see information about what implementation is used in the <b>codecImplementationName </b>stat</li>
+<li style="font-weight: 400;">The number of <b>bytesSent</b>, <b>bytesReceived</b>, <b>packetsSent </b>and <b>packetsReceived </b>(depending on whether you send or receive) allow you to calculate bitrates. Those numbers are cumulative so you need to divide by the time since you last queried getStats. The <a href="http://w3c.github.io/webrtc-pc/#example">sample code </a>in the specification is quite nice but beware that Chrome <a href="https://bugs.chromium.org/p/webrtc/issues/detail?id=5361">sometimes resets those counters</a> so you might end up with negative rates.</li>
+<li style="font-weight: 400;"><b>packetsLost </b>gives you an indication about the number of packets lost. For the sender, this comes via RTCP, for the receiver it is measured locally. This is probably the most direct indicator you want to look at when looking at bad call quality</li>
+</ul>
+<h4>Voice specific</h4>
+<p>For audio tracks we have the <b>audioInputLevel </b>and <b>audioOutputLevel </b>respectively (the specification calls it <a href="https://w3c.github.io/webrtc-stats/#dom-rtcmediastreamtrackstats-audiolevel">audioLevel</a>) which gives an indication whether an audio signal is coming from the microphone (unless it is muted) or played through the speakers. This could be used to detect the <a href="https://bugs.chromium.org/p/webrtc/issues/detail?id=4799">infamous Chrome audio bug</a>. Also we get information about the <a href="https://webrtcglossary.com/jitter/">amount of Jitter received</a> and the <a href="https://webrtcglossary.com/jitter-buffer/">jitter buffer state</a> in <b>googJitterReceived </b>and <b>googJitterBufferReceived</b>.</p>
+<h4>Video specific</h4>
+<p>For video tracks we get two major pieces of information. The first is the number of <a href="https://webrtcglossary.com/nack/">NACK</a>, <a href="https://webrtcglossary.com/pli/">PLI</a> and <a href="https://webrtcglossary.com/fir/">FIR</a> packets sent in <b>googNacksSent</b>, <b>googPLIsSent </b>and <b>googFIRsSent </b>(and their respective Received) variants. This gives us an idea about how packet loss is affecting video quality.</p>
+<p>More importantly, we get information about the frame size and rate that is input (<b>googFrameWidthInput</b>, <b>googFrameHeightInput</b>, <b>googFrameRateInput</b>) and actually sent on the network (<b>googFrameWidthSent</b>, <b>googFrameHeightSent</b>, <b>googFrameRateSent</b>).<br />
+Similar data can be gathered on the receiving end in the <b>googFrameWidthReceived</b>, <b>googFrameHeightReceived </b>statistics. For the frame rate we even get it split up between the <b>googFrameRateReceived</b>, <b>googFrameRateDecoded </b>and <b>googFrameRateOutput</b>.</p>
+<p>On the encoder side we can observe difference between these values and get even more information about why the picture is scaled down. Typically this happens either because there is not enough CPU or bandwidth to transmit the full picture. In addition to lowering the frame rate (which could be observed by comparing differences between <b>googFrameRateInput </b>and <b>googFrameRateSent</b>) we get extra information about whether the resolution is adapted because of CPU issues (then <b>googCpuLimitedResolution </b>is true then &#8212; mind you that it is the string true, not a boolean value in Chrome’s current implementation) and if it is because the bandwidth is insufficient then <b>googBandwidthLimitedResolution </b>will be true. Whenever one of those conditions changes, the <b>googAdaptionChanges </b>counter increases.</p>
+<p>We can see such a change in this diagram:</p>
+<p><img class="aligncenter size-full wp-image-447" src="https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-width-graph.png" alt="Checking WebRTC video width in getstats" width="800" height="316" srcset="https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-width-graph.png 800w, https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-width-graph-300x119.png 300w, https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-width-graph-768x303.png 768w" sizes="(max-width: 800px) 100vw, 800px" /></p>
+<p>Here, packet loss is artificially generated. In response, Chrome tries to reduce the resolution first at t=184 where the green line showing the <b>googFrameWidthSent </b>starts to differ from the <b>googFrameWidthInput</b> shown in black. Next at t=186 frames are dropped and the input frame rate of 30fps (shown in light blue) is different from the frame rate sent (blue line) which is close to 0.</p>
+<p>In addition to these standard statistics, Chrome exposes a large number of statistics about the behaviour of the audio and video stack on the ssrc report. We will discuss them in a future post.</p>
+<h3>VideoBWE report</h3>
+<p>Last but not least the <b>VideoBWE</b> report. As the name suggests, it contains information about the bandwidth estimate that the peerconnection has. But there is quite a bit more useful information contained in this report:</p>
+<ul>
+<li style="font-weight: 400;"><b>googAvailableReceiveBandwidth</b> &#8211; the bandwidth that is available for receiving video data</li>
+<li style="font-weight: 400;"><b>googAvailableSendBandwidth</b> &#8211; the bandwidth that is available for sending video data</li>
+<li style="font-weight: 400;"><b>googTargetEncBitrate</b> &#8211; the target bitrate of the the video encoder. This tries to fill out the available bandwidth</li>
+<li style="font-weight: 400;"><b>googActualEncBitrate</b> &#8211; the bitrate coming out of the video encoder. This should usually match the target bitrate</li>
+<li style="font-weight: 400;"><b>googTransmitBitrate</b> &#8211; the bitrate actually transmitted. If this is very different from the actual encoder bitrate, this might be due to <a href="https://webrtcglossary.com/fec/">forward error correction</a></li>
+<li style="font-weight: 400;"><b>googRetransmitBitrate</b> &#8211; this allows measuring the bitrate of retransmits if RTX is used. This is usually an indication of packet loss.</li>
+<li style="font-weight: 400;"><b>googBucketDelay</b> &#8211; is a measure for Google’s “leaky bucket” strategy for dealing with large frames. Should be very small usually</li>
+</ul>
+<p>As you can see this report gives you quite a wealth of information about one of the most important aspects of the video quality &#8211; the available bandwidth. Checking the available send and receive bandwidth is often the first step before diving deeper into the ssrc reports. Because sometimes you might find behaviour like this which explains ‘bad quality’ complaints from users:</p>
+<p><img class="aligncenter size-full wp-image-448" src="https://testrtc.com/wp-content/uploads/2016/12/201612-WebRTC-bandwidth-estimation-graph.png" alt="Bandwidth estimation graph for WebRTC" width="800" height="173" srcset="https://testrtc.com/wp-content/uploads/2016/12/201612-WebRTC-bandwidth-estimation-graph.png 800w, https://testrtc.com/wp-content/uploads/2016/12/201612-WebRTC-bandwidth-estimation-graph-300x65.png 300w, https://testrtc.com/wp-content/uploads/2016/12/201612-WebRTC-bandwidth-estimation-graph-768x166.png 768w" sizes="(max-width: 800px) 100vw, 800px" /></p>
+<p>In this case “the bandwidth estimate dropped all the time” is a pretty good explanation for quality issues.</p>
+<h3>What’s next?</h3>
+<p>That’s a small part of what you can glean out of webrtc-internals. There’s more to it, which means Fippo and I will be churning out more posts in this serie of articles about webrtc-internals. If you are interested in keeping up with us, you might want to consider <a href="http://testrtc.com/subscribe/">subscribing</a>.</p>
+<p><strong>Huge thanks for Fippo in assisting with this one!</strong></p>
+</div><label class="single-tags"><img width="20px" src="https://testrtc.com/wp-content/themes/testrtc-genesis/images/tagicon.png"><span><a href="https://testrtc.com/tag/analysis/" rel="tag">analysis</a>, <a href="https://testrtc.com/tag/debugging/" rel="tag">debugging</a>, <a href="https://testrtc.com/tag/webrtc-internals/" rel="tag">webrtc-internals</a></span></label>	<div class='author-bio'>
+		<img alt='' src='https://secure.gravatar.com/avatar/71e7dc653f8adeeab10b764ede939a86?s=96&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/71e7dc653f8adeeab10b764ede939a86?s=192&#038;d=mm&#038;r=g 2x' class='avatar avatar-96 photo' height='96' width='96' />		<p class='author'>Tsahi Levent-Levi</p>
+		<p>Tsahi Levent-Levi is the co-founder of testRTC, as well as author of BlogGeek.me.</p>
+	</div>
+	<div class='comment-count'>
+		14 comments	</div>
+	<div class='comments-wrapper line-top'>
+				<ol class="commentlist">
+    <liclass="comment even thread-even depth-1 parent"id="comment-122">        <div id="div-comment-122" class="comment-body">
+    <div class="comment-author vcard">
+        <img alt='' src='https://secure.gravatar.com/avatar/5a9bbcc21d5909746ec3a960b85d23d6?s=50&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/5a9bbcc21d5909746ec3a960b85d23d6?s=100&#038;d=mm&#038;r=g 2x' class='avatar avatar-50 photo' height='50' width='50' />        <p style='padding-left:70px;'>
+            <cite class="fn"><a href='https://cambooster.com/' rel='external nofollow' class='url'>Anton Klein</a> says:</cite>            <!--div class="comment-meta commentmetadata"-->
+            <a class='metadata-date' href="https://testrtc.com/webrtc-internals-parameters/#comment-122">
+                2018-07-26 00:04:00            </a>
+                        <!--/div-->
+        </p>
+        <div class='comment-text'>
+            <p>Hi,<br />
+has anyone seen a table with resolution and min. required bitrate? We would like to avoid googBandwidthLimitedResolution and check the available bandwidth before &#8220;call&#8221; starts, but we do not have a reference table with resolutions and required bitrates to reduce the resolution to an acceptable level before call.</p>
+        </div>
+    </div>
+    <!--div class="reply"-->
+    <a rel='nofollow' class='comment-reply-link' href='#comment-122' onclick='return addComment.moveForm( "div-comment-122", "122", "respond", "385" )' aria-label='Reply to Anton Klein'>Reply</a>    <!--/div-->
+        </div>
+    <ul class="children">
+    <liclass="comment byuser comment-author-testrtc bypostauthor odd alt depth-2"id="comment-123">        <div id="div-comment-123" class="comment-body">
+    <div class="comment-author vcard">
+        <img alt='' src='https://secure.gravatar.com/avatar/71e7dc653f8adeeab10b764ede939a86?s=50&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/71e7dc653f8adeeab10b764ede939a86?s=100&#038;d=mm&#038;r=g 2x' class='avatar avatar-50 photo' height='50' width='50' />        <p style='padding-left:70px;'>
+            <cite class="fn"><a href='http://testrtc.wpengine.com' rel='external nofollow' class='url'>Tsahi Levent-Levi</a> says:</cite>            <!--div class="comment-meta commentmetadata"-->
+            <a class='metadata-date' href="https://testrtc.com/webrtc-internals-parameters/#comment-123">
+                2018-07-26 00:08:00            </a>
+                        <!--/div-->
+        </p>
+        <div class='comment-text'>
+            <p>Anton,</p>
+<p>This would be a trial and error thing, where you won&#8217;t get to the numbers you wish to find easily. Different browsers may have different tables for such data, which will also differ based on the codec, frame rate requested and a myriad of other parameters. It may also change across versions of the same browser.</p>
+<p>The notion is that the browser should do its best to decide what resolution to use at what bitrate, though I am assuming that isn&#8217;t always the case.</p>
+        </div>
+    </div>
+    <!--div class="reply"-->
+    <a rel='nofollow' class='comment-reply-link' href='#comment-123' onclick='return addComment.moveForm( "div-comment-123", "123", "respond", "385" )' aria-label='Reply to Tsahi Levent-Levi'>Reply</a>    <!--/div-->
+        </div>
+    </li><!-- #comment-## -->
+</ul><!-- .children -->
+</li><!-- #comment-## -->
+    <liclass="comment even thread-odd thread-alt depth-1 parent"id="comment-120">        <div id="div-comment-120" class="comment-body">
+    <div class="comment-author vcard">
+        <img alt='' src='https://secure.gravatar.com/avatar/7419dddc3d71d23f71f15f18c8a4dacf?s=50&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/7419dddc3d71d23f71f15f18c8a4dacf?s=100&#038;d=mm&#038;r=g 2x' class='avatar avatar-50 photo' height='50' width='50' />        <p style='padding-left:70px;'>
+            <cite class="fn"><a href='https://maria-src.com/' rel='external nofollow' class='url'>Maria Fernandez (elbecita)</a> says:</cite>            <!--div class="comment-meta commentmetadata"-->
+            <a class='metadata-date' href="https://testrtc.com/webrtc-internals-parameters/#comment-120">
+                2018-07-18 17:51:00            </a>
+                        <!--/div-->
+        </p>
+        <div class='comment-text'>
+            <p>This article is spot on! Thank you very much, it has helped me a lot. I have a question very much related to video stats:<br />
+Imagine I have someone streaming video, and their viewers start to see a quality degradation. Let&#8217;s say this is because a buggy connection (packet loss, latency, etc) on the presenter side. I am trying to identify this, based on the presenter stats. So far I think the best metrics I got are the frame rate input and the frame rate sent. I am using this rule: if for some X time the (frameRateSent / frameRateInput) falls below 0.5 (means frame rate is being reduced by half or less for some amount of time, without recovering), I consider the presenter really is in a bad connection and I do take some action (I could think he&#8217;s on a VPN with many UDP packets loss and I could force a webrtc reconnection on turn tcp mode for instance, but that is for another discussion).</p>
+<p>What do you think? I&#8217;ve played with plis and firs and nacks, but I don&#8217;t find that easy to determine when is the moment to take action&#8230;</p>
+        </div>
+    </div>
+    <!--div class="reply"-->
+    <a rel='nofollow' class='comment-reply-link' href='#comment-120' onclick='return addComment.moveForm( "div-comment-120", "120", "respond", "385" )' aria-label='Reply to Maria Fernandez (elbecita)'>Reply</a>    <!--/div-->
+        </div>
+    <ul class="children">
+    <liclass="comment byuser comment-author-testrtc bypostauthor odd alt depth-2"id="comment-121">        <div id="div-comment-121" class="comment-body">
+    <div class="comment-author vcard">
+        <img alt='' src='https://secure.gravatar.com/avatar/71e7dc653f8adeeab10b764ede939a86?s=50&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/71e7dc653f8adeeab10b764ede939a86?s=100&#038;d=mm&#038;r=g 2x' class='avatar avatar-50 photo' height='50' width='50' />        <p style='padding-left:70px;'>
+            <cite class="fn"><a href='http://testrtc.wpengine.com' rel='external nofollow' class='url'>Tsahi Levent-Levi</a> says:</cite>            <!--div class="comment-meta commentmetadata"-->
+            <a class='metadata-date' href="https://testrtc.com/webrtc-internals-parameters/#comment-121">
+                2018-07-20 16:43:00            </a>
+                        <!--/div-->
+        </p>
+        <div class='comment-text'>
+            <p>Maria,</p>
+<p>Everyone I know is developing and defining their own specialized heuristics on this one.</p>
+<p>We&#8217;re leaning towards the values of bitrate, framerate, packet loss and jitter. We&#8217;re also in the process of introducing it as an integral part of testRTC &#8211; giving media scoring to test runs.</p>
+        </div>
+    </div>
+    <!--div class="reply"-->
+    <a rel='nofollow' class='comment-reply-link' href='#comment-121' onclick='return addComment.moveForm( "div-comment-121", "121", "respond", "385" )' aria-label='Reply to Tsahi Levent-Levi'>Reply</a>    <!--/div-->
+        </div>
+    </li><!-- #comment-## -->
+</ul><!-- .children -->
+</li><!-- #comment-## -->
+    <liclass="comment even thread-even depth-1 parent"id="comment-118">        <div id="div-comment-118" class="comment-body">
+    <div class="comment-author vcard">
+        <img alt='' src='https://secure.gravatar.com/avatar/30bc6db81c5e2b02fbb3e65e414aecea?s=50&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/30bc6db81c5e2b02fbb3e65e414aecea?s=100&#038;d=mm&#038;r=g 2x' class='avatar avatar-50 photo' height='50' width='50' />        <p style='padding-left:70px;'>
+            <cite class="fn">Jinchen says:</cite>            <!--div class="comment-meta commentmetadata"-->
+            <a class='metadata-date' href="https://testrtc.com/webrtc-internals-parameters/#comment-118">
+                2018-07-05 03:03:00            </a>
+                        <!--/div-->
+        </p>
+        <div class='comment-text'>
+            <p>Hi<br />
+Could you please explain what is the following two parameters means?<br />
+googAvgEncodeMs and googEncodeUsagePercent, seems they are missing in this blog..<br />
+Thanks a lot!</p>
+        </div>
+    </div>
+    <!--div class="reply"-->
+    <a rel='nofollow' class='comment-reply-link' href='#comment-118' onclick='return addComment.moveForm( "div-comment-118", "118", "respond", "385" )' aria-label='Reply to Jinchen'>Reply</a>    <!--/div-->
+        </div>
+    <ul class="children">
+    <liclass="comment byuser comment-author-testrtc bypostauthor odd alt depth-2"id="comment-119">        <div id="div-comment-119" class="comment-body">
+    <div class="comment-author vcard">
+        <img alt='' src='https://secure.gravatar.com/avatar/71e7dc653f8adeeab10b764ede939a86?s=50&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/71e7dc653f8adeeab10b764ede939a86?s=100&#038;d=mm&#038;r=g 2x' class='avatar avatar-50 photo' height='50' width='50' />        <p style='padding-left:70px;'>
+            <cite class="fn"><a href='http://testrtc.wpengine.com' rel='external nofollow' class='url'>Tsahi Levent-Levi</a> says:</cite>            <!--div class="comment-meta commentmetadata"-->
+            <a class='metadata-date' href="https://testrtc.com/webrtc-internals-parameters/#comment-119">
+                2018-07-05 08:38:00            </a>
+                        <!--/div-->
+        </p>
+        <div class='comment-text'>
+            <p>Jinchen,</p>
+<p>I am not an expert in each and every of these parameters, but here&#8217;s my guess about these two:</p>
+<p>googAvgEncodeMs &#8211; the time it takes for the encoder on average to encode a frame. If this is video, and you&#8217;re doing 30 fps, it should be lower than 30 millisecond to be able to cope with the throughput</p>
+<p>googlEncodeUsagePercent &#8211; how much of the CPU is being invested in encoding</p>
+<p>For the most part, you won&#8217;t be needing to look this further down into the internals of WebRTC.</p>
+        </div>
+    </div>
+    <!--div class="reply"-->
+    <a rel='nofollow' class='comment-reply-link' href='#comment-119' onclick='return addComment.moveForm( "div-comment-119", "119", "respond", "385" )' aria-label='Reply to Tsahi Levent-Levi'>Reply</a>    <!--/div-->
+        </div>
+    </li><!-- #comment-## -->
+</ul><!-- .children -->
+</li><!-- #comment-## -->
+    <liclass="comment even thread-odd thread-alt depth-1 parent"id="comment-92">        <div id="div-comment-92" class="comment-body">
+    <div class="comment-author vcard">
+        <img alt='' src='https://secure.gravatar.com/avatar/f7a4afc04f7fe48d1a75722d1d67781d?s=50&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/f7a4afc04f7fe48d1a75722d1d67781d?s=100&#038;d=mm&#038;r=g 2x' class='avatar avatar-50 photo' height='50' width='50' />        <p style='padding-left:70px;'>
+            <cite class="fn">dula says:</cite>            <!--div class="comment-meta commentmetadata"-->
+            <a class='metadata-date' href="https://testrtc.com/webrtc-internals-parameters/#comment-92">
+                2017-11-09 12:58:00            </a>
+                        <!--/div-->
+        </p>
+        <div class='comment-text'>
+            <p>Hi,</p>
+<p>Can we generate Ssrc report for the android native webRTC application,</p>
+        </div>
+    </div>
+    <!--div class="reply"-->
+    <a rel='nofollow' class='comment-reply-link' href='#comment-92' onclick='return addComment.moveForm( "div-comment-92", "92", "respond", "385" )' aria-label='Reply to dula'>Reply</a>    <!--/div-->
+        </div>
+    <ul class="children">
+    <liclass="comment byuser comment-author-testrtc bypostauthor odd alt depth-2"id="comment-93">        <div id="div-comment-93" class="comment-body">
+    <div class="comment-author vcard">
+        <img alt='' src='https://secure.gravatar.com/avatar/71e7dc653f8adeeab10b764ede939a86?s=50&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/71e7dc653f8adeeab10b764ede939a86?s=100&#038;d=mm&#038;r=g 2x' class='avatar avatar-50 photo' height='50' width='50' />        <p style='padding-left:70px;'>
+            <cite class="fn"><a href='http://testrtc.wpengine.com' rel='external nofollow' class='url'>Tsahi Levent-Levi</a> says:</cite>            <!--div class="comment-meta commentmetadata"-->
+            <a class='metadata-date' href="https://testrtc.com/webrtc-internals-parameters/#comment-93">
+                2017-11-09 15:10:00            </a>
+                        <!--/div-->
+        </p>
+        <div class='comment-text'>
+            <p>Sure. You&#8217;ll need to dig into the code and capture the APIs that handle the RTCP stats reporting.</p>
+        </div>
+    </div>
+    <!--div class="reply"-->
+    <a rel='nofollow' class='comment-reply-link' href='#comment-93' onclick='return addComment.moveForm( "div-comment-93", "93", "respond", "385" )' aria-label='Reply to Tsahi Levent-Levi'>Reply</a>    <!--/div-->
+        </div>
+    </li><!-- #comment-## -->
+</ul><!-- .children -->
+</li><!-- #comment-## -->
+    <liclass="comment even thread-even depth-1 parent"id="comment-72">        <div id="div-comment-72" class="comment-body">
+    <div class="comment-author vcard">
+        <img alt='' src='https://secure.gravatar.com/avatar/ea7fc6b36233e02e3a1e164498646709?s=50&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/ea7fc6b36233e02e3a1e164498646709?s=100&#038;d=mm&#038;r=g 2x' class='avatar avatar-50 photo' height='50' width='50' />        <p style='padding-left:70px;'>
+            <cite class="fn">Ray says:</cite>            <!--div class="comment-meta commentmetadata"-->
+            <a class='metadata-date' href="https://testrtc.com/webrtc-internals-parameters/#comment-72">
+                2017-08-27 22:33:00            </a>
+                        <!--/div-->
+        </p>
+        <div class='comment-text'>
+            <p>I am trying this but apparently it is not really working?  All i see is a Create Dump.  When I click it, all I see it:<br />
+{<br />
+ &#8220;getUserMedia&#8221;: [<br />
+  {<br />
+   &#8220;audio&#8221;: &#8220;&#8221;,<br />
+   &#8220;origin&#8221;: &#8220;https://192.168.0.16:9001&#8221;,<br />
+   &#8220;pid&#8221;: 2592,<br />
+   &#8220;rid&#8221;: 19,<br />
+   &#8220;video&#8221;: &#8220;{width: {exact: 1024}, height: {exact: 768}, aspectRatio: {ideal: 1.77}}&#8221;<br />
+  },<br />
+  {<br />
+   &#8220;audio&#8221;: &#8220;&#8221;,<br />
+   &#8220;origin&#8221;: &#8220;https://192.168.0.16:9001&#8221;,<br />
+   &#8220;pid&#8221;: 2592,<br />
+   &#8220;rid&#8221;: 19,<br />
+   &#8220;video&#8221;: &#8220;{width: {exact: 1024}, height: {exact: 768}, aspectRatio: {ideal: 1.77}}&#8221;<br />
+  },<br />
+  {<br />
+   &#8220;audio&#8221;: &#8220;&#8221;,<br />
+   &#8220;origin&#8221;: &#8220;https://192.168.0.16:9001&#8221;,<br />
+   &#8220;pid&#8221;: 2592,<br />
+   &#8220;rid&#8221;: 19,<br />
+   &#8220;video&#8221;: &#8220;{width: {exact: 1024}, height: {exact: 768}, aspectRatio: {ideal: 1.77}}&#8221;<br />
+  },<br />
+  {<br />
+   &#8220;audio&#8221;: &#8220;&#8221;,<br />
+   &#8220;origin&#8221;: &#8220;https://192.168.0.16:9001&#8221;,<br />
+   &#8220;pid&#8221;: 2592,<br />
+   &#8220;rid&#8221;: 19,<br />
+   &#8220;video&#8221;: &#8220;{width: {exact: 1024}, height: {exact: 768}, aspectRatio: {ideal: 1.77}}&#8221;<br />
+  },<br />
+  {<br />
+   &#8220;audio&#8221;: &#8220;&#8221;,<br />
+   &#8220;origin&#8221;: &#8220;https://192.168.0.16:9001&#8221;,<br />
+   &#8220;pid&#8221;: 2592,<br />
+   &#8220;rid&#8221;: 19,<br />
+   &#8220;video&#8221;: &#8220;{width: {exact: 1024}, height: {exact: 768}, aspectRatio: {ideal: 1.77}}&#8221;<br />
+  },<br />
+  {<br />
+   &#8220;audio&#8221;: &#8220;&#8221;,<br />
+   &#8220;origin&#8221;: &#8220;https://192.168.0.16:9001&#8221;,<br />
+   &#8220;pid&#8221;: 2592,<br />
+   &#8220;rid&#8221;: 19,<br />
+   &#8220;video&#8221;: &#8220;{width: {exact: 1024}, height: {exact: 768}, aspectRatio: {ideal: 1.77}}&#8221;<br />
+  },<br />
+  {<br />
+   &#8220;audio&#8221;: &#8220;&#8221;,<br />
+   &#8220;origin&#8221;: &#8220;https://192.168.0.16:9001&#8221;,<br />
+   &#8220;pid&#8221;: 2592,<br />
+   &#8220;rid&#8221;: 19,<br />
+   &#8220;video&#8221;: &#8220;{width: {exact: 1024}, height: {exact: 768}, aspectRatio: {ideal: 1.77}}&#8221;<br />
+  }<br />
+ ],<br />
+ &#8220;PeerConnections&#8221;: {},<br />
+ &#8220;UserAgent&#8221;: &#8220;Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.101 Safari/537.36&#8221;<br />
+}</p>
+<p>What am I missing here?</p>
+        </div>
+    </div>
+    <!--div class="reply"-->
+    <a rel='nofollow' class='comment-reply-link' href='#comment-72' onclick='return addComment.moveForm( "div-comment-72", "72", "respond", "385" )' aria-label='Reply to Ray'>Reply</a>    <!--/div-->
+        </div>
+    <ul class="children">
+    <liclass="comment byuser comment-author-testrtc bypostauthor odd alt depth-2"id="comment-73">        <div id="div-comment-73" class="comment-body">
+    <div class="comment-author vcard">
+        <img alt='' src='https://secure.gravatar.com/avatar/71e7dc653f8adeeab10b764ede939a86?s=50&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/71e7dc653f8adeeab10b764ede939a86?s=100&#038;d=mm&#038;r=g 2x' class='avatar avatar-50 photo' height='50' width='50' />        <p style='padding-left:70px;'>
+            <cite class="fn"><a href='http://testrtc.wpengine.com' rel='external nofollow' class='url'>Tsahi Levent-Levi</a> says:</cite>            <!--div class="comment-meta commentmetadata"-->
+            <a class='metadata-date' href="https://testrtc.com/webrtc-internals-parameters/#comment-73">
+                2017-08-27 22:55:00            </a>
+                        <!--/div-->
+        </p>
+        <div class='comment-text'>
+            <p>Latest Chrome versions require opening the webrtc-internals dump before anything else you do on another tab with WebRTC in order to &#8220;catch&#8221; the API calls.<br />
+It might be it.<br />
+It might also be the fact that there&#8217;s no media flowing?</p>
+        </div>
+    </div>
+    <!--div class="reply"-->
+    <a rel='nofollow' class='comment-reply-link' href='#comment-73' onclick='return addComment.moveForm( "div-comment-73", "73", "respond", "385" )' aria-label='Reply to Tsahi Levent-Levi'>Reply</a>    <!--/div-->
+        </div>
+    </li><!-- #comment-## -->
+</ul><!-- .children -->
+</li><!-- #comment-## -->
+    <liclass="comment even thread-odd thread-alt depth-1 parent"id="comment-38">        <div id="div-comment-38" class="comment-body">
+    <div class="comment-author vcard">
+        <img alt='' src='https://secure.gravatar.com/avatar/028ce4d3bbf71d3f26211ccf628a0b55?s=50&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/028ce4d3bbf71d3f26211ccf628a0b55?s=100&#038;d=mm&#038;r=g 2x' class='avatar avatar-50 photo' height='50' width='50' />        <p style='padding-left:70px;'>
+            <cite class="fn">Mir Nar says:</cite>            <!--div class="comment-meta commentmetadata"-->
+            <a class='metadata-date' href="https://testrtc.com/webrtc-internals-parameters/#comment-38">
+                2017-02-14 18:14:00            </a>
+                        <!--/div-->
+        </p>
+        <div class='comment-text'>
+            <p>Hello,<br />
+ I would like to get to know more about:</p>
+<p>googCurrentDelayMs<br />
+googJitterBufferMs<br />
+googJitterReceived<br />
+googPreferredJitterBufferMs</p>
+<p>Can you please point me to the right source of information regarding this?</p>
+        </div>
+    </div>
+    <!--div class="reply"-->
+    <a rel='nofollow' class='comment-reply-link' href='#comment-38' onclick='return addComment.moveForm( "div-comment-38", "38", "respond", "385" )' aria-label='Reply to Mir Nar'>Reply</a>    <!--/div-->
+        </div>
+    <ul class="children">
+    <liclass="comment odd alt depth-2"id="comment-61">        <div id="div-comment-61" class="comment-body">
+    <div class="comment-author vcard">
+        <img alt='' src='https://secure.gravatar.com/avatar/bb79ac351ec9bd4e02aa18a8837178da?s=50&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/bb79ac351ec9bd4e02aa18a8837178da?s=100&#038;d=mm&#038;r=g 2x' class='avatar avatar-50 photo' height='50' width='50' />        <p style='padding-left:70px;'>
+            <cite class="fn">Sam Joseph says:</cite>            <!--div class="comment-meta commentmetadata"-->
+            <a class='metadata-date' href="https://testrtc.com/webrtc-internals-parameters/#comment-61">
+                2017-07-19 23:26:00            </a>
+                        <!--/div-->
+        </p>
+        <div class='comment-text'>
+            <p>I also have similar questions. What does currentDelay really mean?</p>
+        </div>
+    </div>
+    <!--div class="reply"-->
+    <a rel='nofollow' class='comment-reply-link' href='#comment-61' onclick='return addComment.moveForm( "div-comment-61", "61", "respond", "385" )' aria-label='Reply to Sam Joseph'>Reply</a>    <!--/div-->
+        </div>
+    </li><!-- #comment-## -->
+</ul><!-- .children -->
+</li><!-- #comment-## -->
+    <liclass="pingback even thread-even depth-1"id="comment-36">        <div id="div-comment-36" class="comment-body">
+    <div class="comment-author vcard">
+                <p style='padding-left:70px;'>
+            <cite class="fn"><a href='https://bloggeek.me/webrtc-rtcpeerconnection-one-per-stream/' rel='external nofollow' class='url'>WebRTC RTCPeerConnection. One to rule them all, or one per stream? &bull; BlogGeek.me</a> says:</cite>            <!--div class="comment-meta commentmetadata"-->
+            <a class='metadata-date' href="https://testrtc.com/webrtc-internals-parameters/#comment-36">
+                2017-01-09 12:00:00            </a>
+                        <!--/div-->
+        </p>
+        <div class='comment-text'>
+            <p>[&#8230;] you are following the series of articles Fippo wrote with me on testRTC about how to read webrtc-internals, then you should know a thing or two about its [&#8230;]</p>
+        </div>
+    </div>
+    <!--div class="reply"-->
+    <a rel='nofollow' class='comment-reply-link' href='#comment-36' onclick='return addComment.moveForm( "div-comment-36", "36", "respond", "385" )' aria-label='Reply to WebRTC RTCPeerConnection. One to rule them all, or one per stream? &bull; BlogGeek.me'>Reply</a>    <!--/div-->
+        </div>
+    </li><!-- #comment-## -->
+    <liclass="pingback odd alt thread-odd thread-alt depth-1"id="comment-32">        <div id="div-comment-32" class="comment-body">
+    <div class="comment-author vcard">
+                <p style='padding-left:70px;'>
+            <cite class="fn"><a href='http://realtimeweekly.co/2016-12-12/' rel='external nofollow' class='url'>RealTimeWeekly | RealTimeWeekly #159</a> says:</cite>            <!--div class="comment-meta commentmetadata"-->
+            <a class='metadata-date' href="https://testrtc.com/webrtc-internals-parameters/#comment-32">
+                2016-12-12 12:03:00            </a>
+                        <!--/div-->
+        </p>
+        <div class='comment-text'>
+            <p>[&#8230;] What do the Parameters in webrtc-internals Really Mean? [&#8230;]</p>
+        </div>
+    </div>
+    <!--div class="reply"-->
+    <a rel='nofollow' class='comment-reply-link' href='#comment-32' onclick='return addComment.moveForm( "div-comment-32", "32", "respond", "385" )' aria-label='Reply to RealTimeWeekly | RealTimeWeekly #159'>Reply</a>    <!--/div-->
+        </div>
+    </li><!-- #comment-## -->
+				</ol>
+					<div id="respond" class="comment-respond">
+		<h3 id="reply-title" class="comment-reply-title">Leave a reply <small><a rel="nofollow" id="cancel-comment-reply-link" href="/webrtc-internals-parameters/#respond" style="display:none;">Cancel reply</a></small></h3>			<form action="https://testrtc.com/wp-comments-post.php?wpe-comment-post=testrtc" method="post" id="commentform" class="comment-form" novalidate>
+				<p class="comment-notes"><span id="email-notes">Your email address will not be published.</span> Required fields are marked <span class="required">*</span></p><p class="comment-form-comment"><label for="comment">Comment <span class="required">*</span></label><textarea id="comment" name="comment" aria-required="true"></textarea></p><p class="comment-form-author"><label for="author">Name <span class="required">*</span></label> <input id="author" name="author" type="text" value="" size="30" maxlength="245" required='required' /></p>
+<p class="comment-form-email"><label for="email">Email <span class="required">*</span></label> <input id="email" name="email" type="email" value="" size="30" maxlength="100" aria-describedby="email-notes" required='required' /></p>
+<p class="comment-form-url"><label for="url">Website</label> <input id="url" name="url" type="url" value="" size="30" maxlength="200" /></p>
+<p class="form-submit"><input name="submit" type="submit" id="submit" class="button" value="Post Comment" /> <input type='hidden' name='comment_post_ID' value='385' id='comment_post_ID' />
+<input type='hidden' name='comment_parent' id='comment_parent' value='0' />
+</p><p style="display: none;"><input type="hidden" id="akismet_comment_nonce" name="akismet_comment_nonce" value="7c8e8d7a00" /></p>
+<!-- Anti-spam plugin v.5.2 wordpress.org/plugins/anti-spam/ -->
+		<p class="antispam-group antispam-group-q" style="clear: both;">
+			<label>Current <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0f766a4f7d">[email&#160;protected]</a> <span class="required">*</span></label>
+			<input type="hidden" name="antspm-a" class="antispam-control antispam-control-a" value="2018" />
+			<input type="text" name="antspm-q" class="antispam-control antispam-control-q" value="5.2" autocomplete="off" />
+		</p>
+		<p class="antispam-group antispam-group-e" style="display: none;">
+			<label>Leave this field empty</label>
+			<input type="text" name="antspm-e-email-url-website" class="antispam-control antispam-control-e" value="" autocomplete="off" />
+		</p>
+<p style="display: none;"><input type="hidden" id="ak_js" name="ak_js" value="233"/></p>			</form>
+			</div><!-- #respond -->
+					<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+					// jQuery('.comment-form-author>input').attr('placeholder',jQuery('.comment-form-author').text());
+					// jQuery('.comment-form-author>label').remove();
+					// jQuery('.comment-form-email>input').attr('placeholder',jQuery('.comment-form-email').text());
+					// jQuery('.comment-form-email>label').remove();
+					// jQuery('.comment-form-url>input').attr('placeholder',jQuery('.comment-form-url').text());
+					// jQuery('.comment-form-url>label').remove();
+				</script>
+	</div>
+</main><aside class="sidebar sidebar-primary widget-area" role="complementary" aria-label="Primary Sidebar" itemscope itemtype="https://schema.org/WPSideBar">		<ul id="sidebar">
+			<li id="search-3" class="widget widget_search"><form class="search-form" itemprop="potentialAction" itemscope itemtype="https://schema.org/SearchAction" method="get" action="https://testrtc.com/" role="search"><meta itemprop="target" content="https://testrtc.com/?s={s}"/><input itemprop="query-input" type="search" name="s" placeholder="Search this website &#x2026;" /><input type="submit" value="Search"  /></form></li><li id="gform_widget-2" class="widget gform_widget"><h2 class="widgettitle">SUBSCRIBE TO OUR UPDATES</h2><link rel='stylesheet' id='gforms_reset_css-css'  href='https://testrtc.com/wp-content/plugins/gravityforms/css/formreset.min.css?ver=2.2.1' type='text/css' media='all' />
+<link rel='stylesheet' id='gforms_formsmain_css-css'  href='https://testrtc.com/wp-content/plugins/gravityforms/css/formsmain.min.css?ver=2.2.1' type='text/css' media='all' />
+<link rel='stylesheet' id='gforms_ready_class_css-css'  href='https://testrtc.com/wp-content/plugins/gravityforms/css/readyclass.min.css?ver=2.2.1' type='text/css' media='all' />
+<link rel='stylesheet' id='gforms_browsers_css-css'  href='https://testrtc.com/wp-content/plugins/gravityforms/css/browsers.min.css?ver=2.2.1' type='text/css' media='all' />
+                <div class='gf_browser_unknown gform_wrapper' id='gform_wrapper_2' ><form method='post' enctype='multipart/form-data'  id='gform_2'  action='/webrtc-internals-parameters/'>
+                        <div class='gform_heading'>
+                            <span class='gform_description'>Be the first to know about WebRTC testing and monitoring</span>
+                        </div>
+                        <div class='gform_body'><ul id='gform_fields_2' class='gform_fields top_label form_sublabel_below description_below'><li id='field_2_1' class='gfield gfield_contains_required field_sublabel_below field_description_below gfield_visibility_visible' ><label class='gfield_label' for='input_2_1' ><span class='gfield_required'>*</span></label><div class='ginput_container ginput_container_email'>
+                            <input name='input_1' id='input_2_1' type='text' value='' class='large' tabindex='1'   placeholder='Your email' aria-required="true" aria-invalid="false"/>
+                        </div></li><li id='field_2_2' class='gfield gform_validation_container field_sublabel_below field_description_below gfield_visibility_' ><label class='gfield_label' for='input_2_2' >Email</label><div class='ginput_container'><input name='input_2' id='input_2_2' type='text' value='' /></div><div class='gfield_description'>This field is for validation purposes and should be left unchanged.</div></li>
+                            </ul></div>
+        <div class='gform_footer top_label'> <input type='submit' id='gform_submit_button_2' class='gform_button button' value='Subscribe' tabindex='2' onclick='if(window["gf_submitting_2"]){return false;}  window["gf_submitting_2"]=true;  ' onkeypress='if( event.keyCode == 13 ){ if(window["gf_submitting_2"]){return false;} window["gf_submitting_2"]=true;  jQuery("#gform_2").trigger("submit",[true]); }' />
+            <input type='hidden' class='gform_hidden' name='is_submit_2' value='1' />
+            <input type='hidden' class='gform_hidden' name='gform_submit' value='2' />
+            <input type='hidden' class='gform_hidden' name='gform_unique_id' value='' />
+            <input type='hidden' class='gform_hidden' name='state_2' value='WyJbXSIsIjQyZDEyY2U2NDE5Y2UwZmVhNDU3MmRkY2Q3ZjEzYzc3Il0=' />
+            <input type='hidden' class='gform_hidden' name='gform_target_page_number_2' id='gform_target_page_number_2' value='0' />
+            <input type='hidden' class='gform_hidden' name='gform_source_page_number_2' id='gform_source_page_number_2' value='1' />
+            <input type='hidden' name='gform_field_values' value='' />
+        </div>
+                        </form>
+                        </div><script type='text/javascript'> jQuery(document).bind('gform_post_render', function(event, formId, currentPage){if(formId == 2) {if(typeof Placeholders != 'undefined'){
+                        Placeholders.enable();
+                    }} } );jQuery(document).bind('gform_post_conditional_logic', function(event, formId, fields, isInit){} );</script><script type='text/javascript'> jQuery(document).ready(function(){jQuery(document).trigger('gform_post_render', [2, 1]) } ); </script></li><li id="categories-5" class="widget widget_categories"><h2 class="widgettitle">Categories</h2>		<ul>
+	<li class="cat-item cat-item-6"><a href="https://testrtc.com/category/analysis/" >Analysis</a>
+</li>
+	<li class="cat-item cat-item-3"><a href="https://testrtc.com/category/announcements/" >Announcements</a>
+</li>
+	<li class="cat-item cat-item-5"><a href="https://testrtc.com/category/how-to/" >How to</a>
+</li>
+	<li class="cat-item cat-item-10"><a href="https://testrtc.com/category/stories/" >Stories</a>
+</li>
+	<li class="cat-item cat-item-197"><a href="https://testrtc.com/category/testimonials/" >Testimonials</a>
+</li>
+	<li class="cat-item cat-item-16"><a href="https://testrtc.com/category/testrtc-tips/" >testRTC tips</a>
+</li>
+		</ul>
+</li>		</ul>
+	</aside></div></div><div class="footer-widgets"><div class="wrap"><div class="widget-area footer-widgets-1 footer-widget-area"><section id="sow-editor-2" class="widget widget_sow-editor"><div class="widget-wrap"><div class="so-widget-sow-editor so-widget-sow-editor-base"><h4 class="widget-title widgettitle">Good to Know</h4>
+<div class="siteorigin-widget-tinymce textwidget">
+	<ul>
+<li><a href="http://testrtc.com/why-testrtc/">Why testRTC?</a></li>
+<li><a href="http://testrtc.com/privacy/">Privacy Policy</a></li>
+<li><a href="http://testrtc.com/terms/">Terms and Conditions</a></li>
+</ul>
+</div>
+</div></div></section>
+<section id="sow-editor-3" class="widget widget_sow-editor"><div class="widget-wrap"><div class="so-widget-sow-editor so-widget-sow-editor-base"><h4 class="widget-title widgettitle">Our Products</h4>
+<div class="siteorigin-widget-tinymce textwidget">
+	<ul>
+<li><a href="http://testrtc.com/monitoring/">Monitoring</a></li>
+<li><a href="http://testrtc.com/stress-testing/">Stress Testing</a></li>
+<li><a href="http://testrtc.com/functional-testing/">Functional Testing</a></li>
+</ul>
+</div>
+</div></div></section>
+<section id="sow-editor-4" class="widget widget_sow-editor"><div class="widget-wrap"><div class="so-widget-sow-editor so-widget-sow-editor-base"><h4 class="widget-title widgettitle">About Us</h4>
+<div class="siteorigin-widget-tinymce textwidget">
+	<ul>
+<li><a href="http://testrtc.com/about/">About testRTC</a></li>
+<li><a href="/blog/">Our Blog</a></li>
+</ul>
+</div>
+</div></div></section>
+</div><div class="widget-area footer-widgets-2 footer-widget-area"><section id="sow-editor-5" class="widget widget_sow-editor"><div class="widget-wrap"><div class="so-widget-sow-editor so-widget-sow-editor-base"><h4 class="widget-title widgettitle">Connect with Us</h4>
+<div class="siteorigin-widget-tinymce textwidget">
+	<ul class="contact-us-links">
+<li class='phone'>+972-3-721-9301</li>
+<li class='mail'><a href="/cdn-cgi/l/email-protection#97fef9f1f8d7e3f2e4e3e5e3f4b9f4f8fa"><span class="__cf_email__" data-cfemail="f0999e969fb084958384828493de939f9d">[email&#160;protected]</span></a></li>
+<li class='map'>68 Kaplan st, Qiryat Ono 5529368, Israel</li>
+</ul>
+</div>
+</div></div></section>
+</div><div class="widget-area footer-widgets-3 footer-widget-area"><section id="sow-editor-6" class="widget widget_sow-editor"><div class="widget-wrap"><div class="so-widget-sow-editor so-widget-sow-editor-base">
+<div class="siteorigin-widget-tinymce textwidget">
+	<p class="footer-social-icons" style="text-align: center;"><a style="padding: 5px; display: inline-block;" href="https://www.linkedin.com/company/testrtc"><img class="alignnone size-full wp-image-344" src="https://testrtc.com/wp-content/uploads/2017/04/i-150x150.png" alt="LinkedIn" width="130" height="130" /></a> <a style="padding: 5px; display: inline-block;" href="https://twitter.com/testrtc"><img class="alignnone size-full wp-image-345" src="http://testrtc.com/wp-content/uploads/2017/04/l-150x150.png" alt="Twitter" width="130" height="130" /></a> <a style="padding: 5px; display: inline-block;" href="https://www.youtube.com/channel/UCvf6BlEtzwssSLMiCV33dHw"><img class="alignnone size-full wp-image-347 aligncenter" src="http://testrtc.com/wp-content/uploads/2017/04/x-150x150.png" alt="YouTube" width="130" height="130" /></a> <a style="padding: 5px; display: inline-block;" href="/feed"><img class="alignnone size-full wp-image-346" src="http://testrtc.com/wp-content/uploads/2017/04/r.png" alt="RSS feed" width="130" height="130" /></a></p>
+<p style="text-align: center;"><a href='https://app.testrtc.com/signup' class='get-started'>Get Started</a></p>
+</div>
+</div></div></section>
+</div></div></div><footer class="site-footer" itemscope itemtype="https://schema.org/WPFooter"><div class="wrap">    <div class='footer-copyright'>
+        &copy; 2018 testRTC
+    </div>
+    <div class='footer-site-logo'>
+        <img src='https://testrtc.com/wp-content/uploads/2017/04/testRTC_logo_300dpi-transparent.png'>
+    </div>
+    </div></footer></div><!-- WP-Minify Footer Placeholder --><div class="mobmenu-overlay"></div><div class="mob-menu-header-holder mobmenu"  data-menu-display="mob-menu-slideout-over" ><div class="mob-menu-logo-holder"><a href="https://testrtc.com" class="headertext"><img class="mob-standard-logo" src="https://testrtc.com/wp-content/uploads/2016/03/testRTC_logo_190px.png"  alt=" Logo Header Menu"></a></div><div  class="mobmenur-container"><a href="#" class="mobmenu-right-bt" alt="Right Menu Button"><img src="" alt="Right Menu Icon"><i class="mob-icon-cancel mob-cancel-button"></i></a></div></div>				<!--  Right Panel Structure -->
+				<div class="mob-menu-right-panel mobmenu  ">
+					<a href="#" class="mobmenu-right-bt"  alt="Right Menu Button"><i class="mob-icon-cancel mob-cancel-button"></i></a>
+					<div class="mobmenu_content">
+		<div class="menu-main-menu-container"><ul id="mobmenuright"><li  class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-527"><a href="#" class="">Product</a>
+<ul class="sub-menu">
+	<li  class="menu-item menu-item-type-post_type menu-item-object-page menu-item-594"><a href="https://testrtc.com/monitoring/" class="">Monitoring</a></li>	<li  class="menu-item menu-item-type-post_type menu-item-object-page menu-item-534"><a href="https://testrtc.com/stress-testing/" class="">Stress Testing</a></li>	<li  class="menu-item menu-item-type-post_type menu-item-object-page menu-item-535"><a href="https://testrtc.com/functional-testing/" class="">Functional Testing</a></li></ul>
+</li><li  class="menu-item menu-item-type-post_type menu-item-object-page menu-item-536"><a href="https://testrtc.com/contact/" class="">Contact</a></li><li  class="menu-item menu-item-type-post_type menu-item-object-page current_page_parent menu-item-537"><a href="https://testrtc.com/blog/" class="">Blog</a></li><li  class="button menu-item menu-item-type-custom menu-item-object-custom menu-item-539"><a href="https://app.testrtc.com/" class="">Get Started</a></li></ul></div>
+			</div><div class="mob-menu-right-bg-holder"></div></div>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PM8DCRQ"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->	<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="text/javascript">
+		var c = document.body.className;
+		c = c.replace(/woocommerce-no-js/, 'woocommerce-js');
+		document.body.className = c;
+	</script>
+	<script type='text/javascript' src='https://testrtc.com/wp-content/plugins/anti-spam/js/anti-spam-5.2.js'></script>
+<script type='text/javascript' src='https://testrtc.com/wp-content/plugins/woocommerce/assets/js/jquery-blockui/jquery.blockUI.min.js?ver=2.70'></script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var wc_add_to_cart_params = {"ajax_url":"\/wp-admin\/admin-ajax.php","wc_ajax_url":"\/?wc-ajax=%%endpoint%%","i18n_view_cart":"View cart","cart_url":"https:\/\/testrtc.com","is_cart":"","cart_redirect_after_add":"yes"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://testrtc.com/wp-content/plugins/woocommerce/assets/js/frontend/add-to-cart.min.js?ver=3.5.0'></script>
+<script type='text/javascript' src='https://testrtc.com/wp-content/plugins/woocommerce/assets/js/js-cookie/js.cookie.min.js?ver=2.1.4'></script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var woocommerce_params = {"ajax_url":"\/wp-admin\/admin-ajax.php","wc_ajax_url":"\/?wc-ajax=%%endpoint%%"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://testrtc.com/wp-content/plugins/woocommerce/assets/js/frontend/woocommerce.min.js?ver=3.5.0'></script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var wc_cart_fragments_params = {"ajax_url":"\/wp-admin\/admin-ajax.php","wc_ajax_url":"\/?wc-ajax=%%endpoint%%","cart_hash_key":"wc_cart_hash_7612c225d6d2ad450c40d1aee191872c","fragment_name":"wc_fragments_7612c225d6d2ad450c40d1aee191872c"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://testrtc.com/wp-content/plugins/woocommerce/assets/js/frontend/cart-fragments.min.js?ver=3.5.0'></script>
+<script type='text/javascript' src='https://testrtc.com/wp-includes/js/comment-reply.min.js?ver=4.9.8'></script>
+<script type='text/javascript' src='https://testrtc.com/wp-content/themes/testrtc-genesis/core/slick/slick.js?ver=1.0.0'></script>
+<script type='text/javascript' src='https://testrtc.com/wp-content/themes/testrtc-genesis/scripts/script.js?ver=1.0.0'></script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var tve_dash_front = {"ajaxurl":"https:\/\/testrtc.com\/wp-admin\/admin-ajax.php","force_ajax_send":"","is_crawler":"1"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://testrtc.com/wp-content/plugins/thrive-visual-editor/thrive-dashboard/js/dist/frontend.min.js?ver=2.0.66'></script>
+<script type='text/javascript' src='https://testrtc.com/wp-includes/js/wp-embed.min.js?ver=4.9.8'></script>
+<script async="async" type='text/javascript' src='https://testrtc.com/wp-content/plugins/akismet/_inc/form.js?ver=4.0.8'></script>
+<script type='text/javascript' src='https://testrtc.com/wp-content/plugins/gravityforms/js/placeholders.jquery.min.js?ver=2.2.1'></script>
+<script type="text/javascript">/*<![CDATA[*/if ( !window.TL_Const ) {var TL_Const={"security":"4b6a696c84","ajax_url":"https:\/\/testrtc.com\/wp-admin\/admin-ajax.php","forms":[],"action_conversion":"tve_leads_ajax_conversion","action_impression":"tve_leads_ajax_impression","ajax_load":0,"custom_post_data":[],"current_screen":{"screen_type":4,"screen_id":385},"ignored_fields":["email","_captcha_size","_captcha_theme","_captcha_type","_submit_option","_use_captcha","g-recaptcha-response","__tcb_lg_fc","__tcb_lg_msg","_state","_form_type","_error_message_option","_back_url","_submit_option","url","_asset_group","_asset_option","mailchimp_optin"]};} else {ThriveGlobal.$j.extend(true, TL_Const, {"security":"4b6a696c84","ajax_url":"https:\/\/testrtc.com\/wp-admin\/admin-ajax.php","forms":[],"action_conversion":"tve_leads_ajax_conversion","action_impression":"tve_leads_ajax_impression","ajax_load":0,"custom_post_data":[],"current_screen":{"screen_type":4,"screen_id":385},"ignored_fields":["email","_captcha_size","_captcha_theme","_captcha_type","_submit_option","_use_captcha","g-recaptcha-response","__tcb_lg_fc","__tcb_lg_msg","_state","_form_type","_error_message_option","_back_url","_submit_option","url","_asset_group","_asset_option","mailchimp_optin"]})} /*]]> */</script>   <style>
+		.single-tags{
+			background:#3DAD6D;
+			display: block;
+			margin-right: -20px;
+			padding:10px 10px;
+			color:white;
+		}
+		.single-tags a{
+			text-decoration:none;
+			color:white;
+			font-size: 15pt !important;
+		}
+		.author-bio img{
+			border-radius: 96px;
+			border: 1px solid gainsboro;
+			float:left;
+			margin:10px;
+		}
+		.author-bio p{
+			margin: 0px;
+			font-style:italic;
+		}
+		.author-bio .author{
+			font-weight: bold;
+			font-size: 13pt !important;
+			padding-top: 30px;
+			font-style:normal;
+		}
+		.comments-wrapper{
+			clear:both;
+		}
+		.comment-count{
+			clear: both;
+			border-top: 1px solid gainsboro;
+			border-bottom: 1px solid gainsboro;
+			margin-right: -20px;
+			padding: 20px;
+		}
+		.commentlist{
+			padding:0px;
+		}
+		.commentlist li{
+			list-style:none;
+		}
+		.commentlist li .comment-body{
+			list-style:none;
+			border:1px solid gainsboro;
+			padding:10px;
+			margin-top:-1px;
+		}
+		.commentlist .avatar{
+			width: 50px;
+			height: 50px;
+			border-radius:50px;
+			float:left;
+			margin-right: 20px;
+		}
+		.commentlist  .metadata-date{
+			float:right;
+			text-decoration:none;
+			color:#3dad6d;
+		}
+		.commentlist .fn{
+			color:#3dad6d;
+		}
+		.commentlist .comment-reply-link{
+			position: absolute;
+			right: 10px;
+			bottom: 0px;
+			background: #3DAD6D;
+			padding: 5px;
+			color:white;
+			text-decoration:none;
+		}
+		.commentlist .comment-reply-link:after{
+			content:"\f105";
+			font:normal normal normal 14px/1 FontAwesome;
+			margin-left: 5px;
+		}
+		.commentlist .comment-text{
+			padding-left:70px;
+		}
+		.comment-respond{
+			border-top:1px solid gainsboro;
+			margin-right:-20px;
+			padding-right:20px;
+		}
+		.comment-respond #comment{
+			width:100%;
+			height:200px;
+		}
+		.page-content-wrapper{
+			padding:0px 5px;
+		}
+   </style>
+   </body></html>

@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="never">
+    <title>ZeroMQ研究与应用分析 - ct - 博客园</title>
+<meta property="og:description" content="学习">
+    
+
+
+    <link title="RSS" type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/rainbowzc/rss">
+    <link title="RSD" type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/rainbowzc/rsd.xml">
+<link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/rainbowzc/wlwmanifest.xml">
+    
+    
+    
+<link rel="preload" href="https://adservice.google.com/adsid/integrator.js?domain=www.cnblogs.com" as="script">
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<a name="top"></a>
+
+
+<div id="top">
+	
+<div>
+	<table>
+		<tbody><tr>
+			<td class="HeaderTitles">
+				<h1 class="HeaderTitle"><a id="Header1_HeaderTitle" class="HeaderMainTitle" href="https://www.cnblogs.com/rainbowzc/">rainbowzc</a></h1>
+				<p id="tagline"></p>
+			</td>
+		</tr>
+	</tbody></table>
+</div>
+<div class="HeaderBar">
+	<table id="HeaderBar" class="HeaderBar" cellspacing="0" cellpadding="0">
+		<tbody><tr>
+			<td class="HeaderBarTab" nowrap="">
+&nbsp;
+<a id="blog_nav_sitehome" href="https://www.cnblogs.com/">博客园</a> ::
+<a id="blog_nav_myhome" href="https://www.cnblogs.com/rainbowzc/">首页</a> ::
+<a href="http://q.cnblogs.com/" class="menu">博问</a> ::
+<a href="http://home.cnblogs.com/ing/" class="menu">闪存</a> ::
+<a id="blog_nav_newpost" rel="nofollow" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">新随笔</a> ::
+ ::
+
+ ::
+<a id="blog_nav_admin" rel="nofollow" href="https://i.cnblogs.com/">管理</a> ::
+
+</td>
+			<td><img id="Header1_BlueTab" src="bluetabright.gif" align="absmiddle"></td>
+			<td class="HeaderBarTabBack" width="100%" nowrap="">
+				<div id="blog_stats">
+<div class="BlogStatsBar">
+	<table class="BlogStatsBar">
+		<tbody><tr>
+			<td width="100%">
+			</td>
+			<td class="BlogStatsBar" nowrap="">
+				&nbsp;
+				692 
+				随笔&nbsp;::
+				2 文章
+				::
+				0 评论
+				::
+				1 引用
+			</td>
+		</tr>
+	</tbody></table>
+</div>
+</div>
+			</td>
+		</tr>
+	</tbody></table>
+</div>
+
+</div>
+<div id="leftmenu">	
+
+	    <div id="blog-calendar" style=""><table id="blogCalendar" class="Cal" title="Calendar" cellspacing="0" cellpadding="0">
+	<tbody><tr><td colspan="7"><table class="CalTitle" cellspacing="0">
+		<tbody><tr><td class="CalNextPrev"><a href="https://www.cnblogs.com/rainbowzc/p/2018/12/01">&lt;</a></td><td align="center">2019年1月</td><td class="CalNextPrev" align="right"><a href="https://www.cnblogs.com/rainbowzc/p/2019/02/01">&gt;</a></td></tr>
+	</tbody></table></td></tr><tr><th class="CalDayHeader" abbr="日" scope="col" align="center">日</th><th class="CalDayHeader" abbr="一" scope="col" align="center">一</th><th class="CalDayHeader" abbr="二" scope="col" align="center">二</th><th class="CalDayHeader" abbr="三" scope="col" align="center">三</th><th class="CalDayHeader" abbr="四" scope="col" align="center">四</th><th class="CalDayHeader" abbr="五" scope="col" align="center">五</th><th class="CalDayHeader" abbr="六" scope="col" align="center">六</th></tr><tr><td class="CalOtherMonthDay" align="center">30</td><td class="CalOtherMonthDay" align="center">31</td><td align="center">1</td><td align="center">2</td><td align="center">3</td><td align="center">4</td><td class="CalWeekendDay" align="center">5</td></tr><tr><td class="CalWeekendDay" align="center">6</td><td align="center">7</td><td align="center">8</td><td align="center">9</td><td align="center">10</td><td align="center">11</td><td class="CalWeekendDay" align="center">12</td></tr><tr><td class="CalWeekendDay" align="center">13</td><td align="center">14</td><td align="center">15</td><td align="center">16</td><td align="center">17</td><td align="center">18</td><td class="CalWeekendDay" align="center">19</td></tr><tr><td class="CalWeekendDay" align="center">20</td><td align="center">21</td><td align="center">22</td><td align="center">23</td><td align="center">24</td><td align="center">25</td><td class="CalWeekendDay" align="center">26</td></tr><tr><td class="CalWeekendDay" align="center">27</td><td align="center">28</td><td align="center">29</td><td class="CalTodayDay" align="center">30</td><td align="center">31</td><td class="CalOtherMonthDay" align="center">1</td><td class="CalOtherMonthDay" align="center">2</td></tr><tr><td class="CalOtherMonthDay" align="center">3</td><td class="CalOtherMonthDay" align="center">4</td><td class="CalOtherMonthDay" align="center">5</td><td class="CalOtherMonthDay" align="center">6</td><td class="CalOtherMonthDay" align="center">7</td><td class="CalOtherMonthDay" align="center">8</td><td class="CalOtherMonthDay" align="center">9</td></tr>
+</tbody></table></div>
+		
+		<div id="blog-sidecolumn"><div id="sidebar_search" class="sidebar-block">
+<div id="sidebar_search" class="mySearch">
+<h3 class="catListTitle">搜索</h3>
+<div id="sidebar_search_box">
+
+<div id="widget_my_google" class="div_my_zzk"><input name="google_q" id="google_q" onkeydown="return google_go_enter(event)" class="input_my_zzk" value="" type="text">&nbsp;<input onclick="google_go()" value="谷歌搜索" class="btn_my_zzk" type="button"></div>
+</div>
+</div>
+
+</div><div id="sidebar_shortcut" class="sidebar-block">
+<h3 class="catListTitle">常用链接</h3>
+<ul>
+<li><a href="https://www.cnblogs.com/rainbowzc/p/" title="我的博客的随笔列表">我的随笔</a></li><li><a href="https://www.cnblogs.com/rainbowzc/MyComments.html" title="我发表过的评论列表">我的评论</a></li><li><a href="https://www.cnblogs.com/rainbowzc/OtherPosts.html" title="我评论过的随笔列表">我的参与</a></li><li><a href="https://www.cnblogs.com/rainbowzc/RecentComments.html" title="我的博客的评论列表">最新评论</a></li><li><a href="https://www.cnblogs.com/rainbowzc/tag/" title="我的博客的标签列表">我的标签</a></li>
+</ul>
+<div id="itemListLin_con" style="display: none;">
+
+</div></div><div id="sidebar_toptags" class="sidebar-block"></div><div id="sidebar_categories">
+		<h3>随笔分类<span style="font-size: 11px; font-weight: normal;">(88)</span></h3>
+		
+				<ul>
+			
+				<li><a id="CatList_LinkList_0_Link_0" href="https://www.cnblogs.com/rainbowzc/category/367714.html">.NET(20)</a> </li>
+			
+				<li><a id="CatList_LinkList_0_Link_1" href="https://www.cnblogs.com/rainbowzc/category/367715.html">C/C++ Visual C++6 Visual c++2005 Evc4.0 编程(20)</a> </li>
+			
+				<li><a id="CatList_LinkList_0_Link_2" href="https://www.cnblogs.com/rainbowzc/category/367716.html">DirectX 开发(1)</a> </li>
+			
+				<li><a id="CatList_LinkList_0_Link_3" href="https://www.cnblogs.com/rainbowzc/category/367717.html">DSP 6000系列开发(4)</a> </li>
+			
+				<li><a id="CatList_LinkList_0_Link_4" href="https://www.cnblogs.com/rainbowzc/category/367718.html">H264 工程开发(1)</a> </li>
+			
+				<li><a id="CatList_LinkList_0_Link_5" href="https://www.cnblogs.com/rainbowzc/category/367719.html">Jobs</a> </li>
+			
+				<li><a id="CatList_LinkList_0_Link_6" href="https://www.cnblogs.com/rainbowzc/category/367720.html">Linux 编程</a> </li>
+			
+				<li><a id="CatList_LinkList_0_Link_7" href="https://www.cnblogs.com/rainbowzc/category/367721.html">sea119的专栏 </a> </li>
+			
+				<li><a id="CatList_LinkList_0_Link_8" href="https://www.cnblogs.com/rainbowzc/category/367722.html">SQL Server 2005(2)</a> </li>
+			
+				<li><a id="CatList_LinkList_0_Link_9" href="https://www.cnblogs.com/rainbowzc/category/367723.html">SQL Server 2000</a> </li>
+			
+				<li><a id="CatList_LinkList_0_Link_10" href="https://www.cnblogs.com/rainbowzc/category/367724.html">Visual studio mmx sse sse2 多媒体指令集 (3)</a> </li>
+			
+				<li><a id="CatList_LinkList_0_Link_11" href="https://www.cnblogs.com/rainbowzc/category/367725.html">VOIP(5)</a> </li>
+			
+				<li><a id="CatList_LinkList_0_Link_12" href="https://www.cnblogs.com/rainbowzc/category/367726.html">windows 操作系统配置(17)</a> </li>
+			
+				<li><a id="CatList_LinkList_0_Link_13" href="https://www.cnblogs.com/rainbowzc/category/367728.html">日日新 专业的图像处理blog</a> </li>
+			
+				<li><a id="CatList_LinkList_0_Link_14" href="https://www.cnblogs.com/rainbowzc/category/367729.html">生活随笔(11)</a> </li>
+			
+				<li><a id="CatList_LinkList_0_Link_15" href="https://www.cnblogs.com/rainbowzc/category/367727.html">图像处理(4)</a> </li>
+			
+				</ul>
+			
+	
+		<h3>随笔档案<span style="font-size: 11px; font-weight: normal;">(691)</span></h3>
+		
+				<ul>
+			
+				<li><a id="CatList_LinkList_1_Link_0" href="https://www.cnblogs.com/rainbowzc/archive/2017/07.html">2017年7月 (1)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_1" href="https://www.cnblogs.com/rainbowzc/archive/2017/02.html">2017年2月 (2)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_2" href="https://www.cnblogs.com/rainbowzc/archive/2016/09.html">2016年9月 (1)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_3" href="https://www.cnblogs.com/rainbowzc/archive/2016/08.html">2016年8月 (5)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_4" href="https://www.cnblogs.com/rainbowzc/archive/2016/07.html">2016年7月 (4)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_5" href="https://www.cnblogs.com/rainbowzc/archive/2016/06.html">2016年6月 (1)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_6" href="https://www.cnblogs.com/rainbowzc/archive/2016/05.html">2016年5月 (7)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_7" href="https://www.cnblogs.com/rainbowzc/archive/2016/04.html">2016年4月 (5)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_8" href="https://www.cnblogs.com/rainbowzc/archive/2016/03.html">2016年3月 (1)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_9" href="https://www.cnblogs.com/rainbowzc/archive/2015/11.html">2015年11月 (1)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_10" href="https://www.cnblogs.com/rainbowzc/archive/2015/09.html">2015年9月 (1)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_11" href="https://www.cnblogs.com/rainbowzc/archive/2015/07.html">2015年7月 (1)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_12" href="https://www.cnblogs.com/rainbowzc/archive/2015/06.html">2015年6月 (6)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_13" href="https://www.cnblogs.com/rainbowzc/archive/2015/05.html">2015年5月 (4)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_14" href="https://www.cnblogs.com/rainbowzc/archive/2015/04.html">2015年4月 (1)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_15" href="https://www.cnblogs.com/rainbowzc/archive/2015/03.html">2015年3月 (12)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_16" href="https://www.cnblogs.com/rainbowzc/archive/2015/02.html">2015年2月 (3)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_17" href="https://www.cnblogs.com/rainbowzc/archive/2015/01.html">2015年1月 (9)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_18" href="https://www.cnblogs.com/rainbowzc/archive/2014/12.html">2014年12月 (6)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_19" href="https://www.cnblogs.com/rainbowzc/archive/2014/10.html">2014年10月 (4)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_20" href="https://www.cnblogs.com/rainbowzc/archive/2014/09.html">2014年9月 (1)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_21" href="https://www.cnblogs.com/rainbowzc/archive/2014/08.html">2014年8月 (4)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_22" href="https://www.cnblogs.com/rainbowzc/archive/2014/07.html">2014年7月 (1)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_23" href="https://www.cnblogs.com/rainbowzc/archive/2014/06.html">2014年6月 (6)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_24" href="https://www.cnblogs.com/rainbowzc/archive/2014/05.html">2014年5月 (21)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_25" href="https://www.cnblogs.com/rainbowzc/archive/2014/04.html">2014年4月 (16)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_26" href="https://www.cnblogs.com/rainbowzc/archive/2014/03.html">2014年3月 (31)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_27" href="https://www.cnblogs.com/rainbowzc/archive/2014/02.html">2014年2月 (3)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_28" href="https://www.cnblogs.com/rainbowzc/archive/2014/01.html">2014年1月 (1)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_29" href="https://www.cnblogs.com/rainbowzc/archive/2013/12.html">2013年12月 (17)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_30" href="https://www.cnblogs.com/rainbowzc/archive/2013/11.html">2013年11月 (10)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_31" href="https://www.cnblogs.com/rainbowzc/archive/2013/10.html">2013年10月 (11)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_32" href="https://www.cnblogs.com/rainbowzc/archive/2013/09.html">2013年9月 (3)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_33" href="https://www.cnblogs.com/rainbowzc/archive/2013/08.html">2013年8月 (2)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_34" href="https://www.cnblogs.com/rainbowzc/archive/2013/07.html">2013年7月 (1)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_35" href="https://www.cnblogs.com/rainbowzc/archive/2013/05.html">2013年5月 (2)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_36" href="https://www.cnblogs.com/rainbowzc/archive/2013/04.html">2013年4月 (2)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_37" href="https://www.cnblogs.com/rainbowzc/archive/2013/03.html">2013年3月 (2)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_38" href="https://www.cnblogs.com/rainbowzc/archive/2013/02.html">2013年2月 (8)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_39" href="https://www.cnblogs.com/rainbowzc/archive/2013/01.html">2013年1月 (2)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_40" href="https://www.cnblogs.com/rainbowzc/archive/2012/12.html">2012年12月 (1)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_41" href="https://www.cnblogs.com/rainbowzc/archive/2012/06.html">2012年6月 (3)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_42" href="https://www.cnblogs.com/rainbowzc/archive/2012/03.html">2012年3月 (3)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_43" href="https://www.cnblogs.com/rainbowzc/archive/2012/02.html">2012年2月 (3)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_44" href="https://www.cnblogs.com/rainbowzc/archive/2012/01.html">2012年1月 (1)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_45" href="https://www.cnblogs.com/rainbowzc/archive/2011/12.html">2011年12月 (2)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_46" href="https://www.cnblogs.com/rainbowzc/archive/2011/10.html">2011年10月 (2)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_47" href="https://www.cnblogs.com/rainbowzc/archive/2011/09.html">2011年9月 (1)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_48" href="https://www.cnblogs.com/rainbowzc/archive/2011/08.html">2011年8月 (3)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_49" href="https://www.cnblogs.com/rainbowzc/archive/2011/07.html">2011年7月 (7)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_50" href="https://www.cnblogs.com/rainbowzc/archive/2011/06.html">2011年6月 (6)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_51" href="https://www.cnblogs.com/rainbowzc/archive/2011/05.html">2011年5月 (3)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_52" href="https://www.cnblogs.com/rainbowzc/archive/2011/04.html">2011年4月 (4)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_53" href="https://www.cnblogs.com/rainbowzc/archive/2011/03.html">2011年3月 (3)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_54" href="https://www.cnblogs.com/rainbowzc/archive/2011/01.html">2011年1月 (4)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_55" href="https://www.cnblogs.com/rainbowzc/archive/2010/12.html">2010年12月 (3)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_56" href="https://www.cnblogs.com/rainbowzc/archive/2010/10.html">2010年10月 (5)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_57" href="https://www.cnblogs.com/rainbowzc/archive/2010/09.html">2010年9月 (6)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_58" href="https://www.cnblogs.com/rainbowzc/archive/2010/08.html">2010年8月 (16)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_59" href="https://www.cnblogs.com/rainbowzc/archive/2010/07.html">2010年7月 (3)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_60" href="https://www.cnblogs.com/rainbowzc/archive/2010/06.html">2010年6月 (9)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_61" href="https://www.cnblogs.com/rainbowzc/archive/2010/05.html">2010年5月 (5)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_62" href="https://www.cnblogs.com/rainbowzc/archive/2010/04.html">2010年4月 (1)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_63" href="https://www.cnblogs.com/rainbowzc/archive/2010/03.html">2010年3月 (3)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_64" href="https://www.cnblogs.com/rainbowzc/archive/2010/01.html">2010年1月 (3)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_65" href="https://www.cnblogs.com/rainbowzc/archive/2009/11.html">2009年11月 (3)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_66" href="https://www.cnblogs.com/rainbowzc/archive/2009/10.html">2009年10月 (2)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_67" href="https://www.cnblogs.com/rainbowzc/archive/2009/09.html">2009年9月 (4)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_68" href="https://www.cnblogs.com/rainbowzc/archive/2009/08.html">2009年8月 (5)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_69" href="https://www.cnblogs.com/rainbowzc/archive/2009/07.html">2009年7月 (4)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_70" href="https://www.cnblogs.com/rainbowzc/archive/2009/06.html">2009年6月 (9)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_71" href="https://www.cnblogs.com/rainbowzc/archive/2009/05.html">2009年5月 (3)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_72" href="https://www.cnblogs.com/rainbowzc/archive/2009/03.html">2009年3月 (2)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_73" href="https://www.cnblogs.com/rainbowzc/archive/2009/02.html">2009年2月 (5)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_74" href="https://www.cnblogs.com/rainbowzc/archive/2009/01.html">2009年1月 (1)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_75" href="https://www.cnblogs.com/rainbowzc/archive/2008/12.html">2008年12月 (1)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_76" href="https://www.cnblogs.com/rainbowzc/archive/2008/11.html">2008年11月 (6)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_77" href="https://www.cnblogs.com/rainbowzc/archive/2008/10.html">2008年10月 (11)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_78" href="https://www.cnblogs.com/rainbowzc/archive/2008/09.html">2008年9月 (9)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_79" href="https://www.cnblogs.com/rainbowzc/archive/2008/08.html">2008年8月 (13)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_80" href="https://www.cnblogs.com/rainbowzc/archive/2008/07.html">2008年7月 (25)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_81" href="https://www.cnblogs.com/rainbowzc/archive/2008/06.html">2008年6月 (29)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_82" href="https://www.cnblogs.com/rainbowzc/archive/2008/05.html">2008年5月 (2)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_83" href="https://www.cnblogs.com/rainbowzc/archive/2008/04.html">2008年4月 (6)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_84" href="https://www.cnblogs.com/rainbowzc/archive/2008/03.html">2008年3月 (6)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_85" href="https://www.cnblogs.com/rainbowzc/archive/2007/10.html">2007年10月 (14)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_86" href="https://www.cnblogs.com/rainbowzc/archive/2007/09.html">2007年9月 (4)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_87" href="https://www.cnblogs.com/rainbowzc/archive/2007/08.html">2007年8月 (6)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_88" href="https://www.cnblogs.com/rainbowzc/archive/2007/07.html">2007年7月 (3)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_89" href="https://www.cnblogs.com/rainbowzc/archive/2007/06.html">2007年6月 (20)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_90" href="https://www.cnblogs.com/rainbowzc/archive/2007/05.html">2007年5月 (20)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_91" href="https://www.cnblogs.com/rainbowzc/archive/2007/04.html">2007年4月 (12)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_92" href="https://www.cnblogs.com/rainbowzc/archive/2007/03.html">2007年3月 (8)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_93" href="https://www.cnblogs.com/rainbowzc/archive/2007/02.html">2007年2月 (13)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_94" href="https://www.cnblogs.com/rainbowzc/archive/2007/01.html">2007年1月 (20)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_95" href="https://www.cnblogs.com/rainbowzc/archive/2006/12.html">2006年12月 (20)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_96" href="https://www.cnblogs.com/rainbowzc/archive/2006/11.html">2006年11月 (14)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_97" href="https://www.cnblogs.com/rainbowzc/archive/2006/10.html">2006年10月 (7)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_98" href="https://www.cnblogs.com/rainbowzc/archive/2006/09.html">2006年9月 (20)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_99" href="https://www.cnblogs.com/rainbowzc/archive/2006/08.html">2006年8月 (19)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_100" href="https://www.cnblogs.com/rainbowzc/archive/2006/07.html">2006年7月 (20)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_101" href="https://www.cnblogs.com/rainbowzc/archive/2006/06.html">2006年6月 (6)</a> </li>
+			
+				</ul>
+			
+	
+		<h3>IOCP高性能网络编程</h3>
+		
+				<ul>
+			
+				<li><a id="CatList_LinkList_2_Link_0" href="http://gamebabyrocksun.blog.163.com/blog/#m=0&amp;t=1&amp;c=fks_087074083081081068087084085095081081080070087082080064" rel="nofollow">Gamebaby 163 iocp 详解</a> </li>
+			<li class="c_b_p_link_desc">由浅及深讲解IOCP模型，后边的几篇涉及bind模式的极简IOCP，功力深厚。
+===互联网IOCP最详讲解===</li>
+				<li><a id="CatList_LinkList_2_Link_1" href="http://blog.csdn.net/piggyxp/article/category/302220">piggyxp详解IOCP模型并实现</a> </li>
+			<li class="c_b_p_link_desc">更加详细的讲解，代码非常健壮，难能可贵</li>
+				<li><a id="CatList_LinkList_2_Link_2" href="http://redsoft.ycool.com/post.2734773.html" rel="nofollow">宝岛高手实现IOCP例子</a> </li>
+			
+				</ul>
+			
+	
+		<h3>VC++2008</h3>
+		
+				<ul>
+			
+				<li><a id="CatList_LinkList_3_Link_0" href="http://hi.baidu.com/vc_net" rel="nofollow">C++帮助文档blog</a> </li>
+			
+				<li><a id="CatList_LinkList_3_Link_1" href="http://imcc.blogbus.com/" rel="nofollow" target="_top">有{間}客栈</a> </li>
+			
+				</ul>
+			
+	
+		<h3>windows驱动、逆向技术</h3>
+		
+				<ul>
+			
+				<li><a id="CatList_LinkList_4_Link_0" href="http://blog.csdn.net/WINCOL" rel="nofollow">windows内核、web前端</a> </li>
+			
+				</ul>
+			
+	
+		<h3>常用链接</h3>
+		
+				<ul>
+			
+				<li><a id="CatList_LinkList_5_Link_0" href="https://www.cnblogs.com/tracky/archive/2013/01/23/2873760.html">dotnetbar界面库crack</a> </li>
+			<li class="c_b_p_link_desc">国内破解的最好的了</li>
+				<li><a id="CatList_LinkList_5_Link_1" href="http://vista.itecn.net/" rel="nofollow" target="_top">vista 操作系统blog</a> </li>
+			
+				<li><a id="CatList_LinkList_5_Link_2" href="http://zhanyonhu.blog.163.com/" rel="nofollow">zhangyonghui 网络开发 内核开发</a> </li>
+			
+				<li><a id="CatList_LinkList_5_Link_3" href="http://gamebabyrocksun.blog.163.com/" rel="nofollow">北风网作者blog</a> </li>
+			<li class="c_b_p_link_desc">主要是VC++ Windows编程，系统内核编程，游戏服务高性能设计等</li>
+				<li><a id="CatList_LinkList_5_Link_4" href="http://hi.baidu.com/combojiang/item/8d87d22ca577600a73863e21" rel="nofollow" target="_top">内核开发</a> </li>
+			
+				<li><a id="CatList_LinkList_5_Link_5" href="http://www.pcguide.com/ref/hdd/file/ntfs/files_Files.htm" rel="nofollow" target="_top">数据恢复</a> </li>
+			<li class="c_b_p_link_desc">国外的一个专讲磁盘协议的网址</li>
+				<li><a id="CatList_LinkList_5_Link_6" href="https://www.cnblogs.com/jigee/" rel="nofollow" target="_top">微软mvp</a> </li>
+			
+				</ul>
+			
+	
+		<h3>透明加密技术编程</h3>
+		
+				<ul>
+			
+				<li><a id="CatList_LinkList_6_Link_0" href="http://hi.baidu.com/jonathan2004/item/dc92080d5c280a8d03ce1b24" rel="nofollow">详解TrueCrypt 6.2a源码系列</a> </li>
+			<li class="c_b_p_link_desc">计算机信息安全方面大牛，涉及计算机安全编程几乎所有方面</li>
+				</ul>
+			
+	</div><div id="sidebar_topviewedposts" class="sidebar-block"><div id="topview_posts_wrap">
+<h3 class="catListTitle">阅读排行榜</h3>
+<div class="RecentComment" id="TopViewPosts"> 
+	<div id="TopViewPostsBlock"><ul><li><a href="https://www.cnblogs.com/rainbowzc/archive/2010/08/19/1803886.html">1. DOTNETBAR的使用方法(转)(46985)</a></li><li><a href="https://www.cnblogs.com/rainbowzc/p/4583019.html">2. 史上最强大的js图表库——ECharts带你入门(转)(42073)</a></li><li><a href="https://www.cnblogs.com/rainbowzc/p/3571400.html">3. vs2010+ Ankhsvn使用详解(34046)</a></li><li><a href="https://www.cnblogs.com/rainbowzc/p/3357594.html">4. ZeroMQ研究与应用分析(32194)</a></li><li><a href="https://www.cnblogs.com/rainbowzc/p/3593242.html">5. jQuery EasyUI Datagrid性能优化专题(转)(19688)</a></li></ul></div>
+</div>
+</div></div><div id="sidebar_topdiggedposts" class="sidebar-block"><div id="topdigg_posts_wrap">
+<h3 class="catListTitle">推荐排行榜</h3>
+<div class="RecentComment">
+	<div id="TopDiggPostsBlock"><ul><li><a href="https://www.cnblogs.com/rainbowzc/p/3357594.html">1. ZeroMQ研究与应用分析(14)</a></li><li><a href="https://www.cnblogs.com/rainbowzc/archive/2010/08/19/1803886.html">2. DOTNETBAR的使用方法(转)(6)</a></li><li><a href="https://www.cnblogs.com/rainbowzc/p/3621624.html">3. .NET开发过程中的全文索引使用技巧之Solr（转）(4)</a></li><li><a href="https://www.cnblogs.com/rainbowzc/p/3571400.html">4. vs2010+ Ankhsvn使用详解(4)</a></li><li><a href="https://www.cnblogs.com/rainbowzc/p/3687193.html">5. .NET代码执行效率优化(3)</a></li></ul></div>
+</div></div></div></div>
+	
+</div>
+<div id="main">
+	
+        <div id="post_detail">
+<div class="post">
+	<div class="postTitle">
+		<a id="cb_post_title_url" href="https://www.cnblogs.com/rainbowzc/p/3357594.html">ZeroMQ研究与应用分析</a>
+	</div>
+	
+	<div class="postText">
+		<div id="cnblogs_post_body" class="blogpost-body"><div class="Blog_wz1" style="overflow-wrap: break-word;">
+<p><span style="line-height: 120%; font-family: 黑体; font-size: 14pt;">1<span>&nbsp; </span>ZeroMQ</span><span style="line-height: 120%; font-family: 黑体; font-size: 14pt;">概述</span></p>
+<p style="text-indent: 21pt;"><span>ZeroMQ</span><span style="font-family: 宋体;">是一种基于消息队列的多线程网络库，其对套接字类型、连接处理、帧、甚至路由的底层细节进行抽象，提供跨越多种传输协议的套接字。</span><span>ZeroMQ</span><span style="font-family: 宋体;">是网络通信中新的一层，介于应用层和传输层之间（按照</span><span>TCP/IP</span><span style="font-family: 宋体;">划分），其是一个可伸缩层，可并行运行，分散在分布式系统间。</span></p>
+<p><span style="line-height: 120%; font-family: 黑体; font-size: 14pt;">2<span>&nbsp; </span></span><span style="line-height: 120%; font-family: 黑体; font-size: 14pt;">系统架构</span></p>
+<p><span style="line-height: 120%; font-family: 黑体; font-size: 12pt;">2.1</span><span style="line-height: 120%; font-family: 黑体; font-size: 12pt;">总体架构</span></p>
+<p style="text-indent: 21pt;"><span>ZeroMQ</span><span style="font-family: 宋体;">几乎所有的</span><span>I/O</span><span style="font-family: 宋体;">操作都是异步的，主线程不会被阻塞。</span><span>ZeroMQ</span><span style="font-family: 宋体;">会根据用户调用</span><span>zmq_init</span><span style="font-family: 宋体;">函数时传入的接口参数，创建对应数量的</span><span>I/O Thread</span><span style="font-family: 宋体;">。每个</span><span>I/O Thread</span><span style="font-family: 宋体;">都有与之绑定的</span><span>Poller</span><span style="font-family: 宋体;">，</span><span>Poller</span><span style="font-family: 宋体;">采用经典的</span><span>Reactor</span><span style="font-family: 宋体;">模式实现，</span><span>Poller</span><span style="font-family: 宋体;">根据不同操作系统平台使用不同的网络</span><span>I/O</span><span style="font-family: 宋体;">模型（</span><span>select</span><span style="font-family: 宋体;">、</span><span>poll</span><span style="font-family: 宋体;">、</span><span>epoll</span><span style="font-family: 宋体;">、</span><span>devpoll</span><span style="font-family: 宋体;">、</span><span>kequeue</span><span style="font-family: 宋体;">等）。主线程与</span><span>I/O</span><span style="font-family: 宋体;">线程通过</span><span>Mail Box</span><span style="font-family: 宋体;">传递消息来进行通信。</span><span>Server</span><span style="font-family: 宋体;">开始监听或者</span><span>Client</span><span style="font-family: 宋体;">发起连接时，在主线程中创建</span><span>zmq_connecter</span><span style="font-family: 宋体;">或</span><span>zmq_listener</span><span style="font-family: 宋体;">，通过</span><span>Mail Box</span><span style="font-family: 宋体;">发消息的形式将其绑定到</span><span>I/O</span><span style="font-family: 宋体;">线程，</span><span>I/O</span><span style="font-family: 宋体;">线程会把</span><span>zmq_connecter</span><span style="font-family: 宋体;">或</span><span>zmq_listener</span><span style="font-family: 宋体;">添加到</span><span>Poller</span><span style="font-family: 宋体;">中用以侦听读</span><span>/</span><span style="font-family: 宋体;">写事件。</span><span>Server</span><span style="font-family: 宋体;">与</span><span>Client</span><span style="font-family: 宋体;">在第一次通信时，会创建</span><span>zmq_init</span><span style="font-family: 宋体;">来发送</span><span>identity</span><span style="font-family: 宋体;">，用以进行认证。认证结束后，双方会为此次连接创建</span><span>Session</span><span style="font-family: 宋体;">，以后双方就通过</span><span>Session</span><span style="font-family: 宋体;">进行通信。每个</span><span>Session</span><span style="font-family: 宋体;">都会关联到相应的读</span><span>/</span><span style="font-family: 宋体;">写管道，</span> <span style="font-family: 宋体;">主线程收发消息只是分别从管道中读</span><span>/</span><span style="font-family: 宋体;">写数据。</span><span>Session</span><span style="font-family: 宋体;">并不实际跟</span><span>kernel</span><span style="font-family: 宋体;">交换</span><span>I/O</span><span style="font-family: 宋体;">数据，而是通过</span><span>plugin</span><span style="font-family: 宋体;">到</span><span>Session</span><span style="font-family: 宋体;">中的</span><span>Engine</span><span style="font-family: 宋体;">来与</span><span>kernel</span><span style="font-family: 宋体;">交换</span><span>I/O</span><span style="font-family: 宋体;">数据。</span></p>
+<p style="text-align: center;" align="center"><span><img src="22312037_1364724942uqqb.png" alt="" width="700" height="334"><br></span></p>
+<p style="text-align: center;" align="center"><span style="line-height: 120%; font-family: 黑体; font-size: 9pt;">图<span>1</span>总体架构</span> </p>
+<p><span style="line-height: 120%; font-family: 黑体; font-size: 12pt;">2.2</span><span style="line-height: 120%; font-family: 黑体; font-size: 12pt;">所处层次</span> </p>
+<p><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>ZeroMQ</span><span style="font-family: 宋体;">不是单独的服务或者程序，仅仅是一套组件，其封装了网络通信、消息队列、线程调度等功能，向上层提供简洁的</span><span>API</span><span style="font-family: 宋体;">，应用程序通过加载库文件，调用</span><span>API</span><span style="font-family: 宋体;">函数来实现高性能网络通信。</span> </p>
+<p style="text-align: center;" align="center"><span><img src="22312037_136472497950yy.png" alt="" width="192" height="118"><br></span></p>
+<p style="text-align: center;" align="center"><span style="line-height: 120%; font-family: 黑体; font-size: 9pt;">图<span>2</span>所处层次</span> </p>
+<p><span style="line-height: 120%; font-family: 黑体; font-size: 12pt;">2.3</span><span style="line-height: 120%; font-family: 黑体; font-size: 12pt;">消息模型</span> </p>
+<p style="text-indent: 21pt;"><span>ZeroMQ</span><span style="font-family: 宋体;">将消息通信分成</span><span>4</span><span style="font-family: 宋体;">种模型，分别是一对一结对模型（</span><span>Exclusive-Pair</span><span style="font-family: 宋体;">）、请求回应模型（</span><span>Request-Reply</span><span style="font-family: 宋体;">）、发布订阅模型（</span><span>Publish-Subscribe</span><span style="font-family: 宋体;">）、推拉模型（</span><span>Push-Pull</span><span style="font-family: 宋体;">）。这</span><span>4</span><span style="font-family: 宋体;">种模型总结出了通用的网络通信模型，在实际中可以根据应用需要，组合其中的</span><span>2</span><span style="font-family: 宋体;">种或多种模型来形成自己的解决方案。</span> </p>
+<p><span style="font-family: 黑体;">2.3.1<span>&nbsp;&nbsp; </span></span><span style="font-family: 黑体;">一对一结对模型</span> </p>
+<p><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span style="font-family: 宋体;">最简单的</span><span>1:1</span><span style="font-family: 宋体;">消息通信模型，可以认为是一个</span><span>TCP Connection</span><span style="font-family: 宋体;">，但是</span><span>TCP Server</span><span style="font-family: 宋体;">只能接受一个连接。数据可以双向流动，这点不同于后面的请求回应模型。</span> </p>
+<p><span style="font-family: 黑体;">2.3.2<span>&nbsp;&nbsp; </span></span><span style="font-family: 黑体;">请求回应模型</span> </p>
+<p style="text-indent: 21pt;"><span style="font-family: 宋体;">由请求端发起请求，然后等待回应端应答。一个请求必须对应一个回应，从请求端的角度来看是发</span><span>-</span><span style="font-family: 宋体;">收配对，从回应端的角度是收</span><span>-</span><span style="font-family: 宋体;">发对。跟一对一结对模型的区别在于请求端可以是</span><span>1~N</span><span style="font-family: 宋体;">个。该模型主要用于远程调用及任务分配等。</span><span>Echo</span><span style="font-family: 宋体;">服务就是这种经典模型的应用。</span> </p>
+<p style="text-align: center;" align="center"><span><img src="22312037_1364725006a6xz.png" alt="" width="455" height="190"><br></span></p>
+<p style="text-align: center;" align="center"><span style="line-height: 120%; font-family: 黑体; font-size: 9pt;">图<span>3</span>请求回应模型</span> </p>
+<p><span style="font-family: 黑体;">2.3.3<span>&nbsp;&nbsp; </span></span><span style="font-family: 黑体;">发布订阅模型</span> </p>
+<p><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span style="font-family: 宋体;">发布端单向分发数据，且不关心是否把全部信息发送给订阅端。如果发布端开始发布信息时，订阅端尚未连接上来，则这些信息会被直接丢弃。订阅端未连接导致信息丢失的问题，可以通过与请求回应模型组合来解决。订阅端只负责接收，而不能反馈，且在订阅端消费速度慢于发布端的情况下，会在订阅端堆积数据。该模型主要用于数据分发。天气预报、微博明星粉丝可以应用这种经典模型。</span> </p>
+<p style="text-align: center;" align="center"><span><img src="22312037_1364725030jp0w.png" alt="" width="455" height="266"><br></span></p>
+<p style="text-align: center;" align="center"><span style="line-height: 120%; font-family: 黑体; font-size: 9pt;">图<span>4</span>发布订阅模型</span> </p>
+<p><span style="font-family: 黑体;">2.3.4<span>&nbsp;&nbsp; </span></span><span style="font-family: 黑体;">推拉模型</span> </p>
+<p style="text-indent: 21pt;"><span>Server</span><span style="font-family: 宋体;">端作为</span><span>Push</span><span style="font-family: 宋体;">端，而</span><span>Client</span><span style="font-family: 宋体;">端作为</span><span>Pull</span><span style="font-family: 宋体;">端，如果有多个</span><span>Client</span><span style="font-family: 宋体;">端同时连接到</span><span>Server</span><span style="font-family: 宋体;">端，则</span><span>Server</span><span style="font-family: 宋体;">端会在内部做一个负载均衡，采用平均分配的算法，将所有消息均衡发布到</span><span>Client</span><span style="font-family: 宋体;">端上。与发布订阅模型相比，推拉模型在没有消费者的情况下，发布的消息不会被消耗掉；在消费者能力不够的情况下，能够提供多消费者并行消费解决方案。该模型主要用于多任务并行。</span> </p>
+<p style="text-align: center;" align="center"><span><img src="22312037_1364725120uoae.png" alt="" width="455" height="345"><br></span></p>
+<p style="text-align: center;" align="center"><span style="line-height: 120%; font-family: 黑体; font-size: 9pt;">图<span>5 </span>推拉模型</span> </p>
+<p><span style="line-height: 120%; font-family: 黑体; font-size: 12pt;">2.4</span><span style="line-height: 120%; font-family: 黑体; font-size: 12pt;">通信协议</span> </p>
+<p style="text-indent: 21pt;"><span style="font-family: 宋体;">提供进程内、进程间、机器间、广播等四种通信协议。通信协议配置简单，用类似于</span><span>URL</span><span style="font-family: 宋体;">形式的字符串指定即可，格式分别为</span><span>inproc://</span><span style="font-family: 宋体;">、</span><span>ipc://</span><span style="font-family: 宋体;">、</span><span>tcp://</span><span style="font-family: 宋体;">、</span><span>pgm://</span><span style="font-family: 宋体;">。</span><span>ZeroMQ</span><span style="font-family: 宋体;">会自动根据指定的字符串解析出协议、地址、端口号等信息。</span> </p>
+<p><span style="line-height: 120%; font-family: 黑体; font-size: 14pt;">3<span>&nbsp; </span></span><span style="line-height: 120%; font-family: 黑体; font-size: 14pt;">工作流程</span> </p>
+<p style="text-align: center;"><span><img src="22312037_1364725157vphv.png" alt="" width="700" height="1038"><br></span></p>
+<p style="text-align: center;" align="center"><span style="line-height: 120%; font-family: 黑体; font-size: 9pt;">图<span>6 </span>基本流程</span> </p>
+<p><span style="line-height: 120%; font-family: 黑体; font-size: 14pt;">4<span>&nbsp; </span></span><span style="line-height: 120%; font-family: 黑体; font-size: 14pt;">性能分析</span> </p>
+<p style="text-indent: 21pt;"><span style="font-family: 宋体;">目前，市面上类似的产品不少，主要有</span><span>4</span><span style="font-family: 宋体;">种：</span><span>MSMQ</span><span style="font-family: 宋体;">（微软产品）、</span><span>ActiveMQ</span><span style="font-family: 宋体;">（</span><span>Java</span><span style="font-family: 宋体;">）、</span><span>RabbitMQ(Erlang)</span><span style="font-family: 宋体;">、</span><span>ZeroMQ</span><span style="font-family: 宋体;">（</span><span>C++</span><span style="font-family: 宋体;">）。除</span><span>ZeroMQ</span><span style="font-family: 宋体;">外，其它</span><span>3</span><span style="font-family: 宋体;">款产品都是一个单独服务或者进程，需要单独安装和运行，且对环境有一定依赖。其中，</span><span>MSMQ</span><span style="font-family: 宋体;">在非</span><span>Windows</span><span style="font-family: 宋体;">平台下安装非常复杂，</span><span>ActiveMQ</span><span style="font-family: 宋体;">需要目标机器上已经安装了</span><span>Java</span><span style="font-family: 宋体;">，</span><span>RabbitMQ</span><span style="font-family: 宋体;">需要</span><span>Erlang</span><span style="font-family: 宋体;">环境。而</span><span>ZeroMQ</span><span style="font-family: 宋体;">是以库的形式存在，由应用程序加载、运行即可。但是</span><span>ZeroMQ</span><span style="font-family: 宋体;">仅提供非持久性的消息队列。</span> </p>
+<p style="text-indent: 21pt;"><span style="font-family: 宋体;">图</span><span>7</span><span style="font-family: 宋体;">是来自于</span><span>Internet</span><span style="font-family: 宋体;">的性能测试数据。显示的是每秒钟发送和接受的消息数。整个过程共产生</span><span>1</span><span style="font-family: 宋体;">百万条</span><span>1K</span><span style="font-family: 宋体;">的消息，测试环境为</span><span>Windows Vista</span><span style="font-family: 宋体;">。从测试数据可以看出，</span><span>ZeroMQ</span><span style="font-family: 宋体;">的性能远远高于其它</span><span>3</span><span style="font-family: 宋体;">个</span><span>MQ</span><span style="font-family: 宋体;">。</span> </p>
+<p style="text-indent: 21pt;"><span style="font-family: 宋体;">但是测试数据仅供参考，因为缺少必须的环境参数和性能指标，比如：</span><span>CPU</span><span style="font-family: 宋体;">参数、内存参数、消息模型、通信协议、极限时消耗</span><span>CPU</span><span style="font-family: 宋体;">百分比、极限时消耗内存百分比等。</span> </p>
+<p style="text-align: center;"><span><img src="22312037_1364725293ce0y.png" alt="" width="641" height="456"><br></span></p>
+<p style="text-align: center;" align="center"><span style="line-height: 120%; font-family: 黑体; font-size: 9pt;">图<span>7</span>性能测试</span> </p>
+<p><span style="line-height: 120%; font-family: 黑体; font-size: 14pt;">5<span>&nbsp; </span></span><span style="line-height: 120%; font-family: 黑体; font-size: 14pt;">应用场景</span> </p>
+<p style="text-indent: 21pt;"><span style="font-family: 宋体;">应用</span><span>ZeroMQ</span><span style="font-family: 宋体;">的</span><span>Push-Pull</span><span style="font-family: 宋体;">模型实现联众游戏服务器的“热插拔”、负载均衡和消息派发。按照如图</span><span>8</span><span style="font-family: 宋体;">部署服务器，</span><span>Push</span><span style="font-family: 宋体;">端充当</span><span>Gateway</span><span style="font-family: 宋体;">，作为一组游戏服务器集群最上层的一个</span><span>Proxy</span><span style="font-family: 宋体;">，起负载均衡的作用，所有</span><span>Gameserver</span><span style="font-family: 宋体;">作为</span><span>Pull</span><span style="font-family: 宋体;">端。当一个请求到达</span><span>Push</span><span style="font-family: 宋体;">端（</span><span>Gateway</span><span style="font-family: 宋体;">）时，</span><span>Push</span><span style="font-family: 宋体;">端根据一定的分配策略将任务派发到</span><span>Pull</span><span style="font-family: 宋体;">端（</span><span>Gameserver</span><span style="font-family: 宋体;">）。以联众某款游戏</span><span>A</span><span style="font-family: 宋体;">为例，游戏</span><span>A</span><span style="font-family: 宋体;">刚上线时，预计最大同时在线人数是</span><span>10W</span><span style="font-family: 宋体;">，单台</span><span>Gameserver</span><span style="font-family: 宋体;">并发处理能力为</span><span>1W</span><span style="font-family: 宋体;">，需要</span><span>10</span><span style="font-family: 宋体;">台</span><span>Gameserver</span><span style="font-family: 宋体;">，由于游戏</span><span>A</span><span style="font-family: 宋体;">可玩性非常好，半个月后最大同时在线人数暴增到</span><span>50W</span><span style="font-family: 宋体;">，那么不需要在某天的凌晨将</span><span>Gateway</span><span style="font-family: 宋体;">和</span><span>Gameserver</span><span style="font-family: 宋体;">停机，只需要随时在机房新添加</span><span>40</span><span style="font-family: 宋体;">台</span><span>Gameserver</span><span style="font-family: 宋体;">，启动并连接到</span><span>Gateway</span><span style="font-family: 宋体;">即可。</span> </p>
+<p style="text-indent: 21pt;"><span>ZeroMQ</span><span style="font-family: 宋体;">中对</span><span>Client</span><span style="font-family: 宋体;">和</span><span>Server</span><span style="font-family: 宋体;">的启动顺序没有要求，</span><span>Gameserver</span><span style="font-family: 宋体;">之间如果需要通信的话，</span><span>Gameserver</span><span style="font-family: 宋体;">的应用层不需要管理这些细节，</span><span>ZeroMQ</span><span style="font-family: 宋体;">已经做了重连处理。</span> </p>
+<p style="text-align: center;"><span><img src="22312037_1364725343791v.png" alt="" width="700" height="324"><br></span></p>
+<p style="text-align: center;" align="center"><span style="line-height: 120%; font-family: 黑体; font-size: 9pt;">图<span>8</span>应用场景</span> </p>
+<p><span style="line-height: 120%; font-family: 黑体; font-size: 14pt;">6<span>&nbsp; </span></span><span style="line-height: 120%; font-family: 黑体; font-size: 14pt;">总结</span> </p>
+<p><span style="line-height: 120%; font-family: 黑体; font-size: 12pt;">6.1</span><span style="line-height: 120%; font-family: 黑体; font-size: 12pt;">简单</span> </p>
+<p><span>1</span><span style="font-family: 宋体;">、仅仅提供</span><span>24</span><span style="font-family: 宋体;">个</span><span>API</span><span style="font-family: 宋体;">接口，风格类似于</span><span>BSD Socket</span><span style="font-family: 宋体;">。</span> </p>
+<p><span>2</span><span style="font-family: 宋体;">、处理了网络异常，包括连接异常中断、重连等。</span> </p>
+<p><span>3</span><span style="font-family: 宋体;">、改变</span><span>TCP</span><span style="font-family: 宋体;">基于字节流收发数据的方式，处理了粘包、半包等问题，以</span><span>msg</span><span style="font-family: 宋体;">为单位收发数据，结合</span><span>Protocol Buffers</span><span style="font-family: 宋体;">，可以对应用层彻底屏蔽网络通信层。</span> </p>
+<p><span>4</span><span style="font-family: 宋体;">、对大数据通过</span><span>SENDMORE/RECVMORE</span><span style="font-family: 宋体;">提供分包收发机制。</span> </p>
+<p><span>5</span><span style="font-family: 宋体;">、通过线程间数据流动来保证同一时刻任何数据都只会被一个线程持有，以此实现多线程的“去锁化”。</span> </p>
+<p><span>6</span><span style="font-family: 宋体;">、通过高水位</span><span>HWM</span><span style="font-family: 宋体;">来控制流量，用交换</span><span>SWAP</span><span style="font-family: 宋体;">来转储内存数据，弥补</span><span>HWM</span><span style="font-family: 宋体;">丢失数据的缺陷。</span> </p>
+<p><span>7</span><span style="font-family: 宋体;">、服务器端和客户端的启动没有先后顺序。</span> </p>
+<p><span style="line-height: 120%; font-family: 黑体; font-size: 12pt;">6.2</span><span style="line-height: 120%; font-family: 黑体; font-size: 12pt;">灵活</span> </p>
+<p><span>1</span><span style="font-family: 宋体;">、支持多种通信协议，可以灵活地适应多种通信环境，包括进程内、进程间、机器间、广播。</span> </p>
+<p><span>2</span><span style="font-family: 宋体;">、支持多种消息模型，消息模型之间可以相互组合，形成特定的解决方案。</span> </p>
+<p><span style="line-height: 120%; font-family: 黑体; font-size: 12pt;">6.3</span><span style="line-height: 120%; font-family: 黑体; font-size: 12pt;">跨平台</span> </p>
+<p><span style="font-family: 宋体;">支持</span><span>Linux</span><span style="font-family: 宋体;">、</span><span>Windows</span><span style="font-family: 宋体;">、</span><span>OS X</span><span style="font-family: 宋体;">等。</span> </p>
+<p><span style="line-height: 120%; font-family: 黑体; font-size: 12pt;">6.4</span><span style="line-height: 120%; font-family: 黑体; font-size: 12pt;">多语言</span> </p>
+<p><span style="font-family: 宋体;">可以绑定</span><span>C</span><span style="font-family: 宋体;">、</span><span>C++</span><span style="font-family: 宋体;">、</span><span>Java</span><span style="font-family: 宋体;">、</span><span>.NET</span><span style="font-family: 宋体;">、</span><span>Python</span><span style="font-family: 宋体;">等</span><span>30</span><span style="font-family: 宋体;">多种开发语言。</span> </p>
+<p><span style="line-height: 120%; font-family: 黑体; font-size: 12pt;">6.5</span><span style="line-height: 120%; font-family: 黑体; font-size: 12pt;">高性能</span> </p>
+<p><span style="font-family: 宋体;">相对同类产品，性能卓越。</span> </p>
+<br><br><br></div></div><div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+<div id="BlogPostCategory"></div>
+<div id="EntryTag"></div>
+<div id="blog_post_info"><div id="green_channel">
+        <a href="javascript:void(0);" id="green_channel_digg" onclick="DiggIt(3357594,cb_blogId,1);green_channel_success(this,'谢谢推荐！');">好文要顶</a>
+            <a id="green_channel_follow" onclick="follow('8632420b-63cf-dd11-9e4d-001cf0cd104b');" href="javascript:void(0);">关注我</a>
+    <a id="green_channel_favorite" onclick="AddToWz(cb_entryId);return false;" href="javascript:void(0);">收藏该文</a>
+    <a id="green_channel_weibo" href="javascript:void(0);" title="分享至新浪微博" onclick="ShareToTsina()"><img src="icon_weibo_24.png" alt=""></a>
+    <a id="green_channel_wechat" href="javascript:void(0);" title="分享至微信" onclick="shareOnWechat()"><img src="wechat.png" alt=""></a>
+</div>
+<div id="author_profile">
+    <div id="author_profile_info" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/rainbowzc/" target="_top"><img src="sample_face.gif" class="author_avatar" alt=""></a>
+        <div id="author_profile_detail" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/rainbowzc/">ct</a><br>
+            <a href="http://home.cnblogs.com/u/rainbowzc/followees">关注 - 0</a><br>
+            <a href="http://home.cnblogs.com/u/rainbowzc/followers">粉丝 - 79</a>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div id="author_profile_honor"></div>
+    <div id="author_profile_follow">
+                <a href="javascript:void(0);" onclick="follow('8632420b-63cf-dd11-9e4d-001cf0cd104b');return false;">+加关注</a>
+    </div>
+</div>
+<div id="div_digg">
+    <div class="diggit" onclick="votePost(3357594,'Digg')">
+        <span class="diggnum" id="digg_count">14</span>
+    </div>
+    <div class="buryit" onclick="votePost(3357594,'Bury')">
+        <span class="burynum" id="bury_count">0</span>
+    </div>
+    <div class="clear"></div>
+    <div class="diggword" id="digg_tips">
+    </div>
+</div>
+</div>
+<div class="clear"></div>
+<div id="post_next_prev"><a href="https://www.cnblogs.com/rainbowzc/p/3357554.html" class="p_n_p_prefix">« </a> 上一篇：<a href="https://www.cnblogs.com/rainbowzc/p/3357554.html" title="发布于2013-10-08 17:47">VS2008 打开 VS2010解决方案及项目(转)</a><br><a href="https://www.cnblogs.com/rainbowzc/p/3372567.html" class="p_n_p_prefix">» </a> 下一篇：<a href="https://www.cnblogs.com/rainbowzc/p/3372567.html" title="发布于2013-10-16 17:00">图形报表 webChart.dll 以及其它的图形报表控件 (转)</a><br></div>
+</div>
+
+
+	</div>
+	
+	<div class="postfoot">
+		posted on <span id="post-date">2013-10-08 18:10</span> <a href="https://www.cnblogs.com/rainbowzc/">ct</a> 阅读(<span id="post_view_count">32194</span>) 评论(<span id="post_comment_count">0</span>)  <a href="https://i.cnblogs.com/EditPosts.aspx?postid=3357594" rel="nofollow">编辑</a> <a href="#" onclick="AddToWz(3357594);return false;">收藏</a>
+	</div>
+</div>
+
+
+</div><a name="!comments"></a><div id="blog-comments-placeholder"></div>
+<div id="comment_form" class="commentform">
+<a name="commentform"></a>
+<div id="divCommentShow"></div>
+<div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+<div id="comment_form_container">（评论功能已被禁用）</div>
+<div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+<div id="ad_t2"><a href="http://www.ucancode.com/index.htm" target="_top" onclick="ga('send', 'event', 'Link', 'click', 'T2-工控')">【推荐】超50万C++/C#源码: 大型实时仿真HMI组态CAD\GIS图形源码！</a><br><a href="https://gitee.com/enterprises?from=bky-2" target="_top" onclick="ga('send', 'event', 'Link', 'click', 'T2-gitee')">【推荐】专业便捷的企业级代码托管服务 - Gitee 码云</a><br></div>
+<div id="opt_under_post"></div>
+
+
+
+<div id="cnblogs_c1" class="c_ad_block">
+    <div id="div-gpt-ad-1546353474406-0" style="height: 250px; width: 300px;" data-google-query-id="CKmCmqPBzOACFRGzlgodnNsNDA"><div id="google_ads_iframe_/1090369/C1_0__container__" style="border: 0pt none;"><iframe id="google_ads_iframe_/1090369/C1_0" title="3rd party ad content" name="google_ads_iframe_/1090369/C1_0" scrolling="no" marginwidth="0" marginheight="0" style="border: 0px none; vertical-align: bottom;" srcdoc="" data-google-container-id="1" data-load-complete="true" src="index_1.html" width="300" height="250" frameborder="0"></iframe></div></div>
+</div>
+<div id="under_post_news"><div class="itnews c_ad_block"><b>相关博文：</b><br>·  <a href="https://www.cnblogs.com/wangguolong/articles/2841041.html" target="_top" onclick="clickRecomItmem(2841041,'0htZ6q8+ENaYQb1kxiu9xrDEvr+g/h1k0rB8mGyeKYWBkgzC+HJaRjtP8DBYNv+vtYEC6qkp1jBbWdZKqPnSg66cqFydgdw+/rdNI1+y7YiR0DLSudoL6pjw+MX/sNG4uBteKwI8G4Tn2UVe5SM=')">JavaCC 研究与应用</a><br>·  <a href="https://www.cnblogs.com/shijingxiang/articles/4517515.html" target="_top" onclick="clickRecomItmem(4517515,'UjrfygxqpuqQHHXay4NxdBzEwXmDRwJ3ITEhn/EU6p9ukYUQP5H4ZSrnACuvB7yAfQT0tF2BJpnqDqsFW/HzGy4BWXFhTLdVQB5h8l2HKRAhz9sq4PpZ6tg7UN3s6f1GO5+Zm1UrjCCQb5qbwBI=')">ZeroMQ的学习和研究</a><br>·  <a href="https://www.cnblogs.com/java20130722/p/3206781.html" target="_top" onclick="clickRecomItmem(3206781,'nnL61HzMRiQDKBhFamQwGUM3ct4jI/EWh7vm49lebwaZWYsPvngoFgXh0wVTMn0VOYdhEp+vocEhhfmpBxm25Ea4qTSnVmvjtIFXDPZk5ocCyFIHP07DSotJqKY+S6rczGeo9t/ThfRSPv4v7wE=')">Lucene Payload 的研究与应用</a><br>·  <a href="https://www.cnblogs.com/shhnwangjian/p/5985799.html" target="_top" onclick="clickRecomItmem(5985799,'VY6e5d4xHe10tEoIdHhKWF6ar2QJRpq3/qCKA4vsTUjO3+wtd3ePbNRFQSwdTvQSu8Fu0XMMeY87c0PL80k6PJ8+fTxtkCohfAjfLHewRvTj+AEHUsQMcpt1LY5utwaooWmONlLlMMqbvqljaww=')">SaltStack与ZeroMQ（二）</a><br>·  <a href="https://www.cnblogs.com/cxcx/p/6216053.html" target="_top" onclick="clickRecomItmem(6216053,'UB1uXlPEaCKXjEQBYNkSmHJgvd+jShwJop6InK8UYoX/DT88utwA/IAscstxsHxQoGhrF46zHehNz11xsEG39L72YflhOekkRLj+Qp0T6gIhSjyFVlEzWnvHGxpRhZkCgLj/s8jZGW+zgDQMZcM=')">SaltStack(五) SaltStack与ZeroMQ</a><br></div></div>
+<div id="cnblogs_c2" class="c_ad_block">
+    <div id="div-gpt-ad-1539008685004-0" style="height: 60px; width: 468px;" data-google-query-id="CL6CmqPBzOACFY8ylgoddJ4CEw"><div id="google_ads_iframe_/1090369/C2_0__container__" style="border: 0pt none;"><iframe id="google_ads_iframe_/1090369/C2_0" title="3rd party ad content" name="google_ads_iframe_/1090369/C2_0" scrolling="no" marginwidth="0" marginheight="0" style="border: 0px none; vertical-align: bottom;" srcdoc="" data-google-container-id="2" data-load-complete="true" src="index_2.html" width="468" height="60" frameborder="0"></iframe></div></div>
+</div>
+<div id="under_post_kb"><div class="itnews c_ad_block"><b>最新新闻</b>：<br> ·  <a href="https://news.cnblogs.com/n/620016/" target="_top">头条、美团与滴滴：“TMD”三小巨头的2018</a><br> ·  <a href="https://news.cnblogs.com/n/620014/" target="_top">除了“复制粘贴”，安全圈的抄袭更复杂</a><br> ·  <a href="https://news.cnblogs.com/n/620012/" target="_top">永不造车？拆解华为拥有的自动驾驶和电动汽车关键技术</a><br> ·  <a href="https://news.cnblogs.com/n/620010/" target="_top">6天面试、斩获6家硅谷巨头Offer，我是如何做到的？</a><br> ·  <a href="https://news.cnblogs.com/n/620007/" target="_top">IBM成Z代人最青睐科技公司 谷歌和亚马逊分列第二三名</a><br>» <a href="http://news.cnblogs.com/" title="IT新闻" target="_top">更多新闻...</a></div></div>
+<div id="HistoryToday" class="c_ad_block"></div>
+
+</div>
+
+    
+</div>
+<div class="footer">
+
+<p id="footer">
+	Powered by: 
+	<br>
+	
+	<a id="Footer1_Hyperlink3" name="Hyperlink1" href="https://www.cnblogs.com/" style="font-family: Verdana; font-size: 12px;">博客园</a>
+	<br>
+	Copyright © ct
+</p>
+</div>
+
+
+
+<iframe id="google_osd_static_frame_6605212056034" name="google_osd_static_frame" style="display: none; width: 0px; height: 0px;" src="index_3.html"></iframe></body>
+</html>

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="origin">
+    <title>centos下如何使用sendmail发送邮件 - hduhans - 博客园</title>
+<meta property="og:description" content="最近在实施服务端日志监控脚本，需要对异常情况发送邮件通知相关责任人，记录下centos通过sendmail发送邮件的配置过程。 一、安装sendmail与mail 1、安装sendmail： 1) c">
+    
+
+
+
+    <link title="RSS" type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/hanganglin/rss">
+    <link title="RSD" type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/hanganglin/rsd.xml">
+<link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/hanganglin/wlwmanifest.xml">
+    
+    
+    
+
+<link rel="preload" href="https://adservice.google.com/adsid/integrator.js?domain=www.cnblogs.com" as="script">
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<a name="top"></a>
+
+
+
+<div id="container">
+    <a class="minyx" href="http://www.cnblogs.com/">代码改变世界</a>
+    <ul id="topMnu">
+        <!-- 统计数据 -->
+        <li>
+            
+                <div id="blog_stats">
+Posts - 45, 
+Articles - 123, 
+Comments - 9
+<!----></div>
+            
+        </li>
+        <!-- 这边可以增加一些链接 -->
+        <!-- 博客园 -->
+        <li><a href="http://www.cnblogs.com/">Cnblogs</a></li>
+        <!-- 管理 -->
+        <li id="topMnu-dashboard">
+            <a id="lnkDashboard" href="https://www.cnblogs.com/hanganglin/admin/EditPosts.aspx">Dashboard</a></li>
+        <li>
+            <a id="lnkLogin" href="http://passport.cnblogs.com/login.aspx?ReturnUrl=http://www.cnblogs.com/hanganglin/p/6510216.html">Login</a></li>
+    </ul>
+
+    
+
+    <div id="header">
+        <ul id="menu">
+            <!-- 首页，当前section加上current类 -->
+            <li id="menu-home" class="current">
+                <a id="lnkHome" href="https://www.cnblogs.com/hanganglin/">Home</a></li>
+            <!-- 联系 -->
+            <li id="menu-contact">
+                <a id="lnkContact" href="http://space.cnblogs.com/msg/send/hduhans">Contact</a></li>
+            <!-- 相册 -->
+            <li id="menu-gallary">
+                <a id="lnkGallery" href="https://www.cnblogs.com/hanganglin/gallery.html">Gallery</a></li>
+            <!-- Rss订阅 -->
+            <li id="rss">
+                <a id="lnkRss" href="https://www.cnblogs.com/hanganglin/rss">RSS</a></li>
+        </ul>
+        <div id="newmsg"></div>
+        <h1>
+            <!-- 主标题 -->
+            <a id="lnkBlogTitle" href="https://www.cnblogs.com/hanganglin/"><b>hduhans</b><font style="font-family: 楷体;" size="5"> -- 每天进步一点点，立志成为高级搬砖工</font></a>
+            <!-- 子标题 -->
+            <small>
+                </small>
+        </h1>
+    </div>
+
+    
+
+    <div id="wrapper">
+        <div id="content">
+            
+            
+        <div id="post_detail">
+<div class="post" id="post">
+    <a name="top"></a>
+    <h2><a id="cb_post_title_url" href="https://www.cnblogs.com/hanganglin/p/6510216.html">centos下如何使用sendmail发送邮件</a></h2>
+    <small>2017-03-06 15:33 by hduhans, <span id="post_view_count">13842</span> 阅读, <span id="post_comment_count">0</span> 评论, <a href="#" onclick="AddToWz(6510216);return false;">收藏</a>,  <a href="https://i.cnblogs.com/EditPosts.aspx?postid=6510216" rel="nofollow">编辑</a></small>
+    <div class="entry">
+        <div id="cnblogs_post_body" class="blogpost-body"><p>　　最近在实施服务端日志监控脚本，需要对异常情况发送邮件通知相关责任人，记录下centos通过sendmail发送邮件的配置过程。</p>
+<div class="hans_title">一、安装sendmail与mail</div>
+<p>　　1、安装sendmail：</p>
+<p>　　　 &nbsp;1) centos下可以安装命令：<span style="color: rgb(255, 0, 0);">yum -y install sendmail</span></p>
+<p>　　 　 2) 安装完后启动sendmail命令：<span style="color: rgb(255, 0, 0);">service sendmail start</span></p>
+<p>　　2、安装mail</p>
+<p>　　　 &nbsp;安装命令：<span style="color: rgb(255, 0, 0);">yum install -y mailx</span></p>
+<div class="hans_title">二、发送邮件</div>
+<p>&nbsp;　 &nbsp;1、通过文件内容发送</p>
+<p>　　　 &nbsp;发送命令：<span style="color: rgb(255, 0, 0);">mail -s 'mail test' xxx@yyy.com &lt; con.txt</span> （"mail test"为邮件主题，xxx@yyy.com为收件人邮箱，con.txt保存邮件内容）</p>
+<p>　　2、通过管道符直接发送</p>
+<p>　　　 &nbsp;发送命令：<span style="color: rgb(255, 0, 0);">echo "this is my test mail" | mail -s 'mail test'&nbsp;xxx@yyy.com</span></p>
+<div class="hans_title">三、设置发件人信息</div>
+<p>　　上述发送邮件默认会使用linux当前登录用户信，通常会被当成垃圾邮件，指定发件人邮箱信息命令：vi /etc/mail.rc，编辑内容如：</p>
+<div class="cnblogs_code">
+<pre>set from=username@126.com
+set smtp=smtp.126.com
+set smtp-auth-user=username
+set smtp-auth-password=password
+set smtp-auth=login</pre>
+</div>
+<p>&nbsp;　　注意配置中的smtp-auth-password不是邮箱登录密码，是邮箱服务器开启smtp的授权码，每个邮箱开启授权码操作不同（网易126邮箱开启菜单：设置-&gt; 客户端授权密码）。</p></div><div id="MySignature"></div>
+        <div class="clear"></div>
+        <div id="blog_post_info_block">
+        <div id="blog_post_info"><div id="green_channel">
+        <a href="javascript:void(0);" id="green_channel_digg" onclick="DiggIt(6510216,cb_blogId,1);green_channel_success(this,'谢谢推荐！');">好文要顶</a>
+            <a id="green_channel_follow" onclick="follow('0fe3c3d2-a7f4-df11-ac81-842b2b196315');" href="javascript:void(0);">关注我</a>
+    <a id="green_channel_favorite" onclick="AddToWz(cb_entryId);return false;" href="javascript:void(0);">收藏该文</a>
+    <a id="green_channel_weibo" href="javascript:void(0);" title="分享至新浪微博" onclick="ShareToTsina()"><img src="icon_weibo_24.png" alt=""></a>
+    <a id="green_channel_wechat" href="javascript:void(0);" title="分享至微信" onclick="shareOnWechat()"><img src="wechat.png" alt=""></a>
+</div>
+<div id="author_profile">
+    <div id="author_profile_info" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/hanganglin/" target="_top"><img src="sample_face.gif" class="author_avatar" alt=""></a>
+        <div id="author_profile_detail" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/hanganglin/">hduhans</a><br>
+            <a href="http://home.cnblogs.com/u/hanganglin/followees">关注 - 1</a><br>
+            <a href="http://home.cnblogs.com/u/hanganglin/followers">粉丝 - 21</a>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div id="author_profile_honor"></div>
+    <div id="author_profile_follow">
+                <a href="javascript:void(0);" onclick="follow('0fe3c3d2-a7f4-df11-ac81-842b2b196315');return false;">+加关注</a>
+    </div>
+</div>
+<div id="div_digg">
+    <div class="diggit" onclick="votePost(6510216,'Digg')">
+        <span class="diggnum" id="digg_count">0</span>
+    </div>
+    <div class="buryit" onclick="votePost(6510216,'Bury')">
+        <span class="burynum" id="bury_count">0</span>
+    </div>
+    <div class="clear"></div>
+    <div class="diggword" id="digg_tips">
+    </div>
+</div>
+</div>
+        <div class="clear"></div>
+        <div id="post_next_prev"><a href="https://www.cnblogs.com/hanganglin/p/6496422.html" class="p_n_p_prefix">« </a> 上一篇：<a href="https://www.cnblogs.com/hanganglin/p/6496422.html" title="发布于2017-03-03 14:01">带上下限的红包算法实践总结</a><br><a href="https://www.cnblogs.com/hanganglin/p/6538291.html" class="p_n_p_prefix">» </a> 下一篇：<a href="https://www.cnblogs.com/hanganglin/p/6538291.html" title="发布于2017-03-12 16:34">了解数字证书、数字签名与常见的加密算法</a><br></div>
+    </div>
+</div>
+    <ul class="postmetadata">
+        <li class="icon_cat" id="BlogPostCategory">分类: <a href="https://www.cnblogs.com/hanganglin/category/691253.html" target="_top">Linux</a></li>
+        <li class="icon_bullet" id="EntryTag"></li>
+    </ul>
+</div>
+
+
+
+</div><a name="!comments"></a><div id="blog-comments-placeholder"></div>
+<div id="comment_form" class="commentform">
+<a name="commentform"></a>
+<div id="divCommentShow"></div>
+<div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+<div id="comment_form_container"><div class="login_tips">注册用户登录后才能发表评论，请 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return login('commentform');">登录</a> 或 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return register();">注册</a>，<a href="http://www.cnblogs.com/">访问</a>网站首页。</div></div>
+<div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+<div id="ad_t2"><a href="https://edu.51cto.com/px/train/248?bky" target="_top" onclick="ga('send', 'event', 'Link', 'click', 'T2-51CTO')">【幸运】99%的人不知道我们有可以帮你薪资翻倍的秘笈！</a><br><a href="http://www.ucancode.com/index.htm" target="_top" onclick="ga('send', 'event', 'Link', 'click', 'T2-工控')">【推荐】超50万C++/C#源码: 大型实时仿真组态图形源码</a><br><a href="https://cloud.baidu.com/campaign/purchase-2019/index.html?track=cp:dsp|pf:pc|pp:chui-bokeyuan-huodong-19caigouji-BCC-neiyeCH-190311|pu:neiyeCH-wenzilian|ci:2019cgj|kw:2105959" target="_top" onclick="ga('send', 'event', 'Link', 'click', 'T2-百度云')">【推荐】百度云“猪”你开年行大运，红包疯狂拿</a><br><a href="https://ke.qq.com/adActivity.html?name=xiangxueketang2" target="_top" onclick="ga('send', 'event', 'Link', 'click', 'T2-享学')">【推荐】55K刚面完Java架构师岗，这些技术你必须掌握</a><br></div>
+<div id="opt_under_post"></div>
+
+
+
+<div id="cnblogs_c1" class="c_ad_block">
+    <div id="div-gpt-ad-1546353474406-0" style="height: 250px; width: 300px;" data-google-query-id="CJzmnriuleECFc7AlgodQ5cPfA"><div id="google_ads_iframe_/1090369/C1_0__container__" style="border: 0pt none;"><iframe id="google_ads_iframe_/1090369/C1_0" title="3rd party ad content" name="google_ads_iframe_/1090369/C1_0" scrolling="no" marginwidth="0" marginheight="0" style="border: 0px none; vertical-align: bottom;" srcdoc="" data-google-container-id="1" data-load-complete="true" src="index_1.html" width="300" height="250" frameborder="0"></iframe></div></div>
+</div>
+<div id="under_post_news"><div class="itnews c_ad_block"><b>相关博文：</b><br>·  <a href="https://www.cnblogs.com/huandada/p/9415341.html" target="_top" onclick="clickRecomItmem(9415341)">sendmail邮件自动发送</a><br>·  <a href="https://www.cnblogs.com/Tiago/p/3980825.html" target="_top" onclick="clickRecomItmem(3980825)">wamp配置sendmail发送邮件</a><br>·  <a href="https://www.cnblogs.com/willier/archive/2012/12/03/3082820.html" target="_top" onclick="clickRecomItmem(3082820)">sendmail 发送邮件例子</a><br>·  <a href="https://www.cnblogs.com/paul8339/p/6559085.html" target="_top" onclick="clickRecomItmem(6559085)">linux通过sendmail发送邮件</a><br>·  <a href="https://www.cnblogs.com/dee0912/p/5448350.html" target="_top" onclick="clickRecomItmem(5448350)">PHP （sendmail / PHPMailer / ezcMailComposer）发送邮件</a><br></div></div>
+<div id="cnblogs_c2" class="c_ad_block">
+    <div id="div-gpt-ad-1539008685004-0" style="height: 60px; width: 468px;" data-google-query-id="CLLkn7iuleECFc7AlgodQ5cPfA"><div id="google_ads_iframe_/1090369/C2_0__container__" style="border: 0pt none;"><iframe id="google_ads_iframe_/1090369/C2_0" title="3rd party ad content" name="google_ads_iframe_/1090369/C2_0" scrolling="no" marginwidth="0" marginheight="0" style="border: 0px none; vertical-align: bottom;" srcdoc="" data-google-container-id="2" data-load-complete="true" src="index_2.html" width="468" height="60" frameborder="0"></iframe></div></div>
+</div>
+<div id="under_post_kb"><div class="itnews c_ad_block"><b>最新新闻</b>：<br> ·  <a href="https://news.cnblogs.com/n/622333/" target="_top">原来App“偷听”，竟无需太高技术门槛？</a><br> ·  <a href="https://news.cnblogs.com/n/622348/" target="_top">互联网大佬的盗版江湖</a><br> ·  <a href="https://news.cnblogs.com/n/622383/" target="_top">硅谷“造王者” 离场，Y Combinator失去Altman</a><br> ·  <a href="https://news.cnblogs.com/n/622349/" target="_top">物理学家进一步证实物质和反物质的不对称性</a><br> ·  <a href="https://news.cnblogs.com/n/622347/" target="_top">姚班天才少年陈立杰斩获ACM STOC最佳学生论文</a><br>» <a href="http://news.cnblogs.com/" title="IT新闻" target="_top">更多新闻...</a></div></div>
+<div id="HistoryToday" class="c_ad_block"></div>
+
+</div>
+
+    
+        </div>
+
+        
+
+        <div id="sidebar">
+            
+<div id="about">
+<div>
+<h2 id="about_title">About</h2>
+<div id="about_body">
+<div id="blog-news"><p>毕业于杭电，一只勤勤恳恳、脚踏实地的程序猿</p>
+<p>擅长 Ai、Fw、Fl、Br、Ae、Pr、Id、Ps 等软件的安装与卸载，精通 CSS、JavaScript、PHP、ASP、C、C++、C#、Java、Ruby、Perl、Lisp、Python、Objective-C、ActionScript、Pascal 等单词的拼写，熟悉 Windows、Linux、OS X、Android、iOS、WP8 等系统的开关机</p>
+<p>看--时间过得多快，不说了，去搬砖了</p>
+<p><object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" id="honehoneclock" width="160" height="70" align="middle"><param name="allowScriptAccess" value="always"><param name="movie" value="http://chabudai.sakura.ne.jp/blogparts/honehoneclock/honehone_clock_wh.swf"><param name="quality" value="high"><param name="bgcolor" value="#ffffff"><param name="wmode" value="transparent"><embed wmode="transparent" src="honehone_clock_wh.swf" quality="high" bgcolor="#ffffff" name="honehoneclock" allowscriptaccess="always" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" width="160" height="70" align="middle"></object></p><div id="profile_block">昵称：<a href="https://home.cnblogs.com/u/hanganglin/">hduhans</a><br>园龄：<a href="https://home.cnblogs.com/u/hanganglin/" title="入园时间：2010-11-20">8年4个月</a><br>粉丝：<a href="https://home.cnblogs.com/u/hanganglin/followers/">21</a><br>关注：<a href="https://home.cnblogs.com/u/hanganglin/followees/">1</a><div id="p_b_follow"><a href="javascript:void(0);" onclick="follow('0fe3c3d2-a7f4-df11-ac81-842b2b196315')">+加关注</a></div></div></div>
+
+</div>
+</div>
+</div>
+
+            
+            
+<div id="mySearchWrapper">
+    <div id="mySearch">
+        <input src="btnsearch.gif" id="btnZzk" class="submit" onclick="zzk_go();return false;" type="image">
+        <label class="lb_search"><input id="q" onkeydown="return zzk_go_enter(event);" class="keyword" value="" type="text"></label>
+    </div>
+</div>
+
+            
+            <div id="sideMain">
+            <div id="side-recent-comments">
+        <h2>最新评论</h2>
+        <ul class="voice">
+                <li>
+                    <a href="https://www.cnblogs.com/hanganglin/articles/6863487.html#4108289">Re:linux统计qps、qpm、响应时间的命令</a>
+                    <br>
+                    <a class="child" href="https://www.cnblogs.com/hanganglin/articles/6863487.html#4108289">
+                        没有提到QPM
+                        -- wajika
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.cnblogs.com/hanganglin/p/6777838.html#4060418">Re:等额本息计算公式推导</a>
+                    <br>
+                    <a class="child" href="https://www.cnblogs.com/hanganglin/p/6777838.html#4060418">
+                        能否指点下
+已知每期还款额X，总金额为A，贷款期数为k
+求月利率β。
+实在算不来
+                        -- shijianbo
+                    </a>
+                </li>
+                <li>
+                    <a href="http://www.cnblogs.com/hanganglin/p/6771051.html#3993993">Re:使用Charles抓取APP之HTTPS请求</a>
+                    <br>
+                    <a class="child" href="http://www.cnblogs.com/hanganglin/p/6771051.html#3993993">
+                        常见问题太有用了，怒赞！！！
+                        -- Alex Von Kwok
+                    </a>
+                </li>
+                <li>
+                    <a href="http://www.cnblogs.com/hanganglin/p/4341854.html#3941166">Re:Java基础必备 -- 堆栈、引用传值、垃圾回收等</a>
+                    <br>
+                    <a class="child" href="http://www.cnblogs.com/hanganglin/p/4341854.html#3941166">
+                        编译器执行第一条语句时，会在栈中开辟一个地址存放变量为a的引用。这句话不对吧，基本数据类型有引用一说么？
+                        -- 望着
+                    </a>
+                </li>
+                <li>
+                    <a href="http://www.cnblogs.com/hanganglin/p/5670210.html#3934622">Re:使用nginx-http-concat添加nginx资源请求合并功能</a>
+                    <br>
+                    <a class="child" href="http://www.cnblogs.com/hanganglin/p/5670210.html#3934622">
+                        感谢楼主分享经验
+                        -- 了然如一
+                    </a>
+                </li>
+        </ul>
+    </div></div>
+            <div id="sideRight">
+                
+    
+
+
+    
+
+
+</div>
+            <div id="sideLeft">
+            <div id="side-calendar">
+        <h2>日历</h2>
+        <div id="blog-calendar"><table id="blogCalendar" class="Cal" title="Calendar" cellspacing="0" cellpadding="0">
+	<tbody><tr><td colspan="7"><table class="CalTitle" cellspacing="0">
+		<tbody><tr><td class="CalNextPrev"><a href="https://www.cnblogs.com/hanganglin/p/2019/02/01">&lt;</a></td><td align="center">2019年3月</td><td class="CalNextPrev" align="right"><a href="https://www.cnblogs.com/hanganglin/p/2019/04/01">&gt;</a></td></tr>
+	</tbody></table></td></tr><tr><th class="CalDayHeader" abbr="日" scope="col" align="center">日</th><th class="CalDayHeader" abbr="一" scope="col" align="center">一</th><th class="CalDayHeader" abbr="二" scope="col" align="center">二</th><th class="CalDayHeader" abbr="三" scope="col" align="center">三</th><th class="CalDayHeader" abbr="四" scope="col" align="center">四</th><th class="CalDayHeader" abbr="五" scope="col" align="center">五</th><th class="CalDayHeader" abbr="六" scope="col" align="center">六</th></tr><tr><td class="CalOtherMonthDay" align="center">24</td><td class="CalOtherMonthDay" align="center">25</td><td class="CalOtherMonthDay" align="center">26</td><td class="CalOtherMonthDay" align="center">27</td><td class="CalOtherMonthDay" align="center">28</td><td align="center">1</td><td class="CalWeekendDay" align="center">2</td></tr><tr><td class="CalWeekendDay" align="center">3</td><td align="center">4</td><td align="center">5</td><td align="center">6</td><td align="center">7</td><td align="center">8</td><td class="CalWeekendDay" align="center">9</td></tr><tr><td class="CalWeekendDay" align="center">10</td><td align="center">11</td><td align="center">12</td><td align="center">13</td><td align="center">14</td><td align="center">15</td><td class="CalWeekendDay" align="center">16</td></tr><tr><td class="CalWeekendDay" align="center">17</td><td align="center">18</td><td align="center">19</td><td align="center">20</td><td align="center">21</td><td class="CalTodayDay" align="center">22</td><td class="CalWeekendDay" align="center">23</td></tr><tr><td class="CalWeekendDay" align="center">24</td><td align="center">25</td><td align="center">26</td><td align="center">27</td><td align="center">28</td><td align="center">29</td><td class="CalWeekendDay" align="center">30</td></tr><tr><td class="CalWeekendDay" align="center">31</td><td class="CalOtherMonthDay" align="center">1</td><td class="CalOtherMonthDay" align="center">2</td><td class="CalOtherMonthDay" align="center">3</td><td class="CalOtherMonthDay" align="center">4</td><td class="CalOtherMonthDay" align="center">5</td><td class="CalOtherMonthDay" align="center">6</td></tr>
+</tbody></table></div>
+    </div><div id="side-categories">
+        <h2>随笔分类</h2>
+        <ul class="folder">
+                <li>
+                    
+                    <a href="https://www.cnblogs.com/hanganglin/category/663051.html">.NET(2)</a>
+                </li>
+                <li>
+                    
+                    <a href="https://www.cnblogs.com/hanganglin/category/663116.html">hadoop相关(17)</a>
+                </li>
+                <li>
+                    
+                    <a href="https://www.cnblogs.com/hanganglin/category/663052.html">Java(13)</a>
+                </li>
+                <li>
+                    
+                    <a href="https://www.cnblogs.com/hanganglin/category/691253.html">Linux(1)</a>
+                </li>
+                <li>
+                    
+                    <a href="https://www.cnblogs.com/hanganglin/category/844205.html">PHP(1)</a>
+                </li>
+                <li>
+                    
+                    <a href="https://www.cnblogs.com/hanganglin/category/852943.html">web服务器(2)</a>
+                </li>
+                <li>
+                    
+                    <a href="https://www.cnblogs.com/hanganglin/category/663195.html">基础必备(2)</a>
+                </li>
+                <li>
+                    
+                    <a href="https://www.cnblogs.com/hanganglin/category/769189.html">趣味杂玩(5)</a>
+                </li>
+                <li>
+                    
+                    <a href="https://www.cnblogs.com/hanganglin/category/663192.html">设计模式(2)</a>
+                </li>
+                <li>
+                    
+                    <a href="https://www.cnblogs.com/hanganglin/category/958255.html">算法实践(2)</a>
+                </li>
+                <li>
+                    
+                    <a href="https://www.cnblogs.com/hanganglin/category/963735.html">网络安全(4)</a>
+                </li>
+        </ul>
+    </div><div id="side-top-posts-custom">
+    <h2>推荐排行榜</h2>
+    <div id="TopDiggPostsBlock"><ul><li><a href="https://www.cnblogs.com/hanganglin/p/4558510.html">1. 使用MapReduce实现join操作(2)</a></li><li><a href="https://www.cnblogs.com/hanganglin/p/4485999.html">2. Java反射与动态代理(2)</a></li><li><a href="https://www.cnblogs.com/hanganglin/p/3526240.html">3. Java定时任务Timer、TimerTask与ScheduledThreadPoolExecutor详解(1)</a></li><li><a href="https://www.cnblogs.com/hanganglin/p/3657260.html">4. 提高你的C#程序编码质量(1)</a></li><li><a href="https://www.cnblogs.com/hanganglin/p/3577096.html">5. Java常用锁机制简介(1)</a></li></ul></div>
+</div><div id="side-top-posts">
+    <h2>阅读排行榜</h2>
+    <div id="TopViewPostsBlock"><ul><li><a href="https://www.cnblogs.com/hanganglin/p/6510216.html">1. centos下如何使用sendmail发送邮件(13842)</a></li><li><a href="https://www.cnblogs.com/hanganglin/p/6777838.html">2. 等额本息计算公式推导(12321)</a></li><li><a href="https://www.cnblogs.com/hanganglin/p/3577096.html">3. Java常用锁机制简介(6536)</a></li><li><a href="https://www.cnblogs.com/hanganglin/p/3526240.html">4. Java定时任务Timer、TimerTask与ScheduledThreadPoolExecutor详解(5106)</a></li><li><a href="https://www.cnblogs.com/hanganglin/p/4349919.html">5. 编译本地64位版本的hadoop-2.6.0(4831)</a></li></ul></div>
+</div></div>
+            
+                <div id="sideContainer"></div>
+                
+            
+        </div>
+
+        
+
+        <div id="footer">
+            
+<p id="logoFoot">
+    <a href="http://www.spiga.com.mx/" title="Agencia Interactiva Spiga">www.spiga.com.mx</a>
+</p>
+<div class="footText">
+<p>
+Copyright ©2019 hduhans
+</p>
+<p>
+<a href="http://www.cnblogs.com/">博客园</a>
+</p>
+</div>
+        </div>
+    </div>
+
+    
+
+</div>
+
+
+
+
+<iframe id="google_osd_static_frame_1883632646772" name="google_osd_static_frame" style="display: none; width: 0px; height: 0px;" src="index_3.html"></iframe></body>
+</html>

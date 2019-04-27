@@ -1,0 +1,818 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    <title>
+      Yocto/gstreamer/latency – Gateworks
+    </title>
+      
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--[if IE]><script type="text/javascript">
+      if (/^#__msie303:/.test(window.location.hash))
+        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
+    </script><![endif]-->
+          <link rel="search" href="http://trac.gateworks.com/search">
+          <link rel="help" href="http://trac.gateworks.com/wiki/TracGuide">
+          <link rel="alternate" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/latency?format=txt" type="text/x-trac-wiki" title="Plain Text">
+          <link rel="up" href="http://trac.gateworks.com/wiki/Yocto/gstreamer" title="View parent page">
+          <link rel="start" href="http://trac.gateworks.com/wiki">
+          
+          
+          <link rel="icon" href="trac.ico" type="image/x-icon">
+    
+      <link type="application/opensearchdescription+xml" rel="search" href="http://trac.gateworks.com/search/opensearch" title="Search Gateworks">
+      
+      
+      
+      
+      
+    
+    
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+
+		
+	
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+    <div id="banner">
+      <div id="header">
+        <a id="logo" href="http://trac.gateworks.com/wiki"><img src="g2998.png" alt="Gateworks Wiki"></a>
+      </div>
+      <form id="search" action="http://trac.gateworks.com/search" method="get">
+        <div>
+          <label for="proj-search">Search:</label>
+          <input id="proj-search" name="q" size="18" value="" type="text">
+          <input value="Search" type="submit">
+        </div>
+      </form>
+      <div id="metanav" class="nav">
+    <ul>
+      <li class="first"><a href="http://trac.gateworks.com/login">Login</a></li><li><a href="http://trac.gateworks.com/prefs">Preferences</a></li><li><a href="http://trac.gateworks.com/wiki/TracGuide">Help/Guide</a></li><li><a href="http://trac.gateworks.com/about">About Trac</a></li><li class="last"><a href="http://trac.gateworks.com/reset_password">Forgot your password?</a></li>
+    </ul>
+  </div>
+    </div>
+    <div id="mainnav" class="nav">
+    <ul>
+      <li class="first active"><a href="http://trac.gateworks.com/wiki">Wiki</a></li><li><a href="http://trac.gateworks.com/timeline">Timeline</a></li><li><a href="http://trac.gateworks.com/browser">Browse Source</a></li><li class="last"><a href="http://trac.gateworks.com/search">Search</a></li>
+    </ul>
+  </div>
+    <div id="main">
+      <div id="pagepath" class="noprint">
+  <a class="pathentry first" title="View WikiStart" href="http://trac.gateworks.com/wiki">wiki:</a><a class="pathentry" href="http://trac.gateworks.com/wiki/Yocto" title="View Yocto">Yocto</a><span class="pathentry sep">/</span><a class="pathentry" href="http://trac.gateworks.com/wiki/Yocto/gstreamer" title="View Yocto/gstreamer">gstreamer</a><span class="pathentry sep">/</span><a class="pathentry" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/latency" title="View Yocto/gstreamer/latency">latency</a>
+</div>
+      <div id="ctxtnav" class="nav">
+        <h2>Context Navigation</h2>
+        <ul>
+          <li class="first"><a href="http://trac.gateworks.com/wiki/Yocto/gstreamer">Up</a></li><li><a href="http://trac.gateworks.com/wiki/WikiStart">Start Page</a></li><li><a href="http://trac.gateworks.com/wiki/TitleIndex">Index</a></li><li class="last"><a href="http://trac.gateworks.com/wiki/Yocto/gstreamer/latency?action=history">History</a></li>
+        </ul>
+        <hr>
+      </div>
+    <div id="content" class="wiki">
+      <div class="wikipage searchable">
+        
+          <div id="wikipage" class="trac-content"><p>
+</p><div class="wiki-toc">
+<ol>
+  <li>
+    <a href="#Latency">Latency</a>
+    <ol>
+      <li>
+        <a href="#MeasuringLatency">Measuring Latency</a>
+        <ol>
+          <li>
+            <a href="#AccountingforLatency">Accounting for Latency</a>
+          </li>
+        </ol>
+      </li>
+      <li>
+        <a href="#LatencySummaryTable">Latency Summary Table</a>
+      </li>
+      <li>
+        <a href="#CVBSAnalogIn">CVBS (Analog) In</a>
+        <ol>
+          <li>
+            <a href="#CVBSintoHDMIout">CVBS in to HDMI out</a>
+          </li>
+          <li>
+            <a href="#CVBSintoLVDSout">CVBS in to LVDS out</a>
+          </li>
+          <li>
+            <a href="#CVBSintoCVBSout">CVBS in to CVBS out</a>
+          </li>
+          <li>
+            <a href="#CVBSintoRTSPout">CVBS in to RTSP out</a>
+            <ol>
+              <li>
+                <a href="#Yocto1.8GW5304">Yocto 1.8 GW5304</a>
+              </li>
+              <li>
+                <a href="#Ubuntu14.04i5DesktopPC">Ubuntu 14.04 i5 Desktop PC</a>
+              </li>
+            </ol>
+          </li>
+        </ol>
+      </li>
+      <li>
+        <a href="#HDMIDigitalIn">HDMI (Digital) In</a>
+        <ol>
+          <li>
+            <ol>
+              <li>
+                <a href="#HDMIintoHDMIout">HDMI in to HDMI out</a>
+                <ol>
+                  <li>
+                    <a href="#Whilecapturinginyuv422smp:">While capturing in yuv422smp:</a>
+                  </li>
+                  <li>
+                    <a href="#Whilecapturinginbt656:">While capturing in bt656:</a>
+                  </li>
+                </ol>
+              </li>
+              <li>
+                <a href="#HDMIintoLVDSout">HDMI in to LVDS out</a>
+                <ol>
+                  <li>
+                    <a href="#Whilecapturinginyuv422smp:1">While capturing in yuv422smp:</a>
+                  </li>
+                  <li>
+                    <a href="#Whilecapturinginbt656:1">While capturing in bt656:</a>
+                  </li>
+                </ol>
+              </li>
+              <li>
+                <a href="#HDMIintoCVBSout">HDMI in to CVBS out</a>
+                <ol>
+                  <li>
+                    <a href="#Whilecapturinginyuv422smp:2">While capturing in yuv422smp:</a>
+                  </li>
+                  <li>
+                    <a href="#Whilecapturinginbt656:2">While capturing in bt656:</a>
+                  </li>
+                </ol>
+              </li>
+              <li>
+                <a href="#HDMIintoRTSPout">HDMI in to RTSP out</a>
+                <ol>
+                  <li>
+                    <a href="#Yocto1.8GW53041">Yocto 1.8 GW5304</a>
+                  </li>
+                  <li>
+                    <a href="#Ubuntu14.04i5DesktopPC1">Ubuntu 14.04 i5 Desktop PC</a>
+                  </li>
+                </ol>
+              </li>
+            </ol>
+          </li>
+        </ol>
+      </li>
+      <li>
+        <a href="#avc8000nanominiPCIecapturecardin">avc8000nano (miniPCIe capture card) in</a>
+        <ol>
+          <li>
+            <a href="#avc8000nanointoHDMIout">avc8000nano in to HDMI out</a>
+          </li>
+          <li>
+            <a href="#avc8000nanointoLVDSout">avc8000nano in to LVDS out</a>
+          </li>
+          <li>
+            <a href="#avc8000nanointoCVBSout">avc8000nano in to CVBS out</a>
+          </li>
+          <li>
+            <a href="#avc8000nanointoRTSPout">avc8000nano in to RTSP out</a>
+            <ol>
+              <li>
+                <a href="#Yocto1.8GW53042">Yocto 1.8 GW5304</a>
+              </li>
+              <li>
+                <a href="#Ubuntu14.04i5DesktopPC2">Ubuntu 14.04 i5 Desktop PC</a>
+              </li>
+            </ol>
+          </li>
+        </ol>
+      </li>
+    </ol>
+  </li>
+</ol>
+</div><p>
+</p>
+<h1 id="Latency">Latency<a class="anchor" href="#Latency" title="Link to this section"> ¶</a></h1>
+<p>
+Latency is the term used to describe how long it takes for video from the source side to get to the sink side. For example, if a video system was described as having a latency of 1 second, that would mean that it takes 1 second for the video to get from the capture (or reading a file) side to the actual display.
+</p>
+<p>
+This section will attempt to describe some real world latencies that we have seen using gstreamer and our product. Because latency is highly dependent on the different 'knobs' that you can turn, each section will be a very specific test setup. This is important, as you cannot reliably compare latencies when you start to introduce/remove certain feature, video capture ports/types, sink types etc.
+</p>
+<p>
+The below values differ in capture/display device+driver in the following ways that affect latency
+</p>
+<ul><li>Frames Per Second (FPS)
+</li><li>Interlace vs. Progressive
+</li><li>Capture device Output format (RAW vs JPEG)
+</li><li>Capture device's inherent latency
+</li><li>Display device's inherent latency
+</li></ul><p>
+Please note, the below values are <strong>not</strong> comparisons, but rather completely isolated and individual examples that happen to be categorized based on input types. This is because latency is affected by several things, some of which aren't always applicable to the scenario demonstrated.
+</p>
+<p>
+To see prior numbers, please see <a href="http://trac.gateworks.com/wiki/Yocto/gstreamer/latency?version=3">this older page revision</a>.
+</p>
+<p>
+<span class="wikianchor" id="measure"><a class="anchor" href="#measure" title="Link to #measure"> ¶</a></span>
+</p>
+<h2 id="MeasuringLatency">Measuring Latency<a class="anchor" href="#MeasuringLatency" title="Link to this section"> ¶</a></h2>
+<p>
+We've come up with a synchronous method of testing total system latency. We wrote <a class="ext-link" href="https://github.com/Gateworks/gateworks-sample-apps/blob/master/gw-latency-tester/gw-latency-tester.c"><span class="icon">​</span>a program</a> that uses the on-board gpio's to control an ambient light sensor (<a class="ext-link" href="http://www.digikey.com/product-detail/en/TEPT5700/751-1059-ND/1681193"><span class="icon">​</span>Vishay Semiconductor Opto Division TEPT5700</a>) and a bright blue LED. A camera would be pointed to the LED while a GStreamer pipeline would pipe it to some sink. Finally, the <a class="ext-link" href="https://github.com/Gateworks/gateworks-sample-apps/blob/master/gw-latency-tester/gw-latency-tester.c"><span class="icon">​</span>program</a> controlling the LED and light sensor turns the LED on, measures how long it took the ambient light sensor to detect it, and repeat several times. If you would like to repeat our findings, please build the <a class="ext-link" href="https://github.com/Gateworks/gateworks-sample-apps/blob/master/gw-latency-tester/gw-latency-tester.c"><span class="icon">​</span>gw-latency-tester</a> program and use in conjunction with the following hardware:
+</p>
+<ul><li><a class="ext-link" href="http://www.digikey.com/product-detail/en/TEPT5700/751-1059-ND/1681193"><span class="icon">​</span>Vishay Semiconductor Opto Division TEPT5700</a>
+</li><li>Bright Blue or White LED
+</li></ul><p>
+Pinout to the DIO connector is as follows:
+</p>
+<pre class="wiki">DIO0 - Power to the ambient light sensor (Collector Side), tie other end to DIO3
+DIO1 - Power to the LED, tie other end to GND
+DIO2 - [OPTIONAL] Status LED, tie other end to GND
+DIO3 - Receiver end of ambient light sensor (Emitter Side), tie other end to DIO0
+GND  -
+</pre><p>
+Usage is as follows:
+</p>
+<pre class="wiki">root@ventana:~# ./gw-latency-tester
+gw-latency-tester &lt;pwr_dio emit_dio led_dio recv_dio&gt; [&lt;count&gt;] [&lt;udelay&gt;] [&lt;alpha&gt;]
+
+   DIO:  0  1  2  3
+         ----------
+GW54xx:  9 19 41 42
+GW53xx: 16 19 17 20
+GW52xx: 16 19 17 20
+GW51xx: 16 19 17 18
+GW551x: Unsupported
+GW552x: 16 19 17 20
+</pre><p>
+The below results will show how the program was run, so please refer to them for examples.
+</p>
+<p>
+In general (unless otherwise specified), we use the following displays configured in the following ways:
+</p>
+<ul><li>HDMI: Hanns-G HL273
+<ul><li>Resolution: 1920x1080p-60
+</li><li>Manufacturer specified latency: 2ms
+</li></ul></li><li>LVDS: HannStar HSD100PXN1
+<ul><li>Resolution: 1024x768p-60
+</li><li>Manufacturer specified rise time latency: 3-6ms
+</li><li>Manufacturer specified fall time latency: 9-18ms
+</li></ul></li><li>CVBS: Generic 5" inch TFT LCD Monitor (AC-530DB)
+<ul><li>Resolution: D:720x480i-60
+</li></ul></li></ul><h3 id="AccountingforLatency">Accounting for Latency<a class="anchor" href="#AccountingforLatency" title="Link to this section"> ¶</a></h3>
+<p>
+When we say a system has a latency of <code>66ms</code>, this number only accounts from end to end devices. However, if we know certain device latencies (such as a displays), we can subtract that off and get fine-tuned numbers.
+</p>
+<p>
+Using the measurement method described <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/latency#measure">above</a>, calculating the circuitry involved RC time constants, LED Diode rise/fall times, and the response time of the ambient light sensor, we get a "circuitry latency" of: (sensor fall time response) + (led rise time response) == <code>(2us + 13us) + (200ns + 13us) = 28.200us</code>
+</p>
+<p>
+Because of DIO levels, we'll round that number down to 28us. Plus add in latency from an input (let's assume a camera has exactly 1framerate of latency at 30fps) at 33ms, and finally add in the display latency (we'll assume 4ms). Adding these together produces a total of: <code>28us + 33ms + 4ms = 37.28ms</code> of latency. We can now say that latency inherent to our product is <code>66ms - 37.28ms = 28.72ms</code>.
+</p>
+<h2 id="LatencySummaryTable">Latency Summary Table<a class="anchor" href="#LatencySummaryTable" title="Link to this section"> ¶</a></h2>
+<p>
+Here is a summary table of the below results.
+</p>
+<p>
+Note that customers have reported down to 4ms latency on 1080p30 HDMI input to 1080p30 HDMI output eliminating the source (camera) latency. Note the <a class="missing wiki">GoPro?</a> has been reported to have 60-100ms of latency itself, however, this is unverified by Gateworks. 
+</p>
+<p>
+Loopback:
+</p>
+<table class="wiki">
+<tbody><tr><th> Type </th><th> Capture </th><th> Display </th><th> End-To-End Latency 
+</th></tr><tr><td> Analog </td><td> CVBS(NTSC:<strong>480i@30fps</strong>) <br> imxv4l2videosrc(IPU)        </td><td> CVBS monitor <br> imxg2dvideosink(GPU) </td><td> 56ms  
+</td></tr><tr><td> Analog </td><td> CVBS(NTSC:<strong>480i@30fps</strong>) <br> imxv4l2videosrc(IPU)        </td><td> HDMI monitor <br> imxg2dvideosink(GPU) </td><td> 66ms  
+</td></tr><tr><td> Analog </td><td> CVBS(NTSC:<strong>480i@30fps</strong>) <br> imxv4l2videosrc(IPU)        </td><td> LVDS monitor <br> imxg2dvideosink(GPU) </td><td> 76ms  
+</td></tr><tr><td> 
+</td></tr><tr><td> Analog </td><td> PCI-AVC8000(NTSC:<strong>480i@30fps</strong>) <br> v4l2src </td><td> CVBS monitor <br> imxg2dvideosink(GPU) </td><td> 55ms  
+</td></tr><tr><td> Analog </td><td> PCI-AVC8000(NTSC:<strong>480i@30fps</strong>) <br> v4l2src </td><td> HDMI monitor <br> imxg2dvideosink(GPU) </td><td> 67ms  
+</td></tr><tr><td> Analog </td><td> PCI-AVC8000(NTSC:<strong>480i@30fps</strong>) <br> v4l2src </td><td> LVDS monitor <br> imxg2dvideosink(GPU) </td><td> 78ms  
+</td></tr><tr><td> 
+</td></tr><tr><td> Digital </td><td> HDMI(GoPro:<strong>720p@60fps</strong>) <br> imxv4l2videosrc(IPU)      </td><td> CVBS monitor <br> imxg2dvideosink(GPU) </td><td> 92ms  
+</td></tr><tr><td> Digital </td><td> HDMI(GoPro:<strong>720p@60fps</strong>) <br> imxv4l2videosrc(IPU)      </td><td> HDMI monitor <br> imxg2dvideosink(GPU) </td><td> 96ms  
+</td></tr><tr><td> Digital </td><td> HDMI(GoPro:<strong>720p@60fps</strong>) <br> imxv4l2videosrc(IPU)      </td><td> LVDS monitor <br> imxg2dvideosink(GPU) </td><td> 117ms 
+</td></tr><tr><td> 
+</td></tr><tr><td> Digital </td><td> HDMI(GoPro:<strong>480p@60</strong>) <br> imxv4l2videosrc(IPU)      </td><td> HDMI monitor <br> imxg2dvideosink(GPU) </td><td> 101ms 
+</td></tr><tr><td> Digital </td><td> HDMI(GoPro:<strong>720p@30</strong>) <br> imxv4l2videosrc(IPU)      </td><td> HDMI monitor <br> imxg2dvideosink(GPU) </td><td> 113ms 
+</td></tr><tr><td> Digital </td><td> HDMI(GoPro:<strong>960p@60</strong>) <br> imxv4l2videosrc(IPU)      </td><td> HDMI monitor <br> imxg2dvideosink(GPU) </td><td> 157ms 
+</td></tr><tr><td> Digital </td><td> HDMI(GoPro:<strong>1080p@60</strong>) <br> imxv4l2videosrc(IPU)      </td><td> HDMI monitor <br> imxg2dvideosink(GPU) </td><td> 175ms 
+</td></tr></tbody></table>
+<p>
+RTSP Streaming:
+</p>
+<table class="wiki">
+<tbody><tr><th> Capture </th><th> Transform </th><th> Encode(VPU) </th><th> Stream </th><th> Decode(VPU) </th><th> Display </th><th> End-To-End Latency 
+</th></tr><tr><td> CVBS(NTSC:<strong>480i@30fps</strong>) <br>yuv422smp <br> imxv4l2videosrc(IPU)        </td><td> imxipuvideotransform(IPU) </td><td> imxvpuenc_h264 <br> 3mbps CBR   </td><td> RTSP <br> latency=10ms </td><td> imxvpudec <br> (h264) </td><td> HDMI monitor <br> imxg2dvideosink(GPU) </td><td> 98ms  
+</td></tr><tr><td> PCI-AVC8000(NTSC:<strong>480i@30fps</strong>) <br>yuv422smp <br> imxv4l2videosrc(IPU) </td><td> imxipuvideotransform(IPU) </td><td> imxvpuenc_h264 <br> 3mbps CBR   </td><td> RTSP <br> latency=10ms </td><td> imxvpudec <br> (h264) </td><td> HDMI monitor <br> imxg2dvideosink(GPU) </td><td> 98ms  
+</td></tr><tr><td> HDMI(GoPro:<strong>720p@60fps</strong>) <br>yuv422smp <br> imxv4l2videosrc(IPU)      </td><td> imxipuvideotransform(IPU) </td><td> imxvpuenc_h264 <br> 5.5mbps CBR </td><td> RTSP <br> latency=10ms </td><td> imxvpudec <br> (h264) </td><td> HDMI monitor <br> imxg2dvideosink(GPU) </td><td> 160ms 
+</td></tr></tbody></table>
+<p>
+Notes:
+</p>
+<ol><li><code>imxipuvideosink</code> and <code>imxg2dvideosink</code> have the same latencies.
+</li><li>LVDS display requires a transform from YUV to RGB colorspace. 
+</li><li>HDMI capture using yuv422smp requires a transform before encoding while yuv422bt656 does not.
+</li><li>IPU transforms with a width or height greater than 1024 (720p/720i/1080p/1080i) require striping equating to two transforms
+</li></ol><p>
+ 
+</p>
+<h2 id="CVBSAnalogIn">CVBS (Analog) In<a class="anchor" href="#CVBSAnalogIn" title="Link to this section"> ¶</a></h2>
+<p>
+Using a 208C Wired Micro Mini Camera with NTSC 720x480@30FPS output captured via the Ventana Analog in (<a class="ext-link" href="http://www.analog.com/media/en/technical-documentation/data-sheets/ADV7180.pdf"><span class="icon">​</span>adv7180 SDTV Video Decoder</a>) with 8bit ITU-R BT656 output to the IMX6 CSI, the following latencies were found using a GW5400:
+</p>
+<h3 id="CVBSintoHDMIout">CVBS in to HDMI out<a class="anchor" href="#CVBSintoHDMIout" title="Link to this section"> ¶</a></h3>
+<ul><li>CVBS Input to HDMI Output
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video1 ! imxg2dvideosink <span class="nv">framebuffer</span><span class="o">=</span>/dev/fb0
+</pre></div></div><div class="wiki-code"><div class="code"><pre>gw-latency-tester <span class="m">9</span> <span class="m">19</span> <span class="m">41</span> <span class="m">42</span> <span class="m">60</span> <span class="nv">0</span>
+<span class="o">===</span> <span class="nv">Summary</span> <span class="o">===</span>
+Ran <span class="m">60</span> <span class="nb">times</span>
+Max Latency: <span class="m">0</span>.082425s
+Min Latency: <span class="m">0</span>.052815s
+Max Jitter : <span class="m">0</span>.029610s
+Exponential Moving Average <span class="o">(</span><span class="nv">alpha</span><span class="o">=</span><span class="m">0</span>.1<span class="o">)</span>: <span class="m">0</span>.065967s
+</pre></div></div></li></ul><h3 id="CVBSintoLVDSout">CVBS in to LVDS out<a class="anchor" href="#CVBSintoLVDSout" title="Link to this section"> ¶</a></h3>
+<ul><li>CVBS Input to LVDS Output
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video1 ! imxg2dvideosink <span class="nv">framebuffer</span><span class="o">=</span>/dev/fb4
+</pre></div></div><div class="wiki-code"><div class="code"><pre>gw-latency-tester <span class="m">9</span> <span class="m">19</span> <span class="m">41</span> <span class="m">42</span> <span class="m">60</span> <span class="nv">0</span>
+<span class="o">===</span> <span class="nv">Summary</span> <span class="o">===</span>
+Ran <span class="m">60</span> <span class="nb">times</span>
+Max Latency: <span class="m">0</span>.082155s
+Min Latency: <span class="m">0</span>.055859s
+Max Jitter : <span class="m">0</span>.026296s
+Exponential Moving Average <span class="o">(</span><span class="nv">alpha</span><span class="o">=</span><span class="m">0</span>.1<span class="o">)</span>: <span class="m">0</span>.076021s
+</pre></div></div></li></ul><h3 id="CVBSintoCVBSout">CVBS in to CVBS out<a class="anchor" href="#CVBSintoCVBSout" title="Link to this section"> ¶</a></h3>
+<ul><li>CVBS Input to CVBS Output
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video1 ! imxg2dvideosink <span class="nv">framebuffer</span><span class="o">=</span>/dev/fb2
+</pre></div></div><div class="wiki-code"><div class="code"><pre>gw-latency-tester <span class="m">9</span> <span class="m">19</span> <span class="m">41</span> <span class="m">42</span> <span class="m">60</span> <span class="nv">0</span>
+<span class="o">===</span> <span class="nv">Summary</span> <span class="o">===</span>
+Ran <span class="m">60</span> <span class="nb">times</span>
+Max Latency: <span class="m">0</span>.066111s
+Min Latency: <span class="m">0</span>.045768s
+Max Jitter : <span class="m">0</span>.020343s
+Exponential Moving Average <span class="o">(</span><span class="nv">alpha</span><span class="o">=</span><span class="m">0</span>.1<span class="o">)</span>: <span class="m">0</span>.056305s
+</pre></div></div></li></ul><h3 id="CVBSintoRTSPout">CVBS in to RTSP out<a class="anchor" href="#CVBSintoRTSPout" title="Link to this section"> ¶</a></h3>
+<p>
+RTSP is an audio/video streaming standard that is commonly supported by various player clients.
+</p>
+<p>
+Notes:
+</p>
+<ul><li><a class="ext-link" href="https://www.ietf.org/rfc/rfc2326.txt"><span class="icon">​</span>RTSP RFC</a>
+</li><li>Note that latency=0 on the receiver will get it to display frames as soon as it receives them. However, depending on network congestion/frame sizes, this could cause video stuttering due to varying latencies.
+</li><li>These tests were done through a ZyXEL GS1100-24 Switch with 4 ports having active traffic.
+</li><li>RTSP clients (players) will have a configuration that specifically adds latency by stream buffering to allow for audio/video synchronization which can be on the order of 10 to 1000ms. For gstreamer rtspsrc this is the 'latency' parameter - we set it to 10ms to minimize latency as a value of 0 can confuse gstreamer.
+</li><li>See the <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/streaming#rtsp">gstreamer/streaming</a> page for more examples on RTSP streaming
+</li></ul><p>
+The below sections show various gstreamer sinks running on a GW5304 running Yocto 1.8 and an Ubuntu based PC.
+</p>
+<h4 id="Yocto1.8GW5304">Yocto 1.8 GW5304<a class="anchor" href="#Yocto1.8GW5304" title="Link to this section"> ¶</a></h4>
+<p>
+Receiver latency set to 10, bitrate set to 3mbit/s:
+</p>
+<ul><li>CVBS input to RTSP Server (gst-variable-rtsp-server)
+</li><li>receiver:
+<pre class="wiki">gst-launch-1.0 rtspsrc location=rtsp://172.24.10.180:9099/stream latency=10 ! \
+ rtph264depay ! h264parse ! imxvpudec ! imxg2dvideosink
+</pre></li><li>sender: <code>(imxv4l2videosrc ! imxipuvideotransform ! imxvpuenc_h264 ! rtph264pay pt=96)</code>
+<div class="wiki-code"><div class="code"><pre>gst-variable-rtsp-server -i /dev/video1 -s imxv4l2videosrc -r <span class="m">0</span> -b <span class="m">3000</span>
+</pre></div></div></li><li>latency:
+<div class="wiki-code"><div class="code"><pre>gw-latency-tester <span class="m">9</span> <span class="m">19</span> <span class="m">41</span> <span class="m">42</span> <span class="m">60</span> <span class="nv">500000</span>
+<span class="o">===</span> <span class="nv">Summary</span> <span class="o">===</span>
+Ran <span class="m">60</span> <span class="nb">times</span>
+Max Latency: <span class="m">0</span>.100264334s
+Min Latency: <span class="m">0</span>.057308000s
+Max Jitter : <span class="m">0</span>.042956334s
+Exponential Moving Average <span class="o">(</span><span class="nv">alpha</span><span class="o">=</span><span class="m">0</span>.1<span class="o">)</span>: <span class="m">0</span>.092784375s
+</pre></div></div></li></ul><p>
+Here is an example of using <code>udpsink</code> instead of the <code>gst-variable-rtsp-server</code> application. Receiver latency set to 10, bitrate set to 3mbit/s:
+</p>
+<ul><li>CVBS input to RTSP Server (gst-variable-rtsp-server)
+</li><li>sender:
+<pre class="wiki">gst-launch-1.0 imxv4l2videosrc device=/dev/video3 ! \
+ imxipuvideotransform ! imxvpuenc_h264 bitrate=3000 ! \
+ rtph264pay ! udpsink host=172.24.10.63 port=9001
+</pre></li><li>receiver:
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 udpsrc <span class="nv">port</span><span class="o">=</span><span class="m">9001</span> <span class="se">\
+</span> <span class="nv">caps</span><span class="o">=</span><span class="s2">"application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264"</span> ! <span class="se">\
+</span> rtph264depay ! h264parse ! imxvpudec ! imxg2dvideosink
+</pre></div></div></li><li>latency:
+<div class="wiki-code"><div class="code"><pre>gw-latency-tester <span class="m">9</span> <span class="m">19</span> <span class="m">41</span> <span class="m">42</span> <span class="m">60</span> <span class="nv">500000</span>
+<span class="o">===</span> <span class="nv">Summary</span> <span class="o">===</span>
+Ran <span class="m">60</span> <span class="nb">times</span>
+Max Latency: <span class="m">0</span>.116625333s
+Min Latency: <span class="m">0</span>.083219333s
+Max Jitter : <span class="m">0</span>.033406000s
+Exponential Moving Average <span class="o">(</span><span class="nv">alpha</span><span class="o">=</span><span class="m">0</span>.1<span class="o">)</span>: <span class="m">0</span>.098617987s
+</pre></div></div></li></ul><p>
+Receiver latency set to 100, bitrate set to 3mbit/s:
+</p>
+<ul><li>CVBS input to RTSP Server (gst-variable-rtsp-server)
+</li><li>sender: <code>(imxv4l2videosrc ! imxipuvideotransform ! imxvpuenc_h264 ! rtph264pay pt=96)</code>
+<pre class="wiki">gst-variable-rtsp-server -i /dev/video1 -s imxv4l2videosrc -r 0 -b 3000
+</pre></li><li>receiver:
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 rtspsrc <span class="nv">location</span><span class="o">=</span>rtsp://172.24.10.180:9099/stream <span class="nv">latency</span><span class="o">=</span><span class="m">100</span> ! <span class="se">\
+</span> rtph264depay ! h264parse ! imxvpudec ! imxg2dvideosink
+</pre></div></div></li><li>latency:
+<div class="wiki-code"><div class="code"><pre>gw-latency-tester <span class="m">9</span> <span class="m">19</span> <span class="m">41</span> <span class="m">42</span> <span class="m">60</span> <span class="nv">500000</span>
+<span class="o">===</span> <span class="nv">Summary</span> <span class="o">===</span>
+Ran <span class="m">60</span> <span class="nb">times</span>
+Max Latency: <span class="m">0</span>.166653334s
+Min Latency: <span class="m">0</span>.131223333s
+Max Jitter : <span class="m">0</span>.035430001s
+Exponential Moving Average <span class="o">(</span><span class="nv">alpha</span><span class="o">=</span><span class="m">0</span>.1<span class="o">)</span>: <span class="m">0</span>.139983921s
+</pre></div></div></li></ul><h4 id="Ubuntu14.04i5DesktopPC">Ubuntu 14.04 i5 Desktop PC<a class="anchor" href="#Ubuntu14.04i5DesktopPC" title="Link to this section"> ¶</a></h4>
+<p>
+Receiver latency set to 10, bitrate set to 3mbit/s:
+</p>
+<ul><li>CVBS input to RTSP Server (gst-variable-rtsp-server)
+</li><li>sender: <code>(imxv4l2videosrc ! imxipuvideotransform ! imxvpuenc_h264 ! rtph264pay pt=96)</code>
+<div class="wiki-code"><div class="code"><pre>gst-variable-rtsp-server -i /dev/video1 -s imxv4l2videosrc -r <span class="m">0</span> -b <span class="m">3000</span>
+</pre></div></div></li><li>receiver:
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 rtspsrc <span class="nv">location</span><span class="o">=</span>rtsp://172.24.10.180:9099/stream <span class="nv">latency</span><span class="o">=</span><span class="m">10</span> ! <span class="se">\
+</span> decodebin ! autovideosink
+</pre></div></div></li><li>latency:
+<div class="wiki-code"><div class="code"><pre>gw-latency-tester <span class="m">9</span> <span class="m">19</span> <span class="m">41</span> <span class="m">42</span> <span class="m">60</span> <span class="nv">500000</span>
+<span class="o">===</span> <span class="nv">Summary</span> <span class="o">===</span>
+Ran <span class="m">60</span> <span class="nb">times</span>
+Max Latency: <span class="m">0</span>.118248000s
+Min Latency: <span class="m">0</span>.056305334s
+Max Jitter : <span class="m">0</span>.061942666s
+Exponential Moving Average <span class="o">(</span><span class="nv">alpha</span><span class="o">=</span><span class="m">0</span>.1<span class="o">)</span>: <span class="m">0</span>.081248197s
+</pre></div></div></li></ul><p>
+Receiver latency set to 100, bitrate set to 3mbit/s:
+</p>
+<ul><li>CVBS input to RTSP Server (gst-variable-rtsp-server)
+</li><li>sender: <code>(imxv4l2videosrc ! imxipuvideotransform ! imxvpuenc_h264 ! rtph264pay pt=96)</code>
+<div class="wiki-code"><div class="code"><pre>gst-variable-rtsp-server -i /dev/video1 -s imxv4l2videosrc -r <span class="m">0</span> -b <span class="m">3000</span>
+</pre></div></div></li><li>receiver:
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 rtspsrc <span class="nv">location</span><span class="o">=</span>rtsp://172.24.10.180:9099/stream <span class="nv">latency</span><span class="o">=</span><span class="m">100</span> ! <span class="se">\
+</span> decodebin ! autovideosink
+</pre></div></div></li><li>latency:
+<div class="wiki-code"><div class="code"><pre>gw-latency-tester <span class="m">9</span> <span class="m">19</span> <span class="m">41</span> <span class="m">42</span> <span class="m">60</span> <span class="nv">500000</span>
+<span class="o">===</span> <span class="nv">Summary</span> <span class="o">===</span>
+Ran <span class="m">60</span> <span class="nb">times</span>
+Max Latency: <span class="m">0</span>.167262000s
+Min Latency: <span class="m">0</span>.138012667s
+Max Jitter : <span class="m">0</span>.029249333s
+Exponential Moving Average <span class="o">(</span><span class="nv">alpha</span><span class="o">=</span><span class="m">0</span>.1<span class="o">)</span>: <span class="m">0</span>.164639100s
+</pre></div></div></li></ul><h2 id="HDMIDigitalIn">HDMI (Digital) In<a class="anchor" href="#HDMIDigitalIn" title="Link to this section"> ¶</a></h2>
+<p>
+This section is for boards using hdmi capture to various outputs. The in-depth results are based off of the GoPro Hero3 camera.
+</p>
+<p>
+Please note that the camera itself is responsible for a lot of the latency. Here is an example of how various HDMI output devices can vary (using the same output format and capture format):
+</p>
+<ul><li>HDMI input (yuv422smp - <strong>Dino-Lite Digital Microscope @ 1280x720p@60</strong>) to HDMI Output
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video0 ! imxg2dvideosink <span class="nv">framebuffer</span><span class="o">=</span>/dev/fb0
+</pre></div></div><div class="wiki-code"><div class="code"><pre>gw-latency-tester <span class="m">9</span> <span class="m">19</span> <span class="m">41</span> <span class="m">42</span> <span class="nv">60</span>
+<span class="o">===</span> <span class="nv">Summary</span> <span class="o">===</span>
+Ran <span class="m">60</span> <span class="nb">times</span>
+Max Latency: <span class="m">0</span>.116650000s
+Min Latency: <span class="m">0</span>.068762333s
+Max Jitter : <span class="m">0</span>.047887667s
+Exponential Moving Average <span class="o">(</span><span class="nv">alpha</span><span class="o">=</span><span class="m">0</span>.1<span class="o">)</span>: <span class="m">0</span>.109525081s
+</pre></div></div></li><li>HDMI input (yuv422smp - <strong>Incredisonic Dash Cam @ 1280x720p@60</strong>) to HDMI Output
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video0 ! imxg2dvideosink <span class="nv">framebuffer</span><span class="o">=</span>/dev/fb0
+</pre></div></div><div class="wiki-code"><div class="code"><pre>gw-latency-tester <span class="m">9</span> <span class="m">19</span> <span class="m">41</span> <span class="m">42</span> <span class="nv">60</span>
+<span class="o">===</span> <span class="nv">Summary</span> <span class="o">===</span>
+Ran <span class="m">60</span> <span class="nb">times</span>
+Max Latency: <span class="m">0</span>.130328000s
+Min Latency: <span class="m">0</span>.085225000s
+Max Jitter : <span class="m">0</span>.045103000s
+Exponential Moving Average <span class="o">(</span><span class="nv">alpha</span><span class="o">=</span><span class="m">0</span>.1<span class="o">)</span>: <span class="m">0</span>.117414606s
+</pre></div></div></li><li>HDMI input (yuv422smp - <strong>GoPro Hero3 @ 1280x720p@60</strong>) to HDMI Output
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video0 ! imxg2dvideosink <span class="nv">framebuffer</span><span class="o">=</span>/dev/fb0
+</pre></div></div><div class="wiki-code"><div class="code"><pre>gw-latency-tester <span class="m">9</span> <span class="m">19</span> <span class="m">41</span> <span class="m">42</span> <span class="nv">60</span>
+<span class="o">===</span> <span class="nv">Summary</span> <span class="o">===</span>
+Ran <span class="m">60</span> <span class="nb">times</span>
+Max Latency: <span class="m">0</span>.115457666s
+Min Latency: <span class="m">0</span>.095496333s
+Max Jitter : <span class="m">0</span>.019961333s
+Exponential Moving Average <span class="o">(</span><span class="nv">alpha</span><span class="o">=</span><span class="m">0</span>.1<span class="o">)</span>: <span class="m">0</span>.096331845s
+</pre></div></div></li></ul><p>
+As you can see, camera choice plays a huge factor in latency numbers. In this case, the GoPro had 20ms less latency than the Incredisonic Dash Cam, and 10ms less latency than the Dino-Lite Digital Microscope.
+</p>
+<p>
+Also note that HDMI sources have variying latencies based on their output formats. For example 1080p@30 on the GoPro has increased latencies due it its own performance.
+</p>
+<p>
+Here are some GoPro Hero3 latency numbers at different output modes:
+</p>
+<ul><li>HDMI input (yuv422smp - GoPro Hero3 @ <strong>1080p@60</strong>) to HDMI Output
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video0 ! imxg2dvideosink <span class="nv">framebuffer</span><span class="o">=</span>/dev/fb0
+</pre></div></div><div class="wiki-code"><div class="code"><pre>gw-latency-tester <span class="m">9</span> <span class="m">19</span> <span class="m">41</span> <span class="m">42</span> <span class="m">60</span> <span class="nv">0</span>
+<span class="o">===</span> <span class="nv">Summary</span> <span class="o">===</span>
+Ran <span class="m">60</span> <span class="nb">times</span>
+Max Latency: <span class="m">0</span>.198507s
+Min Latency: <span class="m">0</span>.167948s
+Max Jitter : <span class="m">0</span>.030559s
+Exponential Moving Average <span class="o">(</span><span class="nv">alpha</span><span class="o">=</span><span class="m">0</span>.1<span class="o">)</span>: <span class="m">0</span>.175236s
+</pre></div></div></li><li>HDMI input (yuv422smp - GoPro Hero3 @ <strong>960p@60</strong>) to HDMI Output
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video0 ! imxg2dvideosink <span class="nv">framebuffer</span><span class="o">=</span>/dev/fb0
+</pre></div></div><div class="wiki-code"><div class="code"><pre>gw-latency-tester <span class="m">9</span> <span class="m">19</span> <span class="m">41</span> <span class="m">42</span> <span class="nv">60</span>
+<span class="o">===</span> <span class="nv">Summary</span> <span class="o">===</span>
+Ran <span class="m">60</span> <span class="nb">times</span>
+Max Latency: <span class="m">0</span>.176905000s
+Min Latency: <span class="m">0</span>.137760667s
+Max Jitter : <span class="m">0</span>.039144333s
+Exponential Moving Average <span class="o">(</span><span class="nv">alpha</span><span class="o">=</span><span class="m">0</span>.1<span class="o">)</span>: <span class="m">0</span>.156957710s
+</pre></div></div></li><li>HDMI input (yuv422smp - GoPro Hero3 @ <strong>720p@30</strong>) to HDMI Output
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video0 ! imxg2dvideosink <span class="nv">framebuffer</span><span class="o">=</span>/dev/fb0
+</pre></div></div><div class="wiki-code"><div class="code"><pre>gw-latency-tester <span class="m">9</span> <span class="m">19</span> <span class="m">41</span> <span class="m">42</span> <span class="nv">60</span>
+<span class="o">===</span> <span class="nv">Summary</span> <span class="o">===</span>
+Ran <span class="m">60</span> <span class="nb">times</span>
+Max Latency: <span class="m">0</span>.138299333s
+Min Latency: <span class="m">0</span>.096406667s
+Max Jitter : <span class="m">0</span>.041892666s
+Exponential Moving Average <span class="o">(</span><span class="nv">alpha</span><span class="o">=</span><span class="m">0</span>.1<span class="o">)</span>: <span class="m">0</span>.112956985s
+</pre></div></div></li><li>HDMI input (yuv422smp - GoPro Hero3 @ <strong>480p@60</strong>) to HDMI Output
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video0 ! imxg2dvideosink <span class="nv">framebuffer</span><span class="o">=</span>/dev/fb0
+</pre></div></div><div class="wiki-code"><div class="code"><pre>gw-latency-tester <span class="m">9</span> <span class="m">19</span> <span class="m">41</span> <span class="m">42</span> <span class="nv">60</span>
+<span class="o">===</span> <span class="nv">Summary</span> <span class="o">===</span>
+Ran <span class="m">60</span> <span class="nb">times</span>
+Max Latency: <span class="m">0</span>.116750333s
+Min Latency: <span class="m">0</span>.093424667s
+Max Jitter : <span class="m">0</span>.023325666s
+Exponential Moving Average <span class="o">(</span><span class="nv">alpha</span><span class="o">=</span><span class="m">0</span>.1<span class="o">)</span>: <span class="m">0</span>.101177281s
+</pre></div></div></li></ul><p>
+Also note that any resolution larger than 1080x720 (720p/720i) requires striping for any IPU transform that needs to be performed on the IMX (ie colorspace transform for encoding when capturing in yuv422smp mode and output transform when displaying on a device that differs in format).
+</p>
+<h4 id="HDMIintoHDMIout">HDMI in to HDMI out<a class="anchor" href="#HDMIintoHDMIout" title="Link to this section"> ¶</a></h4>
+<p>
+With the GoPro configured to <strong>output 1280x720p@60</strong>, pixel format YUV420, the following latencies were found using a GW5400:
+</p>
+<h5 id="Whilecapturinginyuv422smp:">While capturing in yuv422smp:<a class="anchor" href="#Whilecapturinginyuv422smp:" title="Link to this section"> ¶</a></h5>
+<ul><li>HDMI input (<strong>yuv422smp</strong> - GoPro Hero3) to HDMI Output
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video0 ! imxg2dvideosink <span class="nv">framebuffer</span><span class="o">=</span>/dev/fb0
+</pre></div></div><div class="wiki-code"><div class="code"><pre>gw-latency-tester <span class="m">9</span> <span class="m">19</span> <span class="m">41</span> <span class="m">42</span> <span class="nv">60</span>
+<span class="o">===</span> <span class="nv">Summary</span> <span class="o">===</span>
+Ran <span class="m">60</span> <span class="nb">times</span>
+Max Latency: <span class="m">0</span>.115457666s
+Min Latency: <span class="m">0</span>.095496333s
+Max Jitter : <span class="m">0</span>.019961333s
+Exponential Moving Average <span class="o">(</span><span class="nv">alpha</span><span class="o">=</span><span class="m">0</span>.1<span class="o">)</span>: <span class="m">0</span>.096331845s
+</pre></div></div></li></ul><h5 id="Whilecapturinginbt656:">While capturing in bt656:<a class="anchor" href="#Whilecapturinginbt656:" title="Link to this section"> ¶</a></h5>
+<ul><li>HDMI input (<strong>yuv422bt656</strong> - GoPro Hero3) to HDMI Output
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video0 ! imxg2dvideosink <span class="nv">framebuffer</span><span class="o">=</span>/dev/fb0
+</pre></div></div><div class="wiki-code"><div class="code"><pre>gw-latency-tester <span class="m">9</span> <span class="m">19</span> <span class="m">41</span> <span class="m">42</span> <span class="m">60</span> <span class="nv">0</span>
+<span class="o">===</span> <span class="nv">Summary</span> <span class="o">===</span>
+Ran <span class="m">60</span> <span class="nb">times</span>
+Max Latency: <span class="m">0</span>.113161667s
+Min Latency: <span class="m">0</span>.085511333s
+Max Jitter : <span class="m">0</span>.027650334s
+Exponential Moving Average <span class="o">(</span><span class="nv">alpha</span><span class="o">=</span><span class="m">0</span>.1<span class="o">)</span>: <span class="m">0</span>.097953780s
+</pre></div></div></li></ul><h4 id="HDMIintoLVDSout">HDMI in to LVDS out<a class="anchor" href="#HDMIintoLVDSout" title="Link to this section"> ¶</a></h4>
+<h5 id="Whilecapturinginyuv422smp:1">While capturing in yuv422smp:<a class="anchor" href="#Whilecapturinginyuv422smp:1" title="Link to this section"> ¶</a></h5>
+<ul><li>HDMI input (<strong>yuv422smp</strong> - GoPro Hero3) to LVDS Output
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video0 ! imxg2dvideosink <span class="nv">framebuffer</span><span class="o">=</span>/dev/fb4
+</pre></div></div><div class="wiki-code"><div class="code"><pre>gw-latency-tester <span class="m">9</span> <span class="m">19</span> <span class="m">41</span> <span class="m">42</span> <span class="m">60</span> <span class="nv">0</span>
+<span class="o">===</span> <span class="nv">Summary</span> <span class="o">===</span>
+Ran <span class="m">60</span> <span class="nb">times</span>
+Max Latency: <span class="m">0</span>.127060667s
+Min Latency: <span class="m">0</span>.106143666s
+Max Jitter : <span class="m">0</span>.020917001s
+Exponential Moving Average <span class="o">(</span><span class="nv">alpha</span><span class="o">=</span><span class="m">0</span>.1<span class="o">)</span>: <span class="m">0</span>.117725942s
+</pre></div></div></li></ul><h5 id="Whilecapturinginbt656:1">While capturing in bt656:<a class="anchor" href="#Whilecapturinginbt656:1" title="Link to this section"> ¶</a></h5>
+<ul><li>HDMI input (<strong>yuv422bt656</strong> - GoPro Hero3) to LVDS Output
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video0 ! imxg2dvideosink <span class="nv">framebuffer</span><span class="o">=</span>/dev/fb4
+</pre></div></div><div class="wiki-code"><div class="code"><pre>gw-latency-tester <span class="m">9</span> <span class="m">19</span> <span class="m">41</span> <span class="m">42</span> <span class="m">60</span> <span class="nv">0</span>
+<span class="o">===</span> <span class="nv">Summary</span> <span class="o">===</span>
+Ran <span class="m">60</span> <span class="nb">times</span>
+Max Latency: <span class="m">0</span>.173456000s
+Min Latency: <span class="m">0</span>.120619667s
+Max Jitter : <span class="m">0</span>.052836333s
+Exponential Moving Average <span class="o">(</span><span class="nv">alpha</span><span class="o">=</span><span class="m">0</span>.1<span class="o">)</span>: <span class="m">0</span>.131980293s
+</pre></div></div></li></ul><h4 id="HDMIintoCVBSout">HDMI in to CVBS out<a class="anchor" href="#HDMIintoCVBSout" title="Link to this section"> ¶</a></h4>
+<h5 id="Whilecapturinginyuv422smp:2">While capturing in yuv422smp:<a class="anchor" href="#Whilecapturinginyuv422smp:2" title="Link to this section"> ¶</a></h5>
+<ul><li>HDMI input (<strong>yuv422smp</strong> - GoPro Hero3) to CVBS Output
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video0 ! imxg2dvideosink <span class="nv">framebuffer</span><span class="o">=</span>/dev/fb2
+</pre></div></div><div class="wiki-code"><div class="code"><pre>gw-latency-tester <span class="m">9</span> <span class="m">19</span> <span class="m">41</span> <span class="m">42</span> <span class="m">60</span> <span class="nv">0</span>
+<span class="o">===</span> <span class="nv">Summary</span> <span class="o">===</span>
+Ran <span class="m">60</span> <span class="nb">times</span>
+Max Latency: <span class="m">0</span>.103408000s
+Min Latency: <span class="m">0</span>.091112000s
+Max Jitter : <span class="m">0</span>.012296000s
+Exponential Moving Average <span class="o">(</span><span class="nv">alpha</span><span class="o">=</span><span class="m">0</span>.1<span class="o">)</span>: <span class="m">0</span>.092611801s
+</pre></div></div></li></ul><h5 id="Whilecapturinginbt656:2">While capturing in bt656:<a class="anchor" href="#Whilecapturinginbt656:2" title="Link to this section"> ¶</a></h5>
+<ul><li>HDMI input (<strong>yuv422bt656</strong> - GoPro Hero3) to CVBS Output
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video0 ! imxg2dvideosink <span class="nv">framebuffer</span><span class="o">=</span>/dev/fb2
+</pre></div></div><div class="wiki-code"><div class="code"><pre>gw-latency-tester <span class="m">9</span> <span class="m">19</span> <span class="m">41</span> <span class="m">42</span> <span class="m">60</span> <span class="nv">0</span>
+<span class="o">===</span> <span class="nv">Summary</span> <span class="o">===</span>
+Ran <span class="m">60</span> <span class="nb">times</span>
+Max Latency: <span class="m">0</span>.114230334s
+Min Latency: <span class="m">0</span>.099739667s
+Max Jitter : <span class="m">0</span>.014490667s
+Exponential Moving Average <span class="o">(</span><span class="nv">alpha</span><span class="o">=</span><span class="m">0</span>.1<span class="o">)</span>: <span class="m">0</span>.100241924s
+</pre></div></div></li></ul><h4 id="HDMIintoRTSPout">HDMI in to RTSP out<a class="anchor" href="#HDMIintoRTSPout" title="Link to this section"> ¶</a></h4>
+<p>
+RTSP is an audio/video streaming standard that is commonly supported by various player clients.
+</p>
+<p>
+Notes:
+</p>
+<ul><li><a class="ext-link" href="https://www.ietf.org/rfc/rfc2326.txt"><span class="icon">​</span>RTSP RFC</a>
+</li><li>Note that latency=0 on the receiver will get it to display frames as soon as it receives them. However, depending on network congestion/frame sizes, this could cause video stuttering due to varying latencies.
+</li><li>These tests were done through a ZyXEL GS1100-24 Switch with 4 ports having active traffic.
+</li><li>RTSP clients (players) will have a configuration that specifically adds latency by stream buffering to allow for audio/video synchronization which can be on the order of 10 to 1000ms. For gstreamer rtspsrc this is the 'latency' parameter - we set it to 10ms to minimize latency as a value of 0 can confuse gstreamer.
+</li><li>See the <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/streaming#rtsp">gstreamer/streaming</a> page for more examples on RTSP streaming
+</li></ul><p>
+The below sections show various gstreamer sinks running on a GW5304 running Yocto 1.8 and an Ubuntu based PC.
+</p>
+<h5 id="Yocto1.8GW53041">Yocto 1.8 GW5304<a class="anchor" href="#Yocto1.8GW53041" title="Link to this section"> ¶</a></h5>
+<p>
+Receiver latency set to 10, bitrate set to 5.5mbit/s:
+</p>
+<ul><li>HDMI input (yuv422smp - GoPro Hero3) to HDMI Output
+</li><li>sender: <code>(imxv4l2videosrc ! imxipuvideotransform ! imxvpuenc_h264 ! rtph264pay pt=96)</code>
+<div class="wiki-code"><div class="code"><pre>gst-variable-rtsp-server -i /dev/video0 -s imxv4l2videosrc -r <span class="m">0</span> -b <span class="m">5500</span>
+</pre></div></div></li><li>receiver:
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 rtspsrc <span class="nv">location</span><span class="o">=</span>rtsp://172.24.10.180:9099/stream <span class="nv">latency</span><span class="o">=</span><span class="m">10</span> ! <span class="se">\
+</span> rtph264depay ! h264parse ! imxvpudec ! imxg2dvideosink
+</pre></div></div></li><li>latency:
+<div class="wiki-code"><div class="code"><pre>gw-latency-tester <span class="m">9</span> <span class="m">19</span> <span class="m">41</span> <span class="m">42</span> <span class="nv">60</span>
+<span class="o">===</span> <span class="nv">Summary</span> <span class="o">===</span>
+Ran <span class="m">60</span> <span class="nb">times</span>
+Max Latency: <span class="m">0</span>.183257333s
+Min Latency: <span class="m">0</span>.149575667s
+Max Jitter : <span class="m">0</span>.033681666s
+Exponential Moving Average <span class="o">(</span><span class="nv">alpha</span><span class="o">=</span><span class="m">0</span>.1<span class="o">)</span>: <span class="m">0</span>.160407397s
+</pre></div></div></li></ul><h5 id="Ubuntu14.04i5DesktopPC1">Ubuntu 14.04 i5 Desktop PC<a class="anchor" href="#Ubuntu14.04i5DesktopPC1" title="Link to this section"> ¶</a></h5>
+<p>
+Receiver latency set to 10, bitrate set to 5.5mbit/s:
+</p>
+<ul><li>HDMI input (yuv422smp - <a class="missing wiki">GoPro?</a> Hero3) to HDMI Output
+</li><li>sender: <code>(imxv4l2videosrc ! imxipuvideotransform ! imxvpuenc_h264 ! rtph264pay pt=96)</code>
+<div class="wiki-code"><div class="code"><pre>gst-variable-rtsp-server -i /dev/video0 -s imxv4l2videosrc -r <span class="m">0</span> -b <span class="m">5500</span>
+</pre></div></div></li><li>receiver:
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 rtspsrc <span class="nv">location</span><span class="o">=</span>rtsp://172.24.10.180:9099/stream <span class="nv">latency</span><span class="o">=</span><span class="m">10</span> ! <span class="se">\
+</span> decodebin ! autovideosink
+</pre></div></div></li><li>latency:
+<div class="wiki-code"><div class="code"><pre>gw-latency-tester <span class="m">9</span> <span class="m">19</span> <span class="m">41</span> <span class="m">42</span> <span class="nv">60</span>
+<span class="o">===</span> <span class="nv">Summary</span> <span class="o">===</span>
+Ran <span class="m">60</span> <span class="nb">times</span>
+Max Latency: <span class="m">0</span>.127060667s
+Min Latency: <span class="m">0</span>.106143666s
+Max Jitter : <span class="m">0</span>.020917001s
+Exponential Moving Average <span class="o">(</span><span class="nv">alpha</span><span class="o">=</span><span class="m">0</span>.1<span class="o">)</span>: <span class="m">0</span>.117725942s
+</pre></div></div></li></ul><h2 id="avc8000nanominiPCIecapturecardin">avc8000nano (miniPCIe capture card) in<a class="anchor" href="#avc8000nanominiPCIecapturecardin" title="Link to this section"> ¶</a></h2>
+<p>
+This section is for boards using the avc8000nano miniPCIe capture card to various outputs.
+</p>
+<p>
+Using a 208C Wired Micro Mini Camera with NTSC 720x480@30FPS output captured via the Ventana Analog in (<a class="ext-link" href="http://www.analog.com/media/en/technical-documentation/data-sheets/ADV7180.pdf"><span class="icon">​</span>adv7180 SDTV Video Decoder</a>) with 8bit ITU-R BT656 output to the IMX6 CSI, the following latencies were found using a GW5400:
+</p>
+<h3 id="avc8000nanointoHDMIout">avc8000nano in to HDMI out<a class="anchor" href="#avc8000nanointoHDMIout" title="Link to this section"> ¶</a></h3>
+<ul><li>avc8000nano Input to HDMI Output
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video3 ! imxg2dvideosink <span class="nv">framebuffer</span><span class="o">=</span>/dev/fb0
+</pre></div></div></li><li>latency:
+<div class="wiki-code"><div class="code"><pre>gw-latency-tester <span class="m">9</span> <span class="m">19</span> <span class="m">41</span> <span class="m">42</span> <span class="m">60</span> <span class="nv">0</span>
+<span class="o">===</span> <span class="nv">Summary</span> <span class="o">===</span>
+Ran <span class="m">60</span> <span class="nb">times</span>
+Max Latency: <span class="m">0</span>.067630s
+Min Latency: <span class="m">0</span>.058137s
+Max Jitter : <span class="m">0</span>.009493s
+Exponential Moving Average <span class="o">(</span><span class="nv">alpha</span><span class="o">=</span><span class="m">0</span>.1<span class="o">)</span>: <span class="m">0</span>.066845s
+</pre></div></div></li></ul><h3 id="avc8000nanointoLVDSout">avc8000nano in to LVDS out<a class="anchor" href="#avc8000nanointoLVDSout" title="Link to this section"> ¶</a></h3>
+<ul><li>avc8000nano Input to LVDS Output
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video3 ! imxg2dvideosink <span class="nv">framebuffer</span><span class="o">=</span>/dev/fb4
+</pre></div></div></li><li>latency:
+<div class="wiki-code"><div class="code"><pre>gw-latency-tester <span class="m">9</span> <span class="m">19</span> <span class="m">41</span> <span class="m">42</span> <span class="m">60</span> <span class="nv">0</span>
+<span class="o">===</span> <span class="nv">Summary</span> <span class="o">===</span>
+Ran <span class="m">60</span> <span class="nb">times</span>
+Max Latency: <span class="m">0</span>.090251s
+Min Latency: <span class="m">0</span>.059275s
+Max Jitter : <span class="m">0</span>.030976s
+Exponential Moving Average <span class="o">(</span><span class="nv">alpha</span><span class="o">=</span><span class="m">0</span>.1<span class="o">)</span>: <span class="m">0</span>.078264s
+</pre></div></div></li></ul><h3 id="avc8000nanointoCVBSout">avc8000nano in to CVBS out<a class="anchor" href="#avc8000nanointoCVBSout" title="Link to this section"> ¶</a></h3>
+<ul><li>avc8000nano Input to CVBS Output
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video3 ! imxg2dvideosink <span class="nv">framebuffer</span><span class="o">=</span>/dev/fb2
+</pre></div></div></li><li>latency:
+<div class="wiki-code"><div class="code"><pre>gw-latency-tester <span class="m">9</span> <span class="m">19</span> <span class="m">41</span> <span class="m">42</span> <span class="m">60</span> <span class="nv">0</span>
+<span class="o">===</span> <span class="nv">Summary</span> <span class="o">===</span>
+Ran <span class="m">60</span> <span class="nb">times</span>
+Max Latency: <span class="m">0</span>.062595s
+Min Latency: <span class="m">0</span>.049624s
+Max Jitter : <span class="m">0</span>.012971s
+Exponential Moving Average <span class="o">(</span><span class="nv">alpha</span><span class="o">=</span><span class="m">0</span>.1<span class="o">)</span>: <span class="m">0</span>.055531s
+</pre></div></div></li></ul><h3 id="avc8000nanointoRTSPout">avc8000nano in to RTSP out<a class="anchor" href="#avc8000nanointoRTSPout" title="Link to this section"> ¶</a></h3>
+<p>
+RTSP is an audio/video streaming standard that is commonly supported by various player clients.
+</p>
+<p>
+Notes:
+</p>
+<ul><li><a class="ext-link" href="https://www.ietf.org/rfc/rfc2326.txt"><span class="icon">​</span>RTSP RFC</a>
+</li><li>Note that latency=0 on the receiver will get it to display frames as soon as it receives them. However, depending on network congestion/frame sizes, this could cause video stuttering due to varying latencies.
+</li><li>These tests were done through a ZyXEL GS1100-24 Switch with 4 ports having active traffic.
+</li><li>RTSP clients (players) will have a configuration that specifically adds latency by stream buffering to allow for audio/video synchronization which can be on the order of 10 to 1000ms. For gstreamer rtspsrc this is the 'latency' parameter - we set it to 10ms to minimize latency as a value of 0 can confuse gstreamer.
+</li><li>See the <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/streaming#rtsp">gstreamer/streaming</a> page for more examples on RTSP streaming
+</li></ul><p>
+The below sections show various gstreamer sinks running on a GW5304 running Yocto 1.8 and an Ubuntu based PC.
+</p>
+<h4 id="Yocto1.8GW53042">Yocto 1.8 GW5304<a class="anchor" href="#Yocto1.8GW53042" title="Link to this section"> ¶</a></h4>
+<p>
+Receiver latency set to 10, bitrate set to 3mbit/s:
+</p>
+<ul><li>avc8000nano input to RTSP Server (gst-variable-rtsp-server)
+</li><li>sender: <code>(imxv4l2videosrc ! imxipuvideotransform ! imxvpuenc_h264 ! rtph264pay pt=96)</code>
+<div class="wiki-code"><div class="code"><pre>gst-variable-rtsp-server -i /dev/video3 -s imxv4l2videosrc -r <span class="m">0</span> -b <span class="m">3000</span>
+</pre></div></div></li><li>receiver:
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 rtspsrc <span class="nv">location</span><span class="o">=</span>rtsp://172.24.10.180:9099/stream <span class="nv">latency</span><span class="o">=</span><span class="m">10</span> ! <span class="se">\
+</span> rtph264depay ! h264parse ! imxvpudec ! imxg2dvideosink
+</pre></div></div></li><li>latency:
+<div class="wiki-code"><div class="code"><pre>gw-latency-tester <span class="m">9</span> <span class="m">19</span> <span class="m">41</span> <span class="m">42</span> <span class="m">60</span> <span class="nv">500000</span>
+<span class="o">===</span> <span class="nv">Summary</span> <span class="o">===</span>
+Ran <span class="m">60</span> <span class="nb">times</span>
+Max Latency: <span class="m">0</span>.116920334s
+Min Latency: <span class="m">0</span>.059414667s
+Max Jitter : <span class="m">0</span>.057505667s
+Exponential Moving Average <span class="o">(</span><span class="nv">alpha</span><span class="o">=</span><span class="m">0</span>.1<span class="o">)</span>: <span class="m">0</span>.098957740s
+</pre></div></div></li></ul><p>
+Receiver latency set to 100, bitrate set to 3mbit/s:
+</p>
+<ul><li>avc8000nano input to RTSP Server (gst-variable-rtsp-server)
+</li><li>sender: <code>(imxv4l2videosrc ! imxipuvideotransform ! imxvpuenc_h264 ! rtph264pay pt=96)</code>
+<div class="wiki-code"><div class="code"><pre>gst-variable-rtsp-server -i /dev/video3 -s imxv4l2videosrc -r <span class="m">0</span> -b <span class="m">3000</span> 
+</pre></div></div></li><li>receiver:
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 rtspsrc <span class="nv">location</span><span class="o">=</span>rtsp://172.24.10.180:9099/stream <span class="nv">latency</span><span class="o">=</span><span class="m">100</span> ! <span class="se">\
+</span> rtph264depay ! h264parse ! imxvpudec ! imxg2dvideosink
+</pre></div></div></li><li>latency:
+<div class="wiki-code"><div class="code"><pre>gw-latency-tester <span class="m">9</span> <span class="m">19</span> <span class="m">41</span> <span class="m">42</span> <span class="m">60</span> <span class="nv">500000</span>
+<span class="o">===</span> <span class="nv">Summary</span> <span class="o">===</span>
+Ran <span class="m">60</span> <span class="nb">times</span>
+Max Latency: <span class="m">0</span>.166873667s
+Min Latency: <span class="m">0</span>.039013333s
+Max Jitter : <span class="m">0</span>.127860334s
+Exponential Moving Average <span class="o">(</span><span class="nv">alpha</span><span class="o">=</span><span class="m">0</span>.1<span class="o">)</span>: <span class="m">0</span>.156437334s
+</pre></div></div></li></ul><h4 id="Ubuntu14.04i5DesktopPC2">Ubuntu 14.04 i5 Desktop PC<a class="anchor" href="#Ubuntu14.04i5DesktopPC2" title="Link to this section"> ¶</a></h4>
+<p>
+Receiver latency set to 10, bitrate set to 3mbit/s:
+</p>
+<ul><li>avc8000nano input to RTSP Server (gst-variable-rtsp-server)
+</li><li>sender: <code>(imxv4l2videosrc ! imxipuvideotransform ! imxvpuenc_h264 ! rtph264pay pt=96)</code>
+<div class="wiki-code"><div class="code"><pre>gst-variable-rtsp-server -i /dev/video3 -s imxv4l2videosrc -r <span class="m">0</span> -b <span class="m">3000</span>
+</pre></div></div></li><li>receiver:
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 rtspsrc <span class="nv">location</span><span class="o">=</span>rtsp://172.24.10.180:9099/stream <span class="nv">latency</span><span class="o">=</span><span class="m">10</span> ! <span class="se">\
+</span> decodebin ! autovideosink
+</pre></div></div></li><li>latency:
+<div class="wiki-code"><div class="code"><pre>gw-latency-tester <span class="m">9</span> <span class="m">19</span> <span class="m">41</span> <span class="m">42</span> <span class="m">60</span> <span class="nv">500000</span>
+<span class="o">===</span> <span class="nv">Summary</span> <span class="o">===</span>
+Ran <span class="m">60</span> <span class="nb">times</span>
+Max Latency: <span class="m">0</span>.129218s
+Min Latency: <span class="m">0</span>.067037s
+Max Jitter : <span class="m">0</span>.062181s
+Exponential Moving Average <span class="o">(</span><span class="nv">alpha</span><span class="o">=</span><span class="m">0</span>.1<span class="o">)</span>: <span class="m">0</span>.091255s
+</pre></div></div></li></ul><p>
+Receiver latency set to 100, bitrate set to 3mbit/s:
+</p>
+<ul><li>avc8000nano input to RTSP Server (gst-variable-rtsp-server)
+</li><li>sender: <code>(imxv4l2videosrc ! imxipuvideotransform ! imxvpuenc_h264 ! rtph264pay pt=96)</code>
+<div class="wiki-code"><div class="code"><pre>gst-variable-rtsp-server -i /dev/video3 -s imxv4l2videosrc -r <span class="m">0</span> -b <span class="m">3000</span>
+</pre></div></div></li><li>receiver:
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 rtspsrc <span class="nv">location</span><span class="o">=</span>rtsp://172.24.10.180:9099/stream <span class="nv">latency</span><span class="o">=</span><span class="m">100</span> ! <span class="se">\
+</span> decodebin ! autovideosink
+</pre></div></div></li><li>latency:
+<div class="wiki-code"><div class="code"><pre>gw-latency-tester <span class="m">9</span> <span class="m">19</span> <span class="m">41</span> <span class="m">42</span> <span class="m">60</span> <span class="nv">500000</span>
+<span class="o">===</span> <span class="nv">Summary</span> <span class="o">===</span>
+Ran <span class="m">60</span> <span class="nb">times</span>
+Max Latency: <span class="m">0</span>.201775s
+Min Latency: <span class="m">0</span>.165823s
+Max Jitter : <span class="m">0</span>.035952s
+Exponential Moving Average <span class="o">(</span><span class="nv">alpha</span><span class="o">=</span><span class="m">0</span>.1<span class="o">)</span>: <span class="m">0</span>.177493s
+</pre></div></div></li></ul></div>
+          
+          <div class="trac-modifiedby">
+            <span><a href="http://trac.gateworks.com/wiki/Yocto/gstreamer/latency?action=diff&amp;version=3" title="Version 3 by Tim Harvey: fixed video src for pci capture card">Last modified</a> <a class="timeline" href="http://trac.gateworks.com/timeline?from=2018-04-19T11%3A22%3A50-07%3A00&amp;precision=second" title="See timeline at 04/19/2018 11:22:50 AM">5 months ago</a></span>
+            <span class="trac-print">Last modified on 04/19/2018 11:22:50 AM</span>
+          </div>
+        
+        
+      </div>
+      
+
+    </div>
+    
+    <div id="altlinks">
+      <h3>Download in other formats:</h3>
+      <ul>
+        <li class="last first">
+          <a rel="nofollow" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/latency?format=txt">Plain Text</a>
+        </li>
+      </ul>
+    </div>
+    </div>
+    <div id="footer" xml:lang="en" lang="en"><hr>
+      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="trac_logo_mini.png" alt="Trac Powered" width="107" height="30"></a>
+      <p class="left">Powered by <a href="http://trac.gateworks.com/about"><strong>Trac 1.2.2</strong></a><br>
+        By <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
+      <p class="right">Visit the Trac open source project at<br><a href="http://trac.edgewall.org/">http://trac.edgewall.org/</a></p>
+    </div>
+	
+</body>
+</html>

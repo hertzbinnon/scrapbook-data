@@ -1,0 +1,1666 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    <meta charset="UTF-8">
+    <link rel="canonical" href="https://blog.csdn.net/fishmai/article/details/69915183"> 
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="referrer" content="always">
+    <meta name="description" content="带宽估计可能是WebRTC视频引擎中最重要的一部分了。带宽估计（BWE）模块的任务是决定你可以发送多大的视频流且不会造成网络拥塞，以此来保证不会降低视频质量。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 在以前的带宽估计算法还是十分基础的，大体上是基于丢包而设计的。通常我们在开始慢慢的增加视频的比特率，直到我们检测到丢包为止。为了检测丢包，你使用标准的RTCP反馈，其中接收端使用RTCP接收端报告（RR）信息来周期性">
+    <meta name="keywords" content="">
+    <meta http-equiv="Cache-Control" content="no-siteapp"><link rel="alternate" media="handheld" href="https://blog.csdn.net/fishmai/article/details/69915183#">
+    <meta name="shenma-site-verification" content="5a59773ab8077d4a62bf469ab966a63b_1497598848">
+    
+
+    <link href="favicon.ico" rel="SHORTCUT ICON">
+    <title>WebRTC带宽估计 - CSDN博客</title>
+    
+            
+        
+
+    
+    
+    
+    
+        
+         
+    
+
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body><div id="BAIDU_DUP_fp_wrapper" style="position: absolute; left: -1px; bottom: -1px; z-index: 0; width: 0px; height: 0px; overflow: hidden; visibility: hidden; display: none;"><iframe id="BAIDU_DUP_fp_iframe" src="index_1.html" style="width: 0px; height: 0px; visibility: hidden; display: none;"></iframe></div><div id="MathJax_Message" style="display: none;"></div>    
+    
+    
+    
+
+
+
+<header>
+	<div class="container d-flex clearfix">
+		<div class="title-box">
+			<h6 class="title-blog">
+				<a href="https://blog.csdn.net/fishmai">fishmai的专栏</a>
+			</h6>
+			<p class="description"></p>
+		</div>
+		<div class="opt-box d-flex justify-content-end">
+			<a class="btn btn-sm" href="https://blog.csdn.net/fishmai/rss/list">
+					<svg class="icon" aria-hidden="true">
+						<use xlink:href="#csdnc-rss"></use>
+					</svg>RSS订阅</a>
+					</div>
+	</div>
+</header>
+<div class="container clearfix pt0" id="mainBox">
+    <main>
+        <div class="blog-content-box">
+	<div class="article-title-box">
+			<span class="article-type type-2 float-left">转</span>		<h6 class="title-article">WebRTC带宽估计</h6>
+	</div>
+	<div class="article-info-box">
+		<div class="article-bar-top d-flex">
+												<span class="time">2017年04月09日 20:19:30</span>
+			<div class="float-right">
+				<span class="read-count">阅读数：1999</span>
+											</div>
+		</div>
+	</div>
+	<article>
+		<div id="article_content" class="article_content clearfix csdn-tracking-statistics" data-pid="blog" data-mod="popu_307" data-dsm="post">
+                    
+            <div class="htmledit_views">
+                
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 10px; padding-bottom: 10px; clear: both; font-size: 14px; line-height: 33px; color: rgb(101, 100, 100); font-family: &quot;微软雅黑&quot;,&quot;微软雅黑&quot;;">
+带宽估计可能是<a href="http://webrtc.org.cn/category/specialized/webrtc/" style="margin: 0px; padding: 0px; color: rgb(214, 98, 61);">WebRTC</a>视频引擎中最重要的一部分了。带宽估计（BWE）模块的任务是决定你可以发送多大的视频流且不会造成网络拥塞，以此来保证不会降低视频质量。</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 10px; padding-bottom: 10px; clear: both; font-size: 14px; line-height: 33px; color: rgb(101, 100, 100); font-family: &quot;微软雅黑&quot;,&quot;微软雅黑&quot;;">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 在以前的带宽估计算法还是十分基础的，大体上是基于丢包而设计的。通常我们在开始慢慢的增加视频的比特率，直到我们检测到丢包为止。为了检测丢包，你使用标准的RTCP反馈，其中接收端使用RTCP接收端报告（RR）信息来周期性的报告丢包。</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 10px; padding-bottom: 10px; clear: both; font-size: 14px; line-height: 33px; color: rgb(101, 100, 100); font-family: &quot;微软雅黑&quot;,&quot;微软雅黑&quot;;">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 现在的带宽估计算法变得更加先进，尝试在拥塞严重到了路由器开始丢弃数据包之前就检测出来。这些算法通过分析数据包之间的延时来预测拥塞情况。想法是当你开始遇到拥塞时，数据会开始流入路由器中的缓冲区，延时也会变得更多样。这些算法中比较出名的几种是<a href="https://tools.ietf.org/html/draft-ietf-rmcat-gcc-02" style="margin: 0px; padding: 0px; color: rgb(214, 98, 61);">Google
+ Congestion Control</a>（就是WebRTC中用的），<a href="https://github.com/EricssonResearch/scream" style="margin: 0px; padding: 0px; color: rgb(214, 98, 61);">SCReAM</a>以及<a href="http://aim.nms.lcs.mit.edu/papers/nsdi13-sprout.pdf" style="margin: 0px; padding: 0px; color: rgb(214, 98, 61);">SPROUT</a>。如果你想要了解更多有关拥塞控制标准的历史发展和现状，你可以看一下<a href="https://blog.mozilla.org/webrtc/what-is-rmcat-congestion-control/" style="margin: 0px; padding: 0px; color: rgb(214, 98, 61);">Randell
+ Jesup写的这篇很有趣的博文</a>。</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 10px; padding-bottom: 10px; clear: both; font-size: 14px; line-height: 33px; color: rgb(101, 100, 100); font-family: &quot;微软雅黑&quot;,&quot;微软雅黑&quot;;">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 从WebRTC的最初级阶段开始，媒体引擎（由Google搭建，但是Firefox和Chrome都在使用）就是基于远端带宽估计理论而搭建的。正像我之前说的那样，接收端会分析包间延时，并且会对可用带宽产生一个估计值，然后使用RTCP信息报回给发送端，其中RTCP信息使用了一种被设计来完成这项工作的信息类型：<a href="https://tools.ietf.org/html/draft-alvestrand-rmcat-remb-03" style="margin: 0px; padding: 0px; color: rgb(214, 98, 61);">REMB</a>。另一个关于WebRTC实现的细节是，发送端不会只使用这个在REMB包中接收的带宽估计值，也会使用反馈的丢包来决定最终发送的目标视频比特率。</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 10px; padding-bottom: 10px; clear: both; font-size: 14px; line-height: 33px; color: rgb(101, 100, 100); font-family: &quot;微软雅黑&quot;,&quot;微软雅黑&quot;;">
+<a href="http://webrtc.org.cn/wp-content/uploads/2017/02/bwe1.png" style="margin: 0px; padding: 0px; color: rgb(214, 98, 61);"><img alt="bwe1" class="alignnone size-medium wp-image-832" src="bwe1-300x90.png" style="margin: 0px auto; padding: 0px; border: 0px none; display: block;" width="300" height="90"></a></p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 10px; padding-bottom: 10px; clear: both; font-size: 14px; line-height: 33px; color: rgb(101, 100, 100); font-family: &quot;微软雅黑&quot;,&quot;微软雅黑&quot;;">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 这个实现的好处是它可以在检测到使用过度的时候迅速的降低比特率，即使此刻还没有探测到拥塞的时候。</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 10px; padding-bottom: 10px; clear: both; font-size: 14px; line-height: 33px; color: rgb(101, 100, 100); font-family: &quot;微软雅黑&quot;,&quot;微软雅黑&quot;;">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 但是在最近版本的Chrome中这点发生了改变，现在带宽估计的所有的逻辑都是发生在发送端。拥塞的基本检测跟以前没有什么大的差别，且发送端需要从接收端传来的延时信息来估计可用的带宽。这是用两个全新的机制/协议来完成的：</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 10px; padding-bottom: 10px; clear: both; font-size: 14px; line-height: 33px; color: rgb(101, 100, 100); font-family: &quot;微软雅黑&quot;,&quot;微软雅黑&quot;;">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #1 传输宽序列号的报头扩展：所有视频RTP数据包都在报头处有额外的4位来包含一个序列号。这是通过下面语句与SDP协商得来：</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 10px; padding-bottom: 10px; clear: both; font-size: 14px; line-height: 33px; color: rgb(101, 100, 100); font-family: &quot;微软雅黑&quot;,&quot;微软雅黑&quot;;">
+<a href="http://webrtc.org.cn/wp-content/uploads/2017/02/bwe2.png" style="margin: 0px; padding: 0px; color: rgb(214, 98, 61);"><img alt="bwe2" class="alignnone size-medium wp-image-833" src="bwe2-300x10.png" style="margin: 0px auto; padding: 0px; border: 0px none; display: block;" width="300" height="10"></a></p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 10px; padding-bottom: 10px; clear: both; font-size: 14px; line-height: 33px; color: rgb(101, 100, 100); font-family: &quot;微软雅黑&quot;,&quot;微软雅黑&quot;;">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 注意：这种新的序列号的思想是可以对音频和视频只使用一个计数器，但是Chrome还没有将其在音频领域中使用，所以我认为它现在还并不是很有用。</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 10px; padding-bottom: 10px; clear: both; font-size: 14px; line-height: 33px; color: rgb(101, 100, 100); font-family: &quot;微软雅黑&quot;,&quot;微软雅黑&quot;;">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #2 传输反馈：接收端会周期性地将包含有关已接收数据包和包间延时的信息反馈给发送端。为了完成这项工作，接收端使用了新的RTCP包（传输反馈）。这是通过下面这条包括了新RTCP反馈信息的语句在SDP中协商得来：</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 10px; padding-bottom: 10px; clear: both; font-size: 14px; line-height: 33px; color: rgb(101, 100, 100); font-family: &quot;微软雅黑&quot;,&quot;微软雅黑&quot;;">
+<a href="http://webrtc.org.cn/wp-content/uploads/2017/02/bwe3.png" style="margin: 0px; padding: 0px; color: rgb(214, 98, 61);"><img alt="bwe3" class="alignnone size-full wp-image-834" src="bwe3.png" style="margin: 0px auto; padding: 0px; border: 0px none; display: block;" width="292" height="27"></a></p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 10px; padding-bottom: 10px; clear: both; font-size: 14px; line-height: 33px; color: rgb(101, 100, 100); font-family: &quot;微软雅黑&quot;,&quot;微软雅黑&quot;;">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 当你在观察这些传输反馈数据包是什么样子的时候，有意思的是你会意识到其中有<a href="https://tools.ietf.org/html/draft-holmer-rmcat-transport-wide-cc-extensions-00" style="margin: 0px; padding: 0px; color: rgb(214, 98, 61);">Google建议的规范</a>，以及<a href="https://www.ietf.org/id/draft-dt-rmcat-feedback-message-01.txt" style="margin: 0px; padding: 0px; color: rgb(214, 98, 61);">官方标准化方案</a>，但是真正使用的是在<a href="https://chromium.googlesource.com/external/webrtc/+/master/webrtc/modules/rtp_rtcp/source/rtcp_packet/transport_feedback.cc" style="margin: 0px; padding: 0px; color: rgb(214, 98, 61);">源码之中的实际实现</a>。</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 10px; padding-bottom: 10px; clear: both; font-size: 14px; line-height: 33px; color: rgb(101, 100, 100); font-family: &quot;微软雅黑&quot;,&quot;微软雅黑&quot;;">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 这个RTCP反馈默认100ms发送一次，但是实际上是动态适应的，只会使用5%的可用带宽（最小值是50ms，最大值是250ms）。</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 10px; padding-bottom: 10px; clear: both; font-size: 14px; line-height: 33px; color: rgb(101, 100, 100); font-family: &quot;微软雅黑&quot;,&quot;微软雅黑&quot;;">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 为了将大小控制在最小，这种新的RTCP包的格式十分简洁，包括块内的分组包，以base+diff的形式存储数字，或者将粒度降低到0.25ms为间隔。我做了一个简单的测试，有了这些改进方案，其依旧会使用16Kbps来每50ms发送一次反馈数据包。</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 10px; padding-bottom: 10px; clear: both; font-size: 14px; line-height: 33px; color: rgb(101, 100, 100); font-family: &quot;微软雅黑&quot;,&quot;微软雅黑&quot;;">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://webrtc.org.cn/wp-content/uploads/2017/02/bwe4.png" style="margin: 0px; padding: 0px; color: rgb(214, 98, 61);"><img alt="bwe4" class="alignnone size-medium wp-image-835" src="bwe4-300x133.png" style="margin: 0px auto; padding: 0px; border: 0px none; display: block;" width="300" height="133"></a></p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 10px; padding-bottom: 10px; clear: both; font-size: 14px; line-height: 33px; color: rgb(101, 100, 100); font-family: &quot;微软雅黑&quot;,&quot;微软雅黑&quot;;">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 你可以在<a href="https://chromium.googlesource.com/external/webrtc/+/master/webrtc/modules/remote_bitrate_estimator/remote_estimator_proxy.cc" style="margin: 0px; padding: 0px; color: rgb(214, 98, 61);">remote_estimator_proxy.h</a>以及<a href="https://chromium.googlesource.com/external/webrtc/+/master/webrtc/modules/rtp_rtcp/source/rtcp_packet/transport_feedback.cc" style="margin: 0px; padding: 0px; color: rgb(214, 98, 61);">transport_feedback.cc</a>中查看相关实现。</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 10px; padding-bottom: 10px; clear: both; font-size: 14px; line-height: 33px; color: rgb(101, 100, 100); font-family: &quot;微软雅黑&quot;,&quot;微软雅黑&quot;;">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 10px; padding-bottom: 10px; clear: both; font-size: 14px; line-height: 33px; color: rgb(101, 100, 100); font-family: &quot;微软雅黑&quot;,&quot;微软雅黑&quot;;">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="margin: 0px; padding: 0px;">发送端带宽估计的好处是什么？</span><a href="https://groups.google.com/d/msg/discuss-webrtc/ZyKcu3E9XgA/hF0saddeLgAJ" style="margin: 0px; padding: 0px; color: rgb(214, 98, 61);">Google给出的解释</a>是，这样做的话，所有的决定逻辑都会在一个地方（发送端），而且这会让测试新算法变得更简单，因为你不需要同时取决于两个端点。说实话，由于浏览器的自动更新，我看不出来这点改变可以带来什么大的好处，但是其确实更加的整洁，即便会在带宽使用方面更贵一点。另一项好处是，发送端可以知道自己所发送的数据流是什么类型的，也可以在发送普通视频，而不是做例如屏幕广播这种事情的时候使用不同的算法。</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 10px; padding-bottom: 10px; clear: both; font-size: 14px; line-height: 33px; color: rgb(101, 100, 100); font-family: &quot;微软雅黑&quot;,&quot;微软雅黑&quot;;">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="margin: 0px; padding: 0px;">我们会受到实际影响吗？</span>如果你搭建了一个需要进行带宽估计的媒体服务器，在某种程度上你需要更新你的实现。好消息是Chrome还会支持旧机制（REMB）一段时间，至少会持续到Firefox支持它之后。但是REMB可能不会再有新的进展了，而且现在出现bug的可能性会更高，所以我认为推迟更新太久并不是一个好主意。</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 10px; padding-bottom: 10px; clear: both; font-size: 14px; line-height: 33px; color: rgb(101, 100, 100); font-family: &quot;微软雅黑&quot;,&quot;微软雅黑&quot;;">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="margin: 0px; padding: 0px;">发送端带宽估计真的就更好吗？</span>我做了一个快速的测试（<a href="https://jsfiddle.net/u5ux9pxo/" style="margin: 0px; padding: 0px; color: rgb(214, 98, 61);">这是测试页面，你可以尝试一种，或者通过改变布尔值来进行别的测试</a>），其中在Chrome中同时用了两种算法（老的REMB和新的传输反馈），其中新算法的表现要好的多，至少在连接开始阶段的上升部分要好的多。我不认为对于这种结果，除了Google现在全新投入在新算法中，而不管老算法，且所有的赶紧都只会发生在新算法中，这个原因以外还存在着什么技术上的解释。很显然在新算法中，头两秒内肯定是有什么特殊的方法来处理带宽估计，但是我也没有太深入的研究。</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 10px; padding-bottom: 10px; clear: both; font-size: 14px; line-height: 33px; color: rgb(101, 100, 100); font-family: &quot;微软雅黑&quot;,&quot;微软雅黑&quot;;">
+<a href="http://webrtc.org.cn/wp-content/uploads/2017/02/bwe5.png" style="margin: 0px; padding: 0px; color: rgb(214, 98, 61);"><img alt="bwe5" class="alignnone size-medium wp-image-836" src="bwe5-300x113.png" style="margin: 0px auto; padding: 0px; border: 0px none; display: block;" width="300" height="113"></a></p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 10px; padding-bottom: 10px; clear: both; font-size: 14px; line-height: 33px; color: rgb(101, 100, 100); font-family: &quot;微软雅黑&quot;,&quot;微软雅黑&quot;;">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 现在什么人在做这件事情，以及现况是什么？发送端带宽估计是Chrome55版本中默认使用的算法，但是其还在开发过程中，所以我们应该做好还有很多改变的预期。官方的标准化工作在<a href="https://datatracker.ietf.org/wg/rmcat/documents/" style="margin: 0px; padding: 0px; color: rgb(214, 98, 61);">RMCAT工作组</a>&nbsp;IETF中进行，但是现在Chrome中大多数的可用实现都是Google自己的版本，都是Google自己的在建算法和反馈协议的规范。</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 10px; padding-bottom: 10px; clear: both; font-size: 14px; line-height: 33px; color: rgb(101, 100, 100); font-family: &quot;微软雅黑&quot;,&quot;微软雅黑&quot;;">
+&nbsp;</p>
+<p style="margin-top: 0px; margin-bottom: 0px; padding-top: 10px; padding-bottom: 10px; clear: both; font-size: 14px; line-height: 33px; color: rgb(101, 100, 100); font-family: &quot;微软雅黑&quot;,&quot;微软雅黑&quot;;">
+*Chrome打算也在决定发送的音频比特率上使用带宽估计算法（<a href="https://bugs.chromium.org/p/webrtc/issues/detail?id=5079" style="margin: 0px; padding: 0px; color: rgb(214, 98, 61);">计划在58版本中加入</a>）。</p>
+            </div>
+                </div>
+				<div class="hide-article-box text-center csdn-tracking-statistics tracking-click" data-mod="popu_376">
+			<a class="btn btn-red-hollow" id="btn-readmore">阅读更多</a>
+		</div>
+        	</article>
+	
+		<div class="article-bar-bottom">
+								<div class="tags-box">
+			<span class="label">个人分类：</span>
+						<a class="tag-link" href="https://blog.csdn.net/fishmai/article/category/6294108" target="_top">音视频						</a>
+		</div>
+					</div>
+	
+	<!-- !empty($pre_next_article[0]) -->
+		</div>
+
+
+
+
+        <div class="edu-promotion"></div>
+        <a id="commentBox"></a>
+<div class="comment-box">
+	  	<div class="unlogin-box text-center">
+		想对作者说点什么？
+		<!-- $curl 当前地址 -->
+		<a href="https://passport.csdn.net/account/login?from=https://blog.csdn.net/fishmai/article/details/69915183#commentBox" class="btn btn-sm btn-red">我来说一句</a>
+	</div>
+			<div class="comment-list-container">
+		<a id="comments"></a>
+		<div class="comment-list-box">
+		</div>
+		<div id="commentPage" class="pagination-box d-none"></div>
+		<div class="opt-box text-center">
+			<button class="btn btn-sm btn-link-blue" id="btnMoreComment"></button>
+		</div>
+	</div>
+</div>        <div class="recommend-box">
+            		<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_614" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/u010643777/article/details/78702577" target="_top" strategy="BlogCommendFromBaidu_0">
+				BBR即时<em>带宽</em>的计算			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/u010643777/article/details/78702577" target="_top">
+				BBR算法中每收到一个ack，就计算一下即时<em>带宽</em>，论文中给出的计算公式为： 
+deliveryRate=(delivered-packet.delivered)/(now-packet.deliver...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/u010643777" title="u010643777" target="_blank">
+					<img src="3_u010643777.jpg" alt="u010643777" class="avatar-pic">
+					<span class="name">u010643777</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2017-12-03 18:25:34</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：327</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_614" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/webzjuyujun/article/details/51221197" target="_top" strategy="BlogCommendFromBaidu_1">
+				BP神经网络的网络<em>带宽</em>预测			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/webzjuyujun/article/details/51221197" target="_top">
+				网络流量预测的背景
+
+网络流量为指定时间内通过网络或网络端口的数据大小，各个网络节点都是有瓶颈的，当流量达到或超过节点的瓶颈时，网络服务已经收到了不同程度的影响。建立网络流量模型，通过模型预测将来...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/webzjuyujun" title="webzjuyujun" target="_blank">
+					<img src="3_webzjuyujun.jpg" alt="webzjuyujun" class="avatar-pic">
+					<span class="name">webzjuyujun</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2016-04-22 16:26:15</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：1398</span>
+			</p>
+		</div>
+	</div>
+								<div class="recommend-item-box recommend-ad-box" id="ad1"></div>
+				
+
+			
+					<div class="recommend-item-box recommend-download-box csdn-tracking-statistics clearfix" data-mod="popu_614" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<div class="content float-left">
+				<h4 class="text-truncate">
+					<a href="https://download.csdn.net/download/u014754907/7260743" target="_top" strategy="BlogCommendFromBaidu_2">
+						网络<em>带宽</em>预测算法（英文）					</a>
+				</h4>
+				<p>
+					<span class="data">2014年04月27日 </span>
+					<span class="size">197KB</span>
+					<span class="type">下载</span>
+				</p>
+			</div>
+			<div class="img-box float-right">
+				<a href="https://download.csdn.net/download/u014754907/7260743" target="_top" strategy="BlogCommendFromBaidu_2">
+					<img src="pdf.svg" alt="">
+				</a>
+			</div>
+		</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_614" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/bamboolsu/article/details/49313379" target="_top" strategy="BlogCommendFromBaidu_3">
+				<em>webrtc</em>中的<em>带宽</em>自适应算法			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/bamboolsu/article/details/49313379" target="_top">
+				<em>webrtc</em>中的<em>带宽</em>自适应算法分为两种：
+
+１，　发端<em>带宽</em>控制，　原理是由rtcp中的丢包统计来动态的增加或减少<em>带宽</em>，在减少<em>带宽</em>时使用TFRC算法来增加平滑度。
+
+２，　收端<em>带宽</em>估算，　原理是...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/bamboolsu" title="bamboolsu" target="_blank">
+					<img src="3_bamboolsu.jpg" alt="bamboolsu" class="avatar-pic">
+					<span class="name">bamboolsu</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2015-10-21 22:56:41</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：1724</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_614" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/u013160228/article/details/46392037" target="_top" strategy="BlogCommendFromBaidu_4">
+				<em>WebRTC</em>之<em>带宽</em>控制部分学习(1)   ------基本demo的介绍			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/u013160228/article/details/46392037" target="_top">
+				<em>WebRTC</em>的代码真是非常之大啊，下载以及编译了我好几天才搞完。。。。。
+可以看到<em>WebRTC</em>d代码分成了4个部分，目前为止只看了talk里的一些东西。
+&nbsp; &nbsp; &nbsp; 1、 talk中的项目文件大多数都...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/u013160228" title="u013160228" target="_blank">
+					<img src="3_u013160228.jpg" alt="u013160228" class="avatar-pic">
+					<span class="name">u013160228</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2015-06-06 22:27:41</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：4447</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_614" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/volvet/article/details/62237375" target="_top" strategy="BlogCommendFromBaidu_5">
+				<em>WebRTC</em>的<em>带宽</em>评估的新变化			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/volvet/article/details/62237375" target="_top">
+				<em>带宽</em>评估(BWE)也许是<em>WebRTC</em>的视频引擎中最关键的模块了,   它将决定视频通信中, 不引发网络拥塞时最多可以产生的视频数据量. 早期的<em>带宽</em>评估算法比较简陋, 大多是基于丢包来<em>估计</em>,    基本...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/volvet" title="volvet" target="_blank">
+					<img src="3_volvet.jpg" alt="volvet" class="avatar-pic">
+					<span class="name">volvet</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2017-03-15 21:38:39</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：2946</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box recommend-ad-box" id="a_d_feed_0"></div>
+			
+			<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_614" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/volvet/article/details/54577776" target="_top" strategy="BlogCommendFromBaidu_6">
+				<em>WebRTC</em> 中的<em>带宽</em>侦测			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/volvet/article/details/54577776" target="_top">
+				<em>WebRTC</em> 中的<em>带宽</em>侦测<em>WebRTC</em>的<em>带宽</em>利用率相当高,    在测试中, 绝大多数时间都可以在可用<em>带宽</em>的95%以上,  而且在高利用率的同时, 还能保持音视频的高质量,   其<em>带宽</em>侦测机制在其中扮...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/volvet" title="volvet" target="_blank">
+					<img src="3_volvet.jpg" alt="volvet" class="avatar-pic">
+					<span class="name">volvet</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2017-01-16 22:47:54</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：1927</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_614" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/kk1946n/article/details/79113016" target="_top" strategy="BlogCommendFromBaidu_8">
+				web服务器<em>带宽</em>的数据统计和估算			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/kk1946n/article/details/79113016" target="_top">
+				本人在实际工作中所见的一部分真实数据,供参考
+
+我所在的公司是一家提供全景服务为主要业务的公司,这个项目的主要特点是：web线上服务,有大量的小图片,大到什么程度,看下图 
+
+
+28G数据100万个文...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/kk1946n" title="kk1946n" target="_blank">
+					<img src="3_kk1946n.jpg" alt="kk1946n" class="avatar-pic">
+					<span class="name">kk1946n</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2018-01-20 11:27:00</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：385</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_614" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/vn9PLgZvnPs1522s82g/article/details/78960171" target="_top" strategy="BlogCommendFromBaidu_9">
+				展望2018音视频技术：AV1，AI，区块链，<em>WebRTC</em>			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/vn9PLgZvnPs1522s82g/article/details/78960171" target="_top">
+				编者按：音视频技术的历史可能要追溯到19世纪末——特斯拉与爱迪生的伟大时代。直到今天，他们的发明依然伴随我们生活的每时每刻。2018年音视频技术将有哪些突破？来自学霸君的资深架构师袁荣喜从编解码器、客...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/vn9PLgZvnPs1522s82g" title="vn9PLgZvnPs1522s82g" target="_blank">
+					<img src="3_vn9plgzvnps1522s82g.jpg" alt="vn9PLgZvnPs1522s82g" class="avatar-pic">
+					<span class="name">vn9PLgZvnPs1522s82g</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2018-01-03 00:00:00</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：1264</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_614" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/liuhongxiangm/article/details/53788218" target="_top" strategy="BlogCommendFromBaidu_10">
+				<em>webrtc</em>研究-remb协议分析			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/liuhongxiangm/article/details/53788218" target="_top">
+				分析入口 <em>webrtc</em>/ideo/vie_remb.ccvoid VieRemb::OnReceiveBitrateChanged(const std::vector&amp; ssrcs,
+        ...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/liuhongxiangm" title="liuhongxiangm" target="_blank">
+					<img src="3_liuhongxiangm.jpg" alt="liuhongxiangm" class="avatar-pic">
+					<span class="name">liuhongxiangm</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2016-12-21 17:46:54</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：736</span>
+			</p>
+		</div>
+	</div>
+			            <div class="recommend-loading-box">
+                <img src="feedloading.gif">
+            </div>
+            <div class="recommend-end-box">
+                <p class="text-center">没有更多推荐了，<a href="https://blog.csdn.net/" class="c-blue c-blue-hover c-blue-focus">返回首页</a></p>
+            </div>
+        </div>
+    </main>
+    <aside>
+		    <div id="asideProfile" class="aside-box">
+    <h3 class="aside-title">个人资料</h3>
+    <div class="profile-intro d-flex">
+        <div class="avatar-box d-flex justify-content-center flex-column">
+            <a href="https://blog.csdn.net/fishmai">
+                <img src="3_fishmai.jpg" class="avatar_pic">
+            </a>
+        </div>
+        <div class="user-info d-flex justify-content-center flex-column">
+            <p class="name csdn-tracking-statistics tracking-click" data-mod="popu_379">
+                <a href="https://blog.csdn.net/fishmai" target="_top" class="text-truncate" id="uid">fishmai</a>
+            </p>
+                    </div>
+                <div class="opt-box d-flex justify-content-center flex-column">
+            <span class="csdn-tracking-statistics tracking-click" data-mod="popu_379">
+                                <a class="btn btn-sm btn-red-hollow" href="https://passport.csdn.net/account/login?from=https://blog.csdn.net/fishmai/article/details/69915183" target="_self">关注</a>
+                            </span>
+            
+        </div>
+            </div>
+    <div class="data-info d-flex item-tiling">
+        <dl class="text-center" title="413">
+            <dt>原创</dt>
+            <dd><span class="count">413</span></dd>
+        </dl>
+        <dl class="text-center" title="170">
+            <dt>粉丝</dt>
+            <dd><span class="count" id="fan">170</span></dd>
+        </dl>
+        <dl class="text-center" title="69">
+            <dt>喜欢</dt>
+            <dd><span class="count">69</span></dd>
+        </dl>
+        <dl class="text-center" title="64">
+            <dt>评论</dt>
+            <dd><span class="count">64</span></dd>
+        </dl>
+    </div>
+    <div class="grade-box clearfix">
+        <dl>
+            <dt>等级：</dt>
+            <dd>
+                <a href="https://blog.csdn.net/home/help.html#level" title="6级,点击查看等级说明" target="_top">
+                    <svg class="icon icon-level" aria-hidden="true">
+                        <use xlink:href="#csdnc-bloglevel-6"></use>
+                    </svg>
+                </a>
+            </dd>
+        </dl>
+        <dl>
+            <dt>访问：</dt>
+            <dd title="904763">
+                90万+            </dd>
+        </dl>
+        <dl>
+            <dt>积分：</dt>
+            <dd title="9868">
+                9868            </dd>
+        </dl>
+        <dl title="2298">
+            <dt>排名：</dt>
+            <dd>2298</dd>
+        </dl>
+    </div>
+    </div>		    <div class="csdn-tracking-statistics mb8 box-shadow" data-pid="blog" data-mod="popu_4" style="height: 250px;">
+    <div class="aside-content text-center" id="cpro_u2734133">
+        <!-- 投放代码 -->
+        <div id="_bnhevg98hzk"><iframe scrolling="no" src="index_2.html" width="300" height="250" frameborder="0"></iframe><span id="btbxqykmue" style="display: none; margin-top: 0px;"></span></div>
+    </div>
+</div>
+		    <div id="asideNewArticle" class="aside-box">
+    <h3 class="aside-title">最新文章</h3>
+    <div class="aside-content">
+        <ul class="inf_list clearfix csdn-tracking-statistics tracking-click" data-mod="popu_382">
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/fishmai/article/details/79500480" target="_top">有关“为何选择Netty”的11个疑问及解答</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/fishmai/article/details/79499932" target="_top">etty-Mina深入学习与对比</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/fishmai/article/details/79173668" target="_top">单独编译使用WebRTC的音频处理模块</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/fishmai/article/details/79172496" target="_top">ffmpeg开发之旅(3)--AAC 文件解析及解码流程</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/fishmai/article/details/79170855" target="_top">FFmpeg学习1：视频解码</a>
+            </li>
+                    </ul>
+    </div>
+</div>
+		    		    <div id="asideCategory" class="aside-box flexible-box">
+    <h3 class="aside-title">个人分类</h3>
+    <div class="aside-content">
+        <ul>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6175046">
+                    linux基础配置                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6175047">
+                    qt                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6175048">
+                    生活立方                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6221995">
+                    android逆向                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6233401">
+                    ios                    <span class="count float-right">113篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6233402">
+                    server                    <span class="count float-right">15篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6290462">
+                    voip                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6290464">
+                    编译器                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6290465">
+                    编译器调试器                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6293433">
+                    机器学习                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6293438">
+                    大数据                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6294108">
+                    音视频                    <span class="count float-right">32篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6313164">
+                    android                    <span class="count float-right">110篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6318065">
+                    中间件                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6324190">
+                    产品经理                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6327829">
+                    代码生成自动化                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6345427">
+                    IOS逆向                    <span class="count float-right">8篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6366094">
+                    软件测试                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6385061">
+                    PC开发                    <span class="count float-right">20篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395862">
+                    C++学习                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395866">
+                    GUI框架                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395867">
+                    MFC                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395869">
+                    Flex                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395872">
+                    四柱预测学                    <span class="count float-right">8篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395874">
+                    情感生活                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395876">
+                    vs ide                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395877">
+                    数据库                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395878">
+                    经验教训                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395879">
+                    调试                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395880">
+                    web建站                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395881">
+                    软件工程                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395882">
+                    eclipse                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395883">
+                    软件工具使用                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395884">
+                    php                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395885">
+                    项目管理                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395886">
+                    工作流                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395887">
+                    软件生涯                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395888">
+                    高效学习                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395889">
+                    战略管理                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395890">
+                    软件调试                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395891">
+                    领导力                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395892">
+                    架构师                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395893">
+                    amr                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395894">
+                    chrome                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395895">
+                    架构                    <span class="count float-right">11篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395897">
+                    架构师考试                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395900">
+                    性能测试                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395902">
+                    scm                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395903">
+                    大数据处理                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395904">
+                    加密安全                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395907">
+                    网络架设                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395909">
+                    读书笔记                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395910">
+                    javascript                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395912">
+                    手机                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395913">
+                    开发环境搭建                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395914">
+                    性能                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395915">
+                    软件                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395917">
+                    android调试                    <span class="count float-right">13篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395918">
+                    时间管理                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395919">
+                    电商                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395920">
+                    生活                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395921">
+                    证券                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395922">
+                    理财                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395923">
+                    房贷                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6395925">
+                    android测试                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6411996">
+                    dephi                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6413366">
+                    深度学习                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6430995">
+                    文本编辑器                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6437436">
+                    游戏地图编辑器                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6443385">
+                    图像处理                    <span class="count float-right">9篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6535830">
+                    字体                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6555791">
+                    智能家居                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6602382">
+                    直播                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6603980">
+                    easydarwin                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6654667">
+                    opengl                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6667139">
+                    http server                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6707962">
+                    wifidog                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6752029">
+                    输入法                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6762211">
+                    C#                    <span class="count float-right">11篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6780772">
+                    vb                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6785507">
+                    ffmpeg                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6886853">
+                    xcode                    <span class="count float-right">25篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6894444">
+                    java                    <span class="count float-right">12篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6894460">
+                    jvm                    <span class="count float-right">11篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6899300">
+                    objc                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6915480">
+                    svn                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6918077">
+                    mac                    <span class="count float-right">17篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6922599">
+                    mach-o                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6924542">
+                    lldb                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6936714">
+                    消息推送                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6937292">
+                    工具效率                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6939564">
+                    llvm                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6945061">
+                    UI框架                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6946606">
+                    apple审核                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6948071">
+                    crash                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6948081">
+                    脚本编译                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6953159">
+                    gdb                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6953803">
+                    DTrace                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6955536">
+                    sqlite                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6956592">
+                    网络优化                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6956593">
+                    app                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6959152">
+                    启动                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6959157">
+                    swift                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6959365">
+                    架构-网络                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6963658">
+                    摄像头                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6971189">
+                    webrtc                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6975512">
+                    内存管理                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6975776">
+                    cpu                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6977055">
+                    基础库                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6979137">
+                    go                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6980191">
+                    cocos2d                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/6987048">
+                    动画库                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/7014975">
+                    网络                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/7040218">
+                    react native                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/7040219">
+                    开源库                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/7040832">
+                    android studio                    <span class="count float-right">10篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/7047458">
+                    linux                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/7051648">
+                    gradle                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/7052104">
+                    buck                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/7057493">
+                    android framework                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/7064249">
+                    sourcetree                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/7066980">
+                    多线程                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/7067023">
+                    sdk                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/7067024">
+                    jdk                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/7068703">
+                    推送                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/7072072">
+                    anr                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/7086636">
+                    存活率                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/7087192">
+                    git                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/7091152">
+                    hybrid                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/7113456">
+                    android源代码分析                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/7116882">
+                    安全                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/7123420">
+                    atlas                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/7224626">
+                    后台                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/7242295">
+                    运维                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/7252102">
+                    spark                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/7270653">
+                    elk                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/7272778">
+                    iphonex                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/7284356">
+                    redis                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/7284489">
+                    tcpip                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/7308774">
+                    分布式存储                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/7313477">
+                    代码review                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/fishmai/article/category/7355232">
+                    架构-领域驱动开发                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                    </ul>
+    </div>
+        <p class="text-center">
+        <a class="btn btn-link-blue flexible-btn" data-fbox="aside-archive">展开</a>
+    </p>
+    </div>
+		    <div id="asideArchive" class="aside-box flexible-box">
+    <h3 class="aside-title">归档</h3>
+    <div class="aside-content">
+        <ul class="archive-list">
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/fishmai/article/month/2018/03">
+                    2018年3月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/fishmai/article/month/2018/01">
+                    2018年1月                    <span class="count float-right">8篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/fishmai/article/month/2017/12">
+                    2017年12月                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/fishmai/article/month/2017/11">
+                    2017年11月                    <span class="count float-right">11篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/fishmai/article/month/2017/10">
+                    2017年10月                    <span class="count float-right">15篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/fishmai/article/month/2017/09">
+                    2017年9月                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/fishmai/article/month/2017/08">
+                    2017年8月                    <span class="count float-right">23篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/fishmai/article/month/2017/07">
+                    2017年7月                    <span class="count float-right">35篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/fishmai/article/month/2017/06">
+                    2017年6月                    <span class="count float-right">58篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/fishmai/article/month/2017/05">
+                    2017年5月                    <span class="count float-right">41篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/fishmai/article/month/2017/04">
+                    2017年4月                    <span class="count float-right">22篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/fishmai/article/month/2017/03">
+                    2017年3月                    <span class="count float-right">20篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/fishmai/article/month/2017/02">
+                    2017年2月                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/fishmai/article/month/2017/01">
+                    2017年1月                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/fishmai/article/month/2016/12">
+                    2016年12月                    <span class="count float-right">39篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/fishmai/article/month/2016/11">
+                    2016年11月                    <span class="count float-right">9篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/fishmai/article/month/2016/10">
+                    2016年10月                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/fishmai/article/month/2016/09">
+                    2016年9月                    <span class="count float-right">249篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/fishmai/article/month/2016/08">
+                    2016年8月                    <span class="count float-right">117篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/fishmai/article/month/2016/07">
+                    2016年7月                    <span class="count float-right">66篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/fishmai/article/month/2016/06">
+                    2016年6月                    <span class="count float-right">13篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/fishmai/article/month/2016/05">
+                    2016年5月                    <span class="count float-right">42篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/fishmai/article/month/2016/04">
+                    2016年4月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/fishmai/article/month/2016/02">
+                    2016年2月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/fishmai/article/month/2016/01">
+                    2016年1月                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/fishmai/article/month/2015/12">
+                    2015年12月                    <span class="count float-right">19篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/fishmai/article/month/2015/11">
+                    2015年11月                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/fishmai/article/month/2015/10">
+                    2015年10月                    <span class="count float-right">19篇</span>
+                </a>
+            </li>
+                    </ul>
+    </div>
+        <p class="text-center">
+        <a class="btn btn-link-blue flexible-btn" data-fbox="aside-archive">展开</a>
+    </p>
+    </div>
+		    <div id="asideHotArticle" class="aside-box">
+	<h3 class="aside-title">热门文章</h3>
+	<div class="aside-content">
+		<ul class="hotArticle-list csdn-tracking-statistics tracking-click" data-mod="popu_521">
+							<li>
+					<a href="https://blog.csdn.net/fishmai/article/details/52782332">[转载]各种安装包打包发布工具（安装制作工具）评测</a>
+					<p class="read">阅读量：<span>22209</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/fishmai/article/details/51699161">15个nosql数据库</a>
+					<p class="read">阅读量：<span>16588</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/fishmai/article/details/51817183">open-falcon监控系统简介</a>
+					<p class="read">阅读量：<span>16223</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/fishmai/article/details/52388840">Referer详解</a>
+					<p class="read">阅读量：<span>15885</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/fishmai/article/details/52170495">Android面试题【高级工程师版】</a>
+					<p class="read">阅读量：<span>15803</span></p>
+				</li>
+					</ul>
+	</div>
+</div>
+		    <div id="asideNewComments" class="aside-box">
+    <h3 class="aside-title">最新评论</h3>
+    <div class="aside-content">
+        <ul class="newcomment-list">
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/fishmai/article/details/53676194#comments">流媒体协议RTP、RTCP、H26...</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/feiniao007" class="user-name" target="_top">feiniao007</a>：东西很齐，就是感觉有几段描述是软件翻译的，不通顺啊。                </p>
+            </li>
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/fishmai/article/details/54179172#comments">凯聪网络摄像机SIP1201系列使...</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/weixin_42207360" class="user-name" target="_top">weixin_42207360</a>：我的摄像头不能用能帮下忙吗                </p>
+            </li>
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/fishmai/article/details/79080996#comments">云时代架构系列经典技术书籍</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/robertleepeak" class="user-name" target="_top">robertleepeak</a>：谢谢                </p>
+            </li>
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/fishmai/article/details/52224437#comments">项目经理面试题</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/huanggutang" class="user-name" target="_top">huanggutang</a>：这个确实很有用，面试的时候问到了一些，面试前看看还是有好处的。                </p>
+            </li>
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/fishmai/article/details/51550149#comments">音频格式DTS 和 AC3 和 A...</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/hzx505" class="user-name" target="_top">hzx505</a>：AAC 和 DTS 封装电影大小差别挺大的。
+The.Post.2017.1080p.BluRay...                </p>
+            </li>
+                    </ul>
+    </div>
+</div>
+		<div id="asideFooter">
+			
+		<div class="aside-box">
+						<div id="_z0tmkv7omi"><div style="padding-top: 0px;"><div id="iawpmy" style="padding: 0px;"><iframe scrolling="no" src="index_3.html" width="300" height="250" frameborder="0"></iframe><em id="uiylymzks" style="width: 0px; height: 0px;"></em></div></div></div>
+					</div>
+				<div class="aside-box">
+			<div class="persion_article">
+			</div>
+		</div>
+	</div>
+</aside>
+
+
+</div>
+<div class="mask-dark"></div>
+<div class="report-box">
+    <div class="pos-box">
+        <h2 class="title">不良信息举报</h2>
+        <a class="btn-close">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#csdnc-times"></use>
+            </svg>
+        </a>
+        <form id="frmReport" action="https://blog.csdn.net/fishmai/article/details/69915183">
+            <div class="form-box">
+                <div class="txt-row-box">
+                    <label class="title" id="reptTit">举报内容：</label>
+                    <p class="rpt-title text-truncate">WebRTC带宽估计</p>
+                </div>
+                <div class="txt-row-box">
+                    <label class="title">举报原因：</label>
+                    <div class="rdo-box">
+                        <label><input class="rdo-chk report-type" id="report_sex" name="report_type" value="1" type="radio">色情</label>
+                        <label><input class="rdo-chk report-type" id="report_Politics" name="report_type" value="2" type="radio">政治</label>
+                        <label><input class="rdo-chk report-type" id="report_copy" name="report_type" value="3" type="radio">抄袭</label>
+                        <label><input class="rdo-chk report-type" id="report_ad" name="report_type" value="4" type="radio">广告</label>
+                        <label><input class="rdo-chk report-type" id="report_want" name="report_type" value="5" type="radio">招聘</label>
+                        <label><input class="rdo-chk report-type" id="report_call" name="report_type" value="6" type="radio">骂人</label>
+                        <label><input class="rdo-chk report-type" id="report_other" name="report_type" value="7" type="radio">其他</label>
+                    </div>
+                </div>
+                <div class="txt-row-box" id="rptOriginalurl">
+                    <label class="title">原文地址：</label>
+                    <div class="txt-box">
+                        <input class="ipt" id="originalurl" name="originalurl" value="" type="text">
+                    </div>
+                </div>
+                <div class="txt-row-box">
+                    <label class="title">原因补充：</label>
+                    <div class="txt-box">
+                        <textarea class="ipt ipt-textarea" name="description" maxlength="30"></textarea>
+                        <p class="remark">最多只允许输入30个字</p>
+                    </div>
+                </div>
+            </div>
+            <div class="opt-box text-right">
+                <input class="btn btn-link-gray btn-close" value="取消" type="reset">
+                <input class="btn btn-red btn-submit" value="提交" type="submit">
+            </div>
+        </form>
+    </div>
+</div>
+<div class="pulllog-box" style="display: block;">
+	<div class="pulllog clearfix">
+		<span class="text float-left">加入CSDN，享受更精准的内容推荐，与500万程序员共同成长！</span>
+		<div class="pulllog-btn float-right clearfix">
+            <button class="pulllog-login float-left csdn-tracking-statistics tracking-click" data-mod="popu_557">
+                登录
+            </button>
+            <div class="pulllog-sigin float-left csdn-tracking-statistics tracking-click" data-mod="popu_558">
+                <a href="https://passport.csdn.net/account/mobileregister" target="_top">注册</a>
+            </div>
+            <button class="btn-close">
+                <svg class="icon" aria-hidden="true">
+                    <use xlink:href="#csdnc-times"></use>
+                </svg>
+            </button>
+		</div>
+	</div>
+</div>
+<div id="loginWrap" style="display: none;"></div>
+<div class="tool-box">
+	<ul class="meau-list">
+		<li>
+			<button class="btn-like " title="点赞">
+				<svg class="icon active" aria-hidden="true">
+					<use xlink:href="#csdnc-thumbsup-ok"></use>
+				</svg><svg class="icon no-active" aria-hidden="true">
+					<use xlink:href="#csdnc-thumbsup"></use>
+				</svg>
+				<p>1</p>
+			</button>
+		</li>
+		<li class="toc-container-box" id="liTocBox">
+			<button class="btn-toc" title="目录">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-contents"></use>
+				</svg><br>目录
+			</button>
+			<div class="toc-container">
+				<div class="pos-box">
+					<div class="icon-arrow"></div>
+					<div class="scroll-box">
+						<div class="toc-box"></div>
+					</div>
+				</div>
+				<div class="opt-box">
+					<button class="btn-opt prev nomore" title="向上">
+						<svg class="icon" aria-hidden="true">
+							<use xlink:href="#csdnc-chevronup"></use>
+						</svg>
+					</button>
+					<button class="btn-opt next">
+						<svg class="icon" aria-hidden="true">
+							<use xlink:href="#csdnc-chevrondown"></use>
+						</svg>
+					</button>
+				</div>
+			</div>
+		</li>
+		<li>
+			<button class="btn-bookmark" title="收藏">
+				<svg class="icon active" aria-hidden="true">
+					<use xlink:href="#csdnc-bookmark-ok"></use>
+				</svg><svg class="icon no-active" aria-hidden="true">
+					<use xlink:href="#csdnc-bookmark"></use>
+				</svg><br>收藏
+			</button>
+		</li>
+		<li>
+			<a class="btn-comments" title="评论" href="#commentBox">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-comments"></use>
+				</svg><br>评论
+			</a>
+		</li>
+				<li class="bdsharebuttonbox">
+			<a class="btn-comments bds_weixin" data-cmd="weixin" title="微信分享">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-wechat"></use>
+				</svg><br>微信
+			</a>
+		</li>
+		<li class="bdsharebuttonbox">
+			<a class="btn-comments bds_tsina" data-cmd="tsina" title="微博分享">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-weibo"></use>
+				</svg><br>微博
+			</a>
+		</li>
+		<li class="bdsharebuttonbox">
+			<a class="btn-comments bds_qzone" data-cmd="qzone" title="QQ分享">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-qq"></use>
+				</svg><br>QQ
+			</a>
+		</li>
+	</ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="box-box-default">
+    <a class="btn-remove">
+        关闭
+    </a>
+    <div id="_vh1vdrd3m" style="width: 100%;"><div style="text-align: left;"><div style="zoom:1;"><div style="text-align: left;"><iframe scrolling="no" src="index_4.html" width="160" height="600" frameborder="0"></iframe></div></div></div></div>
+</div>
+<div class="box-box-large">
+    <a class="btn-remove">
+        关闭
+    </a>
+    <div id="_72cm1le5k1m"><ins id="cwmpyno" style="width: 0px; height: 0px; margin-top: 0px;"></ins><iframe scrolling="no" src="index_5.html" width="250" height="250" frameborder="0"></iframe></div>
+</div>
+</body>
+</html>

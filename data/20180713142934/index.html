@@ -1,0 +1,922 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" dir="ltr">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    
+    <title>ATS+Nginx+FastDFS - Alex - ITeye博客</title>
+    <meta name="description" content="最近有个需求，需要用到图片服务器，对于这个需求，如果走公司统一内部集群，一点问题都没有，只可惜我们的服务必须部署到公有云，也就是说公司 ...">
+    <meta name="keywords" content="ATS, FastDFS, 图片服务器, CDN ATS+Nginx+FastDFS">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="search" type="application/opensearchdescription+xml" href="http://alexchan.iteye.com/open_search.xml" title="ITeye">
+    <link href="http://alexchan.iteye.com/rss" rel="alternate" title="Alex" type="application/rss+xml">
+    
+
+        
+    
+
+
+
+      
+  
+
+  
+
+
+    <!-- 请置于所有广告位代码之前 -->
+    
+    <link ref="canonical" href="http://alexchan.iteye.com/blog/2306110">
+    
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body><div id="BAIDU_DUP_fp_wrapper" style="position: absolute; left: -1px; bottom: -1px; z-index: 0; width: 0px; height: 0px; overflow: hidden; visibility: hidden; display: none;"><iframe id="BAIDU_DUP_fp_iframe" src="index_1.html" style="width: 0px; height: 0px; visibility: hidden; display: none;"></iframe></div>
+  
+  
+    <div id="header">
+	      <div id="blog_site_nav">
+  <a href="http://www.iteye.com/" class="homepage">首页</a>
+  <a href="http://www.iteye.com/news">资讯</a>
+  <a href="http://www.iteye.com/magazines">精华</a>
+  <a href="http://www.iteye.com/forums">论坛</a>
+  <a href="http://www.iteye.com/ask">问答</a>
+  <a href="http://www.iteye.com/blogs">博客</a>
+  <a href="http://www.iteye.com/blogs/subjects">专栏</a>
+  <a href="http://www.iteye.com/groups">群组</a>
+  <a href="#" onclick="return false;" id="msna"><u>更多</u> <small>▼</small></a>
+  <div class="quick_menu" style="display: none;">
+    <a target="_top" href="http://job.iteye.com/iteye">知识库</a>
+    <a href="http://www.iteye.com/search">搜索</a>
+  </div>
+</div>
+
+	      <div id="user_nav">
+
+      <a href="http://alexchan.iteye.com/login" class="welcome" title="登录">您还未登录 !</a>
+    <a href="http://alexchan.iteye.com/login">登录</a>
+    <!--<a href="/signup" class="nobg">注册</a>-->
+    <!--<a href="http://passport.csdn.net/account/mobileregister?from=http://www.iteye.com">注册</a>-->
+  </div>
+
+	    
+    </div>
+
+    <div id="page">
+        <div id="branding" class="clearfix" style="overflow: hidden; background: rgba(0, 0, 0, 0) none repeat scroll 0% 0%; padding: 0px 0px 2px;">
+          <!-- 广告位：PC端-iteye博客详情页顶部banner-960*90 -->
+          <div id="_2nxcm09lf4v"></div><div><iframe scrolling="no" src="index_4.html" width="960" height="90" frameborder="0"></iframe></div>
+        </div>
+      <div id="branding" class="clearfix">
+        <div id="blog_name">
+          <h1><a href="http://alexchan.iteye.com/">Alex</a></h1>
+        </div>
+        <div id="fd"></div>
+        <div id="blog_navbar">
+          <ul>
+            <li class="blog_navbar_for"><a href="http://alexchan.iteye.com/"><strong>博客</strong></a></li>
+            <li><a href="http://alexchan.iteye.com/weibo">微博</a></li>
+            <li><a href="http://alexchan.iteye.com/album">相册</a></li>
+            <li><a href="http://alexchan.iteye.com/link">收藏</a></li>
+            <li><a href="http://alexchan.iteye.com/blog/guest_book">留言</a></li>
+            <li><a href="http://alexchan.iteye.com/blog/profile">关于我</a></li>
+          </ul>
+    
+          <div class="search">
+            <form action="http://alexchan.iteye.com/blog/search" method="get">
+              <input class="search_text" id="query" name="query" style="margin-left: 10px; width: 110px;" value="" type="text">
+              <input class="submit_search" value="" type="submit">
+            </form>
+          </div> 
+          <div id="fd"></div>         
+        </div>
+      </div>
+      
+      <div id="content" class="clearfix">
+        <div id="main">
+          
+
+
+
+          
+
+
+<div class="h-entry" style="display: none;">
+  <a href="http://alexchan.iteye.com/" class="p-author" target="_top">簡單從泚銷夨</a>
+</div>
+
+
+<div class="blog_main">
+  
+  <div class="blog_title">
+    <h3>
+      <a href="http://alexchan.iteye.com/blog/2306110">ATS+Nginx+FastDFS</a>
+      <em class="actions">      </em>
+    </h3>
+    <ul class="blog_categories"><strong>博客分类：</strong> <li><a href="http://alexchan.iteye.com/category/359510">图片服务器</a></li> </ul>
+        <div class="news_tag"><a href="http://www.iteye.com/blogs/tag/ATS">ATS</a><a href="http://www.iteye.com/blogs/tag/FastDFS">FastDFS</a><a href="http://www.iteye.com/blogs/tag/%E5%9B%BE%E7%89%87%E6%9C%8D%E5%8A%A1%E5%99%A8">图片服务器</a><a href="http://www.iteye.com/blogs/tag/CDN">CDN</a>&nbsp;</div>
+  </div>
+
+  <div id="blog_content" class="blog_content">
+    最近有个需求，需要用到图片服务器，对于这个需求，如果走公司统一内部集群，一点问题都没有，只可惜我们的服务必须部署到公有云，也就是说公司的内部工具、服务，我们一般都用不了，如果购买公有云的服务和工具，那又需要提高成本，所以，所以，所以我们自己通过物理机搭建了自己的图片服务器。
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 技术选型：ATS+Nginx+FastDFS
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FastDFS作为图片存储，ATS作为CDN，整体架构如下：
+<br>
+<br><img src="15c0cf23-2dbf-3910-a533-c553e478b805.png">
+<br>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FastDFS架构(from 51CTO网)：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="wkiom1vnkebgghiraahaxdu64ye088.jpg">
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ATS（from oschina）
+<br><img src="25143749_pvbf.jpg" title="点击查看原始大小图片" class="magplus" width="700" height="417">
+<br>最后进行压测
+<br>一台物理机，内存：252G，硬盘：600G+ , cpu:64核 ， 网卡：千兆 双网卡，160kb+图片
+<br>网卡几乎打满，rt在500ms，线程500，ATS的负载还是很小，ATS本地90%以上在1ms之内返回，所以网卡成了最后的瓶颈点。
+<br>
+<br>
+<br>
+<br>
+<br>=============================================================== 
+<br>附一些资料：
+<br>AST 日志： /usr/local/var/log/trafficserver
+<br>AST 配置文件：/usr/local/etc/trafficserver
+<br>FstDFS配置文件：/etc/fdfs/
+<br> 
+<br>sudo /usr/bin/fdfs_test /etc/fdfs/client.conf upload&nbsp; ~/pic/3.pic.jpg 
+<br> 
+<br> 
+<br>http://sofar.blog.51cto.com/353572/1656160
+<br>http://blog.csdn.net/xifeijian/article/details/38567839/ FastDFS安装、配置、部署（一）－安装和部署
+<br>http://bbs.chinaunix.net/thread-1941456-1-1.html [FastDFS] FastDFS 配置文件详解
+<br>http://bbs.go-news.com/thread-54-1-1.html Trafficserver5.3 安装配置
+<br>http://twiki.corp.taobao.com/pub/SRE/OPS/CdnATStest/TS_%E5%8A%9F%E8%83%BD%E6%B5%8B%E8%AF%95%E4%B9%8BCache.pdf&nbsp; TS 功能测试之Cache
+<br>https://linux.cn/article-3215-1.html&nbsp; Linux终端下 dstat 监控工具
+<br>https://docs.trafficserver.apache.org/en/latest/admin-guide/monitoring/statistics/core/cache.en.html&nbsp; cache 监控
+<br> 
+<br> 
+<br>trafficserver-5.3.2.tar.bz2
+<br>tengine-1.5.2.tar.gz
+<br>libfastcommon-1.0.7.tar.gz
+<br>fastdfs-5.05.tar.gz
+<br>fastdfs-nginx-module_v1.16.tar.gz
+<br>======
+<br>监控：
+<br>sar -n DEV 2
+<br>dstat
+<br> 
+<br>./traffic_line -r proxy.node.cache_hit_ratio_avg_10s #查询当前缓存服务命中率
+<br>./traffic_line -r proxy.node.current_server_connections #到后端源的连接数
+<br>./traffic_line -r proxy.node.current_client_connections #前端用户到TServer的连接数
+<br>./traffic_line -r proxy.node.user_agent_xacts_per_second #平均每秒处理的并发数
+<br>./traffic_line -r proxy.node.client_throughput_out #当前TServer输出到前端的带宽流量（单位Mbps）
+<br> 
+<br>=======
+<br>Traffic Server 是一套快速、模块化的兼容 HTTP/1.1 的反向代理服务器，与 Nginx 和 Squid 类似，Apache软件基金会发布的最新版本是Apache Traffic Server v5.3.0。Traffic Server的处理能力非常强大，它可以在对内容传输要求非常严格的真实部署环境中处理TB级的数据。
+<br> 
+<br>官网：http://trafficserver.apache.org/
+<br>http://apache.fayea.com/trafficserver/trafficserver-5.3.0.tar.bz2
+<br> 
+<br>1、安装依赖
+<br># yum install tcl-devel pcre-devel
+<br> 
+<br>2、源码编译
+<br># cd /usr/local/src
+<br># wget http://apache.fayea.com/trafficserver/trafficserver-5.3.0.tar.bz2
+<br># tar jxf trafficserver-5.3.0.tar.bz2 
+<br># cd trafficserver-5.3.0
+<br># ./configure --prefix=/usr/local/trafficserver
+<br># make make install
+<br># cp rc/trafficserver /etc/init.d/# 开机启动
+<br># chmod 755 /etc/init.d/trafficserver &amp;amp;&amp;amp; chkconfig --add trafficserver &amp;amp;&amp;amp; chkconfig trafficserver on
+<br> 
+<br>3、配置
+<br>records.config 主配置文件 ,是 key-value 格式的配置文件，负责大部分全局的选项设置
+<br>storage.config 用于指定磁盘存储。
+<br>remap.config&nbsp;&nbsp; 定义映射规则，用于请求的重写（rewrite），反向代理即在此配置
+<br> 
+<br>storage.config举例
+<br>/data1/cache 256M
+<br>/data2/cache 256M
+<br>remap.config举例
+<br>map http://www.go-news.com http://192.168.4.56
+<br> 
+<br>records.config详解
+<br>#ts管理用户名
+<br>CONFIG proxy.config.admin.admin_user STRING admin
+<br>#配置文件副本数量
+<br>CONFIG proxy.config.admin.number_config_bak INT 3
+<br>#选项用于指定运行的traffic_server过程，也可以用来指定的配置文件和日志文件的所有权
+<br>CONFIG proxy.config.admin.user_id STRING nobody
+<br> 
+<br>##############################################################################
+<br># Thread configurations. Docs:
+<br>#&nbsp;&nbsp;&nbsp; https://docs.trafficserver.apach ... c-thread-autoconfig
+<br>##############################################################################
+<br># TS线程数量根据可用的CPU核数进行调整,默认值为1，即开启
+<br>CONFIG proxy.config.exec_thread.autoconfig INT 1
+<br># 上面配置开启，TS CPU核数与TS线程数量的默认比例,默认的缩放比例是1.5。CPU核数*缩放比例=TS线程数量
+<br>CONFIG proxy.config.exec_thread.autoconfig.scale FLOAT 1.5
+<br># 当proxy.config.exec_thread.autoconfig值为0时，设置TS线程数量
+<br>CONFIG proxy.config.exec_thread.limit INT 2
+<br># 设置SSL线程数量,默认是CPU数量和proxy.config.exec_thread.autoconfig.scale的乘积。
+<br># 你可以设置非零的值
+<br>CONFIG proxy.config.ssl.number.threads INT 0
+<br># 当启用时设置1，运行一个单独的线程来处理请求。如果禁用(0)，那么只有一个线程
+<br>CONFIG proxy.config.accept_threads INT 1
+<br># 配置任务的线程池，推荐2
+<br>CONFIG proxy.config.task_threads INT 2
+<br># 设置每块磁盘分配多少的I/O线程
+<br>CONFIG proxy.config.cache.threads_per_disk INT 8
+<br># https://docs.trafficserver.apach ... xec-thread-affinity
+<br>CONFIG proxy.config.exec_thread.affinity INT 0
+<br> 
+<br>##############################################################################
+<br># Specify server addresses and ports to bind for HTTP and HTTPS. Docs:
+<br>#&nbsp;&nbsp;&nbsp; https://docs.trafficserver.apach ... g-http-server-ports
+<br>##############################################################################
+<br># 配置端口，默认8080
+<br>CONFIG proxy.config.http.server_ports STRING 80
+<br> 
+<br>##############################################################################
+<br># Via: headers. Docs:
+<br>#&nbsp;&nbsp;&nbsp;&nbsp; https://docs.trafficserver.apach ... rt-response-via-str
+<br>##############################################################################
+<br># 配置via字段的处理方式，1 用正常的信息来更新via
+<br>CONFIG proxy.config.http.insert_request_via_str INT 1
+<br># 配置如何处理响应到客户端的via字段，0不做修改
+<br># 1&nbsp;&nbsp;&nbsp;&nbsp; 用正常的信息来更新via
+<br># 2&nbsp;&nbsp;&nbsp;&nbsp; 用详细信息来更新via
+<br># 3&nbsp;&nbsp;&nbsp;&nbsp; 用最详细信息来更新via
+<br>CONFIG proxy.config.http.insert_response_via_str INT 0
+<br> 
+<br>##############################################################################
+<br># Parent proxy configuration, in addition to these settings also see parent.config. Docs:
+<br>#&nbsp;&nbsp;&nbsp; https://docs.trafficserver.apach ... proxy-configuration
+<br>#&nbsp;&nbsp;&nbsp; https://docs.trafficserver.apach ... rent.config.en.html
+<br>##############################################################################
+<br># 设置关闭父节点
+<br>CONFIG proxy.config.http.parent_proxy_routing_enable INT 0
+<br># 当父节点不可用时，设置重试时间
+<br>CONFIG proxy.config.http.parent_proxy.retry_time INT 300
+<br># 父节点不可用时，设置超时时间
+<br>CONFIG proxy.config.http.parent_proxy.connect_attempts_timeout INT 30
+<br># 配置发送身份验证信息到父节点
+<br>CONFIG proxy.config.http.forward.proxy_auth_to_parent INT 0
+<br># 设置不可缓存请求使用旁路请求父节点
+<br>CONFIG proxy.config.http.uncacheable_requests_bypass_parent INT 1
+<br> 
+<br>##############################################################################
+<br># HTTP connection timeouts (secs). Docs:
+<br>#&nbsp;&nbsp;&nbsp; https://docs.trafficserver.apach ... connection-timeouts
+<br>##############################################################################
+<br># 指定事务结束后为保证后续进入请求而继续打开的连接时间
+<br>CONFIG proxy.config.http.keep_alive_no_activity_timeout_in INT 115
+<br># 指定事务结束后为保证后续出口请求而继续打开的连接时间
+<br>CONFIG proxy.config.http.keep_alive_no_activity_timeout_out INT 120
+<br># 指定如果发生网络拥塞时(入)，ts服务器多长时间后与客户端断开连接
+<br>CONFIG proxy.config.http.transaction_no_activity_timeout_in INT 30
+<br># 指定如果发生网络拥塞时(出)，ts服务器多长时间后与客户端断开连接
+<br>CONFIG proxy.config.http.transaction_no_activity_timeout_out INT 30
+<br># 和客户端保持连接的最长时间(入)
+<br>CONFIG proxy.config.http.transaction_active_timeout_in INT 900
+<br># 和客户端保持连接的最长时间(出)
+<br>CONFIG proxy.config.http.transaction_active_timeout_out INT 0
+<br># 关闭没有活动的连接的超时时间间隔
+<br>CONFIG proxy.config.http.accept_no_activity_timeout INT 120
+<br># 设置连接闲置超时设置
+<br>CONFIG proxy.config.net.default_inactivity_timeout INT 86400
+<br> 
+<br>##############################################################################
+<br># Origin server connect attempts. Docs:
+<br>#&nbsp;&nbsp;&nbsp; https://docs.trafficserver.apach ... er-connect-attempts
+<br>##############################################################################
+<br># 当源服务器没有响应时,ts最大重试次数
+<br>CONFIG proxy.config.http.connect_attempts_max_retries INT 6
+<br># 当源服务器不可用时,ts最大重试次数
+<br>CONFIG proxy.config.http.connect_attempts_max_retries_dead_server INT 3
+<br># 如果该服务器DNS有做轮循，则在轮循条目标记为down之前允许尝试连接失败的最大值
+<br>CONFIG proxy.config.http.connect_attempts_rr_retries INT 3
+<br># 源服务器连接的超时值
+<br>CONFIG proxy.config.http.connect_attempts_timeout INT 30
+<br># POST/PUT请求时，源服务器的超时值
+<br>CONFIG proxy.config.http.post_connect_attempts_timeout INT 1800
+<br># 指定多长时间后,TS标记源服务器为down掉
+<br>CONFIG proxy.config.http.down_server.cache_time INT 300
+<br># 在一个客户端因为源服务器相应太慢而放弃请求之后到TS标记该服务器不可达之间的秒数
+<br>CONFIG proxy.config.http.down_server.abort_threshold INT 10
+<br> 
+<br>##############################################################################
+<br># Negative response caching, for redirects and errors. Docs:
+<br>#&nbsp;&nbsp;&nbsp; https://docs.trafficserver.apach ... ve-response-caching
+<br>##############################################################################
+<br># 开启/禁用负响应缓存.当TS缓存到一个负响应时（如404),下一客户端请求相应URL时，直接由TS服务器返回负响应
+<br># 负响应包括：204 305 400 403 404 405 500 501 502 503 504
+<br>CONFIG proxy.config.http.negative_caching_enabled INT 0
+<br># 设置缓存负响应时间
+<br>CONFIG proxy.config.http.negative_caching_lifetime INT 1800
+<br> 
+<br>##############################################################################
+<br># Proxy users variables. Docs:
+<br>#&nbsp;&nbsp;&nbsp; https://docs.trafficserver.apach ... roxy-user-variables
+<br>##############################################################################
+<br># 启用之后将添加Client_IP头保留客户端的IP地址
+<br>CONFIG proxy.config.http.anonymize_insert_client_ip INT 1
+<br># 启用后，将添加客户端的IP地址添加到x-forward-for
+<br>CONFIG proxy.config.http.insert_squid_x_forwarded_for INT 1
+<br>##############################################################################
+<br># Security. Docs:
+<br>#&nbsp;&nbsp;&nbsp; https://docs.trafficserver.apache.org/records.config#security
+<br>##############################################################################
+<br># 启用/禁用HTTP PUSH的选项
+<br>CONFIG proxy.config.http.push_method_enabled INT 0
+<br> 
+<br>##############################################################################
+<br># Enable / disable HTTP caching. Useful for testing, but also as an
+<br># overridable (per remap) config
+<br>##############################################################################
+<br># 配置开启http缓存
+<br>CONFIG proxy.config.http.cache.http INT 1
+<br> 
+<br>##############################################################################
+<br># Cache control. Docs:
+<br>#&nbsp;&nbsp;&nbsp; https://docs.trafficserver.apach ... onfig#cache-control
+<br>#&nbsp;&nbsp;&nbsp; https://docs.trafficserver.apach ... ache.config.en.html
+<br>##############################################################################
+<br># 是否忽略所有客户端中的max-age头
+<br>CONFIG proxy.config.http.cache.ignore_client_cc_max_age INT 1
+<br># 启用后使所有的Accept-Encoding头部规范化
+<br>CONFIG proxy.config.http.normalize_ae_gzip INT 1
+<br># 缓存响应cookie的五个选项
+<br># 0 - 不缓存所有cookies响应
+<br># 1 - 只缓存content-type
+<br># 2 - 只缓存图片
+<br># 3 - 缓存所有的文字内容类型
+<br># 4 - 缓存为所有除了系统响应的没有”Set-Cookie”或者有”Cache-Control:public”的文字内容类型
+<br># ts缓存cookies操作
+<br>CONFIG proxy.config.http.cache.cache_responses_to_cookies INT 1
+<br># 缓存动态文件内容
+<br>CONFIG proxy.config.http.cache.cache_urls_that_look_dynamic INT 1
+<br># https://docs.trafficserver.apach ... -when-to-revalidate
+<br># 重新验证内容的5个选项
+<br># 0 - 默认.使用缓存指令或启发式缓存
+<br># 1 - 启发式缓存
+<br># 2 - 总是陈旧的(总是重新验证)
+<br># 3 - 不刷新
+<br># 4 - 如果请求含有条件则验证，否则使用默认值
+<br># 如果该请求中包含的If-Modified-since，然后TS的总是重新验证缓存的内容，
+<br># 并使用客户端的代理请求的If-Modified-Since的头。
+<br># TS重新验证缓存机制
+<br>CONFIG proxy.config.http.cache.when_to_revalidate INT 0
+<br># https://docs.trafficserver.apach ... he-required-headers
+<br># 配置TS缓存所需要的头部
+<br># 所需头部的三个选项:
+<br># 0 - 不需要使用头部来决定文档是否可以缓存
+<br># 1 - 需要Last-Modified:&amp;quot;, &amp;quot;Expires:&amp;quot;, 或者 &amp;quot;Cache-Control: max-age&amp;quot;
+<br># 2 - 明确缓存生命周期需要的,&amp;quot;Expires:&amp;quot; 或者&amp;quot;Cache-Control: max-age
+<br>CONFIG proxy.config.http.cache.required_headers INT 2
+<br> 
+<br>##############################################################################
+<br># Heuristic cache expiration. Docs:
+<br>#&nbsp;&nbsp;&nbsp; https://docs.trafficserver.apach ... euristic-expiration
+<br>##############################################################################
+<br># 一个在缓存中没有过期的并且没有过期时间的对象能被保持的最短时间
+<br>CONFIG proxy.config.http.cache.heuristic_min_lifetime INT 3600
+<br># 一个在缓存中没有过期的并且没有过期时间的对象能被保持的最长时间
+<br>CONFIG proxy.config.http.cache.heuristic_max_lifetime INT 86400
+<br># 设置这个变量来指定计算有效期的老化因子。TS存储该对象从其上次修改后这个百分比的时间。默认值为0.1
+<br>CONFIG proxy.config.http.cache.heuristic_lm_factor FLOAT 0.10
+<br> 
+<br>##############################################################################
+<br># Network. Docs:
+<br>#&nbsp;&nbsp;&nbsp; https://docs.trafficserver.apache.org/records.config#network
+<br>##############################################################################
+<br># 配置最大网络连接限制
+<br>CONFIG proxy.config.net.connections_throttle INT 30000
+<br> 
+<br>##############################################################################
+<br># RAM and disk cache configurations. Docs:
+<br>#&nbsp;&nbsp;&nbsp; https://docs.trafficserver.apache.org/records.config#ram-cache
+<br>#&nbsp;&nbsp;&nbsp; https://docs.trafficserver.apach ... rage.config.en.html
+<br>##############################################################################
+<br># 设置RAM缓存大小
+<br>CONFIG proxy.config.cache.ram_cache.size INT -1
+<br># 用于确定写入缓存的object大小，只有小于该数值的object才会缓存，默认为4M
+<br>CONFIG proxy.config.cache.ram_cache_cutoff INT 4194304
+<br># https://docs.trafficserver.apach ... imits-http-max-alts
+<br># 指定TS缓存一个对象不同版本的数目。默认为：5
+<br>CONFIG proxy.config.cache.limits.http.max_alts INT 5
+<br># https://docs.trafficserver.apach ... -cache-max-doc-size
+<br># 存储在缓存中最大的文件大小，设置为0即禁用最大尺寸检查
+<br>CONFIG proxy.config.cache.max_doc_size INT 0
+<br># 配置最小，平均对象大小.默认是8000
+<br>CONFIG proxy.config.cache.min_average_object_size INT 8000
+<br> 
+<br>##############################################################################
+<br># Logging Config. Docs:
+<br>#&nbsp;&nbsp;&nbsp; https://docs.trafficserver.apach ... gging-configuration
+<br>#&nbsp;&nbsp;&nbsp; https://docs.trafficserver.apach ... _xml.config.en.html
+<br>##############################################################################
+<br># 开启自定义log选项
+<br>CONFIG proxy.config.log.custom_logs_enabled INT 1
+<br># 可启用的日志记录：
+<br># 0：全部不记录
+<br># 1：只记录错误
+<br># 2：只记录事务日志
+<br># 3：全部记录（错误和事务）
+<br>CONFIG proxy.config.log.logging_enabled INT 0
+<br># 分配给日志目录的空间大小（MB）
+<br>CONFIG proxy.config.log.max_space_mb_for_logs INT 25000
+<br># 用来防止磁盘被日志打满
+<br>CONFIG proxy.config.log.max_space_mb_headroom INT 1000
+<br># 开启/禁用squid日志格式
+<br>CONFIG proxy.config.log.squid_log_enabled INT 0
+<br># squid日志格式类型。1=ASCII 2=binary
+<br>CONFIG proxy.config.log.squid_log_is_ascii INT 0
+<br># 日志文件的滚动
+<br># 0 - 禁用日志文件的滚动
+<br># 1 - 启用在特定的时间间隔对日志文件进行滚动.(需要配合proxy.config.log.rolling_interval_sec和proxy.config.log.rolling_offset_hr)
+<br># 2 - 启用在指定文件大小对日志文件进行滚动（需要配合proxy.config.log.rolling_size_mb ）
+<br># 3 - 启用在指定文件大小或特定的时间间隔对日志文件进行滚动（以先发生优先）
+<br># 4 - 启用在指定的时间间隔中日志文件达到特定大小进行滚动
+<br>CONFIG proxy.config.log.rolling_enabled INT 1
+<br># 日志滚动间隔秒数。最低为300秒，最大为86400，即1天
+<br>CONFIG proxy.config.log.rolling_interval_sec INT 86400
+<br># 当日志文件多大的时对日志进行滚动
+<br>CONFIG proxy.config.log.rolling_size_mb INT 10
+<br># 是否启用滚动文件的自动删除
+<br>CONFIG proxy.config.log.auto_delete_rolled_files INT 1
+<br> 
+<br>##############################################################################
+<br># These settings control remapping, and if the proxy allows (open) forward proxy or not. Docs:
+<br>#&nbsp;&nbsp;&nbsp; https://docs.trafficserver.apach ... fig#url-remap-rules
+<br>#&nbsp;&nbsp;&nbsp; https://docs.trafficserver.apach ... emap.config.en.html
+<br>##############################################################################
+<br># 设置为1时，如果你想TS服务请求从源服务器的映射的规则的remap.config文件中列出
+<br>CONFIG proxy.config.url_remap.remap_required INT 1
+<br># https://docs.trafficserver.apach ... p-pristine-host-hdr
+<br># 设置为1时，将保留在重映射请求的客户端主机头，默认是0
+<br>CONFIG proxy.config.url_remap.pristine_host_hdr INT 1
+<br># https://docs.trafficserver.apach ... onfig#reverse-proxy
+<br># 启用\关启http反向代理
+<br>CONFIG proxy.config.reverse_proxy.enabled INT 1
+<br> 
+<br>##############################################################################
+<br># SSL Termination. Docs:
+<br>#&nbsp;&nbsp;&nbsp; https://docs.trafficserver.apach ... lated-configuration
+<br>#&nbsp;&nbsp;&nbsp; https://docs.trafficserver.apach ... cert.config.en.html
+<br>##############################################################################
+<br># 配置TS验证原始服务器证书的CA
+<br>CONFIG proxy.config.ssl.client.verify.server INT 0
+<br># 指定CA签发文件的位置
+<br>CONFIG proxy.config.ssl.client.CA.cert.filename STRING NULL
+<br># 下面两个变更设置TS使用HTTPS连接使用的加密方法
+<br>CONFIG proxy.config.ssl.server.cipher_suite STRING ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA384:AES128-GCM-SHA256:AES256-GCM-SHA384:ECDHE-RSA-RC4-SHA:ECDHE-RSA-AES128-SHA:ECDHE-RSA-AES256-SHA:RC4-SHA:RC4-MD5:AES128-SHA:AES256-SHA:DES-CBC3-SHA!SRP:!DSS:!PSK:!aNULL:!eNULL:!SSLv2
+<br> 
+<br>##############################################################################
+<br># ICP Configuration. Docs:
+<br>#&nbsp;&nbsp;&nbsp; https://docs.trafficserver.apach ... g#icp-configuration
+<br>#&nbsp;&nbsp;&nbsp; https://docs.trafficserver.apach ... /icp.config.en.html
+<br>##############################################################################
+<br># ICP模式
+<br># 0 = ICP关闭
+<br># 1 ＝ 允许接收ICP查询
+<br># 2 ＝ 允许发送、接收ICP查询
+<br>CONFIG proxy.config.icp.enabled INT 0
+<br> 
+<br>##############################################################################
+<br># Debugging. Docs:
+<br>#&nbsp;&nbsp;&nbsp; https://docs.trafficserver.apach ... gging-configuration
+<br>##############################################################################
+<br># 可以使用正则表达式来匹配debug的主题名字，但是相应的性能也会受到一定影响
+<br>CONFIG proxy.config.diags.debug.enabled INT 0
+<br># 匹配http dns字符
+<br>CONFIG proxy.config.diags.debug.tags STRING http.*|dns.*
+<br># ToDo: Undocumented
+<br># 跟踪内存泄露的利器，但是需要使用ink分配器
+<br>CONFIG proxy.config.dump_mem_info_frequency INT 0
+<br># 记录慢日志的阈值.当请求大于多少毫秒时会被记录至慢日志，当该参数值大于0时即启用
+<br>CONFIG proxy.config.http.slow.log.threshold INT 0
+<br> 
+<br>##############################################################################
+<br># Cluster Subsystem. Docs:
+<br>#&nbsp;&nbsp;&nbsp; https://docs.trafficserver.apache.org/records.config#cluster
+<br>##############################################################################
+<br># 集群类型需要重启才能生效
+<br># 1=全集群模式
+<br># 2=管理模式
+<br># 3=非集群模式
+<br>LOCAL proxy.local.cluster.type INT 3
+<br># 设置集群模式的以太网口
+<br>CONFIG proxy.config.cluster.ethernet_interface STRING lo
+<br># 设置集群端口
+<br>CONFIG proxy.config.cluster.cluster_port INT 8086
+<br># 配置可靠的服务端口.可靠端口用于发送配置信息在集群节点间,所有的集群节点间必须使用相同的可靠服务端口
+<br>CONFIG proxy.config.cluster.rsport INT 8088
+<br># 指定组播端口。组播端口是用于节点识别。在集群中所有节点必须使用相同的组播端口
+<br>CONFIG proxy.config.cluster.mcport INT 8089
+<br># 指定一个组播地址
+<br>CONFIG proxy.config.cluster.mc_group_addr STRING 224.0.1.37
+<br> 
+<br>4、清缓存配置
+<br>编辑需增加的IP在配置文件
+<br>ip_allow.config
+<br>src_ip=127.0.0.1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; action=ip_allow method=ALL
+<br> 
+<br>清除单个url
+<br>curl -X PURGE -v http://www.go-news.com/ -x 127.0.0.1:80
+<br>清除所有缓存
+<br>停止server
+<br>/usr/local/trafficserver/bin/traffic_server -Cclear
+<br>启动server
+<br> 
+<br>5、常用命令
+<br>#查询当前缓存服务命中率
+<br>/usr/local/trafficserver/bin/traffic_line -r proxy.node.cache_hit_ratio_avg_10s
+<br>#到后端源的连接数
+<br>/usr/local/trafficserver/bin/traffic_line -r proxy.node.current_server_connections
+<br>#前端用户到TServer的连接数
+<br>/usr/local/trafficserver/bin/traffic_line -r proxy.node.current_client_connections
+<br>#平均每秒处理的并发数
+<br>/usr/local/trafficserver/bin/traffic_line -r proxy.node.user_agent_xacts_per_second
+<br>#当前TServer输出到前端的带宽流量（单位Mbps）
+<br>/usr/local/trafficserver/bin/traffic_line -r proxy.node.client_throughput_out
+<br>#查看配置的值
+<br>/usr/local/trafficserver/bin/traffic_line -r 变量名 
+<br>#修改配置
+<br>/usr/local/trafficserver/bin/traffic_line -s 变量名 -v 变量值
+<br>#重新读取配置文件
+<br>/usr/local/trafficserver/bin/traffic_line -x 
+<br>#在不重启服务下，使配置生效
+<br>/usr/local/trafficserver/bin/traffic_line -L
+<br> 
+  </div>
+
+  
+  <div class="attachments">
+    
+      
+        <ul style="display: none;">
+          <li><a href="http://dl2.iteye.com/upload/attachment/0118/1466/15c0cf23-2dbf-3910-a533-c553e478b805.png" target="_top"><img src="15c0cf23-2dbf-3910-a533-c553e478b805-thumb.png" class="magplus" title="点击查看原始大小图片"></a></li>
+          
+          <li>大小: 39.8 KB</li>
+        </ul>
+      
+    
+    
+      <ul>
+        <li><a href="http://alexchan.iteye.com/blog/div.attachments%20ul">查看图片附件</a></li>
+      </ul>
+    
+  </div>
+
+
+  <div>
+    <!-- 广告位：PC端-iteye博客详情页底部banner2-728*90 -->
+    <div id="_yyz85gwfg69"></div><div id="_xoesr0e4a0a"><span style="width: 0px; height: 0px;"></span><iframe scrolling="no" src="index_7.html" width="728" height="90" frameborder="0"></iframe></div>
+  </div>
+
+
+
+  <div id="bottoms" class="clearfix">
+    
+    <div id="share_weibo">分享到：
+      <a data-type="sina" href="javascript:;" title="分享到新浪微博"><img src="sina.jpg"></a>
+      <a data-type="qq" href="javascript:;" title="分享到腾讯微博"><img src="tec.jpg"></a>
+    </div>
+  </div>
+
+  <div class="blog_nav">
+    <div class="pre_next">
+      <a href="http://alexchan.iteye.com/blog/2306117" class="next" title="数据工程师的必备技能">数据工程师的必备技能</a>
+      |
+      <a href="http://alexchan.iteye.com/blog/2301071" class="pre" title="MAC设置$JAVA_HOME">MAC设置$JAVA_HOME</a>
+    </div>
+  </div>
+  <div class="blog_bottom">
+    <ul>
+      <li>2016-06-20 14:40</li>
+      <li>浏览 1600</li>
+      <li><a href="#comments">评论(0)</a></li>
+      
+      
+      <li>分类:<a href="http://www.iteye.com/blogs/category/architecture">企业架构</a></li>      
+      <li class="last"><a href="http://www.iteye.com/wiki/blog/2306110" target="_top" class="more">查看更多</a></li>
+    </ul>    
+  </div>
+    
+  <div class="blog_comment">
+    <h5>评论</h5>
+    <a id="comments" name="comments"></a>
+    
+    
+    
+  </div>
+
+  <div class="blog_comment">
+    <h5>发表评论</h5>
+            <p style="text-align: center; margin-top: 30px; margin-bottom: 0px;"><a href="http://alexchan.iteye.com/login" style="background-color: white;"> <img src="login_icon.png" style="vertical-align: middle; margin-right: 10px;"></a><a href="http://alexchan.iteye.com/login">  您还没有登录,请您登录后再发表评论 </a></p>
+      </div>
+
+  
+      
+<div class="boutique-curr-box blog_comment">
+	  <div class="boutique-curr clearfix" id="album_detail_wrap">
+	    <h5 class="h3titles">相关资源推荐</h5>
+			<ul style="margin-top: 15px;" class="clearfix">
+				
+						<li style="width: 50%; float: left; margin: 0px; line-height: 25px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+							<a href="https://blog.csdn.net/joeyon/article/details/46573281" target="_top" title="nginx ats squid varnish使用场景对比介绍">nginx ats squid varnish使用场景对比介绍</a>
+						</li>
+				
+						<li style="width: 50%; float: left; margin: 0px; line-height: 25px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+							<a href="https://blog.csdn.net/charleslei/article/details/50879908" target="_top" title="CDN缓存服务器现状,squid、nginx、trafficserver、ATS性能测试">CDN缓存服务器现状,squid、nginx、trafficserver、ATS性能测试</a>
+						</li>
+				
+						<li style="width: 50%; float: left; margin: 0px; line-height: 25px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+							<a href="https://blog.csdn.net/u013091013/article/details/53643866" target="_top" title="nginx＋apache架构配置https适应ATS">nginx＋apache架构配置https适应ATS</a>
+						</li>
+				
+						<li style="width: 50%; float: left; margin: 0px; line-height: 25px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+							<a href="https://blog.csdn.net/sfdst/article/details/72885148" target="_top" title="解决nginx https下 ATS检测未通过 的思路">解决nginx https下 ATS检测未通过 的思路</a>
+						</li>
+				
+						<li style="width: 50%; float: left; margin: 0px; line-height: 25px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+							<a href="https://blog.csdn.net/wqh8522/article/details/78948879" target="_top" title="Nginx与FastDFS简单整合">Nginx与FastDFS简单整合</a>
+						</li>
+				
+						<li style="width: 50%; float: left; margin: 0px; line-height: 25px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+							<a href="https://blog.csdn.net/u014800380/article/details/73744146" target="_top" title="FastDFS与Nginx的搭建及遇到的问题">FastDFS与Nginx的搭建及遇到的问题</a>
+						</li>
+				
+						<li style="width: 50%; float: left; margin: 0px; line-height: 25px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+							<a href="https://blog.csdn.net/refuil/article/details/51512493" target="_top" title="FastDFS + Nginx 多服务器完整配置与反向代理缓存等">FastDFS + Nginx 多服务器完整配置与反向代理缓存等</a>
+						</li>
+				
+						<li style="width: 50%; float: left; margin: 0px; line-height: 25px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+							<a href="https://blog.csdn.net/CleverCode/article/details/52276169" target="_top" title="fastdfs分布式架构 -- nginx扩展模块使用">fastdfs分布式架构 -- nginx扩展模块使用</a>
+						</li>
+				
+						<li style="width: 50%; float: left; margin: 0px; line-height: 25px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+							<a href="https://download.csdn.net/download/weixin_38898423/10499756" target="_top" title="FastDFS和Linux下安装使用FastDFS">FastDFS和Linux下安装使用FastDFS</a>
+						</li>
+				
+						<li style="width: 50%; float: left; margin: 0px; line-height: 25px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+							<a href="https://blog.csdn.net/u013380694/article/details/78627982" target="_top" title="nginx缩略图image_filter配置整合fastdfs">nginx缩略图image_filter配置整合fastdfs</a>
+						</li>
+				
+						<li style="width: 50%; float: left; margin: 0px; line-height: 25px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+							<a href="https://blog.csdn.net/Maria_Huang/article/details/53557674" target="_top" title="Nginx与FastDFS整合时,问题汇总">Nginx与FastDFS整合时,问题汇总</a>
+						</li>
+				
+						<li style="width: 50%; float: left; margin: 0px; line-height: 25px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+							<a href="https://download.csdn.net/download/zhao_lei2015/9960788" target="_top" title="linux 下 Fastdfs+nginx+java 解决方案（含Fastdfs使用文档+Fastdfs安装说明）">linux 下 Fastdfs+nginx+java 解决方案（含Fastdfs使用文档+Fastdfs安装说明）</a>
+						</li>
+				
+						<li style="width: 50%; float: left; margin: 0px; line-height: 25px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+							<a href="https://blog.csdn.net/chen3888015/article/details/78022035" target="_top" title="fastdfs  nginx 搭建分布式文件系统(单机模式)">fastdfs  nginx 搭建分布式文件系统(单机模式)</a>
+						</li>
+				
+						<li style="width: 50%; float: left; margin: 0px; line-height: 25px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+							<a href="https://blog.csdn.net/u011881908/article/details/48165509" target="_top" title="搭建ATS反向代理服务器压力测试环境">搭建ATS反向代理服务器压力测试环境</a>
+						</li>
+				
+						<li style="width: 50%; float: left; margin: 0px; line-height: 25px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+							<a href="https://blog.csdn.net/u012883078/article/details/79552976" target="_top" title="FastDFS整合Nginx详细安装步骤">FastDFS整合Nginx详细安装步骤</a>
+						</li>
+				
+						<li style="width: 50%; float: left; margin: 0px; line-height: 25px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+							<a href="https://blog.csdn.net/kuangfengbuyi/article/details/72961703" target="_top" title="fastdfs的安装与使用，配置nginx可直接用http访问">fastdfs的安装与使用，配置nginx可直接用http访问</a>
+						</li>
+				
+						<li style="width: 50%; float: left; margin: 0px; line-height: 25px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+							<a href="https://blog.csdn.net/a609733301/article/details/66975626" target="_top" title="Centos 7+FastDFS与Nginx的整合教程">Centos 7+FastDFS与Nginx的整合教程</a>
+						</li>
+				
+						<li style="width: 50%; float: left; margin: 0px; line-height: 25px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+							<a href="https://blog.csdn.net/ForeverSunshine/article/details/51734362" target="_top" title="FastDFS安装与nginx反向代理配置">FastDFS安装与nginx反向代理配置</a>
+						</li>
+				
+						<li style="width: 50%; float: left; margin: 0px; line-height: 25px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+							<a href="https://blog.csdn.net/boonya/article/details/54604952" target="_top" title="FastDFS NGINX集成与图片防盗">FastDFS NGINX集成与图片防盗</a>
+						</li>
+				
+						<li style="width: 50%; float: left; margin: 0px; line-height: 25px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+							<a href="https://blog.csdn.net/zxl315/article/details/53537628" target="_top" title="FastDFS+Nginx安装与配置">FastDFS+Nginx安装与配置</a>
+						</li>
+				
+			</ul>
+	  </div>
+</div>
+
+    
+
+</div>
+
+
+
+
+
+
+
+        </div>
+
+        <div id="local">
+          <div class="local_top"></div>
+          <div id="blog_owner">
+  <div id="blog_owner_logo"><a href="http://alexchan.iteye.com/"><img alt="簡單從泚銷夨的博客" class="logo" src="e14d3520-1bab-38ce-8c32-76ae551d0c8c.jpg" title="簡單從泚銷夨的博客: Alex" width=""></a></div>
+  <div id="blog_owner_name">簡單從泚銷夨</div>
+</div>
+
+          <div id="blog_actions">
+            <ul>
+              <li>浏览: 55457 次</li>
+              <li>性别: <img alt="Icon_minigender_1" src="icon_minigender_1.gif" title="男"></li>
+              <li>来自: 文一西路969号</li>
+              <li><img src="offline.gif"></li>
+              
+            </ul>
+          </div>
+          <div id="user_visits" class="clearfix">
+            <h5>最近访客 <span style="font-weight: normal; font-size: 12px; padding-left: 30px;"><a href="http://alexchan.iteye.com/blog/user_visits">更多访客&gt;&gt;</a></span></h5>
+            
+              <div class="user_visit">
+                <div class="logo"><a href="http://xulang110.iteye.com/" target="_top"><img alt="xulang的博客" class="logo" src="fba5a583-8d49-30a9-8fbe-fd8b81990dbb-thumb.jpg" title="xulang的博客: " width="48px"></a></div>
+                <div class="left"><a href="http://xulang110.iteye.com/" target="_top" title="xulang">xulang</a></div>
+              </div>
+            
+              <div class="user_visit">
+                <div class="logo"><a href="http://system-admin.iteye.com/" target="_top"><img alt="System_admin的博客" class="logo" src="user-logo-thumb.gif" title="System_admin的博客: " width="48px"></a></div>
+                <div class="left"><a href="http://system-admin.iteye.com/" target="_top" title="System_admin">System_admin</a></div>
+              </div>
+            
+              <div class="user_visit">
+                <div class="logo"><a href="http://nuptaxin201610092254.iteye.com/" target="_top"><img alt="任正信的博客" class="logo" src="user-logo-thumb.gif" title="任正信的博客: " width="48px"></a></div>
+                <div class="left"><a href="http://nuptaxin201610092254.iteye.com/" target="_top" title="任正信">任正信</a></div>
+              </div>
+            
+              <div class="user_visit">
+                <div class="logo"><a href="http://806989638.iteye.com/" target="_top"><img alt="光影流年的博客" class="logo" src="user-logo-thumb.gif" title="光影流年的博客: " width="48px"></a></div>
+                <div class="left"><a href="http://806989638.iteye.com/" target="_top" title="光影流年">光影流年</a></div>
+              </div>
+            
+          </div>
+
+          
+
+                      <div id="blog_menu">
+              <h5>文章分类</h5>
+              <ul>
+                <li><a href="http://alexchan.iteye.com/">全部博客 (25)</a></li>
+                
+                  <li><a href="http://alexchan.iteye.com/category/87689">java (13)</a></li>
+                
+                  <li><a href="http://alexchan.iteye.com/category/161323">数据库 (2)</a></li>
+                
+                  <li><a href="http://alexchan.iteye.com/category/262505">web (2)</a></li>
+                
+                  <li><a href="http://alexchan.iteye.com/category/262506">app (0)</a></li>
+                
+                  <li><a href="http://alexchan.iteye.com/category/277014">移动互联网 (1)</a></li>
+                
+                  <li><a href="http://alexchan.iteye.com/category/281781">php (1)</a></li>
+                
+                  <li><a href="http://alexchan.iteye.com/category/281819">PhpStorm (1)</a></li>
+                
+                  <li><a href="http://alexchan.iteye.com/category/290112">多线程 (0)</a></li>
+                
+                  <li><a href="http://alexchan.iteye.com/category/300422">心得 (1)</a></li>
+                
+                  <li><a href="http://alexchan.iteye.com/category/301581">linux (1)</a></li>
+                
+                  <li><a href="http://alexchan.iteye.com/category/308279">开发工具 (2)</a></li>
+                
+                  <li><a href="http://alexchan.iteye.com/category/358442">maven (1)</a></li>
+                
+                  <li><a href="http://alexchan.iteye.com/category/359510">图片服务器 (1)</a></li>
+                
+                  <li><a href="http://alexchan.iteye.com/category/359511">大数据 (1)</a></li>
+                
+              </ul>
+            </div>
+            <div id="month_blogs">
+              <h5>社区版块</h5>
+              <ul>
+                <li><a href="http://alexchan.iteye.com/blog/news">我的资讯</a> (0)</li>
+                <li>
+                  <a href="http://alexchan.iteye.com/blog/post">我的论坛</a> (23)
+                </li>
+                <li><a href="http://alexchan.iteye.com/blog/answered_problems">我的问答</a> (0)</li>
+              </ul>
+            </div>
+            <div id="month_blogs">
+              <h5>存档分类</h5>
+              <ul>
+                
+                  <li><a href="http://alexchan.iteye.com/blog/monthblog/2016-06">2016-06</a> (2)</li>
+                
+                  <li><a href="http://alexchan.iteye.com/blog/monthblog/2016-05">2016-05</a> (1)</li>
+                
+                  <li><a href="http://alexchan.iteye.com/blog/monthblog/2014-11">2014-11</a> (1)</li>
+                
+                <li><a href="http://alexchan.iteye.com/blog/monthblog_more">更多存档...</a></li>
+              </ul>
+            </div>
+            
+            
+
+            <div id="guest_books">
+              <h5>最新评论</h5>
+              <ul>
+                
+                <li>
+                  <a href="http://weituotian.iteye.com/" target="_top" title="weituotian">weituotian</a>： 
+                  什么鬼？看不懂<br>
+                  <a href="http://alexchan.iteye.com/blog/1884570#bc2390690">PhpStorm+Xampp+Xdebug环境搭建</a>
+                </li>
+                
+                <li>
+                  <a href="http://alexchan.iteye.com/" target="_top" title="簡單從泚銷夨">簡單從泚銷夨</a>： 
+                  houyujiangjun 写道簡單從泚銷夨 写道houyuj ...<br>
+                  <a href="http://alexchan.iteye.com/blog/1859603#bc2310070">web+native客户端静态资源内置与动态更新</a>
+                </li>
+                
+                <li>
+                  <a href="http://houyujiangjun.iteye.com/" target="_top" title="houyujiangjun">houyujiangjun</a>： 
+                  簡單從泚銷夨 写道houyuj ...<br>
+                  <a href="http://alexchan.iteye.com/blog/1859603#bc2310053">web+native客户端静态资源内置与动态更新</a>
+                </li>
+                
+                <li>
+                  <a href="http://alexchan.iteye.com/" target="_top" title="簡單從泚銷夨">簡單從泚銷夨</a>： 
+                  houyujiangjun 写道一年前已经做过，这个问题其实不 ...<br>
+                  <a href="http://alexchan.iteye.com/blog/1859603#bc2310049">web+native客户端静态资源内置与动态更新</a>
+                </li>
+                
+                <li>
+                  <a href="http://houyujiangjun.iteye.com/" target="_top" title="houyujiangjun">houyujiangjun</a>： 
+                  一年前已经做过，这个问题其实不用这样考虑，建议楼主思考缓存的本 ...<br>
+                  <a href="http://alexchan.iteye.com/blog/1859603#bc2310047">web+native客户端静态资源内置与动态更新</a>
+                </li>
+                
+              </ul>
+            </div>
+
+            <div class="local_bottom"></div>
+          
+        </div>
+
+        <div id="nav_show_top_stop" style="height: 500px; z-index: 1000; margin-top: 10px; float: left; clear: left;">
+          <div>
+            <!-- 广告位：PC端-iteye博客详情页左侧Button1-200*200 -->
+            <div id="_vsllftbft0k"></div><div id="_kwk5wt29im8"><div><div><div style="display: none;"></div><iframe scrolling="no" src="index_10.html" width="200" height="200" frameborder="0"></iframe></div></div></div>
+          </div>
+          <div>
+            <!-- 广告位：PC端-iteye博客详情页左侧Button2-200*200 -->
+            <div id="_36z60vdp9bw"></div><div id="_v8idzqgv61"><iframe scrolling="no" src="index_11.html" width="200" height="200" frameborder="0"></iframe></div>
+          </div>
+        </div>
+        
+      </div>
+            
+  
+      <div id="footer" class="clearfix">
+        <div id="copyright">
+          <hr>
+          声明：ITeye文章版权属于作者，受法律保护。没有作者书面许可不得转载。若作者同意转载，必须以超链接形式标明文章原始出处和作者。<br>
+          © 2003-2018 ITeye.com.   All rights reserved.  [ 京ICP证110151号  京公网安备110105010620 ]
+        </div>
+        <div id="ad_pop">
+          <div class="J_adv" data-view="true" data-mod="ad_popu_64" data-mtp="62" data-order="21" data-con="ad_content_2070">
+            
+            <div id="layerd" style="position: fixed; bottom: 0px; right: 0px; line-height: 0px; z-index: 1000; width: 300px; height: 278px;">
+              <div onclick="jQuery('#ad_abc').hide();jQuery('.J_close').hide();" class="J_close layer_close" style="display: block; background-color: rgb(239, 239, 239); padding: 0px; color: rgb(51, 51, 51); font: 12px/24px Helvetica,Tahoma,Arial,sans-serif; text-align: right;">
+                关闭
+              </div>
+              <div id="ad_abc">
+                <!-- 广告位：PC端-iteye博客详情右侧弹窗-300*250 -->
+                <div id="_pzr9juc0jx"></div><div id="_cw1kljt87ar"><div style="padding-bottom: 0px;"><div style="margin-right: 0px;"><div style="margin-top: 0px;"><iframe scrolling="no" src="index_12.html" width="300" height="250" frameborder="0"></iframe><abbr class="ypuxxylhbry" style="width: 0px; height: 0px;"></abbr></div></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <img src="untitled" width="0" height="0">
+
+
+
+    
+    
+    
+
+
+
+
+    
+	    
+	    
+	    
+    
+    
+  
+
+</body>
+</html>

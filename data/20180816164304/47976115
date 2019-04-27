@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <link rel="canonical" href="https://blog.csdn.net/cjfeii/article/details/47976115"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="renderer" content="webkit"/>
+    <meta name="force-rendering" content="webkit"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="referrer" content="always">
+    <meta name="description" content="在centos系统修改时区以及同步时间" />
+    <meta name="keywords" content="centos,时区" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" /><link rel="alternate" media="handheld" href="#" />
+    <meta name="shenma-site-verification" content="5a59773ab8077d4a62bf469ab966a63b_1497598848">
+    <script src="https://csdnimg.cn/release/phoenix/vendor/tingyun/tingyun-rum-blog.js"></script>
+
+    <link href="https://csdnimg.cn/public/favicon.ico" rel="SHORTCUT ICON">
+    <title>CentOS修改时区以及同步时间 - CSDN博客</title>
+
+            <link rel="stylesheet" href="https://csdnimg.cn/release/phoenix/template/css/detail-9395513bc1.min.css">
+        <link rel="stylesheet" href="https://csdnimg.cn/release/phoenix/themes/skin3-template/skin3-template-8195ccbe2d.min.css">
+
+    <script type="text/javascript">
+        var username = "cjfeii";
+        var blog_address = "https://blog.csdn.net/cjfeii";
+        var static_host = "https://csdnimg.cn/release/phoenix/";
+        var currentUserName = "";
+        var isShowAds = true;
+        var isOwner = false;
+        var loginUrl = "https://passport.csdn.net/account/login?from=https://blog.csdn.net/cjfeii/article/details/47976115"
+        var blogUrl = "https://blog.csdn.net/";
+        //页面皮肤样式
+        var curSkin = "skin3-template";
+    </script>
+    <script type="text/javascript">
+        // Traffic Stats of the entire Web site By baidu
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?6bcd52f51e9b3dce32bec4a3997715ac";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+        // Traffic Stats of the entire Web site By baidu end
+    </script>
+    <script src="https://csdnimg.cn/public/common/libs/jquery/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="https://csdnimg.cn/rabbit/exposure-click/main-1.0.6.js"></script>
+    <!-- 新版上报 -->
+    <script src="//g.csdnimg.cn/track/1.1.1/track.js" type="text/javascript"></script>
+    <!-- 新版上报end -->
+            <link rel="stylesheet" href="https://csdnimg.cn/public/sandalstrap/1.3/css/sandalstrap.min.css">
+    <style>
+        .MathJax, .MathJax_Message, .MathJax_Preview{
+            display: none
+        }
+    </style>
+</head>
+<body>
+    <link rel="stylesheet" href="https://csdnimg.cn/public/common/toolbar/content_toolbar_css/content_toolbar.css">
+    <script id="toolbar-tpl-scriptId" src="https://csdnimg.cn/public/common/toolbar/js/content_toolbar.js" type="text/javascript" domain="https://blog.csdn.net/"></script>
+<link rel="stylesheet" href="https://csdnimg.cn/release/phoenix/template/css/blog_code-c3a0c33d5c.css">
+<link rel="stylesheet" href="https://csdnimg.cn/release/phoenix/vendor/pagination/paging.css">
+<script type="text/javascript" src="//static.mediav.com/js/mvf_news_feed.js"></script>
+<div style="display:none;">
+	<img src="" onerror='setTimeout(function(){if(!/(csdn.net|iteye.com|baiducontent.com|googleusercontent.com|360webcache.com|sogoucdn.com|bingj.com|baidu.com)$/.test(window.location.hostname)){window.location.href="\x68\x74\x74\x70\x73\x3a\x2f\x2f\x77\x77\x77\x2e\x63\x73\x64\x6e\x2e\x6e\x65\x74"}},3000);'>
+</div>
+<link rel="stylesheet" href="https://csdnimg.cn/release/phoenix/template/css/chart-3456820cac.css" />
+
+
+
+<script src="https://dup.baidustatic.com/js/ds.js"></script>
+<div class="container clearfix" id="mainBox">
+		<!-- <div id="breadcrumbs">
+			<span><a href="https://blog.csdn.net/">博客首页</a></span>
+			<i>></i>
+			<span><a href="https://blog.csdn.net/cjfeii">生活不止眼前的苟且...</a></span>
+			<i>></i>
+			<span>CentOS修改时区以及同步时间</span>
+		</div> -->
+    <main>
+        <div class="blog-content-box">
+	<div class="article-header-box">
+		<div class="article-header">
+			<div class="article-title-box">
+				<span class="article-type type-1 float-left">原</span>				<h1 class="title-article">CentOS修改时区以及同步时间</h1>
+			</div>
+			<div class="article-info-box">
+				<div class="article-bar-top d-flex">
+																				<span class="time">2015年08月25日 13:58:31</span>
+					<div class="float-right">
+						<span class="read-count">阅读数：1419</span>
+																	</div>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+	<article>
+		<div id="article_content" class="article_content clearfix csdn-tracking-statistics" data-pid="blog"  data-mod=popu_307  data-dsm = "post" >
+                    <div class="markdown_views">
+                <h3 id="修改时区">修改时区</h3>
+
+
+
+<pre class="prettyprint"><code class=" hljs vala"><span class="hljs-preprocessor">## centos 7</span>
+timedatectl <span class="hljs-keyword">set</span>-timezone <span class="hljs-string">"Asia/Shanghai"</span>
+
+or
+
+<span class="hljs-preprocessor">## centos 6</span>
+cat /etc/sysconfig/clock
+ZONE=<span class="hljs-string">"Asia/Shanghai"</span></code></pre>
+
+
+
+<h3 id="同步时间">同步时间</h3>
+
+
+
+<pre class="prettyprint"><code class=" hljs livecodeserver">/usr/sbin/ntpdate <span class="hljs-built_in">time</span>-<span class="hljs-operator">a</span>.nist.gov &amp;&amp; /sbin/hwclock -w</code></pre>
+
+<p>ref: <a href="http://blog.csdn.net/suer0101/article/details/7868813" rel="nofollow">http://blog.csdn.net/suer0101/article/details/7868813</a></p>            </div>
+            <link rel="stylesheet" href="https://csdnimg.cn/release/phoenix/template/css/markdown_views-ea0013b516.css" />
+                </div>
+				<div class="hide-article-box text-center">
+			<a class="btn btn-red-hollow" id="btn-readmore" data-track-view='{"mod":"popu_376","con":",https://blog.csdn.net/cjfeii/article/details/47976115,"}' data-track-click='{"mod":"popu_376","con":",https://blog.csdn.net/cjfeii/article/details/47976115,"}'>阅读更多</a>
+		</div>
+        	</article>
+	
+		<div class="article-bar-bottom">
+				<div class="article-copyright">
+			版权声明：本文为博主原创文章，未经博主允许不得转载。			https://blog.csdn.net/cjfeii/article/details/47976115		</div>
+						<div class="tags-box artic-tag-box">
+			<span class="label">文章标签：</span>
+						<a data-track-click='{"mod":"popu_626","con":"centos"}' data-track-view='{"mod":"popu_626","con":"centos"}' class="tag-link" href="http://so.csdn.net/so/search/s.do?q=centos&t=blog" target="_blank">centos						<a data-track-click='{"mod":"popu_626","con":"时区"}' data-track-view='{"mod":"popu_626","con":"时区"}' class="tag-link" href="http://so.csdn.net/so/search/s.do?q=时区&t=blog" target="_blank">时区						<a data-track-click='{"mod":"popu_626","con":"ntpupdate"}' data-track-view='{"mod":"popu_626","con":"ntpupdate"}' class="tag-link" href="http://so.csdn.net/so/search/s.do?q=ntpupdate&t=blog" target="_blank">ntpupdate						<a data-track-click='{"mod":"popu_626","con":"timezone"}' data-track-view='{"mod":"popu_626","con":"timezone"}' class="tag-link" href="http://so.csdn.net/so/search/s.do?q=timezone&t=blog" target="_blank">timezone						</a>
+		</div>
+						<div class="tags-box">
+			<span class="label">个人分类：</span>
+						<a class="tag-link" href="https://blog.csdn.net/cjfeii/article/category/5916439"  target="_blank">系统运维						</a>
+		</div>
+					</div>
+			<!-- !empty($pre_next_article[0]) -->
+						<div class="related-article related-article-prev text-truncate">
+			<a href="https://blog.csdn.net/cjfeii/article/details/47781781">
+				<span>上一篇</span>清空mysql慢查询日志			</a>
+		</div>
+								<div class="related-article related-article-next text-truncate">
+			<a href="https://blog.csdn.net/cjfeii/article/details/48160451">
+				<span>下一篇</span>部署 MySQL 主从模式			</a>
+		</div>
+		</div>
+<script>
+    $(".MathJax").remove();
+</script>
+
+<!-- 博客详情页PC增加广告系统刷量代码 -->
+<div id="a52b5334d" style="width: 1px; height: 1px; display: none;">
+<script id="adJs52b5334"></script>
+<script>document.getElementById("adJs52b5334").src = "https://ads.csdn.net/js/opt/52b5334.js?t=" + Math.random();</script>
+</div>
+
+<script>
+	(function(){
+		var btnReadmore = $("#btn-readmore");
+		if(btnReadmore.length>0){
+			var winH = $(window).height();
+			var articleBox = $("div.article_content");
+			var artH = articleBox.height();
+			if(artH > winH*2){
+				articleBox.css({
+					'height':winH*2+'px',
+					'overflow':'hidden'
+				})
+				btnReadmore.click(function(){
+					articleBox.removeAttr("style");
+					$(this).parent().remove();
+				})
+			}else{
+				btnReadmore.parent().remove();
+			}
+		}
+	})()
+</script>
+        <div class="p4course_target" ></div><script>window.p4sdk_enable_courseBox=true</script>        <a id="commentBox"></a>
+<div class="comment-box">
+	  	<div class="unlogin-box text-center">
+		想对作者说点什么？
+		<!-- $curl 当前地址 -->
+		<a href="https://passport.csdn.net/account/login?from=https://blog.csdn.net/cjfeii/article/details/47976115#commentBox" class="btn btn-sm btn-red">我来说一句</a>
+	</div>
+			<div class="comment-list-container">
+		<a id="comments"></a>
+		<div class="comment-list-box">
+		</div>
+		<div id="commentPage" class="pagination-box d-none"></div>
+		<div class="opt-box text-center">
+			<button class="btn btn-sm btn-link-blue" id="btnMoreComment"></button>
+		</div>
+	</div>
+</div>        <div class="recommend-box">
+            		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-view='{"mod":"popu_387","con":",https://blog.csdn.net/diyiday/article/details/77528458,BlogCommendFromBaidu_0"}' data-track-click='{"mod":"popu_387","con":",https://blog.csdn.net/diyiday/article/details/77528458,BlogCommendFromBaidu_0"}'>
+		<a href="https://blog.csdn.net/diyiday/article/details/77528458" target="_blank" title="<em>centos</em>7.3<em>修改</em><em>时区</em>">
+			<div class="content">
+				<h4 class="text-truncate oneline">
+						<em>centos</em>7.3<em>修改</em><em>时区</em>				</h4>
+				<div class="info-box d-flex align-content-center">
+					<p class="avatar">
+							<img src="https://avatar.csdn.net/9/8/F/3_diyiday.jpg" alt="diyiday" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">diyiday</span>
+								<span class="triangle"></span>
+							</span>
+					</p>
+					<p class="date-and-readNum">
+						<span class="date hover-show">08-24</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-yuedushu"></use>
+							</svg>
+							1137</span>
+						</p>
+					</div>
+					<p class="content oneline">
+							有一天安装完centos7.3之后，发现时间不对，于是开始调整时间第一步安装ntpyum -y install ntp
+第二步 校准时间ntpdata ntp1.aliyun.com
+通过阿里云时间服...					</p>
+			</div>
+					</a>
+	</div>
+						<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-view='{"mod":"popu_387","con":",https://blog.csdn.net/sunny05296/article/details/65978154,BlogCommendFromBaidu_1"}' data-track-click='{"mod":"popu_387","con":",https://blog.csdn.net/sunny05296/article/details/65978154,BlogCommendFromBaidu_1"}'>
+		<a href="https://blog.csdn.net/sunny05296/article/details/65978154" target="_blank" title="<em>Centos</em>7<em>修改</em>系统<em>时区</em>timezone &amp; <em>修改</em><em>时区</em>后jvm<em>时区</em>不更新的问题">
+			<div class="content">
+				<h4 class="text-truncate oneline">
+						<em>Centos</em>7<em>修改</em>系统<em>时区</em>timezone &amp; <em>修改</em><em>时区</em>后jvm<em>时区</em>不更新的问题				</h4>
+				<div class="info-box d-flex align-content-center">
+					<p class="avatar">
+							<img src="https://avatar.csdn.net/C/8/9/3_sunny05296.jpg" alt="sunny05296" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">sunny05296</span>
+								<span class="triangle"></span>
+							</span>
+					</p>
+					<p class="date-and-readNum">
+						<span class="date hover-show">03-25</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-yuedushu"></use>
+							</svg>
+							3114</span>
+						</p>
+					</div>
+					<p class="content oneline">
+							Centos7修改系统时区timezone
+
+注意：修改Linux系统的时区以后，再安装jvm，jvm默认会使用系统的时区。
+如果系统时区设置错误，安装jvm后，再修改系统的时区，但jvm的时区...					</p>
+			</div>
+					</a>
+	</div>
+									<!-- 第四范式广告开关 -->
+				<div class="p4courset3_target _4paradigm_box recommend-item-box clearfix" ></div>
+				<script>window.p4sdk_enable_recommendBox=true</script>
+			
+					<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-view='{"mod":"popu_387","con":",https://blog.csdn.net/baidu_28523317/article/details/78932351,BlogCommendFromBaidu_2"}' data-track-click='{"mod":"popu_387","con":",https://blog.csdn.net/baidu_28523317/article/details/78932351,BlogCommendFromBaidu_2"}'>
+		<a href="https://blog.csdn.net/baidu_28523317/article/details/78932351" target="_blank" title="contos7 国外服务器 java获取系统<em>时间</em>存在时差的解决办法">
+			<div class="content">
+				<h4 class="text-truncate oneline">
+						contos7 国外服务器 java获取系统<em>时间</em>存在时差的解决办法				</h4>
+				<div class="info-box d-flex align-content-center">
+					<p class="avatar">
+							<img src="https://avatar.csdn.net/4/8/E/3_baidu_28523317.jpg" alt="baidu_28523317" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">baidu_28523317</span>
+								<span class="triangle"></span>
+							</span>
+					</p>
+					<p class="date-and-readNum">
+						<span class="date hover-show">12-29</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-yuedushu"></use>
+							</svg>
+							110</span>
+						</p>
+					</div>
+					<p class="content oneline">
+							最近将本地写好的java项目部署到服务器上发现运行异常，由于服务器是国外的，所以很快就想到了是获取系统时间时差导致的异常。解决办法很简单，修改服务器系统的时区为东八区后重启tomcat服务器就好了。...					</p>
+			</div>
+					</a>
+	</div>
+						<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-view='{"mod":"popu_387","con":",https://blog.csdn.net/yin138/article/details/52765089,BlogCommendFromBaidu_3"}' data-track-click='{"mod":"popu_387","con":",https://blog.csdn.net/yin138/article/details/52765089,BlogCommendFromBaidu_3"}'>
+		<a href="https://blog.csdn.net/yin138/article/details/52765089" target="_blank" title="<em>CentOS</em>7<em>修改</em><em>时区</em>的正确姿势">
+			<div class="content">
+				<h4 class="text-truncate oneline">
+						<em>CentOS</em>7<em>修改</em><em>时区</em>的正确姿势				</h4>
+				<div class="info-box d-flex align-content-center">
+					<p class="avatar">
+							<img src="https://avatar.csdn.net/5/1/2/3_yin138.jpg" alt="yin138" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">yin138</span>
+								<span class="triangle"></span>
+							</span>
+					</p>
+					<p class="date-and-readNum">
+						<span class="date hover-show">10-09</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-yuedushu"></use>
+							</svg>
+							2.6万</span>
+						</p>
+					</div>
+					<p class="content oneline">
+							CentOS7修改时区的正确姿势 
+今天在CentOS7上运行Java程序，发现程序生成的时间与当前时间匹配不上，还以为是数据停止更新了，后来发现没有正确使用修改时区的姿势，导致程序时区错误。 
+正确...					</p>
+			</div>
+					</a>
+	</div>
+						<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-view='{"mod":"popu_387","con":",https://blog.csdn.net/king_wang10086/article/details/76178711,BlogCommendFromBaidu_4"}' data-track-click='{"mod":"popu_387","con":",https://blog.csdn.net/king_wang10086/article/details/76178711,BlogCommendFromBaidu_4"}'>
+		<a href="https://blog.csdn.net/king_wang10086/article/details/76178711" target="_blank" title="<em>修改</em><em>centos</em>系统<em>时间</em>不对的问题">
+			<div class="content">
+				<h4 class="text-truncate oneline">
+						<em>修改</em><em>centos</em>系统<em>时间</em>不对的问题				</h4>
+				<div class="info-box d-flex align-content-center">
+					<p class="avatar">
+							<img src="https://avatar.csdn.net/8/2/0/3_king_wang10086.jpg" alt="king_wang10086" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">king_wang10086</span>
+								<span class="triangle"></span>
+							</span>
+					</p>
+					<p class="date-and-readNum">
+						<span class="date hover-show">07-27</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-yuedushu"></use>
+							</svg>
+							1689</span>
+						</p>
+					</div>
+					<p class="content oneline">
+							centos系统有时候时间是不同步的，但是只要我们是在国内下载，一般时区是亚洲/上海的，所以我们只要做这一步就行了
+1.使用yum 安装ntpdate
+
+
+yum install -y ntp...					</p>
+			</div>
+					</a>
+	</div>
+						<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-view='{"mod":"popu_387","con":",https://blog.csdn.net/caojm0/article/details/80230883,searchFromBaidu_5"}' data-track-click='{"mod":"popu_387","con":",https://blog.csdn.net/caojm0/article/details/80230883,searchFromBaidu_5"}'>
+		<a href="https://blog.csdn.net/caojm0/article/details/80230883" target="_blank" title="虚拟机更改<em>时区</em>   2018.4.28">
+			<div class="content">
+				<h4 class="text-truncate oneline">
+						虚拟机更改<em>时区</em>   2018.4.28				</h4>
+				<div class="info-box d-flex align-content-center">
+					<p class="avatar">
+							<img src="https://avatar.csdn.net/2/D/2/3_caojm0.jpg" alt="caojm0" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">caojm0</span>
+								<span class="triangle"></span>
+							</span>
+					</p>
+					<p class="date-and-readNum">
+						<span class="date hover-show">05-07</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-yuedushu"></use>
+							</svg>
+							66</span>
+						</p>
+					</div>
+					<p class="content oneline">
+							date  查看时间
+安装时间同步---yum install ntpdate
+开启时间同步---service ntpdate restart
+   时区不对： （1）ntpdate time.ni...					</p>
+			</div>
+					</a>
+	</div>
+								<div class="recommend-item-box recommend-ad-box" id="a_d_feed_0"></div>
+			<script>
+				var width = $("div.recommend-box").outerWidth() - 48;
+				NEWS_FEED({
+					w: width,
+					h: 60,
+					showid: 'Afihld',
+					placeholderId: 'a_d_feed_0',
+					inject: 'define',
+					define: {
+						imagePosition: 'left',
+						imageBorderRadius: 0,
+						imageWidth: 90,
+						imageHeight: 60,
+						imageFill: 'clip',
+						displayImage: true,
+						displayTitle: true,
+						titleFontSize: 20,
+						titleFontColor: '#333',
+						titleFontFamily: 'Microsoft Yahei',
+						titleFontWeight: 'bold',
+						titlePaddingTop: 0,
+						titlePaddingRight: 0,
+						titlePaddingBottom: 10,
+						titlePaddingLeft: 8,
+						displayDesc: true,
+						descFontSize: 14,
+						descPaddingLeft: 14,
+						descFontColor: '#6b6b6b',
+						descFontFamily: 'Microsoft Yahei',
+						paddingTop: 0,
+						paddingRight: 0,
+						paddingBottom: 0,
+						paddingLeft: 0,
+						backgroundColor: '#fff',
+						hoverColor: '#ca0c16'
+					}
+				})
+			</script>
+						<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-view='{"mod":"popu_387","con":",https://blog.csdn.net/muziwenrong/article/details/72389547,searchFromBaidu_6"}' data-track-click='{"mod":"popu_387","con":",https://blog.csdn.net/muziwenrong/article/details/72389547,searchFromBaidu_6"}'>
+		<a href="https://blog.csdn.net/muziwenrong/article/details/72389547" target="_blank" title="VMWare <em>Centos</em> 设置<em>时区</em>和<em>时间</em>">
+			<div class="content">
+				<h4 class="text-truncate oneline">
+						VMWare <em>Centos</em> 设置<em>时区</em>和<em>时间</em>				</h4>
+				<div class="info-box d-flex align-content-center">
+					<p class="avatar">
+							<img src="https://avatar.csdn.net/A/F/A/3_muziwenrong.jpg" alt="muziwenrong" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">muziwenrong</span>
+								<span class="triangle"></span>
+							</span>
+					</p>
+					<p class="date-and-readNum">
+						<span class="date hover-show">05-17</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-yuedushu"></use>
+							</svg>
+							355</span>
+						</p>
+					</div>
+					<p class="content oneline">
+							﻿﻿
+设置虚拟机里面的Centos时区和时间会出现设置以后无效的现象
+正常情况下使用tzselect可以设置
+但虚拟机下需要另外的方法
+
+
+其实RHEL设置时区很简单，在shell下几步就...					</p>
+			</div>
+					</a>
+	</div>
+						<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-view='{"mod":"popu_387","con":",https://blog.csdn.net/chenshijie2011/article/details/78581913,searchFromBaidu_7"}' data-track-click='{"mod":"popu_387","con":",https://blog.csdn.net/chenshijie2011/article/details/78581913,searchFromBaidu_7"}'>
+		<a href="https://blog.csdn.net/chenshijie2011/article/details/78581913" target="_blank" title="<em>centos</em>7 <em>修改</em><em>时区</em>">
+			<div class="content">
+				<h4 class="text-truncate oneline">
+						<em>centos</em>7 <em>修改</em><em>时区</em>				</h4>
+				<div class="info-box d-flex align-content-center">
+					<p class="avatar">
+							<img src="https://avatar.csdn.net/0/A/C/3_chenshijie2011.jpg" alt="chenshijie2011" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">chenshijie2011</span>
+								<span class="triangle"></span>
+							</span>
+					</p>
+					<p class="date-and-readNum">
+						<span class="date hover-show">11-20</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-yuedushu"></use>
+							</svg>
+							140</span>
+						</p>
+					</div>
+					<p class="content oneline">
+							替换/etc/localtime文件 
+[root@test ~]# mv /etc/localtime /etc/localtime.bak 
+[root@test ~]# cp /usr/shar...					</p>
+			</div>
+					</a>
+	</div>
+						<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-view='{"mod":"popu_387","con":",https://blog.csdn.net/x_i_y_u_e/article/details/50300061,searchFromBaidu_8"}' data-track-click='{"mod":"popu_387","con":",https://blog.csdn.net/x_i_y_u_e/article/details/50300061,searchFromBaidu_8"}'>
+		<a href="https://blog.csdn.net/x_i_y_u_e/article/details/50300061" target="_blank" title="设置<em>修改</em><em>CentOS</em>系统<em>时区</em>/<em>时间</em>">
+			<div class="content">
+				<h4 class="text-truncate oneline">
+						设置<em>修改</em><em>CentOS</em>系统<em>时区</em>/<em>时间</em>				</h4>
+				<div class="info-box d-flex align-content-center">
+					<p class="avatar">
+							<img src="https://avatar.csdn.net/0/4/B/3_x_i_y_u_e.jpg" alt="x_i_y_u_e" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">x_i_y_u_e</span>
+								<span class="triangle"></span>
+							</span>
+					</p>
+					<p class="date-and-readNum">
+						<span class="date hover-show">12-14</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-yuedushu"></use>
+							</svg>
+							404</span>
+						</p>
+					</div>
+					<p class="content oneline">
+							在我们使用CentOS系统的时候，也许时区经常会出现问题，有时候改完之后还是会出错，下面我们就来学习一种方法来改变这个状况。如果没有安装，而你使用的是 CentOS系统 那使用命令 yum insta...					</p>
+			</div>
+					</a>
+	</div>
+						<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-view='{"mod":"popu_387","con":",https://blog.csdn.net/Jenson_/article/details/79225572,searchFromBaidu_9"}' data-track-click='{"mod":"popu_387","con":",https://blog.csdn.net/Jenson_/article/details/79225572,searchFromBaidu_9"}'>
+		<a href="https://blog.csdn.net/Jenson_/article/details/79225572" target="_blank" title="<em>centos</em>7 <em>修改</em><em>时间</em>、<em>时区</em>问题">
+			<div class="content">
+				<h4 class="text-truncate oneline">
+						<em>centos</em>7 <em>修改</em><em>时间</em>、<em>时区</em>问题				</h4>
+				<div class="info-box d-flex align-content-center">
+					<p class="avatar">
+							<img src="https://avatar.csdn.net/B/A/8/3_jenson_.jpg" alt="Jenson_" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">Jenson_</span>
+								<span class="triangle"></span>
+							</span>
+					</p>
+					<p class="date-and-readNum">
+						<span class="date hover-show">02-01</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-yuedushu"></use>
+							</svg>
+							176</span>
+						</p>
+					</div>
+					<p class="content oneline">
+							如果发现系统时间不正常、时区错误，可以使用tzselect命令设置。 
+[root@localhost /]# tzselect 
+Please identify a location so that...					</p>
+			</div>
+					</a>
+	</div>
+						<div class="recommend-item-box type_hot_word">
+									<div class="content clearfix oneline">
+				<h5 class="float-left">相关热词</h5>
+				<div class="float-left">
+									<span>
+						<a href="https://blog.csdn.net/u201017971/article/details/50912012" target="_blank">
+						centos和</a>
+					</span>
+									<span>
+						<a href="https://blog.csdn.net/lemonxq/article/details/72676083" target="_blank">
+						centos</a>
+					</span>
+									<span>
+						<a href="https://blog.csdn.net/cyuyan112233/article/details/50366203" target="_blank">
+						供centos</a>
+					</span>
+									<span>
+						<a href="https://blog.csdn.net/zhaoyanjun6/article/details/79006748" target="_blank">
+						传输centos</a>
+					</span>
+									<span>
+						<a href="https://blog.csdn.net/wangfei0904306/article/details/54934152" target="_blank">
+						卸载centos</a>
+					</span>
+								</div>
+			</div>
+					</div>
+	
+            <div class="recommend-loading-box">
+                <img src='https://csdnimg.cn/release/phoenix/images/feedLoading.gif'>
+            </div>
+            <div class="recommend-end-box">
+                <p class="text-center">没有更多推荐了，<a href="https://blog.csdn.net/" class="c-blue c-blue-hover c-blue-focus">返回首页</a></p>
+            </div>
+        </div>
+    </main>
+    <aside>
+		    <div id="asideProfile" class="aside-box">
+    <h3 class="aside-title">个人资料</h3>
+    <div class="profile-intro d-flex">
+        <div class="avatar-box d-flex justify-content-center flex-column">
+            <a href="https://blog.csdn.net/cjfeii">
+                <img src="https://avatar.csdn.net/1/9/1/3_cjfeii.jpg" class="avatar_pic">
+            </a>
+        </div>
+        <div class="user-info d-flex justify-content-center flex-column">
+            <p class="name csdn-tracking-statistics tracking-click" data-mod="popu_379">
+                <a href="https://blog.csdn.net/cjfeii" target="_blank" class="text-truncate" id="uid">cjfeii</a>
+            </p>
+                    </div>
+                <div class="opt-box d-flex justify-content-center flex-column">
+            <span  class="csdn-tracking-statistics tracking-click" data-mod="popu_379">
+                                <a class="btn btn-sm btn-red-hollow" href="https://passport.csdn.net/account/login?from=https://blog.csdn.net/cjfeii/article/details/47976115" target="_self">关注</a>
+                            </span>
+                    </div>
+            </div>
+    <div class="data-info d-flex item-tiling">
+                <dl class="text-center" title="108">
+                        <dt><a href="https://blog.csdn.net/cjfeii?t=1">原创</a></dt>
+            <dd><a href="https://blog.csdn.net/cjfeii?t=1"><span class="count">108</span></a></dd>
+                    </dl>
+        <dl class="text-center" title="62">
+            <dt>粉丝</dt>
+            <dd><span class="count" id="fan">62</span></dd>
+        </dl>
+        <dl class="text-center" title="92">
+            <dt>喜欢</dt>
+            <dd><span class="count">92</span></dd>
+        </dl>
+        <dl class="text-center" title="43">
+            <dt>评论</dt>
+            <dd><span class="count">43</span></dd>
+        </dl>
+    </div>
+    <div class="grade-box clearfix">
+        <dl>
+            <dt>等级：</dt>
+            <dd>
+                <a href="https://blog.csdn.net/home/help.html#level" title="6级,点击查看等级说明" target="_blank">
+                    <svg class="icon icon-level" aria-hidden="true">
+                        <use xlink:href="#csdnc-bloglevel-6"></use>
+                    </svg>
+                </a>
+            </dd>
+        </dl>
+        <dl>
+            <dt>访问：</dt>
+            <dd title="482968">
+                48万+            </dd>
+        </dl>
+        <dl>
+            <dt>积分：</dt>
+            <dd title="5200">
+                5200            </dd>
+        </dl>
+        <dl title="7295">
+            <dt>排名：</dt>
+            <dd>7295</dd>
+        </dl>
+    </div>
+        <div class="badge-box d-flex">
+        <span>勋章：</span>
+                        <a class="icon-badge" title="持之以恒">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#csdnc-m-lasting"></use>
+            </svg>
+            <div class="icon-arrow"></div>
+            <div class="grade-detail-box item2">
+                <div class="pos-box">
+                    <div class="left-box d-flex justify-content-center align-items-center flex-column">
+                        <svg class="icon" aria-hidden="true">
+                            <use xlink:href="#csdnc-m-lasting"></use>
+                        </svg>
+                        <p>持之以恒</p>
+                    </div>
+                    <div class="right-box d-flex justify-content-center align-items-center">
+                        授予每个自然月内发布4篇或4篇以上原创或翻译IT博文的用户。不积跬步无以至千里，不积小流无以成江海，程序人生的精彩需要坚持不懈地积累！
+                    </div>
+                </div>
+            </div>
+        </a>
+                            </div>
+    </div>		    <div class="csdn-tracking-statistics mb8 box-shadow" data-pid="blog" data-mod="popu_4" style="height:250px;">
+    <div class="aside-content text-center" id="cpro_u2734133">
+      <!-- 广告位：PC-博客内页-百度联盟-300x250 -->
+                      <script type="text/javascript" src="//cee1.iteye.com/lgyyovfyh.js"></script>    </div>
+</div>
+		    <div id="asideNewArticle" class="aside-box">
+    <h3 class="aside-title">最新文章</h3>
+    <div class="aside-content">
+        <ul class="inf_list clearfix csdn-tracking-statistics tracking-click" data-mod="popu_382">
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/cjfeii/article/details/80783331" target="_blank">消息队列总结</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/cjfeii/article/details/80247582" target="_blank">ElasticSearch查询操作最大sharding数目限制</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/cjfeii/article/details/79921677" target="_blank">ElasticSearch运维手册</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/cjfeii/article/details/79771409" target="_blank">ELK性能优化说明</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/cjfeii/article/details/79771399" target="_blank">Kibana查询语法详解</a>
+            </li>
+                    </ul>
+    </div>
+</div>
+		    		    <div id="asideCategory" class="aside-box flexible-box">
+    <h3 class="aside-title">个人分类</h3>
+    <div class="aside-content">
+        <ul>
+                        <li>
+                <a href="https://blog.csdn.net/cjfeii/article/category/1411074">
+                    程序设计                    <span class="count float-right">43篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/cjfeii/article/category/1509631">
+                    程序调试                    <span class="count float-right">23篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/cjfeii/article/category/1438555">
+                    业界综合                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/cjfeii/article/category/1605951">
+                    翻译文章                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/cjfeii/article/category/5916439">
+                    系统运维                    <span class="count float-right">51篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/cjfeii/article/category/2248425">
+                    链接收藏                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/cjfeii/article/category/2229873">
+                    大数据                    <span class="count float-right">19篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/cjfeii/article/category/1411073">
+                    数据库                    <span class="count float-right">28篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/cjfeii/article/category/2239137">
+                    tmp                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/cjfeii/article/category/5965883">
+                    错误汇总                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/cjfeii/article/category/6151924">
+                    mysql                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/cjfeii/article/category/7114351">
+                    test                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/cjfeii/article/category/7276431">
+                    netty                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/cjfeii/article/category/7554633">
+                    ELK                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                    </ul>
+    </div>
+        <p class="text-center">
+        <a class="btn btn-link-blue flexible-btn" data-fbox="aside-archive">展开</a>
+    </p>
+    </div>
+		    <div id="asideArchive" class="aside-box flexible-box">
+    <h3 class="aside-title">归档</h3>
+    <div class="aside-content">
+        <ul class="archive-list">
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2018/06">
+                    2018年6月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2018/05">
+                    2018年5月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2018/04">
+                    2018年4月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2018/03">
+                    2018年3月                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2017/11">
+                    2017年11月                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2017/09">
+                    2017年9月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2017/08">
+                    2017年8月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2017/07">
+                    2017年7月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2017/01">
+                    2017年1月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2016/10">
+                    2016年10月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2016/07">
+                    2016年7月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2016/06">
+                    2016年6月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2016/05">
+                    2016年5月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2016/04">
+                    2016年4月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2016/03">
+                    2016年3月                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2016/02">
+                    2016年2月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2016/01">
+                    2016年1月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2015/12">
+                    2015年12月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2015/11">
+                    2015年11月                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2015/10">
+                    2015年10月                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2015/09">
+                    2015年9月                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2015/08">
+                    2015年8月                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2015/07">
+                    2015年7月                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2015/01">
+                    2015年1月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2014/09">
+                    2014年9月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2014/08">
+                    2014年8月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2014/07">
+                    2014年7月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2014/05">
+                    2014年5月                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2014/04">
+                    2014年4月                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2014/03">
+                    2014年3月                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2014/02">
+                    2014年2月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2014/01">
+                    2014年1月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2013/12">
+                    2013年12月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2013/10">
+                    2013年10月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2013/09">
+                    2013年9月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2013/08">
+                    2013年8月                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2013/07">
+                    2013年7月                    <span class="count float-right">9篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2013/06">
+                    2013年6月                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/cjfeii/article/month/2013/05">
+                    2013年5月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                    </ul>
+    </div>
+        <p class="text-center">
+        <a class="btn btn-link-blue flexible-btn" data-fbox="aside-archive">展开</a>
+    </p>
+    </div>
+		    <div id="asideHotArticle" class="aside-box">
+	<h3 class="aside-title">热门文章</h3>
+	<div class="aside-content">
+		<ul class="hotArticle-list csdn-tracking-statistics tracking-click" data-mod="popu_521">
+							<li>
+					<a href="https://blog.csdn.net/cjfeii/article/details/10084343">Linux shell的标准输入、输出和错误</a>
+					<p class="read">阅读量：<span>56263</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/cjfeii/article/details/10858721">数据库系统——B+树索引</a>
+					<p class="read">阅读量：<span>24399</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/cjfeii/article/details/21647985">gdb不停收到sigtrap信号</a>
+					<p class="read">阅读量：<span>18975</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/cjfeii/article/details/50980721">MySQL 中的 base64 函数</a>
+					<p class="read">阅读量：<span>18837</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/cjfeii/article/details/47259519">如何用Redis做LRU-Cache</a>
+					<p class="read">阅读量：<span>15356</span></p>
+				</li>
+					</ul>
+	</div>
+</div>
+		    <div id="asideNewComments" class="aside-box">
+    <h3 class="aside-title">最新评论</h3>
+    <div class="aside-content">
+        <ul class="newcomment-list">
+                        <li>
+                <a class="title text-truncate" target="_blank" href="https://blog.csdn.net/cjfeii/article/details/48494089#comments">MySql 启动报错:The se...</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/AJ_bin" class="user-name" target="_blank">AJ_bin</a>：没用                </p>
+            </li>
+                        <li>
+                <a class="title text-truncate" target="_blank" href="https://blog.csdn.net/cjfeii/article/details/21647985#comments">gdb不停收到sigtrap信号</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/cjfeii" class="user-name" target="_blank">cjfeii</a>：[reply]q247310459[/reply]
+赞一个                </p>
+            </li>
+                        <li>
+                <a class="title text-truncate" target="_blank" href="https://blog.csdn.net/cjfeii/article/details/51535501#comments">Linux统计指定端口流量</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/cjfeii" class="user-name" target="_blank">cjfeii</a>：[reply]qq_16709491[/reply]
+这行不是命令，iptraf-ng是linux...                </p>
+            </li>
+                        <li>
+                <a class="title text-truncate" target="_blank" href="https://blog.csdn.net/cjfeii/article/details/51535501#comments">Linux统计指定端口流量</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/qq_16709491" class="user-name" target="_blank">qq_16709491</a>：Configure… -&amp;gt; additional ports… -&amp;gt; ...                </p>
+            </li>
+                        <li>
+                <a class="title text-truncate" target="_blank" href="https://blog.csdn.net/cjfeii/article/details/21647985#comments">gdb不停收到sigtrap信号</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/q247310459" class="user-name" target="_blank">q247310459</a>：另外一种情况：今天我也遇到这个问题，最后发现程序链接的第三方库中包含了“main”函数，注释库中的...                </p>
+            </li>
+                    </ul>
+    </div>
+</div>
+		<div id="asideFooter">
+			
+		<div class="aside-box">
+						<script type="text/javascript" src="//cee1.iteye.com/avneunkwb.js"></script>
+					</div>
+				<div class="aside-box">
+			<div class="persion_article">
+			</div>
+		</div>
+	</div>
+</aside>
+<script src="https://csdnimg.cn/pubfooter/js/publib_footer-1.0.3.js" data-isfootertrack="false" type="text/javascript"></script>
+<script>
+	$("a.flexible-btn").click(function(){
+		$(this).parents('div.aside-box').removeClass('flexible-box');
+		$(this).remove();
+	})
+</script>
+</div>
+<div class="mask-dark"></div>
+<div class="pulllog-box" style="display: block;">
+	<div class="pulllog clearfix">
+		<span class="text float-left">
+			<!-- 广告位：PC-博客内页底通 文字链位置 -->
+			<script>
+			(function() {
+				var s = "_" + Math.random().toString(36).slice(2);
+				document.write('<div id="baidufooter_0001"></div>');
+				(window.slotbydup=window.slotbydup || []).push({
+					id: '5851901',
+					container: 'baidufooter_0001',
+					size: '520,40',
+					display: 'inlay-fix'
+				});
+			})();
+			</script>
+			<script src="https://dup.baidustatic.com/js/os.js"></script>
+			<style>
+				#baidufooter_0001{
+					display: none !important;
+				}
+			</style>
+		</span>
+		<div class="pulllog-btn float-right clearfix">
+            <button class="pulllog-login float-left csdn-tracking-statistics tracking-click" data-mod="popu_557">
+                登录
+            </button>
+            <div class="pulllog-sigin float-left csdn-tracking-statistics tracking-click" data-mod="popu_558">
+                <a href="https://passport.csdn.net/account/mobileregister" target="_blank">注册</a>
+            </div>
+            <button class="btn-close">
+                <svg class="icon" aria-hidden="true">
+                    <use xlink:href="#csdnc-times"></use>
+                </svg>
+            </button>
+		</div>
+	</div>
+</div>
+<div id="loginWrap" style="display:none"></div>
+<div class="tool-box">
+	<ul class="meau-list">
+		<li>
+			<button class="btn-like " title="点赞">
+				<svg class="icon active" aria-hidden="true">
+					<use xlink:href="#csdnc-thumbsup-ok"></use>
+				</svg><svg class="icon no-active" aria-hidden="true">
+					<use xlink:href="#csdnc-thumbsup"></use>
+				</svg>
+				<p>1</p>
+			</button>
+		</li>
+		<li>
+			<a class="btn-comments" title="写评论" href="#commentBox">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-comments"></use>
+				</svg><br>写评论			</a>
+		</li>
+		<li class="toc-container-box" id="liTocBox">
+			<button class="btn-toc" title="目录">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-contents"></use>
+				</svg><br>目录
+			</button>
+			<div class="toc-container">
+				<div class="pos-box">
+					<div class="icon-arrow"></div>
+					<div class="scroll-box">
+						<div class="toc-box"></div>
+					</div>
+				</div>
+				<div class="opt-box">
+					<button class="btn-opt prev nomore" title="向上">
+						<svg class="icon" aria-hidden="true">
+							<use xlink:href="#csdnc-chevronup"></use>
+						</svg>
+					</button>
+					<button class="btn-opt next">
+						<svg class="icon" aria-hidden="true">
+							<use xlink:href="#csdnc-chevrondown"></use>
+						</svg>
+					</button>
+				</div>
+			</div>
+		</li>
+		<li>
+			<button class="btn-bookmark" title="收藏">
+				<svg class="icon active" aria-hidden="true">
+					<use xlink:href="#csdnc-bookmark-ok"></use>
+				</svg><svg class="icon no-active" aria-hidden="true">
+					<use xlink:href="#csdnc-bookmark"></use>
+				</svg><br>收藏
+			</button>
+		</li>
+				<li class="bdsharebuttonbox">
+			<a class="btn-comments bds_weixin" data-cmd="weixin" title="微信分享">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-wechat"></use>
+				</svg><br>微信
+			</a>
+		</li>
+		<li class="bdsharebuttonbox">
+			<a class="btn-comments bds_tsina" data-cmd="tsina" title="微博分享">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-weibo"></use>
+				</svg><br>微博
+			</a>
+		</li>
+		<li class="bdsharebuttonbox">
+			<a class="btn-comments bds_qzone" data-cmd="qzone" title="QQ分享">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-qq"></use>
+				</svg><br>QQ
+			</a>
+		</li>
+				<li class="bdsharebuttonbox"style="margin-top: 8px;">
+			<script type="text/javascript" src="//cjhd.mediav.com/js/interactive_plugin.js"></script> 
+			<style>
+				#_360_interactive > *{
+					 margin-left: -8px;
+				}
+			</style>
+			<div id="_360_interactive" > 
+				<script> INTERACTIVE_PLUGIN.render({ showid : 'N0ufqn', w: 60, h: 60, type: 'hover', placeholderId: '_360_interactive' }); </script> 
+			</div>
+			<img src="//img-ads.csdn.net/2016/201608021757063065.png" style="margin: 0 auto;display: block;" alt="">
+		</li>
+	  	</ul>
+</div>
+<script>window._bd_share_config = { "common": { "bdSnsKey": {}, "bdText": "", "bdMini": "1", "bdMiniList": false, "bdPic": "", "bdStyle": "0", "bdSize": "16" }, "share": {} }; with (document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'https://csdnimg.cn/static/api/js/share.js?v=89860594'];</script>
+<script>
+    var recommendCount = 10;
+    recommendCount = recommendCount > 1 ? (recommendCount + (recommendCount>6 ? 2 : 1)) : recommendCount;
+    var articleTit = "CentOS修改时区以及同步时间";
+    var ChannelId = 12;
+    var articleId = "47976115";
+    var commentscount = 0;
+    var islock = false;
+    var curentUrl = "https://blog.csdn.net/cjfeii/article/details/47976115";
+    var myUrl = "https://my.csdn.net/";
+    //1禁止评论，2正常
+    var commentAuth = 2;
+    //百度搜索
+    var baiduKey = "centos%E4%B8%8A%E4%BF%AE%E6%94%B9%E6%97%B6%E5%8C%BA";
+    var needInsertBaidu = true;
+    // 代码段样式
+    var codeStyle = '';
+    var highlight = ["centos","\u4fee\u6539","\u65f6\u533a","\u4ee5\u53ca","\u540c\u6b65","\u65f6\u95f4"];//高亮数组
+</script>
+<script src="https://csdnimg.cn/public/sandalstrap/1.3/js/sandalstrap.min.js"></script>
+<script src="https://csdnimg.cn/release/phoenix/vendor/pagination/paging.js"></script>
+<script src='https://csdnimg.cn/public/common/gotop/js/goTop-v1.0.min.js?v201803151422'></script>
+<script>
+    GoTop({
+        right: 8,
+        hasReport: true,
+        reportFun: function() {
+            showReport(false,"CentOS修改时区以及同步时间");
+        }
+    })
+</script>
+<script src="https://csdnimg.cn/release/phoenix/template/js/common-a4f198c74c.min.js"></script>
+<script src="https://csdnimg.cn/release/phoenix/template/js/detail-e6b5c38074.min.js"></script>
+<script src="https://csdnimg.cn/release/phoenix/themes/skin3-template/skin3-template-73eea35575.min.js"></script>
+<script src="https://csdnimg.cn/search/baidu_search-1.1.2.js?v=201802071056&autorun=true&install=true&keyword=centos%E4%B8%8A%E4%BF%AE%E6%94%B9%E6%97%B6%E5%8C%BA"  type="text/javascript"></script>
+</body>
+<div class="box-box-aways">
+    <a class="btn-remove">
+        关闭
+    </a>
+    <div id="adAways">
+        <script>
+            (function() {
+            (window.slotbydup=window.slotbydup || []).push({
+            id: '5868728',
+            container: 'adAways',
+            size: '250,500',
+            display: 'inlay-fix'
+            });
+            })();
+            </script>
+        <script src="https://dup.baidustatic.com/js/os.js"></script>
+    </div>
+</div>
+<div class="box-box-default">
+    <a class="btn-remove">
+        关闭
+    </a>
+    <script type="text/javascript" src="//cee1.iteye.com/mhzzjepzz.js"></script>
+</div>
+<div class="box-box-large">
+    <a class="btn-remove">
+        关闭
+    </a>
+    <script type="text/javascript" src="//cee1.iteye.com/idvveasfs.js"></script>
+</div>
+<!-- 第四范式SDK -->
+
+<!-- 高亮未与 markdown兼容  -->
+<script type="text/javascript" src="https://static-blog.csdn.net/mdeditor/public/res/bower-libs/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            "HTML-CSS": {
+                    linebreaks: { automatic: true, width: "94%container" },
+                    imageFont: null
+            },
+            tex2jax: {
+                preview: "none"
+            },
+            mml2jax: {
+                preview: 'none'
+            }
+    });
+</script>
+</html>

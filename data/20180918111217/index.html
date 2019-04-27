@@ -1,0 +1,765 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    <title>
+      Yocto/gstreamer/video – Gateworks
+    </title>
+      
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--[if IE]><script type="text/javascript">
+      if (/^#__msie303:/.test(window.location.hash))
+        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
+    </script><![endif]-->
+          <link rel="search" href="http://trac.gateworks.com/search">
+          <link rel="help" href="http://trac.gateworks.com/wiki/TracGuide">
+          <link rel="alternate" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/video?format=txt" type="text/x-trac-wiki" title="Plain Text">
+          <link rel="up" href="http://trac.gateworks.com/wiki/Yocto/gstreamer" title="View parent page">
+          <link rel="start" href="http://trac.gateworks.com/wiki">
+          
+          
+          <link rel="icon" href="trac.ico" type="image/x-icon">
+    
+      <link type="application/opensearchdescription+xml" rel="search" href="http://trac.gateworks.com/search/opensearch" title="Search Gateworks">
+      
+      
+      
+      
+      
+    
+    
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+
+		
+	
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+    <div id="banner">
+      <div id="header">
+        <a id="logo" href="http://trac.gateworks.com/wiki"><img src="g2998.png" alt="Gateworks Wiki"></a>
+      </div>
+      <form id="search" action="http://trac.gateworks.com/search" method="get">
+        <div>
+          <label for="proj-search">Search:</label>
+          <input id="proj-search" name="q" size="18" value="" type="text">
+          <input value="Search" type="submit">
+        </div>
+      </form>
+      <div id="metanav" class="nav">
+    <ul>
+      <li class="first"><a href="http://trac.gateworks.com/login">Login</a></li><li><a href="http://trac.gateworks.com/prefs">Preferences</a></li><li><a href="http://trac.gateworks.com/wiki/TracGuide">Help/Guide</a></li><li><a href="http://trac.gateworks.com/about">About Trac</a></li><li class="last"><a href="http://trac.gateworks.com/reset_password">Forgot your password?</a></li>
+    </ul>
+  </div>
+    </div>
+    <div id="mainnav" class="nav">
+    <ul>
+      <li class="first active"><a href="http://trac.gateworks.com/wiki">Wiki</a></li><li><a href="http://trac.gateworks.com/timeline">Timeline</a></li><li><a href="http://trac.gateworks.com/browser">Browse Source</a></li><li class="last"><a href="http://trac.gateworks.com/search">Search</a></li>
+    </ul>
+  </div>
+    <div id="main">
+      <div id="pagepath" class="noprint">
+  <a class="pathentry first" title="View WikiStart" href="http://trac.gateworks.com/wiki">wiki:</a><a class="pathentry" href="http://trac.gateworks.com/wiki/Yocto" title="View Yocto">Yocto</a><span class="pathentry sep">/</span><a class="pathentry" href="http://trac.gateworks.com/wiki/Yocto/gstreamer" title="View Yocto/gstreamer">gstreamer</a><span class="pathentry sep">/</span><a class="pathentry" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/video" title="View Yocto/gstreamer/video">video</a>
+</div>
+      <div id="ctxtnav" class="nav">
+        <h2>Context Navigation</h2>
+        <ul>
+          <li class="first"><a href="http://trac.gateworks.com/wiki/Yocto/gstreamer">Up</a></li><li><a href="http://trac.gateworks.com/wiki/WikiStart">Start Page</a></li><li><a href="http://trac.gateworks.com/wiki/TitleIndex">Index</a></li><li class="last"><a href="http://trac.gateworks.com/wiki/Yocto/gstreamer/video?action=history">History</a></li>
+        </ul>
+        <hr>
+      </div>
+    <div id="content" class="wiki">
+      <div class="wikipage searchable">
+        
+          <div id="wikipage" class="trac-content"><p>
+</p><div class="wiki-toc">
+<ol>
+  <li>
+    <a href="#Video">Video</a>
+    <ol>
+      <li>
+        <a href="#Output">Output</a>
+        <ol>
+          <li>
+            <a href="#imxg2dvideosink">imxg2dvideosink</a>
+          </li>
+          <li>
+            <a href="#imxipuvideosink">imxipuvideosink</a>
+          </li>
+          <li>
+            <a href="#imxpxpvideosink">imxpxpvideosink</a>
+          </li>
+          <li>
+            <a href="#imxeglvivsink">imxeglvivsink</a>
+          </li>
+          <li>
+            <a href="#autovideosink">autovideosink</a>
+          </li>
+          <li>
+            <a href="#fbdevsink">fbdevsink</a>
+          </li>
+          <li>
+            <a href="#fdsink">fdsink</a>
+          </li>
+          <li>
+            <a href="#ximagexsinkxvimagesink">ximagexsink/xvimagesink</a>
+          </li>
+          <li>
+            <a href="#fakesink">fakesink</a>
+          </li>
+          <li>
+            <a href="#v4l2sink">v4l2sink</a>
+          </li>
+          <li>
+            <a href="#Examples">Examples</a>
+          </li>
+        </ol>
+      </li>
+      <li>
+        <a href="#Input">Input</a>
+        <ol>
+          <li>
+            <a href="#video4linux2devicesandv4l2-ctl">video4linux2 devices and v4l2-ctl</a>
+          </li>
+          <li>
+            <a href="#imxv4l2videosrc">imxv4l2videosrc</a>
+          </li>
+          <li>
+            <a href="#autovideosrc">autovideosrc</a>
+          </li>
+          <li>
+            <a href="#videotestsrc">videotestsrc</a>
+          </li>
+          <li>
+            <a href="#v4l2src">v4l2src</a>
+          </li>
+          <li>
+            <a href="#Examples1">Examples</a>
+          </li>
+        </ol>
+      </li>
+      <li>
+        <a href="#ColorspaceConvertingandorVideoScaling">Colorspace Converting and/or Video Scaling</a>
+        <ol>
+          <li>
+            <a href="#imxipuvideotransform">imxipuvideotransform</a>
+          </li>
+          <li>
+            <a href="#imxg2dvideotransform">imxg2dvideotransform</a>
+          </li>
+          <li>
+            <a href="#imxpxpvideotransform">imxpxpvideotransform</a>
+          </li>
+          <li>
+            <a href="#autovideoconvert">autovideoconvert</a>
+          </li>
+          <li>
+            <a href="#videoconvert">videoconvert</a>
+          </li>
+          <li>
+            <a href="#rgb2bayer">rgb2bayer</a>
+          </li>
+          <li>
+            <a href="#Examples2">Examples</a>
+          </li>
+        </ol>
+      </li>
+      <li>
+        <a href="#ScreenTearing">Screen Tearing</a>
+      </li>
+      <li>
+        <a href="#InterlacedVideoandDeinterlacing">Interlaced Video and Deinterlacing</a>
+      </li>
+      <li>
+        <a href="#CapsFilters">Caps Filters</a>
+      </li>
+      <li>
+        <a href="#LoopbackTest">Loopback Test</a>
+      </li>
+      <li>
+        <a href="#Encoding">Encoding</a>
+        <ol>
+          <li>
+            <a href="#VBRCBR">VBR/CBR</a>
+          </li>
+          <li>
+            <a href="#h264">h264</a>
+          </li>
+          <li>
+            <a href="#mpeg4">mpeg4</a>
+          </li>
+          <li>
+            <a href="#mjpeg">mjpeg</a>
+          </li>
+          <li>
+            <a href="#jpeg">jpeg</a>
+          </li>
+        </ol>
+      </li>
+      <li>
+        <a href="#Decoding">Decoding</a>
+        <ol>
+          <li>
+            <a href="#H.264">H.264</a>
+          </li>
+          <li>
+            <a href="#MPEG4">MPEG4</a>
+          </li>
+        </ol>
+      </li>
+      <li>
+        <a href="#Transcoding">Transcoding</a>
+      </li>
+    </ol>
+  </li>
+</ol>
+</div><p>
+</p>
+<h1 id="Video">Video<a class="anchor" href="#Video" title="Link to this section"> ¶</a></h1>
+<p>
+This page will show several example pipelines for getting video through our boards using the gstreamer-imx set of plugins. The gstreamer-imx set of plugins have several elements that can be used to output a frame to a display. Please see <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer#gstreamer-imx">Yocto/gstreamer</a> for element specifics.
+</p>
+<p>
+<span class="wikianchor" id="output"><a class="anchor" href="#output" title="Link to #output"> ¶</a></span>
+</p>
+<h2 id="Output">Output<a class="anchor" href="#Output" title="Link to this section"> ¶</a></h2>
+<p>
+Generally, a 'sink' plugin is one that will take a video stream and output it to a display. Please refer to the <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/Video_Out">Yocto/Video_Out</a> page for details on the video out devices on the ventana platform.
+</p>
+<p>
+ 
+A complete list of output sinks on the imx6:
+</p>
+<ul><li><code>gstreamer-imx</code> specific sinks
+<ul><li>imxg2dvideosink
+</li><li>imxipuvideosink
+</li><li>imxpxpvideosink
+</li><li>imxeglvivsink
+</li></ul></li><li>Other GStreamer sinks
+<ul><li>autovideosink
+</li><li>fbdevsink
+</li><li>fdsink
+</li><li>ximagesink/xvimagesink
+</li><li>fakesink
+</li><li>v4l2sink
+</li></ul></li></ul><p>
+Plus many more! Execute a <code>gst-inspect-1.0 | grep sink</code> to see a complete list of video sinks available.
+</p>
+<p>
+<span class="wikianchor" id="imxg2dvideosink"><a class="anchor" href="#imxg2dvideosink" title="Link to #imxg2dvideosink"> ¶</a></span>
+</p>
+<h3 id="imxg2dvideosink">imxg2dvideosink<a class="anchor" href="#imxg2dvideosink" title="Link to this section"> ¶</a></h3>
+<p>
+This video sink is very versatile in that it can output any image size. It can also transform images (changing size, rotation etc), place images in specified locations, and can accept the following video formats: RGBx, BGRx, RGBA, BGRA, RGB16, NV12, NV21, I420, YV12, YUY2, UYVY
+</p>
+<p>
+ 
+For drawing to a display, this is our recommended GStreamer video sink.
+</p>
+<p>
+ 
+The <code>imxg2dvideosink</code> also supports vertical sync to eliminate <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/video#tearing">screen tearing</a>. To enable this set the <code>use-vsync</code> property to true.
+</p>
+<p>
+<span class="wikianchor" id="imxipuvideosink"><a class="anchor" href="#imxipuvideosink" title="Link to #imxipuvideosink"> ¶</a></span>
+</p>
+<h3 id="imxipuvideosink">imxipuvideosink<a class="anchor" href="#imxipuvideosink" title="Link to this section"> ¶</a></h3>
+<p>
+This video sink is not nearly as versatile in output sizes. In many cases, it will refuse a format and bail out. However, one advantage it has over the <code>imxg2dvideosink</code> is that it includes a deinterlacer and can sink more video formats: RGB16, BGR, RGB, BGRx, BGRA, RGBx, RGBA, ABGR, UYVY, v308, NV12, YV12, I420, Y42B, Y444
+</p>
+<p>
+ 
+This is only recommended if you require a deinterlacer to eliminate the effect of <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/video#interlaced-video">interlaced video effects</a> or requires a certain video format only this video sink can provide.
+</p>
+<p>
+To enable the deinterlacer set the <code>deinterlace=true</code> property.
+</p>
+<p>
+ 
+The imxipuvideosink also supports vertical sync to eliminate <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/video#tearing">screen tearing</a>. To enable this set the <code>use-vsync=true</code> property.
+</p>
+<p>
+<span class="wikianchor" id="imxpxpvideosink"><a class="anchor" href="#imxpxpvideosink" title="Link to #imxpxpvideosink"> ¶</a></span>
+</p>
+<h3 id="imxpxpvideosink">imxpxpvideosink<a class="anchor" href="#imxpxpvideosink" title="Link to this section"> ¶</a></h3>
+<p>
+This sink is only available on the i.mx6solo and i.mx6dl processors. It can do the same as the above (minus having a built-in deinterlacer), and has support for the following video formats: BGRx, RGB16, I420, YV12, Y42B, NV12, YUY2, UYVY, YVYU
+</p>
+<p>
+This is recommended if resources are limited and you require offloading some processing to the PXP engine.
+</p>
+<p>
+Setting the <code>use-vsync=true</code> property is useful to prevent <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/video#tearing">screen tearing</a> in the video.
+</p>
+<p>
+<span class="wikianchor" id="imxeglvidsink"><a class="anchor" href="#imxeglvidsink" title="Link to #imxeglvidsink"> ¶</a></span>
+</p>
+<h3 id="imxeglvivsink">imxeglvivsink<a class="anchor" href="#imxeglvivsink" title="Link to this section"> ¶</a></h3>
+<p>
+This sink is very useful when you have a X11 display, and uses Vivante direct textures to output to the primary display. Like the <code>imxipuvideosink</code>, it has a flexible output video format list: I420, YV12, NV12, NV21, UYVY, RGB16, RGBA, BGRA, RGBx, BGRx, BGR, ARGB, ABGR, xRGB, xBGR
+</p>
+<p>
+This is recommended when running a pipeline which will output to a display with X11/wayland.
+ 
+To use double-buffering (to eliminate tearing) set the FB_MULTI_BUFFER env variable to 2.
+</p>
+<p>
+<span class="wikianchor" id="autovideosink"><a class="anchor" href="#autovideosink" title="Link to #autovideosink"> ¶</a></span>
+</p>
+<h3 id="autovideosink">autovideosink<a class="anchor" href="#autovideosink" title="Link to this section"> ¶</a></h3>
+<p>
+This GStreamer sink is not really a 'video' sink in the traditional sense. Similar to <code>playbin</code> and <code>decodebin</code>, this element selects what it thinks is the best available video sink and uses it. This will typically use <code>imxg2dvideosink</code> unless format choices require one of the other sinks. Generally this is not recommended as it avoids understanding the specific pipeline that is in use.
+</p>
+<p>
+You can add a verbose flag <code>gst-launch-1.0 -v</code> to see details about the elements and caps chosen when using any type of 'auto' element or 'bin' element.
+</p>
+<p>
+<span class="wikianchor" id="fbdevsink"><a class="anchor" href="#fbdevsink" title="Link to #fbdevsink"> ¶</a></span>
+</p>
+<h3 id="fbdevsink">fbdevsink<a class="anchor" href="#fbdevsink" title="Link to this section"> ¶</a></h3>
+<p>
+This sink allows you to directly output to the framebuffer.
+</p>
+<p>
+<span class="wikianchor" id="fdsink"><a class="anchor" href="#fdsink" title="Link to #fdsink"> ¶</a></span>
+</p>
+<h3 id="fdsink">fdsink<a class="anchor" href="#fdsink" title="Link to this section"> ¶</a></h3>
+<p>
+This sink allows you to write to an open file descriptor.
+</p>
+<p>
+<span class="wikianchor" id="xvimagesink"><a class="anchor" href="#xvimagesink" title="Link to #xvimagesink"> ¶</a></span>
+</p>
+<h3 id="ximagexsinkxvimagesink">ximagexsink/xvimagesink<a class="anchor" href="#ximagexsinkxvimagesink" title="Link to this section"> ¶</a></h3>
+<p>
+These sinks output to the X11 display using standard Xlib API calls. The <code>xvimagesink</code> is used for XFree86 video out.
+</p>
+<p>
+<span class="wikianchor" id="fakesink"><a class="anchor" href="#fakesink" title="Link to #fakesink"> ¶</a></span>
+</p>
+<h3 id="fakesink">fakesink<a class="anchor" href="#fakesink" title="Link to this section"> ¶</a></h3>
+<p>
+This is a very useful video sink. It takes whatever frames is given to it and drops them. This might help debugging pipelines if problems ever arise.
+</p>
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 videotestsrc <span class="nv">pattern</span><span class="o">=</span><span class="m">0</span> ! fakesink
+</pre></div></div><p>
+<span class="wikianchor" id="v4l2sink"><a class="anchor" href="#v4l2sink" title="Link to #v4l2sink"> ¶</a></span>
+</p>
+<h3 id="v4l2sink">v4l2sink<a class="anchor" href="#v4l2sink" title="Link to this section"> ¶</a></h3>
+<p>
+This sink is useful when displaying frames on a video4linux2 device. Generally not used on imx6 based product unless all other sinks fail.
+</p>
+<p>
+  
+</p>
+<h3 id="Examples">Examples<a class="anchor" href="#Examples" title="Link to this section"> ¶</a></h3>
+<p>
+Using the above, an example video output pipeline might look like the following:
+</p>
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 videotestsrc <span class="nv">pattern</span><span class="o">=</span><span class="m">18</span> ! imxg2dvideosink <span class="nv">framebuffer</span><span class="o">=</span>/dev/fb0
+</pre></div></div><p>
+<span class="wikianchor" id="input"><a class="anchor" href="#input" title="Link to #input"> ¶</a></span>
+</p>
+<h2 id="Input">Input<a class="anchor" href="#Input" title="Link to this section"> ¶</a></h2>
+<p>
+An input source is anything coming from an input on the device, e.g. HDMI input/USB Web Cam. In order to capture these frames and display it. Please refer to the <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/Video_In">Yocto/Video_In</a> page for details on the video in devices on the Ventana platform.
+</p>
+<p>
+A complete list of input sources on the imx6:
+</p>
+<ul><li>gstreamer-imx specific sources
+<ul><li>imxv4l2videosrc
+</li></ul></li><li>Other GStreamer sources
+<ul><li>autovideosrc
+</li><li>videotestsrc
+</li><li>v4l2src
+</li></ul></li></ul><p>
+Plus many more! Execute a <code>gst-inspect-1.0 | grep src</code> to see a complete list of video sinks available.
+</p>
+<p>
+If the <code>is-live</code> property is set to true this will cause buffers to be discarded on a pipeline paused state and pipelines will not participate in the PREROLL phase of a pipeline.
+</p>
+<p>
+<span class="wikianchor" id="v4l2-ctl"><a class="anchor" href="#v4l2-ctl" title="Link to #v4l2-ctl"> ¶</a></span>
+</p>
+<h3 id="video4linux2devicesandv4l2-ctl">video4linux2 devices and v4l2-ctl<a class="anchor" href="#video4linux2devicesandv4l2-ctl" title="Link to this section"> ¶</a></h3>
+<p>
+The <code>imxv4l2videosrc</code> and <code>v4l2src</code> elements capture from a video4linux2 device. You can use the <code>v4l2-ctl</code> application to to interact with the device to get/set various capabilities and controls.
+</p>
+<p>
+For example:
+</p>
+<ul><li>display all details about /dev/video1:
+<div class="wiki-code"><div class="code"><pre>v4l2-ctl -d /dev/video1 --all
+</pre></div></div></li></ul><p>
+Note that the IMX6 capture driver uses the v4l-int-dev API which creates a 'master' and 'slave' relationship between the CPU's IPU capture driver (mxc_capture) and the driver for the actual image sensor or video decoder (ie adv7180 analog video decoder or tda1997x HDMI receiver). As such the V4L2 API and <code>v4l2-ctl</code> may not give you access to all the knobs that may exist on the 'slave' or 'sensor' driver. Please see the <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/Video_In">Yocto/Video_In</a> page for more details.
+</p>
+<p>
+<span class="wikianchor" id="imxv4l2videosrc"><a class="anchor" href="#imxv4l2videosrc" title="Link to #imxv4l2videosrc"> ¶</a></span>
+</p>
+<h3 id="imxv4l2videosrc">imxv4l2videosrc<a class="anchor" href="#imxv4l2videosrc" title="Link to this section"> ¶</a></h3>
+<p>
+This is the recommended video capture source element for the least amount of CPU overhead if you are going to be using any of the IMX6 IPU/VPU/GPU capabilities such as displaying on an IMX6 output, <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/video#encoding">encoding</a>/<a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/video#decoding">decoding</a>/<a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/video#transcoding">transcoding</a> video, <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/compositing">video composition</a>, or using any of the other transforms such as <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/video#colorspace">colorspace conversion</a>, <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/video#scaling">scaling</a>, or <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/video#interlaced-video">de-interlacing</a>.
+</p>
+<p>
+ 
+This is because the imxv4l2videosrc element is necessary to achieve <a class="missing wiki">​zero-copy?</a> where DMA-able buffers can be shared among gstreamer elements and eliminate CPU-intensive memory copies.
+</p>
+<p>
+ 
+The v4l CSI drivers in the Gateworks downstream vendor kernel has some extra calls that allow one to retrieve the physical address that corresponds to a v4l buffer and since the IPU, G2D, VPU, PxP driver API's all use physical addresses to access data via DMA, this allows for zero-copy.
+</p>
+<p>
+See also <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/video#v4l2-ctl">v4l2-ctl</a> above
+</p>
+<p>
+<span class="wikianchor" id="autovideosrc"><a class="anchor" href="#autovideosrc" title="Link to #autovideosrc"> ¶</a></span>
+</p>
+<h3 id="autovideosrc">autovideosrc<a class="anchor" href="#autovideosrc" title="Link to this section"> ¶</a></h3>
+<p>
+Like the other <code>auto*</code> GStreamer plugins, this one attempts to pick a video source and use it.
+</p>
+<p>
+<span class="wikianchor" id="videotestsrc"><a class="anchor" href="#videotestsrc" title="Link to #videotestsrc"> ¶</a></span>
+</p>
+<h3 id="videotestsrc">videotestsrc<a class="anchor" href="#videotestsrc" title="Link to this section"> ¶</a></h3>
+<p>
+This is a very useful plugin for testing. It can output a huge number for raw video formats: I420, YV12, YUY2, UYVY, AYUV, RGBx, BGRx, xRGB, xBGR, RGBA, BGRA, ARGB, ABGR, RGB, BGR, Y41B, Y42B, YVYU, Y444, v210, v216, NV12, NV21, NV16, NV24, GRAY8, GRAY16_BE, GRAY16_LE, v308, RGB16, BGR16, RGB15, BGR15, UYVP, A420, RGB8P, YUV9, YVU9, IYU1, ARGB64, AYUV64, r210, I420_10LE, I420_10BE, I422_10LE, I422_10BE, Y444_10LE, Y444_10BE, GBR, GBR_10LE, GBR_10BE, NV12_64Z32
+</p>
+<p>
+In addition, it can output several bayer video formats: bggr, rggb, grbg, gbrg
+</p>
+<p>
+Selecting a test pattern from the range of 0 - 22, you can verify colors, movement, among other things.
+</p>
+<p>
+<span class="wikianchor" id="v4l2src"><a class="anchor" href="#v4l2src" title="Link to #v4l2src"> ¶</a></span>
+</p>
+<h3 id="v4l2src">v4l2src<a class="anchor" href="#v4l2src" title="Link to this section"> ¶</a></h3>
+<p>
+This plugin is similar to the <code>imxv4l2videosrc</code> plugin in that it uses the v4l2 api to capture video from input sources, however it does not have access to the physical memory addresses necessary to achieve <a class="ext-link" href="https://github.com/Freescale/gstreamer-imx/blob/master/docs/zerocopy.md"><span class="icon">​</span>zero-copy</a> and therefore is typically more CPU intensive depending on your pipeline. If you are going to be using any IMX6 IPU/GPU/VPU capabilities, use <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/video#imxv4l2videosrc">imxv4l2videosrc</a> instead.
+</p>
+<p>
+Note that <code>v4l2src</code> is always live regardless of the is-live property.
+</p>
+<p>
+See also <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/video#v4l2-ctl">v4l2-ctl</a> above
+</p>
+<h3 id="Examples1">Examples<a class="anchor" href="#Examples1" title="Link to this section"> ¶</a></h3>
+<p>
+Here are some capture examples:
+</p>
+<ul><li>Use a videotestsrc as the source and output to a fakesink
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 videotestsrc <span class="nv">pattern</span><span class="o">=</span><span class="m">0</span> ! fakesink
+</pre></div></div></li><li>Use imxv4l2videosrc to capture video from camera source (/dev/video0 in this case) and output to the first video device via imxg2dvideosink
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video0 ! imxg2dvideosink
+</pre></div></div></li></ul><p>
+<span class="wikianchor" id="colorspace"><a class="anchor" href="#colorspace" title="Link to #colorspace"> ¶</a></span>
+<span class="wikianchor" id="scaling"><a class="anchor" href="#scaling" title="Link to #scaling"> ¶</a></span>
+</p>
+<h2 id="ColorspaceConvertingandorVideoScaling">Colorspace Converting and/or Video Scaling<a class="anchor" href="#ColorspaceConvertingandorVideoScaling" title="Link to this section"> ¶</a></h2>
+<p>
+Often times, a colorspace conversion or scaling is required in order to link GStreamer elements together. This is often due to the fact that not all elements can every format available.
+</p>
+<p>
+A list of available video transforms:
+</p>
+<ul><li>gstreamer-imx specific hardware-accelerated converters:
+<ul><li>imxipuvideotransform (uses IMX6 IPU)
+</li><li>imxg2dvideotransform (uses IMX6 GPU)
+</li><li>imxpxpvideotransform (uses IMX6 PXP)
+<ul><li>Note again that the PXP is only available on the i.mx6solo and i.mx6dl processors.
+</li></ul></li></ul></li><li>Other GStreamer colorspace converters (software based):
+<ul><li>autovideoconvert
+</li><li>videoconvert
+</li><li>rgb2bayer
+</li></ul></li></ul><p>
+<span class="wikianchor" id="transform"><a class="anchor" href="#transform" title="Link to #transform"> ¶</a></span>
+<span class="wikianchor" id="imxipuvideotransform"><a class="anchor" href="#imxipuvideotransform" title="Link to #imxipuvideotransform"> ¶</a></span>
+</p>
+<h3 id="imxipuvideotransform">imxipuvideotransform<a class="anchor" href="#imxipuvideotransform" title="Link to this section"> ¶</a></h3>
+<p>
+This plugin can convert between input type RGB16, BGR, RGB, BGRx, BGRA, RGBx, RGBA, ABGR, UYVY, v308, NV12, YV12, I420, Y42B, Y444 to output type RGB16, BGR, RGB, BGRx, BGRA, RGBx, RGBA, ABGR, UYVY, v308, NV12, YV12, I420, Y42B, Y444 video formats. Further, this element can deinterlace video before sending a frame on, which can be very useful depending on your video types.
+</p>
+<p>
+To enable deinterlacing set the <code>deinterlace=true</code> property on the element.
+</p>
+<p>
+This is the recommended video transform, however please note that the IPU cannot accept non-standard video resolutions.
+</p>
+<p>
+<span class="wikianchor" id="imxg2dvideotransform"><a class="anchor" href="#imxg2dvideotransform" title="Link to #imxg2dvideotransform"> ¶</a></span>
+</p>
+<h3 id="imxg2dvideotransform">imxg2dvideotransform<a class="anchor" href="#imxg2dvideotransform" title="Link to this section"> ¶</a></h3>
+<p>
+This plugin can convert between input type RGBx, BGRx, RGBA, BGRA, RGB16, NV12, NV21, I420, YV12, YUY2, UYVY and output type RGBx, BGRx, RGBA, BGRA, RGB16. This video transform obviously doesn't support any many video formats as the imxipuvideotransform, which is why it is not recommended.
+</p>
+<p>
+<span class="wikianchor" id="imxpxpvideotransform"><a class="anchor" href="#imxpxpvideotransform" title="Link to #imxpxpvideotransform"> ¶</a></span>
+</p>
+<h3 id="imxpxpvideotransform">imxpxpvideotransform<a class="anchor" href="#imxpxpvideotransform" title="Link to this section"> ¶</a></h3>
+<p>
+This plugin can convert between input type BGRx, RGB16, I420, YV12, Y42B, NV12, YUY2, UYVY, YVYU and output type BGRx, BGRA, RGB16, GRAY8. Like the imxg2dvideotransform, it cannot handle many video formats, which is why it is not recommended.
+</p>
+<p>
+<span class="wikianchor" id="autovideoconvert"><a class="anchor" href="#autovideoconvert" title="Link to #autovideoconvert"> ¶</a></span>
+</p>
+<h3 id="autovideoconvert">autovideoconvert<a class="anchor" href="#autovideoconvert" title="Link to this section"> ¶</a></h3>
+<p>
+Like the other auto* plugins, this one chooses the best plugin it thinks can convert one video format to another. It is generally not recommended.
+</p>
+<p>
+<span class="wikianchor" id="videoconvert"><a class="anchor" href="#videoconvert" title="Link to #videoconvert"> ¶</a></span>
+</p>
+<h3 id="videoconvert">videoconvert<a class="anchor" href="#videoconvert" title="Link to this section"> ¶</a></h3>
+<p>
+This is the GStreamer software video colorspace converter. Because it is software based, it can output a whole slew of video formats:
+</p>
+<p>
+Input type I420, YV12, YUY2, UYVY, AYUV, RGBx, BGRx, xRGB, xBGR, RGBA, BGRA, ARGB, ABGR, RGB, BGR, Y41B, Y42B, YVYU, Y444, v210, v216, NV12, NV21, NV16, NV24, GRAY8, GRAY16_BE, GRAY16_LE, v308, RGB16, BGR16, RGB15, BGR15, UYVP, A420, RGB8P, YUV9, YVU9, IYU1, ARGB64, AYUV64, <a class="missing changeset" title="No default repository defined">r210</a>, I420_10LE, I420_10BE, I422_10LE, I422_10BE, Y444_10LE, Y444_10BE, GBR, GBR_10LE, GBR_10BE, NV12_64Z32 to output type I420, YV12, YUY2, UYVY, AYUV, RGBx, BGRx, xRGB, xBGR, RGBA, BGRA, ARGB, ABGR, RGB, BGR, Y41B, Y42B, YVYU, Y444, v210, v216, NV12, NV21, NV16, NV24, GRAY8, GRAY16_BE, GRAY16_LE, v308, RGB16, BGR16, RGB15, BGR15, UYVP, A420, RGB8P, YUV9, YVU9, IYU1, ARGB64, AYUV64, <a class="missing changeset" title="No default repository defined">r210</a>, I420_10LE, I420_10BE, I422_10LE, I422_10BE, Y444_10LE, Y444_10BE, GBR, GBR_10LE, GBR_10BE, NV12_64Z32.
+</p>
+<p>
+ 
+This converter is only recommended when the above cannot be used. Because it is software based, it's performance cost is very high.
+</p>
+<h3 id="rgb2bayer">rgb2bayer<a class="anchor" href="#rgb2bayer" title="Link to this section"> ¶</a></h3>
+<p>
+This plugin can convert between the following: Input type bggr, gbrg, grbg, rggb to output type ARGB.
+</p>
+<h3 id="Examples2">Examples<a class="anchor" href="#Examples2" title="Link to this section"> ¶</a></h3>
+<p>
+Examples using colorspace conversion:
+</p>
+<ul><li>Loopback video from a non-IMX capture source to IMX output:
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 v4l2src <span class="nv">device</span><span class="o">=</span>/dev/video0 ! imxipuvideotransform ! imxg2dvideosink
+</pre></div></div></li><li>Take IMX video input /dev/video0 and output it to /dev/fb0 using the IPU to both colorspace convert and display:
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0  imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video0 ! imxipuvideotransform ! imxipuvideosink <span class="nv">framebuffer</span><span class="o">=</span>/dev/fb0
+</pre></div></div></li></ul><p>
+<span class="wikianchor" id="tearing"><a class="anchor" href="#tearing" title="Link to #tearing"> ¶</a></span> 
+</p>
+<h2 id="ScreenTearing">Screen Tearing<a class="anchor" href="#ScreenTearing" title="Link to this section"> ¶</a></h2>
+<p>
+Screen tearing occurs when the video output is not in sync with the display's refresh rate. The process of synchronizing the output to the refresh rate is also referred to as "vsync".
+</p>
+<p>
+If the video frames are displayed directly on the framebuffer, this is easy to fix. The blitter-based video sinks (the IPU, G2D, PxP sinks: <code>imxipuvideosink</code>, <code>imxg2dvideosink</code>, <code>imxpxpvideosink</code>) have a <code>use-vsync</code> property, which is set to false by default. If set to true, it reconfigures the framebuffer, enlarging its virtual height. It then performs page flipping during playback. The page flipping is synchronized to the display's refresh rate, eliminating the tearing effects. If <code>imxeglvivsink</code> is used, the <code>FB_MULTI_BUFFER</code> environment variable needs to be set to 2. This instructs the Vivante EGL libraries to set up the framebuffer in a way that is similar to what the blitter-based sinks do.
+</p>
+<p>
+In X11, vsync is not doable from the gstreamer-imx side. It would require changes to the existing i.MX6 X11 driver. So far, no such change has been made, meaning that as of now, tearing-free video playback in X11 is not possible.
+</p>
+<p>
+In Wayland, vsync is possible when using Weston as the Wayland compositor. Weston can use OpenGL ES for rendering and also Vivante's G2D. With OpenGL ES, the <code>FB_MULTI_BUFFER</code> approach mentioned above enables vsync for Weston output. This means that the export <code>FB_MULTI_BUFFER=2</code> line needs to be added to the Weston init script. <code>imxeglvivsink</code> can then be used to display video in Wayland, and it will automatically be in sync with the display's refresh rate.
+</p>
+<p>
+References: 
+</p>
+<ul><li><a class="ext-link" href="https://github.com/Freescale/gstreamer-imx/blob/master/docs/faq.md"><span class="icon">​</span>gstreamer-imx FAQ</a>
+</li><li><a class="ext-link" href="https://en.wikipedia.org/wiki/Screen_tearing"><span class="icon">​</span>Wikipedia - includes a simulated image showing tearing</a>
+</li></ul><p>
+<span class="wikianchor" id="interlaced-video"><a class="anchor" href="#interlaced-video" title="Link to #interlaced-video"> ¶</a></span>
+</p>
+<h2 id="InterlacedVideoandDeinterlacing">Interlaced Video and Deinterlacing<a class="anchor" href="#InterlacedVideoandDeinterlacing" title="Link to this section"> ¶</a></h2>
+<p>
+Interlaced video is a technique for doubling the perceived frame rate of a video display without consuming extra bandwidth. The interlaced signal contains two fields of a video frame captured at two different times. The alternative to interlaced video is called progressive video.
+ 
+While reducing bandwidth this can cause a perceived flicker effect as well as a very apparent artifact seen during motion. For example a car moving horizontally across a scene will show every other vertical line differently: the second field interlaced with the first field will be a full frame period ahead in time from the other. The visual affect can be seen in <a class="ext-link" href="https://en.wikipedia.org/wiki/File:Interlaced_video_frame_(car_wheel).jpg"><span class="icon">​</span>this image from Wikipedia</a>
+</p>
+<p>
+Television signals are typically interlaced, or at least were until recently. For example, analog television standards such as NTSC used in North America as well as the PAL and SECAM formats used abroad use interlaced video and therefore any analog video decoder such as the ADV7180 found on many Gateworks Ventana boards will capture interlaced video and are subject to interlacing artifacts. Interlaced video is still used in High Definition signals as well and the letter at the end of the format tells you if its interlaced (ie 480i, 720i, 1080i) or progressive (ie 480p, 720p, 1080p).
+</p>
+<p>
+To use the IMX6 to deinterlace video you can use the <code>deinterlace=true</code> property of the <code>imxipuvideosink</code> or <code>imxipuvideotransform</code> elements.
+ 
+References:
+</p>
+<ul><li><a class="ext-link" href="https://en.wikipedia.org/wiki/Interlaced_video"><span class="icon">​</span>Wikipedia interlaced video - includes several images demonstrating interlacing artifacts</a>
+</li><li><a class="ext-link" href="https://en.wikipedia.org/wiki/Deinterlacing"><span class="icon">​</span>Wikipedia deinterlacing</a>
+</li></ul><p>
+<span class="wikianchor" id="capsfilters"><a class="anchor" href="#capsfilters" title="Link to #capsfilters"> ¶</a></span>
+</p>
+<h2 id="CapsFilters">Caps Filters<a class="anchor" href="#CapsFilters" title="Link to this section"> ¶</a></h2>
+<p>
+ 
+GStreamer has a concept called <a class="ext-link" href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/manual/html/section-caps-api.html"><span class="icon">​</span>caps filters</a>. A 'cap' is used to describe the type of data that links two pads (two plugins). For example, adding a -v flag to a pipeline pipe will output the caps negotiated between these two plugins:
+</p>
+<div class="wiki-code"><div class="code"><pre><span class="c1"># gst-launch-1.0 -v videotestsrc ! fakesink
+</span>Setting pipeline to PAUSED ...
+Pipeline is PREROLLING ...
+/GstPipeline:pipeline0/GstVideoTestSrc:videotestsrc0.GstPad:src: <span class="nv">caps</span> <span class="o">=</span> <span class="s2">"video/x-raw\,\ format\=\(string\)I420\,\ width\=\(int\)320\,\ height\=\(int\)240\,\ framerate\=\(fraction\)30/1\,\ pixel-aspect-ratio\=\(fraction\)1/1\,\ interlace-mode\=\(string\)progressive"</span>
+/GstPipeline:pipeline0/GstFakeSink:fakesink0.GstPad:sink: <span class="nv">caps</span> <span class="o">=</span> <span class="s2">"video/x-raw\,\ format\=\(string\)I420\,\ width\=\(int\)320\,\ height\=\(int\)240\,\ framerate\=\(fraction\)30/1\,\ pixel-aspect-ratio\=\(fraction\)1/1\,\ interlace-mode\=\(string\)progressive"</span>
+Pipeline is PREROLLED ...
+Setting pipeline to PLAYING ...
+New clock: GstSystemClock
+</pre></div></div><p>
+In the output, the <code>caps = "video/x-raw\,\ format\=\(string\)I420\,\ width\=\(int\)320\,\ height\=\(int\)240\,\ framerate\=\(fraction\)30/1\,\ pixel-aspect-ratio\=\(fraction\)1/1\,\ interlace-mode\=\(string\)progressive"</code> are the video caps negotiated between the two. You can also force in a caps filter between two elements:
+</p>
+<div class="wiki-code"><div class="code"><pre>~# gst-launch-1.0 -v videotestsrc ! <span class="s1">'video/x-raw, format=UYVY, width=1920, height=1080, framerate=10/1'</span> ! fakesink
+Setting pipeline to PAUSED ...
+Pipeline is PREROLLING ...
+/GstPipeline:pipeline0/GstVideoTestSrc:videotestsrc0.GstPad:src: <span class="nv">caps</span> <span class="o">=</span> <span class="s2">"video/x-raw\,\ format\=\(string\)UYVY\,\ width\=\(int\)1920\,\ height\=\(int\)1080\,\ framerate\=\(fraction\)10/1\,\ pixel-aspect-ratio\=\(fraction\)1/1\,\ interlace-mode\=\(string\)progressive"</span>
+/GstPipeline:pipeline0/GstCapsFilter:capsfilter0.GstPad:src: <span class="nv">caps</span> <span class="o">=</span> <span class="s2">"video/x-raw\,\ format\=\(string\)UYVY\,\ width\=\(int\)1920\,\ height\=\(int\)1080\,\ framerate\=\(fraction\)10/1\,\ pixel-aspect-ratio\=\(fraction\)1/1\,\ interlace-mode\=\(string\)progressive"</span>
+/GstPipeline:pipeline0/GstFakeSink:fakesink0.GstPad:sink: <span class="nv">caps</span> <span class="o">=</span> <span class="s2">"video/x-raw\,\ format\=\(string\)UYVY\,\ width\=\(int\)1920\,\ height\=\(int\)1080\,\ framerate\=\(fraction\)10/1\,\ pixel-aspect-ratio\=\(fraction\)1/1\,\ interlace-mode\=\(string\)progressive"</span>
+/GstPipeline:pipeline0/GstCapsFilter:capsfilter0.GstPad:sink: <span class="nv">caps</span> <span class="o">=</span> <span class="s2">"video/x-raw\,\ format\=\(string\)UYVY\,\ width\=\(int\)1920\,\ height\=\(int\)1080\,\ framerate\=\(fraction\)10/1\,\ pixel-aspect-ratio\=\(fraction\)1/1\,\ interlace-mode\=\(string\)progressive"</span>
+Pipeline is PREROLLED ...
+Setting pipeline to PLAYING ...
+New clock: GstSystemClock
+</pre></div></div><p>
+As you can see, the caps filter I introduced changed both the video format, resolution, and framerate of the video stream coming out of the <code>videotestsrc</code> plugin. Caps filters are useful when you want to capture at a specific resolution/format, changing audio sample rate etc.
+</p>
+<p>
+<span class="wikianchor" id="loopback"><a class="anchor" href="#loopback" title="Link to #loopback"> ¶</a></span>
+</p>
+<h2 id="LoopbackTest">Loopback Test<a class="anchor" href="#LoopbackTest" title="Link to this section"> ¶</a></h2>
+<p>
+Looping video (i.e. going from an input source back out to an output sink) is something that can be useful if doing colorspace conversions/video composition/resizing etc.
+ 
+The easiest method of confirming video in to out is by doing something like the following:
+</p>
+<div class="wiki-code"><div class="code"><pre><span class="c1"># Take camera input /dev/video0 and output it to /dev/fb0 using the GPU
+</span>gst-launch-1.0  imxv4l2videosrc ! imxg2dvideosink
+</pre></div></div><p>
+However, there are some input devices that the GPU sink cannot accept, and therefore you'll need to do a colorspace conversion:
+</p>
+<div class="wiki-code"><div class="code"><pre><span class="c1"># Take camera input /dev/video0, colorspace convert it using the IPU, and finally output it to /dev/fb0 using the GPU
+</span>gst-launch-1.0  imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video0 ! imxipuvideotransform ! imxg2dvideosink
+</pre></div></div><p>
+Some other examples:
+</p>
+<ul><li>Take camera input /dev/video0 and output it to /dev/fb0 using the IPU to both colorspace convert and display
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0  imxv4l2videosrc ! imxipuvideotransform ! imxipuvideosink
+</pre></div></div></li><li>Take two inputs, and place them in separate sections of the screen using both IPU and GPU
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 <span class="se">\
+</span>  imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video0 ! imxipuvideosink window-width<span class="o">=</span><span class="m">480</span> window-height<span class="o">=</span><span class="m">272</span> <span class="se">\
+</span>  videotestsrc ! imxg2dvideosink window-width<span class="o">=</span><span class="m">480</span> window-height<span class="o">=</span><span class="m">272</span> window-x-coord<span class="o">=</span><span class="m">900</span>
+</pre></div></div></li><li>Take camera input on HDMI and output to HDMI monitor and also record to file
+<pre class="wiki">gst-launch-1.0  imxv4l2videosrc device=/dev/video0 ! imxipuvideotransform ! tee name=t ! queue ! imxg2dvideosink t. ! queue ! imxvpuenc_h264 quant-param=25 ! filesink location=/home/root/file.mp4
+</pre></li></ul><p>
+<span class="wikianchor" id="encoding"><a class="anchor" href="#encoding" title="Link to #encoding"> ¶</a></span> 
+</p>
+<h2 id="Encoding">Encoding<a class="anchor" href="#Encoding" title="Link to this section"> ¶</a></h2>
+<p>
+ 
+Encoding a file means to take a raw stream and convert it to a file format (e.g. avi/mp4 etc). The hardware accelerated encoder elements on the i.mx6 are: imxvpuenc_h263, imxvpuenc_h264, imxvpuenc_mpeg4, and imxvpuenc_mjpeg. See below for some examples.
+</p>
+<p>
+ 
+</p>
+<h3 id="VBRCBR">VBR/CBR<a class="anchor" href="#VBRCBR" title="Link to this section"> ¶</a></h3>
+<p>
+Variable Bitrate (VBR) and Constant Bitrate (CBR) are some some parameters you can pass into an encoder. For example, the imxvpuenc_h263 encoder can set it's bitrate property for CBR, or can change quant-param for VBR. When setting the bitrate, you're guaranteed a maximum bitrate of that stream. For example, if filming an action scene, the bitrate is guaranteed to not exceed 10mbps. However, on calm scenes, the camera might decide to lower it's own bitrate (depending on if it's doing it's own compression). On the other hand, the quant-param will take in whatever bitrate was decided on by the camera and only attempt to quantize it. That is, a quantization level of 25 means each frame will be split into 25 chunks from the original, thus lowering it's quality (and dynamically changing the bitrate).
+</p>
+<p>
+  
+</p>
+<h3 id="h264">h264<a class="anchor" href="#h264" title="Link to this section"> ¶</a></h3>
+<p>
+h264 is a very popular encoding technology. It is most often used for HD content, such as Blu-rays and HDTV. See below for an example using the hardware accelerated h264 encoder:
+</p>
+<div class="wiki-code"><div class="code"><pre><span class="c1"># Take camera input /dev/video0, encode it to h264 at a bitrate of 10mbit/s (CBR) and save to a file.
+</span>gst-launch-1.0  imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video0 ! imxvpuenc_h264 <span class="nv">bitrate</span><span class="o">=</span><span class="m">10000</span> ! filesink <span class="nv">location</span><span class="o">=</span>/tmp/file.mp4
+</pre></div></div><p>
+Some cameras provide output that the vpu encoder can't handle, thus colorspace convert it first:
+</p>
+<div class="wiki-code"><div class="code"><pre><span class="c1"># Take camera input /dev/video0, colorspace convert it, encode it to h264 at a quant-param level of 25 (VBR) and save to a file
+</span>gst-launch-1.0  imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video0 ! imxipuvideotransform ! imxvpuenc_h264 quant-param<span class="o">=</span><span class="m">25</span> ! filesink <span class="nv">location</span><span class="o">=</span>/tmp/file.mp4
+</pre></div></div><p>
+ 
+</p>
+<h3 id="mpeg4">mpeg4<a class="anchor" href="#mpeg4" title="Link to this section"> ¶</a></h3>
+<p>
+mpeg4 is another very popular encoding technology. It is the older version of h264, but is still prevalent. See below for examples using the hardware accelerated mpeg4 encoder:
+ 
+</p>
+<div class="wiki-code"><div class="code"><pre><span class="c1"># Take camera input /dev/video0, encode it to mpeg4 at a bitrate of 10mbit/s (CBR) and save to a file.
+</span>gst-launch-1.0  imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video0 ! imxvpuenc_mpeg4 <span class="nv">bitrate</span><span class="o">=</span><span class="m">10000</span> ! filesink <span class="nv">location</span><span class="o">=</span>/tmp/file.mp4
+</pre></div></div><p>
+ 
+</p>
+<h3 id="mjpeg">mjpeg<a class="anchor" href="#mjpeg" title="Link to this section"> ¶</a></h3>
+<p>
+mjpeg is the format often used when saving a .jpg file, or using the .jpg compression technology over a stream of frames. Please note that mjpeg's bitrate/quant-param parameters don't work. Currently, there is no way to vary the compression rate of the mjpeg. See below for an example usage:
+</p>
+<ul><li>Take 1 frame, encode it to mjpeg, and save to a file
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 videotestsrc <span class="nv">pattern</span><span class="o">=</span><span class="m">0</span> num-buffers<span class="o">=</span><span class="m">1</span> ! imxvpuenc_mjpeg ! filesink <span class="nv">location</span><span class="o">=</span>/tmp/file.mjpg
+</pre></div></div></li><li>Take 50 frames, encode it to mjpeg, and save to a file
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 videotestsrc <span class="nv">pattern</span><span class="o">=</span><span class="m">0</span> num-buffers<span class="o">=</span><span class="m">50</span> ! imxvpuenc_mjpeg ! filesink <span class="nv">location</span><span class="o">=</span>/tmp/file.mjpg
+</pre></div></div></li></ul><p>
+ 
+</p>
+<h3 id="jpeg">jpeg<a class="anchor" href="#jpeg" title="Link to this section"> ¶</a></h3>
+<p>
+jpeg is an image format, usually used to display single frame captures. For example, a user can capture a single frame from a camera or other source via the jpegenc element and display it in their favorite image viewer. For example:
+</p>
+<ul><li>Capture a frame and save it to a .jpg file
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video0 num-buffers<span class="o">=</span><span class="m">1</span> ! jpegenc ! filesink <span class="nv">location</span><span class="o">=</span>/tmp/file.jpg
+</pre></div></div></li></ul><p>
+<span class="wikianchor" id="decoding"><a class="anchor" href="#decoding" title="Link to #decoding"> ¶</a></span> 
+</p>
+<h2 id="Decoding">Decoding<a class="anchor" href="#Decoding" title="Link to this section"> ¶</a></h2>
+<p>
+Like encoding, you can go the other way (in order to display video on a monitor).
+</p>
+<p>
+Instead of having a different plugin element for each codec supported, the <code>imxvpudec</code> plugin element will automatically use the appropriate VPU decoder. However, it is necessary to have a bitstream parser in order to detect and split up the video into elements depending on the codec in use.
+ 
+Note that the following examples assume you are using raw video encoded files, not container formats used for mimxed multimedia types (audio + video) such as ogg, avi, or mov (Quicktime). For information on de-muxing container formats see <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/multimedia">Yocto/gstreamer/multimedia</a>
+</p>
+<p>
+  
+</p>
+<h3 id="H.264">H.264<a class="anchor" href="#H.264" title="Link to this section"> ¶</a></h3>
+<p>
+Decoding a h264 file might look like this:
+</p>
+<ul><li>Take an input, decode, and display
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 filesrc <span class="nv">location</span><span class="o">=</span>/tmp/file.h264 ! h264parse ! imxvpudec ! imxipuvideotransform ! imxipuvideosink
+</pre></div></div></li></ul><p>
+ 
+</p>
+<h3 id="MPEG4">MPEG4<a class="anchor" href="#MPEG4" title="Link to this section"> ¶</a></h3>
+<p>
+Decoding an MPEG4 file might look like this:
+</p>
+<ul><li>Take an input, decode, and display
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 filesrc <span class="nv">location</span><span class="o">=</span>/tmp/file.mp4 ! mpeg4videoparse ! imxvpudec ! imxipuvideotransform ! imxipuvideosink
+</pre></div></div></li></ul><p>
+<span class="wikianchor" id="transcoding"><a class="anchor" href="#transcoding" title="Link to #transcoding"> ¶</a></span> 
+</p>
+<h2 id="Transcoding">Transcoding<a class="anchor" href="#Transcoding" title="Link to this section"> ¶</a></h2>
+<p>
+Transcoding is the ability for a file to be converted to another format. For example:
+</p>
+<ul><li>Take a file in the AVI format, and converts it to a h264 at a bitrate of 5mbit/s.
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 filesrc <span class="nv">location</span><span class="o">=</span>/tmp/file.avi ! imxvpudec ! queue2 ! imxvpuenc_h264 <span class="nv">bitrate</span><span class="o">=</span><span class="m">5000</span> ! filesink <span class="nv">location</span><span class="o">=</span>file.mp4
+</pre></div></div></li></ul></div>
+          
+          <div class="trac-modifiedby">
+            <span><a href="http://trac.gateworks.com/wiki/Yocto/gstreamer/video?action=diff&amp;version=5" title="Version 5 by Ryan Erbstoesser: add example for display and record at the same time using tee ">Last modified</a> <a class="timeline" href="http://trac.gateworks.com/timeline?from=2018-07-24T13%3A29%3A15-07%3A00&amp;precision=second" title="See timeline at 07/24/2018 01:29:15 PM">8 weeks ago</a></span>
+            <span class="trac-print">Last modified on 07/24/2018 01:29:15 PM</span>
+          </div>
+        
+        
+      </div>
+      
+
+    </div>
+    
+    <div id="altlinks">
+      <h3>Download in other formats:</h3>
+      <ul>
+        <li class="last first">
+          <a rel="nofollow" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/video?format=txt">Plain Text</a>
+        </li>
+      </ul>
+    </div>
+    </div>
+    <div id="footer" xml:lang="en" lang="en"><hr>
+      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="trac_logo_mini.png" alt="Trac Powered" width="107" height="30"></a>
+      <p class="left">Powered by <a href="http://trac.gateworks.com/about"><strong>Trac 1.2.2</strong></a><br>
+        By <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
+      <p class="right">Visit the Trac open source project at<br><a href="http://trac.edgewall.org/">http://trac.edgewall.org/</a></p>
+    </div>
+	
+</body>
+</html>

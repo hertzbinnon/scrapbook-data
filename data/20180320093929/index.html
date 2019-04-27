@@ -1,0 +1,2070 @@
+<!DOCTYPE html>
+<html class="v2" dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xmlns:b="http://www.google.com/2005/gml/b" xmlns:data="http://www.google.com/2005/gml/data" xmlns:expr="http://www.google.com/2005/gml/expr">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+
+<meta content="width=1100" name="viewport">
+
+<meta content="blogger" name="generator">
+<link href="favicon.ico" rel="icon" type="image/x-icon">
+<link href="http://blog.nirbheek.in/2018/02/gstreamer-webrtc.html" rel="canonical">
+<link rel="alternate" type="application/atom+xml" title="Nirbheek’s Rantings - Atom" href="http://blog.nirbheek.in/feeds/posts/default">
+<link rel="alternate" type="application/rss+xml" title="Nirbheek’s Rantings - RSS" href="http://blog.nirbheek.in/feeds/posts/default?alt=rss">
+<link rel="service.post" type="application/atom+xml" title="Nirbheek’s Rantings - Atom" href="https://www.blogger.com/feeds/701969077517001201/posts/default">
+
+<link rel="alternate" type="application/atom+xml" title="Nirbheek’s Rantings - Atom" href="http://blog.nirbheek.in/feeds/5460568175258307802/comments/default">
+<!--[if IE]><script type="text/javascript" src="https://www.blogger.com/static/v1/jsbin/3658603751-ieretrofit.js"></script>
+<![endif]-->
+<meta content="http://blog.nirbheek.in/2018/02/gstreamer-webrtc.html" property="og:url">
+<meta content="GStreamer has grown a WebRTC implementation" property="og:title">
+<meta content="In other news, GStreamer is now almost buzzword-compliant! The next blog post on our list: blockchains and smart contracts in GStreamer.   L..." property="og:description">
+<!--[if IE]> <script> (function() { var html5 = ("abbr,article,aside,audio,canvas,datalist,details," + "figure,footer,header,hgroup,mark,menu,meter,nav,output," + "progress,section,time,video").split(','); for (var i = 0; i < html5.length; i++) { document.createElement(html5[i]); } try { document.execCommand('BackgroundImageCache', false, true); } catch(e) {} })(); </script> <![endif]-->
+<title>Nirbheek’s Rantings: GStreamer has grown a WebRTC implementation</title>
+
+
+
+
+
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body class=" variant-dark">
+<div class="navbar section" id="navbar" name="Navbar"><div class="widget Navbar" data-version="1" id="Navbar1">
+<div id="navbar-iframe-container"></div>
+
+
+</div></div>
+<div class="body-fauxcolumns">
+<div class="fauxcolumn-outer body-fauxcolumn-outer">
+<div class="cap-top">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+<div class="fauxborder-left">
+<div class="fauxborder-right"></div>
+<div class="fauxcolumn-inner">
+</div>
+</div>
+<div class="cap-bottom">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+</div>
+</div>
+<div class="content">
+<div class="content-fauxcolumns">
+<div class="fauxcolumn-outer content-fauxcolumn-outer">
+<div class="cap-top">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+<div class="fauxborder-left">
+<div class="fauxborder-right"></div>
+<div class="fauxcolumn-inner">
+</div>
+</div>
+<div class="cap-bottom">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+</div>
+</div>
+<div class="content-outer">
+<div class="content-cap-top cap-top">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+<div class="fauxborder-left content-fauxborder-left">
+<div class="fauxborder-right content-fauxborder-right"></div>
+<div class="content-inner">
+<header>
+<div class="header-outer">
+<div class="header-cap-top cap-top">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+<div class="fauxborder-left header-fauxborder-left">
+<div class="fauxborder-right header-fauxborder-right"></div>
+<div class="region-inner header-inner">
+<div class="header section" id="header" name="Header"><div class="widget Header" data-version="1" id="Header1">
+<div id="header-inner">
+<div class="titlewrapper">
+<h1 class="title">
+<a href="http://blog.nirbheek.in/">
+Nirbheek’s Rantings
+</a>
+</h1>
+</div>
+<div class="descriptionwrapper">
+<p class="description"><span>
+</span></p>
+</div>
+</div>
+</div></div>
+</div>
+</div>
+<div class="header-cap-bottom cap-bottom">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+</div>
+</header>
+<div class="tabs-outer">
+<div class="tabs-cap-top cap-top">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+<div class="fauxborder-left tabs-fauxborder-left">
+<div class="fauxborder-right tabs-fauxborder-right"></div>
+<div class="region-inner tabs-inner">
+<div class="tabs no-items section" id="crosscol" name="Cross-Column"></div>
+<div class="tabs no-items section" id="crosscol-overflow" name="Cross-Column 2"></div>
+</div>
+</div>
+<div class="tabs-cap-bottom cap-bottom">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+</div>
+<div class="main-outer">
+<div class="main-cap-top cap-top">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+<div class="fauxborder-left main-fauxborder-left">
+<div class="fauxborder-right main-fauxborder-right"></div>
+<div class="region-inner main-inner">
+<div class="columns fauxcolumns">
+<div class="fauxcolumn-outer fauxcolumn-center-outer">
+<div class="cap-top">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+<div class="fauxborder-left">
+<div class="fauxborder-right"></div>
+<div class="fauxcolumn-inner">
+</div>
+</div>
+<div class="cap-bottom">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+</div>
+<div class="fauxcolumn-outer fauxcolumn-left-outer">
+<div class="cap-top">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+<div class="fauxborder-left">
+<div class="fauxborder-right"></div>
+<div class="fauxcolumn-inner">
+</div>
+</div>
+<div class="cap-bottom">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+</div>
+<div class="fauxcolumn-outer fauxcolumn-right-outer">
+<div class="cap-top">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+<div class="fauxborder-left">
+<div class="fauxborder-right"></div>
+<div class="fauxcolumn-inner">
+</div>
+</div>
+<div class="cap-bottom">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+</div>
+<!-- corrects IE6 width calculation -->
+<div class="columns-inner">
+<div class="column-center-outer">
+<div class="column-center-inner">
+<div class="main section" id="main" name="Main"><div class="widget Blog" data-version="1" id="Blog1">
+<div class="blog-posts hfeed">
+
+          <div class="date-outer">
+        
+<h2 class="date-header"><span>Saturday, February 3, 2018</span></h2>
+
+          <div class="date-posts">
+        
+<div class="post-outer">
+<div class="post hentry uncustomized-post-template" itemprop="blogPost" itemscope="itemscope" itemtype="http://schema.org/BlogPosting">
+<meta content="701969077517001201" itemprop="blogId">
+<meta content="5460568175258307802" itemprop="postId">
+<a name="5460568175258307802"></a>
+<h3 class="post-title entry-title" itemprop="name">
+GStreamer has grown a WebRTC implementation
+</h3>
+<div class="post-header">
+<div class="post-header-line-1"></div>
+</div>
+<div class="post-body entry-content" id="post-body-5460568175258307802" itemprop="description articleBody">
+<div dir="ltr" style="text-align: left;" trbidi="on"><span style="color: rgb(153, 153, 153);"><i>In other news, GStreamer is now almost buzzword-compliant! The next blog post on our list: blockchains and smart contracts in GStreamer.</i></span><br>
+<br>
+Late last year, <a href="https://twitter.com/centricular/status/921727092810592256" target="_top">we at Centricular announced</a> a new <a href="http://webrtcbydralex.com/index.php/2017/10/21/a-new-webrtc-implementation-is-out/" target="_top">implementation of WebRTC</a> in GStreamer.&nbsp; Today we're happy to announce that after  community review, that work has been <a href="https://cgit.freedesktop.org/gstreamer/gst-plugins-bad/commit/?id=1894293d6378c69548d974d2965e9decc1527654" target="_top">merged into GStreamer</a> itself! The plugin is called <tt>webrtcbin</tt>, and the library is, naturally, called <tt>gstwebrtc</tt>.<br>
+<br>
+The implementation has all the basic features, is transparently compatible with other WebRTC stacks (particularly in browsers), and has been  well-tested with both Firefox and Chrome.<br>
+<br>
+Some of the more advanced features such as FEC  are already a <a href="https://bugzilla.gnome.org/show_bug.cgi?id=792696" target="_top">work in progress</a>, and others will be too—if you want them to be! Hop onto IRC on #gstreamer @ Freenode.net or join <a href="https://lists.freedesktop.org/mailman/listinfo/gstreamer-devel" target="_top">the mailing list</a>.<br>
+<br>
+<h3 style="text-align: left;">How do I use it?</h3><br>
+Currently, the easiest way to use <tt>webrtcbin</tt> is to build GStreamer using either <a href="https://arunraghavan.net/2014/07/quick-start-guide-to-gst-uninstalled-1-x/">gst-uninstalled</a> (Linux and macOS) or <a href="https://gstreamer.freedesktop.org/documentation/installing/building-from-source-using-cerbero.html">Cerbero</a> (Windows, iOS, Android). If you're a patient person, you can follow <a href="https://twitter.com/gstreamer">@gstreamer</a> and wait for GStreamer 1.14 to be released which will include <a href="https://gstreamer.freedesktop.org/download/">Windows, macOS, iOS, and Android binaries</a>.<br>
+<br>
+The API currently lacks documentation, so the best way to learn it is to dive into the <a href="https://cgit.freedesktop.org/gstreamer/gst-plugins-bad/tree/tests/examples/webrtc">source-tree examples</a>. Help on this will be most appreciated! To see how to use GStreamer to do WebRTC with a browser, checkout the <a href="https://github.com/centricular/gstwebrtc-demos/">bidirectional audio-video demos</a> that I wrote.<br>
+<br>
+<a name="show-code"></a><h3 style="text-align: left;">Show me the code! <span style="font-size: xx-small; font-weight: normal; vertical-align: text-top;"><a href="#no-code-pls">[skip]</a></span></h3><br>
+Here's a quick highlight of the important bits that should get you started if you already know how GStreamer works. This example is in C, but GStreamer also has bindings for <a href="https://coaxion.net/blog/2017/12/gstreamer-rust-bindings-release-0-10-0-gst-plugin-release-0-1-0/">Rust</a>, <a href="https://cgit.freedesktop.org/gstreamer/gst-python/">Python</a>, <a href="https://github.com/gstreamer-java/gst1-java-core">Java</a>, <a href="https://cgit.freedesktop.org/gstreamer/gstreamer-sharp/">C#</a>, Vala, and so on.<br>
+<br>
+Let's say you want to capture video from <a href="https://en.wikipedia.org/wiki/Video4Linux">V4L2</a>, stream it to a webrtc peer, and receive video back from it. The first step is the streaming pipeline, which will look something like this:<br>
+<br>
+<!-- HTML generated using hilite.me --><div style="background: rgb(39, 40, 34) none repeat scroll 0% 0%; overflow: auto; width: auto; border-style: solid; border-color: gray; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; border-width: 0.1em 0.1em 0.1em 0.8em; padding: 0.2em 0.6em;"><pre style="margin: 0px; line-height: 125%;"><span style="color: rgb(248, 248, 242);">v4l2src</span> <span style="color: rgb(249, 38, 114);">!</span> <span style="color: rgb(248, 248, 242);">queue</span> <span style="color: rgb(249, 38, 114);">!</span> <span style="color: rgb(248, 248, 242);">vp8enc</span> <span style="color: rgb(249, 38, 114);">!</span> <span style="color: rgb(248, 248, 242);">rtpvp8pay</span> <span style="color: rgb(249, 38, 114);">!</span>
+    <span style="color: rgb(248, 248, 242);">application</span><span style="color: rgb(249, 38, 114);">/</span><span style="color: rgb(248, 248, 242);">x</span><span style="color: rgb(249, 38, 114);">-</span><span style="color: rgb(248, 248, 242);">rtp,media</span><span style="color: rgb(249, 38, 114);">=</span><span style="color: rgb(248, 248, 242);">video,encoding</span><span style="color: rgb(249, 38, 114);">-</span><span style="color: rgb(248, 248, 242);">name</span><span style="color: rgb(249, 38, 114);">=</span><span style="color: rgb(102, 217, 239);">VP8</span><span style="color: rgb(248, 248, 242);">,payload</span><span style="color: rgb(249, 38, 114);">=</span><span style="color: rgb(174, 129, 255);">96</span> <span style="color: rgb(249, 38, 114);">!</span> 
+    <span style="color: rgb(248, 248, 242);">webrtcbin</span> <span style="color: rgb(248, 248, 242);">name</span><span style="color: rgb(249, 38, 114);">=</span><span style="color: rgb(166, 226, 46);">sendrecv</span>
+</pre><table><tbody><tr></tr>
+</tbody></table></div><br>
+As a short-cut, let's parse the string description to create the pipeline.<br>
+<br>
+<!-- HTML generated using hilite.me --><div style="background: rgb(39, 40, 34) none repeat scroll 0% 0%; overflow: auto; width: auto; border-style: solid; border-color: gray; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; border-width: 0.1em 0.1em 0.1em 0.8em; padding: 0.2em 0.6em;"><table><tbody><tr><td><pre style="margin: 0px; line-height: 125%;">1
+2
+3
+4
+5</pre></td><td><pre style="margin: 0px; line-height: 125%;"><span style="color: rgb(175, 175, 223);">GstElement</span> <span style="color: rgb(249, 38, 114);">*</span><span style="color: rgb(248, 248, 242);">pipe;</span>
+
+<span style="color: rgb(248, 248, 242);">pipe</span> <span style="color: rgb(249, 38, 114);">=</span> <span style="color: rgb(223, 175, 223);">gst_parse_launch</span> <span style="color: rgb(248, 248, 242);">(</span><span style="color: rgb(230, 219, 116);">"v4l2src ! queue ! vp8enc ! rtpvp8pay ! "</span>
+    <span style="color: rgb(230, 219, 116);">"application/x-rtp,media=video,encoding-name=VP8,payload=96 !"</span>
+    <span style="color: rgb(230, 219, 116);">" webrtcbin name=sendrecv"</span><span style="color: rgb(248, 248, 242);">,</span> <span style="color: rgb(230, 219, 116);">NULL</span><span style="color: rgb(248, 248, 242);">);</span>
+</pre></td></tr>
+</tbody></table></div><br>
+Next, we get a reference to the <tt>webrtcbin</tt> element and attach some callbacks to it.<br>
+<br>
+<!-- HTML generated using hilite.me --><div style="background: rgb(39, 40, 34) none repeat scroll 0% 0%; overflow: auto; width: auto; border-style: solid; border-color: gray; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; border-width: 0.1em 0.1em 0.1em 0.8em; padding: 0.2em 0.6em;"><table><tbody><tr><td><pre style="margin: 0px; line-height: 125%;">&nbsp;1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19</pre></td><td><pre style="margin: 0px; line-height: 125%;"><span style="color: rgb(175, 175, 223);">GstElement</span> <span style="color: rgb(249, 38, 114);">*</span><span style="color: rgb(248, 248, 242);">webrtc;</span>
+
+<span style="color: rgb(248, 248, 242);">webrtc</span> <span style="color: rgb(249, 38, 114);">=</span> <span style="color: rgb(223, 175, 223);">gst_bin_get_by_name</span> <span style="color: rgb(248, 248, 242);">(</span><span style="color: rgb(166, 226, 46);">GST_BIN</span> <span style="color: rgb(248, 248, 242);">(pipe),</span> <span style="color: rgb(230, 219, 116);">"sendrecv"</span><span style="color: rgb(248, 248, 242);">);</span>
+<span style="color: rgb(223, 175, 223);">g_assert</span> <span style="color: rgb(248, 248, 242);">(webrtc</span> <span style="color: rgb(249, 38, 114);">!=</span> <span style="color: rgb(230, 219, 116);">NULL</span><span style="color: rgb(248, 248, 242);">);</span>
+
+<span style="color: rgb(117, 113, 94);">/* This is the gstwebrtc entry point where we create the offer.</span>
+<span style="color: rgb(117, 113, 94);"> * It will be called when the pipeline goes to PLAYING. */</span>
+<span style="color: rgb(223, 175, 223);">g_signal_connect</span> <span style="color: rgb(248, 248, 242);">(webrtc,</span> <span style="color: rgb(230, 219, 116);">"on-negotiation-needed"</span><span style="color: rgb(248, 248, 242);">,</span>
+    <span style="color: rgb(166, 226, 46);">G_CALLBACK</span> <span style="color: rgb(248, 248, 242);">(on_negotiation_needed),</span> <span style="color: rgb(230, 219, 116);">NULL</span><span style="color: rgb(248, 248, 242);">);</span>
+<span style="color: rgb(117, 113, 94);">/* We will transmit this ICE candidate to the remote using some</span>
+<span style="color: rgb(117, 113, 94);"> * signalling. Incoming ICE candidates from the remote need to be</span>
+<span style="color: rgb(117, 113, 94);"> * added by us too. */</span>
+<span style="color: rgb(223, 175, 223);">g_signal_connect</span> <span style="color: rgb(248, 248, 242);">(webrtc,</span> <span style="color: rgb(230, 219, 116);">"on-ice-candidate"</span><span style="color: rgb(248, 248, 242);">,</span>
+    <span style="color: rgb(166, 226, 46);">G_CALLBACK</span> <span style="color: rgb(248, 248, 242);">(send_ice_candidate_message),</span> <span style="color: rgb(230, 219, 116);">NULL</span><span style="color: rgb(248, 248, 242);">);</span>
+<span style="color: rgb(117, 113, 94);">/* Incoming streams will be exposed via this signal */</span>
+<span style="color: rgb(223, 175, 223);">g_signal_connect</span> <span style="color: rgb(248, 248, 242);">(webrtc,</span> <span style="color: rgb(230, 219, 116);">"pad-added"</span><span style="color: rgb(248, 248, 242);">,</span>
+    <span style="color: rgb(166, 226, 46);">G_CALLBACK</span> <span style="color: rgb(248, 248, 242);">(on_incoming_stream),</span> <span style="color: rgb(248, 248, 242);">pipe);</span>
+<span style="color: rgb(117, 113, 94);">/* Lifetime is the same as the pipeline itself */</span>
+<span style="color: rgb(223, 175, 223);">gst_object_unref</span> <span style="color: rgb(248, 248, 242);">(webrtc);</span>
+</pre></td></tr>
+</tbody></table></div><br>
+When the pipeline goes to PLAYING, the <tt>on_negotiation_needed()</tt> callback will be called, and we will ask <tt>webrtcbin</tt> to create an offer which will match the pipeline above.<br>
+<br>
+<!-- HTML generated using hilite.me --><div style="background: rgb(39, 40, 34) none repeat scroll 0% 0%; overflow: auto; width: auto; border-style: solid; border-color: gray; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; border-width: 0.1em 0.1em 0.1em 0.8em; padding: 0.2em 0.6em;"><table><tbody><tr><td><pre style="margin: 0px; line-height: 125%;">&nbsp;1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></td><td><pre style="margin: 0px; line-height: 125%;"><span style="color: rgb(175, 175, 223);">static</span> <span style="color: rgb(175, 175, 223);">void</span>
+<span style="color: rgb(248, 248, 242);">on_negotiation_needed</span> <span style="color: rgb(175, 175, 223);">(GstElement</span> <span style="color: rgb(249, 38, 114);">*</span> <span style="color: rgb(248, 248, 242);">webrtc,</span> <span style="color: rgb(175, 175, 223);">gpointer</span> <span style="color: rgb(248, 248, 242);">user_data)</span>
+<span style="color: rgb(248, 248, 242);">{</span>
+  <span style="color: rgb(175, 175, 223);">GstPromise</span> <span style="color: rgb(249, 38, 114);">*</span><span style="color: rgb(248, 248, 242);">promise;</span>
+
+  <span style="color: rgb(248, 248, 242);">promise</span> <span style="color: rgb(249, 38, 114);">=</span> <span style="color: rgb(223, 175, 223);">gst_promise_new_with_change_func</span> <span style="color: rgb(248, 248, 242);">(on_offer_created,</span>
+      <span style="color: rgb(248, 248, 242);">user_data,</span> <span style="color: rgb(230, 219, 116);">NULL</span><span style="color: rgb(248, 248, 242);">);</span>
+  <span style="color: rgb(223, 175, 223);">g_signal_emit_by_name</span> <span style="color: rgb(248, 248, 242);">(webrtc,</span> <span style="color: rgb(230, 219, 116);">"create-offer"</span><span style="color: rgb(248, 248, 242);">,</span> <span style="color: rgb(230, 219, 116);">NULL</span><span style="color: rgb(248, 248, 242);">,</span>
+      <span style="color: rgb(248, 248, 242);">promise);</span>
+<span style="color: rgb(248, 248, 242);">}</span>
+</pre></td></tr>
+</tbody></table></div><br>
+When webrtcbin has created the offer, it will call <tt>on_offer_created()</tt><br>
+<br>
+<!-- HTML generated using hilite.me --><div style="background: rgb(39, 40, 34) none repeat scroll 0% 0%; overflow: auto; width: auto; border-style: solid; border-color: gray; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; border-width: 0.1em 0.1em 0.1em 0.8em; padding: 0.2em 0.6em;"><table><tbody><tr><td><pre style="margin: 0px; line-height: 125%;">&nbsp;1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21</pre></td><td><pre style="margin: 0px; line-height: 125%;"><span style="color: rgb(175, 175, 223);">static</span> <span style="color: rgb(175, 175, 223);">void</span>
+<span style="color: rgb(248, 248, 242);">on_offer_created</span> <span style="color: rgb(248, 248, 242);">(</span><span style="color: rgb(175, 175, 223);">GstPromise</span> <span style="color: rgb(249, 38, 114);">*</span> <span style="color: rgb(248, 248, 242);">promise,</span> <span style="color: rgb(248, 248, 242);">GstElement</span> <span style="color: rgb(249, 38, 114);">*</span> <span style="color: rgb(248, 248, 242);">webrtc)</span>
+<span style="color: rgb(248, 248, 242);">{</span>
+  <span style="color: rgb(175, 175, 223);">GstWebRTCSessionDescription</span> <span style="color: rgb(249, 38, 114);">*</span><span style="color: rgb(248, 248, 242);">offer</span> <span style="color: rgb(249, 38, 114);">=</span> <span style="color: rgb(248, 248, 242);">NULL</span><span style="color: rgb(248, 248, 242);">;</span>
+  <span style="color: rgb(175, 175, 223);">const</span> <span style="color: rgb(175, 175, 223);">GstStructure</span> <span style="color: rgb(249, 38, 114);">*</span><span style="color: rgb(248, 248, 242);">reply;</span>
+  <span style="color: rgb(175, 175, 223);">gchar</span> <span style="color: rgb(249, 38, 114);">*</span><span style="color: rgb(248, 248, 242);">desc;</span>
+
+  <span style="color: rgb(248, 248, 242);">reply</span> <span style="color: rgb(249, 38, 114);">=</span> <span style="color: rgb(223, 175, 223);">gst_promise_get_reply</span> <span style="color: rgb(248, 248, 242);">(promise);</span>
+  <span style="color: rgb(223, 175, 223);">gst_structure_get</span> <span style="color: rgb(248, 248, 242);">(reply,</span> <span style="color: rgb(230, 219, 116);">"offer"</span><span style="color: rgb(248, 248, 242);">,</span>
+      <span style="color: rgb(230, 219, 116);">GST_TYPE_WEBRTC_SESSION_DESCRIPTION,</span> 
+      <span style="color: rgb(249, 38, 114);">&amp;</span><span style="color: rgb(248, 248, 242);">offer,</span> <span style="color: rgb(230, 219, 116);">NULL</span><span style="color: rgb(248, 248, 242);">);</span>
+  <span style="color: rgb(223, 175, 223);">gst_promise_unref</span> <span style="color: rgb(248, 248, 242);">(promise);</span>
+
+  <span style="color: rgb(117, 113, 94);">/* We can edit this offer before setting and sending */</span>
+  <span style="color: rgb(223, 175, 223);">g_signal_emit_by_name</span> <span style="color: rgb(248, 248, 242);">(webrtc,</span>
+      <span style="color: rgb(230, 219, 116);">"set-local-description"</span><span style="color: rgb(248, 248, 242);">,</span> <span style="color: rgb(248, 248, 242);">offer,</span> <span style="color: rgb(230, 219, 116);">NULL</span><span style="color: rgb(248, 248, 242);">);</span>
+
+  <span style="color: rgb(117, 113, 94);">/* Implement this and send offer to peer using signalling */</span>
+  <span style="color: rgb(248, 248, 242);">send_sdp_offer</span> <span style="color: rgb(248, 248, 242);">(offer);</span>
+  <span style="color: rgb(223, 175, 223);">gst_webrtc_session_description_free</span> <span style="color: rgb(248, 248, 242);">(offer);</span>
+<span style="color: rgb(248, 248, 242);">}</span>
+</pre></td></tr>
+</tbody></table></div><br>
+Similarly, when we have the SDP <tt>answer</tt> from the remote, we must call <tt>"set-remote-description"</tt> on <tt>webrtcbin</tt>. <br>
+<br>
+<!-- HTML generated using hilite.me --><div style="background: rgb(39, 40, 34) none repeat scroll 0% 0%; overflow: auto; width: auto; border-style: solid; border-color: gray; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; border-width: 0.1em 0.1em 0.1em 0.8em; padding: 0.2em 0.6em;"><table><tbody><tr><td><pre style="margin: 0px; line-height: 125%;">1
+2
+3
+4
+5
+6
+7</pre></td><td><pre style="margin: 0px; line-height: 125%;"><span style="color: rgb(248, 248, 242);">answer</span> <span style="color: rgb(249, 38, 114);">=</span> <span style="color: rgb(223, 175, 223);">gst_webrtc_session_description_new</span> <span style="color: rgb(248, 248, 242);">(</span>
+    <span style="color: rgb(230, 219, 116);">GST_WEBRTC_SDP_TYPE_ANSWER,</span> <span style="color: rgb(248, 248, 242);">sdp);</span>
+<span style="color: rgb(223, 175, 223);">g_assert</span> <span style="color: rgb(248, 248, 242);">(answer);</span>
+
+<span style="color: rgb(117, 113, 94);">/* Set remote description on our pipeline */</span>
+<span style="color: rgb(223, 175, 223);">g_signal_emit_by_name</span> <span style="color: rgb(248, 248, 242);">(webrtc,</span> <span style="color: rgb(230, 219, 116);">"set-remote-description"</span><span style="color: rgb(248, 248, 242);">,</span>
+    <span style="color: rgb(248, 248, 242);">answer,</span> <span style="color: rgb(230, 219, 116);">NULL</span><span style="color: rgb(248, 248, 242);">);</span>
+</pre></td></tr>
+</tbody></table></div><br>
+ICE handling is very similar; when the <tt>"on-ice-candidate"</tt> signal is emitted, we get a local ICE candidate which we must <a href="https://github.com/centricular/gstwebrtc-demos/blob/master/sendrecv/gst/webrtc-sendrecv.c#L167">send to the remote</a>. When we have an ICE candidate from the remote, we must <a href="https://github.com/centricular/gstwebrtc-demos/blob/master/sendrecv/gst/webrtc-sendrecv.c#L500">call</a> <tt>"add-ice-candidate"</tt> on <tt>webrtcbin</tt>.<br>
+<br>
+There's just one piece left now; handling incoming streams that are sent by the remote. For that, we have <tt>on_incoming_stream()</tt> attached to the <tt>"pad-added"</tt> signal on <tt>webrtcbin</tt>.<br>
+<br>
+<!-- HTML generated using hilite.me --><div style="background: rgb(39, 40, 34) none repeat scroll 0% 0%; overflow: auto; width: auto; border-style: solid; border-color: gray; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; border-width: 0.1em 0.1em 0.1em 0.8em; padding: 0.2em 0.6em;"><table><tbody><tr><td><pre style="margin: 0px; line-height: 125%;">&nbsp;1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></td><td><pre style="margin: 0px; line-height: 125%;"><span style="color: rgb(175, 175, 223);">static</span> <span style="color: rgb(175, 175, 223);">void</span>
+<span style="color: rgb(248, 248, 242);">on_incoming_stream</span> <span style="color: rgb(248, 248, 242);">(</span><span style="color: rgb(175, 175, 223);">GstElement</span> <span style="color: rgb(249, 38, 114);">*</span> <span style="color: rgb(248, 248, 242);">webrtc,</span> <span style="color: rgb(175, 175, 223);">GstPad</span> <span style="color: rgb(249, 38, 114);">*</span> <span style="color: rgb(248, 248, 242);">pad,</span>
+    <span style="color: rgb(175, 175, 223);">GstElement</span> <span style="color: rgb(249, 38, 114);">*</span> <span style="color: rgb(248, 248, 242);">pipe)</span>
+<span style="color: rgb(248, 248, 242);">{</span>
+  <span style="color: rgb(175, 175, 223);">GstElement</span> <span style="color: rgb(249, 38, 114);">*</span><span style="color: rgb(248, 248, 242);">play;</span>
+
+  <span style="color: rgb(248, 248, 242);">play</span> <span style="color: rgb(249, 38, 114);">=</span> <span style="color: rgb(223, 175, 223);">gst_parse_bin_from_description</span> <span style="color: rgb(248, 248, 242);">(</span>
+      <span style="color: rgb(230, 219, 116);">"queue ! vp8dec ! videoconvert ! autovideosink"</span><span style="color: rgb(248, 248, 242);">,</span>
+      <span style="color: rgb(230, 219, 116);">TRUE</span><span style="color: rgb(248, 248, 242);">,</span> <span style="color: rgb(230, 219, 116);">NULL</span><span style="color: rgb(248, 248, 242);">);</span>
+  <span style="color: rgb(223, 175, 223);">gst_bin_add</span> <span style="color: rgb(248, 248, 242);">(</span><span style="color: rgb(166, 226, 46);">GST_BIN</span> <span style="color: rgb(248, 248, 242);">(pipe),</span> <span style="color: rgb(248, 248, 242);">play);</span>
+
+  <span style="color: rgb(117, 113, 94);">/* Start displaying video */</span>
+  <span style="color: rgb(223, 175, 223);">gst_element_sync_state_with_parent</span> <span style="color: rgb(248, 248, 242);">(play);</span>
+  <span style="color: rgb(223, 175, 223);">gst_element_link</span> <span style="color: rgb(248, 248, 242);">(webrtc,</span> <span style="color: rgb(248, 248, 242);">play);</span>
+<span style="color: rgb(248, 248, 242);">}</span>
+</pre></td></tr>
+</tbody></table></div><br>
+That's it! This is what a basic webrtc workflow looks like. Those of you that have used the <tt>PeerConnection</tt> API before will be happy to see that this maps to that quite closely.<br>
+<br>
+<a name="no-code-pls"></a>The <a href="https://github.com/centricular/gstwebrtc-demos/">aforementioned demos</a> also include a Websocket signalling server and JS browser components, and I will be doing an in-depth application newbie developer's guide at a later time, so you can <a href="https://twitter.com/nirbheek" target="_top">follow me @nirbheek</a> to hear when it comes out!<br>
+<br>
+<h3 style="text-align: left;">Tell me more!</h3><br>
+The code is already being used in production in a number of places, such as <a href="http://www.easymile.com/" target="_top">EasyMile</a>'s autonomous vehicles, and we're excited to see where else the community can take it.<br>
+<div name="why-gst" style="text-align: left;"><br>
+</div>If you're wondering why we decided a new implementation was needed, read on! For a more detailed discussion into that, you should watch <a href="https://gstconf.ubicast.tv/videos/gstreamer-webrtc/">Matthew Waters' talk</a> from the <a href="https://gstreamer.freedesktop.org/conference/2017/">GStreamer conference last year</a>. It's a great companion for this article!<br>
+<br>
+But before we can dig into  details, we need to lay some foundations first.  <br>
+<br>
+<h3 name="what-is" style="text-align: left;">What is GStreamer, and what is WebRTC? <span style="font-size: xx-small; font-weight: normal; vertical-align: text-top;"><a href="#why-build">[skip]</a></span></h3><div style="text-align: left;"><br>
+<b>GStreamer</b> is a cross-platform <a href="https://gstreamer.freedesktop.org/documentation/application-development/introduction/gstreamer.html">open-source multimedia framework</a> that is, in my opinion, the easiest and most flexible way to implement any application that needs to play, record, or transform media-like data across an extremely versatile scale of devices and products. Embedded (IoT, IVI, phones, TVs, …), desktop (video/music players, video recording, non-linear editing, videoconferencing and <a href="https://en.wikipedia.org/wiki/Voice_over_IP">VoIP</a> clients, browsers …), to servers (encode/transcode farms, video/voice conferencing servers, …) and <a href="https://wiki.ligo.org/DASWG/GstLAL">more</a>.</div><div style="text-align: left;"><br>
+</div><div style="text-align: left;">But what I like the most about GStreamer is the pipeline-based model which solves one of the hardest problems in API design: catering to applications of varying complexity; from the simplest one-liners and quick solutions to those that need several hundreds of thousands of lines of code to implement their full featureset.&nbsp;</div><div style="text-align: left;"><br>
+</div><div style="text-align: left;">If you want to learn more about GStreamer, <a href="https://www.youtube.com/watch?v=ZphadMGufY8">Jan Schmidt's tutorial</a> from <a href="http://lca2018.linux.org.au/">Linux.conf.au</a> is a good start.</div><div style="text-align: left;"><br>
+</div><div style="text-align: left;"><b>WebRTC</b> is a set of draft specifications that build upon existing <a href="https://en.wikipedia.org/wiki/Real-time_Transport_Protocol">RTP</a>, <a href="https://en.wikipedia.org/wiki/RTP_Control_Protocol">RTCP</a>, <a href="https://en.wikipedia.org/wiki/Session_Description_Protocol">SDP</a>, <a href="https://en.wikipedia.org/wiki/Datagram_Transport_Layer_Security">DTLS</a>, <a href="https://en.wikipedia.org/wiki/Interactive_Connectivity_Establishment">ICE</a> (and many other) real-time communication specifications and defines an API for making <abbr title="Real-time Communication">RTC</abbr> accessible using browser JS APIs.</div><div style="text-align: left;"><br>
+</div><div style="text-align: left;">People have been doing real-time communication over <a href="https://en.wikipedia.org/wiki/Internet_Protocol">IP</a> for <a href="https://en.wikipedia.org/wiki/Session_Initiation_Protocol">decades</a> with the previously-listed protocols that WebRTC builds upon. The real innovation of WebRTC was creating a bridge between native  applications and webapps by defining a standard, yet flexible, API that browsers can expose to untrusted JavaScript code.</div><div style="text-align: left;"><br>
+</div><div style="text-align: left;">These specifications are <a href="https://datatracker.ietf.org/wg/rtcweb/documents/">constantly</a> being <a href="https://datatracker.ietf.org/wg/rmcat/documents/">improved upon</a>, which combined with the ubiquitous nature of browsers means WebRTC is fast becoming the standard choice for  videoconferencing on all platforms and for most applications.</div><br>
+<a name="why-build"></a><h3 style="text-align: left;">Everything is great, let's build amazing apps! <span style="font-size: xx-small; font-weight: normal; vertical-align: text-top;"><a href="#why-gst">[skip]</a></span></h3><div style="text-align: left;"><br>
+Not so fast, there's more to the story! For WebApps, the <a href="https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection">PeerConnection API</a> is <a href="https://caniuse.com/#feat=rtcpeerconnection">everywhere</a>. There are some browser-specific quirks as usual, and the API itself keeps changing, but  the <a href="https://github.com/webrtc/adapter">WebRTC JS adapter</a> handles most of that. Overall the WebApp experience is mostly 👍.</div><div style="text-align: left;"><br>
+</div><div style="text-align: left;">Sadly, for native code or applications that need more flexibility than a sandboxed JS app can achieve, there <i>haven't</i> been a lot of great options.</div><div style="text-align: left;"><br>
+</div><div style="text-align: left;"><a href="http://webrtc.org/" target="_top">libwebrtc</a> (Chrome's implementation), <a href="https://janus.conf.meetecho.com/" target="_top">Janus</a>, <a href="https://www.kurento.org/kurento-architecture" target="_top">Kurento</a>, and <a href="https://en.wikipedia.org/wiki/OpenWebRTC" target="_top">OpenWebRTC</a> have traditionally been the main contenders, but after having worked with all of these, we found that each implementation has its own inflexibilities, shortcomings, and constraints.</div><div style="text-align: left;"><br>
+</div><div style="text-align: left;"><b>libwebrtc</b> is still the most mature implementation, but it is also the most difficult to work with. Since it's embedded inside Chrome, it's a moving target, the API can be hard to work with, and the project <a href="https://webrtchacks.com/building-webrtc-from-source/" target="_top">is quite difficult to build and integrate</a>, all of which are obstacles in the way of native or server app developers trying to quickly prototype and try out things.</div><div style="text-align: left;"><br>
+</div><div style="text-align: left;">It was also not built for multimedia use-cases, so while the webrtc bits are great, the lower layers get in the way of non-browser use-cases and applications. It is quite painful to do anything other than the default "set raw media, transmit" and "receive from remote, get raw media". This means that if you want to use your own filters, or hardware-specific codecs or sinks/sources, you end up having to fork libwebrtc.</div><br>
+<div style="text-align: left;">In contrast, <a href="#show-code">as shown above</a>, our implementation gives you full control over this as with any other <a href="https://gstreamer.freedesktop.org/documentation/application-development/introduction/basics.html" target="_top">GStreamer pipeline</a>.</div><div style="text-align: left;"><br>
+</div><div style="text-align: left;"><b>OpenWebRTC</b> by Ericsson was the first attempt to rectify this situation, and it was built on top of GStreamer. The target audience was app developers, and it fit the bill quite well as a proof-of-concept—even though it used a custom API and some of the architectural decisions made it quite inflexible for most other use-cases.</div><div style="text-align: left;"><br>
+</div><div style="text-align: left;">However, after an initial flurry of activity around the project, momentum petered out, the project failed to gather a community around itself, and is now <a href="https://www.youtube.com/watch?v=npjOSLCR2hE" target="_top">effectively dead</a>.</div><div style="text-align: left;"><br>
+</div><div style="text-align: left;"><i>Full disclosure: <a href="https://centricular.com/">we</a> worked with Ericsson to polish some of the rough edges around the project immediately prior to its public release.</i><br>
+</div><br>
+<a name="why-gst"></a><h3 style="text-align: left;">WebRTC in GStreamer — webrtcbin and gstwebrtc</h3><div style="text-align: left;"><br>
+Remember how I said the WebRTC standards build upon existing standards and protocols? As it so happens, GStreamer has supported almost all of them for a while now because they were being used for real-time communication, live streaming, and in many other <a href="https://en.wikipedia.org/wiki/Internet_Protocol">IP-based</a> applications. Indeed, that's partly why Ericsson chose it as the base for <abbr title="OpenWebRTC">OWRTC</abbr>.</div><div name="why-gst" style="text-align: left;"><br>
+</div><div style="text-align: left;">This combined with the SRTP and DTLS plugins that were written during OWRTC's development meant that<i> </i>our implementation is built upon a solid and well-tested base, and that implementing WebRTC features is not as difficult as one might presume. However, WebRTC is a large collection of standards, and reaching feature-parity with libwebrtc is an ongoing task.<br>
+<br>
+Lucky for us, <a href="https://github.com/ystreet/">Matthew</a> made some excellent decisions while architecting the internals of webrtcbin, and we follow the PeerConnection specification quite closely, so almost all the missing features involve writing code that would plug into clearly-defined sockets.</div><div name="why-gst" style="text-align: left;"><br>
+</div><div style="text-align: left;">We believe what we've been building here is the most flexible, versatile, and easy to use WebRTC implementation out there, and it can only get better as time goes by. Bringing the power of pipeline-based multimedia manipulation to WebRTC opens new doors for interesting, unique, and highly efficient applications.<br>
+<br>
+To demonstrate this, in the near future we will be publishing articles that dive into how to use the PeerConnection-inspired API exposed by webrtcbin to build various kinds of applications—starting with a CPU-efficient multi-party bidirectional conferencing solution with a mesh topology that can work with any webrtc stack.<br>
+<br>
+Until next time!</div></div>
+<div style="clear: both;"></div>
+</div>
+<div class="post-footer">
+<div class="post-footer-line post-footer-line-1">
+<span class="post-author vcard">
+wrung out by
+<span class="fn" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+<meta content="https://www.blogger.com/profile/05472526900877533156" itemprop="url">
+<a class="g-profile" href="https://www.blogger.com/profile/05472526900877533156" rel="author" title="author profile">
+<span itemprop="name">Nirbheek</span>
+</a>
+</span>
+</span>
+<span class="post-timestamp">
+'round about
+<meta content="http://blog.nirbheek.in/2018/02/gstreamer-webrtc.html" itemprop="url">
+<a class="timestamp-link" href="http://blog.nirbheek.in/2018/02/gstreamer-webrtc.html" rel="bookmark" title="permanent link"><abbr class="published" itemprop="datePublished" title="2018-02-03T11:48:00+05:30">11:48 AM</abbr></a>
+</span>
+<span class="reaction-buttons">
+</span>
+<span class="post-comment-link">
+</span>
+<span class="post-backlinks post-comment-link">
+</span>
+<span class="post-icons">
+<span class="item-control blog-admin pid-55322834">
+<a href="https://www.blogger.com/post-edit.g?blogID=701969077517001201&amp;postID=5460568175258307802&amp;from=pencil" title="Edit Post">
+<img alt="" class="icon-action" src="icon18_edit_allbkg.gif" width="18" height="18">
+</a>
+</span>
+</span>
+<div class="post-share-buttons goog-inline-block">
+</div>
+</div>
+<div class="post-footer-line post-footer-line-2">
+<span class="post-labels">
+Labels:
+<a href="http://blog.nirbheek.in/search/label/centricular" rel="tag">centricular</a>,
+<a href="http://blog.nirbheek.in/search/label/fosdem" rel="tag">fosdem</a>,
+<a href="http://blog.nirbheek.in/search/label/gnome" rel="tag">gnome</a>,
+<a href="http://blog.nirbheek.in/search/label/gstreamer" rel="tag">gstreamer</a>,
+<a href="http://blog.nirbheek.in/search/label/webrtc" rel="tag">webrtc</a>
+</span>
+</div>
+<div class="post-footer-line post-footer-line-3">
+<span class="post-location">
+</span>
+</div>
+</div>
+</div>
+<div class="comments" id="comments">
+<a name="comments"></a>
+<h4>24 comments:</h4>
+<div id="Blog1_comments-block-wrapper">
+<dl class="avatar-comment-indent" id="comments-block">
+<dt class="comment-author " id="c2080658600815238902">
+<a name="c2080658600815238902"></a>
+<div class="avatar-image-container vcard"><span dir="ltr"><a href="https://www.blogger.com/profile/04125528680428027089" target="" rel="nofollow" onclick="" class="avatar-hovercard" id="av-2080658600815238902-04125528680428027089"><img src="blank.gif" class="delayLoad" style="display: none;" longdesc="//lh6.googleusercontent.com/-NQqi3vnszF4/AAAAAAAAAAI/AAAAAAAAB9w/ybwH2U7S6Io/s35-c/photo.jpg" alt="" title="Chiu Hsiang Hsu" width="35" height="35">
+
+</a></span></div>
+<a href="https://www.blogger.com/profile/04125528680428027089" rel="nofollow">Chiu Hsiang Hsu</a>
+said...
+</dt>
+<dd class="comment-body" id="Blog1_cmt-2080658600815238902">
+<p>
+I think there is a typo, "g_assert (webrtc1 != NULL);" should be "g_assert (webrtc != NULL);" in attaching callback example.<br><br>BTW, I've tried webrtcbin (with Janus Gateway as signaling server) before it got merged upstream, it works for me, very appreciated. ☺️
+</p>
+</dd>
+<dd class="comment-footer">
+<span class="comment-timestamp">
+<a href="http://blog.nirbheek.in/2018/02/gstreamer-webrtc.html?showComment=1517801369622#c2080658600815238902" title="comment permalink">
+February 5, 2018 at 8:59 AM
+</a>
+<span class="item-control blog-admin pid-1644487716">
+<a class="comment-delete" href="https://www.blogger.com/delete-comment.g?blogID=701969077517001201&amp;postID=2080658600815238902" title="Delete Comment">
+<img src="icon_delete13.gif">
+</a>
+</span>
+</span>
+</dd>
+<dt class="comment-author " id="c6337217168670979849">
+<a name="c6337217168670979849"></a>
+<div class="avatar-image-container avatar-stock"><span dir="ltr"><a href="https://www.blogger.com/profile/13924799425935238555" target="" rel="nofollow" onclick="" class="avatar-hovercard" id="av-6337217168670979849-13924799425935238555"><img src="zfdxge77vvd2w5xhy6jkvuelkv-u9_9qlkryk8onbdejptjsz82upq5w6hj-sa=s35" alt="" title="Iñaki" width="35" height="35">
+
+</a></span></div>
+<a href="https://www.blogger.com/profile/13924799425935238555" rel="nofollow">Iñaki</a>
+said...
+</dt>
+<dd class="comment-body" id="Blog1_cmt-6337217168670979849">
+<p>
+While these are good news, I don't understand the design of gstwebrtc.<br><br>I'm not an expert in gstreamer but AFAIK gstreamer is already able to send and receive RTP, right? And I'm pretty sure that those RTP handlers do not implement any "createOffer" nor "setRemoteDescription", etc, am I right? If so, why gstwebrtc does implemente them?<br><br>Honestly, I expected something MUCH more low level, something without SDP involved at all. Instead, pass some RTP parameters (such as in ORTC spec) to the gstwebrtc plugin to indicate it what to send and what to receive.<br><br>Good luck with this, but be ready for people complaining about SDP renegotiation, multi-stream (using Chrome's Plan-B versus IETF/W3 Unified-Plan), etc etc etc.
+</p>
+</dd>
+<dd class="comment-footer">
+<span class="comment-timestamp">
+<a href="http://blog.nirbheek.in/2018/02/gstreamer-webrtc.html?showComment=1517835513799#c6337217168670979849" title="comment permalink">
+February 5, 2018 at 6:28 PM
+</a>
+<span class="item-control blog-admin pid-192209892">
+<a class="comment-delete" href="https://www.blogger.com/delete-comment.g?blogID=701969077517001201&amp;postID=6337217168670979849" title="Delete Comment">
+<img src="icon_delete13.gif">
+</a>
+</span>
+</span>
+</dd>
+<dt class="comment-author blog-author" id="c159934367920419364">
+<a name="c159934367920419364"></a>
+<div class="avatar-image-container vcard"><span dir="ltr"><a href="https://www.blogger.com/profile/05472526900877533156" target="" rel="nofollow" onclick="" class="avatar-hovercard" id="av-159934367920419364-05472526900877533156"><img src="blank.gif" class="delayLoad" style="display: none;" longdesc="//3.bp.blogspot.com/--9eYifePm60/VUPkgsMH9GI/AAAAAAAAAjw/QdPPdkfKkmY/s35/*" alt="" title="Nirbheek" width="35" height="35">
+
+</a></span></div>
+<a href="https://www.blogger.com/profile/05472526900877533156" rel="nofollow">Nirbheek</a>
+said...
+</dt>
+<dd class="comment-body" id="Blog1_cmt-159934367920419364">
+<p>
+@Chiu<br>&gt; I think there is a typo, "g_assert (webrtc1 != NULL);" should be "g_assert (webrtc != NULL);" in attaching callback example.<br><br>Fixed, thanks!<br><br>&gt; BTW, I've tried webrtcbin (with Janus Gateway as signaling server) before it got merged upstream, it works for me, very appreciated. ☺️<br><br>Cheers :)<br><br>@Iñaki<br>&gt; Honestly, I expected something MUCH more low level, something without SDP involved at all. Instead, pass some RTP parameters (such as in ORTC spec) to the gstwebrtc plugin to indicate it what to send and what to receive.<br><br>You can already do that with GStreamer. As I noted in the blog post, the low-level APIs all already exist. gstwebrtc and webrtcbin are about implementing an API that app developers can use without having to know the internals of how rtp/rtcp/ice/etc work.
+</p>
+</dd>
+<dd class="comment-footer">
+<span class="comment-timestamp">
+<a href="http://blog.nirbheek.in/2018/02/gstreamer-webrtc.html?showComment=1518081822717#c159934367920419364" title="comment permalink">
+February 8, 2018 at 2:53 PM
+</a>
+<span class="item-control blog-admin pid-55322834">
+<a class="comment-delete" href="https://www.blogger.com/delete-comment.g?blogID=701969077517001201&amp;postID=159934367920419364" title="Delete Comment">
+<img src="icon_delete13.gif">
+</a>
+</span>
+</span>
+</dd>
+<dt class="comment-author " id="c6047034910304395599">
+<a name="c6047034910304395599"></a>
+<div class="avatar-image-container avatar-stock"><span dir="ltr"><a href="https://www.blogger.com/profile/13924799425935238555" target="" rel="nofollow" onclick="" class="avatar-hovercard" id="av-6047034910304395599-13924799425935238555"><img src="zfdxge77vvd2w5xhy6jkvuelkv-u9_9qlkryk8onbdejptjsz82upq5w6hj-sa=s35" alt="" title="Iñaki" width="35" height="35">
+
+</a></span></div>
+<a href="https://www.blogger.com/profile/13924799425935238555" rel="nofollow">Iñaki</a>
+said...
+</dt>
+<dd class="comment-body" id="Blog1_cmt-6047034910304395599">
+<p>
+Thanks Nirbheek, clear now.
+</p>
+</dd>
+<dd class="comment-footer">
+<span class="comment-timestamp">
+<a href="http://blog.nirbheek.in/2018/02/gstreamer-webrtc.html?showComment=1518099113637#c6047034910304395599" title="comment permalink">
+February 8, 2018 at 7:41 PM
+</a>
+<span class="item-control blog-admin pid-192209892">
+<a class="comment-delete" href="https://www.blogger.com/delete-comment.g?blogID=701969077517001201&amp;postID=6047034910304395599" title="Delete Comment">
+<img src="icon_delete13.gif">
+</a>
+</span>
+</span>
+</dd>
+<dt class="comment-author " id="c2341312162350973716">
+<a name="c2341312162350973716"></a>
+<div class="avatar-image-container vcard"><span dir="ltr"><a href="https://www.blogger.com/profile/01110616173544390690" target="" rel="nofollow" onclick="" class="avatar-hovercard" id="av-2341312162350973716-01110616173544390690"><img src="blank.gif" class="delayLoad" style="display: none;" longdesc="//lh4.googleusercontent.com/-LqXBDN0ISQw/AAAAAAAAAAI/AAAAAAAAAPs/2Xb7hMp269c/s35-c/photo.jpg" alt="" title="Sebastian Kilb" width="35" height="35">
+
+</a></span></div>
+<a href="https://www.blogger.com/profile/01110616173544390690" rel="nofollow">Sebastian Kilb</a>
+said...
+</dt>
+<dd class="comment-body" id="Blog1_cmt-2341312162350973716">
+<p>
+Sounds pretty awesome and might be what I need.<br>Currently I am writing my Bachelor Thesis at a company and researching possibilities to implement a webrtc media server, which can run on windows. It should be able to establish a connection between two clients and record audio/video as well as play audio or video from the server to the clients.<br>Initially they wanted it to be implemented in c#, but this might difficult to do, because unfortunately all media servers I found are either implemented in c++ and only support Ubuntu/Mac or via NodeJS. <br>My current POC is using google's webrtc native code, which I compiled into a static library and made a wrapper via c++/cli. But using their API is a real pain.<br>Do you think gstreamer would be a good solution? And will it also support webrtc datachannels or only audio and video via rtp?<br><br>Thank you for sharing it with us.
+</p>
+</dd>
+<dd class="comment-footer">
+<span class="comment-timestamp">
+<a href="http://blog.nirbheek.in/2018/02/gstreamer-webrtc.html?showComment=1518191922053#c2341312162350973716" title="comment permalink">
+February 9, 2018 at 9:28 PM
+</a>
+<span class="item-control blog-admin pid-2026953309">
+<a class="comment-delete" href="https://www.blogger.com/delete-comment.g?blogID=701969077517001201&amp;postID=2341312162350973716" title="Delete Comment">
+<img src="icon_delete13.gif">
+</a>
+</span>
+</span>
+</dd>
+<dt class="comment-author blog-author" id="c1050290073038014278">
+<a name="c1050290073038014278"></a>
+<div class="avatar-image-container vcard"><span dir="ltr"><a href="https://www.blogger.com/profile/05472526900877533156" target="" rel="nofollow" onclick="" class="avatar-hovercard" id="av-1050290073038014278-05472526900877533156"><img src="blank.gif" class="delayLoad" style="display: none;" longdesc="//3.bp.blogspot.com/--9eYifePm60/VUPkgsMH9GI/AAAAAAAAAjw/QdPPdkfKkmY/s35/*" alt="" title="Nirbheek" width="35" height="35">
+
+</a></span></div>
+<a href="https://www.blogger.com/profile/05472526900877533156" rel="nofollow">Nirbheek</a>
+said...
+</dt>
+<dd class="comment-body" id="Blog1_cmt-1050290073038014278">
+<p>
+@Sebastian<br>&gt; implement a webrtc media server, which can run on windows. It should be able to establish a connection between two clients and record audio/video as well as play audio or video from the server to the clients.<br><br>This use-case is one of the primary reasons why we wrote this. The webrtc code hasn't been tested on Windows, but it uses components that are well-tested on Windows, so it should all work fine.<br><br>&gt; Initially they wanted it to be implemented in c#<br><br>GStreamer does have a <a href="https://cgit.freedesktop.org/gstreamer/gstreamer-sharp/" rel="nofollow">C# API</a>, so once it's been updated to add support for the new gstwebrtc and gstpromise APIs you should be able to use this from C#.<br><br>If you want to get started quickly, I would recommend prototyping in C to get a hang of gstreamer and the webrtc API, and then building it in C# later. Poke thiblahute or slomo on #gstreamer on FreeNode about the bindings. :)<br><br>Datachannel support is not implemented yet, <a href="https://github.com/centricular/gstwebrtc-demos/issues/4" rel="nofollow">but can be</a>. However for your use-case communication over websockets via a signalling server might work just as well. The gstwebrtc-demos repository has an example for that.
+</p>
+</dd>
+<dd class="comment-footer">
+<span class="comment-timestamp">
+<a href="http://blog.nirbheek.in/2018/02/gstreamer-webrtc.html?showComment=1518193877227#c1050290073038014278" title="comment permalink">
+February 9, 2018 at 10:01 PM
+</a>
+<span class="item-control blog-admin pid-55322834">
+<a class="comment-delete" href="https://www.blogger.com/delete-comment.g?blogID=701969077517001201&amp;postID=1050290073038014278" title="Delete Comment">
+<img src="icon_delete13.gif">
+</a>
+</span>
+</span>
+</dd>
+<dt class="comment-author " id="c3955196164536085437">
+<a name="c3955196164536085437"></a>
+<div class="avatar-image-container vcard"><span dir="ltr"><a href="https://www.blogger.com/profile/01110616173544390690" target="" rel="nofollow" onclick="" class="avatar-hovercard" id="av-3955196164536085437-01110616173544390690"><img src="blank.gif" class="delayLoad" style="display: none;" longdesc="//lh4.googleusercontent.com/-LqXBDN0ISQw/AAAAAAAAAAI/AAAAAAAAAPs/2Xb7hMp269c/s35-c/photo.jpg" alt="" title="Sebastian Kilb" width="35" height="35">
+
+</a></span></div>
+<a href="https://www.blogger.com/profile/01110616173544390690" rel="nofollow">Sebastian Kilb</a>
+said...
+</dt>
+<dd class="comment-body" id="Blog1_cmt-3955196164536085437">
+<p>
+Sounds awesome. I will definitely try it out.<br>Thank you very much for your help and quick response.
+</p>
+</dd>
+<dd class="comment-footer">
+<span class="comment-timestamp">
+<a href="http://blog.nirbheek.in/2018/02/gstreamer-webrtc.html?showComment=1518216987670#c3955196164536085437" title="comment permalink">
+February 10, 2018 at 4:26 AM
+</a>
+<span class="item-control blog-admin pid-2026953309">
+<a class="comment-delete" href="https://www.blogger.com/delete-comment.g?blogID=701969077517001201&amp;postID=3955196164536085437" title="Delete Comment">
+<img src="icon_delete13.gif">
+</a>
+</span>
+</span>
+</dd>
+<dt class="comment-author " id="c5196392466657969443">
+<a name="c5196392466657969443"></a>
+<div class="avatar-image-container avatar-stock"><span dir="ltr"><img src="blank_001.gif" alt="" title="Anonymous" width="35" height="35">
+
+</span></div>
+Anonymous
+said...
+</dt>
+<dd class="comment-body" id="Blog1_cmt-5196392466657969443">
+<p>
+Post the noob guide please
+</p>
+</dd>
+<dd class="comment-footer">
+<span class="comment-timestamp">
+<a href="http://blog.nirbheek.in/2018/02/gstreamer-webrtc.html?showComment=1518410982030#c5196392466657969443" title="comment permalink">
+February 12, 2018 at 10:19 AM
+</a>
+<span class="item-control blog-admin pid-1604502872">
+<a class="comment-delete" href="https://www.blogger.com/delete-comment.g?blogID=701969077517001201&amp;postID=5196392466657969443" title="Delete Comment">
+<img src="icon_delete13.gif">
+</a>
+</span>
+</span>
+</dd>
+<dt class="comment-author blog-author" id="c8587390609097725231">
+<a name="c8587390609097725231"></a>
+<div class="avatar-image-container vcard"><span dir="ltr"><a href="https://www.blogger.com/profile/05472526900877533156" target="" rel="nofollow" onclick="" class="avatar-hovercard" id="av-8587390609097725231-05472526900877533156"><img src="blank.gif" class="delayLoad" style="display: none;" longdesc="//3.bp.blogspot.com/--9eYifePm60/VUPkgsMH9GI/AAAAAAAAAjw/QdPPdkfKkmY/s35/*" alt="" title="Nirbheek" width="35" height="35">
+
+</a></span></div>
+<a href="https://www.blogger.com/profile/05472526900877533156" rel="nofollow">Nirbheek</a>
+said...
+</dt>
+<dd class="comment-body" id="Blog1_cmt-8587390609097725231">
+<p>
+@anonymous<br>That will probably come out at the same time as the GStreamer 1.14 release so people don't have to build gstreamer to try it out :)
+</p>
+</dd>
+<dd class="comment-footer">
+<span class="comment-timestamp">
+<a href="http://blog.nirbheek.in/2018/02/gstreamer-webrtc.html?showComment=1518433215963#c8587390609097725231" title="comment permalink">
+February 12, 2018 at 4:30 PM
+</a>
+<span class="item-control blog-admin pid-55322834">
+<a class="comment-delete" href="https://www.blogger.com/delete-comment.g?blogID=701969077517001201&amp;postID=8587390609097725231" title="Delete Comment">
+<img src="icon_delete13.gif">
+</a>
+</span>
+</span>
+</dd>
+<dt class="comment-author " id="c7816552677771405460">
+<a name="c7816552677771405460"></a>
+<div class="avatar-image-container avatar-stock"><span dir="ltr"><a href="https://www.blogger.com/profile/16339423978224788726" target="" rel="nofollow" onclick="" class="avatar-hovercard" id="av-7816552677771405460-16339423978224788726"><img src="zfdxge77vvd2w5xhy6jkvuelkv-u9_9qlkryk8onbdejptjsz82upq5w6hj-sa=s35" alt="" title="Victor Kulikov" width="35" height="35">
+
+</a></span></div>
+<a href="https://www.blogger.com/profile/16339423978224788726" rel="nofollow">Victor Kulikov</a>
+said...
+</dt>
+<dd class="comment-body" id="Blog1_cmt-7816552677771405460">
+<p>
+Hi! Thanks for a great work! However I have installed gstreamer with the help of gst-uninstalled and got now<br>gst-inspect-1.0 webrtcbin<br>No such element or plugin 'webrtcbin'
+</p>
+</dd>
+<dd class="comment-footer">
+<span class="comment-timestamp">
+<a href="http://blog.nirbheek.in/2018/02/gstreamer-webrtc.html?showComment=1518759452418#c7816552677771405460" title="comment permalink">
+February 16, 2018 at 11:07 AM
+</a>
+<span class="item-control blog-admin pid-2091952669">
+<a class="comment-delete" href="https://www.blogger.com/delete-comment.g?blogID=701969077517001201&amp;postID=7816552677771405460" title="Delete Comment">
+<img src="icon_delete13.gif">
+</a>
+</span>
+</span>
+</dd>
+<dt class="comment-author blog-author" id="c4853047981281106257">
+<a name="c4853047981281106257"></a>
+<div class="avatar-image-container vcard"><span dir="ltr"><a href="https://www.blogger.com/profile/05472526900877533156" target="" rel="nofollow" onclick="" class="avatar-hovercard" id="av-4853047981281106257-05472526900877533156"><img src="blank.gif" class="delayLoad" style="display: none;" longdesc="//3.bp.blogspot.com/--9eYifePm60/VUPkgsMH9GI/AAAAAAAAAjw/QdPPdkfKkmY/s35/*" alt="" title="Nirbheek" width="35" height="35">
+
+</a></span></div>
+<a href="https://www.blogger.com/profile/05472526900877533156" rel="nofollow">Nirbheek</a>
+said...
+</dt>
+<dd class="comment-body" id="Blog1_cmt-4853047981281106257">
+<p>
+@Victor<br>The plugin should be built inside gst-plugins-bad/ext/webrtc/.libs, if it isn't you need to look at config.log to see if all the dependencies were found. Particularly, ensure that libnice and the gstreamer libnice packages are installed.<br><br>If you still have problems, find us at #gstreamer at FreeNode. Almost anyone there should be able to help you with build issues. Cheers!
+</p>
+</dd>
+<dd class="comment-footer">
+<span class="comment-timestamp">
+<a href="http://blog.nirbheek.in/2018/02/gstreamer-webrtc.html?showComment=1518834922650#c4853047981281106257" title="comment permalink">
+February 17, 2018 at 8:05 AM
+</a>
+<span class="item-control blog-admin pid-55322834">
+<a class="comment-delete" href="https://www.blogger.com/delete-comment.g?blogID=701969077517001201&amp;postID=4853047981281106257" title="Delete Comment">
+<img src="icon_delete13.gif">
+</a>
+</span>
+</span>
+</dd>
+<dt class="comment-author " id="c7728336249250567853">
+<a name="c7728336249250567853"></a>
+<div class="avatar-image-container avatar-stock"><span dir="ltr"><img src="blank_001.gif" alt="" title="Anonymous" width="35" height="35">
+
+</span></div>
+Anonymous
+said...
+</dt>
+<dd class="comment-body" id="Blog1_cmt-7728336249250567853">
+<p>
+Hello,<br><br>Can you explain how to install your web server ? <br>Serve the js/ directory on the root of your website , copy js and index files isn't enough to run the demo.<br><br>I have this error in my console,<br>webrtc.js:149 WebSocket connection to 'wss://192.168.4.127:8443/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED<br>Unable to connect to server, did you add an exception for the certificate?<br><br>Should we start this server ?<br><br>gstwebrtc-demos/signalling$ ./simple-server.py<br><br><br>thanks in avance<br><br><br><br><br><br><br><br><br>https://github.com/centricular/gstwebrtc-demos<br><br>
+</p>
+</dd>
+<dd class="comment-footer">
+<span class="comment-timestamp">
+<a href="http://blog.nirbheek.in/2018/02/gstreamer-webrtc.html?showComment=1519051867747#c7728336249250567853" title="comment permalink">
+February 19, 2018 at 8:21 PM
+</a>
+<span class="item-control blog-admin pid-1967305893">
+<a class="comment-delete" href="https://www.blogger.com/delete-comment.g?blogID=701969077517001201&amp;postID=7728336249250567853" title="Delete Comment">
+<img src="icon_delete13.gif">
+</a>
+</span>
+</span>
+</dd>
+<dt class="comment-author blog-author" id="c1535843947692646593">
+<a name="c1535843947692646593"></a>
+<div class="avatar-image-container vcard"><span dir="ltr"><a href="https://www.blogger.com/profile/05472526900877533156" target="" rel="nofollow" onclick="" class="avatar-hovercard" id="av-1535843947692646593-05472526900877533156"><img src="blank.gif" class="delayLoad" style="display: none;" longdesc="//3.bp.blogspot.com/--9eYifePm60/VUPkgsMH9GI/AAAAAAAAAjw/QdPPdkfKkmY/s35/*" alt="" title="Nirbheek" width="35" height="35">
+
+</a></span></div>
+<a href="https://www.blogger.com/profile/05472526900877533156" rel="nofollow">Nirbheek</a>
+said...
+</dt>
+<dd class="comment-body" id="Blog1_cmt-1535843947692646593">
+<p>
+@anonymous<br><br>Yes, you need to start ./simple-server.py and point it to your HTTP server's certificate database, which must be signed by a CA.<br><br>If you don't have one of those, you can generate a self-signed certificate with ./generate_cert.sh and then tell your browser to accept it when prompted. On the gst side, you need to find the line "SOUP_SESSION_SSL_STRICT, TRUE," and change it to "SOUP_SESSION_SSL_STRICT, FALSE,".
+</p>
+</dd>
+<dd class="comment-footer">
+<span class="comment-timestamp">
+<a href="http://blog.nirbheek.in/2018/02/gstreamer-webrtc.html?showComment=1519057695461#c1535843947692646593" title="comment permalink">
+February 19, 2018 at 9:58 PM
+</a>
+<span class="item-control blog-admin pid-55322834">
+<a class="comment-delete" href="https://www.blogger.com/delete-comment.g?blogID=701969077517001201&amp;postID=1535843947692646593" title="Delete Comment">
+<img src="icon_delete13.gif">
+</a>
+</span>
+</span>
+</dd>
+<dt class="comment-author " id="c5850297490714401931">
+<a name="c5850297490714401931"></a>
+<div class="avatar-image-container avatar-stock"><span dir="ltr"><img src="blank_001.gif" alt="" title="Anonymous" width="35" height="35">
+
+</span></div>
+Anonymous
+said...
+</dt>
+<dd class="comment-body" id="Blog1_cmt-5850297490714401931">
+<p>
+You use  ./simple-server.py below https://webrtc.nirbheek.in/ with index.html and js file ???<br><br>where can we download the server to instantiate this page https://webrtc.nirbheek.in/<br><br>thanks in avance
+</p>
+</dd>
+<dd class="comment-footer">
+<span class="comment-timestamp">
+<a href="http://blog.nirbheek.in/2018/02/gstreamer-webrtc.html?showComment=1519145425291#c5850297490714401931" title="comment permalink">
+February 20, 2018 at 10:20 PM
+</a>
+<span class="item-control blog-admin pid-721767897">
+<a class="comment-delete" href="https://www.blogger.com/delete-comment.g?blogID=701969077517001201&amp;postID=5850297490714401931" title="Delete Comment">
+<img src="icon_delete13.gif">
+</a>
+</span>
+</span>
+</dd>
+<dt class="comment-author blog-author" id="c8458086171167524912">
+<a name="c8458086171167524912"></a>
+<div class="avatar-image-container vcard"><span dir="ltr"><a href="https://www.blogger.com/profile/05472526900877533156" target="" rel="nofollow" onclick="" class="avatar-hovercard" id="av-8458086171167524912-05472526900877533156"><img src="blank.gif" class="delayLoad" style="display: none;" longdesc="//3.bp.blogspot.com/--9eYifePm60/VUPkgsMH9GI/AAAAAAAAAjw/QdPPdkfKkmY/s35/*" alt="" title="Nirbheek" width="35" height="35">
+
+</a></span></div>
+<a href="https://www.blogger.com/profile/05472526900877533156" rel="nofollow">Nirbheek</a>
+said...
+</dt>
+<dd class="comment-body" id="Blog1_cmt-8458086171167524912">
+<p>
+@anonymous, yes, webrtc.nirbheek.in is literally just running from a git checkout of gstwebrtc-demos.
+</p>
+</dd>
+<dd class="comment-footer">
+<span class="comment-timestamp">
+<a href="http://blog.nirbheek.in/2018/02/gstreamer-webrtc.html?showComment=1519146502917#c8458086171167524912" title="comment permalink">
+February 20, 2018 at 10:38 PM
+</a>
+<span class="item-control blog-admin pid-55322834">
+<a class="comment-delete" href="https://www.blogger.com/delete-comment.g?blogID=701969077517001201&amp;postID=8458086171167524912" title="Delete Comment">
+<img src="icon_delete13.gif">
+</a>
+</span>
+</span>
+</dd>
+<dt class="comment-author " id="c5115146245394465617">
+<a name="c5115146245394465617"></a>
+<div class="avatar-image-container avatar-stock"><span dir="ltr"><img src="blank_001.gif" alt="" title="Anonymous" width="35" height="35">
+
+</span></div>
+Anonymous
+said...
+</dt>
+<dd class="comment-body" id="Blog1_cmt-5115146245394465617">
+<p>
+Really :( it does not work at home<br><br>When I checkout this https://github.com/shanet/WebRTC-Example.git<br><br> This example just running from git .<br><br>I have build correctly your application but it's not work with webrtc.nirbheek.in <br><br>./webrtc-sendrecv --peer-id 5981 --gst-debug=*:3<br><br>too bad for me :(
+</p>
+</dd>
+<dd class="comment-footer">
+<span class="comment-timestamp">
+<a href="http://blog.nirbheek.in/2018/02/gstreamer-webrtc.html?showComment=1519148006277#c5115146245394465617" title="comment permalink">
+February 20, 2018 at 11:03 PM
+</a>
+<span class="item-control blog-admin pid-721767897">
+<a class="comment-delete" href="https://www.blogger.com/delete-comment.g?blogID=701969077517001201&amp;postID=5115146245394465617" title="Delete Comment">
+<img src="icon_delete13.gif">
+</a>
+</span>
+</span>
+</dd>
+<dt class="comment-author " id="c4968509857430494923">
+<a name="c4968509857430494923"></a>
+<div class="avatar-image-container avatar-stock"><span dir="ltr"><img src="blank_001.gif" alt="" title="Anonymous" width="35" height="35">
+
+</span></div>
+Anonymous
+said...
+</dt>
+<dd class="comment-body" id="Blog1_cmt-4968509857430494923">
+<p>
+the signaling server seems to me missing from the git repo.
+</p>
+</dd>
+<dd class="comment-footer">
+<span class="comment-timestamp">
+<a href="http://blog.nirbheek.in/2018/02/gstreamer-webrtc.html?showComment=1519157428883#c4968509857430494923" title="comment permalink">
+February 21, 2018 at 1:40 AM
+</a>
+<span class="item-control blog-admin pid-205297725">
+<a class="comment-delete" href="https://www.blogger.com/delete-comment.g?blogID=701969077517001201&amp;postID=4968509857430494923" title="Delete Comment">
+<img src="icon_delete13.gif">
+</a>
+</span>
+</span>
+</dd>
+<dt class="comment-author blog-author" id="c5364269503726185819">
+<a name="c5364269503726185819"></a>
+<div class="avatar-image-container vcard"><span dir="ltr"><a href="https://www.blogger.com/profile/05472526900877533156" target="" rel="nofollow" onclick="" class="avatar-hovercard" id="av-5364269503726185819-05472526900877533156"><img src="blank.gif" class="delayLoad" style="display: none;" longdesc="//3.bp.blogspot.com/--9eYifePm60/VUPkgsMH9GI/AAAAAAAAAjw/QdPPdkfKkmY/s35/*" alt="" title="Nirbheek" width="35" height="35">
+
+</a></span></div>
+<a href="https://www.blogger.com/profile/05472526900877533156" rel="nofollow">Nirbheek</a>
+said...
+</dt>
+<dd class="comment-body" id="Blog1_cmt-5364269503726185819">
+<p>
+I have no idea if I am talking to the same person or multiple different people. Please use a name ;)<br><br>The signalling server is https://github.com/centricular/gstwebrtc-demos/blob/master/signalling/simple-server.py<br><br>You do not need it to try out the code, https://webrtc.nirbheek.in has been working fine for everyone, and I re-verified just now.<br><br>It's difficult to diagnose on blog comments, please visit #gstreamer on freenode or email me. Cheers!
+</p>
+</dd>
+<dd class="comment-footer">
+<span class="comment-timestamp">
+<a href="http://blog.nirbheek.in/2018/02/gstreamer-webrtc.html?showComment=1519159427444#c5364269503726185819" title="comment permalink">
+February 21, 2018 at 2:13 AM
+</a>
+<span class="item-control blog-admin pid-55322834">
+<a class="comment-delete" href="https://www.blogger.com/delete-comment.g?blogID=701969077517001201&amp;postID=5364269503726185819" title="Delete Comment">
+<img src="icon_delete13.gif">
+</a>
+</span>
+</span>
+</dd>
+<dt class="comment-author " id="c6349259147009075786">
+<a name="c6349259147009075786"></a>
+<div class="avatar-image-container avatar-stock"><span dir="ltr"><img src="blank_001.gif" alt="" title="draden" width="35" height="35">
+
+</span></div>
+draden
+said...
+</dt>
+<dd class="comment-body" id="Blog1_cmt-6349259147009075786">
+<p>
+hi Nirbheek , <br>Thanks you.<br>I want to use the directory code js. However locally, it does not work. The peer id is not displayed in the view and the websocket can not connect.<br><br><br>how to configure the web server to have the same behavior locally as your site https://webrtc.nirbheek.in . <br><br><br>best regards<br><br><br>Draden<br><br><br>
+</p>
+</dd>
+<dd class="comment-footer">
+<span class="comment-timestamp">
+<a href="http://blog.nirbheek.in/2018/02/gstreamer-webrtc.html?showComment=1519160137636#c6349259147009075786" title="comment permalink">
+February 21, 2018 at 2:25 AM
+</a>
+<span class="item-control blog-admin pid-205297725">
+<a class="comment-delete" href="https://www.blogger.com/delete-comment.g?blogID=701969077517001201&amp;postID=6349259147009075786" title="Delete Comment">
+<img src="icon_delete13.gif">
+</a>
+</span>
+</span>
+</dd>
+<dt class="comment-author " id="c2301044706024167032">
+<a name="c2301044706024167032"></a>
+<div class="avatar-image-container avatar-stock"><span dir="ltr"><img src="blank_001.gif" alt="" title="draden" width="35" height="35">
+
+</span></div>
+draden
+said...
+</dt>
+<dd class="comment-body" id="Blog1_cmt-2301044706024167032">
+<p>
+Hi,<br><br>Good news . I have disable ssl protocol in gst app.<br><br>session = soup_session_new_with_options (SOUP_SESSION_SSL_STRICT, FALSE,<br>      SOUP_SESSION_SSL_USE_SYSTEM_CA_FILE, FALSE,<br>      //SOUP_SESSION_SSL_CA_FILE, "/etc/ssl/certs/ca-bundle.crt",<br>      SOUP_SESSION_HTTPS_ALIASES, https_aliases, NULL);<br><br>By using a mac with chrome browser, it works with the VP8 and H264 codecs on your site. However, I do not hear sounds.<br><br>Using my workstation under ubuntu 16.04, I have this error <br><br>Status: InvalidStateError: setRemoteDescription needs to called before addIceCandidate<br><br><br><br>
+</p>
+</dd>
+<dd class="comment-footer">
+<span class="comment-timestamp">
+<a href="http://blog.nirbheek.in/2018/02/gstreamer-webrtc.html?showComment=1519210343578#c2301044706024167032" title="comment permalink">
+February 21, 2018 at 4:22 PM
+</a>
+<span class="item-control blog-admin pid-1967305893">
+<a class="comment-delete" href="https://www.blogger.com/delete-comment.g?blogID=701969077517001201&amp;postID=2301044706024167032" title="Delete Comment">
+<img src="icon_delete13.gif">
+</a>
+</span>
+</span>
+</dd>
+<dt class="comment-author " id="c577807228565518474">
+<a name="c577807228565518474"></a>
+<div class="avatar-image-container avatar-stock"><span dir="ltr"><img src="blank_001.gif" alt="" title="draden" width="35" height="35">
+
+</span></div>
+draden
+said...
+</dt>
+<dd class="comment-body" id="Blog1_cmt-577807228565518474">
+<p>
+hello,<br><br>The video freezes frequently. Can you reproduce? I observe this on your site https://webrtc.nirbheek.in/<br><br>cheers<br><br>draden
+</p>
+</dd>
+<dd class="comment-footer">
+<span class="comment-timestamp">
+<a href="http://blog.nirbheek.in/2018/02/gstreamer-webrtc.html?showComment=1519828757759#c577807228565518474" title="comment permalink">
+February 28, 2018 at 8:09 PM
+</a>
+<span class="item-control blog-admin pid-1565723756">
+<a class="comment-delete" href="https://www.blogger.com/delete-comment.g?blogID=701969077517001201&amp;postID=577807228565518474" title="Delete Comment">
+<img src="icon_delete13.gif">
+</a>
+</span>
+</span>
+</dd>
+<dt class="comment-author blog-author" id="c3883523736284474782">
+<a name="c3883523736284474782"></a>
+<div class="avatar-image-container vcard"><span dir="ltr"><a href="https://www.blogger.com/profile/05472526900877533156" target="" rel="nofollow" onclick="" class="avatar-hovercard" id="av-3883523736284474782-05472526900877533156"><img src="blank.gif" class="delayLoad" style="display: none;" longdesc="//3.bp.blogspot.com/--9eYifePm60/VUPkgsMH9GI/AAAAAAAAAjw/QdPPdkfKkmY/s35/*" alt="" title="Nirbheek" width="35" height="35">
+
+</a></span></div>
+<a href="https://www.blogger.com/profile/05472526900877533156" rel="nofollow">Nirbheek</a>
+said...
+</dt>
+<dd class="comment-body" id="Blog1_cmt-3883523736284474782">
+<p>
+@draden, please understand that I cannot treat this comments section as a support system. Video freezing could be due to any number of issues, please either post on the gstreamer mailing list or ask on the IRC channel so other people can also try to help.<br><br>Alternatively, if you are able to get to the bottom of any problems and have isolated the cause, you should file a bug so it can be looked at.<br><br>Cheers!
+</p>
+</dd>
+<dd class="comment-footer">
+<span class="comment-timestamp">
+<a href="http://blog.nirbheek.in/2018/02/gstreamer-webrtc.html?showComment=1519828936618#c3883523736284474782" title="comment permalink">
+February 28, 2018 at 8:12 PM
+</a>
+<span class="item-control blog-admin pid-55322834">
+<a class="comment-delete" href="https://www.blogger.com/delete-comment.g?blogID=701969077517001201&amp;postID=3883523736284474782" title="Delete Comment">
+<img src="icon_delete13.gif">
+</a>
+</span>
+</span>
+</dd>
+<dt class="comment-author " id="c5999804141084573769">
+<a name="c5999804141084573769"></a>
+<div class="avatar-image-container avatar-stock"><span dir="ltr"><img src="blank_001.gif" alt="" title="fred" width="35" height="35">
+
+</span></div>
+fred
+said...
+</dt>
+<dd class="comment-body" id="Blog1_cmt-5999804141084573769">
+<p>
+Hello,<br><br>Great good job<br><br>Have you tested with firefox ?<br>Have you tested with a client on another network ?<br><br>cheers<br><br>fred
+</p>
+</dd>
+<dd class="comment-footer">
+<span class="comment-timestamp">
+<a href="http://blog.nirbheek.in/2018/02/gstreamer-webrtc.html?showComment=1520430738199#c5999804141084573769" title="comment permalink">
+March 7, 2018 at 7:22 PM
+</a>
+<span class="item-control blog-admin pid-675882235">
+<a class="comment-delete" href="https://www.blogger.com/delete-comment.g?blogID=701969077517001201&amp;postID=5999804141084573769" title="Delete Comment">
+<img src="icon_delete13.gif">
+</a>
+</span>
+</span>
+</dd>
+<dt class="comment-author blog-author" id="c180391853073958952">
+<a name="c180391853073958952"></a>
+<div class="avatar-image-container vcard"><span dir="ltr"><a href="https://www.blogger.com/profile/05472526900877533156" target="" rel="nofollow" onclick="" class="avatar-hovercard" id="av-180391853073958952-05472526900877533156"><img src="blank.gif" class="delayLoad" style="display: none;" longdesc="//3.bp.blogspot.com/--9eYifePm60/VUPkgsMH9GI/AAAAAAAAAjw/QdPPdkfKkmY/s35/*" alt="" title="Nirbheek" width="35" height="35">
+
+</a></span></div>
+<a href="https://www.blogger.com/profile/05472526900877533156" rel="nofollow">Nirbheek</a>
+said...
+</dt>
+<dd class="comment-body" id="Blog1_cmt-180391853073958952">
+<p>
+@fred, yes the code has been tested with both Firefox and Chrome, and across NATs. The example currently uses a STUN server, and can also use a TURN server if needed (f.ex, because of a proxy).
+</p>
+</dd>
+<dd class="comment-footer">
+<span class="comment-timestamp">
+<a href="http://blog.nirbheek.in/2018/02/gstreamer-webrtc.html?showComment=1520433785285#c180391853073958952" title="comment permalink">
+March 7, 2018 at 8:13 PM
+</a>
+<span class="item-control blog-admin pid-55322834">
+<a class="comment-delete" href="https://www.blogger.com/delete-comment.g?blogID=701969077517001201&amp;postID=180391853073958952" title="Delete Comment">
+<img src="icon_delete13.gif">
+</a>
+</span>
+</span>
+</dd>
+</dl>
+</div>
+<p class="comment-footer">
+<a href="https://www.blogger.com/comment.g?blogID=701969077517001201&amp;postID=5460568175258307802&amp;isPopup=true" onclick="javascript:window.open(this.href, &quot;bloggerPopup&quot;, &quot;toolbar=0,location=0,statusbar=1,menubar=0,scrollbars=yes,width=640,height=500&quot;); return false;">Post a Comment</a>
+</p>
+<div id="backlinks-container">
+<div id="Blog1_backlinks-container">
+<a name="links"></a><h4><!--Can't find substitution for tag [post.backlinksLabel]--></h4>
+<p class="comment-footer">
+<a class="comment-link" href="http://blog.nirbheek.in/2018/02/gstreamer-webrtc.html" id="Blog1_backlinks-create-link" target="_top"><!--Can't find substitution for tag [post.createLinkLabel]--></a>
+</p>
+</div>
+</div>
+</div>
+</div>
+
+        </div></div>
+      
+</div>
+<div class="blog-pager" id="blog-pager">
+<span id="blog-pager-newer-link">
+<a class="blog-pager-newer-link" href="http://blog.nirbheek.in/2018/02/decoupling-gstreamer-pipelines.html" id="Blog1_blog-pager-newer-link" title="Newer Post">Newer Post</a>
+</span>
+<span id="blog-pager-older-link">
+<a class="blog-pager-older-link" href="http://blog.nirbheek.in/2016/08/the-meson-build-system-at-guadec-2016.html" id="Blog1_blog-pager-older-link" title="Older Post">Older Post</a>
+</span>
+<a class="home-link" href="http://blog.nirbheek.in/">Home</a>
+</div>
+<div class="clear"></div>
+<div class="post-feeds">
+<div class="feed-links">
+Subscribe to:
+<a class="feed-link" href="http://blog.nirbheek.in/feeds/5460568175258307802/comments/default" target="_top" type="application/atom+xml">Post Comments (Atom)</a>
+</div>
+</div>
+
+</div></div>
+</div>
+</div>
+<div class="column-left-outer">
+<div class="column-left-inner">
+<aside>
+</aside>
+</div>
+</div>
+<div class="column-right-outer">
+<div class="column-right-inner">
+<aside>
+<div class="sidebar section" id="sidebar-right-1"><div class="widget Profile" data-version="1" id="Profile1">
+<h2>About Me</h2>
+<div class="widget-content">
+<a href="https://www.blogger.com/profile/05472526900877533156"><img alt="My photo" class="profile-img" src="proxy" width="80" height="80"></a>
+<dl class="profile-datablock">
+<dt class="profile-data">
+<a class="profile-name-link g-profile" href="https://www.blogger.com/profile/05472526900877533156" rel="author" style="background-image: url('logo-16.png');">
+Nirbheek
+</a>
+</dt>
+<dd class="profile-textblock">DON'T PANIC</dd>
+</dl>
+<a class="profile-link" href="https://www.blogger.com/profile/05472526900877533156" rel="author">View my complete profile</a>
+<div class="clear"></div>
+<span class="widget-item-control">
+<span class="item-control blog-admin">
+<a class="quickedit" href="http://www.blogger.com/rearrange?blogID=701969077517001201&amp;widgetType=Profile&amp;widgetId=Profile1&amp;action=editWidget&amp;sectionId=sidebar-right-1" onclick="return _WidgetManager._PopupConfig(document.getElementById(&quot;Profile1&quot;));" target="configProfile1" title="Edit">
+<img alt="" src="icon18_wrench_allbkg.png" width="18" height="18">
+</a>
+</span>
+</span>
+<div class="clear"></div>
+</div>
+</div></div>
+<table class="section-columns columns-2" cellspacing="0" cellpadding="0" border="0">
+<tbody>
+<tr>
+<td class="first columns-cell">
+<div class="sidebar section" id="sidebar-right-2-1"><div class="widget BlogArchive" data-version="1" id="BlogArchive1">
+<h2>Blog Archive</h2>
+<div class="widget-content">
+<div id="ArchiveList">
+<div id="BlogArchive1_ArchiveList">
+<ul class="hierarchy">
+<li class="archivedate expanded">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy toggle-open">
+
+        ▼&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2018/">
+2018
+</a>
+<span class="post-count" dir="ltr">(3)</span>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2018/03/">
+March
+</a>
+<span class="post-count" dir="ltr">(1)</span>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate expanded">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy toggle-open">
+
+        ▼&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2018/02/">
+February
+</a>
+<span class="post-count" dir="ltr">(2)</span>
+<ul class="posts">
+<li><a href="http://blog.nirbheek.in/2018/02/decoupling-gstreamer-pipelines.html">Decoupling GStreamer Pipelines</a></li>
+<li><a href="http://blog.nirbheek.in/2018/02/gstreamer-webrtc.html">GStreamer has grown a WebRTC implementation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2016/">
+2016
+</a>
+<span class="post-count" dir="ltr">(3)</span>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2016/08/">
+August
+</a>
+<span class="post-count" dir="ltr">(1)</span>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2016/07/">
+July
+</a>
+<span class="post-count" dir="ltr">(1)</span>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2016/05/">
+May
+</a>
+<span class="post-count" dir="ltr">(1)</span>
+</li>
+</ul>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2015/">
+2015
+</a>
+<span class="post-count" dir="ltr">(2)</span>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2015/06/">
+June
+</a>
+<span class="post-count" dir="ltr">(1)</span>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2015/05/">
+May
+</a>
+<span class="post-count" dir="ltr">(1)</span>
+</li>
+</ul>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2014/">
+2014
+</a>
+<span class="post-count" dir="ltr">(1)</span>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2014/05/">
+May
+</a>
+<span class="post-count" dir="ltr">(1)</span>
+</li>
+</ul>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2013/">
+2013
+</a>
+<span class="post-count" dir="ltr">(2)</span>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2013/11/">
+November
+</a>
+<span class="post-count" dir="ltr">(1)</span>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2013/05/">
+May
+</a>
+<span class="post-count" dir="ltr">(1)</span>
+</li>
+</ul>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2012/">
+2012
+</a>
+<span class="post-count" dir="ltr">(5)</span>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2012/12/">
+December
+</a>
+<span class="post-count" dir="ltr">(1)</span>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2012/08/">
+August
+</a>
+<span class="post-count" dir="ltr">(1)</span>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2012/07/">
+July
+</a>
+<span class="post-count" dir="ltr">(2)</span>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2012/02/">
+February
+</a>
+<span class="post-count" dir="ltr">(1)</span>
+</li>
+</ul>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2011/">
+2011
+</a>
+<span class="post-count" dir="ltr">(1)</span>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2011/03/">
+March
+</a>
+<span class="post-count" dir="ltr">(1)</span>
+</li>
+</ul>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2010/">
+2010
+</a>
+<span class="post-count" dir="ltr">(11)</span>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2010/08/">
+August
+</a>
+<span class="post-count" dir="ltr">(1)</span>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2010/04/">
+April
+</a>
+<span class="post-count" dir="ltr">(1)</span>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2010/03/">
+March
+</a>
+<span class="post-count" dir="ltr">(2)</span>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2010/02/">
+February
+</a>
+<span class="post-count" dir="ltr">(5)</span>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2010/01/">
+January
+</a>
+<span class="post-count" dir="ltr">(2)</span>
+</li>
+</ul>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2009/">
+2009
+</a>
+<span class="post-count" dir="ltr">(3)</span>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2009/12/">
+December
+</a>
+<span class="post-count" dir="ltr">(1)</span>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2009/10/">
+October
+</a>
+<span class="post-count" dir="ltr">(1)</span>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2009/06/">
+June
+</a>
+<span class="post-count" dir="ltr">(1)</span>
+</li>
+</ul>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2008/">
+2008
+</a>
+<span class="post-count" dir="ltr">(24)</span>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2008/11/">
+November
+</a>
+<span class="post-count" dir="ltr">(1)</span>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2008/10/">
+October
+</a>
+<span class="post-count" dir="ltr">(1)</span>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2008/09/">
+September
+</a>
+<span class="post-count" dir="ltr">(1)</span>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2008/06/">
+June
+</a>
+<span class="post-count" dir="ltr">(2)</span>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2008/04/">
+April
+</a>
+<span class="post-count" dir="ltr">(7)</span>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2008/03/">
+March
+</a>
+<span class="post-count" dir="ltr">(7)</span>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2008/01/">
+January
+</a>
+<span class="post-count" dir="ltr">(5)</span>
+</li>
+</ul>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2007/">
+2007
+</a>
+<span class="post-count" dir="ltr">(39)</span>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2007/11/">
+November
+</a>
+<span class="post-count" dir="ltr">(3)</span>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2007/10/">
+October
+</a>
+<span class="post-count" dir="ltr">(4)</span>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2007/09/">
+September
+</a>
+<span class="post-count" dir="ltr">(2)</span>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2007/08/">
+August
+</a>
+<span class="post-count" dir="ltr">(4)</span>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2007/07/">
+July
+</a>
+<span class="post-count" dir="ltr">(2)</span>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2007/05/">
+May
+</a>
+<span class="post-count" dir="ltr">(7)</span>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2007/04/">
+April
+</a>
+<span class="post-count" dir="ltr">(9)</span>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2007/03/">
+March
+</a>
+<span class="post-count" dir="ltr">(3)</span>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2007/02/">
+February
+</a>
+<span class="post-count" dir="ltr">(4)</span>
+</li>
+</ul>
+<ul class="hierarchy">
+<li class="archivedate collapsed">
+<a class="toggle" href="javascript:void(0)">
+<span class="zippy">
+
+        ►&nbsp;
+      
+</span>
+</a>
+<a class="post-count-link" href="http://blog.nirbheek.in/2007/01/">
+January
+</a>
+<span class="post-count" dir="ltr">(1)</span>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="clear"></div>
+<span class="widget-item-control">
+<span class="item-control blog-admin">
+<a class="quickedit" href="http://www.blogger.com/rearrange?blogID=701969077517001201&amp;widgetType=BlogArchive&amp;widgetId=BlogArchive1&amp;action=editWidget&amp;sectionId=sidebar-right-2-1" onclick="return _WidgetManager._PopupConfig(document.getElementById(&quot;BlogArchive1&quot;));" target="configBlogArchive1" title="Edit">
+<img alt="" src="icon18_wrench_allbkg.png" width="18" height="18">
+</a>
+</span>
+</span>
+<div class="clear"></div>
+</div>
+</div></div>
+</td>
+<td class="columns-cell">
+<div class="sidebar section" id="sidebar-right-2-2"><div class="widget LinkList" data-version="1" id="LinkList3">
+<h2>Web Comics I Read</h2>
+<div class="widget-content">
+<ul>
+<li><a href="http://www.xkcd.com/">xkcd</a></li>
+<li><a href="http://www.asofterworld.com/">A Softer World</a></li>
+<li><a href="http://www.userfriendly.org/static/">User Friendly</a></li>
+<li><a href="http://www.buttercupfestival.com/">Buttercup Festival</a></li>
+<li><a href="http://osnews.com/comics">FocusShift</a></li>
+<li><a href="http://pbfcomics.com/">The Perry Bible Fellowship</a></li>
+<li><a href="http://www.phdcomics.com/comics.php">PHD Comics</a></li>
+<li><a href="http://wondermark.com/">Wondermark</a></li>
+</ul>
+<div class="clear"></div>
+<span class="widget-item-control">
+<span class="item-control blog-admin">
+<a class="quickedit" href="http://www.blogger.com/rearrange?blogID=701969077517001201&amp;widgetType=LinkList&amp;widgetId=LinkList3&amp;action=editWidget&amp;sectionId=sidebar-right-2-2" onclick="return _WidgetManager._PopupConfig(document.getElementById(&quot;LinkList3&quot;));" target="configLinkList3" title="Edit">
+<img alt="" src="icon18_wrench_allbkg.png" width="18" height="18">
+</a>
+</span>
+</span>
+<div class="clear"></div>
+</div>
+</div></div>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="sidebar no-items section" id="sidebar-right-3"></div>
+</aside>
+</div>
+</div>
+</div>
+<div style="clear: both;"></div>
+<!-- columns -->
+</div>
+<!-- main -->
+</div>
+</div>
+<div class="main-cap-bottom cap-bottom">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+</div>
+<footer>
+<div class="footer-outer">
+<div class="footer-cap-top cap-top">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+<div class="fauxborder-left footer-fauxborder-left">
+<div class="fauxborder-right footer-fauxborder-right"></div>
+<div class="region-inner footer-inner">
+<div class="foot no-items section" id="footer-1"></div>
+<table class="section-columns columns-2" cellspacing="0" cellpadding="0" border="0">
+<tbody>
+<tr>
+<td class="first columns-cell">
+<div class="foot no-items section" id="footer-2-1"></div>
+</td>
+<td class="columns-cell">
+<div class="foot no-items section" id="footer-2-2"></div>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- outside of the include in order to lock Attribution widget -->
+<div class="foot section" id="footer-3" name="Footer"><div class="widget Attribution" data-version="1" id="Attribution1">
+<div class="widget-content" style="text-align: center;">
+Simple theme. Powered by <a href="https://www.blogger.com/" target="_top">Blogger</a>.
+</div>
+<div class="clear"></div>
+<span class="widget-item-control">
+<span class="item-control blog-admin">
+<a class="quickedit" href="http://www.blogger.com/rearrange?blogID=701969077517001201&amp;widgetType=Attribution&amp;widgetId=Attribution1&amp;action=editWidget&amp;sectionId=footer-3" onclick="return _WidgetManager._PopupConfig(document.getElementById(&quot;Attribution1&quot;));" target="configAttribution1" title="Edit">
+<img alt="" src="icon18_wrench_allbkg.png" width="18" height="18">
+</a>
+</span>
+</span>
+<div class="clear"></div>
+</div></div>
+</div>
+</div>
+<div class="footer-cap-bottom cap-bottom">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+</div>
+</footer>
+<!-- content -->
+</div>
+</div>
+<div class="content-cap-bottom cap-bottom">
+<div class="cap-left"></div>
+<div class="cap-right"></div>
+</div>
+</div>
+</div>
+
+<!-- Disable stupid swipe gestures on mobile. from: https://productforums.google.com/forum/#!topic/blogger/8hNsCLpEn6U;context-place=forum/blogger -->
+
+
+
+
+
+</body>
+</html>

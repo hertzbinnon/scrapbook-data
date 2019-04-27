@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>分布式存储系统 Ceph - bili111 - 博客园</title>
+
+
+
+<link title="RSS" type="application/rss+xml" rel="alternate" href="http://www.cnblogs.com/james111/rss">
+<link title="RSD" type="application/rsd+xml" rel="EditURI" href="http://www.cnblogs.com/james111/rsd.xml">
+<link type="application/wlwmanifest+xml" rel="wlwmanifest" href="http://www.cnblogs.com/james111/wlwmanifest.xml">
+
+
+
+
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<a name="top"></a>
+
+<!--done-->
+<div id="home">
+<div id="header">
+	<div id="blogTitle">
+	<a id="lnkBlogLogo" href="http://www.cnblogs.com/james111/"><img id="blogLogo" src="logo.gif" alt="返回主页"></a>			
+		
+<!--done-->
+<h1><a id="Header1_HeaderTitle" class="headermaintitle" href="http://www.cnblogs.com/james111/">bili111</a></h1>
+<h2></h2>
+
+
+
+		
+	</div><!--end: blogTitle 博客的标题和副标题 -->
+</div><!--end: header 头部 -->
+
+<div id="main">
+	<div id="mainContent">
+	<div class="forFlow">
+		<div id="navigator">
+			
+<ul id="navList">
+	<li><a id="blog_nav_sitehome" class="menu" href="http://www.cnblogs.com/">博客园</a></li>
+	<li><a id="blog_nav_myhome" class="menu" href="http://www.cnblogs.com/james111/">首页</a></li>
+	<li><a id="blog_nav_newpost" class="menu" rel="nofollow" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">新随笔</a></li>
+	<li><a id="blog_nav_contact" accesskey="9" class="menu" rel="nofollow" href="https://msg.cnblogs.com/send/bili111">联系</a></li>
+	<li><a id="blog_nav_admin" class="menu" rel="nofollow" href="https://i.cnblogs.com/">管理</a></li>
+	<li><a id="blog_nav_rss" class="menu" href="http://www.cnblogs.com/james111/rss">订阅</a>
+	<a id="blog_nav_rss_image" class="aHeaderXML" href="http://www.cnblogs.com/james111/rss"><img src="xml.gif" alt="订阅"></a></li>
+</ul>
+
+
+			<div class="blogStats">
+				
+				<div id="blog_stats">
+<!--done-->
+随笔- 73&nbsp;
+文章- 0&nbsp;
+评论- 1&nbsp;
+</div>
+				
+			</div><!--end: blogStats -->
+		</div><!--end: navigator 博客导航栏 -->
+		
+<div id="post_detail">
+<!--done-->
+<div id="topics">
+	<div class="post">
+		<h1 class="postTitle">
+			<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/james111/p/7289478.html">分布式存储系统 Ceph</a>
+		</h1>
+		<div class="clear"></div>
+		<div class="postBody">
+			<div id="cnblogs_post_body" class="blogpost-body"><p>你了解Ceph吗？</p>
+<p>Ceph是一种分布式存储系统，它可以将多台服务器组成一个超大集群，把这些机器中的磁盘资源整合到一块儿，形成一个大的资源池（PB级别），然后按需分配给应用使用。</p>
+<p>那么你知道Ceph的架构吗？</p>
+<p><img src="1102349-20170805104440881-442463686.png" alt=""></p>
+<p>Ceph的底层实现是RADOS，RADOS是由C++写的，但是它向外界暴露了调用接口，即LibRADOS,应用程序只需要调用LibRADOS的接口，就可以操纵Ceph了。这其中，RADOS GW用于对象存储，RBD用于块存储，它们都属于LibRADOS;CephFS是内核态程序，向外界提供了POSIX接口，用户可以通过客户端直接挂载使用。</p>
+<p>&nbsp;</p>
+<p>你知道RADOS内部架构和工作原理吗？</p>
+<p>&nbsp;</p>
+<p><img src="1102349-20170805104451834-306502859.png" alt=""></p>
+<p>每台服务器都有好几块磁盘（sda,sdb,sdc等），磁盘又可以进一步分区（sda1,sda2等）。CEPH中最基本的进程就是OSD(对象存储设备)，每个磁盘对应一个OSD。</p>
+<p>如果用户通过客户端想要存储一个文件，那么在RADOS中，该文件实际上会分为一个个4M块大小的对象。每个文件都一个文件ID(例如A),那么这些对象的ID就是（A0,A1,A2等）。然而在分布式储存系统中，有成千上万个对象，光遍历就要花很长的时间，所以对象会先通过hash-取模运算，存放到一个PG（Place Group）中，PG相当于数据库中的索引（PG的数量是固定的，不会随着OSD的增加或者删除而改变），这样一来，只需要首先定位到PG的位置，然后在PG中查询对象即可，大大提高了查询的效率。之后，PG中的对象又会根据设置的副本数量进行复制，并根据Crush算法存储到OSD节点上。</p>
+<p>&nbsp;</p>
+<p>你知道CEPH的进程还有哪些吗？</p>
+<p>CEPH中的Monitor（至少有3个）用于维护和监控整个集群的状态，每个Monitor都有一个Cluster Map，只要有这个Map，就能够清楚知道每个对象存储在什么位置了。客户端会先tcp连接到Monitor，从中获取Cluster Map，并在客户端进行计算，当知道对象的位置后，再直接与OSD通信（去中心化的思想）。OSD节点平常会向Monitor节点发送简单心跳，只有当添加、删除或者出现异常状况时，才会自动上报信息给Monitor。</p>
+<p>MDS是可选的，只有需要使用CEPH FS的时候才需要配置MDS节点。在ceph中，元数据也是存放在OSD中的，MDS只相当于元数据的缓存服务器。 &nbsp; &nbsp;&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>在Ceph中，如果要写数据，只能向主OSD写，然后再由主OSD向从OSD同步地写，只有当从OSD返回结果给主OSD后，主OSD才会向客户端报告写入完成的消息。如果要读数据，不会使用读写分离，而是也需要先向主OSD发请求，以保证数据的强一致性。</p>
+<p><img src="1102349-20170805104500225-1806637391.png" alt=""></p>
+<p>&nbsp;</p></div><div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+<div id="BlogPostCategory"></div>
+<div id="EntryTag"></div>
+<div id="blog_post_info">
+</div>
+<div class="clear"></div>
+<div id="post_next_prev"></div>
+</div>
+
+
+		</div>
+		<div class="postDesc">posted @ <span id="post-date">2017-08-05 10:46</span> <a href="http://www.cnblogs.com/james111/">bili111</a> 阅读(<span id="post_view_count">...</span>) 评论(<span id="post_comment_count">...</span>)  <a href="https://i.cnblogs.com/EditPosts.aspx?postid=7289478" rel="nofollow">编辑</a> <a href="#" onclick="AddToWz(7289478);return false;">收藏</a></div>
+	</div>
+	
+	
+</div><!--end: topics 文章、评论容器-->
+</div><a name="!comments"></a><div id="blog-comments-placeholder"></div>
+<div id="comment_form" class="commentform">
+<a name="commentform"></a>
+<div id="divCommentShow"></div>
+<div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+<div id="comment_form_container"></div>
+<div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+<div id="ad_t2"></div>
+<div id="opt_under_post"></div>
+<div id="cnblogs_c1" class="c_ad_block"></div>
+<div id="under_post_news"></div>
+<div id="cnblogs_c2" class="c_ad_block"></div>
+<div id="under_post_kb"></div>
+<div id="HistoryToday" class="c_ad_block"></div>
+
+</div>
+
+
+	</div><!--end: forFlow -->
+	</div><!--end: mainContent 主体内容容器-->
+
+	<div id="sideBar">
+		<div id="sideBarMain">
+			
+<!--done-->
+<div class="newsItem">
+<h3 class="catListTitle">公告</h3>
+	<div id="blog-news"></div>
+</div>
+
+			<div id="calendar"><div id="blog-calendar" style="display: none;"></div></div>
+			
+			<div id="leftcontentcontainer">
+				<div id="blog-sidecolumn"></div>
+			</div>
+			
+		</div><!--end: sideBarMain -->
+	</div><!--end: sideBar 侧边栏容器 -->
+	<div class="clear"></div>
+	</div><!--end: main -->
+	<div class="clear"></div>
+	<div id="footer">
+		
+<!--done-->
+Copyright ©2018 bili111
+	</div><!--end: footer -->
+</div><!--end: home 自定义的最大容器 -->
+
+
+</body>
+</html>

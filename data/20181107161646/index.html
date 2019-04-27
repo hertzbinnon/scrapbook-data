@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#" lang="en-US">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What do the Parameters in webrtc-internals Really Mean? • testRTC</title>
+<!-- Google Tag Manager for WordPress by gtm4wp.com -->
+
+<!-- End Google Tag Manager for WordPress by gtm4wp.com -->
+<!-- This site is optimized with the Yoast SEO plugin v9.0.3 - https://yoast.com/wordpress/plugins/seo/ -->
+<meta name="description" content="All you wanted to ask about the parameters in webrtc-internals and had no one to ask - an in-depth look at the webrtc-internals dump and what to do with all that goodness.">
+<link rel="canonical" href="https://testrtc.com/webrtc-internals-parameters/">
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="article">
+<meta property="og:title" content="What do the Parameters in webrtc-internals Really Mean? • testRTC">
+<meta property="og:description" content="All you wanted to ask about the parameters in webrtc-internals and had no one to ask - an in-depth look at the webrtc-internals dump and what to do with all that goodness.">
+<meta property="og:url" content="https://testrtc.com/webrtc-internals-parameters/">
+<meta property="og:site_name" content="testRTC">
+<meta property="article:tag" content="analysis">
+<meta property="article:tag" content="debugging">
+<meta property="article:tag" content="webrtc-internals">
+<meta property="article:section" content="How to">
+<meta property="article:published_time" content="2016-12-07T10:00:00+00:00">
+<meta property="article:modified_time" content="2017-04-17T08:15:31+00:00">
+<meta property="og:updated_time" content="2017-04-17T08:15:31+00:00">
+<meta property="og:image" content="https://testrtc.com/wp-content/uploads/2016/12/201612-getstats.jpg">
+<meta property="og:image:secure_url" content="https://testrtc.com/wp-content/uploads/2016/12/201612-getstats.jpg">
+<meta property="og:image:width" content="799">
+<meta property="og:image:height" content="420">
+<!-- / Yoast SEO plugin. -->
+<link rel="dns-prefetch" href="https://fonts.googleapis.com/">
+<link rel="dns-prefetch" href="https://s.w.org/">
+<link rel="alternate" type="application/rss+xml" title="testRTC » Feed" href="https://testrtc.com/feed/">
+<link rel="alternate" type="application/rss+xml" title="testRTC » Comments Feed" href="https://testrtc.com/comments/feed/">
+<link rel="alternate" type="application/rss+xml" title="testRTC » What do the Parameters in webrtc-internals Really Mean? Comments Feed" href="https://testrtc.com/webrtc-internals-parameters/feed/">
+		
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--[if lt IE 9]>
+<script type='text/javascript' src='https://testrtc.com/wp-content/themes/genesis/lib/js/html5shiv.min.js?ver=3.7.3'></script>
+<![endif]-->
+
+<link rel="https://api.w.org/" href="https://testrtc.com/wp-json/">
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://testrtc.com/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://testrtc.com/wp-includes/wlwmanifest.xml">
+<link rel="shortlink" href="https://testrtc.com/?p=385">
+<link rel="alternate" type="application/json+oembed" href="https://testrtc.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Ftestrtc.com%2Fwebrtc-internals-parameters%2F">
+<link rel="alternate" type="text/xml+oembed" href="https://testrtc.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Ftestrtc.com%2Fwebrtc-internals-parameters%2F&amp;format=xml">
+<!-- start Simple Custom CSS and JS -->
+
+<!-- end Simple Custom CSS and JS -->
+<meta name="generator" content="Heroic Knowledge Base v2.15.0">
+<!-- Google Tag Manager for WordPress by gtm4wp.com -->
+
+
+<!-- End Google Tag Manager -->
+<!-- End Google Tag Manager for WordPress by gtm4wp.com --><link rel="pingback" href="https://testrtc.com/xmlrpc.php">
+	
+
+<link rel="icon" href="cropped-testrtc_logo_512x512-32x32.png" sizes="32x32">
+<link rel="icon" href="cropped-testrtc_logo_512x512-192x192.png" sizes="192x192">
+<link rel="apple-touch-icon-precomposed" href="https://testrtc.com/wp-content/uploads/2015/11/cropped-testRTC_logo_512x512-180x180.png">
+<meta name="msapplication-TileImage" content="https://testrtc.com/wp-content/uploads/2015/11/cropped-testRTC_logo_512x512-270x270.png">
+
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body class="post-template-default single single-post postid-385 single-format-standard wp-custom-logo woocommerce-js header-full-width content-sidebar enterprise-pro-orange mob-menu-slideout-over" itemscope="" itemtype="https://schema.org/WebPage"><div class="site-container"><header class="site-header" itemscope="" itemtype="https://schema.org/WPHeader"><div class="wrap">    <div class="testrtc-logo-wrapper">
+        <a class="testrtc-logo" href="https://testrtc.com/">
+            <img src="testrtc_logo.png">
+        </a>
+    </div>
+    <nav class="nav-primary" aria-label="Main" itemscope="" itemtype="https://schema.org/SiteNavigationElement"><div class="wrap"><ul id="menu-main-menu" class="menu genesis-nav-menu menu-primary"><li id="menu-item-527" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-527"><a href="#" itemprop="url"><span itemprop="name">Product</span></a>
+<ul class="sub-menu">
+	<li id="menu-item-594" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-594"><a href="https://testrtc.com/monitoring/" itemprop="url"><span itemprop="name">Monitoring</span></a></li>
+	<li id="menu-item-534" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-534"><a href="https://testrtc.com/stress-testing/" itemprop="url"><span itemprop="name">Stress Testing</span></a></li>
+	<li id="menu-item-535" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-535"><a href="https://testrtc.com/functional-testing/" itemprop="url"><span itemprop="name">Functional Testing</span></a></li>
+</ul>
+</li>
+<li id="menu-item-536" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-536"><a href="https://testrtc.com/contact/" itemprop="url"><span itemprop="name">Contact</span></a></li>
+<li id="menu-item-537" class="menu-item menu-item-type-post_type menu-item-object-page current_page_parent menu-item-537"><a href="https://testrtc.com/blog/" itemprop="url"><span itemprop="name">Blog</span></a></li>
+<li id="menu-item-539" class="button menu-item menu-item-type-custom menu-item-object-custom menu-item-539"><a href="https://app.testrtc.com/" itemprop="url"><span itemprop="name">Get Started</span></a></li>
+</ul></div></nav></div></header><div class="site-inner"><div class="content-sidebar-wrap"><main class="content">
+	<h2 class="page-title"><a href="https://testrtc.com/webrtc-internals-parameters/">What do the Parameters in webrtc-internals Really Mean?</a></h2>
+	<p class="post-meta">
+		<label class="date">
+			<img src="dateicon.png" width="20px">
+			<span>December 7, 2016</span>
+		</label>
+		<span class="meta-seperator">|</span>
+		<label class="author">
+			<img src="author.png" width="20px">
+			<span>Tsahi Levent-Levi</span>
+		</label>
+		<span class="meta-seperator">|</span><label class="tags"><img src="tagicon.png" width="20px"><span><a href="https://testrtc.com/category/how-to/" alt="View all posts in How to">How to</a></span></label>	</p>
+	<img src="201612-getstats.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" srcset="https://testrtc.com/wp-content/uploads/2016/12/201612-getstats.jpg 799w, https://testrtc.com/wp-content/uploads/2016/12/201612-getstats-300x158.jpg 300w, https://testrtc.com/wp-content/uploads/2016/12/201612-getstats-768x404.jpg 768w" sizes="(max-width: 799px) 100vw, 799px" width="799" height="420">	<div class="page-content-wrapper"><p><i>To make this one as accurate as possible, I decided to go to my source of truth for the low level stuff related to WebRTC – <a href="https://twitter.com/hcornflower">Philipp Hancke</a>, also known as fippo or hcornflower. This in a way, is a joint article we’ve put together.</i></p>
+<p>webrtc-internals is a great tool when you need to find issues with your WebRTC product. Be it because you are trying to test WebRTC and need to debug an issue or because you’re trying to tweak with your configuration.</p>
+<h3>How to obtain a webrtc-internals stats dump?</h3>
+<p>If you aren’t familiar with this tool, then open a WebRTC session in your Chrome browser, and while in that session, open another tab and direct it to this “internal” URL: chrome://webrtc-internals/</p>
+<p><img class="aligncenter size-full wp-image-442" src="201612-webrtc-internals-view.png" alt="WebRTC Internals screenshot" srcset="https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-internals-view.png 800w, https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-internals-view-300x170.png 300w, https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-internals-view-768x434.png 768w" sizes="(max-width: 800px) 100vw, 800px" width="800" height="452"></p>
+<p>Do it. We will be here waiting.</p>
+<p>webrtc-internals allows downloading the trace as a large JSON thingy that you can layer look at, but when you do, you’ll see something like this:</p>
+<p><img class="aligncenter size-full wp-image-443" src="201612-webrtc-internals-dump.png" alt="WebRTC internals downloaded as JSON" srcset="https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-internals-dump.png 800w, https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-internals-dump-270x300.png 270w, https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-internals-dump-768x852.png 768w" sizes="(max-width: 800px) 100vw, 800px" width="800" height="888"></p>
+<h3>Visualizing webrtc-internals&nbsp;stats</h3>
+<p>One of the first thing people start asking is – what exactly do these numbers say? It is what one of our own testers said the moment we’ve taken <a href="https://github.com/fippo/webrtc-dump-importer">the code Fippo contributed</a> to the community that enables shoving all these values into a time series graph and filtering them out.</p>
+<p>This gives us graphs which are much larger than the 300×140 pixels from webrtc-internals:</p>
+<p><img class="aligncenter size-full wp-image-444" src="201612-getstats-sample-graph.png" alt="Sample graph of WebRTC stats" srcset="https://testrtc.com/wp-content/uploads/2016/12/201612-getstats-sample-graph.png 800w, https://testrtc.com/wp-content/uploads/2016/12/201612-getstats-sample-graph-300x64.png 300w, https://testrtc.com/wp-content/uploads/2016/12/201612-getstats-sample-graph-768x163.png 768w" sizes="(max-width: 800px) 100vw, 800px" width="800" height="170"></p>
+<p>The graphs are made using the <a href="http://www.highcharts.com/">HighCharts</a> library and offer quite a number of handy features such as hiding lines, zooming into an area of interest or hovering to find out the exact value. This makes it much easier to reason about the data than the JSON dump shown above.</p>
+<p>Back to the basic webrtc-internals page. At the top of this page we can see a number of tabs, one for all getUserMedia calls and one tab for each RTCPeerConnection.</p>
+<p><img class="aligncenter size-full wp-image-445" src="201612-webrtc-internals-tabs.png" alt="Tabs in webrtc-internals" srcset="https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-internals-tabs.png 800w, https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-internals-tabs-300x180.png 300w, https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-internals-tabs-768x460.png 768w" sizes="(max-width: 800px) 100vw, 800px" width="800" height="479"></p>
+<p>On the GetUserMedia Requests tab we can see each call to getUserMedia and the constraints passed to it. We don’t get to see the results unfortunately or the ids of the MediaStreams acquired.</p>
+<h3>RTCPeerConnection stats</h3>
+<p>For each peerconnection, we can see four things here:</p>
+<p><img class="aligncenter size-full wp-image-450" src="201612-webrtc-internals-structure.png" alt="webrtc-internals page structure" srcset="https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-internals-structure.png 800w, https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-internals-structure-300x173.png 300w, https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-internals-structure-768x442.png 768w" sizes="(max-width: 800px) 100vw, 800px" width="800" height="460"></p>
+<ol>
+<li style="font-weight: 400;">How the RTCPeerConnection was configured, i.e. what STUN and TURN servers are used and what options are set</li>
+<li style="font-weight: 400;">A trace of the PeerConnection API calls on the left side. These API traces show all the calls to the RTCPeerConnection object and their arguments (e.g. createOffer) as well as the callbacks and event emitters like onicecandidate.</li>
+<li style="font-weight: 400;">The statistics gathered from the getStats() API on the right side</li>
+<li style="font-weight: 400;">Graphs generated from the getStats() API at the bottom</li>
+</ol>
+<p>The RTCPeerConnection API traces are a very powerful tool that allows for example <a href="https://www.youtube.com/watch?v=_OE-4woHv2E&amp;t=1s">reasoning about the cause of ICE failures</a> or can give you insights <a href="https://medium.com/the-making-of-appear-in/where-to-deploy-turn-or-other-relay-servers-2dab2e8157ea#.kbgvxbiyq">where to deploy TURN servers</a>. We will cover this at length in a future blog post.</p>
+<p>The statistics shown on webrtc-internals are the internal format of Chrome. Which means they are a bit out of sync with the <a href="https://w3c.github.io/webrtc-stats/">current specification</a>, some names have changed as well as the structure. At a high level, what we see on the webrtc-internals page is similar to the result we get from calling</p><!-- Crayon Syntax Highlighter v_2.7.2_beta -->
+		<div id="crayon-5be29f4810a5a226351711" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; z-index: 4;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="Toggle Line Numbers"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="Expand Code" style="display: none;"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="Copy"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="Open Code In New Window"><div class="crayon-button-icon"></div></div><span class="crayon-language">JavaScript</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea class="crayon-plain print-no" data-settings="dblclick" readonly="" style="-moz-tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;" wrap="soft">RTCPeerConnection.getStats(function(stats) { console.log(stats.result()); )};</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table" style="">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-5be29f4810a5a226351711-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size: 4;"><div class="crayon-line" id="crayon-5be29f4810a5a226351711-1"><span class="crayon-v">RTCPeerConnection</span><span class="crayon-sy">.</span><span class="crayon-e">getStats</span><span class="crayon-sy">(</span><span class="crayon-t">function</span><span class="crayon-sy">(</span><span class="crayon-v">stats</span><span class="crayon-sy">)</span><span class="crayon-h"> </span><span class="crayon-sy">{</span><span class="crayon-h"> </span><span class="crayon-v">console</span><span class="crayon-sy">.</span><span class="crayon-e">log</span><span class="crayon-sy">(</span><span class="crayon-v">stats</span><span class="crayon-sy">.</span><span class="crayon-e">result</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span><span class="crayon-h"> </span><span class="crayon-sy">)</span><span class="crayon-sy">}</span><span class="crayon-sy">;</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0009 seconds] -->
+<p>This is an array of (legacy) RTCStatsReport objects which have a number of keys and values which can be accessed like this:</p><!-- Crayon Syntax Highlighter v_2.7.2_beta -->
+		<div id="crayon-5be29f4810a62701553610" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; position: absolute; z-index: 2;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="Toggle Line Numbers"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="Expand Code" style="display: none;"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="Copy"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="Open Code In New Window"><div class="crayon-button-icon"></div></div><span class="crayon-language">JavaScript</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea class="crayon-plain print-no" data-settings="dblclick" readonly="" style="-moz-tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;" wrap="soft">RTCPeerConnection.getStats(function(stats) {
+&nbsp;&nbsp;&nbsp;var report = stats.result()[0];
+&nbsp;&nbsp;&nbsp;report.names().forEach(function(name) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log(name, report.stat(name));
+&nbsp;&nbsp;&nbsp;});
+)}</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table" style="">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-5be29f4810a62701553610-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-5be29f4810a62701553610-2">2</div><div class="crayon-num" data-line="crayon-5be29f4810a62701553610-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-5be29f4810a62701553610-4">4</div><div class="crayon-num" data-line="crayon-5be29f4810a62701553610-5">5</div><div class="crayon-num crayon-striped-num" data-line="crayon-5be29f4810a62701553610-6">6</div><div class="crayon-num" data-line="crayon-5be29f4810a62701553610-7">7</div><div class="crayon-num crayon-striped-num" data-line="crayon-5be29f4810a62701553610-8">8</div><div class="crayon-num" data-line="crayon-5be29f4810a62701553610-9">9</div><div class="crayon-num crayon-striped-num" data-line="crayon-5be29f4810a62701553610-10">10</div><div class="crayon-num" data-line="crayon-5be29f4810a62701553610-11">11</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size: 4;"><div class="crayon-line" id="crayon-5be29f4810a62701553610-1"><span class="crayon-v">RTCPeerConnection</span><span class="crayon-sy">.</span><span class="crayon-e">getStats</span><span class="crayon-sy">(</span><span class="crayon-t">function</span><span class="crayon-sy">(</span><span class="crayon-v">stats</span><span class="crayon-sy">)</span><span class="crayon-h"> </span><span class="crayon-sy">{</span></div><div class="crayon-line crayon-striped-line" id="crayon-5be29f4810a62701553610-2">&nbsp;</div><div class="crayon-line" id="crayon-5be29f4810a62701553610-3">&nbsp;&nbsp;&nbsp;<span class="crayon-t">var</span><span class="crayon-h"> </span><span class="crayon-v">report</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-v">stats</span><span class="crayon-sy">.</span><span class="crayon-e">result</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">[</span><span class="crayon-cn">0</span><span class="crayon-sy">]</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-5be29f4810a62701553610-4">&nbsp;</div><div class="crayon-line" id="crayon-5be29f4810a62701553610-5">&nbsp;&nbsp;&nbsp;<span class="crayon-v">report</span><span class="crayon-sy">.</span><span class="crayon-e">names</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-st">forEach</span><span class="crayon-sy">(</span><span class="crayon-t">function</span><span class="crayon-sy">(</span><span class="crayon-r">name</span><span class="crayon-sy">)</span><span class="crayon-h"> </span><span class="crayon-sy">{</span></div><div class="crayon-line crayon-striped-line" id="crayon-5be29f4810a62701553610-6">&nbsp;</div><div class="crayon-line" id="crayon-5be29f4810a62701553610-7">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="crayon-v">console</span><span class="crayon-sy">.</span><span class="crayon-e">log</span><span class="crayon-sy">(</span><span class="crayon-r">name</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-v">report</span><span class="crayon-sy">.</span><span class="crayon-e">stat</span><span class="crayon-sy">(</span><span class="crayon-r">name</span><span class="crayon-sy">)</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-5be29f4810a62701553610-8">&nbsp;</div><div class="crayon-line" id="crayon-5be29f4810a62701553610-9">&nbsp;&nbsp;&nbsp;<span class="crayon-sy">}</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-5be29f4810a62701553610-10">&nbsp;</div><div class="crayon-line" id="crayon-5be29f4810a62701553610-11"><span class="crayon-sy">)</span><span class="crayon-sy">}</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0014 seconds] -->
+<p>Keep in mind that there are quite a few differences between these statistics (which chrome currently exposes in getStats) and the specification. As a rule of thumb, any key name that ends with “Id” contains a pointer to a different report whose id attribute matches the value of the key. So all of these reports are connected to each other. Also note that most values are string even if they look like numbers of boolean values.</p>
+<p>The most important attribute of the RTCStatsReport is the type of the report. There are quite a few of them:</p>
+<ul>
+<li style="font-weight: 400;">googTrack</li>
+<li style="font-weight: 400;">googLibjingleSession</li>
+<li style="font-weight: 400;">googCertificate</li>
+<li style="font-weight: 400;">googComponent</li>
+<li style="font-weight: 400;">googCandidatePair</li>
+<li style="font-weight: 400;">localCandidate</li>
+<li style="font-weight: 400;">remoteCandidate</li>
+<li style="font-weight: 400;">ssrc</li>
+<li style="font-weight: 400;">VideoBWE</li>
+</ul>
+<p>Lets drill down into these reports.</p>
+<h3>googTrack and googLibjingleSession reports</h3>
+<p>The <b>googTrack</b> and <b>googLibjingleSession</b> don’t contain much information so we’ll skip them.</p>
+<h3>googCertificate report</h3>
+<p>The <b>googCertificate</b> report contains some information about the DTLS certificate used by the local side and the peer such as the certificate itself (encoded as DER and wrapped in base64 which means you can decode it using openssls x509 command if you want to), the fingerprint and the hash algorithm. This is mostly as specified in the <a href="https://w3c.github.io/webrtc-stats/#certificatestats-dict*">RTCCertificateStats dictionary</a>.</p>
+<h3>googComponent report</h3>
+<p>The <b>googComponent</b> report is acting as a glue between the certificate statistics and the connection. It contains a pointer to the currently active candidate pair (described in the next section) as well as information about the ciphersuite used for DTLS and the SRTP cipher.</p>
+<h3>googCandidatePair report</h3>
+<p>A report with a type of <b>googCandidatePair</b> describes a pair of ICE candidates, i.e. the low-level connection. From this report you can get quite some information such as:</p>
+<ul>
+<li style="font-weight: 400;">The overall number of packets and bytes sent and received (bytesSent, bytesReceived, packetsSent; packetsReceived is missing for unknown reasons). This is the raw UDP or TCP bytes including RTP headers</li>
+<li style="font-weight: 400;">Whether this is the active connection (<b>googActiveConnection </b>is “true” in that case and “false” otherwise). Most of the time you will be interested only in the statistics of the active candidate pair. The spec equivalent can be found <a href="https://w3c.github.io/webrtc-stats/#transportstats-dict*">here</a></li>
+<li style="font-weight: 400;">The number of STUN request and responses sent and received (<b>requestsSent </b>and <b>responsesReceived</b>; <b>requestsReceived </b>and <b>responsesSent</b>) which <a href="https://w3c.github.io/webrtc-stats/#dom-rtcicecandidatepairstats-requestsreceived">count the number of incoming and outgoing STUN requests</a> that are used in the ICE process</li>
+<li style="font-weight: 400;">The round trip time of the last STUN request, <b>googRtt</b>. This is different from the <b>googRtt</b> on the <b>ssrc </b>report as we will see later</li>
+<li style="font-weight: 400;">The <b>localCandidateId </b>and <b>remoteCandidateId </b>which point to reports of type <b>localCandidate </b>and <b>remoteCandidate </b>which describe the local and remote ICE candidates. You can still see most of the information in the <b>googLocalAddress</b>, <b>googLocalCandidateType </b>etc values</li>
+<li style="font-weight: 400;"><b>googTransportType </b>specifies the transport type. Note that the value of this statistics will usually be ‘udp’, even in cases where TURN over TCP is used to connect to a TURN server. This will be ‘tcp’ only when <a href="https://webrtcglossary.com/ice-tcp/">ICE-TCP</a> is used</li>
+</ul>
+<p>There are a couple of things which are easily visualized here, like the number of bytes sent and received:</p>
+<p><img class="aligncenter size-full wp-image-446" src="201612-webrtc-bytes-graph.png" alt="Bytes graph derived from WebRTC getstats data" srcset="https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-bytes-graph.png 800w, https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-bytes-graph-300x68.png 300w, https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-bytes-graph-768x173.png 768w" sizes="(max-width: 800px) 100vw, 800px" width="800" height="180"></p>
+<h3>localCandidate and remoteCandidate reports</h3>
+<p>The <b>localCandidate</b> and <b>remoteCandidate</b> are thankfully as <a href="https://w3c.github.io/webrtc-stats/#icecandidate-dict*">described in the specification</a>, telling us the ip address, port number and type of the candidate. For TURN candidates this will soon also tell us <a href="https://github.com/w3c/webrtc-stats/issues/83">over which transport the candidate was allocated</a>.</p>
+<h3>Ssrc report</h3>
+<p>The <b>ssrc</b> report is one of the most important ones. There is one for each audio or video track sent or received over the peerconnection. It is the old version of what the specification calls <a href="https://w3c.github.io/webrtc-stats/#mststats-dict*">MediaStreamTrackStats</a> and <a href="https://w3c.github.io/webrtc-stats/#streamstats-dict*">RTPStreamStats</a>. The content depends quite a bit on whether this is an audio or video track and whether it is sent or received. Let us describe some common elements first:</p>
+<ul>
+<li style="font-weight: 400;">The <b>mediaType</b> describes whether we are looking at audio or video statistics</li>
+<li style="font-weight: 400;">The <b>ssrc </b>attribute specifies the ssrc that media is sent or received on</li>
+<li style="font-weight: 400;"><b>googTrackId</b> identifies the track that these statistics describe. This id can be found both in the SDP as well as the local or remote media stream tracks. Actually this is violating the rule that anything named “…Id” is a pointer to another report. Google got the goog stats wrong <img draggable="false" class="emoji" alt="😉" src="1f609.svg"></li>
+<li style="font-weight: 400;"><b>googRtt</b> describes the round-trip time. Unlike the earlier round trip time, this is measured from RTCP</li>
+<li style="font-weight: 400;"><b>transportId </b>is a pointer to the component used to transport this RTP stream. Usually (when BUNDLE) is used this will be the same for both audio and video streams</li>
+<li style="font-weight: 400;"><b>googCodecName </b>specifies the codec name. For audio this will typically be opus, for video this will be either VP8, VP9 or H264. You can also see information about what implementation is used in the <b>codecImplementationName </b>stat</li>
+<li style="font-weight: 400;">The number of <b>bytesSent</b>, <b>bytesReceived</b>, <b>packetsSent </b>and <b>packetsReceived </b>(depending on whether you send or receive) allow you to calculate bitrates. Those numbers are cumulative so you need to divide by the time since you last queried getStats. The <a href="http://w3c.github.io/webrtc-pc/#example">sample code </a>in the specification is quite nice but beware that Chrome <a href="https://bugs.chromium.org/p/webrtc/issues/detail?id=5361">sometimes resets those counters</a> so you might end up with negative rates.</li>
+<li style="font-weight: 400;"><b>packetsLost </b>gives you an indication about the number of packets lost. For the sender, this comes via RTCP, for the receiver it is measured locally. This is probably the most direct indicator you want to look at when looking at bad call quality</li>
+</ul>
+<h4>Voice specific</h4>
+<p>For audio tracks we have the <b>audioInputLevel </b>and <b>audioOutputLevel </b>respectively (the specification calls it <a href="https://w3c.github.io/webrtc-stats/#dom-rtcmediastreamtrackstats-audiolevel">audioLevel</a>) which gives an indication whether an audio signal is coming from the microphone (unless it is muted) or played through the speakers. This could be used to detect the <a href="https://bugs.chromium.org/p/webrtc/issues/detail?id=4799">infamous Chrome audio bug</a>. Also we get information about the <a href="https://webrtcglossary.com/jitter/">amount of Jitter received</a> and the <a href="https://webrtcglossary.com/jitter-buffer/">jitter buffer state</a> in <b>googJitterReceived </b>and <b>googJitterBufferReceived</b>.</p>
+<h4>Video specific</h4>
+<p>For video tracks we get two major pieces of information. The first is the number of <a href="https://webrtcglossary.com/nack/">NACK</a>, <a href="https://webrtcglossary.com/pli/">PLI</a> and <a href="https://webrtcglossary.com/fir/">FIR</a> packets sent in <b>googNacksSent</b>, <b>googPLIsSent </b>and <b>googFIRsSent </b>(and their respective Received) variants. This gives us an idea about how packet loss is affecting video quality.</p>
+<p>More importantly, we get information about the frame size and rate that is input (<b>googFrameWidthInput</b>, <b>googFrameHeightInput</b>, <b>googFrameRateInput</b>) and actually sent on the network (<b>googFrameWidthSent</b>, <b>googFrameHeightSent</b>, <b>googFrameRateSent</b>).<br>
+Similar data can be gathered on the receiving end in the <b>googFrameWidthReceived</b>, <b>googFrameHeightReceived </b>statistics. For the frame rate we even get it split up between the <b>googFrameRateReceived</b>, <b>googFrameRateDecoded </b>and <b>googFrameRateOutput</b>.</p>
+<p>On the encoder side we can observe difference between these values and get even more information about why the picture is scaled down. Typically this happens either because there is not enough CPU or bandwidth to transmit the full picture. In addition to lowering the frame rate (which could be observed by comparing differences between <b>googFrameRateInput </b>and <b>googFrameRateSent</b>) we get extra information about whether the resolution is adapted because of CPU issues (then <b>googCpuLimitedResolution </b>is true then — mind you that it is the string true, not a boolean value in Chrome’s current implementation) and if it is because the bandwidth is insufficient then <b>googBandwidthLimitedResolution </b>will be true. Whenever one of those conditions changes, the <b>googAdaptionChanges </b>counter increases.</p>
+<p>We can see such a change in this diagram:</p>
+<p><img class="aligncenter size-full wp-image-447" src="201612-webrtc-width-graph.png" alt="Checking WebRTC video width in getstats" srcset="https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-width-graph.png 800w, https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-width-graph-300x119.png 300w, https://testrtc.com/wp-content/uploads/2016/12/201612-webrtc-width-graph-768x303.png 768w" sizes="(max-width: 800px) 100vw, 800px" width="800" height="316"></p>
+<p>Here, packet loss is artificially generated. In response, Chrome tries to reduce the resolution first at t=184 where the green line showing the <b>googFrameWidthSent </b>starts to differ from the <b>googFrameWidthInput</b> shown in black. Next at t=186 frames are dropped and the input frame rate of 30fps (shown in light blue) is different from the frame rate sent (blue line) which is close to 0.</p>
+<p>In addition to these standard statistics, Chrome exposes a large number of statistics about the behaviour of the audio and video stack on the ssrc report. We will discuss them in a future post.</p>
+<h3>VideoBWE report</h3>
+<p>Last but not least the <b>VideoBWE</b> report. As the name suggests, it contains information about the bandwidth estimate that the peerconnection has. But there is quite a bit more useful information contained in this report:</p>
+<ul>
+<li style="font-weight: 400;"><b>googAvailableReceiveBandwidth</b> – the bandwidth that is available for receiving video data</li>
+<li style="font-weight: 400;"><b>googAvailableSendBandwidth</b> – the bandwidth that is available for sending video data</li>
+<li style="font-weight: 400;"><b>googTargetEncBitrate</b> – the target bitrate of the the video encoder. This tries to fill out the available bandwidth</li>
+<li style="font-weight: 400;"><b>googActualEncBitrate</b> – the bitrate coming out of the video encoder. This should usually match the target bitrate</li>
+<li style="font-weight: 400;"><b>googTransmitBitrate</b> – the bitrate actually transmitted. If this is very different from the actual encoder bitrate, this might be due to <a href="https://webrtcglossary.com/fec/">forward error correction</a></li>
+<li style="font-weight: 400;"><b>googRetransmitBitrate</b> – this allows measuring the bitrate of retransmits if RTX is used. This is usually an indication of packet loss.</li>
+<li style="font-weight: 400;"><b>googBucketDelay</b> – is a measure for Google’s “leaky bucket” strategy for dealing with large frames. Should be very small usually</li>
+</ul>
+<p>As you can see this report gives you quite a wealth of information about one of the most important aspects of the video quality – the available bandwidth. Checking the available send and receive bandwidth is often the first step before diving deeper into the ssrc reports. Because sometimes you might find behaviour like this which explains ‘bad quality’ complaints from users:</p>
+<p><img class="aligncenter size-full wp-image-448" src="201612-webrtc-bandwidth-estimation-graph.png" alt="Bandwidth estimation graph for WebRTC" srcset="https://testrtc.com/wp-content/uploads/2016/12/201612-WebRTC-bandwidth-estimation-graph.png 800w, https://testrtc.com/wp-content/uploads/2016/12/201612-WebRTC-bandwidth-estimation-graph-300x65.png 300w, https://testrtc.com/wp-content/uploads/2016/12/201612-WebRTC-bandwidth-estimation-graph-768x166.png 768w" sizes="(max-width: 800px) 100vw, 800px" width="800" height="173"></p>
+<p>In this case “the bandwidth estimate dropped all the time” is a pretty good explanation for quality issues.</p>
+<h3>What’s next?</h3>
+<p>That’s a small part of what you can glean out of webrtc-internals. There’s more to it, which means Fippo and I will be churning out more posts in this serie of articles about webrtc-internals. If you are interested in keeping up with us, you might want to consider <a href="http://testrtc.com/subscribe/">subscribing</a>.</p>
+<p><strong>Huge thanks for Fippo in assisting with this one!</strong></p>
+</div><label class="single-tags"><img src="tagicon.png" width="20px"><span><a href="https://testrtc.com/tag/analysis/" rel="tag">analysis</a>, <a href="https://testrtc.com/tag/debugging/" rel="tag">debugging</a>, <a href="https://testrtc.com/tag/webrtc-internals/" rel="tag">webrtc-internals</a></span></label>	<div class="author-bio">
+		<img alt="" src="71e7dc653f8adeeab10b764ede939a86" srcset="https://secure.gravatar.com/avatar/71e7dc653f8adeeab10b764ede939a86?s=192&amp;d=mm&amp;r=g 2x" class="avatar avatar-96 photo" width="96" height="96">		<p class="author">Tsahi Levent-Levi</p>
+		<p>Tsahi Levent-Levi is the co-founder of testRTC, as well as author of BlogGeek.me.</p>
+	</div>
+	<div class="comment-count">
+		14 comments	</div>
+	<div class="comments-wrapper line-top">
+				<ol class="commentlist">
+    <liclass="comment even="" thread-even="" depth-1="" parent"id="comment-122">        <div id="div-comment-122" class="comment-body">
+    <div class="comment-author vcard">
+        <img alt="" src="5a9bbcc21d5909746ec3a960b85d23d6" srcset="https://secure.gravatar.com/avatar/5a9bbcc21d5909746ec3a960b85d23d6?s=100&amp;d=mm&amp;r=g 2x" class="avatar avatar-50 photo" width="50" height="50">        <p style="padding-left: 70px;">
+            <cite class="fn"><a href="https://cambooster.com/" rel="external nofollow" class="url">Anton Klein</a> says:</cite>            <!--div class="comment-meta commentmetadata"-->
+            <a class="metadata-date" href="https://testrtc.com/webrtc-internals-parameters/#comment-122">
+                2018-07-26 00:04:00            </a>
+                        <!--/div-->
+        </p>
+        <div class="comment-text">
+            <p>Hi,<br>
+has anyone seen a table with resolution and min. required bitrate? We would like to avoid googBandwidthLimitedResolution and check the available bandwidth before “call” starts, but we do not have a reference table with resolutions and required bitrates to reduce the resolution to an acceptable level before call.</p>
+        </div>
+    </div>
+    <!--div class="reply"-->
+    <a rel="nofollow" class="comment-reply-link" href="#comment-122" onclick="return addComment.moveForm( &quot;div-comment-122&quot;, &quot;122&quot;, &quot;respond&quot;, &quot;385&quot; )" aria-label="Reply to Anton Klein">Reply</a>    <!--/div-->
+        </div>
+    <ul class="children">
+    <liclass="comment byuser="" comment-author-testrtc="" bypostauthor="" odd="" alt="" depth-2"id="comment-123">        <div id="div-comment-123" class="comment-body">
+    <div class="comment-author vcard">
+        <img alt="" src="71e7dc653f8adeeab10b764ede939a86_001.dat" srcset="https://secure.gravatar.com/avatar/71e7dc653f8adeeab10b764ede939a86?s=100&amp;d=mm&amp;r=g 2x" class="avatar avatar-50 photo" width="50" height="50">        <p style="padding-left: 70px;">
+            <cite class="fn"><a href="http://testrtc.wpengine.com/" rel="external nofollow" class="url">Tsahi Levent-Levi</a> says:</cite>            <!--div class="comment-meta commentmetadata"-->
+            <a class="metadata-date" href="https://testrtc.com/webrtc-internals-parameters/#comment-123">
+                2018-07-26 00:08:00            </a>
+                        <!--/div-->
+        </p>
+        <div class="comment-text">
+            <p>Anton,</p>
+<p>This would be a trial and error thing, where you won’t get to the numbers you wish to find easily. Different browsers may have different tables for such data, which will also differ based on the codec, frame rate requested and a myriad of other parameters. It may also change across versions of the same browser.</p>
+<p>The notion is that the browser should do its best to decide what resolution to use at what bitrate, though I am assuming that isn’t always the case.</p>
+        </div>
+    </div>
+    <!--div class="reply"-->
+    <a rel="nofollow" class="comment-reply-link" href="#comment-123" onclick="return addComment.moveForm( &quot;div-comment-123&quot;, &quot;123&quot;, &quot;respond&quot;, &quot;385&quot; )" aria-label="Reply to Tsahi Levent-Levi">Reply</a>    <!--/div-->
+        </div>
+    <!-- #comment-## -->
+</liclass="comment></ul><!-- .children -->
+<!-- #comment-## -->
+    <liclass="comment even="" thread-odd="" thread-alt="" depth-1="" parent"id="comment-120">        <div id="div-comment-120" class="comment-body">
+    <div class="comment-author vcard">
+        <img alt="" src="7419dddc3d71d23f71f15f18c8a4dacf" srcset="https://secure.gravatar.com/avatar/7419dddc3d71d23f71f15f18c8a4dacf?s=100&amp;d=mm&amp;r=g 2x" class="avatar avatar-50 photo" width="50" height="50">        <p style="padding-left: 70px;">
+            <cite class="fn"><a href="https://maria-src.com/" rel="external nofollow" class="url">Maria Fernandez (elbecita)</a> says:</cite>            <!--div class="comment-meta commentmetadata"-->
+            <a class="metadata-date" href="https://testrtc.com/webrtc-internals-parameters/#comment-120">
+                2018-07-18 17:51:00            </a>
+                        <!--/div-->
+        </p>
+        <div class="comment-text">
+            <p>This article is spot on! Thank you very much, it has helped me a lot. I have a question very much related to video stats:<br>
+Imagine I have someone streaming video, and their viewers start to see a quality degradation. Let’s say this is because a buggy connection (packet loss, latency, etc) on the presenter side. I am trying to identify this, based on the presenter stats. So far I think the best metrics I got are the frame rate input and the frame rate sent. I am using this rule: if for some X time the (frameRateSent / frameRateInput) falls below 0.5 (means frame rate is being reduced by half or less for some amount of time, without recovering), I consider the presenter really is in a bad connection and I do take some action (I could think he’s on a VPN with many UDP packets loss and I could force a webrtc reconnection on turn tcp mode for instance, but that is for another discussion).</p>
+<p>What do you think? I’ve played with plis and firs and nacks, but I don’t find that easy to determine when is the moment to take action…</p>
+        </div>
+    </div>
+    <!--div class="reply"-->
+    <a rel="nofollow" class="comment-reply-link" href="#comment-120" onclick="return addComment.moveForm( &quot;div-comment-120&quot;, &quot;120&quot;, &quot;respond&quot;, &quot;385&quot; )" aria-label="Reply to Maria Fernandez (elbecita)">Reply</a>    <!--/div-->
+        </div>
+    <ul class="children">
+    <liclass="comment byuser="" comment-author-testrtc="" bypostauthor="" odd="" alt="" depth-2"id="comment-121">        <div id="div-comment-121" class="comment-body">
+    <div class="comment-author vcard">
+        <img alt="" src="71e7dc653f8adeeab10b764ede939a86_001.dat" srcset="https://secure.gravatar.com/avatar/71e7dc653f8adeeab10b764ede939a86?s=100&amp;d=mm&amp;r=g 2x" class="avatar avatar-50 photo" width="50" height="50">        <p style="padding-left: 70px;">
+            <cite class="fn"><a href="http://testrtc.wpengine.com/" rel="external nofollow" class="url">Tsahi Levent-Levi</a> says:</cite>            <!--div class="comment-meta commentmetadata"-->
+            <a class="metadata-date" href="https://testrtc.com/webrtc-internals-parameters/#comment-121">
+                2018-07-20 16:43:00            </a>
+                        <!--/div-->
+        </p>
+        <div class="comment-text">
+            <p>Maria,</p>
+<p>Everyone I know is developing and defining their own specialized heuristics on this one.</p>
+<p>We’re leaning towards the values of bitrate, framerate, packet loss and jitter. We’re also in the process of introducing it as an integral part of testRTC – giving media scoring to test runs.</p>
+        </div>
+    </div>
+    <!--div class="reply"-->
+    <a rel="nofollow" class="comment-reply-link" href="#comment-121" onclick="return addComment.moveForm( &quot;div-comment-121&quot;, &quot;121&quot;, &quot;respond&quot;, &quot;385&quot; )" aria-label="Reply to Tsahi Levent-Levi">Reply</a>    <!--/div-->
+        </div>
+    <!-- #comment-## -->
+</liclass="comment></ul><!-- .children -->
+<!-- #comment-## -->
+    <liclass="comment even="" thread-even="" depth-1="" parent"id="comment-118">        <div id="div-comment-118" class="comment-body">
+    <div class="comment-author vcard">
+        <img alt="" src="30bc6db81c5e2b02fbb3e65e414aecea" srcset="https://secure.gravatar.com/avatar/30bc6db81c5e2b02fbb3e65e414aecea?s=100&amp;d=mm&amp;r=g 2x" class="avatar avatar-50 photo" width="50" height="50">        <p style="padding-left: 70px;">
+            <cite class="fn">Jinchen says:</cite>            <!--div class="comment-meta commentmetadata"-->
+            <a class="metadata-date" href="https://testrtc.com/webrtc-internals-parameters/#comment-118">
+                2018-07-05 03:03:00            </a>
+                        <!--/div-->
+        </p>
+        <div class="comment-text">
+            <p>Hi<br>
+Could you please explain what is the following two parameters means?<br>
+googAvgEncodeMs and googEncodeUsagePercent, seems they are missing in this blog..<br>
+Thanks a lot!</p>
+        </div>
+    </div>
+    <!--div class="reply"-->
+    <a rel="nofollow" class="comment-reply-link" href="#comment-118" onclick="return addComment.moveForm( &quot;div-comment-118&quot;, &quot;118&quot;, &quot;respond&quot;, &quot;385&quot; )" aria-label="Reply to Jinchen">Reply</a>    <!--/div-->
+        </div>
+    <ul class="children">
+    <liclass="comment byuser="" comment-author-testrtc="" bypostauthor="" odd="" alt="" depth-2"id="comment-119">        <div id="div-comment-119" class="comment-body">
+    <div class="comment-author vcard">
+        <img alt="" src="71e7dc653f8adeeab10b764ede939a86_001.dat" srcset="https://secure.gravatar.com/avatar/71e7dc653f8adeeab10b764ede939a86?s=100&amp;d=mm&amp;r=g 2x" class="avatar avatar-50 photo" width="50" height="50">        <p style="padding-left: 70px;">
+            <cite class="fn"><a href="http://testrtc.wpengine.com/" rel="external nofollow" class="url">Tsahi Levent-Levi</a> says:</cite>            <!--div class="comment-meta commentmetadata"-->
+            <a class="metadata-date" href="https://testrtc.com/webrtc-internals-parameters/#comment-119">
+                2018-07-05 08:38:00            </a>
+                        <!--/div-->
+        </p>
+        <div class="comment-text">
+            <p>Jinchen,</p>
+<p>I am not an expert in each and every of these parameters, but here’s my guess about these two:</p>
+<p>googAvgEncodeMs – the time it takes for the encoder on average to encode a frame. If this is video, and you’re doing 30 fps, it should be lower than 30 millisecond to be able to cope with the throughput</p>
+<p>googlEncodeUsagePercent – how much of the CPU is being invested in encoding</p>
+<p>For the most part, you won’t be needing to look this further down into the internals of WebRTC.</p>
+        </div>
+    </div>
+    <!--div class="reply"-->
+    <a rel="nofollow" class="comment-reply-link" href="#comment-119" onclick="return addComment.moveForm( &quot;div-comment-119&quot;, &quot;119&quot;, &quot;respond&quot;, &quot;385&quot; )" aria-label="Reply to Tsahi Levent-Levi">Reply</a>    <!--/div-->
+        </div>
+    <!-- #comment-## -->
+</liclass="comment></ul><!-- .children -->
+<!-- #comment-## -->
+    <liclass="comment even="" thread-odd="" thread-alt="" depth-1="" parent"id="comment-92">        <div id="div-comment-92" class="comment-body">
+    <div class="comment-author vcard">
+        <img alt="" src="f7a4afc04f7fe48d1a75722d1d67781d" srcset="https://secure.gravatar.com/avatar/f7a4afc04f7fe48d1a75722d1d67781d?s=100&amp;d=mm&amp;r=g 2x" class="avatar avatar-50 photo" width="50" height="50">        <p style="padding-left: 70px;">
+            <cite class="fn">dula says:</cite>            <!--div class="comment-meta commentmetadata"-->
+            <a class="metadata-date" href="https://testrtc.com/webrtc-internals-parameters/#comment-92">
+                2017-11-09 12:58:00            </a>
+                        <!--/div-->
+        </p>
+        <div class="comment-text">
+            <p>Hi,</p>
+<p>Can we generate Ssrc report for the android native webRTC application,</p>
+        </div>
+    </div>
+    <!--div class="reply"-->
+    <a rel="nofollow" class="comment-reply-link" href="#comment-92" onclick="return addComment.moveForm( &quot;div-comment-92&quot;, &quot;92&quot;, &quot;respond&quot;, &quot;385&quot; )" aria-label="Reply to dula">Reply</a>    <!--/div-->
+        </div>
+    <ul class="children">
+    <liclass="comment byuser="" comment-author-testrtc="" bypostauthor="" odd="" alt="" depth-2"id="comment-93">        <div id="div-comment-93" class="comment-body">
+    <div class="comment-author vcard">
+        <img alt="" src="71e7dc653f8adeeab10b764ede939a86_001.dat" srcset="https://secure.gravatar.com/avatar/71e7dc653f8adeeab10b764ede939a86?s=100&amp;d=mm&amp;r=g 2x" class="avatar avatar-50 photo" width="50" height="50">        <p style="padding-left: 70px;">
+            <cite class="fn"><a href="http://testrtc.wpengine.com/" rel="external nofollow" class="url">Tsahi Levent-Levi</a> says:</cite>            <!--div class="comment-meta commentmetadata"-->
+            <a class="metadata-date" href="https://testrtc.com/webrtc-internals-parameters/#comment-93">
+                2017-11-09 15:10:00            </a>
+                        <!--/div-->
+        </p>
+        <div class="comment-text">
+            <p>Sure. You’ll need to dig into the code and capture the APIs that handle the RTCP stats reporting.</p>
+        </div>
+    </div>
+    <!--div class="reply"-->
+    <a rel="nofollow" class="comment-reply-link" href="#comment-93" onclick="return addComment.moveForm( &quot;div-comment-93&quot;, &quot;93&quot;, &quot;respond&quot;, &quot;385&quot; )" aria-label="Reply to Tsahi Levent-Levi">Reply</a>    <!--/div-->
+        </div>
+    <!-- #comment-## -->
+</liclass="comment></ul><!-- .children -->
+<!-- #comment-## -->
+    <liclass="comment even="" thread-even="" depth-1="" parent"id="comment-72">        <div id="div-comment-72" class="comment-body">
+    <div class="comment-author vcard">
+        <img alt="" src="ea7fc6b36233e02e3a1e164498646709" srcset="https://secure.gravatar.com/avatar/ea7fc6b36233e02e3a1e164498646709?s=100&amp;d=mm&amp;r=g 2x" class="avatar avatar-50 photo" width="50" height="50">        <p style="padding-left: 70px;">
+            <cite class="fn">Ray says:</cite>            <!--div class="comment-meta commentmetadata"-->
+            <a class="metadata-date" href="https://testrtc.com/webrtc-internals-parameters/#comment-72">
+                2017-08-27 22:33:00            </a>
+                        <!--/div-->
+        </p>
+        <div class="comment-text">
+            <p>I am trying this but apparently it is not really working?  All i see is a Create Dump.  When I click it, all I see it:<br>
+{<br>
+ “getUserMedia”: [<br>
+  {<br>
+   “audio”: “”,<br>
+   “origin”: “https://192.168.0.16:9001”,<br>
+   “pid”: 2592,<br>
+   “rid”: 19,<br>
+   “video”: “{width: {exact: 1024}, height: {exact: 768}, aspectRatio: {ideal: 1.77}}”<br>
+  },<br>
+  {<br>
+   “audio”: “”,<br>
+   “origin”: “https://192.168.0.16:9001”,<br>
+   “pid”: 2592,<br>
+   “rid”: 19,<br>
+   “video”: “{width: {exact: 1024}, height: {exact: 768}, aspectRatio: {ideal: 1.77}}”<br>
+  },<br>
+  {<br>
+   “audio”: “”,<br>
+   “origin”: “https://192.168.0.16:9001”,<br>
+   “pid”: 2592,<br>
+   “rid”: 19,<br>
+   “video”: “{width: {exact: 1024}, height: {exact: 768}, aspectRatio: {ideal: 1.77}}”<br>
+  },<br>
+  {<br>
+   “audio”: “”,<br>
+   “origin”: “https://192.168.0.16:9001”,<br>
+   “pid”: 2592,<br>
+   “rid”: 19,<br>
+   “video”: “{width: {exact: 1024}, height: {exact: 768}, aspectRatio: {ideal: 1.77}}”<br>
+  },<br>
+  {<br>
+   “audio”: “”,<br>
+   “origin”: “https://192.168.0.16:9001”,<br>
+   “pid”: 2592,<br>
+   “rid”: 19,<br>
+   “video”: “{width: {exact: 1024}, height: {exact: 768}, aspectRatio: {ideal: 1.77}}”<br>
+  },<br>
+  {<br>
+   “audio”: “”,<br>
+   “origin”: “https://192.168.0.16:9001”,<br>
+   “pid”: 2592,<br>
+   “rid”: 19,<br>
+   “video”: “{width: {exact: 1024}, height: {exact: 768}, aspectRatio: {ideal: 1.77}}”<br>
+  },<br>
+  {<br>
+   “audio”: “”,<br>
+   “origin”: “https://192.168.0.16:9001”,<br>
+   “pid”: 2592,<br>
+   “rid”: 19,<br>
+   “video”: “{width: {exact: 1024}, height: {exact: 768}, aspectRatio: {ideal: 1.77}}”<br>
+  }<br>
+ ],<br>
+ “PeerConnections”: {},<br>
+ “UserAgent”: “Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.101 Safari/537.36”<br>
+}</p>
+<p>What am I missing here?</p>
+        </div>
+    </div>
+    <!--div class="reply"-->
+    <a rel="nofollow" class="comment-reply-link" href="#comment-72" onclick="return addComment.moveForm( &quot;div-comment-72&quot;, &quot;72&quot;, &quot;respond&quot;, &quot;385&quot; )" aria-label="Reply to Ray">Reply</a>    <!--/div-->
+        </div>
+    <ul class="children">
+    <liclass="comment byuser="" comment-author-testrtc="" bypostauthor="" odd="" alt="" depth-2"id="comment-73">        <div id="div-comment-73" class="comment-body">
+    <div class="comment-author vcard">
+        <img alt="" src="71e7dc653f8adeeab10b764ede939a86_001.dat" srcset="https://secure.gravatar.com/avatar/71e7dc653f8adeeab10b764ede939a86?s=100&amp;d=mm&amp;r=g 2x" class="avatar avatar-50 photo" width="50" height="50">        <p style="padding-left: 70px;">
+            <cite class="fn"><a href="http://testrtc.wpengine.com/" rel="external nofollow" class="url">Tsahi Levent-Levi</a> says:</cite>            <!--div class="comment-meta commentmetadata"-->
+            <a class="metadata-date" href="https://testrtc.com/webrtc-internals-parameters/#comment-73">
+                2017-08-27 22:55:00            </a>
+                        <!--/div-->
+        </p>
+        <div class="comment-text">
+            <p>Latest Chrome versions require opening the webrtc-internals dump before anything else you do on another tab with WebRTC in order to “catch” the API calls.<br>
+It might be it.<br>
+It might also be the fact that there’s no media flowing?</p>
+        </div>
+    </div>
+    <!--div class="reply"-->
+    <a rel="nofollow" class="comment-reply-link" href="#comment-73" onclick="return addComment.moveForm( &quot;div-comment-73&quot;, &quot;73&quot;, &quot;respond&quot;, &quot;385&quot; )" aria-label="Reply to Tsahi Levent-Levi">Reply</a>    <!--/div-->
+        </div>
+    <!-- #comment-## -->
+</liclass="comment></ul><!-- .children -->
+<!-- #comment-## -->
+    <liclass="comment even="" thread-odd="" thread-alt="" depth-1="" parent"id="comment-38">        <div id="div-comment-38" class="comment-body">
+    <div class="comment-author vcard">
+        <img alt="" src="028ce4d3bbf71d3f26211ccf628a0b55" srcset="https://secure.gravatar.com/avatar/028ce4d3bbf71d3f26211ccf628a0b55?s=100&amp;d=mm&amp;r=g 2x" class="avatar avatar-50 photo" width="50" height="50">        <p style="padding-left: 70px;">
+            <cite class="fn">Mir Nar says:</cite>            <!--div class="comment-meta commentmetadata"-->
+            <a class="metadata-date" href="https://testrtc.com/webrtc-internals-parameters/#comment-38">
+                2017-02-14 18:14:00            </a>
+                        <!--/div-->
+        </p>
+        <div class="comment-text">
+            <p>Hello,<br>
+ I would like to get to know more about:</p>
+<p>googCurrentDelayMs<br>
+googJitterBufferMs<br>
+googJitterReceived<br>
+googPreferredJitterBufferMs</p>
+<p>Can you please point me to the right source of information regarding this?</p>
+        </div>
+    </div>
+    <!--div class="reply"-->
+    <a rel="nofollow" class="comment-reply-link" href="#comment-38" onclick="return addComment.moveForm( &quot;div-comment-38&quot;, &quot;38&quot;, &quot;respond&quot;, &quot;385&quot; )" aria-label="Reply to Mir Nar">Reply</a>    <!--/div-->
+        </div>
+    <ul class="children">
+    <liclass="comment odd="" alt="" depth-2"id="comment-61">        <div id="div-comment-61" class="comment-body">
+    <div class="comment-author vcard">
+        <img alt="" src="bb79ac351ec9bd4e02aa18a8837178da" srcset="https://secure.gravatar.com/avatar/bb79ac351ec9bd4e02aa18a8837178da?s=100&amp;d=mm&amp;r=g 2x" class="avatar avatar-50 photo" width="50" height="50">        <p style="padding-left: 70px;">
+            <cite class="fn">Sam Joseph says:</cite>            <!--div class="comment-meta commentmetadata"-->
+            <a class="metadata-date" href="https://testrtc.com/webrtc-internals-parameters/#comment-61">
+                2017-07-19 23:26:00            </a>
+                        <!--/div-->
+        </p>
+        <div class="comment-text">
+            <p>I also have similar questions. What does currentDelay really mean?</p>
+        </div>
+    </div>
+    <!--div class="reply"-->
+    <a rel="nofollow" class="comment-reply-link" href="#comment-61" onclick="return addComment.moveForm( &quot;div-comment-61&quot;, &quot;61&quot;, &quot;respond&quot;, &quot;385&quot; )" aria-label="Reply to Sam Joseph">Reply</a>    <!--/div-->
+        </div>
+    <!-- #comment-## -->
+</liclass="comment></ul><!-- .children -->
+<!-- #comment-## -->
+    <liclass="pingback even="" thread-even="" depth-1"id="comment-36">        <div id="div-comment-36" class="comment-body">
+    <div class="comment-author vcard">
+                <p style="padding-left: 70px;">
+            <cite class="fn"><a href="https://bloggeek.me/webrtc-rtcpeerconnection-one-per-stream/" rel="external nofollow" class="url">WebRTC RTCPeerConnection. One to rule them all, or one per stream? • BlogGeek.me</a> says:</cite>            <!--div class="comment-meta commentmetadata"-->
+            <a class="metadata-date" href="https://testrtc.com/webrtc-internals-parameters/#comment-36">
+                2017-01-09 12:00:00            </a>
+                        <!--/div-->
+        </p>
+        <div class="comment-text">
+            <p>[…] you are following the series of articles Fippo wrote with me on testRTC about how to read webrtc-internals, then you should know a thing or two about its […]</p>
+        </div>
+    </div>
+    <!--div class="reply"-->
+    <a rel="nofollow" class="comment-reply-link" href="#comment-36" onclick="return addComment.moveForm( &quot;div-comment-36&quot;, &quot;36&quot;, &quot;respond&quot;, &quot;385&quot; )" aria-label="Reply to WebRTC RTCPeerConnection. One to rule them all, or one per stream? • BlogGeek.me">Reply</a>    <!--/div-->
+        </div>
+    <!-- #comment-## -->
+    <liclass="pingback odd="" alt="" thread-odd="" thread-alt="" depth-1"id="comment-32">        <div id="div-comment-32" class="comment-body">
+    <div class="comment-author vcard">
+                <p style="padding-left: 70px;">
+            <cite class="fn"><a href="http://realtimeweekly.co/2016-12-12/" rel="external nofollow" class="url">RealTimeWeekly | RealTimeWeekly #159</a> says:</cite>            <!--div class="comment-meta commentmetadata"-->
+            <a class="metadata-date" href="https://testrtc.com/webrtc-internals-parameters/#comment-32">
+                2016-12-12 12:03:00            </a>
+                        <!--/div-->
+        </p>
+        <div class="comment-text">
+            <p>[…] What do the Parameters in webrtc-internals Really Mean? […]</p>
+        </div>
+    </div>
+    <!--div class="reply"-->
+    <a rel="nofollow" class="comment-reply-link" href="#comment-32" onclick="return addComment.moveForm( &quot;div-comment-32&quot;, &quot;32&quot;, &quot;respond&quot;, &quot;385&quot; )" aria-label="Reply to RealTimeWeekly | RealTimeWeekly #159">Reply</a>    <!--/div-->
+        </div>
+    <!-- #comment-## -->
+				</liclass="pingback></liclass="pingback></liclass="comment></liclass="comment></liclass="comment></liclass="comment></liclass="comment></liclass="comment></ol>
+					<div id="respond" class="comment-respond">
+		<h3 id="reply-title" class="comment-reply-title">Leave a reply <small><a rel="nofollow" id="cancel-comment-reply-link" href="https://testrtc.com/webrtc-internals-parameters/#respond" style="display: none;">Cancel reply</a></small></h3>			<form action="https://testrtc.com/wp-comments-post.php?wpe-comment-post=testrtc" method="post" id="commentform" class="comment-form anti-spam-form-processed" novalidate="">
+				<p class="comment-notes"><span id="email-notes">Your email address will not be published.</span> Required fields are marked <span class="required">*</span></p><p class="comment-form-comment"><label for="comment">Comment <span class="required">*</span></label><textarea id="comment" name="comment" aria-required="true"></textarea></p><p class="comment-form-author"><label for="author">Name <span class="required">*</span></label> <input id="author" name="author" value="" size="30" maxlength="245" required="required" type="text"></p>
+<p class="comment-form-email"><label for="email">Email <span class="required">*</span></label> <input id="email" name="email" value="" size="30" maxlength="100" aria-describedby="email-notes" required="required" type="email"></p>
+<p class="comment-form-url"><label for="url">Website</label> <input id="url" name="url" value="" size="30" maxlength="200" type="url"></p>
+<p class="form-submit"><input name="submit" id="submit" class="button" value="Post Comment" type="submit"> <input name="comment_post_ID" value="385" id="comment_post_ID" type="hidden">
+<input name="comment_parent" id="comment_parent" value="0" type="hidden">
+</p><p style="display: none;"><input id="akismet_comment_nonce" name="akismet_comment_nonce" value="7c8e8d7a00" type="hidden"></p>
+<!-- Anti-spam plugin v.5.2 wordpress.org/plugins/anti-spam/ -->
+		<p class="antispam-group antispam-group-q" style="clear: both; display: none;">
+			<label>Current ye@r <span class="required">*</span></label>
+			<input name="antspm-a" class="antispam-control antispam-control-a" value="2018" type="hidden">
+			<input name="antspm-q" class="antispam-control antispam-control-q" value="2018" autocomplete="off" type="text">
+		</p>
+		<p class="antispam-group antispam-group-e" style="display: none;">
+			<label>Leave this field empty</label>
+			<input name="antspm-e-email-url-website" class="antispam-control antispam-control-e" value="" autocomplete="off" type="text">
+		</p>
+<p style="display: none;"></p>			<input id="ak_js" name="ak_js" value="1541578582360" type="hidden"><input name="antspm-d" class="antispam-control antispam-control-d" value="2018" type="hidden"></form>
+			</div><!-- #respond -->
+					
+	</div>
+</main><aside class="sidebar sidebar-primary widget-area" role="complementary" aria-label="Primary Sidebar" itemscope="" itemtype="https://schema.org/WPSideBar">		<ul id="sidebar">
+			<li id="search-3" class="widget widget_search"><form class="search-form" itemprop="potentialAction" itemscope="" itemtype="https://schema.org/SearchAction" method="get" action="https://testrtc.com/" role="search"><meta itemprop="target" content="https://testrtc.com/?s={s}"><input itemprop="query-input" name="s" placeholder="Search this website …" type="search"><input value="Search" type="submit"></form></li><li id="gform_widget-2" class="widget gform_widget"><h2 class="widgettitle">SUBSCRIBE TO OUR UPDATES</h2>
+
+
+
+                <div class="gf_browser_unknown gform_wrapper" id="gform_wrapper_2"><form method="post" enctype="multipart/form-data" id="gform_2" action="https://testrtc.com/webrtc-internals-parameters/">
+                        <div class="gform_heading">
+                            <span class="gform_description">Be the first to know about WebRTC testing and monitoring</span>
+                        </div>
+                        <div class="gform_body"><ul id="gform_fields_2" class="gform_fields top_label form_sublabel_below description_below"><li id="field_2_1" class="gfield gfield_contains_required field_sublabel_below field_description_below gfield_visibility_visible"><label class="gfield_label" for="input_2_1"><span class="gfield_required">*</span></label><div class="ginput_container ginput_container_email">
+                            <input name="input_1" id="input_2_1" value="" class="large" tabindex="1" placeholder="Your email" aria-required="true" aria-invalid="false" type="text">
+                        </div></li><li id="field_2_2" class="gfield gform_validation_container field_sublabel_below field_description_below gfield_visibility_"><label class="gfield_label" for="input_2_2">Email</label><div class="ginput_container"><input name="input_2" id="input_2_2" value="" type="text"></div><div class="gfield_description">This field is for validation purposes and should be left unchanged.</div></li>
+                            </ul></div>
+        <div class="gform_footer top_label"> <input id="gform_submit_button_2" class="gform_button button" value="Subscribe" tabindex="2" onclick="if(window[&quot;gf_submitting_2&quot;]){return false;}  window[&quot;gf_submitting_2&quot;]=true;  " onkeypress="if( event.keyCode == 13 ){ if(window[&quot;gf_submitting_2&quot;]){return false;} window[&quot;gf_submitting_2&quot;]=true;  jQuery(&quot;#gform_2&quot;).trigger(&quot;submit&quot;,[true]); }" type="submit">
+            <input class="gform_hidden" name="is_submit_2" value="1" type="hidden">
+            <input class="gform_hidden" name="gform_submit" value="2" type="hidden">
+            <input class="gform_hidden" name="gform_unique_id" value="" type="hidden">
+            <input class="gform_hidden" name="state_2" value="WyJbXSIsIjQyZDEyY2U2NDE5Y2UwZmVhNDU3MmRkY2Q3ZjEzYzc3Il0=" type="hidden">
+            <input class="gform_hidden" name="gform_target_page_number_2" id="gform_target_page_number_2" value="0" type="hidden">
+            <input class="gform_hidden" name="gform_source_page_number_2" id="gform_source_page_number_2" value="1" type="hidden">
+            <input name="gform_field_values" value="" type="hidden">
+        </div>
+                        </form>
+                        </div></li><li id="categories-5" class="widget widget_categories"><h2 class="widgettitle">Categories</h2>		<ul>
+	<li class="cat-item cat-item-6 fa fa-play" style="display: block;"><a href="https://testrtc.com/category/analysis/">Analysis</a>
+</li>
+	<li class="cat-item cat-item-3 fa fa-play" style="display: block;"><a href="https://testrtc.com/category/announcements/">Announcements</a>
+</li>
+	<li class="cat-item cat-item-5 fa fa-play" style="display: block;"><a href="https://testrtc.com/category/how-to/">How to</a>
+</li>
+	<li class="cat-item cat-item-10 fa fa-play" style="display: block;"><a href="https://testrtc.com/category/stories/">Stories</a>
+</li>
+	<li class="cat-item cat-item-197 fa fa-play" style="display: block;"><a href="https://testrtc.com/category/testimonials/">Testimonials</a>
+</li>
+	<li class="cat-item cat-item-16 fa fa-play" style="display: block;"><a href="https://testrtc.com/category/testrtc-tips/">testRTC tips</a>
+</li>
+		</ul>
+</li>		</ul>
+	</aside></div></div><div class="footer-widgets"><div class="wrap"><div class="widget-area footer-widgets-1 footer-widget-area"><section id="sow-editor-2" class="widget widget_sow-editor"><div class="widget-wrap"><div class="so-widget-sow-editor so-widget-sow-editor-base"><h4 class="widget-title widgettitle">Good to Know</h4>
+<div class="siteorigin-widget-tinymce textwidget">
+	<ul>
+<li><a href="http://testrtc.com/why-testrtc/">Why testRTC?</a></li>
+<li><a href="http://testrtc.com/privacy/">Privacy Policy</a></li>
+<li><a href="http://testrtc.com/terms/">Terms and Conditions</a></li>
+</ul>
+</div>
+</div></div></section>
+<section id="sow-editor-3" class="widget widget_sow-editor"><div class="widget-wrap"><div class="so-widget-sow-editor so-widget-sow-editor-base"><h4 class="widget-title widgettitle">Our Products</h4>
+<div class="siteorigin-widget-tinymce textwidget">
+	<ul>
+<li><a href="http://testrtc.com/monitoring/">Monitoring</a></li>
+<li><a href="http://testrtc.com/stress-testing/">Stress Testing</a></li>
+<li><a href="http://testrtc.com/functional-testing/">Functional Testing</a></li>
+</ul>
+</div>
+</div></div></section>
+<section id="sow-editor-4" class="widget widget_sow-editor"><div class="widget-wrap"><div class="so-widget-sow-editor so-widget-sow-editor-base"><h4 class="widget-title widgettitle">About Us</h4>
+<div class="siteorigin-widget-tinymce textwidget">
+	<ul>
+<li><a href="http://testrtc.com/about/">About testRTC</a></li>
+<li><a href="https://testrtc.com/blog/">Our Blog</a></li>
+</ul>
+</div>
+</div></div></section>
+</div><div class="widget-area footer-widgets-2 footer-widget-area"><section id="sow-editor-5" class="widget widget_sow-editor"><div class="widget-wrap"><div class="so-widget-sow-editor so-widget-sow-editor-base"><h4 class="widget-title widgettitle">Connect with Us</h4>
+<div class="siteorigin-widget-tinymce textwidget">
+	<ul class="contact-us-links">
+<li class="phone">+972-3-721-9301</li>
+<li class="mail"><a href="mailto:info@testrtc.com">info@testrtc.com</a></li>
+<li class="map">68 Kaplan st, Qiryat Ono 5529368, Israel</li>
+</ul>
+</div>
+</div></div></section>
+</div><div class="widget-area footer-widgets-3 footer-widget-area"><section id="sow-editor-6" class="widget widget_sow-editor"><div class="widget-wrap"><div class="so-widget-sow-editor so-widget-sow-editor-base">
+<div class="siteorigin-widget-tinymce textwidget">
+	<p class="footer-social-icons" style="text-align: center;"><a style="padding: 5px; display: inline-block;" href="https://www.linkedin.com/company/testrtc"><img class="alignnone size-full wp-image-344" src="i-150x150.png" alt="LinkedIn" width="130" height="130"></a> <a style="padding: 5px; display: inline-block;" href="https://twitter.com/testrtc"><img class="alignnone size-full wp-image-345" src="l-150x150.png" alt="Twitter" width="130" height="130"></a> <a style="padding: 5px; display: inline-block;" href="https://www.youtube.com/channel/UCvf6BlEtzwssSLMiCV33dHw"><img class="alignnone size-full wp-image-347 aligncenter" src="x-150x150.png" alt="YouTube" width="130" height="130"></a> <a style="padding: 5px; display: inline-block;" href="https://testrtc.com/feed"><img class="alignnone size-full wp-image-346" src="r.png" alt="RSS feed" width="130" height="130"></a></p>
+<p style="text-align: center;"><a href="https://app.testrtc.com/signup" class="get-started">Get Started</a></p>
+</div>
+</div></div></section>
+</div></div></div><footer class="site-footer" itemscope="" itemtype="https://schema.org/WPFooter"><div class="wrap">    <div class="footer-copyright">
+        © 2018 testRTC
+    </div>
+    <div class="footer-site-logo">
+        <img src="testrtc_logo_300dpi-transparent.png">
+    </div>
+    </div></footer></div><!-- WP-Minify Footer Placeholder --><div class="mobmenu-overlay"></div><div class="mob-menu-header-holder mobmenu" data-menu-display="mob-menu-slideout-over"><div class="mob-menu-logo-holder"><a href="https://testrtc.com/" class="headertext"><img class="mob-standard-logo" src="testrtc_logo_190px.png" alt=" Logo Header Menu"></a></div><div class="mobmenur-container"><a href="#" class="mobmenu-right-bt" alt="Right Menu Button"><img src="untitled" alt="Right Menu Icon"><i class="mob-icon-cancel mob-cancel-button"></i></a></div></div>				<!--  Right Panel Structure -->
+				<div class="mob-menu-right-panel mobmenu  ">
+					<a href="#" class="mobmenu-right-bt" alt="Right Menu Button"><i class="mob-icon-cancel mob-cancel-button"></i></a>
+					<div class="mobmenu_content">
+		<div class="menu-main-menu-container"><ul id="mobmenuright"><li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-527"><a href="#" class="">Product</a>
+<div class="mob-expand-submenu"><i class="mob-icon-down-open"></i><i class="mob-icon-up-open hide"></i></div><ul class="sub-menu">
+	<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-594"><a href="https://testrtc.com/monitoring/" class="">Monitoring</a></li>	<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-534"><a href="https://testrtc.com/stress-testing/" class="">Stress Testing</a></li>	<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-535"><a href="https://testrtc.com/functional-testing/" class="">Functional Testing</a></li></ul>
+</li><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-536"><a href="https://testrtc.com/contact/" class="">Contact</a></li><li class="menu-item menu-item-type-post_type menu-item-object-page current_page_parent menu-item-537"><a href="https://testrtc.com/blog/" class="">Blog</a></li><li class="button menu-item menu-item-type-custom menu-item-object-custom menu-item-539"><a href="https://app.testrtc.com/" class="">Get Started</a></li></ul></div>
+			</div><div class="mob-menu-right-bg-holder"></div></div>
+<!-- Google Tag Manager (noscript) -->
+
+<!-- End Google Tag Manager (noscript) -->	
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
+   
+</body>
+</html>

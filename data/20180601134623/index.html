@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    <meta charset="UTF-8">
+    <link rel="canonical" href="https://blog.csdn.net/zcmain/article/details/70160857"> 
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="referrer" content="always">
+    <meta name="description" content="对公钥和私钥有点稀里糊涂的，搜索了一些资料，作一些整理吧，先看这个：
+加密--公钥
+解密--私钥
+签名--私钥
+验证--公钥
+看了这个也许会对私钥用于签名不解，其实它等同于用私钥加密，而公钥验证就是用公钥解密，但是不能用于保密信息。因为公钥是公开的。
+再来一个：
+1）公钥和私钥成对出现
+2）公开的密钥叫公钥，只有自己知道的叫私钥
+3）用公钥加密的数据只有对应的私钥可以 解密
+4">
+    <meta name="keywords" content="RSA 公钥 私钥">
+    <meta http-equiv="Cache-Control" content="no-siteapp"><link rel="alternate" media="handheld" href="https://blog.csdn.net/zcmain/article/details/70160857#">
+    <meta name="shenma-site-verification" content="5a59773ab8077d4a62bf469ab966a63b_1497598848">
+    
+
+    <link href="favicon.ico" rel="SHORTCUT ICON">
+    <title>公钥、私钥、数字签名、数字证书、对称与非对称算法、HTTPS - CSDN博客</title>
+    
+            
+        
+
+    
+    
+    
+    
+        
+         
+    
+
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body><div id="BAIDU_DUP_fp_wrapper" style="position: absolute; left: -1px; bottom: -1px; z-index: 0; width: 0px; height: 0px; overflow: hidden; visibility: hidden; display: none;"><iframe id="BAIDU_DUP_fp_iframe" src="index_1.html" style="width: 0px; height: 0px; visibility: hidden; display: none;"></iframe></div><div id="MathJax_Message" style="display: none;"></div>    
+    
+    
+    
+
+
+
+<header>
+	<div class="container d-flex clearfix">
+		<div class="title-box">
+			<h2 class="title-blog">
+				<a href="https://blog.csdn.net/zcmain">zcmain的专栏</a>
+			</h2>
+			<p class="description">要么看书 要么旅行 身体或心灵总要有一样在路上。</p>
+		</div>
+		<div class="opt-box d-flex justify-content-end">
+			<a class="btn btn-sm" href="https://blog.csdn.net/zcmain/rss/list">
+					<svg class="icon" aria-hidden="true">
+						<use xlink:href="#csdnc-rss"></use>
+					</svg>RSS订阅</a>
+					</div>
+	</div>
+</header>
+<div class="container clearfix pt0" id="mainBox">
+    <main>
+        <div class="blog-content-box">
+	<div class="article-title-box">
+			<span class="article-type type-2 float-left">转</span>		<h1 class="title-article">公钥、私钥、数字签名、数字证书、对称与非对称算法、HTTPS</h1>
+	</div>
+	<div class="article-info-box">
+		<div class="article-bar-top d-flex">
+												<span class="time">2017年04月13日 18:39:02</span>
+			<div class="float-right">
+				<span class="read-count">阅读数：1125</span>
+											</div>
+		</div>
+	</div>
+	<article>
+		<div id="article_content" class="article_content clearfix csdn-tracking-statistics" data-pid="blog" data-mod="popu_307" data-dsm="post">
+                    
+            <div class="htmledit_views">
+                
+<p style="background: rgb(248, 248, 248) none repeat scroll 0% 0%;"><span style="color: rgb(61, 70, 77);"><span style="font-family: &quot;Pingfang SC&quot;;"><span style="font-size: 18px;">对公钥和私钥有点稀里糊涂的，搜索了一些资料，作一些整理吧，先看这个：</span></span></span></p>
+<p style="background: rgb(248, 248, 248) none repeat scroll 0% 0%;"><span style="font-size: 18px;"><span style="color: rgb(61, 70, 77);"><span style="font-family: &quot;Pingfang SC&quot;;">加密</span>--公钥</span><span style="color: rgb(61, 70, 77);"><br></span><span style="color: rgb(61, 70, 77);"><span style="font-family: &quot;Pingfang SC&quot;;">解密</span>--私钥</span><span style="color: rgb(61, 70, 77);"><br></span><span style="color: rgb(61, 70, 77);"><span style="font-family: &quot;Pingfang SC&quot;;">签名</span>--私钥</span><span style="color: rgb(61, 70, 77);"><br></span><span style="color: rgb(61, 70, 77);"><span style="font-family: &quot;Pingfang SC&quot;;">验证</span>--公钥</span></span></p>
+<p style="background: rgb(248, 248, 248) none repeat scroll 0% 0%;"><span style="color: rgb(61, 70, 77);"><span style="font-family: &quot;Pingfang SC&quot;;"><span style="font-size: 18px;">看了这个也许会对私钥用于签名不解，其实它等同于用私钥加密，而公钥验证就是用公钥解密，但是不能用于保密信息。因为公钥是公开的。</span></span></span></p>
+<p style="background: rgb(248, 248, 248) none repeat scroll 0% 0%;"><span style="color: rgb(61, 70, 77);"><span style="font-family: &quot;Pingfang SC&quot;;"><span style="font-size: 18px;">再来一个：</span></span></span></p>
+<p style="background: rgb(248, 248, 248) none repeat scroll 0% 0%;"><span style="font-size: 18px;"><span style="color: rgb(61, 70, 77);">1）公钥和私钥成对出现</span><span style="color: rgb(61, 70, 77);"><br></span><span style="color: rgb(61, 70, 77);">2）公开的密钥叫公钥，只有自己知道的叫私钥</span><span style="color: rgb(61, 70, 77);"><br></span><span style="color: rgb(61, 70, 77);">3）用公钥加密的数据只有对应的私钥可以 解密</span><span style="color: rgb(61, 70, 77);"><br></span><span style="color: rgb(61, 70, 77);">4）用私钥加密的数据只有对应的公钥可以解密</span><span style="color: rgb(61, 70, 77);"><br></span><span style="color: rgb(61, 70, 77);">5）如果可以用公钥解密，则必然是对应的私钥加的密</span><span style="color: rgb(61, 70, 77);"><br></span><span style="color: rgb(61, 70, 77);">6）如果可以用私钥解密，则 必然是对应的公钥加的密</span></span></p>
+<p style="background: rgb(248, 248, 248) none repeat scroll 0% 0%;"><span style="color: rgb(61, 70, 77);"><span style="font-size: 18px;"><span style="font-family: &quot;Pingfang SC&quot;;">公钥和私钥都可以用来加密或解密</span>---只要能保证用A加密，就用B解密就行。至于A是公钥还是私钥，其实可以根据不同的用途而定。</span></span></p>
+<p style="background: rgb(248, 248, 248) none repeat scroll 0% 0%;"><span style="font-weight: bold;"><span style="color: rgb(0, 112, 192);"><span style="font-size: 18px;"><span style="font-family: &quot;Pingfang SC&quot;;">一、公钥加密，私钥解密</span>——用于保密信息</span></span></span></p>
+<p style="background: rgb(248, 248, 248) none repeat scroll 0% 0%;"><span style="color: rgb(61, 70, 77);"><span style="font-family: &quot;Pingfang SC&quot;;"><span style="font-size: 18px;">如果你想把某个消息秘密的发给某人，那你就可以用他的公钥加密。因为只有他知道他的私钥，所以这消息也就只有他本人能解开，于是你就达到了你的目的。</span></span></span></p>
+<p style="background: rgb(248, 248, 248) none repeat scroll 0% 0%;"><span style="font-weight: bold;"><span style="color: rgb(0, 112, 192);"><span style="font-size: 18px;"><span style="font-family: &quot;Pingfang SC&quot;;">二、私钥加密，公钥解密</span>——用于数字签名</span></span></span></p>
+<p style="background: rgb(248, 248, 248) none repeat scroll 0% 0%;"><span style="color: rgb(61, 70, 77);"><span style="font-family: &quot;Pingfang SC&quot;;"><span style="font-size: 18px;">严格来说，这里说的私钥加密是用私钥对摘要进行加密，接收方可以用公钥解密，解密成功则可验证信息的发送者是私钥的拥有人。因为公钥是公开的，所以起不了保密信息的作用。</span></span></span></p>
+<p style="background: rgb(248, 248, 248) none repeat scroll 0% 0%;"><span style="color: rgb(61, 70, 77);"><span style="font-size: 18px;"><span style="font-family: &quot;Pingfang SC&quot;;">如果你想发布一个公告，需要一个手段来证明这确实是你本人发的，而不是其他人冒名顶替的。那你可以在你的公告开头或者结尾附上一段用你的私钥加密的内容（例如说就是你公告正文的一段话），那所有其他人都可以用你的公钥来解密，看看解出来的内容是不是相符的。如果是的话，那就说明这公告确实是你发的</span>---因为只有你的公钥才能解开你的私钥加密的内容，而其他人是拿不到你的私钥的。</span></span></p>
+<p style="background: rgb(248, 248, 248) none repeat scroll 0% 0%;"><span style="color: rgb(61, 70, 77);"><span style="font-size: 18px;"><span style="font-family: &quot;Pingfang SC&quot;;">但这仅仅做到了数字签名的第一部分：证明这消息是你发的。数字签名还有第二部分：证明这消息内容确实是完整的</span>---也就是没有经过任何形式的篡改（包括替换、缺少、新增）。</span></span></p>
+<p style="background: rgb(248, 248, 248) none repeat scroll 0% 0%;"><span style="color: rgb(61, 70, 77);"><span style="font-size: 18px;"><span style="font-family: &quot;Pingfang SC&quot;;">要做到数字签名的第二部分，需要做的是：把你公告的原文做一次哈希（</span>md5或者sha1都行），然后用你的私钥加密这段哈希作为签名，并一起公布出去。当别人收到你的公告时，他可以用你的公钥解密你的签名，如果解密成功，并且解密出来的哈希值确实和你的公告原文一致，那么他就证明了两点：这消息确实是你发的，而且内容是完整的。&nbsp;</span></span></p>
+<p style="background: rgb(248, 248, 248) none repeat scroll 0% 0%;"><span style="color: rgb(61, 70, 77);"><span style="font-size: 18px;">&nbsp;</span></span></p>
+<p style="background: rgb(248, 248, 248) none repeat scroll 0% 0%;"><span style="font-weight: bold;"><span style="color: rgb(0, 112, 192);"><span style="font-size: 18px;"><span style="font-family: &quot;Pingfang SC&quot;;">三、对公钥进行认证</span>——数字证书</span></span></span></p>
+<p style="background: rgb(248, 248, 248) none repeat scroll 0% 0%;"><span style="color: rgb(61, 70, 77);"><span style="font-family: &quot;Pingfang SC&quot;;"><span style="font-size: 18px;">黑客可以替换你的公钥，然后用他的私钥做数字签名给你发信息，而你用黑客伪造的公钥能成功验证，会让你误认为消息来源没变。</span></span></span></p>
+<p style="background: rgb(248, 248, 248) none repeat scroll 0% 0%;"><span style="color: rgb(61, 70, 77);"><span style="font-size: 18px;"><span style="font-family: &quot;Pingfang SC&quot;;">这种情况下需要</span>CA(证书中心certificate authority)对公钥进行认证。证书中心用自己的私钥，对信息发送者的公钥和一些相关信息一起加密，生成"数字证书"（Digital Certificate）。</span></span></p>
+<p style="background: rgb(248, 248, 248) none repeat scroll 0% 0%;"><span style="font-size: 18px;"><span style="color: rgb(61, 70, 77);"><span style="font-family: &quot;Pingfang SC&quot;;">这个可以参考这篇文章：</span></span><a href="http://www.ruanyifeng.com/blog/2011/08/what_is_a_digital_signature.html"><span style="color: rgb(68, 102, 187);"><span style="font-family: &quot;Pingfang SC&quot;;">数字签名是什么？</span></span></a><span style="color: rgb(61, 70, 77);">&nbsp;，讲得非常好，图示很清楚。</span></span></p>
+<p style="background: rgb(248, 248, 248) none repeat scroll 0% 0%;"><span style="color: rgb(61, 70, 77);"><span style="font-family: &quot;Pingfang SC&quot;;"><span style="font-size: 18px;">通过在实际的使用中，公钥也不会单独出现，总是以数字证书的方式出现，以确保公钥的安全性和有效性。</span></span></span></p>
+<p style="background: rgb(248, 248, 248) none repeat scroll 0% 0%;"><span style="font-weight: bold;"><span style="color: rgb(0, 112, 192);"><span style="font-family: &quot;Pingfang SC&quot;;"><span style="font-size: 18px;">四、对称与非对称算法</span></span></span></span></p>
+<p style="background: rgb(248, 248, 248) none repeat scroll 0% 0%;"><span style="color: rgb(61, 70, 77);"><span style="font-size: 18px;"><span style="font-family: &quot;Pingfang SC&quot;;">对称算法是说，加密过程和解密过程是对称的，用一个</span><span style="font-family: &quot;Pingfang SC&quot;;">密钥加密，可以用同一个密钥解密。使用公私钥的算法是非对称加密算法。</span></span></span></p>
+<p style="background: rgb(248, 248, 248) none repeat scroll 0% 0%;"><span style="font-size: 18px;"><span style="color: rgb(61, 70, 77);">HTTPS一般使用了以下算法，其中就包括非对称和对称加密算法：</span><span style="color: rgb(61, 70, 77);"><br></span><span style="color: rgb(61, 70, 77);"><span style="font-family: &quot;Pingfang SC&quot;;">非对称加密算法：</span>RSA，DSA/DSS</span><span style="color: rgb(61, 70, 77);"><br></span><span style="color: rgb(61, 70, 77);"><span style="font-family: &quot;Pingfang SC&quot;;">对称加密算法：</span>AES，RC4，3DES</span><span style="color: rgb(61, 70, 77);"><br></span><span style="color: rgb(61, 70, 77);">HASH算法：MD5，SHA1，SHA256</span><span style="color: rgb(61, 70, 77);"><br></span><span style="color: rgb(61, 70, 77);"><span style="font-family: &quot;Pingfang SC&quot;;">其中非对称加密算法用于在握手过程中加密生成的密码，对称加密算法用于对真正传输的数据进行加密，而</span>HASH算法用于验证数据的完整性。</span></span></p>
+<p style="background: rgb(248, 248, 248) none repeat scroll 0% 0%;"><span style="font-size: 18px;"><strong><span style="color: rgb(0, 112, 192);"><span style="font-family: &quot;Pingfang SC&quot;;">五、</span>HTTPS的工作原理</span></strong><span style="color: rgb(61, 70, 77);"><br></span><span style="color: rgb(61, 70, 77);">HTTPS在传输数据之前需要客户端（浏览器）与服务端（网站）之间进行一次握手，在握手过程中将确立双方加密传输数据的密码信息。TLS/SSL协议不仅仅是一套加密传输的协议，更是一件经过艺术家精心设计的艺术品，TLS/SSL中使用了非对称加密，对称加密以及HASH算法。握手过程的简单描述如下：</span><span style="color: rgb(61, 70, 77);"><br></span><span style="color: rgb(61, 70, 77);">1.浏览器将自己支持的一套加密规则发送给网站。</span><span style="color: rgb(61, 70, 77);"><br></span><span style="color: rgb(61, 70, 77);">2.网站从中选出一组加密算法与HASH算法，并将自己的身份信息以证书的形式发回给浏览器。证书里面包含了网站地址，加密公钥，以及证书的颁发机构等信息。</span><span style="color: rgb(61, 70, 77);"><br></span><span style="color: rgb(61, 70, 77);">3.获得网站证书之后浏览器要做以下工作：</span><span style="color: rgb(61, 70, 77);"><br></span><span style="color: rgb(61, 70, 77);">a) 验证证书的合法性（颁发证书的机构是否合法，证书中包含的网站地址是否与正在访问的地址一致等），如果证书受信任，则浏览器栏里面会显示一个小锁头，否则会给出证书不受信的提示。</span><span style="color: rgb(61, 70, 77);"><br></span><span style="color: rgb(61, 70, 77);">b) 如果证书受信任，或者是用户接受了不受信的证书，浏览器会生成一串随机数的密码，并用证书中提供的公钥加密。</span><span style="color: rgb(61, 70, 77);"><br></span><span style="color: rgb(61, 70, 77);">c) 使用约定好的HASH计算握手消息，并使用生成的随机数对消息进行加密，最后将之前生成的所有信息发送给网站。</span><span style="color: rgb(61, 70, 77);"><br></span><span style="color: rgb(61, 70, 77);">4.网站接收浏览器发来的数据之后要做以下的操作：</span><span style="color: rgb(61, 70, 77);"><br></span><span style="color: rgb(61, 70, 77);">a) 使用自己的私钥将信息解密取出密码，使用密码解密浏览器发来的握手消息，并验证HASH是否与浏览器发来的一致。</span><span style="color: rgb(61, 70, 77);"><br></span><span style="color: rgb(61, 70, 77);">b) 使用密码加密一段握手消息，发送给浏览器。</span><span style="color: rgb(61, 70, 77);"><br></span><span style="color: rgb(61, 70, 77);">5.浏览器解密并计算握手消息的HASH，如果与服务端发来的HASH一致，此时握手过程结束，之后所有的通信数据将由之前浏览器生成的随机密码并利用对称加密算法进行加密。</span></span></p>
+<p style="background: rgb(248, 248, 248) none repeat scroll 0% 0%;"><span style="color: rgb(61, 70, 77);"><span style="font-size: 18px;">&nbsp;</span></span></p>
+<p style="background: rgb(248, 248, 248) none repeat scroll 0% 0%;"><span style="color: rgb(61, 70, 77);"><span style="font-family: &quot;Pingfang SC&quot;;"><span style="font-size: 18px;">参考：</span></span></span></p>
+<p style="background: rgb(248, 248, 248) none repeat scroll 0% 0%;"><a href="http://chenling1018.blog.163.com/blog/static/1480254201058112410789/"><span style="color: rgb(68, 102, 187);"><span style="font-size: 18px;"><span style="font-family: &quot;Pingfang SC&quot;;">公钥，私钥</span>,SSL（讲的很生动） </span></span></a></p>
+<p style="background: rgb(248, 248, 248) none repeat scroll 0% 0%;"><a href="http://www.zhihu.com/question/25912483"><span style="color: rgb(68, 102, 187);"><span style="font-size: 18px;">RSA的公钥和私钥到底哪个才是用来加密和哪个用来解密？</span></span></a></p>
+<p style="background: rgb(248, 248, 248) none repeat scroll 0% 0%;"><a href="http://http//blog.csdn.net/liudewen3/article/details/17525421"><span style="font-size: 18px;"><span style="color: rgb(68, 102, 187);"><span style="font-family: &quot;Pingfang SC&quot;;">利用</span>openssl进行RSA加密解密</span><span style="color: rgb(68, 102, 187);"><br></span></span></a></p>
+<p style="background: rgb(248, 248, 248) none repeat scroll 0% 0%;"><span style="font-size: 18px;"><a href="http://blog.csdn.net/hotlinhao/article/details/37592019"><span style="color: rgb(68, 102, 187);">Android客户端与PHP服务端RES公钥私钥互加解密</span></a><span style="color: rgb(61, 70, 77);"><br></span><span style="color: rgb(204, 0, 0);"><a href="http://www.guokr.com/post/114121/">HTTPS那些事（一）HTTPS原理</a></span></span></p>
+<p style="background: rgb(248, 248, 248) none repeat scroll 0% 0%;"><span style="font-size: 18px;"><br></span></p>
+<p style="background: rgb(248, 248, 248) none repeat scroll 0% 0%;"><span style="font-size: 18px;">原文：https://my.oschina.net/ioslighter/blog/359207</span></p>
+<p>&nbsp;</p>
+            </div>
+                </div>
+				<div class="hide-article-box text-center csdn-tracking-statistics tracking-click" data-mod="popu_376">
+			<a class="btn btn-red-hollow" id="btn-readmore">阅读更多</a>
+		</div>
+        	</article>
+	
+		<div class="article-bar-bottom">
+						<div class="tags-box artic-tag-box">
+			<span class="label">文章标签：</span>
+						<a class="tag-link" href="http://so.csdn.net/so/search/s.do?q=RSA%20%E5%85%AC%E9%92%A5%20%E7%A7%81%E9%92%A5&amp;t=blog" target="_top">RSA 公钥 私钥						</a>
+		</div>
+						<div class="tags-box">
+			<span class="label">个人分类：</span>
+						<a class="tag-link" href="https://blog.csdn.net/zcmain/article/category/1359709" target="_top">android开发总结						</a>
+		</div>
+					</div>
+	
+	<!-- !empty($pre_next_article[0]) -->
+		</div>
+
+
+
+
+        <div class="edu-promotion"></div>
+        <a id="commentBox"></a>
+<div class="comment-box">
+	  	<div class="unlogin-box text-center">
+		想对作者说点什么？
+		<!-- $curl 当前地址 -->
+		<a href="https://passport.csdn.net/account/login?from=https://blog.csdn.net/zcmain/article/details/70160857#commentBox" class="btn btn-sm btn-red">我来说一句</a>
+	</div>
+			<div class="comment-list-container">
+		<a id="comments"></a>
+		<div class="comment-list-box">
+		</div>
+		<div id="commentPage" class="pagination-box d-none"></div>
+		<div class="opt-box text-center">
+			<button class="btn btn-sm btn-link-blue" id="btnMoreComment"></button>
+		</div>
+	</div>
+</div>        <div class="recommend-box">
+            		<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/CSDN_so_nice/article/details/52451317" target="_top" strategy="BlogCommendFromBaidu_0">
+				<em>对称</em>密钥系统和公开密钥系统			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/CSDN_so_nice/article/details/52451317" target="_top">
+				<em>对称</em>加密和非<em>对称</em>加密为了安全性，在因特网上传输的一些信息需要加密，比如用户登陆所使用的密码。加密系统一般分为<em>对称</em>密钥系统（symmetric key system）和公开密钥系统（public key...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/CSDN_so_nice" title="CSDN_so_nice" target="_blank">
+					<img src="3_csdn_so_nice.jpg" alt="CSDN_so_nice" class="avatar-pic">
+					<span class="name">CSDN_so_nice</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2016-09-06 16:38:33</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：1712</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/u011461420/article/details/51503283" target="_top" strategy="searchFromBaidu_1">
+				<em>数字签名</em>是什么？ <em>对称</em>加密 <em>与非</em><em>对称</em>加密			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/u011461420/article/details/51503283" target="_top">
+				原址：点击打开链接
+
+
+
+
+今天，我读到一篇好文章。
+
+它用图片通俗易懂地解释了，"<em>数字签名</em>"（digital signature）和"<em>数字证书</em>"（digital certificate）到底是什么。...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/u011461420" title="u011461420" target="_blank">
+					<img src="3_u011461420.jpg" alt="u011461420" class="avatar-pic">
+					<span class="name">u011461420</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2016-05-26 00:43:16</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：1911</span>
+			</p>
+		</div>
+	</div>
+								<div class="recommend-item-box recommend-ad-box" id="ad1"></div>
+				
+
+			
+				<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/z5234032/article/details/51012952" target="_top" strategy="searchFromBaidu_2">
+				<em>数字签名</em>、<em>数字证书</em>、<em>对称</em>加密<em>算法</em>、非<em>对称</em>加密<em>算法</em>、单向加密（散列<em>算法</em>）			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/z5234032/article/details/51012952" target="_top">
+				1.
+
+
+
+鲍勃有两把钥匙，一把是<em>公钥</em>，另一把是<em>私钥</em>。
+
+2.
+
+
+
+鲍勃把<em>公钥</em>送给他的朋友们----帕蒂、道格、苏珊----每人一把。
+
+3.
+
+
+
+苏珊给鲍勃写信，...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/z5234032" title="z5234032" target="_blank">
+					<img src="3_z5234032.jpg" alt="z5234032" class="avatar-pic">
+					<span class="name">z5234032</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2016-03-30 11:34:39</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：936</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/The__Apollo/article/details/79705184" target="_top" strategy="searchFromBaidu_3">
+				<em>公钥</em>、<em>私钥</em>、<em>数字签名</em>、<em>数字证书</em>、<em>对称</em><em>与非</em><em>对称</em><em>算法</em>，<em>HTTPS</em>			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/The__Apollo/article/details/79705184" target="_top">
+				要入门密码学，首先要搞清楚三个概念，即加密，签名和认证。  
+一、<em>公钥</em>加密，<em>私钥</em>解密——用于加密信息
+
+如果你想把某个消息秘密的发给某人，那你就可以用他的<em>公钥</em>加密。因为只有他知道他的<em>私钥</em>，所以这消息也...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/The__Apollo" title="The__Apollo" target="_blank">
+					<img src="3_the__apollo.jpg" alt="The__Apollo" class="avatar-pic">
+					<span class="name">The__Apollo</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2018-03-26 22:03:24</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：15</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/ttomqq/article/details/53202921" target="_top" strategy="searchFromBaidu_4">
+				<em>公钥</em>、<em>私钥</em>、<em>数字签名</em>、<em>数字证书</em>、<em>对称</em><em>与非</em><em>对称</em><em>算法</em>、<em>HTTPS</em>			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/ttomqq/article/details/53202921" target="_top">
+				对<em>公钥</em>和<em>私钥</em>有点稀里糊涂的，搜索了一些资料，作一些整理吧，先看这个：
+加密--<em>公钥</em>
+解密--<em>私钥</em>
+签名--<em>私钥</em>
+验证--<em>公钥</em>
+看了这个也许会对<em>私钥</em>用于签名不解，其实它等同于用<em>私钥</em>加密，而<em>公钥</em>...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/ttomqq" title="ttomqq" target="_blank">
+					<img src="3_ttomqq.jpg" alt="ttomqq" class="avatar-pic">
+					<span class="name">ttomqq</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2016-11-17 17:11:47</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：316</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/cuoguo1111/article/details/1648759" target="_top" strategy="searchFromBaidu_5">
+				<em>对称</em><em>算法</em>和不<em>对称</em><em>算法</em>、加密以及<em>数字签名</em>			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/cuoguo1111/article/details/1648759" target="_top">
+				老师今天说这个，我跟网友提了提，竟然说我巨牛逼。唉，误会我的意思了，俺也只是懂机理罢了。课开头，老师讲了个事，让咱们彻昼不能眠啊。故事是这样，山东大学有一牛鼻子老师，把md5<em>对称</em><em>算法</em>解了！后来美国好多...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/cuoguo1111" title="cuoguo1111" target="_blank">
+					<img src="3_cuoguo1111.jpg" alt="cuoguo1111" class="avatar-pic">
+					<span class="name">cuoguo1111</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2007-06-12 11:51:00</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：644</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box recommend-ad-box" id="a_d_feed_0"></div>
+			
+			<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/hherima/article/details/8699993" target="_top" strategy="searchFromBaidu_7">
+				网络安全-RSA非<em>对称</em>加密<em>算法</em>、<em>数字签名</em>			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/hherima/article/details/8699993" target="_top">
+				<em>数字签名</em>非常普遍：
+&nbsp; &nbsp; &nbsp; &nbsp; 了解<em>数字签名</em>前先了解一下sha-1摘要，rsa加密<em>算法</em>。然后，再了解<em>数字签名</em>。
+SHA-1
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;SHA-1（secure hash&nbsp;Algorithm ...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/hherima" title="hherima" target="_blank">
+					<img src="3_hherima.jpg" alt="hherima" class="avatar-pic">
+					<span class="name">hherima</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2013-03-21 11:18:28</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：3706</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/zh521zh/article/details/51819950" target="_top" strategy="searchFromBaidu_8">
+				<em>数字签名</em>的过程			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/zh521zh/article/details/51819950" target="_top">
+				<em>数字签名</em>的全过程分两大部分，即签名与验证。左侧为签名，右侧为验证过程。即发方将原文用哈希<em>算法</em>求得数字摘要，用签名<em>私钥</em>对数字摘要加密得<em>数字签名</em>，发方将原文与<em>数字签名</em>一起发送给接受方；收方验证签名，即用发...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/zh521zh" title="zh521zh" target="_blank">
+					<img src="3_zh521zh.jpg" alt="zh521zh" class="avatar-pic">
+					<span class="name">zh521zh</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2016-07-04 12:02:41</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：7347</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/u014419512/article/details/26290821" target="_top" strategy="searchFromBaidu_9">
+				<em>数字签名</em>与<em>数字证书</em>技术简介（一）			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/u014419512/article/details/26290821" target="_top">
+				<em>数字签名</em>、<em>数字证书</em>等技术，是现代信息安全的核心技术，可谓使用面十分广泛。其基本理论本身并不复杂，本文希望通过深入浅出的介绍，能够让大家有一些基本了解。
+&nbsp;
+一、<em>对称</em>加密、非<em>对称</em>加密
+让我们通过一个例子...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/u014419512" title="u014419512" target="_blank">
+					<img src="3_u014419512.jpg" alt="u014419512" class="avatar-pic">
+					<span class="name">u014419512</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2014-05-19 23:54:18</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：4709</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/iw1210/article/details/53064091" target="_top" strategy="BlogCommendFromQuerySearch_10">
+				<em>对称</em>密钥加密（<em>私钥</em>加密） 和 非<em>对称</em>密钥加密（<em>公钥</em>加密）			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/iw1210/article/details/53064091" target="_top">
+				<em>对称</em>密钥加密（<em>私钥</em>加密） 和 非<em>对称</em>密钥加密（<em>公钥</em>加密）
+
+<em>对称</em>密钥加密，又称<em>私钥</em>加密，即信息的发送方和接收方用一个密钥去加密和解密数据。它的最大优势是加/解密速度快，适合于对大数据量进行加密，但密钥...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/iw1210" title="iw1210" target="_blank">
+					<img src="3_iw1210.jpg" alt="iw1210" class="avatar-pic">
+					<span class="name">iw1210</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2016-11-07 10:17:30</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：4842</span>
+			</p>
+		</div>
+	</div>
+			            <div class="recommend-loading-box">
+                <img src="feedloading.gif">
+            </div>
+            <div class="recommend-end-box">
+                <p class="text-center">没有更多推荐了，<a href="https://blog.csdn.net/" class="c-blue c-blue-hover c-blue-focus">返回首页</a></p>
+            </div>
+        </div>
+    </main>
+    <aside>
+		    <div id="asideProfile" class="aside-box">
+    <h3 class="aside-title">个人资料</h3>
+    <div class="profile-intro d-flex">
+        <div class="avatar-box d-flex justify-content-center flex-column">
+            <a href="https://blog.csdn.net/zcmain">
+                <img src="3_zcmain.jpg" class="avatar_pic">
+            </a>
+        </div>
+        <div class="user-info d-flex justify-content-center flex-column">
+            <p class="name csdn-tracking-statistics tracking-click" data-mod="popu_379">
+                <a href="https://blog.csdn.net/zcmain" target="_top" class="text-truncate" id="uid">zcmain</a>
+            </p>
+                    </div>
+                <div class="opt-box d-flex justify-content-center flex-column">
+            <span class="csdn-tracking-statistics tracking-click" data-mod="popu_379">
+                                <a class="btn btn-sm btn-red-hollow" href="https://passport.csdn.net/account/login?from=https://blog.csdn.net/zcmain/article/details/70160857" target="_self">关注</a>
+                            </span>
+                    </div>
+            </div>
+    <div class="data-info d-flex item-tiling">
+                <dl class="text-center" title="38">
+                        <dt><a href="https://blog.csdn.net/zcmain?t=1">原创</a></dt>
+            <dd><a href="https://blog.csdn.net/zcmain?t=1"><span class="count">38</span></a></dd>
+                    </dl>
+        <dl class="text-center" title="28">
+            <dt>粉丝</dt>
+            <dd><span class="count" id="fan">28</span></dd>
+        </dl>
+        <dl class="text-center" title="17">
+            <dt>喜欢</dt>
+            <dd><span class="count">17</span></dd>
+        </dl>
+        <dl class="text-center" title="18">
+            <dt>评论</dt>
+            <dd><span class="count">18</span></dd>
+        </dl>
+    </div>
+    <div class="grade-box clearfix">
+        <dl>
+            <dt>等级：</dt>
+            <dd>
+                <a href="https://blog.csdn.net/home/help.html#level" title="5级,点击查看等级说明" target="_top">
+                    <svg class="icon icon-level" aria-hidden="true">
+                        <use xlink:href="#csdnc-bloglevel-5"></use>
+                    </svg>
+                </a>
+            </dd>
+        </dl>
+        <dl>
+            <dt>访问：</dt>
+            <dd title="219438">
+                21万+            </dd>
+        </dl>
+        <dl>
+            <dt>积分：</dt>
+            <dd title="2674">
+                2674            </dd>
+        </dl>
+        <dl title="17347">
+            <dt>排名：</dt>
+            <dd>1万+</dd>
+        </dl>
+    </div>
+        <div class="badge-box d-flex">
+        <span>勋章：</span>
+                        <a class="icon-badge" title="持之以恒">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#csdnc-m-lasting"></use>
+            </svg>
+            <div class="icon-arrow"></div>
+            <div class="grade-detail-box item2">
+                <div class="pos-box">
+                    <div class="left-box d-flex justify-content-center align-items-center flex-column">
+                        <svg class="icon" aria-hidden="true">
+                            <use xlink:href="#csdnc-m-lasting"></use>
+                        </svg>
+                        <p>持之以恒</p>
+                    </div>
+                    <div class="right-box d-flex justify-content-center align-items-center">
+                        授予每个自然月内发布4篇或4篇以上原创或翻译IT博文的用户。不积跬步无以至千里，不积小流无以成江海，程序人生的精彩需要坚持不懈地积累！
+                    </div>
+                </div>
+            </div>
+        </a>
+                            </div>
+    </div>		    <div class="csdn-tracking-statistics mb8 box-shadow" data-pid="blog" data-mod="popu_4" style="height: 250px;">
+    <div class="aside-content text-center" id="cpro_u2734133">
+        <!-- 投放代码 -->
+        <div id="_uy8ltl8myea" style="width: 100%;"><div><div id="babkznkvyb" style="padding: 0px;"><div style="padding-left: 0px;"><iframe scrolling="no" src="index_2.html" width="300" height="250" frameborder="0"></iframe><ins style="width: 0px; height: 0px;"></ins></div></div></div></div>
+    </div>
+</div>
+		    <div id="asideNewArticle" class="aside-box">
+    <h3 class="aside-title">最新文章</h3>
+    <div class="aside-content">
+        <ul class="inf_list clearfix csdn-tracking-statistics tracking-click" data-mod="popu_382">
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/zcmain/article/details/80423045" target="_top">Eslint 入门</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/zcmain/article/details/80406084" target="_top">RN入门-01-环境搭建</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/zcmain/article/details/79691216" target="_top">Mac 下source tree 与 gitlab 添加 ssh 密钥</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/zcmain/article/details/78959129" target="_top">Android Studio 默认keystore 以及自定义keystore使用</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/zcmain/article/details/78272306" target="_top">Android 7.0 app升级内部安装apk—FileProvider使用</a>
+            </li>
+                    </ul>
+    </div>
+</div>
+		    		    <div id="asideCategory" class="aside-box flexible-box">
+    <h3 class="aside-title">个人分类</h3>
+    <div class="aside-content">
+        <ul>
+                        <li>
+                <a href="https://blog.csdn.net/zcmain/article/category/1359709">
+                    android开发总结                    <span class="count float-right">79篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/zcmain/article/category/7537575">
+                    Git                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/zcmain/article/category/1854999">
+                    DataBase                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/zcmain/article/category/1689939">
+                    C++                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/zcmain/article/category/1838943">
+                    .net                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/zcmain/article/category/1719783">
+                    Speex                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/zcmain/article/category/1689949">
+                    cocos2d-x                    <span class="count float-right">15篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/zcmain/article/category/1398511">
+                    ubuntu                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/zcmain/article/category/2743681">
+                    界面设计                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/zcmain/article/category/5825653">
+                    Html5                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/zcmain/article/category/7682927">
+                    React Native                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                    </ul>
+    </div>
+        <p class="text-center">
+        <a class="btn btn-link-blue flexible-btn" data-fbox="aside-archive">展开</a>
+    </p>
+    </div>
+		    <div id="asideArchive" class="aside-box flexible-box">
+    <h3 class="aside-title">归档</h3>
+    <div class="aside-content">
+        <ul class="archive-list">
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2018/05">
+                    2018年5月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2018/03">
+                    2018年3月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2018/01">
+                    2018年1月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2017/10">
+                    2017年10月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2017/09">
+                    2017年9月                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2017/08">
+                    2017年8月                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2017/07">
+                    2017年7月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2017/06">
+                    2017年6月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2017/05">
+                    2017年5月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2017/04">
+                    2017年4月                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2017/02">
+                    2017年2月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2017/01">
+                    2017年1月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2016/12">
+                    2016年12月                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2016/11">
+                    2016年11月                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2016/10">
+                    2016年10月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2016/08">
+                    2016年8月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2016/07">
+                    2016年7月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2016/06">
+                    2016年6月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2016/05">
+                    2016年5月                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2016/04">
+                    2016年4月                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2015/11">
+                    2015年11月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2015/09">
+                    2015年9月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2015/08">
+                    2015年8月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2015/04">
+                    2015年4月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2015/03">
+                    2015年3月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2015/02">
+                    2015年2月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2014/11">
+                    2014年11月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2014/09">
+                    2014年9月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2014/05">
+                    2014年5月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2014/02">
+                    2014年2月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2014/01">
+                    2014年1月                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2013/11">
+                    2013年11月                    <span class="count float-right">12篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2013/10">
+                    2013年10月                    <span class="count float-right">18篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2013/09">
+                    2013年9月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2013/08">
+                    2013年8月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2013/05">
+                    2013年5月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2013/04">
+                    2013年4月                    <span class="count float-right">12篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/zcmain/article/month/2013/03">
+                    2013年3月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                    </ul>
+    </div>
+        <p class="text-center">
+        <a class="btn btn-link-blue flexible-btn" data-fbox="aside-archive">展开</a>
+    </p>
+    </div>
+		    <div id="asideHotArticle" class="aside-box">
+	<h3 class="aside-title">热门文章</h3>
+	<div class="aside-content">
+		<ul class="hotArticle-list csdn-tracking-statistics tracking-click" data-mod="popu_521">
+							<li>
+					<a href="https://blog.csdn.net/zcmain/article/details/76855595">git 推送出现 "fatal: The remote end hung up unexpectedly" 解决方案</a>
+					<p class="read">阅读量：<span>14591</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/zcmain/article/details/14454953">android view SurfaceView GLSurfaceView的关系和区别</a>
+					<p class="read">阅读量：<span>9731</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/zcmain/article/details/17023557">解决ListView滚动复用convertview和ViewHolder数据填充错乱</a>
+					<p class="read">阅读量：<span>8953</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/zcmain/article/details/17794073">c# 使用 Newtonsoft.Json  序列化json字符串以及,反序列化对象</a>
+					<p class="read">阅读量：<span>8752</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/zcmain/article/details/53611245">MPAndroidChart—— pieChart 属性详解</a>
+					<p class="read">阅读量：<span>8713</span></p>
+				</li>
+					</ul>
+	</div>
+</div>
+		    <div id="asideNewComments" class="aside-box">
+    <h3 class="aside-title">最新评论</h3>
+    <div class="aside-content">
+        <ul class="newcomment-list">
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/zcmain/article/details/51203037#comments">MUI_5+SDK_Native....</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/luncy_yuan" class="user-name" target="_top">luncy_yuan</a>：我用MUI框架制作APP，导入AS中，希望H5访问指定activity，使用 html层跳转指定A...                </p>
+            </li>
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/zcmain/article/details/51398347#comments">MVP+Retrofit+RXAn...</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/john_android" class="user-name" target="_top">john_android</a>：学习了。。个人感觉，HttpDao中的getIServiceAPI()方法可以抽出来。不然每次都要...                </p>
+            </li>
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/zcmain/article/details/51398347#comments">MVP+Retrofit+RXAn...</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/qq_39480160" class="user-name" target="_top">qq_39480160</a>：谢谢楼主分分享，学习学习                </p>
+            </li>
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/zcmain/article/details/72887439#comments">Android中的Apk的加固(加...</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/yu1336199790" class="user-name" target="_top">yu1336199790</a>：我最后可以成功反编译？??没有说dex2jar解析错误啊？博主可以请教一下你吗                </p>
+            </li>
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/zcmain/article/details/51995589#comments">Android 起调相机拍照剪裁内...</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/w6545666" class="user-name" target="_top">w6545666</a>：源码可以上传么？                </p>
+            </li>
+                    </ul>
+    </div>
+</div>
+		<div id="asideFooter">
+			
+		<div class="aside-box">
+						<div id="_yds8be2raxr"><iframe scrolling="no" src="index_3.html" width="300" height="250" frameborder="0"></iframe></div>
+					</div>
+				<div class="aside-box">
+			<div class="persion_article">
+			</div>
+		</div>
+	</div>
+</aside>
+
+
+</div>
+<div class="mask-dark"></div>
+<div class="report-box">
+    <div class="pos-box">
+        <h2 class="title">不良信息举报</h2>
+        <a class="btn-close">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#csdnc-times"></use>
+            </svg>
+        </a>
+        <form id="frmReport" action="https://blog.csdn.net/zcmain/article/details/70160857">
+            <div class="form-box">
+                <div class="txt-row-box">
+                    <label class="title" id="reptTit">举报内容：</label>
+                    <p class="rpt-title text-truncate">公钥、私钥、数字签名、数字证书、对称与非对称算法、HTTPS</p>
+                </div>
+                <div class="txt-row-box">
+                    <label class="title">举报原因：</label>
+                    <div class="rdo-box">
+                        <label><input class="rdo-chk report-type" id="report_sex" name="report_type" value="1" type="radio">色情</label>
+                        <label><input class="rdo-chk report-type" id="report_Politics" name="report_type" value="2" type="radio">政治</label>
+                        <label><input class="rdo-chk report-type" id="report_copy" name="report_type" value="3" type="radio">抄袭</label>
+                        <label><input class="rdo-chk report-type" id="report_ad" name="report_type" value="4" type="radio">广告</label>
+                        <label><input class="rdo-chk report-type" id="report_want" name="report_type" value="5" type="radio">招聘</label>
+                        <label><input class="rdo-chk report-type" id="report_call" name="report_type" value="6" type="radio">骂人</label>
+                        <label><input class="rdo-chk report-type" id="report_other" name="report_type" value="7" type="radio">其他</label>
+                    </div>
+                </div>
+                <div class="txt-row-box" id="rptOriginalurl">
+                    <label class="title">原文地址：</label>
+                    <div class="txt-box">
+                        <input class="ipt" id="originalurl" name="originalurl" value="" type="text">
+                    </div>
+                </div>
+                <div class="txt-row-box">
+                    <label class="title">原因补充：</label>
+                    <div class="txt-box">
+                        <textarea class="ipt ipt-textarea" name="description" maxlength="30"></textarea>
+                        <p class="remark">最多只允许输入30个字</p>
+                    </div>
+                </div>
+            </div>
+            <div class="opt-box text-right">
+                <input class="btn btn-link-gray btn-close" value="取消" type="reset">
+                <input class="btn btn-red btn-submit" value="提交" type="submit">
+            </div>
+        </form>
+    </div>
+</div>
+<div class="pulllog-box" style="display: block;">
+	<div class="pulllog clearfix">
+		<span class="text float-left">加入CSDN，享受更精准的内容推荐，与500万程序员共同成长！</span>
+		<div class="pulllog-btn float-right clearfix">
+            <button class="pulllog-login float-left csdn-tracking-statistics tracking-click" data-mod="popu_557">
+                登录
+            </button>
+            <div class="pulllog-sigin float-left csdn-tracking-statistics tracking-click" data-mod="popu_558">
+                <a href="https://passport.csdn.net/account/mobileregister" target="_top">注册</a>
+            </div>
+            <button class="btn-close">
+                <svg class="icon" aria-hidden="true">
+                    <use xlink:href="#csdnc-times"></use>
+                </svg>
+            </button>
+		</div>
+	</div>
+</div>
+<div id="loginWrap" style="display: none;"></div>
+<div class="tool-box">
+	<ul class="meau-list">
+		<li>
+			<button class="btn-like " title="点赞">
+				<svg class="icon active" aria-hidden="true">
+					<use xlink:href="#csdnc-thumbsup-ok"></use>
+				</svg><svg class="icon no-active" aria-hidden="true">
+					<use xlink:href="#csdnc-thumbsup"></use>
+				</svg>
+				<p>0</p>
+			</button>
+		</li>
+		<li class="toc-container-box" id="liTocBox">
+			<button class="btn-toc" title="目录">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-contents"></use>
+				</svg><br>目录
+			</button>
+			<div class="toc-container">
+				<div class="pos-box">
+					<div class="icon-arrow"></div>
+					<div class="scroll-box">
+						<div class="toc-box"></div>
+					</div>
+				</div>
+				<div class="opt-box">
+					<button class="btn-opt prev nomore" title="向上">
+						<svg class="icon" aria-hidden="true">
+							<use xlink:href="#csdnc-chevronup"></use>
+						</svg>
+					</button>
+					<button class="btn-opt next">
+						<svg class="icon" aria-hidden="true">
+							<use xlink:href="#csdnc-chevrondown"></use>
+						</svg>
+					</button>
+				</div>
+			</div>
+		</li>
+		<li>
+			<button class="btn-bookmark" title="收藏">
+				<svg class="icon active" aria-hidden="true">
+					<use xlink:href="#csdnc-bookmark-ok"></use>
+				</svg><svg class="icon no-active" aria-hidden="true">
+					<use xlink:href="#csdnc-bookmark"></use>
+				</svg><br>收藏
+			</button>
+		</li>
+		<li>
+			<a class="btn-comments" title="评论" href="#commentBox">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-comments"></use>
+				</svg><br>评论
+			</a>
+		</li>
+				<li class="bdsharebuttonbox">
+			<a class="btn-comments bds_weixin" data-cmd="weixin" title="微信分享">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-wechat"></use>
+				</svg><br>微信
+			</a>
+		</li>
+		<li class="bdsharebuttonbox">
+			<a class="btn-comments bds_tsina" data-cmd="tsina" title="微博分享">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-weibo"></use>
+				</svg><br>微博
+			</a>
+		</li>
+		<li class="bdsharebuttonbox">
+			<a class="btn-comments bds_qzone" data-cmd="qzone" title="QQ分享">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-qq"></use>
+				</svg><br>QQ
+			</a>
+		</li>
+	</ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="box-box-default">
+    <a class="btn-remove">
+        关闭
+    </a>
+    <div id="_7vhfjbvjmuk"><iframe scrolling="no" src="index_4.html" width="160" height="600" frameborder="0"></iframe></div>
+</div>
+<div class="box-box-large">
+    <a class="btn-remove">
+        关闭
+    </a>
+    <div><iframe scrolling="no" src="index_5.html" width="250" height="250" frameborder="0"></iframe></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+					<meta name="viewport" content="width=device-width,initial-scale=1.0">
+					
+					
+	
+
+					
+	
+	
+	
+					<meta name="google-site-verification" content="qY7B78-fq3tk1RoVHtAMM5RPsB9M1BnfX2lkEVfo3vM">
+            
+	
+	
+			   
+
+	<title>FFmpeg-users - HDR 4K support in ffmpeg</title>
+			<meta name="description" content="HDR 4K support in ffmpeg. Hi Team, I have been asked to check whether ffmpeg supports 4K encoding with HDR or not and if it supports then how to produce a 4K HDR content using ffmpeg and if not then...">
+			<meta name="keywords" content="hdr, 4k, support, ffmpeg, team, have, asked, check, whether, supports, encoding, with, or, not, then, how, produce, content, using, any, other, open, source, ffmpeg-users">
+			
+		 
+					
+	
+	<!-- Start Google Analytics -->
+	
+	<!-- End Google Analytics -->
+	
+	
+				<link rel="preload" href="https://adservice.google.com/adsid/integrator.js?domain=www.ffmpeg-archive.org" as="script">
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+					<div id="notice" class="notice rounded-bottom"></div>
+					<div class="nabble macro_classic_forum_topic" id="nabble">
+						
+			
+			<div class="top-bar">
+		<div class="breadcrumbs" style="float: left;">
+			<span id="breadcrumbs" class="weak-color">
+		
+				<a href="http://www.ffmpeg-archive.org/">FFmpeg-users</a>
+	</span>
+		</div>
+		<div style="text-align: right;">
+			<span style="white-space: nowrap;" id="nabble-user-header"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=login_page&amp;nextUrl=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-td4673485.html">Login</a>&nbsp;&nbsp;<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=start_registration_page&amp;nextUrl=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-td4673485.html">Register</a></span>
+	
+		</div>
+	</div>
+            
+			<div id="nabble-newsflash" class="info-message" style="display: none; padding: 0.5em; margin-bottom: 0.5em;"></div>
+	
+			<div id="topic-search-box" class="search-box float-right" style="padding: 0.5em 0px;">
+		<form action="http://www.ffmpeg-archive.org/template/NamlServlet.jtp">
+		<input name="macro" value="search_page" type="hidden">
+		<input name="node" value="933282" type="hidden">
+		
+		
+		
+		<input id="search-input" name="query" size="18" class="medium-border-color" value="">
+		<div id="search-box-dropdown" class="search-box-dropdown light-bg-color drop-shadow border1 medium-border-color rounded-bottom">
+		<div style="margin: 0.5em 0.5em 0px;">
+					<b>Search</b><br>
+					<input id="search-root-node" name="n" value="933282" checked="checked" type="radio">
+					<label for="search-root-node">everywhere</label><br>
+
+					<input id="search-this-node" name="n" value="4673485" type="radio">
+					<label for="search-this-node">
+						only in this topic
+					</label>
+				</div>
+		<div style="margin: 0.5em; line-height: 2em;">
+			<input class="toolbar action-button float-right" value="Search" type="submit">
+			<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=adv_search_page&amp;node=4673485" rel="nofollow" style="font-size: 80%;">Advanced Search</a>
+		</div>
+	</div>
+	</form>
+	</div>
+
+	<h1 id="post-title" class="adbayes-content" style="margin: 0.25em 0px 0.8em;">
+		HDR 4K support in ffmpeg
+	</h1>
+	<div style="margin: -1em 0px 2em;">
+		<span style="float: left; white-space: nowrap;">
+					<sub class="weak-color" style="font-size: 180%;">‹</sub>
+					<a href="http://www.ffmpeg-archive.org/av-interleaved-write-frame-Not-able-to-handle-non-interleaved-data-tp4673532.html">Previous Topic</a>
+				</span>
+
+		<span style="float: right; white-space: nowrap;">
+					<a href="http://www.ffmpeg-archive.org/hap-snappy-tp4673520.html">Next Topic</a>
+					<sub class="weak-color" style="font-size: 180%;">›</sub>
+				</span>
+		<div style="clear: both; height: 0px;">&nbsp;</div>
+	</div>
+			<div class="topics-controls-wrapper" style="margin: 1.2em 0px 5em;">
+		<div id="topics-controls-left" class="float-left nowrap">
+			<table>
+		<tbody><tr>
+			<td style="padding-right: 0.1em;">
+		<img src="view-classic.gif" style="border: medium none;" alt="classic" width="18" height="18">
+	</td>
+
+	<td style="padding-right: 1.1em;">
+		Classic
+	</td>
+
+			<td style="padding-right: 0.1em;">
+		<a href="javascript:void(0)" onclick="Nabble.setView('list', '/HDR-4K-support-in-ffmpeg-tc4673485.html',null)"><img src="view-list.gif" style="border: medium none;" alt="list" width="18" height="18"></a>
+	</td>
+
+	<td style="padding-right: 1.1em;">
+		<a href="javascript:void(0)" onclick="Nabble.setView('list', '/HDR-4K-support-in-ffmpeg-tc4673485.html',null)">List</a>
+	</td>
+
+			<td style="padding-right: 0.1em;">
+		<a href="javascript:void(0)" onclick="Nabble.setView('threaded', '/HDR-4K-support-in-ffmpeg-tt4673485.html',null)"><img src="view-threaded.gif" style="border: medium none;" alt="threaded" width="18" height="18"></a>
+	</td>
+
+	<td style="padding-right: 1.1em;">
+		<a href="javascript:void(0)" onclick="Nabble.setView('threaded', '/HDR-4K-support-in-ffmpeg-tt4673485.html',null)">Threaded</a>
+	</td>
+		</tr>
+	</tbody></table>
+		</div>
+		<div id="topics-controls-right" class="float-right nowrap" style="padding-top: 0.3em;">
+			<span style="padding-right: 1em; height: 21px;">
+		<img id="pin-icon" src="pin.png" title="This topic has been pinned in FFmpeg-users." style="vertical-align: middle; display: none;" width="20" height="21">
+		<div id="tooltip64840" class="nabble-tooltip" use_title="true">
+		
+		<div class="nabble-tooltip-arrow">
+			<div class="d1">♦</div>
+			<div class="d2">♦</div>
+		</div>
+	</div>
+	
+	</span>
+	<span id="lock-icon" class="weak-color" style="padding: 0px 0.5em; margin-right: 0.5em; display: none;">
+		<img src="lock_sm.png" style="vertical-align: middle;" width="10" height="15"> Locked
+	</span>
+	<span style="padding-right: 1em;">
+		13 messages
+	</span>
+	<img src="gear.png" class="image16" alt="Options">
+	<span id="dd_topicdropdown"><span id="topicdropdown" class="dropdown"><a href="javascript:void(0)" title="Click for more options">Options</a> <img src="more.png" width="10" height="10"><table class="light-bg-color medium-border-color drop-shadow" style="margin-top: 1px;"><tbody><tr id="_loadingtopicdropdown" style="display: none;"><td class="dropdown-simple-row"><span id="_loadingSpantopicdropdown">Loading...</span></td></tr><tr id="topicSubscriptionLink"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=subscribe&amp;node=4673485" rel="nofollow">Subscribe via email</a></td></tr><tr class="dropdown-separator"><td class="action-separator medium-border-color">&nbsp;</td></tr><tr id="moveTopic" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=move_node&amp;node=4673485" rel="nofollow">Move topic</a></td></tr><tr id="pinTopic" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void%20Nabble.pinTopic(4673485)" rel="nofollow">Pin topic</a></td></tr><tr id="unpinTopic" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void%20Nabble.unpinTopic(4673485)" rel="nofollow">Unpin topic</a></td></tr><tr id="lockTopic" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void%20Nabble.lockTopic(4673485)" rel="nofollow">Lock topic</a></td></tr><tr id="unlockTopic" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void%20Nabble.unlockTopic(4673485)" rel="nofollow">Unlock topic</a></td></tr><tr id="deleteRecursively" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deleteFromSite(4673485)" rel="nofollow">Delete this topic</a></td></tr><tr id="deletePost" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deletePost(4673485)" rel="nofollow">Delete this topic</a></td></tr><tr id="changeMetaTags" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=change_title_and_meta_tags&amp;node=4673485" rel="nofollow">Change title and meta tags</a></td></tr><tr id="embedPost4673485"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/embed/EmbedOptions.jtp?node=4673485" rel="nofollow">Embed post</a></td></tr><tr id="permalink4673485"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="prompt('Copy this:','http://www.ffmpeg-archive.org/HDR-4K-support-in-ffmpeg-tp4673485.html')">Permalink</a></td></tr></tbody></table></span></span>
+	
+		</div>
+	</div>
+			<div id="topic-contents" style="margin-top: 1em; clear: both;">
+		<div id="classic-contents">
+		
+		<div class="classic-row">
+		<div class="classic-header">
+			<div class="classic-bar shaded-bg-color rounded-top">
+				<div class="classic-author-name nowrap">
+					<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=user_nodes&amp;user=328370">Tarun singhal</a>
+				</div>
+				<div class="classic-right-menu shaded-bg-color weak-color">
+					<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=reply&amp;node=4673485" rel="nofollow">Reply</a> |
+					<a href="javascript:void(0)" onclick="Nabble.setView('threaded', '/HDR-4K-support-in-ffmpeg-tt4673485.html',4673485)">Threaded</a>
+	<div id="tooltip9010" class="nabble-tooltip" use_title="false">
+		Open this post in threaded view
+		<div class="nabble-tooltip-arrow">
+			<div class="d1">♦</div>
+			<div class="d2">♦</div>
+		</div>
+	</div>
+	 |
+					<span id="dd_postdropdown4673485"><span id="postdropdown4673485" class="dropdown"><a href="javascript:void(0)" title="Click for more options">More</a> <img src="more.png" width="10" height="10"><table class="light-bg-color medium-border-color drop-shadow" style="margin-top: 1px;"><tbody><tr id="_loadingpostdropdown4673485" style="display: none;"><td class="dropdown-simple-row"><span id="_loadingSpanpostdropdown4673485">Loading...</span></td></tr><tr id="replyToAuthor4673485" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=pm&amp;post=4673485" rel="nofollow">Reply to author</a></td></tr><tr id="editPost4673485" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=edit_post&amp;node=4673485" rel="nofollow">Edit post</a></td></tr><tr id="movePost4673485" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=move_node&amp;node=4673485" rel="nofollow">Move post</a></td></tr><tr id="deletePost4673485" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deletePost(4673485)" rel="nofollow">Delete this post</a></td></tr><tr id="deleteRecursively4673485" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deleteFromSite(4673485)" rel="nofollow">Delete this post and replies</a></td></tr><tr id="changePostDate4673485" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=change_post_date&amp;node=4673485" rel="nofollow">Change post date</a></td></tr><tr id="print4673485"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=print_post&amp;node=4673485" rel="nofollow">Print post</a></td></tr><tr id="permalink4673485"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="prompt('Copy this:','http://www.ffmpeg-archive.org/HDR-4K-support-in-ffmpeg-tp4673485.html')">Permalink</a></td></tr><tr id="rawMail4673485" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=raw_mail&amp;node=4673485" rel="nofollow">Raw mail</a></td></tr><tr id="social4673485" style="white-space: nowrap;"><td style="border: medium none;"><a href="http://twitter.com/share?text=HDR+4K+support+in+ffmpeg&amp;related=FFmpeg-users&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485.html" title="Twitter" target="_top" ignore="y"> <img src="twitter.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.facebook.com/share.php?v=4&amp;src=bm&amp;u=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485.html&amp;t=HDR+4K+support+in+ffmpeg" title="Facebook" target="_top" ignore="y"> <img src="facebook.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://del.icio.us/post?url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485.html&amp;title=HDR+4K+support+in+ffmpeg" title="Delicious" target="_top" ignore="y"> <img src="delicious.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.google.com/bookmarks/mark?op=add&amp;bkmk=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485.html&amp;title=HDR+4K+support+in+ffmpeg" title="Google Bookmarks" target="_top" ignore="y"> <img src="google.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.stumbleupon.com/submit?url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485.html&amp;title=HDR+4K+support+in+ffmpeg" title="Stumble Upon" target="_top" ignore="y"> <img src="stumbleupon.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485.html&amp;title=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485.html&amp;source=FFmpeg-users" title="LinkedIn" target="_top" ignore="y"> <img src="linkedin.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://digg.com/submit?phase=2&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485.html&amp;title=HDR+4K+support+in+ffmpeg" title="Digg" target="_top" ignore="y"> <img src="digg.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a></td></tr></tbody></table></span></span>
+	
+				</div>
+				<div class="classic-subject-line">
+					<span id="red-arrow4673485" class="float-left invisible" style="margin-top: 0.2em;">
+		<img title="Selected post" src="arrow.png" alt="Selected post" width="15" height="15">
+	</span>
+					<span class="post-date float-left">
+		<span id="d1450267116537-591">Dec 16, 2015; 7:58pm</span>
+	</span>
+					<h2 class="post-subject float-left adbayes-content" style="width: 30%; overflow: visible; font-family: inherit;">
+		HDR 4K support in ffmpeg
+	</h2>
+				</div>
+			</div>
+		</div>
+		<table class="classic-body">
+			<tbody><tr>
+				<td class="classic-author shaded-bg-color rounded-bottom">
+					<div class="avatar-outer">
+		<div class="avatar-inner">
+			<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=user_nodes&amp;user=328370" rel="nofollow" title="View profile of Tarun singhal" class="nowrap no-decoration"><img class="avatar medium-border-color" src="avatar100.png" alt="Tarun singhal" title="Tarun singhal" width="100" height="100"><img src="online.png" class="online328370 online invisible" title="User is online" alt="online"></a>
+
+	
+	
+		</div>
+	</div>
+	
+	
+	<div class="post-count328370 avatar-label weak-color">73 posts</div>
+	
+				</td>
+				<td class="classic-message">
+					
+	
+	
+	<div id="message4673485" class="message-text adbayes-content">
+		Hi Team,
+<br><br>I have been asked to check whether ffmpeg supports 4K encoding with HDR or
+<br>not and if it supports then how to produce a 4K HDR content using ffmpeg
+<br>and if not then any other open source tools available to get this done.
+<br><br>I checked on multiple websites but I didnt found anyuseful stuff
+<br><br>Can somebody please guide?
+<br><br><br>Regards,
+<br>Tarun Singhal
+<br><br>Senior Software Engineer
+<br>_______________________________________________
+<br>ffmpeg-user mailing list
+<br><a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=node&amp;node=4673485&amp;i=0" target="_top" rel="nofollow" link="external">[hidden email]</a>
+<br><a href="http://ffmpeg.org/mailman/listinfo/ffmpeg-user" target="_top" rel="nofollow" link="external">http://ffmpeg.org/mailman/listinfo/ffmpeg-user</a><br>
+
+	
+	
+	
+	</div>
+				</td>
+			</tr>
+		</tbody></table>
+	</div>
+	<div class="classic-row">
+		<div class="classic-header">
+			<div class="classic-bar shaded-bg-color rounded-top">
+				<div class="classic-author-name nowrap">
+					<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=user_nodes&amp;user=200308">Carl Eugen Hoyos</a>
+				</div>
+				<div class="classic-right-menu shaded-bg-color weak-color">
+					<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=reply&amp;node=4673489" rel="nofollow">Reply</a> |
+					<a href="javascript:void(0)" onclick="Nabble.setView('threaded', '/HDR-4K-support-in-ffmpeg-tt4673485.html#a4673489',4673489)">Threaded</a>
+	<div id="tooltip56039" class="nabble-tooltip" use_title="false">
+		Open this post in threaded view
+		<div class="nabble-tooltip-arrow">
+			<div class="d1">♦</div>
+			<div class="d2">♦</div>
+		</div>
+	</div>
+	 |
+					<span id="dd_postdropdown4673489"><span id="postdropdown4673489" class="dropdown"><a href="javascript:void(0)" title="Click for more options">More</a> <img src="more.png" width="10" height="10"><table class="light-bg-color medium-border-color drop-shadow" style="margin-top: 1px;"><tbody><tr id="_loadingpostdropdown4673489" style="display: none;"><td class="dropdown-simple-row"><span id="_loadingSpanpostdropdown4673489">Loading...</span></td></tr><tr id="replyToAuthor4673489" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=pm&amp;post=4673489" rel="nofollow">Reply to author</a></td></tr><tr id="editPost4673489" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=edit_post&amp;node=4673489" rel="nofollow">Edit post</a></td></tr><tr id="movePost4673489" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=move_node&amp;node=4673489" rel="nofollow">Move post</a></td></tr><tr id="deletePost4673489" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deletePost(4673489)" rel="nofollow">Delete this post</a></td></tr><tr id="deleteRecursively4673489" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deleteFromSite(4673489)" rel="nofollow">Delete this post and replies</a></td></tr><tr id="changePostDate4673489" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=change_post_date&amp;node=4673489" rel="nofollow">Change post date</a></td></tr><tr id="print4673489"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=print_post&amp;node=4673489" rel="nofollow">Print post</a></td></tr><tr id="permalink4673489"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="prompt('Copy this:','http://www.ffmpeg-archive.org/HDR-4K-support-in-ffmpeg-tp4673485p4673489.html')">Permalink</a></td></tr><tr id="rawMail4673489" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=raw_mail&amp;node=4673489" rel="nofollow">Raw mail</a></td></tr><tr id="social4673489" style="white-space: nowrap;"><td style="border: medium none;"><a href="http://twitter.com/share?text=Re%3A+HDR+4K+support+in+ffmpeg&amp;related=FFmpeg-users&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673489.html" title="Twitter" target="_top" ignore="y"> <img src="twitter.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.facebook.com/share.php?v=4&amp;src=bm&amp;u=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673489.html&amp;t=Re%3A+HDR+4K+support+in+ffmpeg" title="Facebook" target="_top" ignore="y"> <img src="facebook.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://del.icio.us/post?url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673489.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Delicious" target="_top" ignore="y"> <img src="delicious.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.google.com/bookmarks/mark?op=add&amp;bkmk=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673489.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Google Bookmarks" target="_top" ignore="y"> <img src="google.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.stumbleupon.com/submit?url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673489.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Stumble Upon" target="_top" ignore="y"> <img src="stumbleupon.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673489.html&amp;title=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673489.html&amp;source=FFmpeg-users" title="LinkedIn" target="_top" ignore="y"> <img src="linkedin.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://digg.com/submit?phase=2&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673489.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Digg" target="_top" ignore="y"> <img src="digg.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a></td></tr></tbody></table></span></span>
+	
+				</div>
+				<div class="classic-subject-line">
+					<span id="red-arrow4673489" class="float-left invisible" style="margin-top: 0.2em;">
+		<img title="Selected post" src="arrow.png" alt="Selected post" width="15" height="15">
+	</span>
+					<span class="post-date float-left">
+		<span id="d1450302047458-411">Dec 17, 2015; 5:40am</span>
+	</span>
+					<h2 class="post-subject float-left adbayes-content" style="width: 30%; overflow: visible; font-family: inherit;">
+		Re: HDR 4K support in ffmpeg
+	</h2>
+				</div>
+			</div>
+		</div>
+		<table class="classic-body">
+			<tbody><tr>
+				<td class="classic-author shaded-bg-color rounded-bottom">
+					<div class="avatar-outer">
+		<div class="avatar-inner">
+			<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=user_nodes&amp;user=200308" rel="nofollow" title="View profile of Carl Eugen Hoyos" class="nowrap no-decoration"><img class="avatar medium-border-color" src="avatar100.png" alt="Carl Eugen Hoyos" title="Carl Eugen Hoyos" width="100" height="100"><img src="online.png" class="online200308 online invisible" title="User is online" alt="online"></a>
+
+	
+	
+		</div>
+	</div>
+	
+	
+	<div class="post-count200308 avatar-label weak-color">5294 posts</div>
+	
+				</td>
+				<td class="classic-message">
+					
+	
+	
+	<div id="message4673489" class="message-text adbayes-content">
+		tarun singhal &lt;tsinghal18 &lt;at&gt; gmail.com&gt; writes:
+<br><br>&gt; I have been asked to check whether ffmpeg supports 
+<br>&gt; 4K encoding 
+<br><br>4k is supported in FFmpeg for (at least) ten years.
+<br><br>&gt; with HDR or not
+<br><br>I believe that strictly speaking HDR means logarithmic 
+<br>or float colour space support. FFmpeg does not support 
+<br>logarithmic colour space and float support is extremely 
+<br>limited (input only, will be converted to rgb48 / rgb64 
+<br>immediately).
+<br><br>x264 supports 9 and 10 bit encoding, x265 supports 
+<br>10 bit encoding, this is all supported by FFmpeg.
+<br><br>What kind of input do you have?
+<br><br>Carl Eugen
+<br><br>_______________________________________________
+<br>ffmpeg-user mailing list
+<br><a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=node&amp;node=4673489&amp;i=0" target="_top" rel="nofollow" link="external">[hidden email]</a>
+<br><a href="http://ffmpeg.org/mailman/listinfo/ffmpeg-user" target="_top" rel="nofollow" link="external">http://ffmpeg.org/mailman/listinfo/ffmpeg-user</a><br>
+
+	
+	
+	
+	</div>
+				</td>
+			</tr>
+		</tbody></table><div style="text-align: center; width: 100%; height: auto; clear: both;" class="google-auto-placed"><ins style="display: block; margin: 10px auto 13.44px; background-color: transparent; height: 90px;" data-ad-format="auto" class="adsbygoogle adsbygoogle-noablate" data-ad-client="ca-pub-1691702211255830" data-adsbygoogle-status="done"><ins id="aswift_1_expand" style="display: inline-table; border: medium none; height: 90px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 1200px; background-color: transparent;"><ins id="aswift_1_anchor" style="display: block; border: medium none; height: 90px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 1200px; background-color: transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" id="aswift_1" name="aswift_1" style="left: 0px; position: absolute; top: 0px; width: 1200px; height: 90px;" src="index_1.html" width="1200" height="90" frameborder="0"></iframe></ins></ins></ins></div>
+	</div>
+	<div class="classic-row">
+		<div class="classic-header">
+			<div class="classic-bar shaded-bg-color rounded-top">
+				<div class="classic-author-name nowrap">
+					<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=user_nodes&amp;user=374452">cozcinar</a>
+				</div>
+				<div class="classic-right-menu shaded-bg-color weak-color">
+					<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=reply&amp;node=4673490" rel="nofollow">Reply</a> |
+					<a href="javascript:void(0)" onclick="Nabble.setView('threaded', '/HDR-4K-support-in-ffmpeg-tt4673485.html#a4673490',4673490)">Threaded</a>
+	<div id="tooltip40816" class="nabble-tooltip" use_title="false">
+		Open this post in threaded view
+		<div class="nabble-tooltip-arrow">
+			<div class="d1">♦</div>
+			<div class="d2">♦</div>
+		</div>
+	</div>
+	 |
+					<span id="dd_postdropdown4673490"><span id="postdropdown4673490" class="dropdown"><a href="javascript:void(0)" title="Click for more options">More</a> <img src="more.png" width="10" height="10"><table class="light-bg-color medium-border-color drop-shadow" style="margin-top: 1px;"><tbody><tr id="_loadingpostdropdown4673490" style="display: none;"><td class="dropdown-simple-row"><span id="_loadingSpanpostdropdown4673490">Loading...</span></td></tr><tr id="replyToAuthor4673490" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=pm&amp;post=4673490" rel="nofollow">Reply to author</a></td></tr><tr id="editPost4673490" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=edit_post&amp;node=4673490" rel="nofollow">Edit post</a></td></tr><tr id="movePost4673490" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=move_node&amp;node=4673490" rel="nofollow">Move post</a></td></tr><tr id="deletePost4673490" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deletePost(4673490)" rel="nofollow">Delete this post</a></td></tr><tr id="deleteRecursively4673490" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deleteFromSite(4673490)" rel="nofollow">Delete this post and replies</a></td></tr><tr id="changePostDate4673490" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=change_post_date&amp;node=4673490" rel="nofollow">Change post date</a></td></tr><tr id="print4673490"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=print_post&amp;node=4673490" rel="nofollow">Print post</a></td></tr><tr id="permalink4673490"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="prompt('Copy this:','http://www.ffmpeg-archive.org/HDR-4K-support-in-ffmpeg-tp4673485p4673490.html')">Permalink</a></td></tr><tr id="rawMail4673490" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=raw_mail&amp;node=4673490" rel="nofollow">Raw mail</a></td></tr><tr id="social4673490" style="white-space: nowrap;"><td style="border: medium none;"><a href="http://twitter.com/share?text=Re%3A+HDR+4K+support+in+ffmpeg&amp;related=FFmpeg-users&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673490.html" title="Twitter" target="_top" ignore="y"> <img src="twitter.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.facebook.com/share.php?v=4&amp;src=bm&amp;u=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673490.html&amp;t=Re%3A+HDR+4K+support+in+ffmpeg" title="Facebook" target="_top" ignore="y"> <img src="facebook.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://del.icio.us/post?url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673490.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Delicious" target="_top" ignore="y"> <img src="delicious.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.google.com/bookmarks/mark?op=add&amp;bkmk=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673490.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Google Bookmarks" target="_top" ignore="y"> <img src="google.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.stumbleupon.com/submit?url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673490.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Stumble Upon" target="_top" ignore="y"> <img src="stumbleupon.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673490.html&amp;title=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673490.html&amp;source=FFmpeg-users" title="LinkedIn" target="_top" ignore="y"> <img src="linkedin.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://digg.com/submit?phase=2&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673490.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Digg" target="_top" ignore="y"> <img src="digg.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a></td></tr></tbody></table></span></span>
+	
+				</div>
+				<div class="classic-subject-line">
+					<span id="red-arrow4673490" class="float-left invisible" style="margin-top: 0.2em;">
+		<img title="Selected post" src="arrow.png" alt="Selected post" width="15" height="15">
+	</span>
+					<span class="post-date float-left">
+		<span id="d1450302388860-230">Dec 17, 2015; 5:46am</span>
+	</span>
+					<h2 class="post-subject float-left adbayes-content" style="width: 30%; overflow: visible; font-family: inherit;">
+		Re: HDR 4K support in ffmpeg
+	</h2>
+				</div>
+			</div>
+		</div>
+		<table class="classic-body">
+			<tbody><tr>
+				<td class="classic-author shaded-bg-color rounded-bottom">
+					<div class="avatar-outer">
+		<div class="avatar-inner">
+			<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=user_nodes&amp;user=374452" rel="nofollow" title="View profile of cozcinar" class="nowrap no-decoration"><img class="avatar medium-border-color" src="avatar100.png" alt="cozcinar" title="cozcinar" width="100" height="100"><img src="online.png" class="online374452 online invisible" title="User is online" alt="online"></a>
+
+	
+	
+		</div>
+	</div>
+	
+	
+	<div class="post-count374452 avatar-label weak-color">2 posts</div>
+	
+				</td>
+				<td class="classic-message">
+					
+	
+	
+	<div id="message4673490" class="message-text adbayes-content">
+		In order to encode 4K HDR format. Firstly, you need to transform (i.e.,
+<br>tone-mapping) HDR data to 8 or 10 bit video sequence. Later, you can use
+<br>ffmpeg.
+<br><br>On Wed, Dec 16, 2015 at 10:58 PM, Carl Eugen Hoyos &lt;<a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=node&amp;node=4673490&amp;i=0" target="_top" rel="nofollow" link="external">[hidden email]</a>&gt; wrote:
+<br><div class="shrinkable-quote" style="height: 300px; overflow-y: hidden;"><br>&gt; tarun singhal &lt;tsinghal18 &lt;at&gt; gmail.com&gt; writes:
+<br>&gt;
+<br>&gt; &gt; I have been asked to check whether ffmpeg supports
+<br>&gt; &gt; 4K encoding
+<br>&gt;
+<br>&gt; 4k is supported in FFmpeg for (at least) ten years.
+<br>&gt;
+<br>&gt; &gt; with HDR or not
+<br>&gt;
+<br>&gt; I believe that strictly speaking HDR means logarithmic
+<br>&gt; or float colour space support. FFmpeg does not support
+<br>&gt; logarithmic colour space and float support is extremely
+<br>&gt; limited (input only, will be converted to rgb48 / rgb64
+<br>&gt; immediately).
+<br>&gt;
+<br>&gt; x264 supports 9 and 10 bit encoding, x265 supports
+<br>&gt; 10 bit encoding, this is all supported by FFmpeg.
+<br>&gt;
+<br>&gt; What kind of input do you have?
+<br>&gt;
+<br>&gt; Carl Eugen
+<br>&gt;
+<br>&gt; _______________________________________________
+<br>&gt; ffmpeg-user mailing list
+<br>&gt; <a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=node&amp;node=4673490&amp;i=1" target="_top" rel="nofollow" link="external">[hidden email]</a>
+<br>&gt; <a href="http://ffmpeg.org/mailman/listinfo/ffmpeg-user" target="_top" rel="nofollow" link="external">http://ffmpeg.org/mailman/listinfo/ffmpeg-user</a><br>&gt;
+</div><div class="shrink-quote"><span>...</span> [<a href="javascript:void(0)" collapsed="2">show rest of quote</a>]</div>_______________________________________________
+<br>ffmpeg-user mailing list
+<br><a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=node&amp;node=4673490&amp;i=2" target="_top" rel="nofollow" link="external">[hidden email]</a>
+<br><a href="http://ffmpeg.org/mailman/listinfo/ffmpeg-user" target="_top" rel="nofollow" link="external">http://ffmpeg.org/mailman/listinfo/ffmpeg-user</a><br>
+
+	
+	
+	
+	</div>
+				</td>
+			</tr>
+		</tbody></table><div style="text-align: center; width: 100%; height: auto; clear: both;" class="google-auto-placed"><ins style="display: block; margin: 10px auto 13.44px; background-color: transparent; height: 90px;" data-ad-format="auto" class="adsbygoogle adsbygoogle-noablate" data-ad-client="ca-pub-1691702211255830" data-adsbygoogle-status="done"><ins id="aswift_2_expand" style="display: inline-table; border: medium none; height: 90px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 1200px; background-color: transparent;"><ins id="aswift_2_anchor" style="display: block; border: medium none; height: 90px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 1200px; background-color: transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" id="aswift_2" name="aswift_2" style="left: 0px; position: absolute; top: 0px; width: 1200px; height: 90px;" src="index_4.html" width="1200" height="90" frameborder="0"></iframe></ins></ins></ins></div>
+	</div>
+	<div class="classic-row">
+		<div class="classic-header">
+			<div class="classic-bar shaded-bg-color rounded-top">
+				<div class="classic-author-name nowrap">
+					<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=user_nodes&amp;user=376515">Rens Dijkshoorn-2</a>
+				</div>
+				<div class="classic-right-menu shaded-bg-color weak-color">
+					<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=reply&amp;node=4673491" rel="nofollow">Reply</a> |
+					<a href="javascript:void(0)" onclick="Nabble.setView('threaded', '/HDR-4K-support-in-ffmpeg-tt4673485.html#a4673491',4673491)">Threaded</a>
+	<div id="tooltip93663" class="nabble-tooltip" use_title="false">
+		Open this post in threaded view
+		<div class="nabble-tooltip-arrow">
+			<div class="d1">♦</div>
+			<div class="d2">♦</div>
+		</div>
+	</div>
+	 |
+					<span id="dd_postdropdown4673491"><span id="postdropdown4673491" class="dropdown"><a href="javascript:void(0)" title="Click for more options">More</a> <img src="more.png" width="10" height="10"><table class="light-bg-color medium-border-color drop-shadow" style="margin-top: 1px;"><tbody><tr id="_loadingpostdropdown4673491" style="display: none;"><td class="dropdown-simple-row"><span id="_loadingSpanpostdropdown4673491">Loading...</span></td></tr><tr id="replyToAuthor4673491" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=pm&amp;post=4673491" rel="nofollow">Reply to author</a></td></tr><tr id="editPost4673491" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=edit_post&amp;node=4673491" rel="nofollow">Edit post</a></td></tr><tr id="movePost4673491" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=move_node&amp;node=4673491" rel="nofollow">Move post</a></td></tr><tr id="deletePost4673491" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deletePost(4673491)" rel="nofollow">Delete this post</a></td></tr><tr id="deleteRecursively4673491" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deleteFromSite(4673491)" rel="nofollow">Delete this post and replies</a></td></tr><tr id="changePostDate4673491" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=change_post_date&amp;node=4673491" rel="nofollow">Change post date</a></td></tr><tr id="print4673491"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=print_post&amp;node=4673491" rel="nofollow">Print post</a></td></tr><tr id="permalink4673491"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="prompt('Copy this:','http://www.ffmpeg-archive.org/HDR-4K-support-in-ffmpeg-tp4673485p4673491.html')">Permalink</a></td></tr><tr id="rawMail4673491" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=raw_mail&amp;node=4673491" rel="nofollow">Raw mail</a></td></tr><tr id="social4673491" style="white-space: nowrap;"><td style="border: medium none;"><a href="http://twitter.com/share?text=Re%3A+HDR+4K+support+in+ffmpeg&amp;related=FFmpeg-users&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673491.html" title="Twitter" target="_top" ignore="y"> <img src="twitter.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.facebook.com/share.php?v=4&amp;src=bm&amp;u=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673491.html&amp;t=Re%3A+HDR+4K+support+in+ffmpeg" title="Facebook" target="_top" ignore="y"> <img src="facebook.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://del.icio.us/post?url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673491.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Delicious" target="_top" ignore="y"> <img src="delicious.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.google.com/bookmarks/mark?op=add&amp;bkmk=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673491.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Google Bookmarks" target="_top" ignore="y"> <img src="google.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.stumbleupon.com/submit?url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673491.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Stumble Upon" target="_top" ignore="y"> <img src="stumbleupon.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673491.html&amp;title=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673491.html&amp;source=FFmpeg-users" title="LinkedIn" target="_top" ignore="y"> <img src="linkedin.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://digg.com/submit?phase=2&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673491.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Digg" target="_top" ignore="y"> <img src="digg.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a></td></tr></tbody></table></span></span>
+	
+				</div>
+				<div class="classic-subject-line">
+					<span id="red-arrow4673491" class="float-left invisible" style="margin-top: 0.2em;">
+		<img title="Selected post" src="arrow.png" alt="Selected post" width="15" height="15">
+	</span>
+					<span class="post-date float-left">
+		<span id="d1450307416327-233">Dec 17, 2015; 7:10am</span>
+	</span>
+					<h2 class="post-subject float-left adbayes-content" style="width: 30%; overflow: visible; font-family: inherit;">
+		Re: HDR 4K support in ffmpeg
+	</h2>
+				</div>
+			</div>
+		</div>
+		<table class="classic-body">
+			<tbody><tr>
+				<td class="classic-author shaded-bg-color rounded-bottom">
+					<div class="avatar-outer">
+		<div class="avatar-inner">
+			<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=user_nodes&amp;user=376515" rel="nofollow" title="View profile of Rens Dijkshoorn-2" class="nowrap no-decoration"><img class="avatar medium-border-color" src="avatar100.png" alt="Rens Dijkshoorn-2" title="Rens Dijkshoorn-2" width="100" height="100"><img src="online.png" class="online376515 online invisible" title="User is online" alt="online"></a>
+
+	
+	
+		</div>
+	</div>
+	
+	
+	<div class="post-count376515 avatar-label weak-color">21 posts</div>
+	
+				</td>
+				<td class="classic-message">
+					
+	
+	
+	<div id="message4673491" class="message-text adbayes-content">
+		<br><div class="shrinkable-quote" style="height: 300px; overflow-y: hidden;"><br>&gt; In order to encode 4K HDR format. Firstly, you need to transform (i.e.,
+<br>&gt; tone-mapping) HDR data to 8 or 10 bit video sequence. Later, you can use
+<br>&gt; ffmpeg.
+<br>&gt; 
+<br>&gt; On Wed, Dec 16, 2015 at 10:58 PM, Carl Eugen Hoyos &lt;<a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=node&amp;node=4673491&amp;i=0" target="_top" rel="nofollow" link="external">[hidden email]</a>&gt; wrote:
+<br>&gt; 
+<br>&gt;&gt; tarun singhal &lt;tsinghal18 &lt;at&gt; gmail.com&gt; writes:
+<br>&gt;&gt;
+<br>&gt;&gt; &gt; I have been asked to check whether ffmpeg supports
+<br>&gt;&gt; &gt; 4K encoding
+<br>&gt;&gt;
+<br>&gt;&gt; 4k is supported in FFmpeg for (at least) ten years.
+<br>&gt;&gt;
+<br>&gt;&gt; &gt; with HDR or not
+<br>&gt;&gt;
+<br>&gt;&gt; I believe that strictly speaking HDR means logarithmic
+<br>&gt;&gt; or float colour space support. FFmpeg does not support
+<br>&gt;&gt; logarithmic colour space and float support is extremely
+<br>&gt;&gt; limited (input only, will be converted to rgb48 / rgb64
+<br>&gt;&gt; immediately).
+<br>&gt;&gt;
+<br>&gt;&gt; x264 supports 9 and 10 bit encoding, x265 supports
+<br>&gt;&gt; 10 bit encoding, this is all supported by FFmpeg.
+<br>&gt;&gt;
+</div><div class="shrink-quote"><span>...</span> [<a href="javascript:void(0)" collapsed="2">show rest of quote</a>]</div><br>HDR or High Dynamic Range is using a different
+<br>Optical to Electrical Transfer [OETF] and
+<br>Electrical to Optical Transfer [EOTF] then
+<br>the standard Gamma curves used in Low Dynamic Range (LDR]
+<br><br>This is just an other curve to fit more of the sensor dynamic
+<br>range into 10 Bits and expand on the display side.
+<br><br>Camera Capture formats can have bit depths up 16bit
+<br>to capture even more dynamic range.
+<br><br>Currently there is no agreed standard how this
+<br>curve should be defined. The NHK/BBC proposal
+<br>seems to be the most promising
+<br><br>If the input file already has an OETF applied encoding
+<br>with ffmpeg should be straight forward in 10 bit x264
+<br>or x265.
+<br><br>If you need to apply an OETF or EOTF then the 3dlut filter
+<br>i.c with the right 3dlut might be the way to go..
+<br><br><br>Regards
+<br><br>Rens
+<br><br><br><br><br><br>_______________________________________________
+<br>ffmpeg-user mailing list
+<br><a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=node&amp;node=4673491&amp;i=1" target="_top" rel="nofollow" link="external">[hidden email]</a>
+<br><a href="http://ffmpeg.org/mailman/listinfo/ffmpeg-user" target="_top" rel="nofollow" link="external">http://ffmpeg.org/mailman/listinfo/ffmpeg-user</a><br>
+
+	
+	
+	
+	</div>
+				</td>
+			</tr>
+		</tbody></table><div style="text-align: center; width: 100%; height: auto; clear: both;" class="google-auto-placed"><ins style="display: block; margin: 10px auto 13.44px; background-color: transparent; height: 90px;" data-ad-format="auto" class="adsbygoogle adsbygoogle-noablate" data-ad-client="ca-pub-1691702211255830" data-adsbygoogle-status="done"><ins id="aswift_3_expand" style="display: inline-table; border: medium none; height: 90px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 1200px; background-color: transparent;"><ins id="aswift_3_anchor" style="display: block; border: medium none; height: 90px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 1200px; background-color: transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" id="aswift_3" name="aswift_3" style="left: 0px; position: absolute; top: 0px; width: 1200px; height: 90px;" src="index_5.html" width="1200" height="90" frameborder="0"></iframe></ins></ins></ins></div>
+	</div>
+	<div class="classic-row">
+		<div class="classic-header">
+			<div class="classic-bar shaded-bg-color rounded-top">
+				<div class="classic-author-name nowrap">
+					<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=user_nodes&amp;user=376773">Kevin Wheatley</a>
+				</div>
+				<div class="classic-right-menu shaded-bg-color weak-color">
+					<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=reply&amp;node=4673494" rel="nofollow">Reply</a> |
+					<a href="javascript:void(0)" onclick="Nabble.setView('threaded', '/HDR-4K-support-in-ffmpeg-tt4673485.html#a4673494',4673494)">Threaded</a>
+	<div id="tooltip95813" class="nabble-tooltip" use_title="false">
+		Open this post in threaded view
+		<div class="nabble-tooltip-arrow">
+			<div class="d1">♦</div>
+			<div class="d2">♦</div>
+		</div>
+	</div>
+	 |
+					<span id="dd_postdropdown4673494"><span id="postdropdown4673494" class="dropdown"><a href="javascript:void(0)" title="Click for more options">More</a> <img src="more.png" width="10" height="10"><table class="light-bg-color medium-border-color drop-shadow" style="margin-top: 1px;"><tbody><tr id="_loadingpostdropdown4673494" style="display: none;"><td class="dropdown-simple-row"><span id="_loadingSpanpostdropdown4673494">Loading...</span></td></tr><tr id="replyToAuthor4673494" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=pm&amp;post=4673494" rel="nofollow">Reply to author</a></td></tr><tr id="editPost4673494" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=edit_post&amp;node=4673494" rel="nofollow">Edit post</a></td></tr><tr id="movePost4673494" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=move_node&amp;node=4673494" rel="nofollow">Move post</a></td></tr><tr id="deletePost4673494" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deletePost(4673494)" rel="nofollow">Delete this post</a></td></tr><tr id="deleteRecursively4673494" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deleteFromSite(4673494)" rel="nofollow">Delete this post and replies</a></td></tr><tr id="changePostDate4673494" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=change_post_date&amp;node=4673494" rel="nofollow">Change post date</a></td></tr><tr id="print4673494"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=print_post&amp;node=4673494" rel="nofollow">Print post</a></td></tr><tr id="permalink4673494"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="prompt('Copy this:','http://www.ffmpeg-archive.org/HDR-4K-support-in-ffmpeg-tp4673485p4673494.html')">Permalink</a></td></tr><tr id="rawMail4673494" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=raw_mail&amp;node=4673494" rel="nofollow">Raw mail</a></td></tr><tr id="social4673494" style="white-space: nowrap;"><td style="border: medium none;"><a href="http://twitter.com/share?text=Re%3A+HDR+4K+support+in+ffmpeg&amp;related=FFmpeg-users&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673494.html" title="Twitter" target="_top" ignore="y"> <img src="twitter.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.facebook.com/share.php?v=4&amp;src=bm&amp;u=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673494.html&amp;t=Re%3A+HDR+4K+support+in+ffmpeg" title="Facebook" target="_top" ignore="y"> <img src="facebook.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://del.icio.us/post?url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673494.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Delicious" target="_top" ignore="y"> <img src="delicious.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.google.com/bookmarks/mark?op=add&amp;bkmk=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673494.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Google Bookmarks" target="_top" ignore="y"> <img src="google.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.stumbleupon.com/submit?url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673494.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Stumble Upon" target="_top" ignore="y"> <img src="stumbleupon.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673494.html&amp;title=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673494.html&amp;source=FFmpeg-users" title="LinkedIn" target="_top" ignore="y"> <img src="linkedin.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://digg.com/submit?phase=2&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673494.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Digg" target="_top" ignore="y"> <img src="digg.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a></td></tr></tbody></table></span></span>
+	
+				</div>
+				<div class="classic-subject-line">
+					<span id="red-arrow4673494" class="float-left invisible" style="margin-top: 0.2em;">
+		<img title="Selected post" src="arrow.png" alt="Selected post" width="15" height="15">
+	</span>
+					<span class="post-date float-left">
+		<span id="d1450342805401-217">Dec 17, 2015; 5:00pm</span>
+	</span>
+					<h2 class="post-subject float-left adbayes-content" style="width: 30%; overflow: visible; font-family: inherit;">
+		Re: HDR 4K support in ffmpeg
+	</h2>
+				</div>
+			</div>
+		</div>
+		<table class="classic-body">
+			<tbody><tr>
+				<td class="classic-author shaded-bg-color rounded-bottom">
+					<div class="avatar-outer">
+		<div class="avatar-inner">
+			<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=user_nodes&amp;user=376773" rel="nofollow" title="View profile of Kevin Wheatley" class="nowrap no-decoration"><img class="avatar medium-border-color" src="avatar100.png" alt="Kevin Wheatley" title="Kevin Wheatley" width="100" height="100"><img src="online.png" class="online376773 online invisible" title="User is online" alt="online"></a>
+
+	
+	
+		</div>
+	</div>
+	
+	
+	<div class="post-count376773 avatar-label weak-color">20 posts</div>
+	
+				</td>
+				<td class="classic-message">
+					
+	
+	
+	<div id="message4673494" class="message-text adbayes-content">
+		On Wed, Dec 16, 2015 at 11:27 PM, Rens Dijkshoorn &lt;<a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=node&amp;node=4673494&amp;i=0" target="_top" rel="nofollow" link="external">[hidden email]</a>&gt; wrote:
+<div class="shrinkable-quote"><br>&gt; Currently there is no agreed standard how this
+<br>&gt; curve should be defined. The NHK/BBC proposal
+<br>&gt; seems to be the most promising
+<br>&gt;
+<br>&gt; If the input file already has an OETF applied encoding
+<br>&gt; with ffmpeg should be straight forward in 10 bit x264
+<br>&gt; or x265.
+<br>&gt;
+<br>&gt; If you need to apply an OETF or EOTF then the 3dlut filter
+<br>&gt; i.c with the right 3dlut might be the way to go..
+</div><br>If you have correctly ranged OpenEXR files, then the OpenEXR reader
+<br>can apply most of the standard "OETF"/transfer characteristics for
+<br>encoding using '-apply_trc', however the NHK/BBC proposal is not one
+<br>of them as I did not have a good reference/standard document for the
+<br>required values to use in encoded files. It does include SMPTE ST2084
+<br>for instance - though you can be at the whims of the downstream
+<br>conversion functions doing the correct thing.
+<br><br>You will need to flag which ever image state you have using
+<br>'-color_trc' as well - using color_trc would apply if you have already
+<br>correctly encoded images in the cases when ffmpeg is unable to
+<br>determine the correct value (like when fileformats do not support this
+<br>metadata).
+<br><br>Kevin
+<br>_______________________________________________
+<br>ffmpeg-user mailing list
+<br><a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=node&amp;node=4673494&amp;i=1" target="_top" rel="nofollow" link="external">[hidden email]</a>
+<br><a href="http://ffmpeg.org/mailman/listinfo/ffmpeg-user" target="_top" rel="nofollow" link="external">http://ffmpeg.org/mailman/listinfo/ffmpeg-user</a><br>
+
+	
+	
+	
+	</div>
+				</td>
+			</tr>
+		</tbody></table><div style="text-align: center; width: 100%; height: auto; clear: both;" class="google-auto-placed"><ins style="display: block; margin: 10px auto 13.44px; background-color: transparent; height: 90px;" data-ad-format="auto" class="adsbygoogle adsbygoogle-noablate" data-ad-client="ca-pub-1691702211255830" data-adsbygoogle-status="done"><ins id="aswift_4_expand" style="display: inline-table; border: medium none; height: 90px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 1200px; background-color: transparent;"><ins id="aswift_4_anchor" style="display: block; border: medium none; height: 90px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 1200px; background-color: transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" id="aswift_4" name="aswift_4" style="left: 0px; position: absolute; top: 0px; width: 1200px; height: 90px;" src="index_8.html" width="1200" height="90" frameborder="0"></iframe></ins></ins></ins></div>
+	</div>
+	<div class="classic-row">
+		<div class="classic-header">
+			<div class="classic-bar shaded-bg-color rounded-top">
+				<div class="classic-author-name nowrap">
+					<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=user_nodes&amp;user=328370">Tarun singhal</a>
+				</div>
+				<div class="classic-right-menu shaded-bg-color weak-color">
+					<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=reply&amp;node=4673495" rel="nofollow">Reply</a> |
+					<a href="javascript:void(0)" onclick="Nabble.setView('threaded', '/HDR-4K-support-in-ffmpeg-tt4673485.html#a4673495',4673495)">Threaded</a>
+	<div id="tooltip70655" class="nabble-tooltip" use_title="false">
+		Open this post in threaded view
+		<div class="nabble-tooltip-arrow">
+			<div class="d1">♦</div>
+			<div class="d2">♦</div>
+		</div>
+	</div>
+	 |
+					<span id="dd_postdropdown4673495"><span id="postdropdown4673495" class="dropdown"><a href="javascript:void(0)" title="Click for more options">More</a> <img src="more.png" width="10" height="10"><table class="light-bg-color medium-border-color drop-shadow" style="margin-top: 1px;"><tbody><tr id="_loadingpostdropdown4673495" style="display: none;"><td class="dropdown-simple-row"><span id="_loadingSpanpostdropdown4673495">Loading...</span></td></tr><tr id="replyToAuthor4673495" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=pm&amp;post=4673495" rel="nofollow">Reply to author</a></td></tr><tr id="editPost4673495" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=edit_post&amp;node=4673495" rel="nofollow">Edit post</a></td></tr><tr id="movePost4673495" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=move_node&amp;node=4673495" rel="nofollow">Move post</a></td></tr><tr id="deletePost4673495" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deletePost(4673495)" rel="nofollow">Delete this post</a></td></tr><tr id="deleteRecursively4673495" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deleteFromSite(4673495)" rel="nofollow">Delete this post and replies</a></td></tr><tr id="changePostDate4673495" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=change_post_date&amp;node=4673495" rel="nofollow">Change post date</a></td></tr><tr id="print4673495"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=print_post&amp;node=4673495" rel="nofollow">Print post</a></td></tr><tr id="permalink4673495"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="prompt('Copy this:','http://www.ffmpeg-archive.org/HDR-4K-support-in-ffmpeg-tp4673485p4673495.html')">Permalink</a></td></tr><tr id="rawMail4673495" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=raw_mail&amp;node=4673495" rel="nofollow">Raw mail</a></td></tr><tr id="social4673495" style="white-space: nowrap;"><td style="border: medium none;"><a href="http://twitter.com/share?text=Re%3A+HDR+4K+support+in+ffmpeg&amp;related=FFmpeg-users&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673495.html" title="Twitter" target="_top" ignore="y"> <img src="twitter.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.facebook.com/share.php?v=4&amp;src=bm&amp;u=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673495.html&amp;t=Re%3A+HDR+4K+support+in+ffmpeg" title="Facebook" target="_top" ignore="y"> <img src="facebook.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://del.icio.us/post?url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673495.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Delicious" target="_top" ignore="y"> <img src="delicious.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.google.com/bookmarks/mark?op=add&amp;bkmk=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673495.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Google Bookmarks" target="_top" ignore="y"> <img src="google.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.stumbleupon.com/submit?url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673495.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Stumble Upon" target="_top" ignore="y"> <img src="stumbleupon.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673495.html&amp;title=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673495.html&amp;source=FFmpeg-users" title="LinkedIn" target="_top" ignore="y"> <img src="linkedin.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://digg.com/submit?phase=2&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673495.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Digg" target="_top" ignore="y"> <img src="digg.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a></td></tr></tbody></table></span></span>
+	
+				</div>
+				<div class="classic-subject-line">
+					<span id="red-arrow4673495" class="float-left invisible" style="margin-top: 0.2em;">
+		<img title="Selected post" src="arrow.png" alt="Selected post" width="15" height="15">
+	</span>
+					<span class="post-date float-left">
+		<span id="d1450343296957-209">Dec 17, 2015; 5:08pm</span>
+	</span>
+					<h2 class="post-subject float-left adbayes-content" style="width: 30%; overflow: visible; font-family: inherit;">
+		Re: HDR 4K support in ffmpeg
+	</h2>
+				</div>
+			</div>
+		</div>
+		<table class="classic-body">
+			<tbody><tr>
+				<td class="classic-author shaded-bg-color rounded-bottom">
+					<div class="avatar-outer">
+		<div class="avatar-inner">
+			<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=user_nodes&amp;user=328370" rel="nofollow" title="View profile of Tarun singhal" class="nowrap no-decoration"><img class="avatar medium-border-color" src="avatar100.png" alt="Tarun singhal" title="Tarun singhal" width="100" height="100"><img src="online.png" class="online328370 online invisible" title="User is online" alt="online"></a>
+
+	
+	
+		</div>
+	</div>
+	
+	
+	<div class="post-count328370 avatar-label weak-color">73 posts</div>
+	
+				</td>
+				<td class="classic-message">
+					
+	
+	
+	<div id="message4673495" class="message-text adbayes-content">
+		On Thu, Dec 17, 2015 at 2:47 PM, Kevin Wheatley &lt;<a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=node&amp;node=4673495&amp;i=0" target="_top" rel="nofollow" link="external">[hidden email]</a>&gt;
+<br>wrote:
+<br><div class="shrinkable-quote" style="height: 300px; overflow-y: hidden;"><br>&gt; On Wed, Dec 16, 2015 at 11:27 PM, Rens Dijkshoorn &lt;<a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=node&amp;node=4673495&amp;i=1" target="_top" rel="nofollow" link="external">[hidden email]</a>&gt;
+<br>&gt; wrote:
+<br>&gt; &gt; Currently there is no agreed standard how this
+<br>&gt; &gt; curve should be defined. The NHK/BBC proposal
+<br>&gt; &gt; seems to be the most promising
+<br>&gt; &gt;
+<br>&gt; &gt; If the input file already has an OETF applied encoding
+<br>&gt; &gt; with ffmpeg should be straight forward in 10 bit x264
+<br>&gt; &gt; or x265.
+<br>&gt; &gt;
+<br>&gt; &gt; If you need to apply an OETF or EOTF then the 3dlut filter
+<br>&gt; &gt; i.c with the right 3dlut might be the way to go..
+<br>&gt;
+<br>&gt; If you have correctly ranged OpenEXR files, then the OpenEXR reader
+<br>&gt; can apply most of the standard "OETF"/transfer characteristics for
+<br>&gt; encoding using '-apply_trc', however the NHK/BBC proposal is not one
+<br>&gt; of them as I did not have a good reference/standard document for the
+<br>&gt; required values to use in encoded files. It does include SMPTE ST2084
+<br>&gt; for instance - though you can be at the whims of the downstream
+<br>&gt; conversion functions doing the correct thing.
+<br>&gt;
+<br>&gt; You will need to flag which ever image state you have using
+<br>&gt; '-color_trc' as well - using color_trc would apply if you have already
+<br>&gt; correctly encoded images in the cases when ffmpeg is unable to
+<br>&gt; determine the correct value (like when fileformats do not support this
+<br>&gt; metadata).
+<br>&gt;
+<br>&gt; Kevin
+<br>&gt; _______________________________________________
+<br>&gt; ffmpeg-user mailing list
+<br>&gt; <a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=node&amp;node=4673495&amp;i=2" target="_top" rel="nofollow" link="external">[hidden email]</a>
+<br>&gt; <a href="http://ffmpeg.org/mailman/listinfo/ffmpeg-user" target="_top" rel="nofollow" link="external">http://ffmpeg.org/mailman/listinfo/ffmpeg-user</a><br>&gt;
+</div><div class="shrink-quote"><span>...</span> [<a href="javascript:void(0)" collapsed="2">show rest of quote</a>]</div><br>Hi Team,
+<br>Ok, So I understand that ffmpeg doesnt supports HDR encoding. to answer the
+<br>question about input format, we dont have any strict definition on input
+<br>format it can be anything a simple mp4 video downloaded from youtube or a
+<br>raw MXF content straight out of studio.
+<br><br>Are you guys aware of any tools free or commercial in the market that can
+<br>independently or work in conjuction with other tools to generate HDR
+<br>encoded 4K content?
+<br>_______________________________________________
+<br>ffmpeg-user mailing list
+<br><a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=node&amp;node=4673495&amp;i=3" target="_top" rel="nofollow" link="external">[hidden email]</a>
+<br><a href="http://ffmpeg.org/mailman/listinfo/ffmpeg-user" target="_top" rel="nofollow" link="external">http://ffmpeg.org/mailman/listinfo/ffmpeg-user</a><br>
+
+	
+	
+	
+	</div>
+				</td>
+			</tr>
+		</tbody></table><div style="text-align: center; width: 100%; height: auto; clear: both;" class="google-auto-placed"><ins style="display: block; margin: 10px auto 13.44px; background-color: transparent; height: 90px;" data-ad-format="auto" class="adsbygoogle adsbygoogle-noablate" data-ad-client="ca-pub-1691702211255830" data-adsbygoogle-status="done"><ins id="aswift_5_expand" style="display: inline-table; border: medium none; height: 90px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 1200px; background-color: transparent;"><ins id="aswift_5_anchor" style="display: block; border: medium none; height: 90px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 1200px; background-color: transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" id="aswift_5" name="aswift_5" style="left: 0px; position: absolute; top: 0px; width: 1200px; height: 90px;" src="index_11.html" width="1200" height="90" frameborder="0"></iframe></ins></ins></ins></div>
+	</div>
+	<div class="classic-row">
+		<div class="classic-header">
+			<div class="classic-bar shaded-bg-color rounded-top">
+				<div class="classic-author-name nowrap">
+					<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=user_nodes&amp;user=374452">cozcinar</a>
+				</div>
+				<div class="classic-right-menu shaded-bg-color weak-color">
+					<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=reply&amp;node=4673496" rel="nofollow">Reply</a> |
+					<a href="javascript:void(0)" onclick="Nabble.setView('threaded', '/HDR-4K-support-in-ffmpeg-tt4673485.html#a4673496',4673496)">Threaded</a>
+	<div id="tooltip39124" class="nabble-tooltip" use_title="false">
+		Open this post in threaded view
+		<div class="nabble-tooltip-arrow">
+			<div class="d1">♦</div>
+			<div class="d2">♦</div>
+		</div>
+	</div>
+	 |
+					<span id="dd_postdropdown4673496"><span id="postdropdown4673496" class="dropdown"><a href="javascript:void(0)" title="Click for more options">More</a> <img src="more.png" width="10" height="10"><table class="light-bg-color medium-border-color drop-shadow" style="margin-top: 1px;"><tbody><tr id="_loadingpostdropdown4673496" style="display: none;"><td class="dropdown-simple-row"><span id="_loadingSpanpostdropdown4673496">Loading...</span></td></tr><tr id="replyToAuthor4673496" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=pm&amp;post=4673496" rel="nofollow">Reply to author</a></td></tr><tr id="editPost4673496" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=edit_post&amp;node=4673496" rel="nofollow">Edit post</a></td></tr><tr id="movePost4673496" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=move_node&amp;node=4673496" rel="nofollow">Move post</a></td></tr><tr id="deletePost4673496" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deletePost(4673496)" rel="nofollow">Delete this post</a></td></tr><tr id="deleteRecursively4673496" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deleteFromSite(4673496)" rel="nofollow">Delete this post and replies</a></td></tr><tr id="changePostDate4673496" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=change_post_date&amp;node=4673496" rel="nofollow">Change post date</a></td></tr><tr id="print4673496"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=print_post&amp;node=4673496" rel="nofollow">Print post</a></td></tr><tr id="permalink4673496"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="prompt('Copy this:','http://www.ffmpeg-archive.org/HDR-4K-support-in-ffmpeg-tp4673485p4673496.html')">Permalink</a></td></tr><tr id="rawMail4673496" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=raw_mail&amp;node=4673496" rel="nofollow">Raw mail</a></td></tr><tr id="social4673496" style="white-space: nowrap;"><td style="border: medium none;"><a href="http://twitter.com/share?text=Re%3A+HDR+4K+support+in+ffmpeg&amp;related=FFmpeg-users&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673496.html" title="Twitter" target="_top" ignore="y"> <img src="twitter.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.facebook.com/share.php?v=4&amp;src=bm&amp;u=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673496.html&amp;t=Re%3A+HDR+4K+support+in+ffmpeg" title="Facebook" target="_top" ignore="y"> <img src="facebook.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://del.icio.us/post?url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673496.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Delicious" target="_top" ignore="y"> <img src="delicious.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.google.com/bookmarks/mark?op=add&amp;bkmk=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673496.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Google Bookmarks" target="_top" ignore="y"> <img src="google.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.stumbleupon.com/submit?url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673496.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Stumble Upon" target="_top" ignore="y"> <img src="stumbleupon.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673496.html&amp;title=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673496.html&amp;source=FFmpeg-users" title="LinkedIn" target="_top" ignore="y"> <img src="linkedin.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://digg.com/submit?phase=2&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673496.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Digg" target="_top" ignore="y"> <img src="digg.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a></td></tr></tbody></table></span></span>
+	
+				</div>
+				<div class="classic-subject-line">
+					<span id="red-arrow4673496" class="float-left invisible" style="margin-top: 0.2em;">
+		<img title="Selected post" src="arrow.png" alt="Selected post" width="15" height="15">
+	</span>
+					<span class="post-date float-left">
+		<span id="d1450347753812-796">Dec 17, 2015; 6:22pm</span>
+	</span>
+					<h2 class="post-subject float-left adbayes-content" style="width: 30%; overflow: visible; font-family: inherit;">
+		Re: HDR 4K support in ffmpeg
+	</h2>
+				</div>
+			</div>
+		</div>
+		<table class="classic-body">
+			<tbody><tr>
+				<td class="classic-author shaded-bg-color rounded-bottom">
+					<div class="avatar-outer">
+		<div class="avatar-inner">
+			<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=user_nodes&amp;user=374452" rel="nofollow" title="View profile of cozcinar" class="nowrap no-decoration"><img class="avatar medium-border-color" src="avatar100.png" alt="cozcinar" title="cozcinar" width="100" height="100"><img src="online.png" class="online374452 online invisible" title="User is online" alt="online"></a>
+
+	
+	
+		</div>
+	</div>
+	
+	
+	<div class="post-count374452 avatar-label weak-color">2 posts</div>
+	
+				</td>
+				<td class="classic-message">
+					
+	
+	
+	<div id="message4673496" class="message-text adbayes-content">
+		Currently, ISO/IEC MPEG has been working on HDR video coding
+<br>standardization. There is a MPEG HDRtools, which contains necessary tools
+<br>for HDR video coding.
+<br><br>Alternatively, there are some HDR image/video toolboxes:
+<br>1- <a href="http://pfstools.sourceforge.net/hdrhtml.html" target="_top" rel="nofollow" link="external">http://pfstools.sourceforge.net/hdrhtml.html</a><br>2- <a href="https://github.com/banterle/" target="_top" rel="nofollow" link="external">https://github.com/banterle/</a><br><br>Also, there is a coding project in <a href="http://www.lumahdrv.org/" target="_top" rel="nofollow" link="external">http://www.lumahdrv.org/</a>&nbsp;that you can
+<br>directly encode your HDR video. However, I do not have idea about its
+<br>performance.
+<br><br>On Thu, Dec 17, 2015 at 10:25 AM, tarun singhal &lt;<a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=node&amp;node=4673496&amp;i=0" target="_top" rel="nofollow" link="external">[hidden email]</a>&gt;
+<br>wrote:
+<br><div class="shrinkable-quote" style="height: 300px; overflow-y: hidden;"><br>&gt; On Thu, Dec 17, 2015 at 2:47 PM, Kevin Wheatley &lt;
+<br>&gt; <a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=node&amp;node=4673496&amp;i=1" target="_top" rel="nofollow" link="external">[hidden email]</a>&gt;
+<br>&gt; wrote:
+<br>&gt;
+<br>&gt; &gt; On Wed, Dec 16, 2015 at 11:27 PM, Rens Dijkshoorn &lt;<a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=node&amp;node=4673496&amp;i=2" target="_top" rel="nofollow" link="external">[hidden email]</a>&gt;
+<br>&gt; &gt; wrote:
+<br>&gt; &gt; &gt; Currently there is no agreed standard how this
+<br>&gt; &gt; &gt; curve should be defined. The NHK/BBC proposal
+<br>&gt; &gt; &gt; seems to be the most promising
+<br>&gt; &gt; &gt;
+<br>&gt; &gt; &gt; If the input file already has an OETF applied encoding
+<br>&gt; &gt; &gt; with ffmpeg should be straight forward in 10 bit x264
+<br>&gt; &gt; &gt; or x265.
+<br>&gt; &gt; &gt;
+<br>&gt; &gt; &gt; If you need to apply an OETF or EOTF then the 3dlut filter
+<br>&gt; &gt; &gt; i.c with the right 3dlut might be the way to go..
+<br>&gt; &gt;
+<br>&gt; &gt; If you have correctly ranged OpenEXR files, then the OpenEXR reader
+<br>&gt; &gt; can apply most of the standard "OETF"/transfer characteristics for
+<br>&gt; &gt; encoding using '-apply_trc', however the NHK/BBC proposal is not one
+<br>&gt; &gt; of them as I did not have a good reference/standard document for the
+<br>&gt; &gt; required values to use in encoded files. It does include SMPTE ST2084
+<br>&gt; &gt; for instance - though you can be at the whims of the downstream
+<br>&gt; &gt; conversion functions doing the correct thing.
+<br>&gt; &gt;
+<br>&gt; &gt; You will need to flag which ever image state you have using
+<br>&gt; &gt; '-color_trc' as well - using color_trc would apply if you have already
+<br>&gt; &gt; correctly encoded images in the cases when ffmpeg is unable to
+<br>&gt; &gt; determine the correct value (like when fileformats do not support this
+<br>&gt; &gt; metadata).
+<br>&gt; &gt;
+<br>&gt; &gt; Kevin
+<br>&gt; &gt; _______________________________________________
+<br>&gt; &gt; ffmpeg-user mailing list
+<br>&gt; &gt; <a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=node&amp;node=4673496&amp;i=3" target="_top" rel="nofollow" link="external">[hidden email]</a>
+<br>&gt; &gt; <a href="http://ffmpeg.org/mailman/listinfo/ffmpeg-user" target="_top" rel="nofollow" link="external">http://ffmpeg.org/mailman/listinfo/ffmpeg-user</a><br>&gt; &gt;
+<br>&gt;
+<br>&gt; Hi Team,
+<br>&gt; Ok, So I understand that ffmpeg doesnt supports HDR encoding. to answer the
+<br>&gt; question about input format, we dont have any strict definition on input
+<br>&gt; format it can be anything a simple mp4 video downloaded from youtube or a
+<br>&gt; raw MXF content straight out of studio.
+<br>&gt;
+<br>&gt; Are you guys aware of any tools free or commercial in the market that can
+<br>&gt; independently or work in conjuction with other tools to generate HDR
+<br>&gt; encoded 4K content?
+<br>&gt; _______________________________________________
+<br>&gt; ffmpeg-user mailing list
+<br>&gt; <a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=node&amp;node=4673496&amp;i=4" target="_top" rel="nofollow" link="external">[hidden email]</a>
+<br>&gt; <a href="http://ffmpeg.org/mailman/listinfo/ffmpeg-user" target="_top" rel="nofollow" link="external">http://ffmpeg.org/mailman/listinfo/ffmpeg-user</a><br>&gt;
+</div><div class="shrink-quote"><span>...</span> [<a href="javascript:void(0)" collapsed="2">show rest of quote</a>]</div>_______________________________________________
+<br>ffmpeg-user mailing list
+<br><a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=node&amp;node=4673496&amp;i=5" target="_top" rel="nofollow" link="external">[hidden email]</a>
+<br><a href="http://ffmpeg.org/mailman/listinfo/ffmpeg-user" target="_top" rel="nofollow" link="external">http://ffmpeg.org/mailman/listinfo/ffmpeg-user</a><br>
+
+	
+	
+	
+	</div>
+				</td>
+			</tr>
+		</tbody></table><div style="text-align: center; width: 100%; height: auto; clear: both;" class="google-auto-placed"><ins style="display: block; margin: 10px auto 13.44px; background-color: transparent; height: 90px;" data-ad-format="auto" class="adsbygoogle adsbygoogle-noablate" data-ad-client="ca-pub-1691702211255830" data-adsbygoogle-status="done"><ins id="aswift_6_expand" style="display: inline-table; border: medium none; height: 90px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 1200px; background-color: transparent;"><ins id="aswift_6_anchor" style="display: block; border: medium none; height: 90px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 1200px; background-color: transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" id="aswift_6" name="aswift_6" style="left: 0px; position: absolute; top: 0px; width: 1200px; height: 90px;" src="index_15.html" width="1200" height="90" frameborder="0"></iframe></ins></ins></ins></div>
+	</div>
+	<div class="classic-row">
+		<div class="classic-header">
+			<div class="classic-bar shaded-bg-color rounded-top">
+				<div class="classic-author-name nowrap">
+					<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=user_nodes&amp;user=200308">Carl Eugen Hoyos</a>
+				</div>
+				<div class="classic-right-menu shaded-bg-color weak-color">
+					<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=reply&amp;node=4673500" rel="nofollow">Reply</a> |
+					<a href="javascript:void(0)" onclick="Nabble.setView('threaded', '/HDR-4K-support-in-ffmpeg-tt4673485.html#a4673500',4673500)">Threaded</a>
+	<div id="tooltip74251" class="nabble-tooltip" use_title="false">
+		Open this post in threaded view
+		<div class="nabble-tooltip-arrow">
+			<div class="d1">♦</div>
+			<div class="d2">♦</div>
+		</div>
+	</div>
+	 |
+					<span id="dd_postdropdown4673500"><span id="postdropdown4673500" class="dropdown"><a href="javascript:void(0)" title="Click for more options">More</a> <img src="more.png" width="10" height="10"><table class="light-bg-color medium-border-color drop-shadow" style="margin-top: 1px;"><tbody><tr id="_loadingpostdropdown4673500" style="display: none;"><td class="dropdown-simple-row"><span id="_loadingSpanpostdropdown4673500">Loading...</span></td></tr><tr id="replyToAuthor4673500" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=pm&amp;post=4673500" rel="nofollow">Reply to author</a></td></tr><tr id="editPost4673500" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=edit_post&amp;node=4673500" rel="nofollow">Edit post</a></td></tr><tr id="movePost4673500" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=move_node&amp;node=4673500" rel="nofollow">Move post</a></td></tr><tr id="deletePost4673500" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deletePost(4673500)" rel="nofollow">Delete this post</a></td></tr><tr id="deleteRecursively4673500" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deleteFromSite(4673500)" rel="nofollow">Delete this post and replies</a></td></tr><tr id="changePostDate4673500" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=change_post_date&amp;node=4673500" rel="nofollow">Change post date</a></td></tr><tr id="print4673500"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=print_post&amp;node=4673500" rel="nofollow">Print post</a></td></tr><tr id="permalink4673500"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="prompt('Copy this:','http://www.ffmpeg-archive.org/HDR-4K-support-in-ffmpeg-tp4673485p4673500.html')">Permalink</a></td></tr><tr id="rawMail4673500" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=raw_mail&amp;node=4673500" rel="nofollow">Raw mail</a></td></tr><tr id="social4673500" style="white-space: nowrap;"><td style="border: medium none;"><a href="http://twitter.com/share?text=Re%3A+HDR+4K+support+in+ffmpeg&amp;related=FFmpeg-users&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673500.html" title="Twitter" target="_top" ignore="y"> <img src="twitter.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.facebook.com/share.php?v=4&amp;src=bm&amp;u=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673500.html&amp;t=Re%3A+HDR+4K+support+in+ffmpeg" title="Facebook" target="_top" ignore="y"> <img src="facebook.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://del.icio.us/post?url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673500.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Delicious" target="_top" ignore="y"> <img src="delicious.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.google.com/bookmarks/mark?op=add&amp;bkmk=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673500.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Google Bookmarks" target="_top" ignore="y"> <img src="google.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.stumbleupon.com/submit?url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673500.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Stumble Upon" target="_top" ignore="y"> <img src="stumbleupon.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673500.html&amp;title=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673500.html&amp;source=FFmpeg-users" title="LinkedIn" target="_top" ignore="y"> <img src="linkedin.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://digg.com/submit?phase=2&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673500.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Digg" target="_top" ignore="y"> <img src="digg.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a></td></tr></tbody></table></span></span>
+	
+				</div>
+				<div class="classic-subject-line">
+					<span id="red-arrow4673500" class="float-left invisible" style="margin-top: 0.2em;">
+		<img title="Selected post" src="arrow.png" alt="Selected post" width="15" height="15">
+	</span>
+					<span class="post-date float-left">
+		<span id="d1450354093292-952">Dec 17, 2015; 8:08pm</span>
+	</span>
+					<h2 class="post-subject float-left adbayes-content" style="width: 30%; overflow: visible; font-family: inherit;">
+		Re: HDR 4K support in ffmpeg
+	</h2>
+				</div>
+			</div>
+		</div>
+		<table class="classic-body">
+			<tbody><tr>
+				<td class="classic-author shaded-bg-color rounded-bottom">
+					<div class="avatar-outer">
+		<div class="avatar-inner">
+			<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=user_nodes&amp;user=200308" rel="nofollow" title="View profile of Carl Eugen Hoyos" class="nowrap no-decoration"><img class="avatar medium-border-color" src="avatar100.png" alt="Carl Eugen Hoyos" title="Carl Eugen Hoyos" width="100" height="100"><img src="online.png" class="online200308 online invisible" title="User is online" alt="online"></a>
+
+	
+	
+		</div>
+	</div>
+	
+	
+	<div class="post-count200308 avatar-label weak-color">5294 posts</div>
+	
+				</td>
+				<td class="classic-message">
+					
+	
+	<div class="weak-color" style="font-size: 80%; padding-bottom: 1em;">
+				In reply to <a href="http://www.ffmpeg-archive.org/HDR-4K-support-in-ffmpeg-tp4673485p4673495.html" rel="nofollow">this post</a> by Tarun singhal
+			</div>
+	<div id="message4673500" class="message-text adbayes-content">
+		tarun singhal &lt;tsinghal18 &lt;at&gt; gmail.com&gt; writes:
+<br><br>&gt; Ok, So I understand that ffmpeg doesnt supports HDR 
+<br>&gt; encoding.
+<br><br>Several people seem to disagree but it depends on your 
+<br>definition of HDR.
+<br><br>&gt; to answer the question about input format, we dont 
+<br>&gt; have any strict definition on input format 
+<br><br>Ok.
+<br><br>&gt; it can be anything a simple mp4 video downloaded 
+<br>&gt; from youtube 
+<br><br>Sorry if this is a stupid question:
+<br>If the video downloaded from youtube is not HDR-encoded 
+<br>(it isn't afaik) what difference would it make if 
+<br>FFmpeg supported HDR (however you define it) or not?
+<br><br>&gt; or a raw MXF content straight out of studio.
+<br><br>How does ffmpeg -i output look for this content?
+<br><br>Carl Eugen
+<br><br>_______________________________________________
+<br>ffmpeg-user mailing list
+<br><a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=node&amp;node=4673500&amp;i=0" target="_top" rel="nofollow" link="external">[hidden email]</a>
+<br><a href="http://ffmpeg.org/mailman/listinfo/ffmpeg-user" target="_top" rel="nofollow" link="external">http://ffmpeg.org/mailman/listinfo/ffmpeg-user</a><br>
+
+	
+	
+	
+	</div>
+				</td>
+			</tr>
+		</tbody></table>
+	</div>
+	<div class="classic-row">
+		<div class="classic-header">
+			<div class="classic-bar shaded-bg-color rounded-top">
+				<div class="classic-author-name nowrap">
+					<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=user_nodes&amp;user=328370">Tarun singhal</a>
+				</div>
+				<div class="classic-right-menu shaded-bg-color weak-color">
+					<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=reply&amp;node=4673519" rel="nofollow">Reply</a> |
+					<a href="javascript:void(0)" onclick="Nabble.setView('threaded', '/HDR-4K-support-in-ffmpeg-tt4673485.html#a4673519',4673519)">Threaded</a>
+	<div id="tooltip58576" class="nabble-tooltip" use_title="false">
+		Open this post in threaded view
+		<div class="nabble-tooltip-arrow">
+			<div class="d1">♦</div>
+			<div class="d2">♦</div>
+		</div>
+	</div>
+	 |
+					<span id="dd_postdropdown4673519"><span id="postdropdown4673519" class="dropdown"><a href="javascript:void(0)" title="Click for more options">More</a> <img src="more.png" width="10" height="10"><table class="light-bg-color medium-border-color drop-shadow" style="margin-top: 1px;"><tbody><tr id="_loadingpostdropdown4673519" style="display: none;"><td class="dropdown-simple-row"><span id="_loadingSpanpostdropdown4673519">Loading...</span></td></tr><tr id="replyToAuthor4673519" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=pm&amp;post=4673519" rel="nofollow">Reply to author</a></td></tr><tr id="editPost4673519" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=edit_post&amp;node=4673519" rel="nofollow">Edit post</a></td></tr><tr id="movePost4673519" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=move_node&amp;node=4673519" rel="nofollow">Move post</a></td></tr><tr id="deletePost4673519" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deletePost(4673519)" rel="nofollow">Delete this post</a></td></tr><tr id="deleteRecursively4673519" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deleteFromSite(4673519)" rel="nofollow">Delete this post and replies</a></td></tr><tr id="changePostDate4673519" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=change_post_date&amp;node=4673519" rel="nofollow">Change post date</a></td></tr><tr id="print4673519"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=print_post&amp;node=4673519" rel="nofollow">Print post</a></td></tr><tr id="permalink4673519"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="prompt('Copy this:','http://www.ffmpeg-archive.org/HDR-4K-support-in-ffmpeg-tp4673485p4673519.html')">Permalink</a></td></tr><tr id="rawMail4673519" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=raw_mail&amp;node=4673519" rel="nofollow">Raw mail</a></td></tr><tr id="social4673519" style="white-space: nowrap;"><td style="border: medium none;"><a href="http://twitter.com/share?text=Re%3A+HDR+4K+support+in+ffmpeg&amp;related=FFmpeg-users&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673519.html" title="Twitter" target="_top" ignore="y"> <img src="twitter.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.facebook.com/share.php?v=4&amp;src=bm&amp;u=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673519.html&amp;t=Re%3A+HDR+4K+support+in+ffmpeg" title="Facebook" target="_top" ignore="y"> <img src="facebook.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://del.icio.us/post?url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673519.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Delicious" target="_top" ignore="y"> <img src="delicious.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.google.com/bookmarks/mark?op=add&amp;bkmk=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673519.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Google Bookmarks" target="_top" ignore="y"> <img src="google.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.stumbleupon.com/submit?url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673519.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Stumble Upon" target="_top" ignore="y"> <img src="stumbleupon.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673519.html&amp;title=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673519.html&amp;source=FFmpeg-users" title="LinkedIn" target="_top" ignore="y"> <img src="linkedin.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://digg.com/submit?phase=2&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673519.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Digg" target="_top" ignore="y"> <img src="digg.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a></td></tr></tbody></table></span></span>
+	
+				</div>
+				<div class="classic-subject-line">
+					<span id="red-arrow4673519" class="float-left invisible" style="margin-top: 0.2em;">
+		<img title="Selected post" src="arrow.png" alt="Selected post" width="15" height="15">
+	</span>
+					<span class="post-date float-left">
+		<span id="d1450420415820-981">Dec 18, 2015; 2:33pm</span>
+	</span>
+					<h2 class="post-subject float-left adbayes-content" style="width: 30%; overflow: visible; font-family: inherit;">
+		Re: HDR 4K support in ffmpeg
+	</h2>
+				</div>
+			</div>
+		</div>
+		<table class="classic-body">
+			<tbody><tr>
+				<td class="classic-author shaded-bg-color rounded-bottom">
+					<div class="avatar-outer">
+		<div class="avatar-inner">
+			<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=user_nodes&amp;user=328370" rel="nofollow" title="View profile of Tarun singhal" class="nowrap no-decoration"><img class="avatar medium-border-color" src="avatar100.png" alt="Tarun singhal" title="Tarun singhal" width="100" height="100"><img src="online.png" class="online328370 online invisible" title="User is online" alt="online"></a>
+
+	
+	
+		</div>
+	</div>
+	
+	
+	<div class="post-count328370 avatar-label weak-color">73 posts</div>
+	
+				</td>
+				<td class="classic-message">
+					
+	
+	
+	<div id="message4673519" class="message-text adbayes-content">
+		On Thu, Dec 17, 2015 at 5:55 PM, Carl Eugen Hoyos &lt;<a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=node&amp;node=4673519&amp;i=0" target="_top" rel="nofollow" link="external">[hidden email]</a>&gt; wrote:
+<br><div class="shrinkable-quote" style="height: 300px; overflow-y: hidden;"><br>&gt; tarun singhal &lt;tsinghal18 &lt;at&gt; gmail.com&gt; writes:
+<br>&gt;
+<br>&gt; &gt; Ok, So I understand that ffmpeg doesnt supports HDR
+<br>&gt; &gt; encoding.
+<br>&gt;
+<br>&gt; Several people seem to disagree but it depends on your
+<br>&gt; definition of HDR.
+<br>&gt;
+<br>&gt; &gt; to answer the question about input format, we dont
+<br>&gt; &gt; have any strict definition on input format
+<br>&gt;
+<br>&gt; Ok.
+<br>&gt;
+<br>&gt; &gt; it can be anything a simple mp4 video downloaded
+<br>&gt; &gt; from youtube
+<br>&gt;
+<br>&gt; Sorry if this is a stupid question:
+<br>&gt; If the video downloaded from youtube is not HDR-encoded
+<br>&gt; (it isn't afaik) what difference would it make if
+<br>&gt; FFmpeg supported HDR (however you define it) or not?
+<br>&gt;
+<br>&gt; &gt; or a raw MXF content straight out of studio.
+<br>&gt;
+<br>&gt; How does ffmpeg -i output look for this content?
+<br>&gt;
+<br>&gt; Carl Eugen
+<br>&gt;
+<br>&gt; _______________________________________________
+<br>&gt; ffmpeg-user mailing list
+<br>&gt; <a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=node&amp;node=4673519&amp;i=1" target="_top" rel="nofollow" link="external">[hidden email]</a>
+<br>&gt; <a href="http://ffmpeg.org/mailman/listinfo/ffmpeg-user" target="_top" rel="nofollow" link="external">http://ffmpeg.org/mailman/listinfo/ffmpeg-user</a><br>&gt;
+</div><div class="shrink-quote"><span>...</span> [<a href="javascript:void(0)" collapsed="2">show rest of quote</a>]</div><br>Hi Carl,
+<br><br>It seems i have created a confusion here...By "ffmpeg supporting HDR
+<br>encoding" I meant wether ffmpeg can convert any random video to a 4K HDR
+<br>encoded content. I have already tested 4K and it works fine but its this
+<br>"HDR" piece thats troubling me and I havent even found a proper solid
+<br>source to understand HDR properly. on the top of that, how do we get to
+<br>know whether a content is HDR or SDR, is there any tool or a specifc
+<br>difference between them which can be reported by a tool?
+<br>_______________________________________________
+<br>ffmpeg-user mailing list
+<br><a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=node&amp;node=4673519&amp;i=2" target="_top" rel="nofollow" link="external">[hidden email]</a>
+<br><a href="http://ffmpeg.org/mailman/listinfo/ffmpeg-user" target="_top" rel="nofollow" link="external">http://ffmpeg.org/mailman/listinfo/ffmpeg-user</a><br>
+
+	
+	
+	
+	</div>
+				</td>
+			</tr>
+		</tbody></table><div style="text-align: center; width: 100%; height: auto; clear: both;" class="google-auto-placed"><ins style="display: block; margin: 10px auto 13.44px; background-color: transparent; height: 90px;" data-ad-format="auto" class="adsbygoogle adsbygoogle-noablate" data-ad-client="ca-pub-1691702211255830" data-adsbygoogle-status="done"><ins id="aswift_7_expand" style="display: inline-table; border: medium none; height: 90px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 1200px; background-color: transparent;"><ins id="aswift_7_anchor" style="display: block; border: medium none; height: 90px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 1200px; background-color: transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" id="aswift_7" name="aswift_7" style="left: 0px; position: absolute; top: 0px; width: 1200px; height: 90px;" src="index_19.html" width="1200" height="90" frameborder="0"></iframe></ins></ins></ins></div>
+	</div>
+	<div class="classic-row">
+		<div class="classic-header">
+			<div class="classic-bar shaded-bg-color rounded-top">
+				<div class="classic-author-name nowrap">
+					<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=user_nodes&amp;user=200308">Carl Eugen Hoyos</a>
+				</div>
+				<div class="classic-right-menu shaded-bg-color weak-color">
+					<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=reply&amp;node=4673524" rel="nofollow">Reply</a> |
+					<a href="javascript:void(0)" onclick="Nabble.setView('threaded', '/HDR-4K-support-in-ffmpeg-tt4673485.html#a4673524',4673524)">Threaded</a>
+	<div id="tooltip94667" class="nabble-tooltip" use_title="false">
+		Open this post in threaded view
+		<div class="nabble-tooltip-arrow">
+			<div class="d1">♦</div>
+			<div class="d2">♦</div>
+		</div>
+	</div>
+	 |
+					<span id="dd_postdropdown4673524"><span id="postdropdown4673524" class="dropdown"><a href="javascript:void(0)" title="Click for more options">More</a> <img src="more.png" width="10" height="10"><table class="light-bg-color medium-border-color drop-shadow" style="margin-top: 1px;"><tbody><tr id="_loadingpostdropdown4673524" style="display: none;"><td class="dropdown-simple-row"><span id="_loadingSpanpostdropdown4673524">Loading...</span></td></tr><tr id="replyToAuthor4673524" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=pm&amp;post=4673524" rel="nofollow">Reply to author</a></td></tr><tr id="editPost4673524" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=edit_post&amp;node=4673524" rel="nofollow">Edit post</a></td></tr><tr id="movePost4673524" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=move_node&amp;node=4673524" rel="nofollow">Move post</a></td></tr><tr id="deletePost4673524" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deletePost(4673524)" rel="nofollow">Delete this post</a></td></tr><tr id="deleteRecursively4673524" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deleteFromSite(4673524)" rel="nofollow">Delete this post and replies</a></td></tr><tr id="changePostDate4673524" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=change_post_date&amp;node=4673524" rel="nofollow">Change post date</a></td></tr><tr id="print4673524"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=print_post&amp;node=4673524" rel="nofollow">Print post</a></td></tr><tr id="permalink4673524"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="prompt('Copy this:','http://www.ffmpeg-archive.org/HDR-4K-support-in-ffmpeg-tp4673485p4673524.html')">Permalink</a></td></tr><tr id="rawMail4673524" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=raw_mail&amp;node=4673524" rel="nofollow">Raw mail</a></td></tr><tr id="social4673524" style="white-space: nowrap;"><td style="border: medium none;"><a href="http://twitter.com/share?text=Re%3A+HDR+4K+support+in+ffmpeg&amp;related=FFmpeg-users&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673524.html" title="Twitter" target="_top" ignore="y"> <img src="twitter.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.facebook.com/share.php?v=4&amp;src=bm&amp;u=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673524.html&amp;t=Re%3A+HDR+4K+support+in+ffmpeg" title="Facebook" target="_top" ignore="y"> <img src="facebook.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://del.icio.us/post?url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673524.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Delicious" target="_top" ignore="y"> <img src="delicious.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.google.com/bookmarks/mark?op=add&amp;bkmk=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673524.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Google Bookmarks" target="_top" ignore="y"> <img src="google.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.stumbleupon.com/submit?url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673524.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Stumble Upon" target="_top" ignore="y"> <img src="stumbleupon.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673524.html&amp;title=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673524.html&amp;source=FFmpeg-users" title="LinkedIn" target="_top" ignore="y"> <img src="linkedin.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://digg.com/submit?phase=2&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673524.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Digg" target="_top" ignore="y"> <img src="digg.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a></td></tr></tbody></table></span></span>
+	
+				</div>
+				<div class="classic-subject-line">
+					<span id="red-arrow4673524" class="float-left invisible" style="margin-top: 0.2em;">
+		<img title="Selected post" src="arrow.png" alt="Selected post" width="15" height="15">
+	</span>
+					<span class="post-date float-left">
+		<span id="d1450428122164-119">Dec 18, 2015; 4:42pm</span>
+	</span>
+					<h2 class="post-subject float-left adbayes-content" style="width: 30%; overflow: visible; font-family: inherit;">
+		Re: HDR 4K support in ffmpeg
+	</h2>
+				</div>
+			</div>
+		</div>
+		<table class="classic-body">
+			<tbody><tr>
+				<td class="classic-author shaded-bg-color rounded-bottom">
+					<div class="avatar-outer">
+		<div class="avatar-inner">
+			<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=user_nodes&amp;user=200308" rel="nofollow" title="View profile of Carl Eugen Hoyos" class="nowrap no-decoration"><img class="avatar medium-border-color" src="avatar100.png" alt="Carl Eugen Hoyos" title="Carl Eugen Hoyos" width="100" height="100"><img src="online.png" class="online200308 online invisible" title="User is online" alt="online"></a>
+
+	
+	
+		</div>
+	</div>
+	
+	
+	<div class="post-count200308 avatar-label weak-color">5294 posts</div>
+	
+				</td>
+				<td class="classic-message">
+					
+	
+	
+	<div id="message4673524" class="message-text adbayes-content">
+		tarun singhal &lt;tsinghal18 &lt;at&gt; gmail.com&gt; writes:
+<br><br>&gt; wether ffmpeg can convert any random video to a 4K HDR
+<br>&gt; encoded content.
+<br><br>(Again, sorry if I miss something, please explain!)
+<br>But if the "random" input video is not HDR encoded 
+<br>how would a (theoretical) software that supports all 
+<br>the features you need produce an output file that 
+<br>does contain HDR information?
+<br><br>Carl Eugen
+<br><br>_______________________________________________
+<br>ffmpeg-user mailing list
+<br><a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=node&amp;node=4673524&amp;i=0" target="_top" rel="nofollow" link="external">[hidden email]</a>
+<br><a href="http://ffmpeg.org/mailman/listinfo/ffmpeg-user" target="_top" rel="nofollow" link="external">http://ffmpeg.org/mailman/listinfo/ffmpeg-user</a><br>
+
+	
+	
+	
+	</div>
+				</td>
+			</tr>
+		</tbody></table>
+	</div>
+	<div class="classic-row">
+		<div class="classic-header">
+			<div class="classic-bar shaded-bg-color rounded-top">
+				<div class="classic-author-name nowrap">
+					<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=user_nodes&amp;user=375421">Andy Furniss-2</a>
+				</div>
+				<div class="classic-right-menu shaded-bg-color weak-color">
+					<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=reply&amp;node=4673525" rel="nofollow">Reply</a> |
+					<a href="javascript:void(0)" onclick="Nabble.setView('threaded', '/HDR-4K-support-in-ffmpeg-tt4673485.html#a4673525',4673525)">Threaded</a>
+	<div id="tooltip80914" class="nabble-tooltip" use_title="false">
+		Open this post in threaded view
+		<div class="nabble-tooltip-arrow">
+			<div class="d1">♦</div>
+			<div class="d2">♦</div>
+		</div>
+	</div>
+	 |
+					<span id="dd_postdropdown4673525"><span id="postdropdown4673525" class="dropdown"><a href="javascript:void(0)" title="Click for more options">More</a> <img src="more.png" width="10" height="10"><table class="light-bg-color medium-border-color drop-shadow" style="margin-top: 1px;"><tbody><tr id="_loadingpostdropdown4673525" style="display: none;"><td class="dropdown-simple-row"><span id="_loadingSpanpostdropdown4673525">Loading...</span></td></tr><tr id="replyToAuthor4673525" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=pm&amp;post=4673525" rel="nofollow">Reply to author</a></td></tr><tr id="editPost4673525" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=edit_post&amp;node=4673525" rel="nofollow">Edit post</a></td></tr><tr id="movePost4673525" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=move_node&amp;node=4673525" rel="nofollow">Move post</a></td></tr><tr id="deletePost4673525" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deletePost(4673525)" rel="nofollow">Delete this post</a></td></tr><tr id="deleteRecursively4673525" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deleteFromSite(4673525)" rel="nofollow">Delete this post and replies</a></td></tr><tr id="changePostDate4673525" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=change_post_date&amp;node=4673525" rel="nofollow">Change post date</a></td></tr><tr id="print4673525"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=print_post&amp;node=4673525" rel="nofollow">Print post</a></td></tr><tr id="permalink4673525"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="prompt('Copy this:','http://www.ffmpeg-archive.org/HDR-4K-support-in-ffmpeg-tp4673485p4673525.html')">Permalink</a></td></tr><tr id="rawMail4673525" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=raw_mail&amp;node=4673525" rel="nofollow">Raw mail</a></td></tr><tr id="social4673525" style="white-space: nowrap;"><td style="border: medium none;"><a href="http://twitter.com/share?text=Re%3A+HDR+4K+support+in+ffmpeg&amp;related=FFmpeg-users&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673525.html" title="Twitter" target="_top" ignore="y"> <img src="twitter.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.facebook.com/share.php?v=4&amp;src=bm&amp;u=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673525.html&amp;t=Re%3A+HDR+4K+support+in+ffmpeg" title="Facebook" target="_top" ignore="y"> <img src="facebook.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://del.icio.us/post?url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673525.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Delicious" target="_top" ignore="y"> <img src="delicious.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.google.com/bookmarks/mark?op=add&amp;bkmk=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673525.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Google Bookmarks" target="_top" ignore="y"> <img src="google.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.stumbleupon.com/submit?url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673525.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Stumble Upon" target="_top" ignore="y"> <img src="stumbleupon.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673525.html&amp;title=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673525.html&amp;source=FFmpeg-users" title="LinkedIn" target="_top" ignore="y"> <img src="linkedin.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://digg.com/submit?phase=2&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673525.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Digg" target="_top" ignore="y"> <img src="digg.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a></td></tr></tbody></table></span></span>
+	
+				</div>
+				<div class="classic-subject-line">
+					<span id="red-arrow4673525" class="float-left invisible" style="margin-top: 0.2em;">
+		<img title="Selected post" src="arrow.png" alt="Selected post" width="15" height="15">
+	</span>
+					<span class="post-date float-left">
+		<span id="d1450431985963-116">Dec 18, 2015; 5:46pm</span>
+	</span>
+					<h2 class="post-subject float-left adbayes-content" style="width: 30%; overflow: visible; font-family: inherit;">
+		Re: HDR 4K support in ffmpeg
+	</h2>
+				</div>
+			</div>
+		</div>
+		<table class="classic-body">
+			<tbody><tr>
+				<td class="classic-author shaded-bg-color rounded-bottom">
+					<div class="avatar-outer">
+		<div class="avatar-inner">
+			<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=user_nodes&amp;user=375421" rel="nofollow" title="View profile of Andy Furniss-2" class="nowrap no-decoration"><img class="avatar medium-border-color" src="avatar100.png" alt="Andy Furniss-2" title="Andy Furniss-2" width="100" height="100"><img src="online.png" class="online375421 online invisible" title="User is online" alt="online"></a>
+
+	
+	
+		</div>
+	</div>
+	
+	
+	<div class="post-count375421 avatar-label weak-color">329 posts</div>
+	
+				</td>
+				<td class="classic-message">
+					
+	
+	<div class="weak-color" style="font-size: 80%; padding-bottom: 1em;">
+				In reply to <a href="http://www.ffmpeg-archive.org/HDR-4K-support-in-ffmpeg-tp4673485p4673519.html" rel="nofollow">this post</a> by Tarun singhal
+			</div>
+	<div id="message4673525" class="message-text adbayes-content">
+		tarun singhal wrote:
+<br><br>&gt; It seems i have created a confusion here...By "ffmpeg supporting HDR
+<br>&gt; &nbsp;encoding" I meant wether ffmpeg can convert any random video to a
+<br>&gt; 4K HDR encoded content. I have already tested 4K and it works fine
+<br>&gt; but its this "HDR" piece thats troubling me and I havent even found
+<br>&gt; a proper solid source to understand HDR properly. on the top of
+<br>&gt; that, how do we get to know whether a content is HDR or SDR, is there
+<br>&gt; any tool or a specifc difference between them which can be reported
+<br>&gt; by a tool?
+<br><br>I don't know much about this. As has already been said it's all a bit
+<br>new standards wise. On the last point, the HDR HEVC demos on
+<br><br><a href="http://www.demo-uhd3d.com/" target="_top" rel="nofollow" link="external">http://www.demo-uhd3d.com</a><br><br>I've "looked at" with ffmpeg do mention smpte2084 which is one standard
+<br>(Dolby?)
+<br><br><br>Some of them seem to have other issues - but then they are experimental
+<br>I guess and I don't know whether it's worth reporting them.
+<br><br>ffmpeg -i Exodus_UHD_HDR_Exodus_draft.mp4
+<br>ffmpeg version N-77335-g7b88046 Copyright (c) 2000-2015 the FFmpeg 
+<br>developers
+<br>&nbsp; &nbsp;built with gcc 4.9.2 (GCC)
+<br>&nbsp; &nbsp;configuration: --prefix=/usr --disable-doc --enable-gpl 
+<br>--enable-libvpx --enable-libschroedinger --enable-libx265 
+<br>--enable-libdcadec --enable-libmp3lame --enable-libx264
+<br>&nbsp; &nbsp;libavutil &nbsp; &nbsp; &nbsp;55. 11.100 / 55. 11.100
+<br>&nbsp; &nbsp;libavcodec &nbsp; &nbsp; 57. 18.100 / 57. 18.100
+<br>&nbsp; &nbsp;libavformat &nbsp; &nbsp;57. 20.100 / 57. 20.100
+<br>&nbsp; &nbsp;libavdevice &nbsp; &nbsp;57. &nbsp;0.100 / 57. &nbsp;0.100
+<br>&nbsp; &nbsp;libavfilter &nbsp; &nbsp; 6. 21.100 / &nbsp;6. 21.100
+<br>&nbsp; &nbsp;libswscale &nbsp; &nbsp; &nbsp;4. &nbsp;0.100 / &nbsp;4. &nbsp;0.100
+<br>&nbsp; &nbsp;libswresample &nbsp; 2. &nbsp;0.101 / &nbsp;2. &nbsp;0.101
+<br>&nbsp; &nbsp;libpostproc &nbsp; &nbsp;54. &nbsp;0.100 / 54. &nbsp;0.100
+<br>[aac @ 0x2515b40] This stream seems to incorrectly report its last 
+<br>channel as LFE[3], mapping to LFE[0]
+<br>Input #0, mov,mp4,m4a,3gp,3g2,mj2, from 'Exodus_UHD_HDR_Exodus_draft.mp4':
+<br>&nbsp; &nbsp;Metadata:
+<br>&nbsp; &nbsp; &nbsp;major_brand &nbsp; &nbsp; : isom
+<br>&nbsp; &nbsp; &nbsp;minor_version &nbsp; : 512
+<br>&nbsp; &nbsp; &nbsp;compatible_brands: isomiso2mp41
+<br>&nbsp; &nbsp; &nbsp;encoder &nbsp; &nbsp; &nbsp; &nbsp; : Lavf56.15.103
+<br>&nbsp; &nbsp;Duration: 00:00:47.79, start: 0.000000, bitrate: 43159 kb/s
+<br>&nbsp; &nbsp; &nbsp;Stream #0:0(und): Video: hevc (Main 10) (hev1 / 0x31766568), 
+<br>yuv420p10le(tv, bt2020nc/bt2020/smpte2084), 3840x2160 [SAR 1:1 DAR 
+<br>16:9], 42805 kb/s, 24 fps, 24 tbr, 24k tbn, 23.98 tbc (default)
+<br>&nbsp; &nbsp; &nbsp;Metadata:
+<br>&nbsp; &nbsp; &nbsp; &nbsp;handler_name &nbsp; &nbsp;: VideoHandler
+<br>&nbsp; &nbsp; &nbsp;Stream #0:1(und): Audio: aac (LC) (mp4a / 0x6134706D), 48000 Hz, 
+<br>5.1, fltp, 381 kb/s (default)
+<br>&nbsp; &nbsp; &nbsp;Metadata:
+<br>&nbsp; &nbsp; &nbsp; &nbsp;handler_name &nbsp; &nbsp;: SoundHandler
+<br>At least one output file must be specified
+<br>_______________________________________________
+<br>ffmpeg-user mailing list
+<br><a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=node&amp;node=4673525&amp;i=0" target="_top" rel="nofollow" link="external">[hidden email]</a>
+<br><a href="http://ffmpeg.org/mailman/listinfo/ffmpeg-user" target="_top" rel="nofollow" link="external">http://ffmpeg.org/mailman/listinfo/ffmpeg-user</a><br>
+
+	
+	
+	
+	</div>
+				</td>
+			</tr>
+		</tbody></table>
+	</div>
+	<div class="classic-row">
+		<div class="classic-header">
+			<div class="classic-bar shaded-bg-color rounded-top">
+				<div class="classic-author-name nowrap">
+					<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=user_nodes&amp;user=200308">Carl Eugen Hoyos</a>
+				</div>
+				<div class="classic-right-menu shaded-bg-color weak-color">
+					<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=reply&amp;node=4673527" rel="nofollow">Reply</a> |
+					<a href="javascript:void(0)" onclick="Nabble.setView('threaded', '/HDR-4K-support-in-ffmpeg-tt4673485.html#a4673527',4673527)">Threaded</a>
+	<div id="tooltip78720" class="nabble-tooltip" use_title="false">
+		Open this post in threaded view
+		<div class="nabble-tooltip-arrow">
+			<div class="d1">♦</div>
+			<div class="d2">♦</div>
+		</div>
+	</div>
+	 |
+					<span id="dd_postdropdown4673527"><span id="postdropdown4673527" class="dropdown"><a href="javascript:void(0)" title="Click for more options">More</a> <img src="more.png" width="10" height="10"><table class="light-bg-color medium-border-color drop-shadow" style="margin-top: 1px;"><tbody><tr id="_loadingpostdropdown4673527" style="display: none;"><td class="dropdown-simple-row"><span id="_loadingSpanpostdropdown4673527">Loading...</span></td></tr><tr id="replyToAuthor4673527" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=pm&amp;post=4673527" rel="nofollow">Reply to author</a></td></tr><tr id="editPost4673527" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=edit_post&amp;node=4673527" rel="nofollow">Edit post</a></td></tr><tr id="movePost4673527" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=move_node&amp;node=4673527" rel="nofollow">Move post</a></td></tr><tr id="deletePost4673527" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deletePost(4673527)" rel="nofollow">Delete this post</a></td></tr><tr id="deleteRecursively4673527" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deleteFromSite(4673527)" rel="nofollow">Delete this post and replies</a></td></tr><tr id="changePostDate4673527" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=change_post_date&amp;node=4673527" rel="nofollow">Change post date</a></td></tr><tr id="print4673527"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=print_post&amp;node=4673527" rel="nofollow">Print post</a></td></tr><tr id="permalink4673527"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="prompt('Copy this:','http://www.ffmpeg-archive.org/HDR-4K-support-in-ffmpeg-tp4673485p4673527.html')">Permalink</a></td></tr><tr id="rawMail4673527" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=raw_mail&amp;node=4673527" rel="nofollow">Raw mail</a></td></tr><tr id="social4673527" style="white-space: nowrap;"><td style="border: medium none;"><a href="http://twitter.com/share?text=Re%3A+HDR+4K+support+in+ffmpeg&amp;related=FFmpeg-users&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673527.html" title="Twitter" target="_top" ignore="y"> <img src="twitter.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.facebook.com/share.php?v=4&amp;src=bm&amp;u=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673527.html&amp;t=Re%3A+HDR+4K+support+in+ffmpeg" title="Facebook" target="_top" ignore="y"> <img src="facebook.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://del.icio.us/post?url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673527.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Delicious" target="_top" ignore="y"> <img src="delicious.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.google.com/bookmarks/mark?op=add&amp;bkmk=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673527.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Google Bookmarks" target="_top" ignore="y"> <img src="google.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.stumbleupon.com/submit?url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673527.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Stumble Upon" target="_top" ignore="y"> <img src="stumbleupon.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673527.html&amp;title=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673527.html&amp;source=FFmpeg-users" title="LinkedIn" target="_top" ignore="y"> <img src="linkedin.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://digg.com/submit?phase=2&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673527.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Digg" target="_top" ignore="y"> <img src="digg.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a></td></tr></tbody></table></span></span>
+	
+				</div>
+				<div class="classic-subject-line">
+					<span id="red-arrow4673527" class="float-left invisible" style="margin-top: 0.2em;">
+		<img title="Selected post" src="arrow.png" alt="Selected post" width="15" height="15">
+	</span>
+					<span class="post-date float-left">
+		<span id="d1450440129065-225">Dec 18, 2015; 8:02pm</span>
+	</span>
+					<h2 class="post-subject float-left adbayes-content" style="width: 30%; overflow: visible; font-family: inherit;">
+		Re: HDR 4K support in ffmpeg
+	</h2>
+				</div>
+			</div>
+		</div>
+		<table class="classic-body">
+			<tbody><tr>
+				<td class="classic-author shaded-bg-color rounded-bottom">
+					<div class="avatar-outer">
+		<div class="avatar-inner">
+			<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=user_nodes&amp;user=200308" rel="nofollow" title="View profile of Carl Eugen Hoyos" class="nowrap no-decoration"><img class="avatar medium-border-color" src="avatar100.png" alt="Carl Eugen Hoyos" title="Carl Eugen Hoyos" width="100" height="100"><img src="online.png" class="online200308 online invisible" title="User is online" alt="online"></a>
+
+	
+	
+		</div>
+	</div>
+	
+	
+	<div class="post-count200308 avatar-label weak-color">5294 posts</div>
+	
+				</td>
+				<td class="classic-message">
+					
+	
+	
+	<div id="message4673527" class="message-text adbayes-content">
+		Andy Furniss &lt;adf.lists &lt;at&gt; gmail.com&gt; writes:
+<br><br>&gt; <a href="http://www.demo-uhd3d.com/" target="_top" rel="nofollow" link="external">http://www.demo-uhd3d.com</a><br><br>&gt; Some of them seem to have other issues - but then they 
+<br>&gt; are experimental I guess and I don't know whether it's 
+<br>&gt; worth reporting them.
+<br><br>Please do report the issues here!
+<br><br>Carl Eugen
+<br><br>_______________________________________________
+<br>ffmpeg-user mailing list
+<br><a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=node&amp;node=4673527&amp;i=0" target="_top" rel="nofollow" link="external">[hidden email]</a>
+<br><a href="http://ffmpeg.org/mailman/listinfo/ffmpeg-user" target="_top" rel="nofollow" link="external">http://ffmpeg.org/mailman/listinfo/ffmpeg-user</a><br>
+
+	
+	
+	
+	</div>
+				</td>
+			</tr>
+		</tbody></table>
+	</div>
+	<div class="classic-row">
+		<div class="classic-header">
+			<div class="classic-bar shaded-bg-color rounded-top">
+				<div class="classic-author-name nowrap">
+					<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=user_nodes&amp;user=375421">Andy Furniss-2</a>
+				</div>
+				<div class="classic-right-menu shaded-bg-color weak-color">
+					<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=reply&amp;node=4673531" rel="nofollow">Reply</a> |
+					<a href="javascript:void(0)" onclick="Nabble.setView('threaded', '/HDR-4K-support-in-ffmpeg-tt4673485.html#a4673531',4673531)">Threaded</a>
+	<div id="tooltip49713" class="nabble-tooltip" use_title="false">
+		Open this post in threaded view
+		<div class="nabble-tooltip-arrow">
+			<div class="d1">♦</div>
+			<div class="d2">♦</div>
+		</div>
+	</div>
+	 |
+					<span id="dd_postdropdown4673531"><span id="postdropdown4673531" class="dropdown"><a href="javascript:void(0)" title="Click for more options">More</a> <img src="more.png" width="10" height="10"><table class="light-bg-color medium-border-color drop-shadow" style="margin-top: 1px;"><tbody><tr id="_loadingpostdropdown4673531" style="display: none;"><td class="dropdown-simple-row"><span id="_loadingSpanpostdropdown4673531">Loading...</span></td></tr><tr id="replyToAuthor4673531" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=pm&amp;post=4673531" rel="nofollow">Reply to author</a></td></tr><tr id="editPost4673531" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=edit_post&amp;node=4673531" rel="nofollow">Edit post</a></td></tr><tr id="movePost4673531" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=move_node&amp;node=4673531" rel="nofollow">Move post</a></td></tr><tr id="deletePost4673531" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deletePost(4673531)" rel="nofollow">Delete this post</a></td></tr><tr id="deleteRecursively4673531" style="display: none;"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="Nabble.deleteFromSite(4673531)" rel="nofollow">Delete this post and replies</a></td></tr><tr id="changePostDate4673531" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=change_post_date&amp;node=4673531" rel="nofollow">Change post date</a></td></tr><tr id="print4673531"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=print_post&amp;node=4673531" rel="nofollow">Print post</a></td></tr><tr id="permalink4673531"><td style="border: medium none;"><a href="javascript:%20void(0)" onclick="prompt('Copy this:','http://www.ffmpeg-archive.org/HDR-4K-support-in-ffmpeg-tp4673485p4673531.html')">Permalink</a></td></tr><tr id="rawMail4673531" style="display: none;"><td style="border: medium none;"><a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=raw_mail&amp;node=4673531" rel="nofollow">Raw mail</a></td></tr><tr id="social4673531" style="white-space: nowrap;"><td style="border: medium none;"><a href="http://twitter.com/share?text=Re%3A+HDR+4K+support+in+ffmpeg&amp;related=FFmpeg-users&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673531.html" title="Twitter" target="_top" ignore="y"> <img src="twitter.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.facebook.com/share.php?v=4&amp;src=bm&amp;u=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673531.html&amp;t=Re%3A+HDR+4K+support+in+ffmpeg" title="Facebook" target="_top" ignore="y"> <img src="facebook.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://del.icio.us/post?url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673531.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Delicious" target="_top" ignore="y"> <img src="delicious.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.google.com/bookmarks/mark?op=add&amp;bkmk=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673531.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Google Bookmarks" target="_top" ignore="y"> <img src="google.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.stumbleupon.com/submit?url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673531.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Stumble Upon" target="_top" ignore="y"> <img src="stumbleupon.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673531.html&amp;title=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673531.html&amp;source=FFmpeg-users" title="LinkedIn" target="_top" ignore="y"> <img src="linkedin.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a> <a href="http://digg.com/submit?phase=2&amp;url=http%3A%2F%2Fwww.ffmpeg-archive.org%2FHDR-4K-support-in-ffmpeg-tp4673485p4673531.html&amp;title=Re%3A+HDR+4K+support+in+ffmpeg" title="Digg" target="_top" ignore="y"> <img src="digg.png" style="width: 16px; height: 16px; margin-top: 0.2em; border: medium none;"> </a></td></tr></tbody></table></span></span>
+	
+				</div>
+				<div class="classic-subject-line">
+					<span id="red-arrow4673531" class="float-left invisible" style="margin-top: 0.2em;">
+		<img title="Selected post" src="arrow.png" alt="Selected post" width="15" height="15">
+	</span>
+					<span class="post-date float-left">
+		<span id="d1450445838750-932">Dec 18, 2015; 9:37pm</span>
+	</span>
+					<h2 class="post-subject float-left adbayes-content" style="width: 30%; overflow: visible; font-family: inherit;">
+		Re: HDR 4K support in ffmpeg
+	</h2>
+				</div>
+			</div>
+		</div>
+		<table class="classic-body">
+			<tbody><tr>
+				<td class="classic-author shaded-bg-color rounded-bottom">
+					<div class="avatar-outer">
+		<div class="avatar-inner">
+			<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=user_nodes&amp;user=375421" rel="nofollow" title="View profile of Andy Furniss-2" class="nowrap no-decoration"><img class="avatar medium-border-color" src="avatar100.png" alt="Andy Furniss-2" title="Andy Furniss-2" width="100" height="100"><img src="online.png" class="online375421 online invisible" title="User is online" alt="online"></a>
+
+	
+	
+		</div>
+	</div>
+	
+	
+	<div class="post-count375421 avatar-label weak-color">329 posts</div>
+	
+				</td>
+				<td class="classic-message">
+					
+	
+	
+	<div id="message4673531" class="message-text adbayes-content">
+		Carl Eugen Hoyos wrote:
+<br>&gt; Andy Furniss &lt;adf.lists &lt;at&gt; gmail.com&gt; writes:
+<br>&gt;
+<br>&gt;&gt; <a href="http://www.demo-uhd3d.com/" target="_top" rel="nofollow" link="external">http://www.demo-uhd3d.com</a><br>&gt;
+<br>&gt;&gt; Some of them seem to have other issues - but then they are
+<br>&gt;&gt; experimental I guess and I don't know whether it's worth reporting
+<br>&gt;&gt; them.
+<br>&gt;
+<br>&gt; Please do report the issues here!
+<br><br>OK there's the line above in this thread from aac, but the main one I
+<br>just posted as hdr hevc Invalid NAL unit 0, skipping.
+<br><br>_______________________________________________
+<br>ffmpeg-user mailing list
+<br><a href="http://www.ffmpeg-archive.org/user/SendEmail.jtp?type=node&amp;node=4673531&amp;i=0" target="_top" rel="nofollow" link="external">[hidden email]</a>
+<br><a href="http://ffmpeg.org/mailman/listinfo/ffmpeg-user" target="_top" rel="nofollow" link="external">http://ffmpeg.org/mailman/listinfo/ffmpeg-user</a><br>
+
+	
+	
+	
+	</div>
+				</td>
+			</tr>
+		</tbody></table>
+	</div>
+	
+		
+	</div>
+	</div>
+			<div id="topic-footer" class="weak-color" style="padding-top: 1em;">
+		«
+		<a href="http://www.ffmpeg-archive.org/">Return to FFmpeg-users</a>
+		&nbsp;|&nbsp;
+		<span id="v4673485" style="">5754 views</span>
+	
+	
+	</div>
+				
+            <table class="footer-table shaded-bg-color">
+		<tbody><tr>
+			<td class="footer-left weak-color">
+				<a href="https://www.nabble.com/" target="_top">Free forum by Nabble</a>
+	
+			</td>
+			<td class="footer-right"><span id="disablepop0"><a id="disablepop1" href="javascript:void(0)">Disable Popup Ads</a> | </span>
+				<a href="http://www.ffmpeg-archive.org/template/NamlServlet.jtp?macro=macro_viewer&amp;id=classic_forum_topic%21nabble%3Atopic.naml&amp;base=nabble.view.web.template.ServletNamespace" rel="nofollow">Edit this page</a>
+			</td>
+		</tr>
+	</tbody></table>
+			
+
+					</div>
+					
+	
+					<!-- n4.nabble.com | Site ID = 933282 -->
+				
+			<ins class="adsbygoogle adsbygoogle-noablate" style="display: none;" data-adsbygoogle-status="done"><ins id="aswift_0_expand" style="display: inline-table; border: medium none; margin: 0px; padding: 0px; position: relative; visibility: visible; background-color: transparent;"><ins id="aswift_0_anchor" style="display: block; border: medium none; margin: 0px; padding: 0px; position: relative; visibility: visible; background-color: transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" id="aswift_0" name="aswift_0" style="left: 0px; position: absolute; top: 0px;" src="index_20.html" frameborder="0"></iframe></ins></ins></ins><iframe id="google_osd_static_frame_863871821157" name="google_osd_static_frame" style="display: none; width: 0px; height: 0px;" src="index_21.html"></iframe></body>
+</html>

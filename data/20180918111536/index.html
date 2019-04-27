@@ -1,0 +1,472 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    <title>
+      Yocto/gstreamer/audio – Gateworks
+    </title>
+      
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--[if IE]><script type="text/javascript">
+      if (/^#__msie303:/.test(window.location.hash))
+        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
+    </script><![endif]-->
+          <link rel="search" href="http://trac.gateworks.com/search">
+          <link rel="help" href="http://trac.gateworks.com/wiki/TracGuide">
+          <link rel="alternate" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/audio?format=txt" type="text/x-trac-wiki" title="Plain Text">
+          <link rel="up" href="http://trac.gateworks.com/wiki/Yocto/gstreamer" title="View parent page">
+          <link rel="start" href="http://trac.gateworks.com/wiki">
+          
+          
+          <link rel="icon" href="trac.ico" type="image/x-icon">
+    
+      <link type="application/opensearchdescription+xml" rel="search" href="http://trac.gateworks.com/search/opensearch" title="Search Gateworks">
+      
+      
+      
+      
+      
+    
+    <meta name="ROBOTS" content="NOINDEX, NOFOLLOW">
+    
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+
+		
+	
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+    <div id="banner">
+      <div id="header">
+        <a id="logo" href="http://trac.gateworks.com/wiki"><img src="g2998.png" alt="Gateworks Wiki"></a>
+      </div>
+      <form id="search" action="http://trac.gateworks.com/search" method="get">
+        <div>
+          <label for="proj-search">Search:</label>
+          <input id="proj-search" name="q" size="18" value="" type="text">
+          <input value="Search" type="submit">
+        </div>
+      </form>
+      <div id="metanav" class="nav">
+    <ul>
+      <li class="first"><a href="http://trac.gateworks.com/login">Login</a></li><li><a href="http://trac.gateworks.com/prefs">Preferences</a></li><li><a href="http://trac.gateworks.com/wiki/TracGuide">Help/Guide</a></li><li><a href="http://trac.gateworks.com/about">About Trac</a></li><li class="last"><a href="http://trac.gateworks.com/reset_password">Forgot your password?</a></li>
+    </ul>
+  </div>
+    </div>
+    <div id="mainnav" class="nav">
+    <ul>
+      <li class="first active"><a href="http://trac.gateworks.com/wiki">Wiki</a></li><li><a href="http://trac.gateworks.com/timeline">Timeline</a></li><li><a href="http://trac.gateworks.com/browser">Browse Source</a></li><li class="last"><a href="http://trac.gateworks.com/search">Search</a></li>
+    </ul>
+  </div>
+    <div id="main">
+      <div id="pagepath" class="noprint">
+  <a class="pathentry first" title="View WikiStart" href="http://trac.gateworks.com/wiki">wiki:</a><a class="pathentry" href="http://trac.gateworks.com/wiki/Yocto" title="View Yocto">Yocto</a><span class="pathentry sep">/</span><a class="pathentry" href="http://trac.gateworks.com/wiki/Yocto/gstreamer" title="View Yocto/gstreamer">gstreamer</a><span class="pathentry sep">/</span><a class="pathentry" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/audio" title="View Yocto/gstreamer/audio">audio</a>
+</div>
+      <div id="ctxtnav" class="nav">
+        <h2>Context Navigation</h2>
+        <ul>
+          <li class="first"><a href="http://trac.gateworks.com/wiki/Yocto/gstreamer">Up</a></li><li><a href="http://trac.gateworks.com/wiki/WikiStart">Start Page</a></li><li><a href="http://trac.gateworks.com/wiki/TitleIndex">Index</a></li><li class="last"><a href="http://trac.gateworks.com/wiki/Yocto/gstreamer/audio?action=history">History</a></li>
+        </ul>
+        <hr>
+      </div>
+    <div id="content" class="wiki">
+      <div class="wikipage searchable">
+        
+          <div id="wikipage" class="trac-content"><p>
+</p><div class="wiki-toc">
+<ol>
+  <li>
+    <a href="#Audio">Audio</a>
+    <ol>
+      <li>
+        <a href="#GStreameralsasrcandalsasink">GStreamer alsasrc and alsasink</a>
+      </li>
+      <li>
+        <a href="#AudioOutput">Audio Output</a>
+        <ol>
+          <li>
+            <a href="#alsasink">alsasink</a>
+          </li>
+          <li>
+            <a href="#fakesink">fakesink</a>
+          </li>
+          <li>
+            <a href="#filesink">filesink</a>
+          </li>
+          <li>
+            <a href="#autoaudiosink">autoaudiosink</a>
+          </li>
+          <li>
+            <a href="#Examples">Examples</a>
+          </li>
+        </ol>
+      </li>
+      <li>
+        <a href="#AudioInput">Audio Input</a>
+        <ol>
+          <li>
+            <a href="#alsasrc">alsasrc</a>
+          </li>
+          <li>
+            <a href="#autoaudiosrc">autoaudiosrc</a>
+          </li>
+          <li>
+            <a href="#audiotestsrc">audiotestsrc</a>
+          </li>
+          <li>
+            <a href="#filesrc">filesrc</a>
+          </li>
+          <li>
+            <a href="#Examples1">Examples</a>
+          </li>
+        </ol>
+      </li>
+      <li>
+        <a href="#Encoding">Encoding</a>
+        <ol>
+          <li>
+            <a href="#imxmp3audioenc">imxmp3audioenc</a>
+          </li>
+          <li>
+            <a href="#vorbisenc">vorbisenc</a>
+          </li>
+          <li>
+            <a href="#mulawenc">mulawenc</a>
+          </li>
+          <li>
+            <a href="#wavenc">wavenc</a>
+          </li>
+          <li>
+            <a href="#alawenc">alawenc</a>
+          </li>
+          <li>
+            <a href="#flacenc">flacenc</a>
+          </li>
+          <li>
+            <a href="#lamemp3enc">lamemp3enc</a>
+          </li>
+          <li>
+            <a href="#Examples2">Examples</a>
+          </li>
+        </ol>
+      </li>
+      <li>
+        <a href="#Decoding">Decoding</a>
+        <ol>
+          <li>
+            <a href="#imxuniaudiodec">imxuniaudiodec</a>
+          </li>
+          <li>
+            <a href="#vorbisdec">vorbisdec</a>
+          </li>
+          <li>
+            <a href="#ivorbisdec">ivorbisdec</a>
+          </li>
+          <li>
+            <a href="#a52dec">a52dec</a>
+          </li>
+          <li>
+            <a href="#mulawdec">mulawdec</a>
+          </li>
+          <li>
+            <a href="#alawdec">alawdec</a>
+          </li>
+          <li>
+            <a href="#flacdec">flacdec</a>
+          </li>
+          <li>
+            <a href="#Examples3">Examples</a>
+          </li>
+        </ol>
+      </li>
+      <li>
+        <a href="#AudioFormatConversion">Audio Format Conversion</a>
+      </li>
+      <li>
+        <a href="#AudioloopbackUsefulfortestingaudioinputandoutput">Audio loopback (Useful for testing audio input and output)</a>
+      </li>
+    </ol>
+  </li>
+</ol>
+</div><p>
+</p>
+<p>
+<span class="wikianchor" id="audio"><a class="anchor" href="#audio" title="Link to #audio"> ¶</a></span>
+</p>
+<h1 id="Audio">Audio<a class="anchor" href="#Audio" title="Link to this section"> ¶</a></h1>
+<p>
+This page will attempt to give examples of audio-based GStreamer pipelines using GStreamer-1.0, with 'enhanced' encoders and decoders from the gstreamer-imx set of plugins. Note that 'enhanced' just means that the software algorithms are especially tuned for the imx6 family.
+</p>
+<p>
+To see GStreamer-0.10 (deprecated) examples, please refer to <a href="http://trac.gateworks.com/wiki/Yocto/gstreamer/audio?version=2">this older revision page</a>.
+</p>
+<p>
+For a description of Audio devices see:
+</p>
+<ul><li><a class="wiki" href="http://trac.gateworks.com/wiki/ventana/audio">Ventana Audio devices</a>
+</li></ul><p>
+<span class="wikianchor" id="gstreamer-alsa"><a class="anchor" href="#gstreamer-alsa" title="Link to #gstreamer-alsa"> ¶</a></span>
+</p>
+<h2 id="GStreameralsasrcandalsasink">GStreamer alsasrc and alsasink<a class="anchor" href="#GStreameralsasrcandalsasink" title="Link to this section"> ¶</a></h2>
+<p>
+The GStreamer <code>alsasrc</code> and <code>alsasink</code> provide audio capture and playback to Advanced Linux Sound Architecture (ALSA) devices. ALSA is the modern device-driver API for the Linux kernel.
+</p>
+<p>
+The Gstreamer alsasrc and alsasink can be passed a <code>device</code> property which can represent either the device name (reported from <code>aplay -L</code> for playback, or <code>arecord -L</code> for record) (ie <code>sysdefault:CARD=sgtl5000audio</code>) or the hw:x,y notation (ie <code>hw:0,0</code> for first device, first subdevice)
+</p>
+<p>
+If not specified via the <code>device</code> property, the device used for alsasrc and alsasink will depend on <code>/etc/asound.conf</code> and/or <code>~/.asoundrc</code>.
+</p>
+<p>
+Playback and Capture also depends on your ALSA mixer (<code>amixer</code>) settings. See <a class="wiki" href="http://trac.gateworks.com/wiki/ventana/audio#Mixermuxgainvolume">mixer settings</a> for more info.
+</p>
+<p>
+<span class="wikianchor" id="audio-output"><a class="anchor" href="#audio-output" title="Link to #audio-output"> ¶</a></span>
+</p>
+<h2 id="AudioOutput">Audio Output<a class="anchor" href="#AudioOutput" title="Link to this section"> ¶</a></h2>
+<p>
+Generally, a 'sink' plugin is one that will take an audio stream and send it to an audio device. Please refer to <a href="http://trac.gateworks.com/wiki/ventana/audio">this audio</a> page for more details on audio devices on the ventana platform.
+</p>
+<p>
+A list of output sinks on the imx6:
+</p>
+<ul><li>alsasink (recommended)
+</li><li>autoaudiosink
+</li><li>fakesink
+</li><li>filesink
+</li></ul><h3 id="alsasink">alsasink<a class="anchor" href="#alsasink" title="Link to this section"> ¶</a></h3>
+<p>
+This audio sink is our recommended audio sink. It can accept the following formats via <code>audio/x-raw</code>: S8, U8, S16LE, S16BE, U16LE, U16BE, S24_32LE, S24_32BE, U24_32LE, U24_32BE, S32LE, S32BE, U32LE, U32BE, S24LE, S24BE, U24LE, U24BE, S20LE, S20BE, U20LE, U20BE, S18LE, S18BE, U18LE, U18BE, F32LE, F32BE, F64LE, F64BE
+</p>
+<h3 id="fakesink">fakesink<a class="anchor" href="#fakesink" title="Link to this section"> ¶</a></h3>
+<p>
+This is a very useful debugging sink. It takes whatever data is given to it and drops them. This might help debugging pipelines if problems ever arise.
+</p>
+<h3 id="filesink">filesink<a class="anchor" href="#filesink" title="Link to this section"> ¶</a></h3>
+<p>
+This sink is very useful when a user wants to record and save audio to a file.
+</p>
+<h3 id="autoaudiosink">autoaudiosink<a class="anchor" href="#autoaudiosink" title="Link to this section"> ¶</a></h3>
+<p>
+This GStreamer sink is not really an 'audio' sink in the traditional sense. Similar to <code>playbin</code> and <code>decodebin</code>, this element selects what it thinks is the best available audio sink and uses it. Generally not recommended.
+</p>
+<h3 id="Examples">Examples<a class="anchor" href="#Examples" title="Link to this section"> ¶</a></h3>
+<p>
+The GStreamer <code>alsasink</code> element will playback a 1KHz tone to any Advanced Linux Sound Architecture (ALSA) device driver:
+</p>
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 audiotestsrc ! alsasink <span class="nv">device</span><span class="o">=</span><span class="s2">"hw:0,0"</span>
+</pre></div></div><ul><li>see <a class="wiki" href="http://trac.gateworks.com/wiki/ventana/audio#devices">here</a> for details on specifying audio input and output devices
+</li></ul><p>
+<span class="wikianchor" id="audio-input"><a class="anchor" href="#audio-input" title="Link to #audio-input"> ¶</a></span>
+</p>
+<h2 id="AudioInput">Audio Input<a class="anchor" href="#AudioInput" title="Link to this section"> ¶</a></h2>
+<p>
+An input source is anything coming from a capture device on the SBC, e.g. HDMI audio in/analog audio in. Please refer to <a href="http://trac.gateworks.com/wiki/ventana/audio">this audio</a> page for more details on audio devices on the ventana platform.
+</p>
+<p>
+A list of input sources on the imx6:
+</p>
+<ul><li>alsasrc (recommended)
+</li><li>autoaudiosrc
+</li><li>audiotestsrc
+</li><li>filesrc
+</li></ul><h3 id="alsasrc">alsasrc<a class="anchor" href="#alsasrc" title="Link to this section"> ¶</a></h3>
+<p>
+This is the recommended audio capture source when capturing audio onto the SBC. This plugin can output the following source types in <code>audio/x-raw</code>: S8, U8, S16LE, S16BE, U16LE, U16BE, S24_32LE, S24_32BE, U24_32LE, U24_32BE, S32LE, S32BE, U32LE, U32BE, S24LE, S24BE, U24LE, U24BE, S20LE, S20BE, U20LE, U20BE, S18LE, S18BE, U18LE, U18BE, F32LE, F32BE, F64LE, F64BE
+</p>
+<h3 id="autoaudiosrc">autoaudiosrc<a class="anchor" href="#autoaudiosrc" title="Link to this section"> ¶</a></h3>
+<p>
+This GStreamer source is not really an 'audio' source in the traditional sense. Similar to <code>playbin</code> and <code>decodebin</code>, this element selects what it thinks is the best available audio source and uses it. Generally not recommended.
+</p>
+<h3 id="audiotestsrc">audiotestsrc<a class="anchor" href="#audiotestsrc" title="Link to this section"> ¶</a></h3>
+<p>
+This is a very useful plugin for testing. It can output 16-64bit <code>audio/x-raw</code>: S16LE, S32LE, F32LE, F64LE
+</p>
+<p>
+This can output audio signals from <code>sine</code> to <code>violet-noise</code>.
+</p>
+<h3 id="filesrc">filesrc<a class="anchor" href="#filesrc" title="Link to this section"> ¶</a></h3>
+<p>
+This source is very useful when a user wants to playback audio from a file.
+</p>
+<h3 id="Examples1">Examples<a class="anchor" href="#Examples1" title="Link to this section"> ¶</a></h3>
+<p>
+The GStreamer <code>alsasrc</code> element will capture audio from any Advanced Linux Sound Architecture (ALSA) device driver:
+</p>
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 alsasrc <span class="nv">device</span><span class="o">=</span><span class="s2">"hw:0,0"</span> ! <span class="s2">"audio/x-raw,rate=32000,channels=2,depth=16"</span> ! <span class="se">\
+</span>  audioconvert ! avimux ! filesink <span class="nv">location</span><span class="o">=</span>./audio.avi
+</pre></div></div><ul><li>see <a class="wiki" href="http://trac.gateworks.com/wiki/ventana/audio#devices">here</a> for details on specifying audio input and output devices
+</li></ul><p>
+<span class="wikianchor" id="audio-encoding"><a class="anchor" href="#audio-encoding" title="Link to #audio-encoding"> ¶</a></span>
+</p>
+<h2 id="Encoding">Encoding<a class="anchor" href="#Encoding" title="Link to this section"> ¶</a></h2>
+<p>
+Encoding is the term used to capture audio and encode it to a new format type.
+</p>
+<p>
+A list of audio encoders on the imx6 platform:
+</p>
+<ul><li><code>gstreamer-imx</code> specific
+<ul><li>imxmp3audioenc
+</li></ul></li><li>Other GStreamer encoders
+<ul><li>vorbisenc
+</li><li>mulawenc
+</li><li>wavenc
+</li><li>alawenc
+</li><li>flacenc
+</li><li>lamemp3enc
+</li></ul></li></ul><p>
+There are many more. You can search for your specified one by running a similar search: <code>gst-inspect-1.0 | grep enc</code>.
+</p>
+<h3 id="imxmp3audioenc">imxmp3audioenc<a class="anchor" href="#imxmp3audioenc" title="Link to this section"> ¶</a></h3>
+<p>
+This encoder can encode <code>audio/x-raw</code> S16LE to <code>audio/mpeg</code>.
+</p>
+<h3 id="vorbisenc">vorbisenc<a class="anchor" href="#vorbisenc" title="Link to this section"> ¶</a></h3>
+<p>
+This encoder can encode <code>audio/x-raw</code> F32LE to <code>audio/x-vorbis</code>.
+</p>
+<h3 id="mulawenc">mulawenc<a class="anchor" href="#mulawenc" title="Link to this section"> ¶</a></h3>
+<p>
+This encoder can encode <code>audio/x-raw</code> S16LE to <code>audio/x-mulaw</code>.
+</p>
+<h3 id="wavenc">wavenc<a class="anchor" href="#wavenc" title="Link to this section"> ¶</a></h3>
+<p>
+This encoder can encode <code>audio/x-raw</code> S32LE, S24LE, S16LE, U8, F32LE, F64LE, <code>audio/x-alaw</code>, and <code>audio/x-mulaw</code> to <code>audio/x-wav</code>.
+</p>
+<h3 id="alawenc">alawenc<a class="anchor" href="#alawenc" title="Link to this section"> ¶</a></h3>
+<p>
+This encoder can encode <code>audio/x-raw</code> S16LE to <code>audio/x-alaw</code>.
+</p>
+<h3 id="flacenc">flacenc<a class="anchor" href="#flacenc" title="Link to this section"> ¶</a></h3>
+<p>
+This encoder can encode <code>audio/x-raw</code> S24LE, S24_32LE, S16LE, S8 to <code>audio/x-flac</code>.
+</p>
+<h3 id="lamemp3enc">lamemp3enc<a class="anchor" href="#lamemp3enc" title="Link to this section"> ¶</a></h3>
+<p>
+This encoder can encode <code>audio/x-raw</code> S16LE to <code>audio/mpeg</code>.
+</p>
+<h3 id="Examples2">Examples<a class="anchor" href="#Examples2" title="Link to this section"> ¶</a></h3>
+<p>
+This will take in an audio source from the mic and save it as an mp3.
+</p>
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 alsasrc <span class="nv">device</span><span class="o">=</span><span class="s2">"hw:0,0"</span> ! audioconvert ! imxmp3audioenc ! filesink <span class="nv">location</span><span class="o">=</span>/tmp/mic.mp3
+</pre></div></div><ul><li>Note the audioconvert element is used to convert audio samplerate / bitwidth / format (via software algorithms) as needed between two elements.
+</li></ul><p>
+<span class="wikianchor" id="audio-decoding"><a class="anchor" href="#audio-decoding" title="Link to #audio-decoding"> ¶</a></span>
+</p>
+<h2 id="Decoding">Decoding<a class="anchor" href="#Decoding" title="Link to this section"> ¶</a></h2>
+<p>
+Decoding is the term used to decode an encoded audio stream to a raw audio stream.
+</p>
+<p>
+A list of audio encoders on the imx6 platform:
+</p>
+<ul><li><code>gstreamer-imx</code> specific
+<ul><li>imxuniaudiodec
+</li></ul></li><li>Other GStreamer encoders
+<ul><li>vorbisdec
+</li><li>ivorbisdec
+</li><li>a52dec
+</li><li>mulawdec
+</li><li>alawdec
+</li><li>flacdec
+</li></ul></li></ul><h3 id="imxuniaudiodec">imxuniaudiodec<a class="anchor" href="#imxuniaudiodec" title="Link to this section"> ¶</a></h3>
+<p>
+This decoder can decode <code>audio/mpeg</code> to <code>audio/x-raw</code> S32LE, S24LE, S16LE, S8.
+</p>
+<h3 id="vorbisdec">vorbisdec<a class="anchor" href="#vorbisdec" title="Link to this section"> ¶</a></h3>
+<p>
+This decoder can decode <code>audio/x-vorbis</code> to <code>audio/x-raw</code> F32LE.
+</p>
+<h3 id="ivorbisdec">ivorbisdec<a class="anchor" href="#ivorbisdec" title="Link to this section"> ¶</a></h3>
+<p>
+This decoder can decode <code>audio/x-vorbis</code> to <code>audio/x-raw</code> S16LE.
+</p>
+<h3 id="a52dec">a52dec<a class="anchor" href="#a52dec" title="Link to this section"> ¶</a></h3>
+<p>
+This decoder can decode <code>audio/x-ac3</code>, <code>audio/ac3</code>, and <code>audio/x-private1-ac3</code> to <code>audio/x-raw</code> F32LE.
+</p>
+<h3 id="mulawdec">mulawdec<a class="anchor" href="#mulawdec" title="Link to this section"> ¶</a></h3>
+<p>
+This decoder can decode <code>audio/x-mulaw</code> to <code>audio/x-raw</code> S16LE.
+</p>
+<h3 id="alawdec">alawdec<a class="anchor" href="#alawdec" title="Link to this section"> ¶</a></h3>
+<p>
+This decoder can decode <code>audio/x-alaw</code> to <code>audio/x-raw</code> S16LE.
+</p>
+<h3 id="flacdec">flacdec<a class="anchor" href="#flacdec" title="Link to this section"> ¶</a></h3>
+<p>
+This decoder can decode <code>audio/x-flac</code> to <code>audio/x-raw</code> S8, S16LE, S24_32LE, S32LE.
+</p>
+<h3 id="Examples3">Examples<a class="anchor" href="#Examples3" title="Link to this section"> ¶</a></h3>
+<p>
+We can decode the MP3 audio saved previously and playback to the default audio device  with the following:
+</p>
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 filesrc <span class="nv">location</span><span class="o">=</span>/tmp/mic.mp3 ! mpegaudioparse ! imxuniaudiodec ! alsasink
+</pre></div></div><p>
+<span class="wikianchor" id="audio-format"><a class="anchor" href="#audio-format" title="Link to #audio-format"> ¶</a></span>
+</p>
+<h2 id="AudioFormatConversion">Audio Format Conversion<a class="anchor" href="#AudioFormatConversion" title="Link to this section"> ¶</a></h2>
+<p>
+In specify the details of the audio format, you use a GStreamer <code>capsfilter</code> and to convert it from one format to another you use the GStreamer <code>audioconvert</code> element.
+</p>
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 alsasrc <span class="nv">device</span><span class="o">=</span><span class="s2">"hw:0,0"</span> ! <span class="s2">"audio/x-raw,rate=32000,channels=2,depth=16"</span> ! <span class="se">\
+</span>  audioconvert ! avimux ! filesink <span class="nv">location</span><span class="o">=</span>./audio.avi
+</pre></div></div><p>
+<span class="wikianchor" id="audio-loopback"><a class="anchor" href="#audio-loopback" title="Link to #audio-loopback"> ¶</a></span>
+</p>
+<h2 id="AudioloopbackUsefulfortestingaudioinputandoutput">Audio loopback (Useful for testing audio input and output)<a class="anchor" href="#AudioloopbackUsefulfortestingaudioinputandoutput" title="Link to this section"> ¶</a></h2>
+<p>
+A simple aduio loopback test can take audio input from an input device and output it to an output device.
+</p>
+<p>
+loopback audio from the first audio card:
+</p>
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 alsasrc <span class="nv">device</span><span class="o">=</span><span class="s2">"hw:0,0"</span> ! alsasink <span class="nv">device</span><span class="o">=</span><span class="s2">"hw:0,0"</span>
+</pre></div></div><p>
+To send audio from the sgtl5000 (analog input) to the imxhdmisoc (HDMI output):
+</p>
+<ul><li>using device/function numbers (ie from <code>aplay -l</code>):
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 alsasrc <span class="nv">device</span><span class="o">=</span><span class="s2">"hw:0,0"</span> ! alsasink <span class="nv">device</span><span class="o">=</span><span class="s2">"hw:2,0"</span>
+</pre></div></div></li><li>or, using names (ie from <code>aplay -L</code>):
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 alsasrc <span class="nv">device</span><span class="o">=</span><span class="s2">"sysdefault:CARD=sgtl5000audio"</span> ! <span class="se">\
+</span> alsasink <span class="nv">device</span><span class="o">=</span><span class="s2">"sysdefault:CARD=imxhdmisoc"</span>
+</pre></div></div></li></ul><p>
+To send audio from the tda1997x HDMI receiver (digital input) to the imxhdmisoc (digital output):
+</p>
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 alsasrc <span class="nv">device</span><span class="o">=</span><span class="s2">"sysdefault:CARD=tda1997xaudio"</span> ! <span class="se">\
+</span>  <span class="s2">"audio/x-raw,rate=44100"</span> ! alsasink <span class="nv">device</span><span class="o">=</span><span class="s2">"sysdefault:CARD=imxhdmisoc"</span>
+</pre></div></div><ul><li>Note here we need to specify the audio sample-rate as it can vary per input stream (and gstreamer does not validate the rate). This rate must match the source stream samplrate which can be found via sysfs <code>/sys/bus/i2c/drivers/tda1997x/2-0048/audmode</code>. If your output device requires a different sample-rate than the source input device, you need to perform a sample-rate conversion.
+</li></ul></div>
+          
+          <div class="trac-modifiedby">
+            <span><a href="http://trac.gateworks.com/wiki/Yocto/gstreamer/audio?action=diff&amp;version=1" title="Version 1 by trac">Last modified</a> <a class="timeline" href="http://trac.gateworks.com/timeline?from=2017-10-21T22%3A28%3A45-07%3A00&amp;precision=second" title="See timeline at 10/21/2017 10:28:45 PM">11 months ago</a></span>
+            <span class="trac-print">Last modified on 10/21/2017 10:28:45 PM</span>
+          </div>
+        
+        
+      </div>
+      
+
+    </div>
+    
+    <div id="altlinks">
+      <h3>Download in other formats:</h3>
+      <ul>
+        <li class="last first">
+          <a rel="nofollow" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/audio?format=txt">Plain Text</a>
+        </li>
+      </ul>
+    </div>
+    </div>
+    <div id="footer" xml:lang="en" lang="en"><hr>
+      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="trac_logo_mini.png" alt="Trac Powered" width="107" height="30"></a>
+      <p class="left">Powered by <a href="http://trac.gateworks.com/about"><strong>Trac 1.2.2</strong></a><br>
+        By <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
+      <p class="right">Visit the Trac open source project at<br><a href="http://trac.edgewall.org/">http://trac.edgewall.org/</a></p>
+    </div>
+	
+</body>
+</html>

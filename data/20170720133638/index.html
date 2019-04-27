@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+  <meta charset="utf-8">
+  <title>GStreamer Echo Canceller</title>
+  <meta name="Description" content="Our multimedia team successfully integrates a WebRTC Audio Processing based echo canceller in GStreamer.">
+  <meta name="Keywords" content="Collabora, GStreamer, multimedia, WebRTC, WebRTC Audio Processing, echo canceller, echo cancellation">
+
+  
+
+  <meta name="viewport" content="maximum-scale = 1.0, user-scalable = no, width = device-width">
+  <!--[if IE]><meta http-equiv="cleartype" content="on" /><![endif]-->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  
+  
+  
+  
+
+  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="apple-touch-icon" href="https://www.collabora.com/assets/images/icons/apple-touch-icon-precomposed.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="https://www.collabora.com/assets/images/icons/apple-touch-icon-72x72-precomposed.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="https://www.collabora.com/assets/images/icons/apple-touch-icon-114x114-precomposed.png">
+  <link rel="apple-touch-startup-image" href="https://www.collabora.com/assets/images/icons/startup.png">
+
+  <!-- TWITTER CARD TAGS -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="Collabora | Open Source Consulting">
+  <meta name="twitter:title" content="GStreamer Echo Canceller">
+  <meta name="twitter:description" content="Our multimedia team successfully integrates a WebRTC Audio Processing based echo canceller in GStreamer.">
+  <meta name="twitter:image" content="https://www.collabora.com//assets/images/core/c_o.jpg">
+
+  <!-- FB OG TAGS -->
+  <meta property="og:title" content="GStreamer Echo Canceller">
+  <meta property="og:site_name" content="Collabora | Open Source Consulting">
+  <meta property="og:url" content="https://www.collabora.com/news-and-blog/blog/2016/07/08/gstreamer-echo-canceller/">
+  <meta property="og:description" content="Our multimedia team successfully integrates a WebRTC Audio Processing based echo canceller in GStreamer.">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://www.collabora.com//assets/images/core/c_o.jpg">
+
+  
+
+  <!-- JS -->
+  
+
+  <!-- RSS FEED -->
+  <link rel="alternate" type="application/rss+xml" title="Collabora Blog RSS feed" href="https://www.collabora.com/newsroom-rss-feed.rss">
+
+    <!-- noscript -->
+  
+  <!-- end of noscript -->
+
+  <!-- Google Analytics -->
+  
+  <!-- end of Google Analytics -->
+
+
+
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body class="whiteBG">
+<!-- HEADER -->
+<div class="headerWrapper2016">
+<div class="headerWrapper2016Inner"><div class="scrolledNavBG"></div>
+
+<div class="container"> 
+    
+<div class="headerLHS_2016"> 
+    
+<a href="https://www.collabora.com/" target="_self" title="Navigate to the Collabora website homepage">
+
+<!--[if IE]>
+<img src="/assets/images/core/Collabora_Logo.png" alt="Collabora logo" title="Collabora logo" class="logoFull2016">
+<![endif]-->
+
+<!--[if !IE]> -->
+<img src="collabora_logo.svg" alt="Collabora logo" title="Collabora logo" class="logoFull2016">
+
+
+
+<!-- <![endif]-->
+
+<!--<img src="/assets/images/core/Collabora_Logo_short.svg" alt="Collabora logo" title="Collabora logo" class="logoShort2016" style="display: none;">-->
+
+<!--<img src="/assets/images/core/logo.png" alt="Collabora logo" title="Collabora logo" class="logoFull2016">
+<img src="/assets/images/core/logo-short.png" alt="Collabora logo" title="Collabora logo" class="logoShort2016" style="display: none;">-->
+</a>
+ 
+</div>
+<div class="headerRHS_2016"> 
+        
+<!-- PRIMARY NAV -->
+
+<!-- Generate the widescreen navigation (#nav_full) -->
+<ul id="nav_full">
+    <li class="first"><a href="https://www.collabora.com/about-us/" title="About">About</a><ul>
+<div class="subnavTriangle"></div>
+<div class="subnavWrapper2016">
+<div class="subnavWrapperInner2016">
+<li class="first"><a href="https://www.collabora.com/about-us/who-we-are/" title="Who we are"><div class="subnavIcon subnavIcon_who-we-are"></div><span>Who we are</span></a></li>
+<li><a href="https://www.collabora.com/about-us/our-expertise.html" title="Our expertise"><div class="subnavIcon subnavIcon_our-expertise"></div><span>Our expertise</span></a></li>
+<li><a href="https://www.collabora.com/about-us/our-work.html" title="Our work"><div class="subnavIcon subnavIcon_our-work"></div><span>Our work</span></a></li>
+<li class="last"><a href="https://www.collabora.com/about-us/open-source.html" title="Open Source"><div class="subnavIcon subnavIcon_open-source"></div><span>Open Source</span></a></li>
+
+</div>
+</div>
+</ul></li>
+<li><a href="https://www.collabora.com/services/" title="Services">Services</a><ul>
+<div class="subnavTriangle"></div>
+<div class="subnavWrapper2016">
+<div class="subnavWrapperInner2016">
+<li class="first"><a href="https://www.collabora.com/services/guide.html" title="Guide"><div class="subnavIcon subnavIcon_guide"></div><span>Guide</span></a></li>
+<li><a href="https://www.collabora.com/services/train.html" title="Train"><div class="subnavIcon subnavIcon_train"></div><span>Train</span></a></li>
+<li><a href="https://www.collabora.com/services/build.html" title="Build"><div class="subnavIcon subnavIcon_build"></div><span>Build</span></a></li>
+<li><a href="https://www.collabora.com/services/integrate.html" title="Integrate"><div class="subnavIcon subnavIcon_integrate"></div><span>Integrate</span></a></li>
+<li><a href="https://www.collabora.com/services/optimize.html" title="Optimize"><div class="subnavIcon subnavIcon_optimize"></div><span>Optimize</span></a></li>
+<li class="last"><a href="https://www.collabora.com/services/maintain.html" title="Maintain"><div class="subnavIcon subnavIcon_maintain"></div><span>Maintain</span></a></li>
+
+</div>
+</div>
+</ul></li>
+<li><a href="https://www.collabora.com/industries/" title="Industries">Industries</a><ul>
+<div class="subnavTriangle"></div>
+<div class="subnavWrapper2016">
+<div class="subnavWrapperInner2016">
+<li class="first"><a href="https://www.collabora.com/industries/automotive.html" title="Automotive"><div class="subnavIcon subnavIcon_automotive"></div><span>Automotive</span></a></li>
+<li><a href="https://www.collabora.com/industries/digital-tv.html" title="Digital TV"><div class="subnavIcon subnavIcon_digital-tv"></div><span>Digital TV</span></a></li>
+<li><a href="https://www.collabora.com/industries/silicon.html" title="Silicon"><div class="subnavIcon subnavIcon_silicon"></div><span>Silicon</span></a></li>
+<li><a href="https://www.collabora.com/industries/oem.html" title="OEM"><div class="subnavIcon subnavIcon_oem"></div><span>OEM</span></a></li>
+<li class="last"><a href="https://www.collabora.com/industries/xr.html" title="XR"><div class="subnavIcon subnavIcon_xr"></div><span>VR/AR</span></a></li>
+
+</div>
+</div>
+</ul></li>
+<li class="hereNav"><a href="https://www.collabora.com/news-and-blog.html" title="News &amp; Blog">News &amp; Blog</a></li>
+<li><a href="https://www.collabora.com/careers.html" title="Careers">Careers</a></li>
+<li class="last"><a href="https://www.collabora.com/contact-us.html" title="Contact">Contact</a></li>
+
+</ul>
+
+<!-- Generate the new mobile navigation for inline treatment 20112014 -->
+<div id="nav_mobileInlineSolution">
+<p><a class="nav_mobileInlineTriggerNEW nav_mobileInlineTriggerNEW_TextLabel"><img src="2016hamburger.png" alt="Menu" title="Menu" class="nav_mobileInlineTriggerNEW_Icon NEWmobileNavTrigger" width="30" height="20"></a></p>
+
+
+<div class="NEWmobileNavAnimWrapper">
+<ul class="NEWmobileNav"><li class="first"><a href="https://www.collabora.com/about-us/" title="About">About</a></li>
+<li><a href="https://www.collabora.com/services/" title="Services">Services</a></li>
+<li><a href="https://www.collabora.com/industries/" title="Industries">Industries</a></li>
+<li class="hereNav"><a href="https://www.collabora.com/news-and-blog.html" title="News &amp; Blog">News &amp; Blog</a></li>
+<li><a href="https://www.collabora.com/careers.html" title="Careers">Careers</a></li>
+<li class="last"><a href="https://www.collabora.com/contact-us.html" title="Contact">Contact</a></li>
+</ul>
+<!--</ul>-->
+<ul class="NEWmobileNavContactBits">
+<li class="NEWmobileNavContactLink"><a href="tel:+441223362967" target="_top" title="Call Collabora today on +44 (0)1223 362967">+44 (0)1223 362967</a></li>
+<li class="NEWmobileNavContactLink"><a href="tel:+15146672599" target="_top" title="Call Collabora today on +1 514 667 2599">+1 514 667 2599</a></li>
+<li class="NEWmobileNavContactLink"><a href="mailto:contact@collabora.com" target="_top" title="Email Collabora today">contact@collabora.com</a></li>
+</ul>
+</div>
+
+
+</div>
+
+<!-- end of PRIMARY NAV --> 
+</div>
+ 
+</div>
+</div>
+</div>
+<!-- end of HERDER --> 
+
+
+ 
+<!-- HERO ELEMENT -->
+<div class="fullWidthWrapper2016"><div class="container">
+<div class="heroElementWrapper contentPage" style="background: rgb(255, 255, 255) none repeat scroll 0% 0%; height: 200px;">    
+    
+<!-- fake loader -->
+<img src="herosizer_slimhero_01.jpg" id="HeroElementBGImageLoader">
+<!-- end of fake loader -->
+
+<img src="slimhero_01.jpg" alt="*" title="*" id="HeroElementBGImage">
+
+<!-- set temp loading height of .heroElementWrapper while #HeroElementBGImage images load -->
+
+<!-- end of set temp loading height of .heroElementWrapper while #HeroElementBGImage images load -->
+
+</div>    
+<!-- end of HERO ELEMENT --> 
+<!-- BODY CONTENT -->
+<div class="bodyContentWrapper darkGrey">
+<div class="bodyContentInnerWrapper">
+    
+<div class="breadcrumbWrapper">
+<!--
+<a href="https://www.collabora.com/" title="Home">Home</a> <span style="margin-right:5px;">&raquo;</span>  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+-->
+
+<ul id="breadcrumb">
+  <li><a href="https://www.collabora.com/">Home</a></li><li><a href="https://www.collabora.com/news-and-blog.html">News &amp; Blog</a></li><li><a href="https://www.collabora.com/news-and-blog/blog/">Blog</a></li><li>GStreamer Echo Canceller</li>
+</ul>
+
+</div>
+
+<!--<div class="mobilecontentTitleWrapper noJSmobilecontentTitleWrapper"><h1>GStreamer Echo Canceller</h1></div>-->
+
+<div class="bodyContent_2ndTier_LHS blogpostLHS _2016blogpostLHS">
+
+<h2>GStreamer Echo Canceller</h2>
+
+<!--<p>Posted on 08/07/2016 by <a href="news-and-blog/blog/author/Jon Wallace">Jon Wallace</a></p>-->
+
+<p>Posted on 08/07/2016 by Nicolas Dufresne</p>
+
+<div class="entry-content">
+<p>For a long time I believed that echo cancellers had no place inside GStreamer. The theory was that GStreamer was too high level and would never be able to provide accurate enough delay information for any canceller to work. With fairly simple test, I could quickly confirm that the reported latency is often off by a period (generally 10ms). This isn’t strictly GStreamer’s fault and is not in any ways catastrophic for general playback experience.</p>
+<p>With the apparition of WebRTC in browsers, it most likely became apparent that to be cross-platform browsers needed to have their own canceller. That’s exactly what happened in <a href="https://webrtc.org/" target="_top">libWebRTC</a> (former libjingle, used in both Firefox and Chrome to implement WebRTC). They implemented an echo canceller that accept an approximate delay and this changes everything for GStreamer.</p>
+<p>At Collabora, I recently had the opportunity to implement this <a href="https://cgit.freedesktop.org/pulseaudio/webrtc-audio-processing/" target="_top">WebRTC Audio Processing</a> based echo canceller. The main motivation was that the canceller on the hardware DSP we had didn’t work due to a hardware bug. A lot of those boards had been produced and no rework was possible. To save these boards, we decided to try with a software echo canceller. Even though it was using a fair amount of CPU, the experiment was a success. I have then clean-up the code and the new elements are now available in <a href="https://cgit.freedesktop.org/gstreamer/gst-plugins-bad/commit/?id=398f7059fc8eb226f3aa67287ef466328cfd1e94" target="_top">GStreamer Plugins Bad</a>.</p>
+<p>How does it work ?</p>
+<p><a href="http://ndufresne.ca/2016/06/gstreamer-echo-canceller/echo/#main" rel="attachment wp-att-136"><img class="size-full wp-image-136 aligncenter" src="echo.png" alt="Echo" width="493" height="270"></a></p>
+<p>The first step is to understand what is the echo. In a phone call with loud speaker, what happens is that your microphone records both your voice and the far end voices. The side effect, is that you are sending to the far end listeners both your voice along with a bad copy of their voices a moment before (the echo). To avoid this echo, you need to monitor the far end stream that you are playing back and “subtract” it from the recorded stream. In practice, it’s much more complex work, since the signal is deteriorated by the speaker and the microphone. You also need to figure-out the delays and hint the canceller, otherwise you may end-up with a terrible startup time or it may simply not work.</p>
+<p>The implementation was greatly inspired from an experiment <a href="https://git.collabora.com/cgit/user/tester/gst-plugins-farsight-tester.git/tree/ext/speexdsp?h=speexdsp" target="_top">Olivier Crête did in 2008</a> using <a href="http://www.speex.org/" target="_top">Speex DSP</a>. I must admit, I never really understood his way of synchronizing the streams and literally ignored pretty much all the code that wasn’t GStreamer specific. The design works this way, you have a DSP element (webrtcdsp) that process the recorded stream and a probe element (webrtcechoprobe) that analyses the far end stream (before playing it back). Due to WebRTC library limitation, those two elements will transform the input buffer into chunk of 10ms. This is done using GstAdapter help. On the probe side, we push buffers in the adapter with timestamp transformed to running time. This time, plus the pipeline latency, gives us the moment in running time when the buffer should be heard by the microphone. We then synchronize the far end data against the recorded data and then let WebRTC Audio Processing library do it’s magic. A simple way of testing the element is by using an echo loop.</p>
+<p><code>&nbsp; gst-launch-1.0 pulsesrc ! webrtcdsp ! webrtcechoprobe ! pulsesink</code></p>
+<p>Without the canceller, this pipeline would create a lot of echo, and probably end with loud feedback if your microphone volume is high enough. With the canceller, you should instead ear only one echo. It behaves a bit like a sound monitor but with too high latency and the side effect of fading in and out monotonic frequencies. After all, this is not what the algorithm have been design for. Try it in your real audio call application, that’s where you will most likely get the best results.</p>
+<p><a href="http://ndufresne.ca/2016/06/gstreamer-echo-canceller/pipeline-2/#main" rel="attachment wp-att-137"><img class="alignnone wp-image-143 size-large" src="pipeline-1-1024x305.png" alt="" width="792" height="236"></a></p>
+<p>Before I conclude, there is a good reason why I called the element DSP rather then AEC. WebRTC Audio Processing is much more then just an echo canceller. In fact, it implements a wide variety of filters, noise suppressor, voice activity detection, etc. Currently we enable of subset of it, but I’m definitely looking forward enabling more (if not all) features from this library. I also encourage contributions. This works was only possible because of the great effort Arun Raghavan have put into extracting the echo canceller form the WebRTC project, create a standalone library usable by all. If you are interested about what cool feature could be added in the future, have a look at <a href="https://arunraghavan.net/2016/06/beamforming-in-pulseaudio/" target="_top">Arun’s blog</a> about beamforming. And last one, thanks to my colleagues who had to suffer hearing me speak to my computer and listening to my echo for a few weeks.</p>
+</div>
+<p style="text-align: center;"><a href="http://ndufresne.ca/2016/06/gstreamer-echo-canceller/" target="_top"><br>Original post</a></p>
+
+<p></p>
+
+<div class="post-comments" id="comments">
+<div class="quip">
+    <h3>Comments (0)</h3>
+	
+    <div id="quip-topofcomments-qcom"></div>
+
+    
+
+    
+</div>
+<br>
+<h3>Add a Comment</h3>
+
+<span class="quip-success" id="quip-success-qcom"></span>
+ 
+<form id="quip-comment-preview-box-qcom" action="https://www.collabora.com/news-and-blog/blog/2016/07/08/gstreamer-echo-canceller/#quip-comment-preview-box-qcom" method="post">
+<div class="quip-comment quip-add-comment">
+    <input name="previewname" value="" type="hidden">
+    <input name="thread" value="article-b32-336" type="hidden">
+    <input name="parent" value="0" type="hidden">
+    <input name="auth_nonce" value="" type="hidden">
+    <input name="preview_mode" value="" type="hidden">
+ 
+     <div class="quip-fld">
+        <label for="quip-comment-name-qcom">Name:</label>
+        <input name="name" id="quip-comment-name-qcom" value="" class="formField" type="text">
+        <span class="quip-error"></span>
+        <br>
+    </div>
+     
+    <div class="quip-fld">
+        <label for="quip-comment-email-qcom">Email:</label>
+        <input name="email" id="quip-comment-email-qcom" value="" class="formField" type="text">
+        <span class="quip-error"></span>
+       
+        <br>
+    </div>
+     
+    <div class="quip-fld">
+        <label for="quip-comment-website-qcom">Website:</label>
+        <input name="website" id="quip-comment-website-qcom" value="" class="formField" type="text">
+        <span class="quip-error"></span>
+        <br>
+    </div>
+ 
+    <div class="quip-fld">
+        <label for="quip-comment-notify-qcom" style="width: 182px;">Notify of New Replies:</label>
+        <input class="tickBox" value="1" name="notify" id="quip-comment-notify-qcom" type="checkbox">
+        <span class="quip-error"></span>
+        <br>
+    </div>
+ 
+
+
+
+
+
+    <div class="quip-fld recaptcha">
+    </div></div></form></div></div></div></div></div></div></body>
+</html>

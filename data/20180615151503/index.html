@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    <meta charset="UTF-8">
+    <link rel="canonical" href="https://blog.csdn.net/yihui8/article/details/22199977"> 
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="referrer" content="always">
+    <meta name="description" content="问题：
+File &quot;out/host/linux-x86/obj/EXECUTABLES/mksnapshot.arm_intermediates/js2c.py&quot;, line 36, in 
+&nbsp; &nbsp; import bz2
+ImportError: No module named bz2
+Traceback (most recent call last):
+&nbsp; File &quot;out/hos">
+    <meta name="keywords" content="">
+    <meta http-equiv="Cache-Control" content="no-siteapp"><link rel="alternate" media="handheld" href="https://blog.csdn.net/yihui8/article/details/22199977#">
+    <meta name="shenma-site-verification" content="5a59773ab8077d4a62bf469ab966a63b_1497598848">
+    
+
+    <link href="favicon.ico" rel="SHORTCUT ICON">
+    <title>ImportError: No module named bz2问题解决方法 - CSDN博客</title>
+    
+            
+        
+
+    
+    
+    
+    
+    <!-- 新版上报 -->
+    
+    <!-- 新版上报end -->
+             
+    
+
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body><div id="BAIDU_DUP_fp_wrapper" style="position: absolute; left: -1px; bottom: -1px; z-index: 0; width: 0px; height: 0px; overflow: hidden; visibility: hidden; display: none;"><iframe id="BAIDU_DUP_fp_iframe" src="index_1.html" style="width: 0px; height: 0px; visibility: hidden; display: none;"></iframe></div><div id="MathJax_Message" style="display: none;"></div>    
+    
+    
+    
+
+
+
+<header>
+	<div class="container d-flex clearfix">
+		<div class="title-box">
+			<h2 class="title-blog">
+				<a href="https://blog.csdn.net/yihui8">yihui8的专栏</a>
+			</h2>
+			<p class="description"></p>
+		</div>
+		<div class="opt-box d-flex justify-content-end">
+			<a class="btn btn-sm" href="https://blog.csdn.net/yihui8/rss/list">
+					<svg class="icon" aria-hidden="true">
+						<use xlink:href="#csdnc-rss"></use>
+					</svg>RSS订阅</a>
+					</div>
+	</div>
+</header>
+<div class="container clearfix pt0" id="mainBox">
+    <main>
+        <div class="blog-content-box">
+	<div class="article-title-box">
+			<span class="article-type type-1 float-left">原</span>		<h1 class="title-article">ImportError: No module named bz2问题解决方法</h1>
+	</div>
+	<div class="article-info-box">
+		<div class="article-bar-top d-flex">
+												<span class="time">2014年03月26日 18:18:34</span>
+			<div class="float-right">
+				<span class="read-count">阅读数：9317</span>
+											</div>
+		</div>
+	</div>
+	<article>
+		<div id="article_content" class="article_content clearfix csdn-tracking-statistics" data-pid="blog" data-mod="popu_307" data-dsm="post">
+                    
+            <div class="htmledit_views">
+                
+<p>问题：</p>
+<p>File "out/host/linux-x86/obj/EXECUTABLES/mksnapshot.arm_intermediates/js2c.py", line 36, in &lt;module&gt;</p>
+&nbsp; &nbsp; import bz2<br>
+ImportError: No module named bz2<br>
+Traceback (most recent call last):<br>
+&nbsp; File "out/host/linux-x86/obj/EXECUTABLES/mksnapshot.arm_intermediates/js2c.py", line 36, in &lt;module&gt;<br>
+&nbsp; &nbsp; import bz2<br>
+ImportError: No module named bz2<br><p><br></p>
+<p>解决方法：</p>
+<p>【第一步】下载&nbsp;<span style="font-family: Simsun; font-size: 14px; line-height: 28px;">bzip2-1.0.5.tar.gz编译，<a href="http://ishare.iask.sina.com.cn/download/explain.php?fileid=9769001">点这里下载</a></span></p>
+<p>tar -xf&nbsp;<span style="font-family: Simsun; font-size: 14px; line-height: 28px;">bzip2-1.0.5.tar.gz</span></p>
+<p><span style="font-family: Simsun; font-size: 14px; line-height: 28px;">cd&nbsp;<span style="font-family: Simsun; font-size: 14px; line-height: 28px;">bzip2-1.0.5</span></span></p>
+<p><span style="font-family: Simsun; font-size: 14px; line-height: 28px;"><span style="font-family: Simsun; font-size: 14px; line-height: 28px;">64位系统需要加上</span><span style="font-family: Simsun; font-size: 14px; line-height: 28px;">-fPIC编译选项</span><br></span></p>
+<p><span style="font-family: Simsun; font-size: 14px; line-height: 28px;">vi Makefile</span></p>
+<p><span style="font-family: Simsun; font-size: 14px; line-height: 28px;">CFLAGS=-fPIC -Wall -Winline -O2 -g $(BIGFILES)<br></span></p>
+<p><span style="font-family: Simsun; font-size: 14px; line-height: 28px;">make&nbsp;</span></p>
+<p><span style="font-family: Simsun; font-size: 14px; line-height: 28px;">sudo make install</span></p>
+<p><span style="font-family: Simsun; font-size: 14px; line-height: 28px;">【第二步】重新编译python</span></p>
+<p><span style="font-family: Simsun; font-size: 14px; line-height: 28px;">cd&nbsp;Python-2.7.6</span></p>
+<p><span style="font-family: Simsun; font-size: 14px; line-height: 28px;">make&nbsp;</span></p>
+<p><span style="font-family: Simsun; font-size: 14px; line-height: 28px;">sudo&nbsp;</span><span style="font-family: Simsun; font-size: 14px; line-height: 28px;">make install</span></p>
+<p><span style="font-family: Simsun; font-size: 14px; line-height: 28px;">python</span></p>
+<p><span style="font-family: Simsun; font-size: 14px; line-height: 28px;">&gt;&gt;&gt;import bz2</span></p>
+<p><span style="font-family: Simsun; font-size: 14px; line-height: 28px;">问题解决</span></p>
+            </div>
+                </div>
+				<div class="hide-article-box text-center csdn-tracking-statistics tracking-click" data-mod="popu_376">
+			<a class="btn btn-red-hollow" id="btn-readmore">阅读更多</a>
+		</div>
+        	</article>
+	
+		<div class="article-bar-bottom">
+								<div class="tags-box">
+			<span class="label">个人分类：</span>
+						<a class="tag-link" href="https://blog.csdn.net/yihui8/article/category/732468" target="_top">Linux shell						</a><a class="tag-link" href="https://blog.csdn.net/yihui8/article/category/663714" target="_top">Android开发						</a>
+		</div>
+					</div>
+	
+	<!-- !empty($pre_next_article[0]) -->
+		</div>
+
+
+
+
+        <div class="edu-promotion"></div>
+        <a id="commentBox"></a>
+<div class="comment-box">
+	  	<div class="unlogin-box text-center">
+		想对作者说点什么？
+		<!-- $curl 当前地址 -->
+		<a href="https://passport.csdn.net/account/login?from=https://blog.csdn.net/yihui8/article/details/22199977#commentBox" class="btn btn-sm btn-red">我来说一句</a>
+	</div>
+			<div class="comment-list-container">
+		<a id="comments"></a>
+		<div class="comment-list-box">
+		</div>
+		<div id="commentPage" class="pagination-box d-none"></div>
+		<div class="opt-box text-center">
+			<button class="btn btn-sm btn-link-blue" id="btnMoreComment"></button>
+		</div>
+	</div>
+</div>        <div class="recommend-box">
+            		<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/wwangfabei1989/article/details/79082110" target="_top" strategy="BlogCommendFromGuangxin_0">
+				python导入包失败<em>Module</em>NotFoundError: No <em>module</em> <em>named</em> 'matplotlib.pyplot'; 'matplotlib' is not a package			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/wwangfabei1989/article/details/79082110" target="_top">
+				最近在看 python,在使用matplotlib进行绘图时，提示：<em>Module</em>NotFoundError: No <em>module</em> <em>named</em> 'matplotlib.pyplot'; 'matplot...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/wwangfabei1989" title="wwangfabei1989" target="_blank">
+					<img src="3_wwangfabei1989.jpg" alt="wwangfabei1989" class="avatar-pic">
+					<span class="name">wwangfabei1989</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2018-01-17 10:27:10</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：2106</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/Inuchiyo_china/article/details/70210974" target="_top" strategy="BlogCommendFromGuangxin_1">
+				No <em>module</em> <em>named</em> caffe,ubuntu16.04安装caffe的问题解决			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/Inuchiyo_china/article/details/70210974" target="_top">
+				在成功编译caffe的源码之后，可以在python环境中使用caffe。在Ubuntu环境下，打开python解释程序，输入import caffe时，可能会出现 &nbsp; &nbsp; <em>ImportError</em>: N...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/Inuchiyo_china" title="Inuchiyo_china" target="_blank">
+					<img src="3_inuchiyo_china.jpg" alt="Inuchiyo_china" class="avatar-pic">
+					<span class="name">Inuchiyo_china</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2017-04-17 14:58:03</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：5818</span>
+			</p>
+		</div>
+	</div>
+								<!-- 第四范式广告开关 -->
+
+			
+				<div class="recommend-item-box" style="cursor: pointer;"><img src="201804211709205513.jpg" class="p4pfx_img" style="width: 120px; height: 90px; float: right;"><h4 class="p4pfx_title text-truncate" style="display: inline-block; width: 1287px;">IDEA开发工具+Maven使用详解视频课程（最适合初学者的教程）</h4><p class="content"><a class="p4pfx_abs" style="display: inline-block; width: 1287px;"></a></p><div class="p4pfx_extra info-box" style="display: inline-block;">广告 | Java | wanghui_777</div></div><div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/weixin_40013463/article/details/79424403" target="_top" strategy="BlogCommendFromGuangxin_2">
+				python提示<em>ImportError</em>: No <em>module</em> <em>named</em> Image			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/weixin_40013463/article/details/79424403" target="_top">
+				把import Image替换成&amp;quot;import PIL.Image&amp;quot;，凡是用到Image的都修改成PIL.Image(前提你的安装pillow（PIL）)...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/weixin_40013463" title="weixin_40013463" target="_blank">
+					<img src="3_weixin_40013463.jpg" alt="weixin_40013463" class="avatar-pic">
+					<span class="name">weixin_40013463</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2018-03-02 16:06:39</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：1097</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/warrior_zhang/article/details/50503379" target="_top" strategy="BlogCommendFromGuangxin_3">
+				The error in python :<em>ImportError</em>: No <em>module</em> <em>named</em> xxx			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/warrior_zhang/article/details/50503379" target="_top">
+				只要出现<em>ImportError</em> 错误就说明有一个包缺失。在本例中，我们安装的networkx 模块有一个未作处理的依赖项——numpy 
+，它是一个高度优化的科学计算工具集。通常，再次调用easy_i...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/warrior_zhang" title="warrior_zhang" target="_blank">
+					<img src="3_warrior_zhang.jpg" alt="warrior_zhang" class="avatar-pic">
+					<span class="name">warrior_zhang</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2016-01-12 13:02:07</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：2338</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/caicaiatnbu/article/details/73845056" target="_top" strategy="BlogCommendFromGuangxin_4">
+				<em>ImportError</em>: No <em>module</em> <em>named</em> ×××××			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/caicaiatnbu/article/details/73845056" target="_top">
+				1. <em>ImportError</em>: No <em>module</em> <em>named</em> 'scipy'
+conda install scipy
+2. <em>ImportError</em>: cannot import name 'imre...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/caicaiatnbu" title="caicaiatnbu" target="_blank">
+					<img src="3_caicaiatnbu.jpg" alt="caicaiatnbu" class="avatar-pic">
+					<span class="name">caicaiatnbu</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2017-06-28 16:02:38</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：2560</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/huanle0610/article/details/41174911" target="_top" strategy="BlogCommendFromBaidu_5">
+				python: <em>ImportError</em>: No <em>module</em> <em>named</em> <em>bz2</em>			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/huanle0610/article/details/41174911" target="_top">
+				python: <em>ImportError</em>: No <em>module</em> <em>named</em> <em>bz2</em>
+
+在安装node.js时提示<em>ImportError</em>: No <em>module</em> <em>named</em> <em>bz2</em>。
+很明显这个pyt...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/huanle0610" title="huanle0610" target="_blank">
+					<img src="3_huanle0610.jpg" alt="huanle0610" class="avatar-pic">
+					<span class="name">huanle0610</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2014-11-16 18:31:47</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：4011</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box recommend-ad-box" id="a_d_feed_0"></div>
+			
+			<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/ruiyiin/article/details/45641833" target="_top" strategy="BlogCommendFromBaidu_6">
+				I'm using Python 2.7.2 <em>ImportError</em> No <em>module</em> <em>named</em> <em>bz2</em>			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/ruiyiin/article/details/45641833" target="_top">
+				这是因为同时装了python2.6和2.7的缘故
+
+sudo cp /usr/lib64/python2.6/lib-dynload/<em>bz2</em>.so /usr/local/lib/python2.7...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/ruiyiin" title="ruiyiin" target="_blank">
+					<img src="3_ruiyiin.jpg" alt="ruiyiin" class="avatar-pic">
+					<span class="name">ruiyiin</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2015-05-11 11:13:21</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：2861</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/u013615357/article/details/52933624" target="_top" strategy="BlogCommendFromBaidu_9">
+				Linux下非Root用户解决<em>ImportError</em>: No <em>module</em> <em>named</em> <em>bz2</em>			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/u013615357/article/details/52933624" target="_top">
+				http://blog.csdn.net/cuixianpeng/article/details/51926518
+&nbsp;
+最近在学习word2vec的内容，并且发现了Python版本的实现代码gen...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/u013615357" title="u013615357" target="_blank">
+					<img src="3_u013615357.jpg" alt="u013615357" class="avatar-pic">
+					<span class="name">u013615357</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2016-10-26 14:02:44</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：2437</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/rick_zyl/article/details/79030818" target="_top" strategy="BlogCommendFromBaidu_10">
+				<em>ImportError</em>: No <em>module</em> <em>named</em> XXX 错误解决方法（Windows）			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/rick_zyl/article/details/79030818" target="_top">
+				window环境下使用pycharm编辑器来写Python时，由from *** import *** 语句导致控制台输出<em>ImportError</em>: No <em>module</em> <em>named</em> ***时，显而易见是...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/rick_zyl" title="rick_zyl" target="_blank">
+					<img src="3_rick_zyl.jpg" alt="rick_zyl" class="avatar-pic">
+					<span class="name">rick_zyl</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2018-01-11 10:03:32</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：862</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/WLJJHSN/article/details/78985880" target="_top" strategy="BlogCommendFromBaidu_11">
+				<em>ImportError</em>: No <em>module</em> <em>named</em> <em>bz2</em>。			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/WLJJHSN/article/details/78985880" target="_top">
+				前几天因为编译Android 7.1.1源码的原因，手贱更新了服务器Python版本，结果编译报错，
+无奈有回到2.x的版本，如下为安装Python3的命令
+
+
+
+
+sudo apt-ge...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/WLJJHSN" title="WLJJHSN" target="_blank">
+					<img src="3_wljjhsn.jpg" alt="WLJJHSN" class="avatar-pic">
+					<span class="name">WLJJHSN</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2018-01-05 23:00:25</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：215</span>
+			</p>
+		</div>
+	</div>
+			            <!-- 第四范式SDK -->
+
+            <div class="recommend-loading-box">
+                <img src="feedloading.gif">
+            </div>
+            <div class="recommend-end-box">
+                <p class="text-center">没有更多推荐了，<a href="https://blog.csdn.net/" class="c-blue c-blue-hover c-blue-focus">返回首页</a></p>
+            </div>
+        </div>
+    </main>
+    <aside>
+		    <div id="asideProfile" class="aside-box">
+    <h3 class="aside-title">个人资料</h3>
+    <div class="profile-intro d-flex">
+        <div class="avatar-box d-flex justify-content-center flex-column">
+            <a href="https://blog.csdn.net/yihui8">
+                <img src="3_yihui8.jpg" class="avatar_pic">
+            </a>
+        </div>
+        <div class="user-info d-flex justify-content-center flex-column">
+            <p class="name csdn-tracking-statistics tracking-click" data-mod="popu_379">
+                <a href="https://blog.csdn.net/yihui8" target="_top" class="text-truncate" id="uid">yihui8</a>
+            </p>
+                    </div>
+                <div class="opt-box d-flex justify-content-center flex-column">
+            <span class="csdn-tracking-statistics tracking-click" data-mod="popu_379">
+                                <a class="btn btn-sm btn-red-hollow" href="https://passport.csdn.net/account/login?from=https://blog.csdn.net/yihui8/article/details/22199977" target="_self">关注</a>
+                            </span>
+                    </div>
+            </div>
+    <div class="data-info d-flex item-tiling">
+                <dl class="text-center" title="191">
+                        <dt><a href="https://blog.csdn.net/yihui8?t=1">原创</a></dt>
+            <dd><a href="https://blog.csdn.net/yihui8?t=1"><span class="count">191</span></a></dd>
+                    </dl>
+        <dl class="text-center" title="144">
+            <dt>粉丝</dt>
+            <dd><span class="count" id="fan">144</span></dd>
+        </dl>
+        <dl class="text-center" title="21">
+            <dt>喜欢</dt>
+            <dd><span class="count">21</span></dd>
+        </dl>
+        <dl class="text-center" title="130">
+            <dt>评论</dt>
+            <dd><span class="count">130</span></dd>
+        </dl>
+    </div>
+    <div class="grade-box clearfix">
+        <dl>
+            <dt>等级：</dt>
+            <dd>
+                <a href="https://blog.csdn.net/home/help.html#level" title="6级,点击查看等级说明" target="_top">
+                    <svg class="icon icon-level" aria-hidden="true">
+                        <use xlink:href="#csdnc-bloglevel-6"></use>
+                    </svg>
+                </a>
+            </dd>
+        </dl>
+        <dl>
+            <dt>访问：</dt>
+            <dd title="798673">
+                79万+            </dd>
+        </dl>
+        <dl>
+            <dt>积分：</dt>
+            <dd title="9600">
+                9600            </dd>
+        </dl>
+        <dl title="2456">
+            <dt>排名：</dt>
+            <dd>2456</dd>
+        </dl>
+    </div>
+        <div class="badge-box d-flex">
+        <span>勋章：</span>
+                        <a class="icon-badge" title="持之以恒">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#csdnc-m-lasting"></use>
+            </svg>
+            <div class="icon-arrow"></div>
+            <div class="grade-detail-box item2">
+                <div class="pos-box">
+                    <div class="left-box d-flex justify-content-center align-items-center flex-column">
+                        <svg class="icon" aria-hidden="true">
+                            <use xlink:href="#csdnc-m-lasting"></use>
+                        </svg>
+                        <p>持之以恒</p>
+                    </div>
+                    <div class="right-box d-flex justify-content-center align-items-center">
+                        授予每个自然月内发布4篇或4篇以上原创或翻译IT博文的用户。不积跬步无以至千里，不积小流无以成江海，程序人生的精彩需要坚持不懈地积累！
+                    </div>
+                </div>
+            </div>
+        </a>
+                            </div>
+    </div>		    <div class="csdn-tracking-statistics mb8 box-shadow" data-pid="blog" data-mod="popu_4" style="height: 250px;">
+    <div class="aside-content text-center" id="cpro_u2734133">
+        <!-- 投放代码 -->
+        <div id="_8vk0ocyo492"><div id="gzopc" style="visibility: visible;"><div style="cursor: auto;"><div style="cursor: auto;"><iframe scrolling="no" src="index_2.html" width="300" height="250" frameborder="0"></iframe><abbr style="display: none;"></abbr></div></div></div></div>
+    </div>
+</div>
+		    <div id="asideNewArticle" class="aside-box">
+    <h3 class="aside-title">最新文章</h3>
+    <div class="aside-content">
+        <ul class="inf_list clearfix csdn-tracking-statistics tracking-click" data-mod="popu_382">
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/yihui8/article/details/80497834" target="_top">工作备忘</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/yihui8/article/details/79923859" target="_top">linux远程scp，但是不覆盖已经存在文件的方法</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/yihui8/article/details/79856255" target="_top">linux 下 将一个已有目录添加到git服务器</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/yihui8/article/details/79856235" target="_top">ubuntu上配置git服务器</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/yihui8/article/details/78924833" target="_top">MTK平台提示 make mrproper,但是 make mrproper 也会报错</a>
+            </li>
+                    </ul>
+    </div>
+</div>
+		    		    <div id="asideCategory" class="aside-box flexible-box">
+    <h3 class="aside-title">个人分类</h3>
+    <div class="aside-content">
+        <ul>
+                        <li>
+                <a href="https://blog.csdn.net/yihui8/article/category/1197294">
+                    MTK                    <span class="count float-right">21篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/yihui8/article/category/806419">
+                    Android 3G                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/yihui8/article/category/663714">
+                    Android开发                    <span class="count float-right">93篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/yihui8/article/category/817847">
+                    git                    <span class="count float-right">9篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/yihui8/article/category/732468">
+                    Linux shell                    <span class="count float-right">60篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/yihui8/article/category/679389">
+                    网络                    <span class="count float-right">21篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/yihui8/article/category/743977">
+                    Linux库的编译                    <span class="count float-right">8篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/yihui8/article/category/799631">
+                    Linux网络                    <span class="count float-right">17篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/yihui8/article/category/678923">
+                    linux驱动开发                    <span class="count float-right">29篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/yihui8/article/category/818275">
+                    office                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/yihui8/article/category/817846">
+                    svn                    <span class="count float-right">16篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/yihui8/article/category/806847">
+                    Ubuntu                    <span class="count float-right">24篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/yihui8/article/category/1242434">
+                    win7                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/yihui8/article/category/1259665">
+                    java                    <span class="count float-right">8篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/yihui8/article/category/1280813">
+                    BeyondCompare                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/yihui8/article/category/1325294">
+                    C++                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/yihui8/article/category/1655041">
+                    多媒体                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/yihui8/article/category/1857991">
+                    备忘                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/yihui8/article/category/2213411">
+                    python                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/yihui8/article/category/2451037">
+                    QT                    <span class="count float-right">10篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/yihui8/article/category/2463407">
+                    mysql                    <span class="count float-right">8篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/yihui8/article/category/2752707">
+                    visual studio                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/yihui8/article/category/3111305">
+                    openwrt                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/yihui8/article/category/5438417">
+                    路由器                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/yihui8/article/category/6115101">
+                    ios                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/yihui8/article/category/6703766">
+                    FPGA                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/yihui8/article/category/7143608">
+                    source insight                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/yihui8/article/category/7198687">
+                    android studio                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                    </ul>
+    </div>
+        <p class="text-center">
+        <a class="btn btn-link-blue flexible-btn" data-fbox="aside-archive">展开</a>
+    </p>
+    </div>
+		    <div id="asideArchive" class="aside-box flexible-box">
+    <h3 class="aside-title">归档</h3>
+    <div class="aside-content">
+        <ul class="archive-list">
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2018/05">
+                    2018年5月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2018/04">
+                    2018年4月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2017/12">
+                    2017年12月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2017/11">
+                    2017年11月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2017/10">
+                    2017年10月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2017/09">
+                    2017年9月                    <span class="count float-right">8篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2017/08">
+                    2017年8月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2017/06">
+                    2017年6月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2017/03">
+                    2017年3月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2017/02">
+                    2017年2月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2017/01">
+                    2017年1月                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2016/12">
+                    2016年12月                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2016/11">
+                    2016年11月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2016/10">
+                    2016年10月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2016/09">
+                    2016年9月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2016/08">
+                    2016年8月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2016/07">
+                    2016年7月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2016/04">
+                    2016年4月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2016/03">
+                    2016年3月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2016/02">
+                    2016年2月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2016/01">
+                    2016年1月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2015/12">
+                    2015年12月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2015/11">
+                    2015年11月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2015/10">
+                    2015年10月                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2015/08">
+                    2015年8月                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2015/07">
+                    2015年7月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2015/06">
+                    2015年6月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2015/05">
+                    2015年5月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2015/04">
+                    2015年4月                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2015/03">
+                    2015年3月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2015/02">
+                    2015年2月                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2015/01">
+                    2015年1月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2014/12">
+                    2014年12月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2014/11">
+                    2014年11月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2014/10">
+                    2014年10月                    <span class="count float-right">8篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2014/09">
+                    2014年9月                    <span class="count float-right">10篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2014/08">
+                    2014年8月                    <span class="count float-right">15篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2014/07">
+                    2014年7月                    <span class="count float-right">9篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2014/06">
+                    2014年6月                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2014/05">
+                    2014年5月                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2014/04">
+                    2014年4月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2014/03">
+                    2014年3月                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2014/01">
+                    2014年1月                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2013/12">
+                    2013年12月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2013/11">
+                    2013年11月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2013/10">
+                    2013年10月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2013/09">
+                    2013年9月                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2013/06">
+                    2013年6月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2013/05">
+                    2013年5月                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2013/04">
+                    2013年4月                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2013/03">
+                    2013年3月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2013/02">
+                    2013年2月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2013/01">
+                    2013年1月                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2012/12">
+                    2012年12月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2012/11">
+                    2012年11月                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2012/10">
+                    2012年10月                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2012/09">
+                    2012年9月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2012/08">
+                    2012年8月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2012/07">
+                    2012年7月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2012/05">
+                    2012年5月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2012/03">
+                    2012年3月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2012/02">
+                    2012年2月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2011/11">
+                    2011年11月                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2011/10">
+                    2011年10月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2011/09">
+                    2011年9月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2011/08">
+                    2011年8月                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2011/07">
+                    2011年7月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2011/06">
+                    2011年6月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2011/05">
+                    2011年5月                    <span class="count float-right">11篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2011/04">
+                    2011年4月                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2011/03">
+                    2011年3月                    <span class="count float-right">9篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2011/02">
+                    2011年2月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2011/01">
+                    2011年1月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2010/12">
+                    2010年12月                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2010/11">
+                    2010年11月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2010/10">
+                    2010年10月                    <span class="count float-right">8篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2010/09">
+                    2010年9月                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2010/07">
+                    2010年7月                    <span class="count float-right">13篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2010/06">
+                    2010年6月                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2010/05">
+                    2010年5月                    <span class="count float-right">9篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2010/04">
+                    2010年4月                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/yihui8/article/month/2010/03">
+                    2010年3月                    <span class="count float-right">10篇</span>
+                </a>
+            </li>
+                    </ul>
+    </div>
+        <p class="text-center">
+        <a class="btn btn-link-blue flexible-btn" data-fbox="aside-archive">展开</a>
+    </p>
+    </div>
+		    <div id="asideHotArticle" class="aside-box">
+	<h3 class="aside-title">热门文章</h3>
+	<div class="aside-content">
+		<ul class="hotArticle-list csdn-tracking-statistics tracking-click" data-mod="popu_521">
+							<li>
+					<a href="https://blog.csdn.net/yihui8/article/details/6445847">SVN与Git比较</a>
+					<p class="read">阅读量：<span>63241</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/yihui8/article/details/6154941">SVN版本问题：This client is too old to work with working copy</a>
+					<p class="read">阅读量：<span>24469</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/yihui8/article/details/54316888">SPI四种模式区别</a>
+					<p class="read">阅读量：<span>18897</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/yihui8/article/details/5696135">在内核中创建文件 filp_open/sys_open</a>
+					<p class="read">阅读量：<span>18681</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/yihui8/article/details/6736679">Linux内核动态调试信息的打开，如pr_debug</a>
+					<p class="read">阅读量：<span>13672</span></p>
+				</li>
+					</ul>
+	</div>
+</div>
+		    <div id="asideNewComments" class="aside-box">
+    <h3 class="aside-title">最新评论</h3>
+    <div class="aside-content">
+        <ul class="newcomment-list">
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/yihui8/article/details/6445847#comments">SVN与Git比较</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/archer_wu2" class="user-name" target="_top">archer_wu2</a>：图片都看不见，还敢贴原创标签，转载就老老实实附上原文链接！                </p>
+            </li>
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/yihui8/article/details/52667968#comments">FPGA Linux驱动</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/qq_41981751" class="user-name" target="_top">qq_41981751</a>：您好，我想问下 我用的是ti的335x  再与FPGA通信的时候需不需要自己再去编写一个FPGA的...                </p>
+            </li>
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/yihui8/article/details/52119409#comments">海思图像质量校正方法（LCS标定：...</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/liuchang199406" class="user-name" target="_top">liuchang199406</a>：[reply]chenjuan0530[/reply]
+不下载那个 Matlab 插件。外挂程序列...                </p>
+            </li>
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/yihui8/article/details/78082191#comments">eclipse ADT完整环境下载</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/haiyoumeizhuce" class="user-name" target="_top">haiyoumeizhuce</a>：一看资源......我只能说&amp;quot;楼主好人&amp;quot;                </p>
+            </li>
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/yihui8/article/details/77786812#comments">source insight死活打...</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/hh906073882" class="user-name" target="_top">hh906073882</a>：谢谢楼主分享经验。这问题困扰了我一个晚上和一个早上                </p>
+            </li>
+                    </ul>
+    </div>
+</div>
+		<div id="asideFooter">
+			
+		<div class="aside-box">
+						<div id="_oej01ergsso"><div id="hcdbx" style="margin-right: 0px;"><iframe scrolling="no" src="index_3.html" width="300" height="250" frameborder="0"></iframe></div></div>
+					</div>
+				<div class="aside-box">
+			<div class="persion_article">
+			</div>
+		</div>
+	</div>
+</aside>
+
+
+</div>
+<div class="mask-dark"></div>
+<div class="pulllog-box" style="display: block;">
+	<div class="pulllog clearfix">
+		<span class="text float-left">加入CSDN，享受更精准的内容推荐，与500万程序员共同成长！</span>
+		<div class="pulllog-btn float-right clearfix">
+            <button class="pulllog-login float-left csdn-tracking-statistics tracking-click" data-mod="popu_557">
+                登录
+            </button>
+            <div class="pulllog-sigin float-left csdn-tracking-statistics tracking-click" data-mod="popu_558">
+                <a href="https://passport.csdn.net/account/mobileregister" target="_top">注册</a>
+            </div>
+            <button class="btn-close">
+                <svg class="icon" aria-hidden="true">
+                    <use xlink:href="#csdnc-times"></use>
+                </svg>
+            </button>
+		</div>
+	</div>
+</div>
+<div id="loginWrap" style="display: none;"></div>
+<div class="tool-box">
+	<ul class="meau-list">
+		<li>
+			<button class="btn-like " title="点赞">
+				<svg class="icon active" aria-hidden="true">
+					<use xlink:href="#csdnc-thumbsup-ok"></use>
+				</svg><svg class="icon no-active" aria-hidden="true">
+					<use xlink:href="#csdnc-thumbsup"></use>
+				</svg>
+				<p>3</p>
+			</button>
+		</li>
+		<li class="toc-container-box" id="liTocBox">
+			<button class="btn-toc" title="目录">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-contents"></use>
+				</svg><br>目录
+			</button>
+			<div class="toc-container">
+				<div class="pos-box">
+					<div class="icon-arrow"></div>
+					<div class="scroll-box">
+						<div class="toc-box"></div>
+					</div>
+				</div>
+				<div class="opt-box">
+					<button class="btn-opt prev nomore" title="向上">
+						<svg class="icon" aria-hidden="true">
+							<use xlink:href="#csdnc-chevronup"></use>
+						</svg>
+					</button>
+					<button class="btn-opt next">
+						<svg class="icon" aria-hidden="true">
+							<use xlink:href="#csdnc-chevrondown"></use>
+						</svg>
+					</button>
+				</div>
+			</div>
+		</li>
+		<li>
+			<button class="btn-bookmark" title="收藏">
+				<svg class="icon active" aria-hidden="true">
+					<use xlink:href="#csdnc-bookmark-ok"></use>
+				</svg><svg class="icon no-active" aria-hidden="true">
+					<use xlink:href="#csdnc-bookmark"></use>
+				</svg><br>收藏
+			</button>
+		</li>
+		<li>
+			<a class="btn-comments" title="评论" href="#commentBox">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-comments"></use>
+				</svg><br>评论
+			</a>
+		</li>
+				<li class="bdsharebuttonbox">
+			<a class="btn-comments bds_weixin" data-cmd="weixin" title="微信分享">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-wechat"></use>
+				</svg><br>微信
+			</a>
+		</li>
+		<li class="bdsharebuttonbox">
+			<a class="btn-comments bds_tsina" data-cmd="tsina" title="微博分享">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-weibo"></use>
+				</svg><br>微博
+			</a>
+		</li>
+		<li class="bdsharebuttonbox">
+			<a class="btn-comments bds_qzone" data-cmd="qzone" title="QQ分享">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-qq"></use>
+				</svg><br>QQ
+			</a>
+		</li>
+	</ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="box-box-default">
+    <a class="btn-remove">
+        关闭
+    </a>
+    <div id="_7hlsbt58p34"><iframe scrolling="no" src="index_4.html" width="160" height="600" frameborder="0"></iframe></div>
+</div>
+<div class="box-box-large">
+    <a class="btn-remove">
+        关闭
+    </a>
+    <div id="_5fjzxx4dftg"><div style="display: none;"></div><iframe scrolling="no" src="index_5.html" width="250" height="250" frameborder="0"></iframe><span style="width: 0px; height: 0px; margin: 0px;"></span></div>
+</div>
+</body>
+</html>

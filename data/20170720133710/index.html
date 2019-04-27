@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keyword" content="Dom, iDom, Dom blog, Dom的博客, HTML5, UI框架, Mobile, 图形渲染">
+    <meta name="description" content="关注移动游戏 Html5 Flash UI框架">
+    <link rel="shortcut icon" href="favicon.ico">
+
+    <title>使用代理同步谷歌项目时出现文件下载失败 - iDom</title>
+
+    <link rel="canonical" href="http://www.idom.me/articles/843.html">
+
+    <!-- Bootstrap Core CSS -->
+    
+
+    <!-- Custom CSS -->
+    
+
+    <!-- Pygments Github CSS -->
+    
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    
+
+
+    <!-- Hux Delete, sad but pending in China 
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+    
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+
+    <!-- Hux add tongji.baidu -->
+    
+    
+
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://www.idom.me/">iDom</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="http://www.idom.me/">Home</a>
+                </li>
+                
+                <li>
+                    <a href="http://www.idom.me/about">About</a>
+                </li>
+                
+                <li>
+                    <a href="http://www.idom.me/tags">Tags</a>
+                </li>
+                
+
+                <!-- Hux customized -->
+
+
+                <!-- Hux end -->
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+
+    <!-- Image to hack wechat -->
+<!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="/img/home-bg.jpg" width="0" height="0"> -->
+
+<!-- Post Header -->
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="http://www.idom.me/tags.html#C++" title="C++">C++</a>
+                        
+                    </div>
+                    <h1 id="">使用代理同步谷歌项目时出现文件下载失败</h1>
+                    
+                    
+                    <h2 class="subheading" id="-1"></h2>
+                    
+                    <span class="meta">Posted on June 7, 2016</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 post-container">
+
+				<p>在按官方文档使用 <code class="highlighter-rouge">gclient sync</code> 命令同步谷歌v8或Chromium项目时，最后总是会出现文件下载失败的报错：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Failed to fetch file gs://chromium-gn/a68b194afb05d6a6357cf2e2464136ed7723c305 for src/buildtools/mac/gn.
+...
+Error: Command 'download_from_google_storage --no_resume --platform=darwin --no_auth --bucket chromium-gn -s src/buildtools/mac/gn.sha1' returned non-zero exit status ...
+</code></pre>
+</div>
+<p>搜索了一下午才找到解决方案，是翻墙代理的问题， <code class="highlighter-rouge">gclient sync</code> 里的某些子命令似乎在代理环境下无法正确连接谷歌服务器，准确说是连接上了，但是验证会卡非常长时间然后验证失败无法下载。一开始以为是代理没配置好，专门给命令行也配置了代理依然不行。这个问题如果你上谷歌官方issue和论坛里去找几乎找不到正确解决方案，因为他们大部分人不需要翻墙，在天朝写个代码真不容易。</p>
+
+<p>这个问题不知道谷歌会不会修好，如果一直没修自己手动也可以解决。本质上只是谷歌自己的命令行工具无法下载，但是你通过浏览器或者其他命令行工具是能下载文件的。以上面的报错为例，命令行需要把这个文件：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>gs://chromium-gn/a68b194afb05d6a6357cf2e2464136ed7723c305
+</code></pre>
+</div>
+<p>下载到这里并命名为 <code class="highlighter-rouge">gn</code>：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>src/buildtools/mac/gn
+</code></pre>
+</div>
+<p>我们只需要 <code class="highlighter-rouge">gs://</code> 替换为 <code class="highlighter-rouge">https://storage.googleapis.com/</code> 就可以直接在浏览器下载了。前提当然是你还开着翻墙代理。所以任务就变成了下载下面这个地址的文件到刚刚那个目录。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>https://storage.googleapis.com/chromium-gn/a68b194afb05d6a6357cf2e2464136ed7723c305
+</code></pre>
+</div>
+<p>你可以一个个用浏览器下载，也可以用命令行工具如 <code class="highlighter-rouge">wget</code> 去下载：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>wget --no-check-certificate https://storage.googleapis.com/chromium-gn/a68b194afb05d6a6357cf2e2464136ed7723c305 -O src/buildtools/mac/gn
+</code></pre>
+</div>
+<p>可以写个工具脚本，一旦遇到 <code class="highlighter-rouge">download_from_google_storage</code> 错误的时候就执行一次手动下载，直到再次执行 <code class="highlighter-rouge">gclient sync</code> 不再报错为止，问题就解决了。</p>
+
+<p><strong>「更新」</strong></p>
+
+<p>我花了点时间用 NodeJS 写了个全自动下载的命令行工具。点击此处下载：<a href="http://www.idom.me/uploads/2016/gs.zip">gs.zip</a>。下载后要在系统安装一下 NodeJS 就可以用了。使用方式很简单，如果在mac下，下载这个文件解压后,放到你上次执行 <code class="highlighter-rouge">gclient sync</code> 的那个目录下，也就是v8或src(chromium)文件夹的上一级。先执行一下：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>chmod +x ./gs
+</code></pre>
+</div>
+<p>让它有可执行权限。然后直接执行：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>./gs src/DEPS
+</code></pre>
+</div>
+<p>只有一个参数，输入项目中DEPS这个文件的路径给它。不管相对路径还是绝对路径都可以。然后你就应该会看到一系列如下的输出：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>downloading... https://xxx  to  xxx
+
+</code></pre>
+</div>
+<p>等它全部下载完就好了。然后你再继续执行 <code class="highlighter-rouge">gclient sync</code> 应该就没问题了。
+如果在windows下，把那个gs加个 <code class="highlighter-rouge">.js</code> 的扩展名，然后用 <code class="highlighter-rouge">node</code> 命令执行它即可,类似这样：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>node gs.js src/DEPS
+</code></pre>
+</div>
+<p>其他步骤同上。</p>
+
+
+                <hr>
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="http://www.idom.me/articles/842.html" data-toggle="tooltip" data-placement="top" title="Mac上直接解压C++静态库的问题">← Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="http://www.idom.me/articles/844.html" data-toggle="tooltip" data-placement="top" title="在Mac下使用libc++编译v8">Next Post →</a>
+                    </li>
+                    
+                </ul>
+
+
+                
+                <div id="disqus_thread" class="ds-thread" data-thread-key="/articles/843" data-url="http://www.idom.me/articles/843.html"></div>
+                
+
+                <!-- friends -->
+                
+                <div class="sidebar-container">
+                    <hr>
+                    <h5 id="friends">FRIENDS</h5>
+                    <ul class="list-inline" style="margin-bottom: 0px;">
+                        
+                            <li><a href="http://junnan.org/">Bindiry</a></li>
+                        
+                            <li><a href="http://nshen.net/">N神的研究所</a></li>
+                        
+                            <li><a href="http://imzc.me/">IMZC</a></li>
+                        
+                            <li><a href="http://zengrong.net/">zrong's blog</a></li>
+                        
+                            <li><a href="http://featherj.org/">FeatherJ</a></li>
+                        
+                            <li><a href="http://hyq.me/">HYQ</a></li>
+                        
+                            <li><a href="http://tgerm.org/">LifeStone</a></li>
+                        
+                            <li><a href="http://xsstomy.com/">Xsstomy</a></li>
+                        
+                            <li><a href="http://xzper.com/">纸片儿</a></li>
+                        
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+
+<!-- async load function -->
+
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+
+
+
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+                    <li>
+                        <a href="http://www.idom.me/feed.xml">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+
+                    <!-- add Weibo, Zhihu by Hux, add target = "_blank" to <a> by Hux -->
+                    
+                    <li>
+                        <a target="_top" href="https://www.zhihu.com/people/domchen">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li>
+                        <a target="_top" href="http://weibo.com/domchen">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+
+                    
+                    
+                    <li>
+                        <a target="_top" href="https://github.com/domchen">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright © iDom 2012-2017
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+</body>
+</html>

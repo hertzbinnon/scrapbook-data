@@ -1,0 +1,469 @@
+<html>
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+
+<link rel="stylesheet" type="text/css" id="SL_Style" href="chrome://imtranslator/content/css/translator.css"></head>
+<body>
+<p><font face="Times New Roman">How to trancode other video formats to AVS using 
+ffmpeg under Linux<br>
+This document will show you how to enable the AVS encoder inside ffmpeg and 
+transcode from other video formats to AVS video under Linux.<br>
+<br>
+<a href="#Compile">1. How to Compile ffmpeg to support XAVS encoding</a><br>
+<a href="#ffmpeg_usage">2. How to use ffmpeg to transcode videos to AVS</a><br>
+<a href="#Mapping">3. XAVS to FFmpeg options mapping</a><br>
+#########################################################################<br>
+##############<font color="#FF0000"><a name="Compile"></a>How to Compile ffmpeg 
+to support XAVS encoding</font>###################<br>
+#########################################################################<br>
+<b>1. Download the ffmpeg sourcecode </b> <br>
+svn checkout svn://svn.ffmpeg.org/ffmpeg/trunk ffmpeg<br>
+Download the xavs sourcecode <br>
+svn co https://xavs.svn.sourceforge.net/svnroot/xavs/trunk xavs<br>
+<br>
+<b>2. Compile the xavs code </b><br>
+install your xavs and Prefix the .h file and the .a 
+file into the system directory like /usr/local. <br>
+./configure --enable-shared <br>
+make <br>
+make install (the libxavs.so.x will be installed at /usr/local/lib/<br>
+<br>
+3.<b> Configure ffmpeg </b> <br>
+When you run the configure file, add the following two commands:<br>
+#./configure --enable-gpl --enable-libxavs<br>
+You should make sure that the ffmpeg project also prefix to the same location 
+where you prefix your avs library file. That is /usr/local in our example.<br>
+&nbsp;make <br>
+&nbsp;make install <br>
+<br>
+<b>Check for XAVS support </b><br>
+#./ffmpeg -formats |less<br>
+DE cavsvideo raw Chinese AVS video<br>
+The avs video encoder is built successfully in the ffmpeg. <br>
+<br>
+#########################################################################<br>
+###############<font color="#FF0000"><a name="ffmpeg_usage"></a>How to use 
+ffmpeg to transcode videos to AVS</font>######################<br>
+#########################################################################<br>
+Command line to accomplish the trancoding should be like this:<br>
+./ffmpeg -vframes 300 -cqp 29 -refs 2 -bf 2 -g 16 -s widthxheight -i "INPUT_FILE_NAME" 
+-vcodec libxavs "OUTPUT_FILE_NAME"<br>
+You should have some basic knowledge of the ffmpeg parameters to set the 
+transcoding configure. We provide you some commonly used parameters as a 
+reference:<br>
+-b/-vb set the bitrate/video bitrate<br>
+-s resoltion should be in the format of widthxheight<br>
+-r frame rate<br>
+-refs number of reference frames<br>
+-bf how many B frame enabled<br>
+-g gop size: frame distance between each I frames<br>
+-cqp value of this parameter should be integer larger or equal to 0. And this 
+shows that you are going to use constant QP.<br>
+-me_method [zero, full, epzs,esa,tesa,dia, log, phod, x1, hex, umh, iter]<br>
+-qmin/-qmax min/max quantization step<br>
+-vframes how many frames are going to encode<br>
+<br>
+example: <br>
+A. 264 -&gt; avs (without B frames)<br>
+#./ffmpeg -i test0.avi -g 60 -b 600k -vcodec libxavs output1.cavs<br>
+Input #0, avi, from 'test.avi':<br>
+Metadata:<br>
+ISFT : Lavf52.68.0<br>
+Duration: 00:00:40.46, start: 0.000000, bitrate: 313 kb/s<br>
+Stream #0.0: Video: h264, yuv420p, 576x432, 30 fps, 30 tbr, 30 tbn, 60 tbc<br>
+Output #0, avs, to 'output.avs':<br>
+Metadata:<br>
+encoder : Lavf52.68.0<br>
+Stream #0.0: Video: libxavs, yuv420p, 576x432, q=2-31, 600 kb/s, 90k tbn, 30 tbc<br>
+#./ffmpeg -i output.avs <br>
+Input #0, cavsvideo, from 'output1.cavs':<br>
+Duration: N/A, bitrate: N/A<br>
+Stream #0.0: Video: cavs, yuv420p, 576x432, 30 fps, 30 tbr, 1200k tbn, 30 tbc<br>
+[libxavs @ 0xaad0030]mb I I16..4: 0.0% 100.0% 0.0%<br>
+[libxavs @ 0xaad0030]mb P I16..4: 0.0% 3.1% 0.0% P16..4: 27.7% 9.3% 3.0% 0.0% 
+0.0% skip:56.9%<br>
+frame= 1214 fps= 3 q=-2.0 Lsize= 2925kB time=40.47 bitrate= 592.2kbits/s <br>
+<br>
+Check Done from RM52k <br>
+<br>
+B. 264 -&gt; avs (with B frames)<br>
+#./ffmpeg -i test0.avi -b 600k -bf 2 -vcodec libxavs output2.cavs <br>
+[libxavs @ 0x9d83030]mb I I16..4: 0.0% 100.0% 0.0%<br>
+[libxavs @ 0x9d83030]mb P I16..4: 0.0% 5.7% 0.0% P16..4: 30.2% 10.2% 3.6% 0.0% 
+0.0% skip:50.3%<br>
+[libxavs @ 0x9d83030]mb B I16..4: 0.0% 0.4% 0.0% B16..8: 33.3% 0.8% 0.9% direct: 
+0.2% skip:64.4%<br>
+frame= 1214 fps= 3 q=-2.0 Lsize= 3304kB time=40.47 bitrate= 668.9kbits/s </font>
+</p>
+<p><font face="Times New Roman">C. PSNR of the trancoding or encoding , use -psnr 
+option <br>
+./ffmpeg -s cif -i /mnt/d/sequences/ak.yuv -psnr -vcodec libxavs test.cavs<br>
+<br>
+D. Set the bitrate of the AVS video <br>
+./ffmpeg -s cif -i /mnt/d/sequences/ak.yuv -b 300k -vcodec libxavs test.cavs</font><br>
+　</p>
+<table x:str="" style="border-collapse: collapse; width: 500pt;" id="table1" width="666" cellspacing="0" cellpadding="0" border="0">
+	<colgroup>
+		<col style="width: 197pt;" width="262">
+		<col style="width: 303pt;" width="404">
+	</colgroup>
+	<tbody><tr style="height: 14.25pt;" height="19">
+		<td colspan="2" style="height: 14.25pt; width: 500pt; text-align: center; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: 宋体; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="666" height="19">
+		<font face="Times New Roman"><b><font size="3" color="#FF0000">
+		<a name="Mapping"></a></font></b><font size="3" color="#FF0000">XAVS to 
+		FFmpeg options mapping</font></font></td>
+	</tr>
+	<tr style="height: 14.25pt;" height="19">
+		<td colspan="2" style="height: 14.25pt; text-align: center; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: 宋体; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px;" height="19">
+		<font size="3" face="Times New Roman">&nbsp; </font></td>
+	</tr>
+	<tr style="height: 14.25pt;" height="19">
+		<td colspan="2" style="height: 14.25pt; text-align: center; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: 宋体; vertical-align: bottom; white-space: nowrap; border-width: medium medium 0.5pt; border-style: none none solid; border-color: currentcolor currentcolor black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" height="19">
+		<font size="3" face="Times New Roman">　</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-weight: 700; font-family: Verdana,sans-serif; text-align: center; vertical-align: middle; white-space: normal; color: windowtext; font-size: 12pt; font-style: normal; text-decoration: none; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">FFmpeg option</font></td>
+		<td style="width: 303pt; font-weight: 700; font-family: Verdana,sans-serif; text-align: center; vertical-align: middle; white-space: normal; color: windowtext; font-size: 12pt; font-style: normal; text-decoration: none; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">xavs option</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">-g &lt;frames&gt;</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–keyint</font></td>
+	</tr>
+	<tr style="height: 18pt;" height="24">
+		<td style="height: 18pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="24">
+		<font size="3" face="Times New Roman">-b &lt;bits per second&gt;</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–bitrate</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">-bufsize &lt;bits&gt;</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–vbv-bufsize</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">-maxrate &lt;bits&gt;</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–vbv-maxrate</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">-pass &lt;1,2,3&gt;</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–pass</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">-crf &lt;float&gt;</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–crf</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">-cqp &lt;int&gt;</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–qp</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">-bf &lt;int&gt;</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–bframes</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">-coder &lt;0,1&gt;</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–no-cabac/nothing</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">-b_strategy &lt;0,1&gt;</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–no-b-adapt/nothing</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">-bframebias &lt;int&gt;</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–b-bias</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">-keyint_min &lt;int&gt;</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–min-keyint</font></td>
+	</tr>
+	<tr style="height: 16.5pt;" height="22">
+		<td style="height: 16.5pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="22">
+		<font size="3" face="Times New Roman">-sc_threshold &lt;int&gt;</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–scenecut</font></td>
+	</tr>
+	<tr style="height: 18pt;" height="24">
+		<td style="height: 18pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt; border-style: none solid; border-color: currentcolor black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="24">
+		<font size="3" face="Times New Roman">-deblockalpha &lt;int&gt;</font></td>
+		<td rowspan="3" style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–deblock</font></td>
+	</tr>
+	<tr style="height: 14.25pt;" height="19">
+		<td style="height: 14.25pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt; border-style: none solid; border-color: currentcolor black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="19">
+		<font size="3" face="Times New Roman">　</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">-deblockbeta &lt;int&gt;</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">-qmin &lt;int&gt;</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–qpmin</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">-qmax &lt;int&gt;</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–qpmax</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">-qdiff &lt;int&gt;</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–qpstep</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">-qcomp &lt;float&gt;</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–qcomp</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">-qblur &lt;float&gt;</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–qblur</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">-complexityblur &lt;float&gt;</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–cplxblur</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">-refs &lt;int&gt;</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–ref</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">-directpred &lt;int&gt;</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–direct</font></td>
+	</tr>
+	<tr style="height: 18pt;" height="24">
+		<td style="height: 18pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="24">
+		<font size="3" face="Times New Roman">-me &lt;epzs,hex,umh,full&gt;</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–me</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">-me_range &lt;int&gt;</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–merange</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">-subq &lt;int&gt;</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–subme</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">-bidir_refine &lt;0,1&gt;</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–bime</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">-trellis &lt;0,1,2&gt;</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–trellis</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">-nr &lt;int&gt;</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–nr</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">-level &lt;int&gt;</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–level</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">-bt &lt;bits&gt;</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–ratetol = -bt / -b</font></td>
+	</tr>
+	<tr style="height: 17.25pt;" height="23">
+		<td style="height: 17.25pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="23">
+		<font size="3" face="Times New Roman">-rc_init_occupancy &lt;bits&gt;</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–vbv-init = -rc_init_occupancy / -bufsize</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">-i_qfactor &lt;float&gt;</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–ipratio = 1 / -i_qfactor</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">-b_qfactor &lt;float&gt;</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–pbratio</font></td>
+	</tr>
+	<tr style="height: 13.5pt;" height="18">
+		<td style="height: 13.5pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="18">
+		<font size="3" face="Times New Roman">-chromaoffset &lt;int&gt;</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–chroma-qp-offset</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">-rc_eq &lt;string&gt;</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–rc_eq</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">-threads &lt;int&gt;</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–threads</font></td>
+	</tr>
+	<tr style="height: 16.5pt;" height="22">
+		<td style="height: 16.5pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="22">
+		<font size="3" face="Times New Roman">-cmp &lt;-chroma/+chroma&gt;</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–no-chroma-me/nothing</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-weight: 700; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">-partitions</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–partitions</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">+parti8×8</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">i8×8</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">+parti4×4</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">i4×4</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">+partp8×8</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">p8×8</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">+partp4×4</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">p4×4</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">+partb8×8</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">b8×8</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-weight: 700; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">-flags</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">　</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">-loop/+loop</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–no-deblock/–deblock</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">-psnr/+psnr</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–no-psnr/nothing</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-weight: 700; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">-flags2</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">　</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">+bpyramid</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–b-pyramid</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">+wpred</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–weightb</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">+brdo</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–b-rdo</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">+mixed_refs</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–mixed-refs</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">+dct8×8</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–8×8dct</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">-fastpskip/+fastpskip</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–no-fast-pskip/nothing</font></td>
+	</tr>
+	<tr style="height: 15pt;" height="20">
+		<td style="height: 15pt; width: 197pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt; border-style: none solid solid; border-color: currentcolor black black; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="262" height="20">
+		<font size="3" face="Times New Roman">+aud</font></td>
+		<td style="width: 303pt; font-family: Verdana,sans-serif; white-space: normal; color: windowtext; font-size: 12pt; font-weight: 400; font-style: normal; text-decoration: none; vertical-align: bottom; border-width: medium 0.5pt 0.5pt medium; border-style: none solid solid none; border-color: currentcolor black black currentcolor; padding-left: 1px; padding-right: 1px; padding-top: 1px;" width="404">
+		<font size="3" face="Times New Roman">–aud</font></td>
+	</tr>
+</tbody></table>
+<p>　</p>
+<p>　</p>
+
+
+<div id="SL_balloon_obj" style="display: none;"><div id="SL_button" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 24px; height: 24px; position: absolute; cursor: pointer;"></div><div id="SL_shadow_translation_result2" style="display: none;"></div><div id="SL_shadow_translator"><div id="SL_providers"><div class="SL_BL_LABLE_ON" title="Google" id="SL_P0">G</div><div class="SL_BL_LABLE_ON" title="Microsoft" id="SL_P1">M</div><div class="SL_BL_LABLE_ON" title="Translator" id="SL_P2">T</div></div><div id="SL_planshet" style="background: rgb(244, 245, 245) url('undefined') repeat scroll 0% 0%;"><div id="SL_arrow_up"></div><div id="SL_TB"><div id="bubblelogo" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 24px; height: 24px; position: absolute;"></div><table id="SL_tables"><tr><td width="10%" align="right"><input id="SLloc" title="鎖定語言" type="checkbox"></td><td width="20%" align="left"><select id="SL_lng_from"><option value="auto">檢測語言</option><option value="sq">阿尔巴尼亚语</option><option value="ar">阿拉伯语</option><option value="az">阿塞拜疆语</option><option value="ga">爱尔兰语</option><option value="et">爱沙尼亚语</option><option value="eu">巴斯克语</option><option value="be">白俄罗斯语</option><option value="bg">保加利亚语</option><option value="is">冰岛语</option><option value="pl">波兰语</option><option value="bs">波斯尼亚语</option><option value="fa">波斯语</option><option value="af">布尔语(南非荷兰语)</option><option value="da">丹麦语</option><option value="de">德语</option><option value="ru">俄语</option><option value="fr">法语</option><option value="tl">菲律宾语</option><option value="fi">芬兰语</option><option value="km">高棉语</option><option value="ka">格鲁吉亚语</option><option value="gu">古吉拉特语</option><option value="kk">哈萨克语</option><option value="ht">海地克里奥尔语</option><option value="ko">韩语</option><option value="ha">豪萨语</option><option value="nl">荷兰语</option><option value="gl">加利西亚语</option><option value="ca">加泰罗尼亚语</option><option value="cs">捷克语</option><option value="kn">卡纳达语</option><option value="hr">克罗地亚语</option><option value="la">拉丁语</option><option value="lv">拉脱维亚语</option><option value="lo">老挝语</option><option value="lt">立陶宛语</option><option value="ro">罗马尼亚语</option><option value="mg">马尔加什语</option><option value="mt">马耳他语</option><option value="mr">马拉地语</option><option value="ml">马拉雅拉姆语</option><option value="ms">马来语</option><option value="mk">马其顿语</option><option value="mi">毛利语</option><option value="mn">蒙古语</option><option value="bn">孟加拉语</option><option value="my">缅甸语</option><option value="hmn">苗语</option><option value="zu">南非祖鲁语</option><option value="ne">尼泊尔语</option><option value="no">挪威语</option><option value="pa">旁遮普语</option><option value="pt">葡萄牙语</option><option value="ny">齐切瓦语</option><option value="ja">日语</option><option value="sv">瑞典语</option><option value="sr">塞尔维亚语</option><option value="st">塞索托语</option><option value="si">僧伽罗语</option><option value="eo">世界语</option><option value="sk">斯洛伐克语</option><option value="sl">斯洛文尼亚语</option><option value="sw">斯瓦希里语</option><option value="ceb">宿务语</option><option value="so">索马里语</option><option value="tg">塔吉克语</option><option value="te">泰卢固语</option><option value="ta">泰米尔语</option><option value="th">泰语</option><option value="tr">土耳其语</option><option value="cy">威尔士语</option><option value="ur">乌尔都语</option><option value="uk">乌克兰语</option><option value="uz">乌兹别克语</option><option value="iw">希伯来语</option><option value="el">希腊语</option><option value="es">西班牙语</option><option value="hu">匈牙利语</option><option value="hy">亚美尼亚语</option><option value="ig">伊博语</option><option value="it">意大利语</option><option value="yi">意第绪语</option><option value="hi">印地语</option><option value="su">印尼巽他语</option><option value="id">印尼语</option><option value="jw">印尼爪哇语</option><option value="en">英语</option><option value="yo">约鲁巴语</option><option value="vi">越南语</option><option value="zh-CN">中文简体</option><option value="zh-TW">中文繁体</option></select></td><td width="5%" align="center"><div id="SL_switch_b" title="切換語言" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 10px; height: 10px; cursor: pointer;" align="center"></div></td><td width="20%" align="left"><select id="SL_lng_to"><option value="sq">阿尔巴尼亚语</option><option value="ar">阿拉伯语</option><option value="az">阿塞拜疆语</option><option value="ga">爱尔兰语</option><option value="et">爱沙尼亚语</option><option value="eu">巴斯克语</option><option value="be">白俄罗斯语</option><option value="bg">保加利亚语</option><option value="is">冰岛语</option><option value="pl">波兰语</option><option value="bs">波斯尼亚语</option><option value="fa">波斯语</option><option value="af">布尔语(南非荷兰语)</option><option value="da">丹麦语</option><option value="de">德语</option><option value="ru">俄语</option><option value="fr">法语</option><option value="tl">菲律宾语</option><option value="fi">芬兰语</option><option value="km">高棉语</option><option value="ka">格鲁吉亚语</option><option value="gu">古吉拉特语</option><option value="kk">哈萨克语</option><option value="ht">海地克里奥尔语</option><option value="ko">韩语</option><option value="ha">豪萨语</option><option value="nl">荷兰语</option><option value="gl">加利西亚语</option><option value="ca">加泰罗尼亚语</option><option value="cs">捷克语</option><option value="kn">卡纳达语</option><option value="hr">克罗地亚语</option><option value="la">拉丁语</option><option value="lv">拉脱维亚语</option><option value="lo">老挝语</option><option value="lt">立陶宛语</option><option value="ro">罗马尼亚语</option><option value="mg">马尔加什语</option><option value="mt">马耳他语</option><option value="mr">马拉地语</option><option value="ml">马拉雅拉姆语</option><option value="ms">马来语</option><option value="mk">马其顿语</option><option value="mi">毛利语</option><option value="mn">蒙古语</option><option value="bn">孟加拉语</option><option value="my">缅甸语</option><option value="hmn">苗语</option><option value="zu">南非祖鲁语</option><option value="ne">尼泊尔语</option><option value="no">挪威语</option><option value="pa">旁遮普语</option><option value="pt">葡萄牙语</option><option value="ny">齐切瓦语</option><option value="ja">日语</option><option value="sv">瑞典语</option><option value="sr">塞尔维亚语</option><option value="st">塞索托语</option><option value="si">僧伽罗语</option><option value="eo">世界语</option><option value="sk">斯洛伐克语</option><option value="sl">斯洛文尼亚语</option><option value="sw">斯瓦希里语</option><option value="ceb">宿务语</option><option value="so">索马里语</option><option value="tg">塔吉克语</option><option value="te">泰卢固语</option><option value="ta">泰米尔语</option><option value="th">泰语</option><option value="tr">土耳其语</option><option value="cy">威尔士语</option><option value="ur">乌尔都语</option><option value="uk">乌克兰语</option><option value="uz">乌兹别克语</option><option value="iw">希伯来语</option><option value="el">希腊语</option><option value="es">西班牙语</option><option value="hu">匈牙利语</option><option value="hy">亚美尼亚语</option><option value="ig">伊博语</option><option value="it">意大利语</option><option value="yi">意第绪语</option><option value="hi">印地语</option><option value="su">印尼巽他语</option><option value="id">印尼语</option><option value="jw">印尼爪哇语</option><option value="en">英语</option><option value="yo">约鲁巴语</option><option value="vi">越南语</option><option value="zh-CN">中文简体</option><option value="zh-TW">中文繁体</option></select></td><td width="5%" align="center"> </td><td width="6%" align="center"><div id="SL_TTS_voice" title="聆聽" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="6%" align="center"><div id="SL_copy" title="複製譯文" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="6%" align="center"><div id="SL_bbl_font_patch" title="此功能在字典中禁用"></div><div id="SL_bbl_font" title="字體大小" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="6%" align="center"><div id="SL_TH" title="翻譯歷史" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="10%"></td><td width="6%" align="right"><div id="SL_pin" title="固定彈出窗口" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 16px; height: 16px; cursor: pointer;"></div></td></tr></table></div><div id="SL_alert_bbl"><div id="SLHKclose"></div><div id="SL_alert_cont"></div></div></div><div id="SL_shadow_translation_result" style="background: rgb(255, 255, 255) url('undefined') repeat scroll 0% 0%;"></div><div id="SL_loading" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; position: absolute; width: 35px; margin-left: 180px; margin-top: -40px; height: 35px;"></div><div id="SL_player2"></div><div id="SL_alert100">語言功能限200個字符</div><div id="SL_Balloon_options" style="background: rgb(255, 255, 255) none repeat scroll 0% 0%;"><div id="SL_arrow_down"></div><table width="100%"><tr><td width="18%" height="16" align="left"><div id="SL_bbl_donate" title="進行一點捐款" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="68%" align="center"><a href="#" id="OPlnk" title="顯示選項">選項</a> : <a href="#" id="HISTlnk" title="翻譯歷史">歷史</a> : <a href="http://about.imtranslator.net/tutorials/presentations/imtranslator-translator-for-firefox/popup-bubble-application/" target="_top" id="HELPlnk" title="幫助">幫助</a> : <a href="#" id="FBlnk" title="反饋">反饋</a></td><td width="15%" align="right"><a id="SL_Balloon_Close" href="#" title="關閉">關閉</a></td></tr></table></div></div></div></body>
+</html>

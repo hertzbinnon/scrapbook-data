@@ -1,0 +1,465 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    <title>
+      Yocto/gstreamer/streaming – Gateworks
+    </title>
+      
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--[if IE]><script type="text/javascript">
+      if (/^#__msie303:/.test(window.location.hash))
+        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
+    </script><![endif]-->
+          <link rel="search" href="http://trac.gateworks.com/search">
+          <link rel="help" href="http://trac.gateworks.com/wiki/TracGuide">
+          <link rel="alternate" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/streaming?format=txt" type="text/x-trac-wiki" title="Plain Text">
+          <link rel="up" href="http://trac.gateworks.com/wiki/Yocto/gstreamer" title="View parent page">
+          <link rel="start" href="http://trac.gateworks.com/wiki">
+          
+          
+          <link rel="icon" href="trac.ico" type="image/x-icon">
+    
+      <link type="application/opensearchdescription+xml" rel="search" href="http://trac.gateworks.com/search/opensearch" title="Search Gateworks">
+      
+      
+      
+      
+      
+    
+    <meta name="ROBOTS" content="NOINDEX, NOFOLLOW">
+    
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+
+		
+	
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+    <div id="banner">
+      <div id="header">
+        <a id="logo" href="http://trac.gateworks.com/wiki"><img src="g2998.png" alt="Gateworks Wiki"></a>
+      </div>
+      <form id="search" action="http://trac.gateworks.com/search" method="get">
+        <div>
+          <label for="proj-search">Search:</label>
+          <input id="proj-search" name="q" size="18" value="" type="text">
+          <input value="Search" type="submit">
+        </div>
+      </form>
+      <div id="metanav" class="nav">
+    <ul>
+      <li class="first"><a href="http://trac.gateworks.com/login">Login</a></li><li><a href="http://trac.gateworks.com/prefs">Preferences</a></li><li><a href="http://trac.gateworks.com/wiki/TracGuide">Help/Guide</a></li><li><a href="http://trac.gateworks.com/about">About Trac</a></li><li class="last"><a href="http://trac.gateworks.com/reset_password">Forgot your password?</a></li>
+    </ul>
+  </div>
+    </div>
+    <div id="mainnav" class="nav">
+    <ul>
+      <li class="first active"><a href="http://trac.gateworks.com/wiki">Wiki</a></li><li><a href="http://trac.gateworks.com/timeline">Timeline</a></li><li><a href="http://trac.gateworks.com/browser">Browse Source</a></li><li class="last"><a href="http://trac.gateworks.com/search">Search</a></li>
+    </ul>
+  </div>
+    <div id="main">
+      <div id="pagepath" class="noprint">
+  <a class="pathentry first" title="View WikiStart" href="http://trac.gateworks.com/wiki">wiki:</a><a class="pathentry" href="http://trac.gateworks.com/wiki/Yocto" title="View Yocto">Yocto</a><span class="pathentry sep">/</span><a class="pathentry" href="http://trac.gateworks.com/wiki/Yocto/gstreamer" title="View Yocto/gstreamer">gstreamer</a><span class="pathentry sep">/</span><a class="pathentry" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/streaming" title="View Yocto/gstreamer/streaming">streaming</a>
+</div>
+      <div id="ctxtnav" class="nav">
+        <h2>Context Navigation</h2>
+        <ul>
+          <li class="first"><a href="http://trac.gateworks.com/wiki/Yocto/gstreamer">Up</a></li><li><a href="http://trac.gateworks.com/wiki/WikiStart">Start Page</a></li><li><a href="http://trac.gateworks.com/wiki/TitleIndex">Index</a></li><li class="last"><a href="http://trac.gateworks.com/wiki/Yocto/gstreamer/streaming?action=history">History</a></li>
+        </ul>
+        <hr>
+      </div>
+    <div id="content" class="wiki">
+      <div class="wikipage searchable">
+        
+          <div id="wikipage" class="trac-content"><p>
+</p><div class="wiki-toc">
+<ol>
+  <li>
+    <a href="#Streaming">Streaming</a>
+    <ol>
+      <li>
+        <a href="#RawUDP">Raw UDP</a>
+      </li>
+      <li>
+        <a href="#TCP">TCP</a>
+      </li>
+      <li>
+        <a href="#RTPrawsession-less">RTP (raw/session-less)</a>
+      </li>
+      <li>
+        <a href="#RTSPRealTimeStreamingProtocolrecommended">RTSP (Real Time Streaming Protocol) <strong>(recommended)</strong></a>
+        <ol>
+          <li>
+            <a href="#Videoonly">Video only</a>
+          </li>
+          <li>
+            <a href="#Audioonly">Audio only</a>
+          </li>
+          <li>
+            <a href="#AudioVideo">Audio + Video</a>
+          </li>
+          <li>
+            <a href="#FilebasedAudioVideo">File based Audio + Video</a>
+          </li>
+        </ol>
+      </li>
+      <li>
+        <a href="#AdaptiveBitrateStreaming">Adaptive Bitrate Streaming</a>
+        <ol>
+          <li>
+            <a href="#GateworksAdaptiveBitratesolutionRTSP">Gateworks Adaptive Bitrate solution (RTSP)</a>
+          </li>
+          <li>
+            <a href="#References">References</a>
+          </li>
+        </ol>
+      </li>
+      <li>
+        <a href="#Troubleshooting">Troubleshooting</a>
+      </li>
+    </ol>
+  </li>
+</ol>
+</div><p>
+</p>
+<p>
+<span class="wikianchor" id="streaming"><a class="anchor" href="#streaming" title="Link to #streaming"> ¶</a></span>
+</p>
+<h1 id="Streaming">Streaming<a class="anchor" href="#Streaming" title="Link to this section"> ¶</a></h1>
+<p>
+GStreamer has elements that allow for network streaming to occur. For example, the <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer#gst-variable-rtsp-server">Yocto/gstreamer</a> is an example application that uses the gstreamer-rtsp-plugin to create a rtsp stream.
+</p>
+<p>
+However, creating a GStreamer application is not the only way to create a network stream. Simple GStreamer pipelines to accomplish this as well which is often used for testing purposes. The following examples are based on GStreamer-1.0 using <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer#gstreamer-imx">gstreamer-imx</a> plugins.
+</p>
+<p>
+There are several ways to accomplish networked streaming over Internet Protocol (IP):
+</p>
+<ul><li><a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/streaming#udp">Raw UDP/IP</a>
+</li><li><a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/streaming#tcp">Raw TCP/IP</a>
+</li><li><a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/streaming#rtp">Real-time Transport Protocol (RTP)</a>
+</li><li><a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/streaming#rtsp">Real Time Streaming Protocol (RTSP)</a> (<strong>recommended</strong>)
+</li><li><a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/streaming#abs">Adaptive Bitrate Streaming</a>
+</li></ul><p>
+To see older/deprecated information, please see <a href="http://trac.gateworks.com/wiki/Yocto/gstreamer/streaming?version=1">this older revision page</a>.
+</p>
+<p>
+<span class="wikianchor" id="udp"><a class="anchor" href="#udp" title="Link to #udp"> ¶</a></span>
+</p>
+<h2 id="RawUDP">Raw UDP<a class="anchor" href="#RawUDP" title="Link to this section"> ¶</a></h2>
+<p>
+Using UDP/IP is the simplest mechanism for streaming and utilizes the least amount of bandwidth. Because UDP does not provide any error detection, packet ordering, or error correction the bitrate is deterministic and simply the bitrate of the media you are streaming.
+</p>
+<p>
+The limitations of raw UDP is:
+</p>
+<ul><li>requires codec that can handle missing/corrupt data (most do these days)
+</li><li>does not use headers containing payload type or timestamp info on stream (making it suitable for only a single type of media, or a pre-muxed type of media)
+</li><li>does not fragment packets - will try to send a raw udp packet for whatever size buffer the udpsink is passed (which can lead to pipeline errors). To fragment packets use RTP
+</li></ul><p>
+The only benefit of using raw UDP is that it is the simplest pipeline you can create for streaming and requires the least amount of dependencies (albeit you might run into one or all of the above problems).
+</p>
+<p>
+<strong>Note that it is recommended that you use <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/streaming#rtp">RTP</a> or <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/streaming#rtsp">RTSP</a> unless you know exactly what you are doing to overcome the limitations listed above</strong>
+</p>
+<p>
+The <code>udpsrc</code> element can be used to render/save a stream originated from a <code>udpsink</code> pipeline.
+</p>
+<p>
+Examples:
+</p>
+<ul><li>encode and send H264 video from Ventana:
+<ol><li>Start decoder first:
+<div class="wiki-code"><div class="code"><pre>ifconfig eth0 <span class="m">192</span>.168.1.1
+gst-launch-1.0 udpsrc <span class="nv">port</span><span class="o">=</span><span class="m">9001</span> ! h264parse ! imxvpudec ! imxipuvideosink <span class="nv">sync</span><span class="o">=</span><span class="nb">false</span>
+</pre></div></div></li><li>Start encoder second:
+<div class="wiki-code"><div class="code"><pre>ifconfig eth0 <span class="m">192</span>.168.1.2
+gst-launch-1.0 videotestsrc is-live<span class="o">=</span><span class="nb">true</span> ! imxvpuenc_h264 <span class="nv">bitrate</span><span class="o">=</span><span class="m">1000</span> ! udpsink <span class="nv">host</span><span class="o">=</span><span class="m">192</span>.168.1.1 <span class="nv">port</span><span class="o">=</span><span class="m">9001</span>
+</pre></div></div></li></ol></li></ul><p>
+Notes:
+</p>
+<ul><li>On the client (stream receiver and renderer) you must use the <code>sync=false</code> property to render frames as they are received otherwise the stream will stall because their is no headers containing timestamps
+</li><li>the decoder (udpsrc) needs to be started first because udpsink will fail if nothing is listening to the socket
+</li></ul><p>
+<span class="wikianchor" id="tcp"><a class="anchor" href="#tcp" title="Link to #tcp"> ¶</a></span>
+</p>
+<h2 id="TCP">TCP<a class="anchor" href="#TCP" title="Link to this section"> ¶</a></h2>
+<p>
+Using TCP/IP brings error detection, packet re-ordering, and error correction to the network stream. This however causes the bitrate to be non-deterministic because as the error rate increases so does the bitrate and latency.
+</p>
+<p>
+The limitations of using TCP:
+</p>
+<ul><li>non-deterministic bitrate
+</li><li>added latency
+</li><li>does not use headers containing payload type or timestamp info on stream (making it suitable for only a single type of media, or a pre-muxed type of media)
+</li></ul><p>
+<strong>Note that it is recommended that you use <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/streaming#rtp">RTP</a> or <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/streaming#rtsp">RTSP</a> unless you know exactly what you are doing to overcome the limitations listed above</strong>
+</p>
+<p>
+TCP/IP introduces the concept of a socket connection therefore there must exist a server and a client in which case the server must be started first to listen for a connection. You can use a server sink or a server source. The <code>tcpserversrc</code> source can be used to create a TCP server that waits for a connection from a <code>tcpclientsink</code> to render/save. Alternatively the <code>tcpserversink</code> sink can be used to create a TCP server that waits for a connection from a <code>tcpclientsrc</code> that will send data.
+</p>
+<p>
+Examples:
+</p>
+<ul><li>encode and send H264 video from Ventana with <strong>decoder as server</strong>:
+<ol><li>Start decoder (server) first:
+<div class="wiki-code"><div class="code"><pre>ifconfig eth0 <span class="m">192</span>.168.1.1
+gst-launch-1.0 tcpserversrc <span class="nv">host</span><span class="o">=</span><span class="m">192</span>.168.1.1 <span class="nv">port</span><span class="o">=</span><span class="m">9001</span> ! decodebin ! autovideosink <span class="nv">sync</span><span class="o">=</span><span class="nb">false</span>
+</pre></div></div></li><li>Start encoder (client) second:
+<div class="wiki-code"><div class="code"><pre>ifconfig eth0 <span class="m">192</span>.168.1.2
+gst-launch-1.0 videotestsrc is-live<span class="o">=</span><span class="nb">true</span> ! imxipuvideotransform ! imxvpuenc_h264 <span class="nv">bitrate</span><span class="o">=</span><span class="m">1000</span> ! tcpclientsink <span class="nv">host</span><span class="o">=</span><span class="m">192</span>.168.1.1 <span class="nv">port</span><span class="o">=</span><span class="m">9001</span>
+</pre></div></div></li></ol></li></ul><p>
+Notes:
+</p>
+<ul><li>TCP is connection oriented therefore the TCP 'server' must be started first. You can choose your elements such that the stream originator is the server or the stream renderer is the server however doing so can be problematic for certain codecs because the client decoding the stream may pick up the stream somewhere in the middle and not know how to parse it.
+</li></ul><p>
+<span class="wikianchor" id="rtp"><a class="anchor" href="#rtp" title="Link to #rtp"> ¶</a></span>
+</p>
+<h2 id="RTPrawsession-less">RTP (raw/session-less)<a class="anchor" href="#RTPrawsession-less" title="Link to this section"> ¶</a></h2>
+<p>
+The <a class="ext-link" href="https://en.wikipedia.org/wiki/Real-time_Transport_Protocol"><span class="icon">​</span>Real-time Transport Protocol (RTP)</a> is a network protocol for delivering audio and video over IP networks. RTP is used extensively in communication and entertainment systems that involve streaming media, such as telephony, video teleconference applications, television services and web-based push-to-talk features.
+</p>
+<p>
+The RTP packet type encapsulates multimedia data with a payload type and time-stamp and therefore can be used to compensate for jitter, out of sequence packets, and time synchronization between streams of different types (ie audio/video lip-sync).
+</p>
+<p>
+RTP is typically used in conjunction with other protocols such as RTP Control Protocol (RTCP) and <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/streaming#rtsp">Real Time Streaming Protocol (RTSP)</a> to manage stream sessions however can be used on its own in a raw session-less fashion using <code>udpsink</code> and <code>udpsrc</code> elements.
+</p>
+<p>
+The limitations of using raw/session-less RTP:
+</p>
+<ul><li>session management needs to be handled manually (capsfilter is needed to specify stream format)
+</li></ul><p>
+<strong>Note that it is recommended that you use <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/streaming#rtsp">RTSP</a> unless you know exactly what you are doing to overcome the limitations listed above</strong>
+</p>
+<p>
+Examples:
+</p>
+<ul><li>encode and send H264 video from Ventana:
+<ol><li>Start decoder first:
+<div class="wiki-code"><div class="code"><pre>ifconfig eth0 <span class="m">192</span>.168.1.1
+gst-launch-1.0 udpsrc <span class="nv">port</span><span class="o">=</span><span class="m">9001</span> <span class="se">\
+</span> <span class="nv">caps</span><span class="o">=</span><span class="s2">"application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264"</span> <span class="se">\
+</span> ! decodebin ! autovideosink
+</pre></div></div></li><li>Start encoder second:
+<div class="wiki-code"><div class="code"><pre>gst-launch-1.0 videotestsrc is-live<span class="o">=</span><span class="nb">true</span> <span class="se">\
+</span> ! imxipuvideotransform ! imxvpuenc_h264 <span class="nv">bitrate</span><span class="o">=</span><span class="m">1000</span> ! rtph264pay ! udpsink <span class="nv">host</span><span class="o">=</span><span class="m">192</span>.168.1.1 <span class="nv">port</span><span class="o">=</span><span class="m">9001</span>
+</pre></div></div></li></ol></li></ul><p>
+Notes:
+</p>
+<ul><li>when using RTP a capsfilter must be used to specify the payload as application/x-rtp as above. You can determine the capsfilter required by starting the encoder with a verbose flag <code>-v</code> and looking for  <code>caps = "application/x-rtp"</code>
+</li></ul><p>
+<span class="wikianchor" id="rtsp"><a class="anchor" href="#rtsp" title="Link to #rtsp"> ¶</a></span>
+</p>
+<h2 id="RTSPRealTimeStreamingProtocolrecommended">RTSP (Real Time Streaming Protocol) <strong>(recommended)</strong><a class="anchor" href="#RTSPRealTimeStreamingProtocolrecommended" title="Link to this section"> ¶</a></h2>
+<p>
+The <a class="ext-link" href="https://en.wikipedia.org/wiki/Real_Time_Streaming_Protocol"><span class="icon">​</span>Real Time Streaming Protocol (RTSP)</a> is a network control protocol designed for use in entertainment and communications systems to control streaming media servers. The protocol is used for establishing and controlling media sessions between end points. Clients of media servers issue VCR-style commands, such as play and pause, to facilitate real-time control of playback of media files from the server. This protocol uses the Real-time Transport Protocol (RTP) in conjunction with Real-time Control Protocol (RTCP) for media stream delivery.
+</p>
+<p>
+The limitations of using RTSP are:
+</p>
+<ul><li>gst-inspect has no way of using a simple pipeline to create an RTSP server - you must create or use an existing gstreamer based application (keep reading below).
+</li></ul><p>
+Creating an RTSP server is not possible via a simple pipeline to gst-launch however GStreamer libraries do exist to make writing an RTSP server trivial. The source for gst-rtsp-server contains an example application <a class="ext-link" href="http://cgit.freedesktop.org/gstreamer/gst-rtsp-server/tree/examples/test-launch.c"><span class="icon">​</span>test-launch.c</a> which provides a simple example that can take a GStreamer 'bin' element consisting of everything but the sink element and serves it via RTSP.
+</p>
+<p>
+An extension of the gst-rtsp-server test-launch application <a class="ext-link" href="https://github.com/Gateworks/gst-gateworks-apps/blob/master/src/gst-variable-rtsp-server.c"><span class="icon">​</span>gst-variable-rtsp-server</a> is included on our <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto">Yocto BSP</a> images which will setup a RTSP server, encode the video stream to h264, and allow multiple clients to connect to it. The enhancements made to gst-variable-rtsp-server includes a mechanism for auto-adjusting the encoding bitrate depending on the number of clients connected in addition to serving as a fairly simple example of how to write a gstreamer application.
+</p>
+<p>
+Notes:
+</p>
+<ul><li>refer <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer#gst-variable-rtsp-server">here</a> for more info on gst-variable-rtsp-server.
+</li><li>refer to the <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/video">gstreamer/video</a> and <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/audio">gstreamer/audio</a> pages to understand how to first capture <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/video">video</a> and <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/audio">audio</a> sources.
+</li><li>refer to <a class="wiki" href="http://trac.gateworks.com/wiki/ventana/audio">ventana/audio</a> and <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/Video_In">Yocto/Video_In</a> for more info on Ventana Audio input and Video input devices.
+</li><li>RTP streams must use a payloader element appropriate for the media type for that stream. Additionally the payloader <code>name</code> property must be defined with the first stream starting at 0 (ie 'pay0') and the <code>pt</code> property must be set to a value according to <a class="ext-link" href="https://tools.ietf.org/html/rfc3551"><span class="icon">​</span>RFC3551</a>. Use <code>gst-inspect-1.0 | grep rtp.*pay</code> to see a full list of available payloaders.
+</li><li>you can use <code>playbin</code> (ie <code>gst-launch-1.0 playbin uri=rtsp://&lt;server&gt;:&lt;port&gt;/&lt;stream&gt;</code>) as well as an RTSP client if you do not want to specify the various element details such as jitterbuffer latency.
+</li></ul><h3 id="Videoonly">Video only<a class="anchor" href="#Videoonly" title="Link to this section"> ¶</a></h3>
+<p>
+encode and send <strong>H264 video</strong> from Ventana:
+</p>
+<ol><li>Start server (encoder) first:
+<div class="wiki-code"><div class="code"><pre>ifconfig eth0 <span class="m">192</span>.168.1.2
+</pre></div></div><div class="wiki-code"><div class="code"><pre><span class="c1"># video test source:
+</span>gst-variable-rtsp-server -p <span class="m">9001</span> -u <span class="se">\
+</span> <span class="s2">"videotestsrc ! imxvpuenc_h264 bitrate=1000 ! rtph264pay name=pay0 pt=96"</span>
+</pre></div></div><div class="wiki-code"><div class="code"><pre><span class="c1"># or alternatively live captured video
+</span>gst-variable-rtsp-server -p <span class="m">9001</span> -u <span class="se">\
+</span> <span class="s2">"imxv4l2videosrc device=/dev/video0 ! imxipuvideotransform ! imxvpuenc_h264 bitrate=1000 ! rtph264pay name=pay0 pt=96"</span>
+</pre></div></div><ul><li>see <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/Video_In">Yocto/Video_In</a> for details on Ventana video capture devices (typically the first video capture device is HDMI if available, and otherwise analog CVBS)
+</li></ul></li></ol><ol start="2"><li>Connect decoder client(s) second:
+<div class="wiki-code"><div class="code"><pre>ifconfig eth0 <span class="m">192</span>.168.1.1
+</pre></div></div><div class="wiki-code"><div class="code"><pre><span class="c1"># view with gstreamer rtspsrc
+</span>gst-launch-1.0 rtspsrc <span class="nv">location</span><span class="o">=</span>rtsp://192.168.1.2:9001/stream <span class="nv">latency</span><span class="o">=</span><span class="m">10</span> ! decodebin ! autovideosink
+</pre></div></div><div class="wiki-code"><div class="code"><pre><span class="c1"># or with vlc
+</span>vlc rtsp://192.168.1.2:9001/stream --rtsp-caching<span class="o">=</span><span class="m">10</span>
+</pre></div></div></li></ol><h3 id="Audioonly">Audio only<a class="anchor" href="#Audioonly" title="Link to this section"> ¶</a></h3>
+<p>
+encode and send <strong>Audio only</strong> from Ventana:
+</p>
+<ol><li>Start server (encoder) first:
+<div class="wiki-code"><div class="code"><pre>ifconfig eth0 <span class="m">192</span>.168.1.2
+</pre></div></div><div class="wiki-code"><div class="code"><pre><span class="c1"># audio test source (tone generator) and AC3 audio encoding
+</span>gst-variable-rtsp-server -p <span class="m">9001</span> -u <span class="se">\
+</span>  <span class="s2">"audiotestsrc ! avenc_ac3 ! rtpac3pay name=pay0 pt=97"</span>
+</pre></div></div><div class="wiki-code"><div class="code"><pre><span class="c1"># or audio test soruce (tone generator) and alaw G711 audio encoding
+</span>gst-variable-rtsp-server -p <span class="m">9001</span> -u <span class="se">\
+</span>  <span class="s2">"audiotestsrc ! alawenc ! rtppcmapay name=pay0 pt=97"</span>
+</pre></div></div><div class="wiki-code"><div class="code"><pre><span class="c1"># or live audio input (of the first audio capture device) and alaw G711 audio encoding
+</span>gst-variable-rtsp-server -p <span class="m">9001</span> -u <span class="se">\
+</span>  <span class="s2">"alsasrc device=hw:0,0 ! alawenc ! rtppcmapay name=pay0 pt=97"</span>
+</pre></div></div><div class="wiki-code"><div class="code"><pre><span class="c1"># or live audio input of HDMI audio (specified by card name) and alaw G711 audio encoding
+</span>gst-variable-rtsp-server -p <span class="m">9001</span> -u <span class="se">\
+</span>  <span class="s2">"alsasrc device=sysdefault:CARD=tda1997xaudio ! alawenc ! rtppcmapay name=pay0 pt=97"</span>
+</pre></div></div><ul><li>use <code>arecord -L</code> to list available audio input devices by name and <code>arecord -l</code> to list by number - see <a class="wiki" href="http://trac.gateworks.com/wiki/ventana/audio">ventana/audio</a> for more details
+</li></ul></li></ol><ol start="2"><li>Connect decoder client(s) second:
+<div class="wiki-code"><div class="code"><pre>ifconfig eth0 <span class="m">192</span>.168.1.1
+</pre></div></div><div class="wiki-code"><div class="code"><pre><span class="c1"># via playbin
+</span>gst-launch-1.0 -v playbin <span class="nv">uri</span><span class="o">=</span>rtsp://192.168.1.2:9001/stream
+</pre></div></div><div class="wiki-code"><div class="code"><pre><span class="c1"># or via playbin calling out a specific audio output device (HDMI out in this case)
+</span>gst-launch-1.0 playbin <span class="nv">uri</span><span class="o">=</span>rtsp://192.168.1.2:9001/stream audio-sink<span class="o">=</span><span class="s2">"alsasink device=sysdefault:CARD=imxhdmisoc"</span>
+</pre></div></div><div class="wiki-code"><div class="code"><pre><span class="c1"># or with vlc
+</span>vlc rtsp://192.168.1.2:9001/stream --rtsp-caching<span class="o">=</span><span class="m">10</span>
+</pre></div></div><ul><li>use <code>aplay -L</code> to list available audio output devices by name and <code>aplay -l</code> to list by number - see <a class="wiki" href="http://trac.gateworks.com/wiki/ventana/audio">ventana/audio</a> for more details
+</li></ul></li></ol><p>
+Codec Notes:
+</p>
+<ul><li>We have seen issues decoding AC3 with GStreamer on Ventana - you may want to use alaw for compatibility.
+</li></ul><h3 id="AudioVideo">Audio + Video<a class="anchor" href="#AudioVideo" title="Link to this section"> ¶</a></h3>
+<p>
+encode and stream <strong>H264 video and encoded audio</strong> from Ventana:
+</p>
+<ol><li>Start server (encoder) first:
+<div class="wiki-code"><div class="code"><pre>ifconfig eth0 <span class="m">192</span>.168.1.2
+</pre></div></div><div class="wiki-code"><div class="code"><pre><span class="c1"># test video (colorbars) and test audio (tone) via AC3 encoding:
+</span>gst-variable-rtsp-server -p <span class="m">9001</span> -u <span class="se">\
+</span> <span class="s2">"videotestsrc ! imxvpuenc_h264 bitrate=1000 ! rtph264pay name=pay0 pt=96 ! \
+  audiotestsrc ! audioconvert ! avenc_ac3 ! rtpac3pay name=pay1 pt=97"</span>
+</pre></div></div><div class="wiki-code"><div class="code"><pre><span class="c1"># or test video (colorbars) and test audio (tone) via ulaw G711 encoding:
+</span>gst-variable-rtsp-server -p <span class="m">9001</span> -u <span class="se">\
+</span> <span class="s2">"videotestsrc ! imxvpuenc_h264 bitrate=1000 ! rtph264pay name=pay0 pt=96 ! \
+  audiotestsrc ! alawenc ! rtppcmapay name=pay1 pt=97"</span>
+</pre></div></div><div class="wiki-code"><div class="code"><pre><span class="c1"># or live captured HDMI alaw audio and H264 video on a GW540x:
+</span>gst-variable-rtsp-server -p <span class="m">9001</span> -u <span class="se">\
+</span> <span class="s2">"imxv4l2videosrc device=/dev/video0 ! imxipuvideotransform ! imxvpuenc_h264 bitrate=1000 ! rtph264pay name=pay0 pt=96 ! \
+  alsasrc device=sysdefault:CARD=tda1997xaudio ! alawenc ! rtppcmapay name=pay1 pt=97"</span>
+</pre></div></div><div class="wiki-code"><div class="code"><pre><span class="c1"># or live captured HDMI AC3 audio and video H264 video on a GW540x:
+</span>gst-variable-rtsp-server -p <span class="m">9001</span> -u  <span class="s2">"imxv4l2videosrc device=/dev/video0 ! imxipuvideotransform ! imxvpuenc_h264 bitrate=1000 ! rtph264pay name=pay0 pt=96 ! \
+  alsasrc device=sysdefault:CARD=tda1997xaudio ! audioconvert ! avenc_ac3 ! rtpac3pay name=pay1 pt=97"</span>
+</pre></div></div><div class="wiki-code"><div class="code"><pre><span class="c1"># or live captured CVBS audio and video on a GW540x:
+</span>gst-variable-rtsp-server -p <span class="m">9001</span> -u <span class="se">\
+</span> <span class="s2">"imxv4l2videosrc device=/dev/video1 ! imxipuvideotransform ! imxvpuenc_h264 bitrate=1000 ! rtph264pay name=pay0 pt=96 ! \
+  alsasrc device=sysdefault:CARD=sgtl5000audio ! audioconvert ! avenc_ac3 ! rtpac3pay name=pay1 pt=97"</span>
+</pre></div></div><div class="wiki-code"><div class="code"><pre><span class="c1"># or live captured CVBS audio and video on a GW510x:
+</span>gst-variable-rtsp-server -p <span class="m">9001</span> -u <span class="se">\
+</span> <span class="s2">"imxv4l2videosrc device=/dev/video0 ! imxipuvideotransform ! imxvpuenc_h264 bitrate=1000 ! rtph264pay name=pay0 pt=96 ! \
+  alsasrc device=sysdefault:CARD=sgtl5000audio ! audioconvert ! avenc_ac3 ! rtpac3pay name=pay1 pt=97"</span>
+</pre></div></div><ul><li>use <code>arecord -L</code> to list available audio input devices by name and <code>arecord -l</code> to list by number - see <a class="wiki" href="http://trac.gateworks.com/wiki/ventana/audio">ventana/audio</a> for more details
+</li></ul></li></ol><ol start="2"><li>Connect decoder client(s) second:
+<div class="wiki-code"><div class="code"><pre>ifconfig eth0 <span class="m">192</span>.168.1.1
+</pre></div></div><div class="wiki-code"><div class="code"><pre><span class="c1"># via playbin
+</span>gst-launch-1.0 -v playbin <span class="nv">uri</span><span class="o">=</span>rtsp://192.168.1.2:9001/stream
+</pre></div></div><div class="wiki-code"><div class="code"><pre><span class="c1"># or via playbin calling out a specific audio output device (HDMI out in this case)
+</span>gst-launch-1.0 playbin <span class="nv">uri</span><span class="o">=</span>rtsp://192.168.1.2:9001/stream audio-sink<span class="o">=</span><span class="s2">"alsasink device=sysdefault:CARD=imxhdmisoc"</span>
+</pre></div></div><div class="wiki-code"><div class="code"><pre><span class="c1"># or manually specifying sinks
+</span>gst-launch-1.0 rtspsrc <span class="nv">location</span><span class="o">=</span>rtsp://192.168.1.2:9001/stream <span class="nv">latency</span><span class="o">=</span><span class="m">10</span> <span class="nv">name</span><span class="o">=</span>demux <span class="se">\
+</span> demux. ! decodebin ! autovideosink <span class="nv">sync</span><span class="o">=</span><span class="nb">true</span> <span class="se">\
+</span> demux. ! decodebin ! autoaudiosink <span class="nv">sync</span><span class="o">=</span><span class="nb">true</span>
+</pre></div></div><div class="wiki-code"><div class="code"><pre><span class="c1"># or with vlc
+</span>vlc rtsp://192.168.1.2:9001/stream --rtsp-caching<span class="o">=</span><span class="m">10</span>
+</pre></div></div><ul><li>use <code>aplay -L</code> to list available audio output devices by name and <code>aplay -l</code> to list by number - see <a class="wiki" href="http://trac.gateworks.com/wiki/ventana/audio">ventana/audio</a> for more details
+</li></ul></li></ol><p>
+Codec Notes:
+</p>
+<ul><li>We have seen issues decoding AC3 both with GStreamer on Ventana and with VLC when using audio+video - you may want to use alaw for compatibility.
+</li></ul><h3 id="FilebasedAudioVideo">File based Audio + Video<a class="anchor" href="#FilebasedAudioVideo" title="Link to this section"> ¶</a></h3>
+<p>
+stream <strong>file based audio+video</strong>:
+</p>
+<ol><li>Start server first:
+<div class="wiki-code"><div class="code"><pre>ifconfig eth0 <span class="m">192</span>.168.1.2
+</pre></div></div><div class="wiki-code"><div class="code"><pre>gst-variable-rtsp-server -p <span class="m">9001</span> -u <span class="se">\
+</span> <span class="s2">"filesrc location=/mnt/usb/open-media/tears_of_steel_1080p.webm typefind=true do-timestamp=true ! \
+  matroskademux name=demux \
+  demux. ! queue2 ! rtpvorbispay name=pay0 \
+  demux. ! queue2 ! rtpvp8pay name=pay1"</span>
+</pre></div></div></li></ol><ol start="2"><li>Connect decoder client(s) second:
+<div class="wiki-code"><div class="code"><pre>ifconfig eth0 <span class="m">192</span>.168.1.1
+</pre></div></div><div class="wiki-code"><div class="code"><pre>gst-launch-1.0 rtspsrc <span class="nv">location</span><span class="o">=</span>rtsp://192.168.1.2:9001/stream <span class="nv">latency</span><span class="o">=</span><span class="m">2000</span> <span class="nv">name</span><span class="o">=</span>demux <span class="se">\
+</span> demux. ! decodebin ! queue2 ! autovideosink <span class="nv">sync</span><span class="o">=</span><span class="nb">true</span> <span class="se">\
+</span> demux. ! decodebin ! queue2 ! autoaudiosink <span class="nv">sync</span><span class="o">=</span><span class="nb">true</span>
+</pre></div></div><ul><li>the larger latency can help account for audio/video timestamp discontinuities in the encoded file source
+</li></ul></li></ol><p>
+<span class="wikianchor" id="abs"><a class="anchor" href="#abs" title="Link to #abs"> ¶</a></span>
+</p>
+<h2 id="AdaptiveBitrateStreaming">Adaptive Bitrate Streaming<a class="anchor" href="#AdaptiveBitrateStreaming" title="Link to this section"> ¶</a></h2>
+<p>
+Adaptive bitrate streaming is the concept of a video lowering its' image quality based on its' network quality. This is often seen in situations of online media streaming from services such as YouTube and Netflix where a lower quality connection will receive SD quality video, which a higher quality connection will receive HD.
+</p>
+<p>
+Some common protocols that exist are: <a class="ext-link" href="https://en.wikipedia.org/wiki/HTTP_Live_Streaming"><span class="icon">​</span>HLS (Created by Apple Inc.)</a>, <a class="ext-link" href="https://en.wikipedia.org/wiki/Dynamic_Adaptive_Streaming_over_HTTP"><span class="icon">​</span>MPEG DASH</a>, <a class="ext-link" href="https://en.wikipedia.org/wiki/Adaptive_bitrate_streaming#Microsoft_Smooth_Streaming"><span class="icon">​</span>SmoothStreaming (Created by Microsoft)</a>. Please note that these protocols are not provided on any BSPs by Gateworks.
+</p>
+<p>
+Gateworks has decided to create a sample application that features our implementation of adaptive bitrate live video streaming for our customers. Please see the below section for more details.
+</p>
+<p>
+<span class="wikianchor" id="gst-variable-rtsp-server"><a class="anchor" href="#gst-variable-rtsp-server" title="Link to #gst-variable-rtsp-server"> ¶</a></span>
+</p>
+<h3 id="GateworksAdaptiveBitratesolutionRTSP">Gateworks Adaptive Bitrate solution (RTSP)<a class="anchor" href="#GateworksAdaptiveBitratesolutionRTSP" title="Link to this section"> ¶</a></h3>
+<p>
+For low latency live video streaming, RTSP might be a good choice. Taking the data found on <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/latency#LatencySummaryTable">our Latency</a> page, we see that live streaming with RTSP had a low end-to-end latency of just 98ms when capturing with an analog CVBS camera (this is including latency in the camera itself).
+</p>
+<p>
+The reason we are including this information under the "Adaptive Bitrate" section is due to the fact that our <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer#gst-variable-rtsp-server">gst-variable-rtsp-server</a> has the ability to change bitrate on the fly. Our implementation relies on the number of clients currently connected. The quality of the stream will decrease as more users join the stream and increase with less users. This simple GStreamer application is fully open-sourced so you may reference how to do something similar, maybe utilizing other information to determine stream quality. Please visit the <a class="ext-link" href="https://github.com/"><span class="icon">​</span>GitHub</a> page <a class="ext-link" href="https://github.com/Gateworks/gst-gateworks-apps"><span class="icon">​</span>here</a> to get started.
+</p>
+<p>
+For more detail on this application, please visit our <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer#gst-variable-rtsp-server">gst-variable-rtsp-server wiki page</a> on the topic.
+</p>
+<h3 id="References">References<a class="anchor" href="#References" title="Link to this section"> ¶</a></h3>
+<ul><li><a class="ext-link" href="https://coaxion.net/blog/2014/05/http-adaptive-streaming-with-gstreamer/"><span class="icon">​</span>HTTP Adaptive Streaming with GStreamer</a>
+</li><li><a class="ext-link" href="https://developer.mozilla.org/en-US/Apps/Build/Audio_and_video_delivery/Live_streaming_web_audio_and_video"><span class="icon">​</span>Live streaming web audio and video by Mozilla</a>
+</li></ul><h2 id="Troubleshooting">Troubleshooting<a class="anchor" href="#Troubleshooting" title="Link to this section"> ¶</a></h2>
+<p>
+If you're having issues with network streaming:
+</p>
+<ul><li>Verify that both sides can ping one another
+</li><li>If the message <code>There may be a timestamping problem, or this computer is too slow</code> appears and the video display appears choppy, try the following:
+<ul><li>Lower the bitrate from the server
+</li><li>Place a <code>sync=false</code> on the sink side of the server and client.
+</li></ul></li><li>If video appears choppy, try using UDP over TCP.
+</li><li>Verify that the network is not congested.
+</li><li>Verify your gstreamer pipeline is correct. The best way to find the element that causes a negotiation failure is to end your pipeline in a fakesink and one-by-one eliminate elements leading up to it until it negotiates successfully.
+</li><li>When encoding streams from video input devices, you will need an imxipuvideotransform if using HDMI capture in the yuv422smp mode. It doens't hurt to add one regardless as it will be skipped if not needed.
+</li></ul></div>
+          
+          <div class="trac-modifiedby">
+            <span><a href="http://trac.gateworks.com/wiki/Yocto/gstreamer/streaming?action=diff&amp;version=1" title="Version 1 by trac">Last modified</a> <a class="timeline" href="http://trac.gateworks.com/timeline?from=2017-10-21T22%3A28%3A45-07%3A00&amp;precision=second" title="See timeline at 10/21/2017 10:28:45 PM">11 months ago</a></span>
+            <span class="trac-print">Last modified on 10/21/2017 10:28:45 PM</span>
+          </div>
+        
+        
+      </div>
+      
+
+    </div>
+    
+    <div id="altlinks">
+      <h3>Download in other formats:</h3>
+      <ul>
+        <li class="last first">
+          <a rel="nofollow" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/streaming?format=txt">Plain Text</a>
+        </li>
+      </ul>
+    </div>
+    </div>
+    <div id="footer" xml:lang="en" lang="en"><hr>
+      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="trac_logo_mini.png" alt="Trac Powered" width="107" height="30"></a>
+      <p class="left">Powered by <a href="http://trac.gateworks.com/about"><strong>Trac 1.2.2</strong></a><br>
+        By <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
+      <p class="right">Visit the Trac open source project at<br><a href="http://trac.edgewall.org/">http://trac.edgewall.org/</a></p>
+    </div>
+	
+</body>
+</html>

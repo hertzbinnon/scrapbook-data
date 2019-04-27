@@ -1,0 +1,928 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="zh-CN">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+	<meta name="Content-Type" content="text/html;charset=utf-8">
+    <meta name="Referrer" content="unsafe-url">
+	<meta content="True" name="HandheldFriendly">
+    <meta name="theme-color" content="#333344">
+	
+    <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="detectify-verification" content="d0264f228155c7a1f72c3d91c17ce8fb">
+<meta name="p:domain_verify" content="b87e3b55b409494aab88c1610b05a5f0">
+<meta name="alexaVerifyID" content="OFc8dmwZo7ttU4UCnDh1rKDtLlY">
+<meta name="baidu-site-verification" content="D00WizvYyr">
+<meta name="msvalidate.01" content="D9B08FEA08E3DA402BF07ABAB61D77DE">
+<meta property="wb:webmaster" content="f2f4cb229bda06a4">
+<meta name="google-site-verification" content="LM_cJR94XJIqcYJeOCscGVMWdaRUvmyz6cVOqkFplaU">
+    
+    <title>Cgroup - 从 CPU 资源隔离说起(一) - V2EX</title>
+    <link rel="dns-prefetch" href="https://static.v2ex.com/">
+    <link rel="dns-prefetch" href="https://cdn.v2ex.com/">
+    <link rel="dns-prefetch" href="https://cdn.v2ex.co/">
+    <link rel="dns-prefetch" href="https://i.v2ex.co/">
+    <link rel="dns-prefetch" href="https://v2ex.assets.uxengine.net/">
+    
+	   
+    
+    
+    
+    
+    
+    
+    <link rel="icon" sizes="192x192" href="v2ex_192.png">
+    <link rel="shortcut icon" href="icon_rayps_64.png" type="image/png">
+    
+	
+	
+	
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <meta name="description" content="Linux - @jerry017cn - # Cgroup - 从 CPU 资源隔离说起![Zorro ］ icon]( http://tp4.sinaimg.cn/1718814015/180/5739428251/1)">
+    
+    
+    <link rel="canonical" href="https://www.v2ex.com/t/246791">
+    
+    
+    
+    <meta property="og:locale" content="zh_CN">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Cgroup - 从 CPU 资源隔离说起(一) - V2EX">
+<meta property="og:description" content="Linux - @jerry017cn - # Cgroup - 从 CPU 资源隔离说起![Zorro ］ icon]( http://tp4.sinaimg.cn/1718814015/180/5739428251/1)">
+<meta property="og:url" content="https://www.v2ex.com/t/246791">
+<meta property="og:site_name" content="V2EX">
+
+<meta property="article:tag" content="linux">
+<meta property="article:section" content="Linux">
+<meta property="article:published_time" content="2015-12-28T14:35:32Z">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:description" content="Linux - @jerry017cn - # Cgroup - 从 CPU 资源隔离说起![Zorro ］ icon]( http://tp4.sinaimg.cn/1718814015/180/5739428251/1)">
+<meta name="twitter:title" content="Cgroup - 从 CPU 资源隔离说起(一) - V2EX">
+<meta name="twitter:image" content="https://cdn.v2ex.com/avatar/277d/4b34/136983_large.png?m=1441503103">
+<meta name="twitter:site" content="@V2EX">
+<meta name="twitter:creator" content="@V2EX">
+    <link rel="top" title="回到顶部" href="https://www.v2ex.com/t/246791#">
+    
+    
+    <link rel="amphtml" href="https://www.v2ex.com/amp/t/246791">
+	
+    
+
+
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+    <div id="Top">
+        <div class="content">
+            <div style="padding-top: 6px;">
+            <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tbody><tr>
+                    <td width="110" align="left"><a href="https://www.v2ex.com/" name="top" title="way to explore"><div id="Logo"></div></a></td>
+                    <td width="auto" align="left">
+                        <div id="Search"><form action="https://www.google.com/" onsubmit="return dispatch()" target="_blank"><div id="qbar"><input maxlength="40" name="q" id="q" value="" onfocus="$('#qbar').addClass('qbar_focus')" onblur="$('#qbar').removeClass('qbar_focus')" type="text"></div></form></div>
+                    </td>
+                    <td style="padding-top: 2px;" width="570" align="right"><a href="https://www.v2ex.com/" class="top">首页</a>&nbsp;&nbsp;&nbsp;<a href="https://www.v2ex.com/signup" class="top">注册</a>&nbsp;&nbsp;&nbsp;<a href="https://www.v2ex.com/signin" class="top">登录</a></td>
+                </tr>
+            </tbody></table>
+            </div>
+        </div>
+    </div>
+    <div id="Wrapper">
+        <div class="content">
+            
+            <div id="Leftbar"></div>
+            <div id="Rightbar">
+                <div class="sep20"></div>
+                
+                    
+                    <div class="box">
+                        <div class="cell">
+                            <strong>V2EX = way to explore</strong>
+                            <div class="sep5"></div>
+                            <span class="fade">V2EX 是一个关于分享和探索的地方</span>
+                        </div>
+                        <div class="inner">
+                            <div class="sep5"></div>
+                            <div align="center"><a href="https://www.v2ex.com/signup" class="super normal button">现在注册</a>
+                            <div class="sep5"></div>
+                            <div class="sep10"></div>
+                            已注册用户请 &nbsp;<a href="https://www.v2ex.com/signin">登录</a></div>
+                        </div>
+                    </div>
+                    
+                    
+
+
+    
+    <div class="sep20"></div>
+    <div class="box">
+        <div class="inner">
+            <div class="sidebar_units">
+  <a href="http://www.oray.com/jump/45599" target="_top"><img src="huashengke_20181219.gif" alt="花生壳" width="100%" border="0"></a>
+  <div class="sep10"></div>
+  <a href="http://csvc.qiniu.com/?hmsr=v2exbanner&amp;hmpl=csvc&amp;hmcu=csvc_v2exbanner&amp;hmkw=&amp;hmci=" target="_top"><img src="qiniu_20181213.png" alt="七牛云" width="100%" border="0"></a>
+  <div class="sep10"></div>
+  <a href="https://datapacket.com/?utm_source=v2ex&amp;utm_medium=cpc&amp;utm_campaign=linux&amp;utm_content=static1" target="_top"><img src="datapacket_20181010.png" alt="DataPacket" width="100%" border="0"></a>
+  <div class="sep10"></div>
+  <a href="https://www.cdn77.com/cn?utm_source=v2ex&amp;utm_medium=cpc&amp;utm_campaign=linux&amp;utm_content=static2" target="_top"><img src="cdn77_20180806.jpg" alt="CDN77" width="100%" border="0"></a>
+  <div class="sep10"></div>
+</div>
+<strong class="green">Distributions</strong>
+<div class="sep5"></div>
+<span class="chevron">›</span> <a href="http://www.ubuntu.com/" target="_top">Ubuntu</a>
+<div class="sep5"></div>
+<span class="chevron">›</span> <a href="http://fedoraproject.org/" target="_top">Fedora</a>
+<div class="sep5"></div>
+<span class="chevron">›</span> <a href="http://www.centos.org/" target="_top">CentOS</a>
+<div class="sep10"></div>
+<strong class="fade">中文资源站</strong>
+<div class="sep5"></div>
+<span class="chevron">›</span> <a href="http://mirrors.163.com/" target="_top">网易开源镜像站</a>
+            
+        </div>
+        <div class="sidebar_compliance"><a href="https://www.v2ex.com/advertise" target="_top">广告</a></div>
+    </div>
+    
+
+
+                    
+                    <div class="sep20"></div>
+                    <div class="box">
+    <div class="inner" align="center">
+        <a href="https://www.lagou.com/lp/html/common.html?utm_source=m_bd_ff_gghz_jixiejing" target="_top"><img src="lagou_20181217.jpg" alt="拉勾" width="250" height="250" border="0"></a>
+    </div>
+</div>
+<!-- Update: 20181201 -->
+                    <div class="sep20"></div>
+                    
+                    
+                    
+                
+            </div>
+            <div id="Main">
+                <div class="sep20"></div>
+                
+<div class="box" style="border-bottom: 0px none;">
+    
+    <div class="header"><div class="fr"><a href="https://www.v2ex.com/member/jerry017cn"><img src="136983_large.png" class="avatar" border="0" align="default"></a></div>
+    <a href="https://www.v2ex.com/">V2EX</a> <span class="chevron">&nbsp;›&nbsp;</span> <a href="https://www.v2ex.com/go/linux">Linux</a>
+    <div class="sep10"></div>
+    <h1>Cgroup - 从 CPU 资源隔离说起(一)</h1>
+    <div id="topic_246791_votes" class="votes">
+<a href="javascript:" onclick="upVoteTopic(246791);" class="vote"><li class="fa fa-chevron-up"></li> &nbsp;8</a> &nbsp;<a href="javascript:" onclick="downVoteTopic(246791);" class="vote"><li class="fa fa-chevron-down"></li></a></div> &nbsp; <small class="gray"><a href="https://www.v2ex.com/member/jerry017cn">jerry017cn</a> · 2015-12-28 22:35:32 +08:00 · 7573 次点击</small>
+    </div>
+    
+    
+    <div class="outdated">这是一个创建于 1088 天前的主题，其中的信息可能已经有所发展或是发生改变。</div>
+    
+    
+    <div class="cell">
+        
+        <div class="topic_content"><div class="markdown_body"><h1>Cgroup - 从 CPU 资源隔离说起</h1>
+
+<p><img src="1" alt="Zorro ］ icon"></p>
+
+<p>Hi ，我是 Zorro 。这是我的<a target="_top" rel="nofollow" href="http://weibo.com/orroz">微博地址</a>，我会不定期在这里更新文章，如果你有兴趣，可以来关注我呦。</p>
+
+<p>本文有配套<a target="_top" rel="nofollow" href="http://www.youku.com/playlist_show/id_26435064_ascending_0.html">视频演示</a>，一起服用效果更佳。</p>
+
+<p>另外，我的其他联系方式：</p>
+
+<p><strong>Email:</strong> <a target="_top" rel="nofollow" href="mailto:mini.jerry@gmail.com">mini.jerry@gmail.com</a></p>
+
+<p><strong>QQ:</strong> 30007147</p>
+
+<p>今天我们来谈谈：</p>
+
+<h2>什么是 Cgroup ？</h2>
+
+<blockquote>
+<p>cgroups ，其名称源自控制组群（ control groups ）的简写，是 Linux 内核的一个功能，用来限制，控制与分离一个进程组群的资源（如 CPU 、内存、磁盘输入输出等）。</p>
+
+<p>--引自<a target="_top" rel="nofollow" href="https://zh.wikipedia.org/wiki/Cgroups">维基百科:cgroup</a>  </p>
+</blockquote>
+
+<p>引用官方说法总是那么冰冷的让人不好理解，所以我还是稍微解释一下：</p>
+
+<p>一个正在运行着服务的计算机系统，跟我们高中上课的情景还是很相似的。如果把系统中的每个进程理解为一个同学的话，那么班主任就是操作系统的核心（ kernel ），负责管理班里的同学。而 cgroup ，就是班主任控制学生行为的一种手段，所以，它起名叫 control groups 。</p>
+
+<p>既然是一种控制手段，那么 cgroup 能控制什么呢？当然是资源啦！对于计算机来说，资源大概可以分成以下几个部分：</p>
+
+<ul>
+<li>计算资源</li>
+<li>内存资源</li>
+<li>io 资源</li>
+<li>网络资源</li>
+</ul>
+
+<p>这就是我们常说的内核四大子系统。当我们学习内核的时候，我们也基本上是围绕这四大子系统进行研究。<br>
+我们今天要讨论的，主要是 cgroup 是如何对系统中的 CPU 资源进行隔离和分配的。其他资源的控制，我们以后有空再说喽。</p>
+
+<h2>如何看待 CPU 资源？</h2>
+
+<p><em>由于进程和线程在 Linux 的 CPU 调度看来没啥区别，所以本文后续都会用</em><em>进程</em><em>这个名词来代表内核的调度对象，一般来讲也包括线程</em></p>
+
+<p>如果要分配资源，我们必须先搞清楚这个资源是如何存在的，或者说是如何组织的。我想 CPU 大家都不陌生，我们都在系统中用过各种工具查看过 CPU 的使用率，比如说以下这个命令和它的输出：</p>
+<div class="highlight"><pre>[zorro@zorrozou-pc0 ~]$ mpstat -P ALL 1 1
+Linux 4.2.5-1-ARCH (zorrozou-pc0)   2015 年 12 月 22 日 _x86_64_     (4 CPU)mt
+
+16 时 01 分 08 秒  CPU    %usr   %nice    %sys %iowait    %irq   %soft  %steal  %guest  %gnice   %idle
+16 时 01 分 09 秒  all    0.25    0.00    0.25    0.00    0.00    0.00    0.00    0.00    0.00   99.50
+16 时 01 分 09 秒    0    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+16 时 01 分 09 秒    1    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+16 时 01 分 09 秒    2    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+16 时 01 分 09 秒    3    0.00    0.00    1.00    0.00    0.00    0.00    0.00    0.00    0.00   99.00
+
+Average:     CPU    %usr   %nice    %sys %iowait    %irq   %soft  %steal  %guest  %gnice   %idle
+Average:     all    0.25    0.00    0.25    0.00    0.00    0.00    0.00    0.00    0.00   99.50
+Average:       0    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+Average:       1    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+Average:       2    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+Average:       3    0.00    0.00    1.00    0.00    0.00    0.00    0.00    0.00    0.00   99.00
+</pre></div>
+
+<p>显示的内容具体什么意思，希望大家都能了解，我就不在这细解释了。根据显示内容我们知道，这个计算机有 4 个 cpu 核心，目前的 cpu 利用率几乎是 0 ，就是说系统整体比较闲。</p>
+
+<p>从这个例子大概可以看出，我们对 cpu 资源的评估一般有两个观察角度：</p>
+
+<ul>
+<li>核心个数</li>
+<li>百分比</li>
+</ul>
+
+<p>目前的计算机基本都是多核甚至多 cpu 系统，一个服务器上存在几个到几十个 cpu 核心的情况都很常见。所以，从这个角度看， cgroup 应该提供一种手段，可以给进程们指定它们可以占用的 cpu 核心，以此来做到 cpu 计算资源的隔离。<br>
+百分比这个概念我们需要多解释一下：这个百分比究竟是怎么来的呢？难道每个 cpu 核心的计算能力就像一个带刻度表的水杯一样？一个进程要占用就会占用到它的一定刻度么？</p>
+
+<p>当然不是啦！这个 cpu 的百分比是按时间比率计算的。基本思路是：一个 CPU 一般就只有两种状态，要么被占用，要么不被占用。当有多个进程要占用 cpu 的时候，那么操作系统在一个 cpu 核心上是进行分时处理的。比如说，我们把一秒钟分成 1000 份，那么每一份就是 1 毫秒，假设现在有 5 个进程都要用 cpu ，那么我们就让它们 5 个轮着使用，比如一人一毫秒，那么 1 秒过后，每个进程只占用了这个 CPU 的 200ms ，使用率为 20%。整体 cpu 使用比率为 100%。<br>
+同理，如果只有一个进程占用，而且它只用了 300ms ，那么在这一秒的尺度看来， cpu 的占用时间是 30 ％。于是显示出来的状态就是占用 30%的 CPU 时间。</p>
+
+<p>这就是内核是如何看待和分配计算资源的。当然实际情况要比这复杂的多，但是基本思路就是这样。 Linux 内核是通过 CPU 调度器 CFS －－完全公平调度器对 CPU 的时间进行调度的，由于本文的侧重点是 cgroup 而不是 CFS ，对这个题目感兴趣的同学可以到<a target="_top" rel="nofollow" href="http://www.linuxjournal.com/magazine/completely-fair-scheduler?page=0,1">这里</a>进一步学习。 CFS 是内核可以实现真对 CPU 资源隔离的核心手段，因此，理解清楚 CFS 对理解清楚 CPU 资源隔离会有很大的帮助。</p>
+
+<h2>如何隔离 CPU 资源？</h2>
+
+<p>根据 CPU 资源的组织形式，我们就可以理解 cgroup 是如何对 CPU 资源进行隔离的了。</p>
+
+<p>无非也是两个思路，一个是分配核心进行隔离，另一个是分配 CPU 使用时间进行隔离。</p>
+
+<p>再介绍如何做隔离之前，我们先来介绍一下我们的实验系统环境：没有特殊情况，我们的实验环境都是一台 24 核心、 128G 内存的服务器，上面安装的系统可以认为是 Centos7.</p>
+
+<h3>搭建测试环境</h3>
+
+<p>我们将使用 cgconfig 服务和 cgred 服务对 cgroup 进行配置和使用。我们将配置两个 group ，一个叫 zorro ，另一个叫 jerry 。它们分别也是系统上的两个账户，其中 zorro 用户所运行的进程都默认在 zorro group 中进行限制， jerry 用户所运行的进程都放到 jerry group 中进行限制。配置文件内容和配置方法如下：</p>
+
+<p><em>本文并不对以下配置方法的具体含义做解释，大家只要知道如此配置可以达到相关试验环境要求即可。如果大家对配置的细节感兴趣，可以自行查找相关资料进行学习。</em></p>
+
+<p>首先添加两个用户， zorro 和 jerry ：</p>
+<div class="highlight"><pre>[root@zorrozou-pc ~]# useradd zorro
+[root@zorrozou-pc ~]# useradd jerry
+</pre></div>
+
+<p>修改 /etc/cgrules.conf ，添加两行内容：</p>
+<div class="highlight"><pre>[root@zorrozou-pc ~]# cat /etc/cgrules.conf 
+zorro       cpu,cpuacct zorro
+jerry       cpu,cpuacct jerry
+</pre></div>
+
+<p>修改 /etc/cgconfig.conf ，添加以下内容：</p>
+<div class="highlight"><pre>[root@zorrozou-pc ~]# cat /etc/cgconfig.conf
+mount {
+    cpuset  = /cgroup/cpuset;
+    cpu = /cgroup/cpu;
+    cpuacct = /cgroup/cpuacct;
+    memory  = /cgroup/memory;
+    devices = /cgroup/devices;
+    freezer = /cgroup/freezer;
+    net_cls = /cgroup/net_cls;
+    blkio   = /cgroup/blkio;
+}
+
+group zorro {
+    cpuset {
+        cpuset.cpus = "1,2";
+    }
+}
+
+group jerry {
+    cpuset {
+        cpuset.cpus = "3,4";
+    }
+}
+</pre></div>
+
+<p>重启 cgconfig 服务和 cgred 服务：</p>
+<div class="highlight"><pre>[root@zorrozou-pc ~]# service cgconfig restart
+[root@zorrozou-pc ~]# service cgred restart
+</pre></div>
+
+<p>根据上面的配置，我们给 zorro 组合 jerry 组分别配置了 cpuset 的隔离设置，那么在 cgroup 的相关目录下应该出现相关组的配置文件：<br>
+<em>本文中所出现的</em><em>组</em><em>的含义，如无特殊说明都是对应 cgroup 的控制组，而非用户组身份。</em><br>
+我们可以通过检查相关目录内容来检查一下环境是否配置完成：</p>
+<div class="highlight"><pre>[root@zorrozou-pc ~]# ls /cgroup/cpuset/{zorro,jerry}
+/cgroup/cpuset/jerry:
+cgroup.clone_children  cpuset.cpu_exclusive  cpuset.mem_exclusive   cpuset.memory_pressure     cpuset.mems                      cpuset.stat
+cgroup.event_control   cpuset.cpuinfo        cpuset.mem_hardwall    cpuset.memory_spread_page  cpuset.sched_load_balance        notify_on_release
+cgroup.procs           cpuset.cpus           cpuset.memory_migrate  cpuset.memory_spread_slab  cpuset.sched_relax_domain_level  tasks
+
+/cgroup/cpuset/zorro:
+cgroup.clone_children  cpuset.cpu_exclusive  cpuset.mem_exclusive   cpuset.memory_pressure     cpuset.mems                      cpuset.stat
+cgroup.event_control   cpuset.cpuinfo        cpuset.mem_hardwall    cpuset.memory_spread_page  cpuset.sched_load_balance        notify_on_release
+cgroup.procs           cpuset.cpus           cpuset.memory_migrate  cpuset.memory_spread_slab  cpuset.sched_relax_domain_level  tasks
+</pre></div>
+
+<p>至此，我们的实验环境已经搭建完成。</p>
+
+<h3>测试用例设计</h3>
+
+<p>无论是针对 CPU 核心的隔离还是针对 CPU 时间的隔离，我们都需要一个可以消耗大量的 CPU 运算资源的程序来进行测试，考虑到我们是一个多 CPU 核心的环境，所以我们的测试用例一定也是一个可以并发使用多个 CPU 核心的计算型测试用例。针对这个需求，我们首先设计了一个使用多线程并发进行筛质数的简单程序。这个程序可以打印出从 100010001 到 100020000 数字范围内的质数有哪些。并发 48 个工作线程从一个共享的 count 整型变量中取数进行计算。程序源代码如下：</p>
+<div class="highlight"><pre>#include &lt;pthread.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+#define NUM 48
+#define START 100010001
+#define END 100020000
+
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
+static int count = 0;
+
+void *prime(void *p)
+{
+    int n, i, flag;
+
+    while (1) {
+            if (pthread_mutex_lock(&amp;mutex) != 0) {
+                    perror("pthread_mutex_lock()");
+                    pthread_exit(NULL);
+            }
+            while (count == 0) {
+                    if (pthread_cond_wait(&amp;cond, &amp;mutex) != 0) {
+                            perror("pthread_cond_wait()");
+                            pthread_exit(NULL);
+                    }
+            }
+            if (count == -1) {
+                    if (pthread_mutex_unlock(&amp;mutex) != 0) {
+                            perror("pthread_mutex_unlock()");
+                            pthread_exit(NULL);
+                    }
+                    break;
+            }
+            n = count;
+            count = 0;
+            if (pthread_cond_broadcast(&amp;cond) != 0) {
+                    perror("pthread_cond_broadcast()");
+                    pthread_exit(NULL);
+            }
+            if (pthread_mutex_unlock(&amp;mutex) != 0) {
+                    perror("pthread_mutex_unlock()");
+                    pthread_exit(NULL);
+            }
+            flag = 1;
+            for (i=2;i&lt;n/2;i++) {
+                    if (n%i == 0) {
+                            flag = 0;
+                            break;
+                    }
+            }
+            if (flag == 1) {
+                    printf("%d is a prime form %d!\n", n, pthread_self());
+            }
+    }
+    pthread_exit(NULL);
+}
+
+
+int main(void)
+{
+    pthread_t tid[NUM];
+    int ret, i;
+
+    for (i=0;i&lt;NUM;i++) {
+            ret = pthread_create(&amp;tid[i], NULL, prime, NULL);
+            if (ret != 0) {
+                    perror("pthread_create()");
+                    exit(1);
+            }
+    }
+
+    for (i=START;i&lt;END;i+=2) {
+            if (pthread_mutex_lock(&amp;mutex) != 0) {
+                    perror("pthread_mutex_lock()");
+                    pthread_exit(NULL);
+            }
+            while (count != 0) {
+                    if (pthread_cond_wait(&amp;cond, &amp;mutex) != 0) {
+                            perror("pthread_cond_wait()");
+                            pthread_exit(NULL);
+                    }
+            }
+            count = i;
+            if (pthread_cond_broadcast(&amp;cond) != 0) {
+                    perror("pthread_cond_broadcast()");
+                    pthread_exit(NULL);
+            }
+            if (pthread_mutex_unlock(&amp;mutex) != 0) {
+                    perror("pthread_mutex_unlock()");
+                    pthread_exit(NULL);
+            }
+    }
+
+    if (pthread_mutex_lock(&amp;mutex) != 0) {
+            perror("pthread_mutex_lock()");
+            pthread_exit(NULL);
+    }
+    while (count != 0) {
+            if (pthread_cond_wait(&amp;cond, &amp;mutex) != 0) {
+                    perror("pthread_cond_wait()");
+                    pthread_exit(NULL);
+            }
+    }
+    count = -1;
+    if (pthread_cond_broadcast(&amp;cond) != 0) {
+            perror("pthread_cond_broadcast()");
+            pthread_exit(NULL);
+    }
+    if (pthread_mutex_unlock(&amp;mutex) != 0) {
+            perror("pthread_mutex_unlock()");
+            pthread_exit(NULL);
+    }
+
+    for (i=0;i&lt;NUM;i++) {
+            ret = pthread_join(tid[i], NULL);
+            if (ret != 0) {
+
+                    perror("pthread_join()");
+                    exit(1);
+            }
+    }
+
+    exit(0);
+}
+</pre></div>
+
+<p>我们先来看一下这个程序在不做限制的情况下的执行效果和执行时间：</p>
+<div class="highlight"><pre>[root@zorrozou-pc ~/test]# time ./prime_thread
+......
+
+100019603 is a prime form 2068363008!
+100019471 is a prime form 1866938112!
+100019681 is a prime form 1934079744!
+100019597 is a prime form 1875330816!
+100019701 is a prime form 2059970304!
+100019657 is a prime form 1799796480!
+100019761 is a prime form 1808189184!
+100019587 is a prime form 1824974592!
+100019659 is a prime form 2076755712!
+100019837 is a prime form 1959257856!
+100019923 is a prime form 2034792192!
+100019921 is a prime form 1908901632!
+100019729 is a prime form 1850152704!
+100019863 is a prime form -2109106432!
+100019911 is a prime form -2125891840!
+100019749 is a prime form 2101933824!
+100019879 is a prime form 2026399488!
+100019947 is a prime form 1942472448!
+100019693 is a prime form 1917294336!
+100019683 is a prime form 2051577600!
+100019873 is a prime form 2110326528!
+100019929 is a prime form -2134284544!
+100019977 is a prime form 1892116224!
+
+real    0m8.945s
+user    3m32.095s
+sys 0m0.235s
+
+
+
+[root@zorrozou-pc ~]# mpstat -P ALL 1
+11:21:51     CPU    %usr   %nice    %sys %iowait    %irq   %soft  %steal  %guest  %gnice   %idle
+11:21:52     all   99.92    0.00    0.08    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+11:21:52       0  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+11:21:52       1  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+11:21:52       2  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+11:21:52       3  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+11:21:52       4   99.00    0.00    1.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+11:21:52       5  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+11:21:52       6  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+11:21:52       7  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+11:21:52       8  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+11:21:52       9  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+11:21:52      10  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+11:21:52      11   99.01    0.00    0.99    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+11:21:52      12  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+11:21:52      13  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+11:21:52      14  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+11:21:52      15  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+11:21:52      16   99.01    0.00    0.00    0.00    0.99    0.00    0.00    0.00    0.00    0.00
+11:21:52      17  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+11:21:52      18  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+11:21:52      19  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+11:21:52      20  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+11:21:52      21  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+11:21:52      22  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+11:21:52      23  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+</pre></div>
+
+<p>经过多次测试，程序执行时间基本稳定：</p>
+<div class="highlight"><pre>[root@zorrozou-pc ~/test]# time ./prime_thread &amp;&gt; /dev/null
+
+real    0m8.953s
+user    3m31.950s
+sys 0m0.227s
+[root@zorrozou-pc ~/test]# time ./prime_thread &amp;&gt; /dev/null
+
+real    0m8.932s
+user    3m31.984s
+sys 0m0.231s
+[root@zorrozou-pc ~/test]# time ./prime_thread &amp;&gt; /dev/null
+
+real    0m8.954s
+user    3m31.794s
+sys 0m0.224s
+</pre></div>
+
+<p>所有相关环境都准备就绪，后续我们将在此程序的基础上进行各种隔离的测试。</p>
+</div></div>
+        
+        
+    </div>
+    
+    
+    
+</div>
+
+<div class="sep20"></div>
+
+
+<div class="box">
+    <div class="cell"><div class="fr" style="margin: -3px -5px 0px 0px;"><a href="https://www.v2ex.com/tag/CPU" class="tag"><li class="fa fa-tag"></li> CPU</a><a href="https://www.v2ex.com/tag/cgroup" class="tag"><li class="fa fa-tag"></li> cgroup</a><a href="https://www.v2ex.com/tag/11:21:52" class="tag"><li class="fa fa-tag"></li> 11:21:52</a><a href="https://www.v2ex.com/tag/prime" class="tag"><li class="fa fa-tag"></li> prime</a></div><span class="gray">15 回复 &nbsp;<strong class="snow">|</strong> &nbsp;直到 2015-12-29 20:20:47 +08:00</span>
+    </div>
+    
+
+    
+        
+        
+        <div id="r_2767014" class="cell">
+        
+        <table width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tbody><tr>
+                <td valign="top" width="48" align="center"><img src="43023_normal.png" class="avatar" border="0" align="default"></td>
+                <td valign="top" width="10"></td>
+                <td valign="top" width="auto" align="left"><div class="fr"> &nbsp; &nbsp; <span class="no">1</span></div>
+                    <div class="sep3"></div>
+                    <strong><a href="https://www.v2ex.com/member/Earthman" class="dark">Earthman</a></strong>&nbsp; &nbsp;<span class="ago">2015-12-28 23:02:08 +08:00</span>  &nbsp; <span class="small fade">♥ 1</span>
+                    <div class="sep5"></div>
+                    <div class="reply_content">没人顶楼主，可惜，战略性 mark</div>
+                </td>
+            </tr>
+        </tbody></table>
+        </div>
+    
+
+    
+        
+        
+        <div id="r_2767022" class="cell">
+        
+        <table width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tbody><tr>
+                <td valign="top" width="48" align="center"><img src="f750f1d434d3cdba17f7a22d53387288" class="avatar" border="0" align="default"></td>
+                <td valign="top" width="10"></td>
+                <td valign="top" width="auto" align="left"><div class="fr"> &nbsp; &nbsp; <span class="no">2</span></div>
+                    <div class="sep3"></div>
+                    <strong><a href="https://www.v2ex.com/member/Evovil" class="dark">Evovil</a></strong>&nbsp; &nbsp;<span class="ago">2015-12-28 23:05:15 +08:00</span> 
+                    <div class="sep5"></div>
+                    <div class="reply_content">mark 。。。</div>
+                </td>
+            </tr>
+        </tbody></table>
+        </div>
+    
+
+    
+        
+        
+        <div id="r_2767059" class="cell">
+        
+        <table width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tbody><tr>
+                <td valign="top" width="48" align="center"><img src="47818_normal.png" class="avatar" border="0" align="default"></td>
+                <td valign="top" width="10"></td>
+                <td valign="top" width="auto" align="left"><div class="fr"> &nbsp; &nbsp; <span class="no">3</span></div>
+                    <div class="sep3"></div>
+                    <strong><a href="https://www.v2ex.com/member/donge" class="dark">donge</a></strong>&nbsp; &nbsp;<span class="ago">2015-12-28 23:20:49 +08:00</span>  &nbsp; <span class="small fade">♥ 1</span>
+                    <div class="sep5"></div>
+                    <div class="reply_content">楼主讲的不错，技术理解与表达能力兼具。</div>
+                </td>
+            </tr>
+        </tbody></table>
+        </div>
+    
+
+    
+        
+        
+        <div id="r_2767064" class="cell">
+        
+        <table width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tbody><tr>
+                <td valign="top" width="48" align="center"><img src="151104_normal.png" class="avatar" border="0" align="default"></td>
+                <td valign="top" width="10"></td>
+                <td valign="top" width="auto" align="left"><div class="fr"> &nbsp; &nbsp; <span class="no">4</span></div>
+                    <div class="sep3"></div>
+                    <strong><a href="https://www.v2ex.com/member/luohaha" class="dark">luohaha</a></strong>&nbsp; &nbsp;<span class="ago">2015-12-28 23:22:45 +08:00</span> 
+                    <div class="sep5"></div>
+                    <div class="reply_content">mark</div>
+                </td>
+            </tr>
+        </tbody></table>
+        </div>
+    
+
+    
+        
+        
+        <div id="r_2767081" class="cell">
+        
+        <table width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tbody><tr>
+                <td valign="top" width="48" align="center"><img src="2ade81d6da4a223032d4ef36801d41a0" class="avatar" border="0" align="default"></td>
+                <td valign="top" width="10"></td>
+                <td valign="top" width="auto" align="left"><div class="fr"> &nbsp; &nbsp; <span class="no">5</span></div>
+                    <div class="sep3"></div>
+                    <strong><a href="https://www.v2ex.com/member/bluecubic" class="dark">bluecubic</a></strong>&nbsp; &nbsp;<span class="ago">2015-12-28 23:28:42 +08:00 via Android</span> 
+                    <div class="sep5"></div>
+                    <div class="reply_content">Lz 的技术文章不错，可是能不能介绍一下背景为什么要讨论这个主题</div>
+                </td>
+            </tr>
+        </tbody></table>
+        </div>
+    
+
+    
+        
+        
+        <div id="r_2767105" class="cell">
+        
+        <table width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tbody><tr>
+                <td valign="top" width="48" align="center"><img src="136983_normal.png" class="avatar" border="0" align="default"></td>
+                <td valign="top" width="10"></td>
+                <td valign="top" width="auto" align="left"><div class="fr"> &nbsp; &nbsp; <span class="no">6</span></div>
+                    <div class="sep3"></div>
+                    <strong><a href="https://www.v2ex.com/member/jerry017cn" class="dark">jerry017cn</a></strong>&nbsp; &nbsp;<span class="ago">2015-12-28 23:38:08 +08:00</span> 
+                    <div class="sep5"></div>
+                    <div class="reply_content">@<a href="https://www.v2ex.com/member/bluecubic">bluecubic</a> cgroup 是 Docker 的底层实现资源隔离的技术，我本人算是在工作中有一些使用上的心得经验，分享一下。</div>
+                </td>
+            </tr>
+        </tbody></table>
+        </div>
+    
+
+    
+        
+        
+        <div id="r_2767163" class="cell">
+        
+        <table width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tbody><tr>
+                <td valign="top" width="48" align="center"><img src="14481_normal.png" class="avatar" border="0" align="default"></td>
+                <td valign="top" width="10"></td>
+                <td valign="top" width="auto" align="left"><div class="fr"> &nbsp; &nbsp; <span class="no">7</span></div>
+                    <div class="sep3"></div>
+                    <strong><a href="https://www.v2ex.com/member/Gothack" class="dark">Gothack</a></strong>&nbsp; &nbsp;<span class="ago">2015-12-28 23:57:37 +08:00</span> 
+                    <div class="sep5"></div>
+                    <div class="reply_content">遇到熟人 😄</div>
+                </td>
+            </tr>
+        </tbody></table>
+        </div>
+    
+
+    
+        
+        
+        <div id="r_2767169" class="cell">
+        
+        <table width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tbody><tr>
+                <td valign="top" width="48" align="center"><img src="127675_normal.png" class="avatar" border="0" align="default"></td>
+                <td valign="top" width="10"></td>
+                <td valign="top" width="auto" align="left"><div class="fr"> &nbsp; &nbsp; <span class="no">8</span></div>
+                    <div class="sep3"></div>
+                    <strong><a href="https://www.v2ex.com/member/raingolee" class="dark">raingolee</a></strong>&nbsp; &nbsp;<span class="ago">2015-12-28 23:59:58 +08:00</span> 
+                    <div class="sep5"></div>
+                    <div class="reply_content">支持楼主~已下载 pdf<br><br>最近刚好在看 namespace cgroup</div>
+                </td>
+            </tr>
+        </tbody></table>
+        </div>
+    
+
+    
+        
+        
+        <div id="r_2767182" class="cell">
+        
+        <table width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tbody><tr>
+                <td valign="top" width="48" align="center"><img src="8042_normal.png" class="avatar" border="0" align="default"></td>
+                <td valign="top" width="10"></td>
+                <td valign="top" width="auto" align="left"><div class="fr"> &nbsp; &nbsp; <span class="no">9</span></div>
+                    <div class="sep3"></div>
+                    <strong><a href="https://www.v2ex.com/member/janxin" class="dark">janxin</a></strong>&nbsp; &nbsp;<span class="ago">2015-12-29 00:04:41 +08:00</span> 
+                    <div class="sep5"></div>
+                    <div class="reply_content">已感谢</div>
+                </td>
+            </tr>
+        </tbody></table>
+        </div>
+    
+
+    
+        
+        
+        <div id="r_2767241" class="cell">
+        
+        <table width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tbody><tr>
+                <td valign="top" width="48" align="center"><img src="77587_normal.png" class="avatar" border="0" align="default"></td>
+                <td valign="top" width="10"></td>
+                <td valign="top" width="auto" align="left"><div class="fr"> &nbsp; &nbsp; <span class="no">10</span></div>
+                    <div class="sep3"></div>
+                    <strong><a href="https://www.v2ex.com/member/br00k" class="dark">br00k</a></strong>&nbsp; &nbsp;<span class="ago">2015-12-29 00:38:56 +08:00</span> 
+                    <div class="sep5"></div>
+                    <div class="reply_content">mark 好文</div>
+                </td>
+            </tr>
+        </tbody></table>
+        </div>
+    
+
+    
+        
+        
+        <div id="r_2767253" class="cell">
+        
+        <table width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tbody><tr>
+                <td valign="top" width="48" align="center"><img src="12897_normal.png" class="avatar" border="0" align="default"></td>
+                <td valign="top" width="10"></td>
+                <td valign="top" width="auto" align="left"><div class="fr"> &nbsp; &nbsp; <span class="no">11</span></div>
+                    <div class="sep3"></div>
+                    <strong><a href="https://www.v2ex.com/member/erik0" class="dark">erik0</a></strong>&nbsp; &nbsp;<span class="ago">2015-12-29 00:48:55 +08:00</span> 
+                    <div class="sep5"></div>
+                    <div class="reply_content">关注。最近在学习容器。</div>
+                </td>
+            </tr>
+        </tbody></table>
+        </div>
+    
+
+    
+        
+        
+        <div id="r_2767263" class="cell">
+        
+        <table width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tbody><tr>
+                <td valign="top" width="48" align="center"><img src="107367_normal.png" class="avatar" border="0" align="default"></td>
+                <td valign="top" width="10"></td>
+                <td valign="top" width="auto" align="left"><div class="fr"> &nbsp; &nbsp; <span class="no">12</span></div>
+                    <div class="sep3"></div>
+                    <strong><a href="https://www.v2ex.com/member/Andiry" class="dark">Andiry</a></strong>&nbsp; &nbsp;<span class="ago">2015-12-29 00:54:53 +08:00</span> 
+                    <div class="sep5"></div>
+                    <div class="reply_content">不得不说这个测试程序写的很 2 ，要 mutex 和 cond 干嘛，每个线程根据自己的 id 直接取数不就完了</div>
+                </td>
+            </tr>
+        </tbody></table>
+        </div>
+    
+
+    
+        
+        
+        <div id="r_2767519" class="cell">
+        
+        <table width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tbody><tr>
+                <td valign="top" width="48" align="center"><img src="87863_normal.png" class="avatar" border="0" align="default"></td>
+                <td valign="top" width="10"></td>
+                <td valign="top" width="auto" align="left"><div class="fr"> &nbsp; &nbsp; <span class="no">13</span></div>
+                    <div class="sep3"></div>
+                    <strong><a href="https://www.v2ex.com/member/eastlhu" class="dark">eastlhu</a></strong>&nbsp; &nbsp;<span class="ago">2015-12-29 08:37:10 +08:00</span> 
+                    <div class="sep5"></div>
+                    <div class="reply_content">还没仔细看，不过楼主这个认真劲不错</div>
+                </td>
+            </tr>
+        </tbody></table>
+        </div>
+    
+
+    
+        
+        
+        <div id="r_2767530" class="cell">
+        
+        <table width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tbody><tr>
+                <td valign="top" width="48" align="center"><img src="141071_normal.png" class="avatar" border="0" align="default"></td>
+                <td valign="top" width="10"></td>
+                <td valign="top" width="auto" align="left"><div class="fr"> &nbsp; &nbsp; <span class="no">14</span></div>
+                    <div class="sep3"></div>
+                    <strong><a href="https://www.v2ex.com/member/GNiux" class="dark">GNiux</a></strong>&nbsp; &nbsp;<span class="ago">2015-12-29 08:41:13 +08:00 via iPhone</span> 
+                    <div class="sep5"></div>
+                    <div class="reply_content">Mark. 昨晚就看到了。不过睡着了。</div>
+                </td>
+            </tr>
+        </tbody></table>
+        </div>
+    
+
+    
+        
+        
+        <div id="r_2770132" class="cell">
+        
+        <table width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tbody><tr>
+                <td valign="top" width="48" align="center"><img src="41060_normal.png" class="avatar" border="0" align="default"></td>
+                <td valign="top" width="10"></td>
+                <td valign="top" width="auto" align="left"><div class="fr"> &nbsp; &nbsp; <span class="no">15</span></div>
+                    <div class="sep3"></div>
+                    <strong><a href="https://www.v2ex.com/member/itfanr" class="dark">itfanr</a></strong>&nbsp; &nbsp;<span class="ago">2015-12-29 20:20:47 +08:00</span> 
+                    <div class="sep5"></div>
+                    <div class="reply_content">已收藏</div>
+                </td>
+            </tr>
+        </tbody></table>
+        </div>
+    
+
+
+</div>
+<div class="sep20"></div>
+
+
+
+
+
+
+            </div>
+            
+            
+        </div>
+        <div class="c"></div>
+        <div class="sep20"></div>
+    </div>
+    <div id="Bottom">
+        <div class="content">
+            <div class="inner">
+                <div class="sep10"></div>
+                    <div class="fr">
+                        <a href="https://www.digitalocean.com/?refcode=1b51f1a7651d" target="_top"><div id="DigitalOcean"></div></a>
+                    </div>
+                    <strong><a href="https://www.v2ex.com/about" class="dark" target="_self">关于</a> &nbsp; <span class="snow">·</span> &nbsp; <a href="https://www.v2ex.com/faq" class="dark" target="_self">FAQ</a> &nbsp; <span class="snow">·</span> &nbsp; <a href="https://www.v2ex.com/p/7v9TEc53" class="dark" target="_self">API</a> &nbsp; <span class="snow">·</span> &nbsp; <a href="https://www.v2ex.com/mission" class="dark" target="_self">我们的愿景</a> &nbsp; <span class="snow">·</span> &nbsp; <a href="https://www.v2ex.com/advertise" class="dark" target="_self">广告投放</a> &nbsp; <span class="snow">·</span> &nbsp; <a href="https://www.v2ex.com/advertise/2017.html" class="dark" target="_self">感谢</a> &nbsp; <span class="snow">·</span> &nbsp; <a href="https://www.v2ex.com/tools" class="dark" target="_self">实用小工具</a> &nbsp; <span class="snow">·</span> &nbsp; 3812 人在线</strong> &nbsp; <span class="fade">最高记录 4019</span> &nbsp; <span class="snow">·</span> &nbsp; <a href="https://www.v2ex.com/select/language"><img src="lang_zhcn_32.png" alt="" width="20" border="0" align="absmiddle"></a>
+                    <div class="sep20"></div>
+                    创意工作者们的社区
+                    <div class="sep5"></div>
+                    World is powered by solitude
+                    <div class="sep20"></div>
+                    <span class="small fade">VERSION: 3.9.8.1 · 23ms · UTC 02:14 · PVG 10:14 · LAX 18:14 · JFK 21:14<br>♥ Do have faith in what you're doing.</span>
+                    <div class="sep20"></div>
+                    <table width="100%" cellspacing="0" cellpadding="0" border="0"><tbody><tr><td style="background-color: transparent;" valign="middle" width="140" align="left"><span class="f12 gray"><a href="http://www.miibeian.gov.cn/" target="_top" rel="nofollow">沪ICP备16043287号-1</a></span></td><td style="background-color: transparent;" valign="middle" width="auto" align="left"></td></tr></tbody></table>
+                <div class="sep10"></div>
+            </div>
+        </div>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+    
+
+    
+	
+    
+
+    
+    
+
+</body>
+</html>

@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#" lang="en-US">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+	<meta charset="UTF-8">
+	<title>Kurento.org: WebRTC, Computer Vision, Augmented Reality, Awesome (Luis López Fernández) - webrtcHacks</title>
+	<link rel="profile" href="http://gmpg.org/xfn/11">
+	<link rel="pingback" href="https://webrtchacks.com/xmlrpc.php">
+	<!--[if lt IE 9]>
+	<script src="https://webrtchacks.com/wp-content/themes/parament/js/html5.js" type="text/javascript"></script>
+	<![endif]-->
+	
+<!-- This site is optimized with the Yoast SEO plugin v4.0.2 - https://yoast.com/wordpress/plugins/seo/ -->
+<meta name="description" content="A walkthrough on how to use the Kurento open source media server to build a WebRTC-based augmented reality computer vision application">
+<meta name="robots" content="noodp">
+<link rel="canonical" href="https://webrtchacks.com/kurento/">
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kurento.org: WebRTC, Computer Vision, Augmented Reality, Awesome (Luis López Fernández) - webrtcHacks">
+<meta property="og:description" content="A walkthrough on how to use the Kurento open source media server to build a WebRTC-based augmented reality computer vision application">
+<meta property="og:url" content="https://webrtchacks.com/kurento/">
+<meta property="og:site_name" content="webrtcHacks">
+<meta property="article:tag" content="augmented reality">
+<meta property="article:tag" content="computer vision">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="kurento">
+<meta property="article:tag" content="MCU">
+<meta property="article:tag" content="media processing">
+<meta property="article:tag" content="media server">
+<meta property="article:tag" content="nubomedia">
+<meta property="article:tag" content="Walkthrough">
+<meta property="article:section" content="Guide">
+<meta property="article:published_time" content="2014-05-27T06:04:52-04:00">
+<meta property="article:modified_time" content="2014-08-06T08:09:47-04:00">
+<meta property="og:updated_time" content="2014-08-06T08:09:47-04:00">
+<meta property="og:image" content="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-0.jpg">
+<meta property="og:image" content="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-1.jpg">
+<meta property="og:image" content="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-2.jpg">
+<meta property="og:image" content="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-3.jpg">
+<meta property="og:image" content="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-4.jpg">
+<meta property="og:image" content="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-5.jpg">
+<meta property="og:image" content="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-6.jpg">
+<meta property="og:image" content="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-7.jpg">
+<meta property="og:image" content="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-8.jpg">
+<meta property="og:image" content="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-9.jpg">
+<meta property="og:image" content="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-10.jpg">
+<meta property="og:image" content="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-11.jpg">
+<meta property="og:image" content="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-12.jpg">
+<meta property="og:image" content="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-13.jpg">
+<meta property="og:image" content="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-14.jpg">
+<meta property="og:image" content="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-15.jpg">
+<meta property="og:image" content="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-16.jpg">
+<meta property="og:image" content="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-17.jpg">
+<meta property="og:image" content="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-18.jpg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:description" content="A walkthrough on how to use the Kurento open source media server to build a WebRTC-based augmented reality computer vision application">
+<meta name="twitter:title" content="Kurento.org: WebRTC, Computer Vision, Augmented Reality, Awesome (Luis López Fernández) - webrtcHacks">
+<meta name="twitter:site" content="@webrtchacks">
+<meta name="twitter:image" content="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-0.jpg">
+<meta name="twitter:creator" content="@chadwallacehart">
+<!-- / Yoast SEO plugin. -->
+
+<link rel="dns-prefetch" href="https://ws.sharethis.com/">
+<link rel="dns-prefetch" href="https://s.w.org/">
+<link rel="alternate" type="application/rss+xml" title="webrtcHacks » Feed" href="https://webrtchacks.com/feed/">
+<link rel="alternate" type="application/rss+xml" title="webrtcHacks » Comments Feed" href="https://webrtchacks.com/comments/feed/">
+<link rel="alternate" type="application/rss+xml" title="webrtcHacks » Kurento.org: WebRTC, Computer Vision, Augmented Reality, Awesome (Luis López Fernández) Comments Feed" href="https://webrtchacks.com/kurento/feed/">
+		
+		
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- This site uses the Google Analytics by MonsterInsights plugin v5.5.4 - Universal enabled - https://www.monsterinsights.com/ -->
+
+<!-- / Google Analytics by MonsterInsights -->
+
+
+
+
+
+<link rel="https://api.w.org/" href="https://webrtchacks.com/wp-json/">
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://webrtchacks.com/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://webrtchacks.com/wp-includes/wlwmanifest.xml"> 
+<link rel="shortlink" href="https://webrtchacks.com/?p=1888">
+<link rel="alternate" type="application/json+oembed" href="https://webrtchacks.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fwebrtchacks.com%2Fkurento%2F">
+<link rel="alternate" type="text/xml+oembed" href="https://webrtchacks.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fwebrtchacks.com%2Fkurento%2F&amp;format=xml">
+		<!-- AJAXY SEARCH V 3.0.7-->
+				
+		
+
+		
+						<!-- WordPress Popular Posts v3.3.4 -->
+				
+				<!-- End WordPress Popular Posts v3.3.4 -->
+					
+	
+	<link rel="shortcut icon" href="favicon.ico">
+	
+	<!-- Google Analytics -->
+		
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--Commented out by Chad -->
+<!--script type="text/javascript" src="https://webrtchacks.com/wp-includes/js/jquery.sticky.js"></script-->
+
+
+
+
+<!--script>
+    /******Changed by Chad ****************/
+	$(window).load(function(){
+      		$("#fixedscroll").sticky({ topSpacing: 0, bottomSpacing: 1250  });
+    });
+		
+</script-->
+
+
+
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body class="post-template-default single single-post postid-1888 single-format-standard custom-background has-image">
+
+<div id="page-wrap" class="contain">
+<div class="header-wrapper">
+	<header id="branding" role="banner">
+		
+					<a id="header-image" href="https://webrtchacks.com/"><img src="webrtchackslogo1.gif" alt=""></a>
+      <div class="whsocialmedia">
+		<a href="https://twitter.com/share?url=http://webrtchacks.com/kurento/" target="_top" style="display: inline; font-size: 0px; padding: 0px 5px;"><img src="twitter.png"></a>
+		<a href="http://www.facebook.com/sharer.php?u=http://webrtchacks.com/kurento/" target="_top" style="display: inline; font-size: 0px; padding: 0px 5px;"><img src="facebook-favicon.png"></a>
+		<a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=http://webrtchacks.com/kurento/" target="_top" style="display: inline; font-size: 0px; padding: 0px 5px;"><img src="linkedin-favicon.png"></a>
+		<a href="https://plus.google.com/share?url=http://webrtchacks.com/kurento/" target="_top" style="display: inline; font-size: 0px; padding: 0px 5px;"><img src="google+-favicon.png"></a>
+</div>
+			</header><!-- #branding -->
+</div><!-- end of header-wrapper -->
+
+	<nav id="menu" role="navigation"><ul id="primary-menu" class="menu"><li id="menu-item-59" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-59"><a href="http://webrtchacks.com/">Home</a></li>
+<li id="menu-item-302" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-302"><a href="https://webrtchacks.com/vendor-directory/">Tool Directory</a></li>
+<li id="menu-item-55" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-55"><a href="https://webrtchacks.com/about/">About</a>
+<ul class="sub-menu">
+	<li id="menu-item-64" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-64"><a href="https://webrtchacks.com/about/chad/">Chad Hart</a></li>
+	<li id="menu-item-62" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-62"><a href="https://webrtchacks.com/about/victor/">Victor Pascual Ávila</a></li>
+	<li id="menu-item-1833" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1833"><a href="https://webrtchacks.com/about/tsahi/">Tsahi Levent-Levi</a></li>
+	<li id="menu-item-2355" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2355"><a href="https://webrtchacks.com/about/fippo/">Philipp Hancke</a></li>
+</ul>
+</li>
+<li id="menu-item-792" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-792"><a href="https://webrtchacks.com/subscribe/">Subscribe</a></li>
+<li id="menu-item-265" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-265"><a href="https://webrtchacks.com/contact/">Contact</a></li>
+</ul><!-- <div id="53f1912965db2" class="sf_container" style="width: 235px;float: left;margin-left: 118px;">
+			<form role="search" method="get" class="searchform" action="https://webrtchacks.com/">
+				<div>
+					<label class="screen-reader-text" for="s">Search for:</label>
+					<div class="sf_search">
+						<span class="sf_block">
+							<input style="width:215px;" class="sf_input" autocomplete="off" type="text" value="search webrtcHacks.com" name="s">
+							<button class="sf_button searchsubmit" type="submit"><span class="sf_hidden">Search</span></button>
+						</span>
+					</div>
+				</div>
+			</form>
+		</div> -->
+  </nav>
+<div style="padding: 0px;" align="center">
+<!-- [adkingpro type=webrtcschool-top_bottom_ad] -->
+	</div><div id="container-holder">
+<div id="container" class="contain">
+	<div id="main" role="main">
+													
+<article id="post-1888" class="contain post-1888 post type-post status-publish format-standard hentry category-guide tag-augmented-reality tag-computer-vision tag-java tag-kurento tag-mcu tag-media-processing tag-media-server tag-nubomedia tag-walkthrough has-byline">
+
+	<div class="title">
+					<h2 class="entry-title"><font color="000">webrtcH4cKS:</font><font color="000"> ~ </font>Kurento.org: WebRTC, Computer Vision, Augmented Reality, Awesome (Luis López Fernández)</h2>				<div class="entry-byline">
+			<span>Posted by <a href="https://webrtchacks.com/author/chad/" title="View all posts by Chad Hart">Chad Hart</a> on <a href="https://webrtchacks.com/kurento/">May 27, 2014</a></span>
+					</div>
+
+		<div class="entry-meta">
+						<div class="entry-posted">
+			<strong>Posted in:</strong> <a href="https://webrtchacks.com/category/guide/" rel="category tag">Guide</a>.			</div>
+						
+						<div class="entry-tagged">
+			<strong>Tagged:</strong> <a href="https://webrtchacks.com/tag/augmented-reality/" rel="tag">augmented reality</a>, <a href="https://webrtchacks.com/tag/computer-vision/" rel="tag">computer vision</a>, <a href="https://webrtchacks.com/tag/java/" rel="tag">java</a>, <a href="https://webrtchacks.com/tag/kurento/" rel="tag">kurento</a>, <a href="https://webrtchacks.com/tag/mcu/" rel="tag">MCU</a>, <a href="https://webrtchacks.com/tag/media-processing/" rel="tag">media processing</a>, <a href="https://webrtchacks.com/tag/media-server/" rel="tag">media server</a>, <a href="https://webrtchacks.com/tag/nubomedia/" rel="tag">nubomedia</a>, <a href="https://webrtchacks.com/tag/walkthrough/" rel="tag">Walkthrough</a>.			</div>
+						
+						<div class="entry-comments">
+				<span class="comments"><a href="https://webrtchacks.com/kurento/#comments">6 comments</a></span></div>
+					</div><!-- entry-meta -->
+
+	</div><!-- end title -->
+
+	<div class="entry-content">
+		<div id="attachment_1911" style="width: 974px;" class="wp-caption alignnone"><a href="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-0.jpg"><img class="wp-image-1911 size-full" src="kurento-0.jpg" alt="kurento-0" srcset="https://webrtchacks.com/wp-content/uploads/2014/05/kurento-0.jpg 964w, https://webrtchacks.com/wp-content/uploads/2014/05/kurento-0-300x220.jpg 300w, https://webrtchacks.com/wp-content/uploads/2014/05/kurento-0-600x441.jpg 600w" sizes="(max-width: 964px) 100vw, 964px" width="964" height="710"></a><p class="wp-caption-text">Augmented reality demonstration using the open source Kurento project</p></div>
+<p>Sending real time communications from point A to point B? That functionality is relatively&nbsp;easy with WebRTC. Processing the media in real time to do something cool with it? That&nbsp;is an area I find a lot more interesting, but it is a lot tougher to do. When I was building my <a href="http://webrtchacks.com/baby-motion-detector">Motion Detecting Baby Monitor</a> project, I wished I had some kind of media server to handle the motion detection processing. That would give me some flexibility to take the processor intensive algorithm off of my phone and stick that in the cloud if I wanted to save on battery. That also got me thinking – if you can do motion detection why not apply other more advanced image processing algorithms to the WebRTC stream? &nbsp;How about facial recognition, object detection, gesture tracking or many of the other cool features that are popping up all the time in the popular Open Source Computer Vision (<a href="http://opencv.org/">OpenCV</a>) project? I wrote this dream off as science fiction for another year or two.</p>
+<p>Last December Luis López, a professor at Rey Juan Carlos University, gave an overview of an open source media server project that he originally&nbsp;worked on as part of the&nbsp;<a href="http://www.fi-ware.org/">FI-WARE</a>&nbsp;European Research project. This project was now called Kurento and includes&nbsp;support for WebRTC. It also includes integration with OpenCV and an interesting media pipelining architecture that allowed the use of multiple filters – media processing algorithms – on a real time stream. This looked like an important academic project, but I assumed it would take a while to materialize.</p>
+<p>I was off on the time to materialize part – the Kurento.org community have made a tremendous amount of progress in just the few months since I first saw Luis’ presentation. More importantly, they are poised to play a much larger role in the future thanks to some significant funding by the European Commission to develop Kurento into a full Platform-as-a-Service in the cloud in a project called <a href="http://www.nubomedia.eu/">Nubomedia</a>.</p>
+<p>I asked Luis if he could walk us through a basic augmented reality application using Kurento. Check out his well-documented walk-through below and make sure to click through for links to his codes and example videos along they way.</p>
+<p>{“intro-by”, “<a title="Chad Hart" href="http://webrtchacks.com/about/chad/">chad</a>“}</p>
+<hr>
+<h2>Introduction</h2>
+<p>Currently, most WebRTC efforts and attention are concentrated on the client-side of the problem. However, WebRTC services also require a server-side infrastructure. This infrastructure must, at a minimum, provide a signaling mechanism making possible clients to find each other, but it may also provide capabilities in the media plane. Capabilities in the media plane are very useful when creating services beyond the standard WebRTC peer-to-peer call model. Some common examples of server-side media plane elements that could be used in WebRTC include:</p>
+<ul>
+<li><a title="What is a WebRTC Gateway anyway? (Lorenzo Miniero)" href="http://webrtchacks.com/webrtc-gw/">WebRTC media gateways</a> – typical on services requiring protocol or format adaptations (as happens when integrating <a title="The IMS approach to WebRTC" href="http://webrtchacks.com/ims-approach-webrtc/">WebRTC with IMS</a>)</li>
+<li>Multi Point Control Units (MCUs) – used to support group communications</li>
+<li>Recording media servers – helpful when one needs to persist a WebRTC call</li>
+</ul>
+<div id="attachment_1892" style="width: 581px;" class="wp-caption alignnone"><a href="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-1.jpg"><img class="wp-image-1892 size-full" src="kurento-1.jpg" alt="kurento-1" srcset="https://webrtchacks.com/wp-content/uploads/2014/05/kurento-1.jpg 571w, https://webrtchacks.com/wp-content/uploads/2014/05/kurento-1-300x183.jpg 300w" sizes="(max-width: 571px) 100vw, 571px" width="571" height="349"></a><p class="wp-caption-text">Figure 1. Kurento vision for WebRTC media servers goes beyond transporting, storing and providing group communications. Kurento ambition is to make possible all kinds of processing of the streams including computer vision, speech analysis, augmented reality, blending, filtering and much more.</p></div>
+<p>Following this, Kurento is an open source WebRTC server infrastructure having minimal ambition at the signaling plane but greedy ambition at the media plane. Hence, when looking at how Kurento deals with signaling, you won’t find many surprises: WebSockets, SIP, JSON, REST and other similar animals of the zoo are present. However, when looking to the media plane, Kurento approaches the problem from a novel and different perspective. Most media servers and media gateways around have been designed for performing specific and limited functions such as mixing, routing, transcoding or recording. They perform those functions efficiently, but it’s really hard to push them into other applications.</p>
+<p>There are many interesting things we can do with the media beyond these standard processes. Why not enrich it using augmented reality? Why no analyze it using computer vision or deep speech analysis? Why can’t we blend, replicate or add special effects to the media as it is travelling? These kinds of capabilities might provide differentiation and added value to applications in many specific verticals including e-Health, e-Learning, security, entertainment, games, advertising or CRMs just to cite a few. For example, we have used Kurento for blurring faces on videoconferences where participants want to maintain anonymous video interviews with doctors or other medical professionals. We also use it for replacing backgrounds or adding costumes on a videoconference so that participants feel “inside” a virtual world in an advertisement. We can also detect and track user’s movements in front of their web-cam for creating interactive WebRTC (Kinect-like) games, or we can use it for reporting incidents (e.g. specific faces, violence, crowds) from security video streams.</p>
+<div id="attachment_1893" style="width: 581px;" class="wp-caption alignnone"><a href="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-2.jpg"><img class="wp-image-1893 size-full" src="kurento-2.jpg" alt="kurento-2" srcset="https://webrtchacks.com/wp-content/uploads/2014/05/kurento-2.jpg 571w, https://webrtchacks.com/wp-content/uploads/2014/05/kurento-2-300x174.jpg 300w" sizes="(max-width: 571px) 100vw, 571px" width="571" height="332"></a><p class="wp-caption-text">Figure 2. Anatomy of an application using Kurento Media Server (KMS). KMS exposes its capabilities through a network interface that is consumed by a client library. That library exposes an API to application developers: the “Media API”.</p></div>
+<h2>Developing applications with Kurento: the Media API</h2>
+<p>At the heart of the Kurento architecture there is a piece of software called KMS (Kurento Media Server), based on pluggable media processing capabilities. Those capabilities are exposed to application developers as black boxes called <em>Media Elements</em>. Each Media Element holds a specific media capability, whose details are fully hidden to application developers. KMS media elements are not restricted to a specific kind of processing or to a given fixed format or media codec. There are media elements capable of, for example, recording streams, mixing streams, applying computer vision to streams, augmenting or blending streams, etc. Of course, developers can also create and plug their very own media elements to KMS. From the application developer perspective, media elements are like Lego pieces: one just needs to take the elements needed for an application and connect them following the desired topology. In KMS jargon, a graph of connected media elements is called a <em>Media Pipeline</em>.</p>
+<p>KMS exposes the capabilities of creating media pipelines through a simple network interface based on <a href="http://www.jsonrpc.org/">JSON-RPC</a>. However, for simplifying further the work of developers, we have created an abstract client API consuming that interface and directly exposing media elements and pipelines as objects that developers can instantiate and manipulate on client programs. We have called it the Media API. Currently we have Java and JavaScript implementations of the Media API, but additional language support (e.g Python, PHP, Ruby, etc.) is the roadmap.</p>
+<div id="attachment_1894" style="width: 581px;" class="wp-caption alignnone"><a href="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-3.jpg"><img class="wp-image-1894 size-full" src="kurento-3.jpg" alt="Figure 3. Architecture of the WebRTC loopback example. The media pipeline is composed of a single media element (WebRtcEndpoint), which receives media and sends it back to the client. Follow this link to see the example executing. " srcset="https://webrtchacks.com/wp-content/uploads/2014/05/kurento-3.jpg 571w, https://webrtchacks.com/wp-content/uploads/2014/05/kurento-3-300x110.jpg 300w" sizes="(max-width: 571px) 100vw, 571px" width="571" height="211"></a><p class="wp-caption-text">Figure 3. Architecture of the WebRTC loopback example. The media pipeline is composed of a single media element (WebRtcEndpoint), which receives media and sends it back to the client. Follow this <a href="https://www.youtube.com/watch?v=HaVqO06uuNA">link</a> to see the example executing.</p></div>
+<p>To get familiar with the Media API let’s create an example. The simplest WebRTC application involving a media server that we can imagine consists on a WebRTC loopback (i.e. an application where the browser sends a WebRTC stream to the server and the server gives it back to the client). The source code in Table 1 implements that functionality using the Java version of Media API. You can implement it in JavaScript (both for browser and Node.js) following the same principles:</p><!-- Crayon Syntax Highlighter v_2.7.2_beta -->
+
+		<div id="crayon-592790e719c3e915047304" class="crayon-syntax crayon-theme-vs2012 crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" no-popup minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" show" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="Toggle Line Numbers"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="Copy"><div class="crayon-button-icon"></div></div></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea class="crayon-plain print-no" data-settings="dblclick" readonly="" style="-moz-tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;" wrap="soft">//Obtaining the MediaPipelineFactory depends on how you create your
+//application and where it executes.
+MediaPipeline mp = mediaPipelineFactory.create();
+//WebRtcEndpoint is a media element with send/receive capabilities
+
+//for WebRTC media streams.
+WebRtcEndpoint webRtcEndpoint = mp.newWebRtcEndpoint().build();
+
+//Connect the WebRtcEndpoint to itself (loopback)
+webRtcEndpoint.connect(webRtcEndpoint);
+
+//Your signaling plane will provide the sdpRequest somehow.
+String sdpRequest = signaling.waitForSdpRequest();
+String sdpAnswer = webRtcEndpoint.processOffer(sdpRequest);
+
+//Your signaling plane should provide the capability of answering
+signaling.sendSdpAnswer(sdpAnser);</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table" style="">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-592790e719c3e915047304-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-592790e719c3e915047304-2">2</div><div class="crayon-num" data-line="crayon-592790e719c3e915047304-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-592790e719c3e915047304-4">4</div><div class="crayon-num" data-line="crayon-592790e719c3e915047304-5">5</div><div class="crayon-num crayon-striped-num" data-line="crayon-592790e719c3e915047304-6">6</div><div class="crayon-num" data-line="crayon-592790e719c3e915047304-7">7</div><div class="crayon-num crayon-striped-num" data-line="crayon-592790e719c3e915047304-8">8</div><div class="crayon-num" data-line="crayon-592790e719c3e915047304-9">9</div><div class="crayon-num crayon-striped-num" data-line="crayon-592790e719c3e915047304-10">10</div><div class="crayon-num" data-line="crayon-592790e719c3e915047304-11">11</div><div class="crayon-num crayon-striped-num" data-line="crayon-592790e719c3e915047304-12">12</div><div class="crayon-num" data-line="crayon-592790e719c3e915047304-13">13</div><div class="crayon-num crayon-striped-num" data-line="crayon-592790e719c3e915047304-14">14</div><div class="crayon-num" data-line="crayon-592790e719c3e915047304-15">15</div><div class="crayon-num crayon-striped-num" data-line="crayon-592790e719c3e915047304-16">16</div><div class="crayon-num" data-line="crayon-592790e719c3e915047304-17">17</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size: 4;"><div class="crayon-line" id="crayon-592790e719c3e915047304-1"><span class="crayon-c">//Obtaining the MediaPipelineFactory depends on how you create your</span></div><div class="crayon-line crayon-striped-line" id="crayon-592790e719c3e915047304-2"><span class="crayon-c">//application and where it executes.</span></div><div class="crayon-line" id="crayon-592790e719c3e915047304-3"><span class="crayon-e">MediaPipeline </span><span class="crayon-v">mp</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-v">mediaPipelineFactory</span><span class="crayon-sy">.</span><span class="crayon-e">create</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-592790e719c3e915047304-4"><span class="crayon-c">//WebRtcEndpoint is a media element with send/receive capabilities</span></div><div class="crayon-line" id="crayon-592790e719c3e915047304-5">&nbsp;</div><div class="crayon-line crayon-striped-line" id="crayon-592790e719c3e915047304-6"><span class="crayon-c">//for WebRTC media streams.</span></div><div class="crayon-line" id="crayon-592790e719c3e915047304-7"><span class="crayon-e">WebRtcEndpoint </span><span class="crayon-v">webRtcEndpoint</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-v">mp</span><span class="crayon-sy">.</span><span class="crayon-e">newWebRtcEndpoint</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">build</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-592790e719c3e915047304-8">&nbsp;</div><div class="crayon-line" id="crayon-592790e719c3e915047304-9"><span class="crayon-c">//Connect the WebRtcEndpoint to itself (loopback)</span></div><div class="crayon-line crayon-striped-line" id="crayon-592790e719c3e915047304-10"><span class="crayon-v">webRtcEndpoint</span><span class="crayon-sy">.</span><span class="crayon-e">connect</span><span class="crayon-sy">(</span><span class="crayon-v">webRtcEndpoint</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-592790e719c3e915047304-11">&nbsp;</div><div class="crayon-line crayon-striped-line" id="crayon-592790e719c3e915047304-12"><span class="crayon-c">//Your signaling plane will provide the sdpRequest somehow.</span></div><div class="crayon-line" id="crayon-592790e719c3e915047304-13"><span class="crayon-t">String</span><span class="crayon-h"> </span><span class="crayon-v">sdpRequest</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-v">signaling</span><span class="crayon-sy">.</span><span class="crayon-e">waitForSdpRequest</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-592790e719c3e915047304-14"><span class="crayon-t">String</span><span class="crayon-h"> </span><span class="crayon-v">sdpAnswer</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-v">webRtcEndpoint</span><span class="crayon-sy">.</span><span class="crayon-e">processOffer</span><span class="crayon-sy">(</span><span class="crayon-v">sdpRequest</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-592790e719c3e915047304-15">&nbsp;</div><div class="crayon-line crayon-striped-line" id="crayon-592790e719c3e915047304-16"><span class="crayon-c">//Your signaling plane should provide the capability of answering</span></div><div class="crayon-line" id="crayon-592790e719c3e915047304-17"><span class="crayon-v">signaling</span><span class="crayon-sy">.</span><span class="crayon-e">sendSdpAnswer</span><span class="crayon-sy">(</span><span class="crayon-v">sdpAnser</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0029 seconds] -->
+<p></p>
+<h5>Table 1. Source code for the WebRTC loopback example.</h5>
+<p>Note that, for simplicity, we have omitted most of the signaling code. To build a working example you should add your own signaling mechanism. At Kurento, we have implemented a very simple API that provides basic signaling capabilities – what we call the Content API. Take a look at&nbsp;<a href="http://www.slideshare.net/LuisLopez235/developing-rich-multimedia-applications-with-kurento-a-tutorial-for-java-developers">this presentation</a> if you want to have a clearer image about the Content API. In Table 2 you can see the links to a fully functional WebRTC loopback example based on Content API signaling.</p>
+<div>
+<table cellspacing="0" cellpadding="0" border="1">
+<tbody>
+<tr>
+<td>WebRTC Loopback</td>
+<td><a href="https://github.com/Kurento/kurento-media-framework/blob/develop/kmf-samples/kmf-tutorial/src/main/webapp/webrtcLoopback.html">Browser</a></td>
+<td><a href="https://github.com/Kurento/kurento-media-framework/blob/develop/kmf-samples/kmf-tutorial/src/main/java/com/kurento/tutorial/MyWebRtcLoopback.java">Server</a></td>
+<td><a href="https://www.youtube.com/watch?v=HaVqO06uuNA">Video</a></td>
+</tr>
+</tbody>
+</table>
+<h5>Table 2. Full source code and video showing the result of executing the WebRTC loopback example.</h5>
+<p>&nbsp;</p>
+</div>
+<p>The WebRTC loopback is not very impressive, but with very little effort we can add more interesting features to it. For example, for recording the stream at the server, we just need to add a few lines of code. Table 3 shows how to do it (to simplify, we omit all parts of the code related to signaling and media pipeline creation):</p><!-- Crayon Syntax Highlighter v_2.7.2_beta -->
+
+		<div id="crayon-592790e719c4c043388454" class="crayon-syntax crayon-theme-vs2012 crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" no-popup minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" show" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="Toggle Line Numbers"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="Copy"><div class="crayon-button-icon"></div></div></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea class="crayon-plain print-no" data-settings="dblclick" readonly="" style="-moz-tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;" wrap="soft">WebRtcEndpoint webRtcEndpoint = mp.newWebRtcEndpoint().build();
+webRtcEndpoint.connect(webRtcEndpoint);
+
+//RecorderEndpoint is capable of recording streams to filesRecorderEndpoint recorderEndpoint = mp.newRecorderEndpoint(“file:///myDir/myFile.webm”).build();
+
+//Just connect webRtcEndpoint source and recoderEndpoint sink
+//connect works in this way: sourceElement.connect(sinkElement)
+webRtcEndpoint.connect(recorderEndpoint);
+//Tell recorder to start recording
+recorderEndpoint.record();</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table" style="">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-592790e719c4c043388454-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-592790e719c4c043388454-2">2</div><div class="crayon-num" data-line="crayon-592790e719c4c043388454-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-592790e719c4c043388454-4">4</div><div class="crayon-num" data-line="crayon-592790e719c4c043388454-5">5</div><div class="crayon-num crayon-striped-num" data-line="crayon-592790e719c4c043388454-6">6</div><div class="crayon-num" data-line="crayon-592790e719c4c043388454-7">7</div><div class="crayon-num crayon-striped-num" data-line="crayon-592790e719c4c043388454-8">8</div><div class="crayon-num" data-line="crayon-592790e719c4c043388454-9">9</div><div class="crayon-num crayon-striped-num" data-line="crayon-592790e719c4c043388454-10">10</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size: 4;"><div class="crayon-line" id="crayon-592790e719c4c043388454-1"><span class="crayon-e">WebRtcEndpoint </span><span class="crayon-v">webRtcEndpoint</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-v">mp</span><span class="crayon-sy">.</span><span class="crayon-e">newWebRtcEndpoint</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">build</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-592790e719c4c043388454-2"><span class="crayon-v">webRtcEndpoint</span><span class="crayon-sy">.</span><span class="crayon-e">connect</span><span class="crayon-sy">(</span><span class="crayon-v">webRtcEndpoint</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-592790e719c4c043388454-3">&nbsp;</div><div class="crayon-line crayon-striped-line" id="crayon-592790e719c4c043388454-4"><span class="crayon-c">//RecorderEndpoint is capable of recording streams to filesRecorderEndpoint recorderEndpoint = mp.newRecorderEndpoint(“file:///myDir/myFile.webm”).build();</span></div><div class="crayon-line" id="crayon-592790e719c4c043388454-5">&nbsp;</div><div class="crayon-line crayon-striped-line" id="crayon-592790e719c4c043388454-6"><span class="crayon-c">//Just connect webRtcEndpoint source and recoderEndpoint sink</span></div><div class="crayon-line" id="crayon-592790e719c4c043388454-7"><span class="crayon-c">//connect works in this way: sourceElement.connect(sinkElement)</span></div><div class="crayon-line crayon-striped-line" id="crayon-592790e719c4c043388454-8"><span class="crayon-v">webRtcEndpoint</span><span class="crayon-sy">.</span><span class="crayon-e">connect</span><span class="crayon-sy">(</span><span class="crayon-v">recorderEndpoint</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-592790e719c4c043388454-9"><span class="crayon-c">//Tell recorder to start recording</span></div><div class="crayon-line crayon-striped-line" id="crayon-592790e719c4c043388454-10"><span class="crayon-v">recorderEndpoint</span><span class="crayon-sy">.</span><span class="crayon-e">record</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0016 seconds] -->
+<p></p>
+<h5>Table 3. Source code of the WebRTC recorder example.</h5>
+<div id="attachment_1895" style="width: 581px;" class="wp-caption alignnone"><a href="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-4.jpg"><img class="wp-image-1895 size-full" src="kurento-4.jpg" alt="kurento-4" srcset="https://webrtchacks.com/wp-content/uploads/2014/05/kurento-4.jpg 571w, https://webrtchacks.com/wp-content/uploads/2014/05/kurento-4-300x84.jpg 300w" sizes="(max-width: 571px) 100vw, 571px" width="571" height="161"></a><p class="wp-caption-text">Figure 4. Architecture for the WebRTC recorder example. The media pipeline includes two media elements: the WebRtcEndpoint, which receives media and sends it back to the client, and a RecorderEndpoint, which stores media into the file system. Follow this <a href="https://www.youtube.com/watch?v=ogN81PGkMuE">link</a> to see the example executing.</p></div>
+<p>Creating a pipeline for playing the pre-recorded file is also straightforward, as can be seen in Table 4.</p><!-- Crayon Syntax Highlighter v_2.7.2_beta -->
+
+		<div id="crayon-592790e719c51081447150" class="crayon-syntax crayon-theme-vs2012 crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" no-popup minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" show" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="Toggle Line Numbers"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="Copy"><div class="crayon-button-icon"></div></div></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea class="crayon-plain print-no" data-settings="dblclick" readonly="" style="-moz-tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;" wrap="soft">//webRtcEndpoint does not need a loopback for this example.WebRtcEndpoint webRtcEndpoint = mp.newWebRtcEndpoint().build();
+
+//PlayerEndpoint is capable of playing streams form filesPlayerEndpoint playerEndpoint = mp.newPlayerEndpoint(“file:///myDir/myFile.webm”).build();
+
+//Just connect playerEndpoint source to webRtcEndpoint sink
+playerEndpoint.connect(webRtcEndpoint);
+//Tell player to start playing
+playerEndpoint.play();</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table" style="">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-592790e719c51081447150-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-592790e719c51081447150-2">2</div><div class="crayon-num" data-line="crayon-592790e719c51081447150-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-592790e719c51081447150-4">4</div><div class="crayon-num" data-line="crayon-592790e719c51081447150-5">5</div><div class="crayon-num crayon-striped-num" data-line="crayon-592790e719c51081447150-6">6</div><div class="crayon-num" data-line="crayon-592790e719c51081447150-7">7</div><div class="crayon-num crayon-striped-num" data-line="crayon-592790e719c51081447150-8">8</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size: 4;"><div class="crayon-line" id="crayon-592790e719c51081447150-1"><span class="crayon-c">//webRtcEndpoint does not need a loopback for this example.WebRtcEndpoint webRtcEndpoint = mp.newWebRtcEndpoint().build();</span></div><div class="crayon-line crayon-striped-line" id="crayon-592790e719c51081447150-2">&nbsp;</div><div class="crayon-line" id="crayon-592790e719c51081447150-3"><span class="crayon-c">//PlayerEndpoint is capable of playing streams form filesPlayerEndpoint playerEndpoint = mp.newPlayerEndpoint(“file:///myDir/myFile.webm”).build();</span></div><div class="crayon-line crayon-striped-line" id="crayon-592790e719c51081447150-4">&nbsp;</div><div class="crayon-line" id="crayon-592790e719c51081447150-5"><span class="crayon-c">//Just connect playerEndpoint source to webRtcEndpoint sink</span></div><div class="crayon-line crayon-striped-line" id="crayon-592790e719c51081447150-6"><span class="crayon-v">playerEndpoint</span><span class="crayon-sy">.</span><span class="crayon-e">connect</span><span class="crayon-sy">(</span><span class="crayon-v">webRtcEndpoint</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-592790e719c51081447150-7"><span class="crayon-c">//Tell player to start playing</span></div><div class="crayon-line crayon-striped-line" id="crayon-592790e719c51081447150-8"><span class="crayon-v">playerEndpoint</span><span class="crayon-sy">.</span><span class="crayon-e">play</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0010 seconds] -->
+<p></p>
+<h5>Table 4. Source code of the WebRTC player example.</h5>
+<p>Again, you can access the full application following the links provided in Table 5.</p>
+<div>
+<table cellspacing="0" cellpadding="0" border="1">
+<tbody>
+<tr>
+<td>WebRTC Player &amp; Recorder</td>
+<td><a href="https://github.com/Kurento/kurento-media-framework/blob/develop/kmf-samples/kmf-tutorial/src/main/webapp/webrtcRecorder.html">Browser</a></td>
+<td><a href="https://github.com/Kurento/kurento-media-framework/blob/develop/kmf-samples/kmf-tutorial/src/main/java/com/kurento/tutorial/MyPlayerRecording.java">Server</a></td>
+<td><a href="https://www.youtube.com/watch?v=ogN81PGkMuE">Video</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<h5>Table 5. Full source code and video showing the result of executing the WebRTC player&amp;recorder example</h5>
+<p>Now, lets go beyond and introduce some advanced processing. Imagine we wish to augment the stream adding a hat on top of people faces using computer vision. We can modify our previous WebRTC loopback example providing that capability to the pipeline. The code in Table 6 shows how to do it:</p><!-- Crayon Syntax Highlighter v_2.7.2_beta -->
+
+		<div id="crayon-592790e719c54915560401" class="crayon-syntax crayon-theme-vs2012 crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" no-popup minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" show" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="Toggle Line Numbers"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="Copy"><div class="crayon-button-icon"></div></div></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea class="crayon-plain print-no" data-settings="dblclick" readonly="" style="-moz-tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;" wrap="soft">WebRtcEndpoint webRtcEndpoint = mp.newWebRtcEndpoint().build();
+
+//This media element uses computer vision to detect faces. When a
+//face is detected, an image is overlayed on top of it.
+FaceOverlayFilter filter = mp.newFaceOverlayFilter().build();
+//You can set and configure the image to put on top of detected faces
+filter.setOverlayedImage("http://ci.kurento.com/imgs/mario-wings.png", -0.35F, -1.2F, 1.6F, 1.6F);
+
+//webRtcEndpoint source is connected to filter sink.
+webRtcEndpoint.connect(filter);
+//filter source is connected to webRtcEndpoint sink
+filter.connect(webRtcEndpoint);</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table" style="">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-592790e719c54915560401-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-592790e719c54915560401-2">2</div><div class="crayon-num" data-line="crayon-592790e719c54915560401-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-592790e719c54915560401-4">4</div><div class="crayon-num" data-line="crayon-592790e719c54915560401-5">5</div><div class="crayon-num crayon-striped-num" data-line="crayon-592790e719c54915560401-6">6</div><div class="crayon-num" data-line="crayon-592790e719c54915560401-7">7</div><div class="crayon-num crayon-striped-num" data-line="crayon-592790e719c54915560401-8">8</div><div class="crayon-num" data-line="crayon-592790e719c54915560401-9">9</div><div class="crayon-num crayon-striped-num" data-line="crayon-592790e719c54915560401-10">10</div><div class="crayon-num" data-line="crayon-592790e719c54915560401-11">11</div><div class="crayon-num crayon-striped-num" data-line="crayon-592790e719c54915560401-12">12</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size: 4;"><div class="crayon-line" id="crayon-592790e719c54915560401-1"><span class="crayon-e">WebRtcEndpoint </span><span class="crayon-v">webRtcEndpoint</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-v">mp</span><span class="crayon-sy">.</span><span class="crayon-e">newWebRtcEndpoint</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">build</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-592790e719c54915560401-2">&nbsp;</div><div class="crayon-line" id="crayon-592790e719c54915560401-3"><span class="crayon-c">//This media element uses computer vision to detect faces. When a</span></div><div class="crayon-line crayon-striped-line" id="crayon-592790e719c54915560401-4"><span class="crayon-c">//face is detected, an image is overlayed on top of it.</span></div><div class="crayon-line" id="crayon-592790e719c54915560401-5"><span class="crayon-e">FaceOverlayFilter </span><span class="crayon-v">filter</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-v">mp</span><span class="crayon-sy">.</span><span class="crayon-e">newFaceOverlayFilter</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">build</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-592790e719c54915560401-6"><span class="crayon-c">//You can set and configure the image to put on top of detected faces</span></div><div class="crayon-line" id="crayon-592790e719c54915560401-7"><span class="crayon-v">filter</span><span class="crayon-sy">.</span><span class="crayon-e">setOverlayedImage</span><span class="crayon-sy">(</span><span class="crayon-s">"http://ci.kurento.com/imgs/mario-wings.png"</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-o">-</span><span class="crayon-cn">0.35F</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-o">-</span><span class="crayon-cn">1.2F</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-cn">1.6F</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-cn">1.6F</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-592790e719c54915560401-8">&nbsp;</div><div class="crayon-line" id="crayon-592790e719c54915560401-9"><span class="crayon-c">//webRtcEndpoint source is connected to filter sink.</span></div><div class="crayon-line crayon-striped-line" id="crayon-592790e719c54915560401-10"><span class="crayon-v">webRtcEndpoint</span><span class="crayon-sy">.</span><span class="crayon-e">connect</span><span class="crayon-sy">(</span><span class="crayon-v">filter</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-592790e719c54915560401-11"><span class="crayon-c">//filter source is connected to webRtcEndpoint sink</span></div><div class="crayon-line crayon-striped-line" id="crayon-592790e719c54915560401-12"><span class="crayon-v">filter</span><span class="crayon-sy">.</span><span class="crayon-e">connect</span><span class="crayon-sy">(</span><span class="crayon-v">webRtcEndpoint</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0026 seconds] -->
+<p></p>
+<h5>Table 6. Source code for the WebRTC + FaceOverlayFilter example.</h5>
+<p>The computer vision algorithms of the FaceOverlayFitler require a raw video format while the WebRtcEndpoint generates a video stream encoded in VP9, but you don’t need to worry about that. You just connect the two elements and KMS takes care of performing the required transcoding.</p>
+<p>To make the example more interesting, let’s add some interactivity. Look at the code in Table 7 and try to figure out what its doing:</p><!-- Crayon Syntax Highlighter v_2.7.2_beta -->
+
+		<div id="crayon-592790e719c58055981842" class="crayon-syntax crayon-theme-vs2012 crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" no-popup minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" show" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="Toggle Line Numbers"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="Copy"><div class="crayon-button-icon"></div></div></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea class="crayon-plain print-no" data-settings="dblclick" readonly="" style="-moz-tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;" wrap="soft">WebRtcEndpoint webRtcEndpoint = mp.newWebRtcEndpoint().build();
+
+//This filter uses computer visión to track a pointer object
+PointerDetectorFilter pointerDetectorFilter = mp.newPointerDetectorFilter().build();
+
+FaceOverlayFilter faceOverlayFilter = mp.newFaceOverlayFilter().build();
+
+PointerDetectorWindowMediaParam start = new PointerDetectorWindowMediaParam("start", 100, 100, 280, 380);
+
+start.setImage("http://ci.kurento.com/imgs/start.png");
+pointerDetectorFilter.addWindow(start);
+
+//When the pointer enters into a window, an event is fired
+pointerDetectorFilter.addWindowInListener(new MediaEventListener() {
+	public void onEvent(WindowInEvent event) {
+		// Set overlay image
+		faceOverlayFilter.setOverlayedImage(
+		"http://ci.kurento.com/imgs/mario-wings.png",
+		-0.35F, -1.2F, 1.6F, 1.6F);
+		}
+	});
+
+// Connections
+webRtcEndpoint.connect(pointerDetectorFilter);
+pointerDetectorFilter.connect(faceOverlayFilter);
+faceOverlayFilter.connect(webRtcEndpoint);</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table" style="">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-592790e719c58055981842-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-592790e719c58055981842-2">2</div><div class="crayon-num" data-line="crayon-592790e719c58055981842-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-592790e719c58055981842-4">4</div><div class="crayon-num" data-line="crayon-592790e719c58055981842-5">5</div><div class="crayon-num crayon-striped-num" data-line="crayon-592790e719c58055981842-6">6</div><div class="crayon-num" data-line="crayon-592790e719c58055981842-7">7</div><div class="crayon-num crayon-striped-num" data-line="crayon-592790e719c58055981842-8">8</div><div class="crayon-num" data-line="crayon-592790e719c58055981842-9">9</div><div class="crayon-num crayon-striped-num" data-line="crayon-592790e719c58055981842-10">10</div><div class="crayon-num" data-line="crayon-592790e719c58055981842-11">11</div><div class="crayon-num crayon-striped-num" data-line="crayon-592790e719c58055981842-12">12</div><div class="crayon-num" data-line="crayon-592790e719c58055981842-13">13</div><div class="crayon-num crayon-striped-num" data-line="crayon-592790e719c58055981842-14">14</div><div class="crayon-num" data-line="crayon-592790e719c58055981842-15">15</div><div class="crayon-num crayon-striped-num" data-line="crayon-592790e719c58055981842-16">16</div><div class="crayon-num" data-line="crayon-592790e719c58055981842-17">17</div><div class="crayon-num crayon-striped-num" data-line="crayon-592790e719c58055981842-18">18</div><div class="crayon-num" data-line="crayon-592790e719c58055981842-19">19</div><div class="crayon-num crayon-striped-num" data-line="crayon-592790e719c58055981842-20">20</div><div class="crayon-num" data-line="crayon-592790e719c58055981842-21">21</div><div class="crayon-num crayon-striped-num" data-line="crayon-592790e719c58055981842-22">22</div><div class="crayon-num" data-line="crayon-592790e719c58055981842-23">23</div><div class="crayon-num crayon-striped-num" data-line="crayon-592790e719c58055981842-24">24</div><div class="crayon-num" data-line="crayon-592790e719c58055981842-25">25</div><div class="crayon-num crayon-striped-num" data-line="crayon-592790e719c58055981842-26">26</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size: 4;"><div class="crayon-line" id="crayon-592790e719c58055981842-1"><span class="crayon-e">WebRtcEndpoint </span><span class="crayon-v">webRtcEndpoint</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-v">mp</span><span class="crayon-sy">.</span><span class="crayon-e">newWebRtcEndpoint</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">build</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-592790e719c58055981842-2">&nbsp;</div><div class="crayon-line" id="crayon-592790e719c58055981842-3"><span class="crayon-c">//This filter uses computer visión to track a pointer object</span></div><div class="crayon-line crayon-striped-line" id="crayon-592790e719c58055981842-4"><span class="crayon-e">PointerDetectorFilter </span><span class="crayon-v">pointerDetectorFilter</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-v">mp</span><span class="crayon-sy">.</span><span class="crayon-e">newPointerDetectorFilter</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">build</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-592790e719c58055981842-5">&nbsp;</div><div class="crayon-line crayon-striped-line" id="crayon-592790e719c58055981842-6"><span class="crayon-e">FaceOverlayFilter </span><span class="crayon-v">faceOverlayFilter</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-v">mp</span><span class="crayon-sy">.</span><span class="crayon-e">newFaceOverlayFilter</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">build</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-592790e719c58055981842-7">&nbsp;</div><div class="crayon-line crayon-striped-line" id="crayon-592790e719c58055981842-8"><span class="crayon-e">PointerDetectorWindowMediaParam </span><span class="crayon-v">start</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-r">new</span><span class="crayon-h"> </span><span class="crayon-e">PointerDetectorWindowMediaParam</span><span class="crayon-sy">(</span><span class="crayon-s">"start"</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-cn">100</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-cn">100</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-cn">280</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-cn">380</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-592790e719c58055981842-9">&nbsp;</div><div class="crayon-line crayon-striped-line" id="crayon-592790e719c58055981842-10"><span class="crayon-v">start</span><span class="crayon-sy">.</span><span class="crayon-e">setImage</span><span class="crayon-sy">(</span><span class="crayon-s">"http://ci.kurento.com/imgs/start.png"</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-592790e719c58055981842-11"><span class="crayon-v">pointerDetectorFilter</span><span class="crayon-sy">.</span><span class="crayon-e">addWindow</span><span class="crayon-sy">(</span><span class="crayon-v">start</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-592790e719c58055981842-12">&nbsp;</div><div class="crayon-line" id="crayon-592790e719c58055981842-13"><span class="crayon-c">//When the pointer enters into a window, an event is fired</span></div><div class="crayon-line crayon-striped-line" id="crayon-592790e719c58055981842-14"><span class="crayon-v">pointerDetectorFilter</span><span class="crayon-sy">.</span><span class="crayon-e">addWindowInListener</span><span class="crayon-sy">(</span><span class="crayon-r">new</span><span class="crayon-h"> </span><span class="crayon-e">MediaEventListener</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-h"> </span><span class="crayon-sy">{</span></div><div class="crayon-line" id="crayon-592790e719c58055981842-15"><span class="crayon-h">	</span><span class="crayon-m">public</span><span class="crayon-h"> </span><span class="crayon-t">void</span><span class="crayon-h"> </span><span class="crayon-e">onEvent</span><span class="crayon-sy">(</span><span class="crayon-e">WindowInEvent </span><span class="crayon-v">event</span><span class="crayon-sy">)</span><span class="crayon-h"> </span><span class="crayon-sy">{</span></div><div class="crayon-line crayon-striped-line" id="crayon-592790e719c58055981842-16"><span class="crayon-h">		</span><span class="crayon-c">// Set overlay image</span></div><div class="crayon-line" id="crayon-592790e719c58055981842-17"><span class="crayon-h">		</span><span class="crayon-v">faceOverlayFilter</span><span class="crayon-sy">.</span><span class="crayon-e">setOverlayedImage</span><span class="crayon-sy">(</span></div><div class="crayon-line crayon-striped-line" id="crayon-592790e719c58055981842-18"><span class="crayon-h">		</span><span class="crayon-s">"http://ci.kurento.com/imgs/mario-wings.png"</span><span class="crayon-sy">,</span></div><div class="crayon-line" id="crayon-592790e719c58055981842-19"><span class="crayon-h">		</span><span class="crayon-o">-</span><span class="crayon-cn">0.35F</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-o">-</span><span class="crayon-cn">1.2F</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-cn">1.6F</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-cn">1.6F</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-592790e719c58055981842-20"><span class="crayon-h">		</span><span class="crayon-sy">}</span></div><div class="crayon-line" id="crayon-592790e719c58055981842-21"><span class="crayon-h">	</span><span class="crayon-sy">}</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-592790e719c58055981842-22">&nbsp;</div><div class="crayon-line" id="crayon-592790e719c58055981842-23"><span class="crayon-c">// Connections</span></div><div class="crayon-line crayon-striped-line" id="crayon-592790e719c58055981842-24"><span class="crayon-v">webRtcEndpoint</span><span class="crayon-sy">.</span><span class="crayon-e">connect</span><span class="crayon-sy">(</span><span class="crayon-v">pointerDetectorFilter</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-592790e719c58055981842-25"><span class="crayon-v">pointerDetectorFilter</span><span class="crayon-sy">.</span><span class="crayon-e">connect</span><span class="crayon-sy">(</span><span class="crayon-v">faceOverlayFilter</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-592790e719c58055981842-26"><span class="crayon-v">faceOverlayFilter</span><span class="crayon-sy">.</span><span class="crayon-e">connect</span><span class="crayon-sy">(</span><span class="crayon-v">webRtcEndpoint</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0048 seconds] -->
+<p></p>
+<h5>Table 7. Source code for the WebRTC + PointerDetectorFilter + FaceOverlayFilter example.</h5>
+<p>The PointerDetectorFilter is a specific type of computer vision capability that detects the position of a pointer (an object having a specific shape or color that can be configured). The filter makes possible to define configurable square regions called Windows. If the pointer enters into a window, the filter generates a WindowInEvent. Of course, a program can subscribe to that event just adding listeners to the filter. Upon reception of the event, we can execute the actions we want, including changing the pipeline topology or modifying media elements behavior. In the example above, the event is firing the setting of the overlay image on the FaceOverlayFilter. As a result, the loopback application now gives back the user image and only when the pointer enters into the Window region (a virtual button depicted at a fixed position of user’s screen) a hat is depicted on top of her face. Table 8 shows hyperlinks to the code source code of a working example as well as a video-clip of it in execution.</p>
+<div id="attachment_1897" style="width: 581px;" class="wp-caption alignnone"><a href="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-5.jpg"><img class="wp-image-1897 size-full" src="kurento-5.jpg" alt="kurento-5" srcset="https://webrtchacks.com/wp-content/uploads/2014/05/kurento-5.jpg 571w, https://webrtchacks.com/wp-content/uploads/2014/05/kurento-5-300x116.jpg 300w" sizes="(max-width: 571px) 100vw, 571px" width="571" height="221"></a><p class="wp-caption-text">Figure 5. Architecture of the WebRTC + PointerDetectorFilter + FaceOverlayFilter example. Follow this <a href="https://www.youtube.com/watch?v=5eJRnwKxgbY">link</a> to see the example executing.</p></div>
+<div>
+<table cellspacing="0" cellpadding="0" border="1">
+<tbody>
+<tr>
+<td>WebRTC+PointerDetectorFilter+FaceOverlayFilter</td>
+<td><a href="https://github.com/Kurento/kurento-media-framework/blob/develop/kmf-samples/kmf-tutorial/src/main/webapp/webrtcFilters.html">Browser</a></td>
+<td><a href="https://github.com/Kurento/kurento-media-framework/blob/develop/kmf-samples/kmf-tutorial/src/main/java/com/kurento/tutorial/MyWebRtcWithFilters.java">Server</a></td>
+<td><a href="https://www.youtube.com/watch?v=5eJRnwKxgbY">Video</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<h5>Table 8. Full source code and video showing the result of executing the WebRTC + PointerDetectorFitler + FaceOverlayFilter</h5>
+<p>All the examples above have not much practical use. If you want to see more complex applications you can take a look to Kurento Github <a href="http://www.github.com/kurento">repository</a> where we have made available the source code of services involving advanced features such as media processing chains, group communications, media interoperability, etc.</p>
+<div id="attachment_1898" style="width: 581px;" class="wp-caption alignnone"><a href="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-6.jpg"><img class="wp-image-1898 size-full" src="kurento-6.jpg" alt="kurento-6" srcset="https://webrtchacks.com/wp-content/uploads/2014/05/kurento-6.jpg 571w, https://webrtchacks.com/wp-content/uploads/2014/05/kurento-6-300x157.jpg 300w" sizes="(max-width: 571px) 100vw, 571px" width="571" height="300"></a><p class="wp-caption-text">Figure 6. Example of media pipeline involving a complex chain of media processing capabilities for creating an interactive WebRTC game. You can see a clip of some users playing this game during Brazil Campus Party 2014 <a href="https://www.youtube.com/watch?v=PYCw9-4oWWA">here</a>.</p></div>
+<h2>Kurento media element toolbox</h2>
+<p>As we have seen in the previous examples, creating applications with the Media API is like a Lego game. You instantiate the media elements you want and connect them using the topology you prefer. Having said this, the application capabilities you can create depend on the available media element implementations. Kurento exposes a rich toolbox of media elements ready to be used, which can be classified in three different types:</p>
+<ul>
+<li><strong>Endpoints</strong>: These are media elements capable of getting media streams into a pipeline (form the network, disk, etc.) or out of a pipeline (to the network, disk, etc.) Table 9 shows a list of the most common Kurento Endpoints.</li>
+<li><strong>Filters</strong>: These media elements are in the path of the media through the pipeline. A filter always receives the stream from another media element, processes the stream somehow, and generates an output stream to be consumed by the next element of the pipeline. Table 10 shows some Kurento filters, which have been made openly available.</li>
+<li><strong>Hubs</strong>: these are special media elements designed for group communications. Mixers and video routers are the supported types of hubs. Table 11 shows more details.</li>
+</ul>
+<table>
+<tbody>
+<tr>
+<td colspan="3" width="576"><strong>Endpoints</strong></td>
+</tr>
+<tr>
+<td width="192">WebRtcEndpoint</td>
+<td><a href="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-7.jpg"><img class="aligncenter size-full wp-image-1899" src="kurento-7.jpg" alt="kurento-7" width="167" height="91"></a></td>
+<td width="192">Provides full duplex capabilities for the exchange of WebRTC media streams. Includes support for ICE, DTLS and SRTP.</td>
+</tr>
+<tr>
+<td width="192">RtpEndpoint</td>
+<td><a href="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-8.jpg"><img class="aligncenter size-full wp-image-1900" src="kurento-8.jpg" alt="kurento-8" width="167" height="91"></a></td>
+<td width="192">Provides full duplex support for RTP media streams (H.263, H.264 and a bunch of audio codecs are supported). If you connect a WebRtcEnpoint to it, you will have a WebRTC to RTP bridge.</td>
+</tr>
+<tr>
+<td width="192">HttpGetEndpoint</td>
+<td><a href="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-9.jpg"><img class="aligncenter size-full wp-image-1901" src="kurento-9.jpg" alt="kurento-9" width="160" height="80"></a></td>
+<td width="192">Provides support for serving media to browsers supporting WebM in the &lt;video&gt; tag. Connect a WebRtcEndpoint to this and you will have a WebRTC to HTTP bridge.</td>
+</tr>
+<tr>
+<td width="192">PlayerEndpoint</td>
+<td><a href="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-10.jpg"><img class="aligncenter size-full wp-image-1902" src="kurento-10.jpg" alt="kurento-10" width="171" height="80"></a></td>
+<td width="192">Reads media from file. Connect it with a WebRtcEndpoint and you will have a WebRTC VoD player.</td>
+</tr>
+<tr>
+<td width="192">RecorderEndpoint</td>
+<td><a href="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-11.jpg"><img class="aligncenter size-full wp-image-1903" src="kurento-11.jpg" alt="kurento-11" srcset="https://webrtchacks.com/wp-content/uploads/2014/05/kurento-11.jpg 151w, https://webrtchacks.com/wp-content/uploads/2014/05/kurento-11-150x80.jpg 150w" sizes="(max-width: 151px) 100vw, 151px" width="151" height="80"></a></td>
+<td width="192">Stores media into files. Connect a WebRtcEndpoint to it to record your WebRTC session.</td>
+</tr>
+</tbody>
+</table>
+<h5>Table 9. List of some of the Endpoints made available by Kurento to application developers</h5>
+<table>
+<tbody>
+<tr>
+<td colspan="3" width="581"><strong>Filters</strong></td>
+</tr>
+<tr>
+<td width="199">FaceOverlayFilter</td>
+<td><a href="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-12.jpg"><img class="aligncenter size-full wp-image-1904" src="kurento-12.jpg" alt="kurento-12" width="159" height="80"></a></td>
+<td width="190">Detects faces and draws an image overlaid on top of them.</td>
+</tr>
+<tr>
+<td width="199">PointerDetectorFilter</td>
+<td><a href="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-13.jpg"><img class="aligncenter size-full wp-image-1905" src="kurento-13.jpg" alt="kurento-13" width="159" height="80"></a></td>
+<td width="190">Detects movement of a pointer object having a specific color or shape. Generate events when the object enters into specific regions.</td>
+</tr>
+<tr>
+<td width="199">CrowdDetectorFilter</td>
+<td><a href="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-14.jpg"><img class="aligncenter size-full wp-image-1906" src="kurento-14.jpg" alt="kurento-14" width="159" height="80"></a></td>
+<td width="190">Detects crowds of people on a video stream. Generates events when the crowding is over certain thresholds.</td>
+</tr>
+<tr>
+<td width="199">PlateDetectorFilter</td>
+<td><a href="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-15.jpg"><img class="aligncenter size-full wp-image-1907" src="kurento-15.jpg" alt="kurento-15" width="159" height="80"></a></td>
+<td width="190">Reads (European formatted) car plates using computer vision. Generate events providing the detected plate numbers.</td>
+</tr>
+<tr>
+<td width="199">ZBarFilter</td>
+<td><a href="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-16.jpg"><img class="aligncenter size-full wp-image-1908" src="kurento-16.jpg" alt="kurento-16" width="159" height="80"></a></td>
+<td width="190">Uses computer vision for detecting and reading bar and QR codes. Generates events providing code contents found on the stream.</td>
+</tr>
+</tbody>
+</table>
+<h5>Table 10. List of some of the Filters made available by Kurento to application developers</h5>
+<table>
+<tbody>
+<tr>
+<td colspan="3" width="576"><strong>Hubs</strong></td>
+</tr>
+<tr>
+<td width="192">Composite</td>
+<td><a href="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-17.jpg"><img class="aligncenter size-full wp-image-1909" src="kurento-17.jpg" alt="kurento-17" width="117" height="117"></a></td>
+<td width="192">Implements a mixer functionality: all input streams getting into this element are mixed onto a single output stream with composite grid layout</td>
+</tr>
+<tr>
+<td width="192">Dispatcher</td>
+<td><a href="http://webrtchacks.com/wp-content/uploads/2014/05/kurento-18.jpg"><img class="aligncenter size-full wp-image-1910" src="kurento-18.jpg" alt="kurento-18" width="116" height="117"></a></td>
+<td width="192">Implements N to M media router functionality. Each of the M outputs can clone any of the N inputs.</td>
+</tr>
+</tbody>
+</table>
+<h5>Table 11. List of some of the group communication capabilities made available by Kurento to application developers</h5>
+<p>Of course, developers can create their very own media elements and integrate them into Kurento. In general, the creation of additional Hubs and Endpoints is complex and requires deep knowledge of Kurento architecture and internals. However, the creation of filters is quite straightforward for anyone having minimal knowledge on video or audio processing. Kurento has some pre-build features specifically designed for OpenCV integration, which makes simple the creation of computer vision filters based on that popular open source software project.</p>
+<h2>Kurento research and development roadmap</h2>
+<p>Kurento is the result of the collaborative effort of industry and University research departments. For this reason, Kurento’s roadmap is highly influenced by the different research projects where committers participate. In particular, several European Research Projects belonging to Framework Programme 7th and Horizon 2020 are having a deep influence in Kurento’s evolution and financial support. In this context, Kurento has been integrated as part of FI-WARE (<a href="http://www.fi-ware.org/">http://www.fi-ware.org</a>): the European infrastructure for the Future Internet. FI-WARE offers a full featured cloud for developers where different enablers, including Kurento itself, can be instantiated and tested for free. FI-WARE is also celebrating hackathons all around the world and providing awards to developers for using their technology in the creation of applications. Visit <a href="http://lab.fi-ware.org/">http://lab.fi-ware.org</a> and <a href="http://catalogue.fi-ware.org/">http://catalogue.fi-ware.org</a> for having more information about FI-WARE and its ecosystem.</p>
+<p>In addition, the NUBOMEDIA research project (<a href="http://www.nubomedia.eu/">http://www.nubomedia.eu</a>) is also being built on top of Kurento. NUBOMEDIA is currently under execution and has the objective of creating an elastic cloud infrastructure offering a PaaS API for accessing Kurento capabilities. Thanks to NUBOMEDIA, the Kurento roadmap for the next few months is very ambitious and include progresses such as the following:</p>
+<ul>
+<li>Automatic deployment of Kurento on top of OpenStack</li>
+<li>Transparent elastic scalability of the infrastructure adapting to client load</li>
+<li>Software Defined Networking providing SLAs and guaranteed QoS to the infrastructure</li>
+<li>Multisensory multimedia through server-side DataChannels</li>
+<li>Distributed media pipelines going beyond the capabilities of a single computer</li>
+<li>Full telco infrastructure integration (i.e. IMS integration)</li>
+<li>IPTV integration</li>
+<li>Advanced client APIs for smartphones and WWW</li>
+<li>New media elements involving computer vision and augmented reality capabilities</li>
+</ul>
+<p>Take a look to <a href="http://www.slideshare.net/LuisLopez235/nubomedia-an-elastic-platform-as-a-service-paas-cloud-for-interactive-social-multimedia">this presentation</a> if you want to have an introduction to the NUBOMEDIA platform</p>
+<h2>Kurento open source software community</h2>
+<p>All Kurento technologies are distributed under the LGPL v2.1 license. Kurento aims at building a community of users and contributors enriching the project and making it to grow and to be useful for developers all around the world. Visit <a href="http://www.kurento.org/">http://www.kurento.org</a> and follow us in Twitter (<a href="http://twitter.com/kurentoms">@kurentoms</a>) for having the latest information about the Kurento ecosystem or go to our GitHub repo if you want to fork or contribute to Kurento: <a href="https://www.github.com/kurento">https://www.github.com/kurento</a>.</p>
+<p>{“author”: <a href="https://plus.google.com/101516110708472483917/">“</a><span style="color: rgb(34, 34, 34);"><a href="https://plus.google.com/101516110708472483917/">Luis López Fernández</a>“}</span></p>
+<p>&nbsp;</p>
+<p>Want to keep up on our latest posts? Please click&nbsp;<a href="http://webrtchacks.com/subscribe/" target="_top">here</a>&nbsp;to subscribe to our mailing list if you have not already. We only email post updates. You can also follow us on twitter at&nbsp;<a href="http://twitter.com/webrtcHacks" target="_top">@webrtcHacks</a>&nbsp;for blog updates.</p><p></p>
+
+<div class="zem_rp_wrap zem_rp_th_vertical" id="zem_rp_first"><div class="zem_rp_content"><h3 class="related_post_title">Related Posts</h3><ul class="related_post zem_rp"><li data-position="0" data-poid="in-2642" data-post-type="none"><a href="https://webrtchacks.com/webrtc-media-servers-in-the-cloud/" class="zem_rp_thumbnail"><img src="3720817095_74e8ef0c77_b-150x150.jpg" alt="WebRTC media servers in the Cloud: lessons learned (Luis López Fernández)" width="150" height="150"></a><a href="https://webrtchacks.com/webrtc-media-servers-in-the-cloud/" class="zem_rp_title">WebRTC media servers in the Cloud: lessons learned (Luis López Fernández)</a></li><li data-position="1" data-poid="in-2601" data-post-type="none"><a href="https://webrtchacks.com/web-audio-conference/" class="zem_rp_thumbnail"><img src="870monkstringtelephone1200-150x150.jpg" alt="Your Browser as a Audio Conference Server with WebRTC &amp; Web Audio (Alexey Aylarov)" width="150" height="150"></a><a href="https://webrtchacks.com/web-audio-conference/" class="zem_rp_title">Your Browser as a Audio Conference Server with WebRTC &amp; Web Audio (Alexey Aylarov)</a></li><li data-position="2" data-poid="in-608" data-post-type="none"><a href="https://webrtchacks.com/baby-motion-detector/" class="zem_rp_thumbnail"><img src="baby-monitor-real-test-150x150.png" alt="How to Build a Motion Detecting Baby Monitor with WebRTC" width="150" height="150"></a><a href="https://webrtchacks.com/baby-motion-detector/" class="zem_rp_title">How to Build a Motion Detecting Baby Monitor with WebRTC</a></li><li data-position="3" data-poid="in-2105" data-post-type="none"><a href="https://webrtchacks.com/javascript-dog-trainer/" class="zem_rp_thumbnail"><img src="f8kepzn-150x150.jpg" alt="How to Train a Dog with JavaScript" width="150" height="150"></a><a href="https://webrtchacks.com/javascript-dog-trainer/" class="zem_rp_title">How to Train a Dog with JavaScript</a></li><li data-position="4" data-poid="in-1960" data-post-type="none"><a href="https://webrtchacks.com/mirror-framerate/" class="zem_rp_thumbnail"><img src="cssmirror-150x150.png" alt="getUserMedia Mirrors and Frame Rates" width="150" height="150"></a><a href="https://webrtchacks.com/mirror-framerate/" class="zem_rp_title">getUserMedia Mirrors and Frame Rates</a></li><li data-position="5" data-poid="in-2608" data-post-type="none"><a href="https://webrtchacks.com/sfu-simulcast/" class="zem_rp_thumbnail"><img src="14675770684_7bac94d7c2_b-150x150.jpg" alt="Optimizing video quality using Simulcast (Oscar Divorra)" width="150" height="150"></a><a href="https://webrtchacks.com/sfu-simulcast/" class="zem_rp_title">Optimizing video quality using Simulcast (Oscar Divorra)</a></li></ul></div></div>
+<!-- Simple Share Buttons Adder (6.3.4) simplesharebuttons.com --><div class="ssba ssba-wrap"><div style="text-align: left;"><a data-site="" class="ssba_twitter_share" href="http://twitter.com/share?url=https://webrtchacks.com/kurento/&amp;text=Kurento.org%3A+WebRTC%2C+Computer+Vision%2C+Augmented+Reality%2C+Awesome+%28Luis+L%C3%B3pez+Fern%C3%A1ndez%29+" target="_top"><img src="twitter.png" title="Twitter" class="ssba ssba-img" alt="Tweet about this on Twitter"></a><a data-site="" class="ssba_facebook_share" href="http://www.facebook.com/sharer.php?u=https://webrtchacks.com/kurento/" target="_top"><img src="facebook-favicon.png" title="Facebook" class="ssba ssba-img" alt="Share on Facebook"></a><a data-site="linkedin" class="ssba_linkedin_share ssba_share_link" href="http://www.linkedin.com/shareArticle?mini=true&amp;url=https://webrtchacks.com/kurento/" target="_top"><img src="linkedin.png" title="LinkedIn" class="ssba ssba-img" alt="Share on LinkedIn"></a><a data-site="" class="ssba_google_share" href="https://plus.google.com/share?url=https://webrtchacks.com/kurento/" target="_top"><img src="google+-favicon.png" title="Google+" class="ssba ssba-img" alt="Share on Google+"></a><a data-site="email" class="ssba_email_share" href="mailto:?subject=Kurento.org:%20WebRTC,%20Computer%20Vision,%20Augmented%20Reality,%20Awesome%20(Luis%20L%C3%B3pez%20Fern%C3%A1ndez)&amp;body=%20https://webrtchacks.com/kurento/"><img src="email.png" title="Email" class="ssba ssba-img" alt="Email this to someone"></a></div></div>	</div>
+
+		<nav id="post-nav" class="contain">
+		<h1 class="assistive-text">Posts navigation</h1>
+		<div class="nav-older">← <a href="https://webrtchacks.com/generic-ie-safari-plugin/" rel="prev">Plug-in free or free plug-in? Q&amp;A with IE &amp; Safari WebRTC plug-in maker Alex Gouaillard</a></div>		<div class="nav-newer"><a href="https://webrtchacks.com/webrtctrunk/" rel="next">Trunking WebRTC: the user authentication challenge (Torrey Searle)</a> →</div>	</nav>
+	
+</article>				
+<div id="comments">
+
+			<h2 id="comments-title">6 comments on “<span>Kurento.org: WebRTC, Computer Vision, Augmented Reality, Awesome (Luis López Fernández)</span>”</h2>
+
+		<ol class="commentlist">
+				<li class="post pingback">
+		<p><span class="pingback-title">Pingback:</span> <a href="http://blog.realtimecommunicationsworld.com/enhancing-the-power-of-webrtc-kurento-nubomedia.html" rel="external nofollow" class="url">Enhancing the Power of WebRTC: Kurento &amp; Nubomedia</a></p>
+	</li><!-- #comment-## -->
+	<li class="post pingback">
+		<p><span class="pingback-title">Pingback:</span> <a href="http://universidadreyjuancarlos.wordpress.com/2014/07/07/un-investigador-de-la-urjc-elegido-entre-las-personalidades-mas-innovadoras-del-mundo-en-tecnologias-web/" rel="external nofollow" class="url">Un investigador de la URJC elegido entre las personalidades más innovadoras del mundo en tecnologías web | Universidad Rey Juan Carlos</a></p>
+	</li><!-- #comment-## -->
+	<li class="post pingback">
+		<p><span class="pingback-title">Pingback:</span> <a href="http://www.webrtc-epistula.net/geen-categorie/audio-of-video-via-webrtc-opslaan-op-server/" rel="external nofollow" class="url">Audio of video via WebRTC opslaan op server | WebRTC Epistula</a></p>
+	</li><!-- #comment-## -->
+	<li class="post pingback">
+		<p><span class="pingback-title">Pingback:</span> <a href="http://www.webrtc-epistula.net/handig/audio-of-video-via-webrtc-opslaan-op-server/" rel="external nofollow" class="url">Audio of video via WebRTC opslaan op server | WebRTC Epistula</a></p>
+	</li><!-- #comment-## -->
+	<li class="comment even thread-even depth-1" id="li-comment-17534">
+		<article id="comment-17534" class="contain">
+			<footer class="comment-meta contain vcard">
+
+				<img alt="" src="11377bf3d7fcf165c2f8ee2b82d59d65" srcset="https://secure.gravatar.com/avatar/11377bf3d7fcf165c2f8ee2b82d59d65?s=80&amp;d=retro&amp;r=r 2x" class="avatar avatar-40 photo" width="40" height="40">
+				<div class="comment-author">
+				<span class="fn">wyatt biker</span> on <a href="https://webrtchacks.com/kurento/#comment-17534"><time pubdate="" datetime="2015-09-18T14:09:52+00:00">September 18, 2015 at 2:09 pm</time></a> said:
+									</div><!-- .comment-author -->
+
+				
+			</footer><!-- .vcard -->
+
+			<div class="comment-content"><p>Hi, great article about Kurento. I would like to use it for SIP applications though and haven’t found a way of doing that. (E.g. call SIP Phones)</p>
+<p>Do you know of a Kurento plugin/adapter that can use/translate SIP for signaling instead of JSON-RPC Kurento protocol? Any sample code?</p>
+</div>
+
+			<div class="reply contain">
+				<a rel="nofollow" class="comment-reply-link" href="https://webrtchacks.com/kurento/?replytocom=17534#respond" onclick="return addComment.moveForm( &quot;comment-17534&quot;, &quot;17534&quot;, &quot;respond&quot;, &quot;1888&quot; )" aria-label="Reply to wyatt biker">Reply</a>			</div><!-- .reply -->
+		</article><!-- #comment-## -->
+
+	<ul class="children">
+	<li class="comment odd alt depth-2" id="li-comment-17536">
+		<article id="comment-17536" class="contain">
+			<footer class="comment-meta contain vcard">
+
+				<img alt="" src="b8fffabbe3831731cb4c4c9667bfa439" srcset="https://secure.gravatar.com/avatar/b8fffabbe3831731cb4c4c9667bfa439?s=80&amp;d=retro&amp;r=r 2x" class="avatar avatar-40 photo" width="40" height="40">
+				<div class="comment-author">
+				<span class="fn"><a href="http://www.kurento.org/" rel="external nofollow" class="url">Luis</a></span> on <a href="https://webrtchacks.com/kurento/#comment-17536"><time pubdate="" datetime="2015-09-21T11:53:16+00:00">September 21, 2015 at 11:53 am</time></a> said:
+									</div><!-- .comment-author -->
+
+				
+			</footer><!-- .vcard -->
+
+			<div class="comment-content"><p>Hi, thank you very much for your interest.</p>
+<p>Kurento Media Server is fully agnostic to signaling and does not provide any kind of signaling capabilities. Hence, no SIP plugin/adapters are available.</p>
+<p>The Kurento team has created indeed some JSON-RPC libraries that can be used for creating applications basing on Java and on JavaScript. However, Kurento Media Server does not depend in any way on them. This means that you can integrate Kurento Media Server with a SIP stack as soon as you have such SIP stack. If you look around, you will see that, for example, in Java, there are many people integrating Kurento with the Mobicens SIP Servlet framework or even directly with the Jain SIP stack.</p>
+<p>Best regards.</p>
+</div>
+
+			<div class="reply contain">
+				<a rel="nofollow" class="comment-reply-link" href="https://webrtchacks.com/kurento/?replytocom=17536#respond" onclick="return addComment.moveForm( &quot;comment-17536&quot;, &quot;17536&quot;, &quot;respond&quot;, &quot;1888&quot; )" aria-label="Reply to Luis">Reply</a>			</div><!-- .reply -->
+		</article><!-- #comment-## -->
+
+	</li><!-- #comment-## -->
+</ul><!-- .children -->
+</li><!-- #comment-## -->
+		</ol>
+
+			
+				<div id="respond" class="comment-respond">
+		<h3 id="reply-title" class="comment-reply-title">Leave a Reply <small><a rel="nofollow" id="cancel-comment-reply-link" href="https://webrtchacks.com/kurento/#respond" style="display: none;">Cancel reply</a></small></h3>			<form action="https://webrtchacks.com/wp-comments-post.php?wpe-comment-post=webrtchacks" method="post" id="commentform" class="comment-form anti-spam-form-processed">
+				<p class="comment-notes"><span id="email-notes">Your email address will not be published.</span> Required fields are marked <span class="required">*</span></p><p class="comment-form-comment"><label for="comment">Comment</label> <textarea id="comment" name="comment" cols="45" rows="8" maxlength="65525" aria-required="true" required="required"></textarea></p><p class="comment-form-author"><label for="author">Name <span class="required">*</span></label> <input id="author" name="author" value="" size="30" maxlength="245" aria-required="true" required="required" type="text"></p>
+<p class="comment-form-email"><label for="email">Email <span class="required">*</span></label> <input id="email" name="email" value="" size="30" maxlength="100" aria-describedby="email-notes" aria-required="true" required="required" type="text"></p>
+<p class="comment-form-url"><label for="url">Website</label> <input id="url" name="url" value="" size="30" maxlength="200" type="text"></p>
+<p class="form-submit"><input name="submit" id="submit" class="submit" value="Post Comment" type="submit"> <input name="comment_post_ID" value="1888" id="comment_post_ID" type="hidden">
+<input name="comment_parent" id="comment_parent" value="0" type="hidden">
+</p><p style="display: none;"><input id="akismet_comment_nonce" name="akismet_comment_nonce" value="e12107c858" type="hidden"></p>		<p class="antispam-group antispam-group-q" style="clear: both; display: none;">
+			<label>Current ye@r <span class="required">*</span></label>
+			<input name="antspm-a" class="antispam-control antispam-control-a" value="2017" type="hidden">
+			<input name="antspm-q" class="antispam-control antispam-control-q" value="2017" autocomplete="off" type="text">
+		</p>
+		<p class="antispam-group antispam-group-e" style="display: none;">
+			<label>Leave this field empty</label>
+			<input name="antspm-e-email-url-website" class="antispam-control antispam-control-e" value="" autocomplete="off" type="text">
+		</p>
+<p class="wysija-after-comment"><label for="wysija-box-after-comment"><input id="wysija-box-after-comment" value="1" name="wysija[comment_subscribe]" type="checkbox">Yes, add me to your mailing list.</label></p><p style="display: none;"></p>			<input id="ak_js" name="ak_js" value="1495765225846" type="hidden"><input name="antspm-d" class="antispam-control antispam-control-d" value="2017" type="hidden"></form>
+			</div><!-- #respond -->
+		
+</div><!-- #comments -->						</div><!-- end main -->
+
+	<ul id="sidebar" role="complementary">
+
+	<li id="ajaxy_sf_widget-2" class="widget widget_ajaxy_sf_widget"><h2 class="widget-title"></h2><h2 class="widget-title">Search</h2>
+		<!-- Ajaxy Search Form v3.0.7 -->
+		<div id="592790e759615" class="sf_container">
+			<form role="search" method="get" class="searchform" action="https://webrtchacks.com/">
+				<div>
+					<label class="screen-reader-text" for="s">Search for:</label>
+					<div class="sf_search" style="border: 1px solid rgb(238, 238, 238);">
+						<span class="sf_block">
+							<input style="width: 224px;" class="sf_input" autocomplete="off" value="search webrtcHacks.com" name="s" type="text">
+							<button class="sf_button searchsubmit" type="submit"><span class="sf_hidden">Search</span></button>
+						</span>
+					</div>
+				</div>
+			</form>
+		</div>
+		</li><li id="tag_cloud-2" class="widget widget_tag_cloud"><h2 class="widget-title">Tags</h2><div class="tagcloud"><a href="https://webrtchacks.com/tag/alex-gouiallard/" class="tag-link-250 tag-link-position-1" title="4 topics" style="font-size: 10.9615pt;">Alex Gouiallard</a>
+<a href="https://webrtchacks.com/tag/apple/" class="tag-link-307 tag-link-position-2" title="4 topics" style="font-size: 10.9615pt;">apple</a>
+<a href="https://webrtchacks.com/tag/blackbox-exploration/" class="tag-link-313 tag-link-position-3" title="11 topics" style="font-size: 16.0769pt;">Blackbox Exploration</a>
+<a href="https://webrtchacks.com/tag/brief/" class="tag-link-154 tag-link-position-4" title="32 topics" style="font-size: 22pt;">Brief</a>
+<a href="https://webrtchacks.com/tag/camera/" class="tag-link-189 tag-link-position-5" title="3 topics" style="font-size: 9.61539pt;">camera</a>
+<a href="https://webrtchacks.com/tag/chrome/" class="tag-link-242 tag-link-position-6" title="5 topics" style="font-size: 12.0385pt;">Chrome</a>
+<a href="https://webrtchacks.com/tag/code/" class="tag-link-183 tag-link-position-7" title="9 topics" style="font-size: 15pt;">code</a>
+<a href="https://webrtchacks.com/tag/dan-burnett/" class="tag-link-286 tag-link-position-8" title="3 topics" style="font-size: 9.61539pt;">Dan Burnett</a>
+<a href="https://webrtchacks.com/tag/datachannel/" class="tag-link-216 tag-link-position-9" title="5 topics" style="font-size: 12.0385pt;">DataChannel</a>
+<a href="https://webrtchacks.com/tag/edge/" class="tag-link-345 tag-link-position-10" title="4 topics" style="font-size: 10.9615pt;">Edge</a>
+<a href="https://webrtchacks.com/tag/extension/" class="tag-link-243 tag-link-position-11" title="2 topics" style="font-size: 8pt;">extension</a>
+<a href="https://webrtchacks.com/tag/gateway/" class="tag-link-235 tag-link-position-12" title="4 topics" style="font-size: 10.9615pt;">gateway</a>
+<a href="https://webrtchacks.com/tag/getusermedia/" class="tag-link-188 tag-link-position-13" title="8 topics" style="font-size: 14.3269pt;">getUserMedia</a>
+<a href="https://webrtchacks.com/tag/ice/" class="tag-link-167 tag-link-position-14" title="7 topics" style="font-size: 13.6538pt;">ICE</a>
+<a href="https://webrtchacks.com/tag/ims/" class="tag-link-161 tag-link-position-15" title="4 topics" style="font-size: 10.9615pt;">ims</a>
+<a href="https://webrtchacks.com/tag/janus/" class="tag-link-237 tag-link-position-16" title="3 topics" style="font-size: 9.61539pt;">janus</a>
+<a href="https://webrtchacks.com/tag/kurento/" class="tag-link-258 tag-link-position-17" title="2 topics" style="font-size: 8pt;">kurento</a>
+<a href="https://webrtchacks.com/tag/mcu/" class="tag-link-222 tag-link-position-18" title="4 topics" style="font-size: 10.9615pt;">MCU</a>
+<a href="https://webrtchacks.com/tag/media-server/" class="tag-link-260 tag-link-position-19" title="2 topics" style="font-size: 8pt;">media server</a>
+<a href="https://webrtchacks.com/tag/microsoft/" class="tag-link-290 tag-link-position-20" title="3 topics" style="font-size: 9.61539pt;">Microsoft</a>
+<a href="https://webrtchacks.com/tag/mozilla/" class="tag-link-201 tag-link-position-21" title="3 topics" style="font-size: 9.61539pt;">mozilla</a>
+<a href="https://webrtchacks.com/tag/muaz-khan/" class="tag-link-232 tag-link-position-22" title="2 topics" style="font-size: 8pt;">muaz khan</a>
+<a href="https://webrtchacks.com/tag/nat/" class="tag-link-168 tag-link-position-23" title="5 topics" style="font-size: 12.0385pt;">NAT</a>
+<a href="https://webrtchacks.com/tag/nubomedia/" class="tag-link-261 tag-link-position-24" title="2 topics" style="font-size: 8pt;">nubomedia</a>
+<a href="https://webrtchacks.com/tag/ortc/" class="tag-link-176 tag-link-position-25" title="8 topics" style="font-size: 14.3269pt;">ORTC</a>
+<a href="https://webrtchacks.com/tag/philipp-hancke/" class="tag-link-341 tag-link-position-26" title="3 topics" style="font-size: 9.61539pt;">Philipp Hancke</a>
+<a href="https://webrtchacks.com/tag/promo/" class="tag-link-153 tag-link-position-27" title="10 topics" style="font-size: 15.5385pt;">Promo</a>
+<a href="https://webrtchacks.com/tag/qa/" class="tag-link-101 tag-link-position-28" title="14 topics" style="font-size: 17.4231pt;">Q&amp;A</a>
+<a href="https://webrtchacks.com/tag/safari/" class="tag-link-253 tag-link-position-29" title="3 topics" style="font-size: 9.61539pt;">Safari</a>
+<a href="https://webrtchacks.com/tag/screencapture/" class="tag-link-233 tag-link-position-30" title="2 topics" style="font-size: 8pt;">screenCapture</a>
+<a href="https://webrtchacks.com/tag/sdes/" class="tag-link-173 tag-link-position-31" title="3 topics" style="font-size: 9.61539pt;">SDES</a>
+<a href="https://webrtchacks.com/tag/sdp/" class="tag-link-177 tag-link-position-32" title="7 topics" style="font-size: 13.6538pt;">SDP</a>
+<a href="https://webrtchacks.com/tag/security/" class="tag-link-174 tag-link-position-33" title="3 topics" style="font-size: 9.61539pt;">security</a>
+<a href="https://webrtchacks.com/tag/sfu/" class="tag-link-329 tag-link-position-34" title="5 topics" style="font-size: 12.0385pt;">sfu</a>
+<a href="https://webrtchacks.com/tag/signaling/" class="tag-link-179 tag-link-position-35" title="3 topics" style="font-size: 9.61539pt;">signaling</a>
+<a href="https://webrtchacks.com/tag/simulcast/" class="tag-link-277 tag-link-position-36" title="3 topics" style="font-size: 9.61539pt;">simulcast</a>
+<a href="https://webrtchacks.com/tag/slack/" class="tag-link-362 tag-link-position-37" title="3 topics" style="font-size: 9.61539pt;">slack</a>
+<a href="https://webrtchacks.com/tag/standards/" class="tag-link-249 tag-link-position-38" title="5 topics" style="font-size: 12.0385pt;">standards</a>
+<a href="https://webrtchacks.com/tag/trace/" class="tag-link-230 tag-link-position-39" title="3 topics" style="font-size: 9.61539pt;">trace</a>
+<a href="https://webrtchacks.com/tag/turn/" class="tag-link-170 tag-link-position-40" title="10 topics" style="font-size: 15.5385pt;">TURN</a>
+<a href="https://webrtchacks.com/tag/video/" class="tag-link-198 tag-link-position-41" title="3 topics" style="font-size: 9.61539pt;">video</a>
+<a href="https://webrtchacks.com/tag/vp8/" class="tag-link-199 tag-link-position-42" title="6 topics" style="font-size: 12.9808pt;">vp8</a>
+<a href="https://webrtchacks.com/tag/walkthrough/" class="tag-link-155 tag-link-position-43" title="26 topics" style="font-size: 20.7885pt;">Walkthrough</a>
+<a href="https://webrtchacks.com/tag/webrtc/" class="tag-link-238 tag-link-position-44" title="3 topics" style="font-size: 9.61539pt;">webrtc</a>
+<a href="https://webrtchacks.com/tag/webrtc-experiment/" class="tag-link-234 tag-link-position-45" title="2 topics" style="font-size: 8pt;">webrtc-experiment</a></div>
+</li><li id="categories-2" class="widget widget_categories"><h2 class="widget-title">Categories</h2>		<ul>
+	<li class="cat-item cat-item-149"><a href="https://webrtchacks.com/category/guide/">Guide</a> (40)
+</li>
+	<li class="cat-item cat-item-116"><a href="https://webrtchacks.com/category/miscellaneous/">Miscellaneous</a> (1)
+</li>
+	<li class="cat-item cat-item-150"><a href="https://webrtchacks.com/category/other/">Other</a> (13)
+</li>
+	<li class="cat-item cat-item-156"><a href="https://webrtchacks.com/category/standard/">Standards</a> (16)
+</li>
+	<li class="cat-item cat-item-152"><a href="https://webrtchacks.com/category/technology/">Technology</a> (30)
+</li>
+		</ul>
+</li><li id="recent-comments-2" class="widget widget_recent_comments"><h2 class="widget-title">Recent Comments</h2><ul id="recentcomments"><li class="recentcomments"><span class="comment-author-link"><a href="https://www.smashingmagazine.com/2017/05/why-no-framework/" rel="external nofollow" class="url">“Why We Didn’t Use A Framework” (Case Study) – Smashing Magazine</a></span> on <a href="https://webrtchacks.com/limit-webrtc-bandwidth-sdp/#comment-17763">How to limit WebRTC bandwidth by modifying the SDP</a></li><li class="recentcomments"><span class="comment-author-link"><a href="http://blog.enthinnai.com/" rel="external nofollow" class="url">Aswath Rao</a></span> on <a href="https://webrtchacks.com/symmetric-nat/#comment-17762">Am I behind a Symmetric NAT?</a></li><li class="recentcomments"><span class="comment-author-link"><a href="http://webrtcbydralex.com/" rel="external nofollow" class="url">DrAlex</a></span> on <a href="https://webrtchacks.com/building-webrtc-from-source/#comment-17760">Making WebRTC source building not suck (Alex Gouaillard)</a></li><li class="recentcomments"><span class="comment-author-link"><a href="http://webrtcbydralex.com/" rel="external nofollow" class="url">DrAlex</a></span> on <a href="https://webrtchacks.com/building-webrtc-from-source/#comment-17759">Making WebRTC source building not suck (Alex Gouaillard)</a></li><li class="recentcomments"><span class="comment-author-link"><a href="https://blog.netapsys.fr/devoxx-2017-retour-sur-une-aventure-ultrasonique/" rel="external nofollow" class="url">Devoxx 2017 : Retour sur «&nbsp;Une aventure ultrasonique&nbsp;» | Le blog Sodifrance Netapsys</a></span> on <a href="https://webrtchacks.com/the-minimum-viable-sdp/#comment-17758">The Minimum Viable SDP</a></li></ul></li><li id="text-2" class="widget widget_text"><h2 class="widget-title">Twittering</h2>			<div class="textwidget"><iframe id="twitter-widget-0" scrolling="no" allowtransparency="true" allowfullscreen="true" class="twitter-timeline twitter-timeline-rendered" style="position: static; visibility: visible; display: inline-block; width: 520px; height: 400px; padding: 0px; border: medium none; max-width: 100%; min-width: 180px; margin-top: 0px; margin-bottom: 0px; min-height: 200px;" data-widget-id="354956526869426177" title="Twitter Timeline" src="index_1.html" frameborder="0"></iframe>
+
+</div>
+		</li><li id="wysija-2" class="widget widget_wysija"><h2 class="widget-title">New post notifications</h2><div class="widget_wysija_cont"><div id="msg-form-wysija-2" class="wysija-msg ajax"></div><form id="form-wysija-2" method="post" action="https://webrtchacks.com/kurento/#wysija" class="widget_wysija">
+<p class="wysija-paragraph">
+    
+    
+    	<input name="wysija[user][firstname]" class="wysija-input " title="First name" placeholder="First name" value="First name" type="text">
+    
+    
+    
+    <span class="abs-req">
+        <input name="wysija[user][abs][firstname]" class="wysija-input validated[abs][firstname]" value="" type="text">
+    </span>
+    
+</p>
+<p class="wysija-paragraph">
+    
+    
+    	<input name="wysija[user][lastname]" class="wysija-input " title="Last name" placeholder="Last name" value="Last name" type="text">
+    
+    
+    
+    <span class="abs-req">
+        <input name="wysija[user][abs][lastname]" class="wysija-input validated[abs][lastname]" value="" type="text">
+    </span>
+    
+</p>
+<p class="wysija-paragraph">
+    
+    
+    	<input name="wysija[user][email]" class="wysija-input validate[required,custom[email]]" title="Email" placeholder="Email" value="Email" type="text">
+    
+    
+    
+    <span class="abs-req">
+        <input name="wysija[user][abs][email]" class="wysija-input validated[abs][email]" value="" type="text">
+    </span>
+    
+</p>
+<input class="wysija-submit wysija-submit-field" value="Subscribe!" type="submit">
+
+    <input name="form_id" value="1" type="hidden">
+    <input name="action" value="save" type="hidden">
+    <input name="controller" value="subscribers" type="hidden">
+    <input value="1" name="wysija-page" type="hidden">
+
+    
+        <input name="wysija[user_list][list_ids]" value="3" type="hidden">
+    
+ </form></div></li><li id="text-5" class="widget widget_text"><h2 class="widget-title">RSS Feed</h2>			<div class="textwidget"><a href="http://feeds.feedburner.com/webrtcHacks" rel="alternate" type="application/rss+xml"><img src="rss.png" alt="" style="vertical-align: middle; border: 0px none;"></a></div>
+		</li>
+</ul><!-- end sidebar -->
+</div><!-- end container -->
+</div><!-- end of container holder -->
+
+</div><!-- end page-wrap -->
+<div class="ads" align="center">
+
+
+<!-- 970x90 -->
+<ins class="adsbygoogle" style="display: inline-block; height: 90px; width: 0px;" data-ad-client="ca-pub-4867498141097795" data-ad-slot="9734864863" data-adsbygoogle-status="done"><ins id="aswift_0_expand" style="display: inline-table; border: medium none; height: 90px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 7px; background-color: transparent;"><ins id="aswift_0_anchor" style="display: block; border: medium none; height: 90px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 7px; background-color: transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" id="aswift_0" name="aswift_0" style="left: 0px; position: absolute; top: 0px; width: 7px; height: 90px;" src="index_5.html" width="7" height="90" frameborder="0"></iframe></ins></ins></ins>
+
+<!-- [adkingpro type=webrtcschool-top_bottom_ad] -->
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a href="https://plus.google.com/115584248522943422895" rel="publisher" style="visibility: hidden;">Google+</a>
+
+<div id="fb-root" class=" fb_reset"><div style="position: absolute; top: -10000px; height: 0px; width: 0px;"><div></div></div><div style="position: absolute; top: -10000px; height: 0px; width: 0px;"><div><iframe name="fb_xdm_frame_https" allowtransparency="true" allowfullscreen="true" scrolling="no" id="fb_xdm_frame_https" aria-hidden="true" title="Facebook Cross Domain Communication Frame" tabindex="-1" style="border: medium none;" src="index_6.html" frameborder="0"></iframe></div></div></div><iframe id="rufous-sandbox" scrolling="no" allowtransparency="true" allowfullscreen="true" style="position: absolute; visibility: hidden; display: none; width: 0px; height: 0px; padding: 0px; border: medium none;" title="Twitter analytics iframe" src="index_7.html" frameborder="0"></iframe></body>
+</html>

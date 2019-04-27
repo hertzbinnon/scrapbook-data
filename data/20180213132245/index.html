@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Trace Function Calls Using GDB</title>
+  <meta property="og:title" content="Trace Function Calls Using GDB">
+  <meta name="twitter:title" content="Trace Function Calls Using GDB">
+  <meta name="description" content="Sometimes it is easier to debug when you are able to view a call trace of all function calls in a particular program. This is especially true when working with code that isn’t yours or when debugging issues such as infinite loops in your own code. The way I typically do this is by creating a GDB commands file that defines breakpoints for each function I would like to see in the trace.">
+  <meta property="og:description" content="Sometimes it is easier to debug when you are able to view a call trace of all function calls in a particular program. This is especially true when working with code that isn’t yours or when debugging issues such as infinite loops in your own code. The way I typically do this is by creating a GDB commands file that defines breakpoints for each function I would like to see in the trace.">
+  <meta name="twitter:description" content="Sometimes it is easier to debug when you are able to view a call trace of all function calls in a particular program. This is especially true when working with code that isn’t yours or when …">
+  <meta name="author" content="Dusty Mabe">
+  <link href="favicon.ico" rel="icon" type="image/x-icon">
+  <meta property="og:image" content="https://dustymabe.com/img/avatar-icon.png">
+  <meta name="twitter:image" content="https://dustymabe.com/img/avatar-icon.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@dustymabe">
+  <meta name="twitter:creator" content="@dustymabe">
+  <meta property="og:url" content="https://dustymabe.com/2012/10/14/trace-function-calls-using-gdb/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="A Random Walk Down Tech Street">
+
+  <meta name="generator" content="Hugo 0.30.2">
+  <link rel="canonical" href="https://dustymabe.com/2012/10/14/trace-function-calls-using-gdb/">
+  <link rel="alternate" href="https://dustymabe.com/index.xml" type="application/rss+xml" title="A Random Walk Down Tech Street">
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+
+
+
+
+
+
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body><div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+
+
+
+
+  
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom top-nav-short">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://dustymabe.com/">A Random Walk Down Tech Street</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="Blog" href="http://dustymabe.com/">Blog</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Tags" href="http://dustymabe.com/tags">Tags</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="A Random Walk Down Tech Street" href="https://dustymabe.com/">
+            <img class="avatar-img" src="avatar-icon.png" alt="A Random Walk Down Tech Street">
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+    
+  
+  
+  
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              <h1>Trace Function Calls Using GDB</h1>
+                
+                
+                  <span class="post-meta">
+  Posted on October 14, 2012
+  
+</span>
+
+
+                
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <p>Sometimes it is easier to debug when you are able to view a call trace
+of all function calls in a particular program. This is especially true
+when working with code that isn’t yours or when debugging issues such as
+infinite loops in your own code. The way I typically do this is by
+creating a GDB commands file that defines breakpoints for each function
+I would like to see in the trace.<br>
+<br>
+For each function breakpoint, I instruct GDB to print a short backtrace
+and then continue execution. I can then stop the program run at any time
+using <code>CTRL-C</code> and observe where the program is, what functions are
+being called, and what arguments they are being called with.<br>
+<br>
+To illustrate this, consider the following short program that accepts
+two arguments. It takes these two arguments, squares them, and then
+finds the lowest common multiple of their squares. This means if you
+pass in 4 and 10, it will find the LCM of 16 and 100.<br>
+<br>
+<strong>NOTE:</strong> I have defined functions for basic operations such as squaring
+a number and adding two numbers just for illustrative purposes.<br>
+</p>
+
+<pre><code class="language-nohighlight">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+// A program that will square two integers and then find the LCM
+// of the resulting two integers. 
+
+int squared(int x)       { return x*x; }
+int modulo(int x, int y) { return x%y; }
+int plus(int x, int y)   { return x+y; }
+
+int main(int argc, char *argv[]) {
+    int x, y, x2, y2, tmp;
+    if (argc != 3) return 0;
+
+    x = atoi(argv[1]);
+    y = atoi(argv[2]);
+    x2       = squared(x);
+    y2 = tmp = squared(y);
+
+    while (1) {
+        if (modulo(tmp,x2) == 0) break;
+        tmp = plus(tmp,y2);
+    }
+    printf("LCM is %d\n", tmp);
+}
+</code></pre>
+
+<p><br>
+I then use the following GDB commands file to define the breakpoints and
+the commands to run for each breakpoint.<br>
+</p>
+
+<pre><code class="language-nohighlight">set args 4 10
+
+break squared
+command
+silent
+backtrace 1
+continue
+end
+
+break modulo
+command
+silent
+backtrace 1
+continue
+end
+
+break plus
+command
+silent
+backtrace 1
+continue
+end
+
+run
+</code></pre>
+
+<p><br>
+After compiling my program (making sure to use <code>gcc -g</code> to add in debug
+information) I can run the program using <code>gdb</code> and view the trace.<br>
+</p>
+
+<pre><code class="language-nohighlight">dustymabe@laptop: gdbpost&gt;gdb -quiet -command=gdb_commands ./a.out 
+Reading symbols from
+/content/gdbpost/a.out...done.
+Breakpoint 1 at 0x400533: file file.c, line 6.
+Breakpoint 2 at 0x400546: file file.c, line 7.
+Breakpoint 3 at 0x40055f: file file.c, line 8.
+#0  squared (x=4) at file.c:6
+#0  squared (x=10) at file.c:6
+#0  modulo (x=100, y=16) at file.c:7
+#0  plus (x=100, y=100) at file.c:8
+#0  modulo (x=200, y=16) at file.c:7
+#0  plus (x=200, y=100) at file.c:8
+#0  modulo (x=300, y=16) at file.c:7
+#0  plus (x=300, y=100) at file.c:8
+#0  modulo (x=400, y=16) at file.c:7
+LCM is 400
+[Inferior 1 (process 4214) exited with code 013]
+Missing separate debuginfos, use: debuginfo-install
+glibc-2.15-56.fc17.x86_64
+(gdb) quit
+</code></pre>
+
+      </article>
+
+      <ul class="pager blog-pager">
+        
+          <li class="previous">
+            <a href="https://dustymabe.com/2012/09/11/share-a-folder-between-kvm-host-and-guest/" data-toggle="tooltip" data-placement="top" title="Share a Folder Between KVM Host and Guest">← Previous Post</a>
+          </li>
+        
+        
+          <li class="next">
+            <a href="https://dustymabe.com/2012/11/15/create-a-disk-image-without-enough-free-space/" data-toggle="tooltip" data-placement="top" title="Create A Disk Image Without Enough Free Space">Next Post →</a>
+          </li>
+        
+      </ul>
+
+      
+        
+      
+
+    </div>
+  </div>
+</div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+                <a href="mailto:dusty@dustymabe.com" title="Email me">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://github.com/dustymabe" title="GitHub">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://gitlab.com/dustymabe" title="GitLab">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-gitlab fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://twitter.com/dustymabe" title="Twitter">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://linkedin.com/in/dustymabe" title="LinkedIn">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://stackoverflow.com/users/2869277/dustymabe" title="StackOverflow">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+          <li>
+            <a href="https://dustymabe.com/index.xml" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          Dusty Mabe
+          &nbsp;•&nbsp;
+          2018
+
+          
+            &nbsp;•&nbsp;
+            <a href="https://dustymabe.com/">A Random Walk Down Tech Street</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="http://gohugo.io/">Hugo v0.30.2</a> powered &nbsp;•&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          &nbsp;•&nbsp;[<a href="https://github.com/dustymabe/dustymabe.com/tree/47faf918bf6e3ed66a4740a50638e2e8b65bda23">47faf91</a>]
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+</body>
+</html>

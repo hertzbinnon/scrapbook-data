@@ -1,0 +1,900 @@
+<!DOCTYPE html PUBLIC "-//W3C//dtD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/dtD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+
+
+
+<title>VLC for Android 基于 Opencv 对 RTSP视频 实时人脸检测 - Android移动开发技术文章_手机开发 - 红黑联盟</title>
+<meta name="description" content="最近项目上需要在Android客户端 通过获取 RTSP 的视频进行实时人脸检测， 要做就就是以下几点： 1、通过VLC 获取 获取RTSP 2、对VLC中播放的视频进行实时截屏并保存在SD卡中">
+<meta http-equiv="mobile-agent" content="format=html5;url=https://m.2cto.com/kf/201609/546162.html">
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body><div style="display: none; position: absolute;" class=""><div class="aui_outer"><table class="aui_border"><tbody><tr><td class="aui_nw"></td><td class="aui_n"></td><td class="aui_ne"></td></tr><tr><td class="aui_w"></td><td class="aui_c"><div class="aui_inner"><table class="aui_dialog"><tbody><tr><td colspan="2" class="aui_header"><div class="aui_titleBar"><div class="aui_title" style="cursor: move; display: block;"></div><a class="aui_close" href="javascript:/*artDialog*/;" style="display: block;">×</a></div></td></tr><tr><td class="aui_icon" style="display: none;"><div class="aui_iconBg" style="background: rgba(0, 0, 0, 0) none repeat scroll 0% 0%;"></div></td><td class="aui_main" style="width: auto; height: auto;"><div class="aui_content" style="padding: 20px 25px;"></div></td></tr><tr><td colspan="2" class="aui_footer"><div class="aui_buttons" style="display: none;"></div></td></tr></tbody></table></div></td><td class="aui_e"></td></tr><tr><td class="aui_sw"></td><td class="aui_s"></td><td class="aui_se" style="cursor: se-resize;"></td></tr></tbody></table></div></div>
+<div class="line_top_box">
+	<dl class="top_box_left">
+		<dd class="left_logo"><a href="https://www.2cto.com/"></a></dd>
+		<dd class="left_menu_link">
+																<a class="first" href="https://www.2cto.com/news/">资讯</a>
+													<a href="https://www.2cto.com/article/">安全</a>
+													<a href="https://bbs.2cto.com/">论坛</a>
+													<a href="https://www.2cto.com/soft/">下载</a>
+													<a href="https://book.2cto.com/">读书</a>
+													<a href="https://www.2cto.com/kf/">程序开发</a>
+													<a href="https://www.2cto.com/database/">数据库</a>
+													<a href="https://www.2cto.com/os/">系统</a>
+													<a href="https://www.2cto.com/net/">网络</a>
+													<a href="https://www.2cto.com/ebook/">电子书</a>
+													<a href="https://www.2cto.com/weixin/">微信学院</a>
+													<a href="https://zz.2cto.com/">站长学院</a>
+													<a href="https://www.2cto.com/qq/">QQ</a>
+													<a href="https://www.2cto.com/sj/">手机软件</a>
+													<a href="https://www.2cto.com/px/">考试</a>
+														</dd>
+	</dl>
+</div>
+<div class="line_top_lmbox">
+	<dl class="lmpic"><dt><i></i>频道栏目</dt></dl>
+	<dl class="lmlinkbox"><dd>
+										<a class="Channel" href="https://www.2cto.com/kf/ware/">软件开发</a>|
+							<a class="Channel" href="https://www.2cto.com/kf/qianduan/">web前端</a>|
+							<a class="Channel" href="https://www.2cto.com/kf/web/">Web开发</a>|
+							<a class="Channel" href="https://www.2cto.com/kf/yidong/">移动开发</a>|
+							<a class="Channel" href="https://www.2cto.com/kf/all/">综合编程</a>|
+								</dd></dl>
+	<div class="login" id="userbar"><div class="unlogin">
+<a class="loginbtn" href="https://home.2cto.com/?forward=https%3A%2F%2Fwww.2cto.com%2Fkf%2F201609%2F546162.html&amp;siteid=1" target="_top">登录</a><a class="regbtn" href="https://home.2cto.com/index.php/index/regedit" target="_top">注册</a>
+</div>
+</div>
+</div>
+<div class="ibox mt8 mb8">
+<!-- 2cto_通栏 -->
+
+</div>
+<div class="wrapper">
+	<div class="box_left">
+		
+		<dl class="box_p">
+			<dd class="pRight"><a href="https://www.2cto.com/">首页</a><span> &gt; </span><a href="https://www.2cto.com/kf/">程序开发</a> &gt; <a href="https://www.2cto.com/kf/yidong/">移动开发</a> &gt; <a href="https://www.2cto.com/kf/yidong/Android/news/">Android</a> &gt;  正文</dd>
+			
+			</dl>
+		<dl class="box_t"><dd>VLC for Android 基于 Opencv 对 RTSP视频 实时人脸检测</dd></dl>
+																										<dl class="box_INFO clearfix">
+			<dd class="frinfo">2016-09-08 09:14:28 &nbsp;&nbsp;&nbsp;&nbsp;
+				<i class="comm"></i><a class="num" href="#SOHUCS" id="changyan_count_unit"></a><a href="#SOHUCS">个评论</a>
+				
+&nbsp;&nbsp;  来源：学习的脚步不能停下来&nbsp;&nbsp;  </dd>
+			<dd class="frsize">
+				<a href="javascript:;" onclick="add_favorite('VLC for Android 基于 Opencv 对 RTSP视频 实时人脸检测');" class="t6">收藏</a>&nbsp;&nbsp;
+				<a target="_top" href="https://www.2cto.com/index.php?m=member&amp;c=content&amp;a=publish&amp;modid=1&amp;siteid=1"><i class="publish"></i>我要投稿</a>
+			</dd>
+		</dl>
+        <!-- 2cto_左一 -->
+         <div class="cont_ibox">
+         	
+         </div>
+		<div class="box_body" id="fontzoom">
+       <div id="Article">
+        <p>最近项目上需要在<a href="https://www.2cto.com/kf/yidong/Android/" target="_top" class="keylink">Android</a>客户端 通过获取 RTSP 的视频进行实时人脸检测， 要做就就是以下几点：<br>
+1、通过VLC 获取 获取RTSP<br>
+2、对VLC中播放的视频进行实时截屏并保存在SD卡中<br>
+3、用opencv对截屏后的文件进行 人脸检测<br>
+4、用截取到的人脸显示在主界面上</p>
+<p>我在网上找到了一个公共的RTSP地址，作为RTSP视频数据源<br>
+先看看VLC获取RTSP效果：<br>
+<img alt="这里写图片描述" src="20160908091845354.jpg" title="" kf="" ware="" vc="" "="" target="_blank" class="keylink" style="width: 630px; height: 381.176px;">vce1xMv1wtTNvL7Nyse92MbBuvO1xMv1wtTNvKOs0tG+rbGjtObU2lNEv6jW0MHLoaM8L3A+DQrXoqO60vLOqrmrv6q1xFJUU1DW0MO709DIy8Gzo6zL+dLU1rvE3NPD0rvVxc28xqzX986qsuLK1A0KPHA+v7S/tMjLwbO87LLitcTQp7n7o7o8YnIgLz4NCjxpbWcgYWx0PQ=="这里写图片描述" src="/uploadfile/Collfiles/20160908/20160908091845356.jpg" title="\" /&gt;</p>
+<p>测试的原图是：<br>
+<img alt="这里写图片描述" src="20160908091845359.jpg" title="\" style="width: 400px; height: 267px;"></p>
+<pre class="brush:java;">//VLC中将视频帧截取出来，并保存在SD卡中
+//String picPath = snapShot(); // 一号位
+//将图片转化为Bitmap对象后
+//Bitmap oldBitmap = getFramePicture(picPath); //二号位
+Bitmap oldBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.timg); //三号位
+//对保存在本地的图片进行人脸检测，并获取截到的所有人脸
+final List<bitmap> faces = mFaceUtil.detectFrame(oldBitmap);</bitmap></pre>
+<p>注：在测试的时候，把上面代码中的 一号位 和二号位的注释去掉， 并且注释掉三号位，这样就会对截屏后的图片直接进行人脸检测了。</p>
+<h3 id="一搭建环境">一、搭建环境</h3>
+<p>1、将OpenCV 作为Model导入项目中（我用的版本是2.4.9）<br>
+<img alt="这里写图片描述" src="20160908091845367.jpg" title="\" style="width: 479px; height: 194px;"></p>
+<p><img alt="这里写图片描述" src="20160908091845368.jpg" title="\" style="width: 630px; height: 403.372px;"></p>
+<p>注意，这里的java文件夹，我也会放到上传的压缩包里，可以直接按照同样的方式，导入Model</p>
+<p><img alt="这里写图片描述" src="20160908091845369.jpg" title="\" style="width: 285px; height: 98px;"></p>
+<p><img alt="这里写图片描述" src="20160908091845371.jpg" title="\" style="width: 330px; height: 247px;"></p>
+<p><img alt="这里写图片描述" src="20160908091845372.jpg" title="\" style="height: 560px; width: 341.205px;"></p>
+<p><img alt="这里写图片描述" src="20160908091845373.jpg" title="\" style="width: 630px; height: 525.608px;"></p>
+<p>2、将Opencv中和VLC的so库复制进去，直接将我项目里的jniLibs文件夹复制到指定main文件夹下就可以了</p>
+<p><img alt="这里写图片描述" src="20160908091845374.jpg" title="\" style="width: 317px; height: 402px;"></p>
+<p>3、将VLC中要用到的代码拷贝到项目里（直接从我项目里拷贝即可，也可以自己去官网下载）</p>
+<p><img alt="这里写图片描述" src="20160908091846380.jpg" title="\" style="height: 560px; width: 317.587px;"></p>
+<p>4、配置一下AndroidManifest.xml</p>
+<pre class="brush:java;"><!-- 获取rtsp视频需要联网 -->
+<uses-permission android:name="android.permission.INTERNET">
+<!-- 截屏是需要读写文件权限 -->
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE">
+<!-- 设置允许改变配置信息的权限 -->
+<uses-permission android:name="android.permission.CHANGE_CONFIGURATION">
+
+    <!-- 需要填写application的name属性 -->
+    <application ...="" android:name="org.videolan.libvlc.VLCApplication">
+        <activity ...="" activity="">
+    </activity></application></uses-permission></uses-permission></uses-permission></pre>
+<p>这样就配置的差不多了。</p>
+<h3 id="二vlc获取rtsp网络视频">二、VLC获取RTSP网络视频</h3>
+<pre class="brush:java;">public class MainActivity extends Activity {
+
+    private static final String TAG = "MainActivity";
+    private VideoPlayerFragment fragment;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        fragment = new VideoPlayerFragment();
+        //-------------
+        //  其他代码
+        //-------------
+        try {
+            EventHandler em = EventHandler.getInstance();
+            em.addHandler(handler);
+            LibVLC mLibVLC = Util.getLibVlcInstance();
+            if (mLibVLC != null) {
+                mLibVLC.setSubtitlesEncoding("");
+                mLibVLC.setTimeStretching(false);
+                mLibVLC.setFrameSkip(true);
+                mLibVLC.setChroma("RV32");
+                mLibVLC.setVerboseMode(true);
+                mLibVLC.setAout(-1);
+                mLibVLC.setDeblocking(4);
+                mLibVLC.setNetworkCaching(1500);
+                //测试地址
+//                String pathUri = "rtsp://218.204.223.237:554/live/1/66251FC11353191F/e7ooqwcfbqjoo80j.sdp";
+                String pathUri = "rtsp://218.204.223.237:554/live/1/67A7572844E51A64/f68g2mj7wjua3la7.sdp";
+                mLibVLC.playMyMRL(pathUri);
+            }
+        } catch (LibVlcException e) {
+            e.printStackTrace();
+        }
+    }
+
+    Handler handler = new Handler() {
+        public void handleMessage(Message msg) {
+            Log.d(TAG, "Event = " + msg.getData().getInt("event"));
+            switch (msg.getData().getInt("event")) {
+                case EventHandler.MediaPlayerPlaying:
+                case EventHandler.MediaPlayerPaused:
+                    break;
+                case EventHandler.MediaPlayerStopped:
+                    break;
+                case EventHandler.MediaPlayerEndReached:
+                    break;
+                case EventHandler.MediaPlayerVout:
+                    if (msg.getData().getInt("data") &gt; 0) {
+                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                        transaction.add(R.id.frame_layout, fragment);
+                        transaction.commit();
+                    }
+                    break;
+                case EventHandler.MediaPlayerPositionChanged:
+                    break;
+                case EventHandler.MediaPlayerEncounteredError:
+                    AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+                            .setTitle("提示信息")
+                            .setMessage("无法连接到网络摄像头，请确保手机已经连接到摄像头所在的wifi热点")
+                            .setNegativeButton("知道了", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    finish();
+                                }
+                            }).create();
+                    dialog.setCanceledOnTouchOutside(false);
+                    dialog.show();
+                    break;
+                default:
+                    Log.d(TAG, "Event not handled ");
+                    break;
+            }
+        }
+    };
+}</pre>
+<p>这里的作用就是先初始化一下VLC，然后判断能否加载到RTSP视频，如果加载不到，就应该是 你的安卓手机 和 拍摄RTSP的摄像头 不处于同一个网络下， 这个需要自行处理，一般连接同一个WIFI就可以了。 我这里的测试地址是 网上公开的，大家都可以获取到RTSP视频的。</p>
+<h3 id="三-对获取到的rtsp进行截屏并保存">三 、对获取到的RTSP进行截屏并保存</h3>
+<pre class="brush:java;">public class VideoPlayerFragment extends Fragment implements IVideoPlayer {
+    public final static String TAG = "VideoPlayerFragment";
+
+    private SurfaceHolder surfaceHolder = null;
+    private LibVLC mLibVLC = null;
+
+    private int mVideoHeight;
+    private int mVideoWidth;
+    private int mSarDen;
+    private int mSarNum;
+    private int mUiVisibility = -1;
+    private static final int SURFACE_SIZE = 3;
+
+    private SurfaceView surfaceView = null;
+    private FaceRtspUtil mFaceUtil;
+    //截图后的图片的宽度
+    private static final int PIC_WIDTH = 1280;
+    //截图后的图片的高度
+    private static final int PIC_HEIGHT = 720;
+    private String mPicCachePath;
+    private Timer mTimer;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        //存放VLC的截屏图片的文件夹路径
+        View view = inflater.inflate(R.layout.video_player, null);
+        init(view);
+        if (Util.isICSOrLater())
+            getActivity().getWindow().getDecorView().findViewById(android.R.id.content)
+                    .setOnSystemUiVisibilityChangeListener(
+                            new OnSystemUiVisibilityChangeListener() {
+
+                                @Override
+                                public void onSystemUiVisibilityChange(
+                                        int visibility) {
+                                    if (visibility == mUiVisibility)
+                                        return;
+                                    setSurfaceSize(mVideoWidth, mVideoHeight,
+                                            mSarNum, mSarDen);
+                                    if (visibility == View.SYSTEM_UI_FLAG_VISIBLE) {
+                                        Log.d(TAG, "onSystemUiVisibilityChange");
+                                    }
+                                    mUiVisibility = visibility;
+                                }
+                            });
+
+        try {
+            mLibVLC = LibVLC.getInstance();
+            if (mLibVLC != null) {
+                EventHandler em = EventHandler.getInstance();
+                em.addHandler(eventHandler);
+            }
+        } catch (LibVlcException e) {
+            e.printStackTrace();
+            Log.i(TAG, "onCreateView: " + e.getMessage());
+        }
+        return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (!mLibVLC.isPlaying()) {
+            mLibVLC.play();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mLibVLC.stop();
+        mTimer.cancel();
+    }
+
+    private CascadeClassifier initializeOpenCVDependencies() {
+        CascadeClassifier classifier = null;
+        try {
+            InputStream is = getResources().openRawResource(R.raw.haarcascade_frontalface_alt);
+            File cascadeDir = getActivity().getDir("cascade", Context.MODE_PRIVATE);
+            File mCascadeFile = new File(cascadeDir, "haarcascade_frontalface_alt.xml");
+            FileOutputStream fos = new FileOutputStream(mCascadeFile);
+
+            byte[] bytes = new byte[4096];
+            int len;
+            while ((len = is.read(bytes)) != -1) {
+                fos.write(bytes, 0, len);
+            }
+            is.close();
+            fos.close();
+            classifier = new CascadeClassifier(mCascadeFile.getAbsolutePath());
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG, "Error loading cascade", e);
+        }
+        return classifier;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!OpenCVLoader.initDebug()) {
+            Log.e(TAG, "OpenCV init error");
+        }
+        CascadeClassifier classifier = initializeOpenCVDependencies();
+        mFaceUtil = new FaceRtspUtil(classifier, PIC_WIDTH, PIC_HEIGHT);
+
+        mTimer = new Timer();
+        //开启一个定时器，每隔一秒截屏检测一次
+        mTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                //VLC中将视频帧截取出来，并保存在SD卡中
+//                String picPath = snapShot();
+//
+//                //将图片转化为Bitmap对象后
+//                Bitmap oldBitmap = getFramePicture(picPath);
+
+                Bitmap oldBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.timg);
+                //对保存在本地的图片进行人脸检测，并获取截到的所有人脸
+                final List<bitmap> faces = mFaceUtil.detectFrame(oldBitmap);
+                if (faces == null || faces.isEmpty()) {
+                    return;
+                }
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        callBack.pushData(faces);
+                    }
+                });
+            }
+        }, 1000, 1000);
+    }
+
+    /**
+     * 初始化<a href="https://www.2cto.com/kf/all/zujian/" target="_top" class="keylink">组件</a>
+     */
+    private void init(View view) {
+        surfaceView = (SurfaceView) view.findViewById(R.id.main_surface);
+        surfaceHolder = surfaceView.getHolder();
+        surfaceHolder.setFormat(PixelFormat.RGBX_8888);
+        surfaceHolder.addCallback(mSurfaceCallback);
+
+        mPicCachePath = getSDPath() + "/FaceTest/";
+
+        File file = new File(mPicCachePath);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+    }
+
+    /**
+     * 截图
+     */
+    private String snapShot() {
+        try {
+            String name = mPicCachePath + System.currentTimeMillis() + ".jpg";
+            //调用LibVlc的截屏功能，传入一个路径，及图片的宽高
+            if (mLibVLC.takeSnapShot(name, PIC_WIDTH, PIC_HEIGHT)) {
+                Log.i(TAG, "snapShot: 保存成功--" + System.currentTimeMillis());
+                return name;
+            }
+            Log.i(TAG, "snapShot: 保存失败");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 传入文件路径，获取bitmap
+     *
+     * @param path 路径
+     */
+    private Bitmap getFramePicture(String path) {
+        if (TextUtils.isEmpty(path) || mFaceUtil == null) {
+            Log.i(TAG, "faceDetect: 文件路径为空|| mFaceUtil == null");
+            return null;
+        }
+        File file = new File(path);
+        if (!file.exists()) {
+            return null;
+        }
+        return file2Bitmap(file);
+    }
+
+    private RtspCallBack callBack;
+
+    public void setRtspCallBack(RtspCallBack callBack) {
+        this.callBack = callBack;
+    }
+
+    public interface RtspCallBack {
+        void pushData(List<bitmap> faces);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        setSurfaceSize(mVideoWidth, mVideoHeight, mSarNum, mSarDen);
+        super.onConfigurationChanged(newConfig);
+    }
+
+    /**
+     * attach and disattach surface to the lib
+     */
+    private final Callback mSurfaceCallback = new Callback() {
+        @Override
+        public void surfaceChanged(SurfaceHolder holder, int format, int width,
+                                   int height) {
+            if (format == PixelFormat.RGBX_8888)
+                Log.d(TAG, "Pixel format is RGBX_8888");
+            else if (format == PixelFormat.RGB_565)
+                Log.d(TAG, "Pixel format is RGB_565");
+            else if (format == ImageFormat.YV12)
+                Log.d(TAG, "Pixel format is YV12");
+            else
+                Log.d(TAG, "Pixel format is other/unknown");
+            mLibVLC.attachSurface(holder.getSurface(),
+                    VideoPlayerFragment.this);
+        }
+
+        @Override
+        public void surfaceCreated(SurfaceHolder holder) {
+        }
+
+        @Override
+        public void surfaceDestroyed(SurfaceHolder holder) {
+            mLibVLC.detachSurface();
+        }
+    };
+
+    public final Handler mHandler = new VideoPlayerHandler(this);
+
+    private static class VideoPlayerHandler extends
+            WeakHandler<videoplayerfragment> {
+        public VideoPlayerHandler(VideoPlayerFragment owner) {
+            super(owner);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            VideoPlayerFragment activity = getOwner();
+            if (activity == null) // WeakReference could be GC'ed early
+                return;
+
+            switch (msg.what) {
+                case SURFACE_SIZE:
+                    activity.changeSurfaceSize();
+                    break;
+            }
+        }
+    }
+
+    private void changeSurfaceSize() {
+        // get screen size
+        int dw = getActivity().getWindow().getDecorView().getWidth();
+        int dh = getActivity().getWindow().getDecorView().getHeight();
+
+        // getWindow().getDecorView() doesn't always take orientation into
+        // account, we have to correct the values
+        boolean isPortrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
+        if (dw &gt; dh &amp;&amp; isPortrait || dw &lt; dh &amp;&amp; !isPortrait) {
+            int d = dw;
+            dw = dh;
+            dh = d;
+        }
+        if (dw * dh == 0)
+            return;
+        // compute the <a href="https://www.2cto.com/kf/web/asp/" target="_top" class="keylink">asp</a>ect ratio
+        double ar, vw;
+        double density = (double) mSarNum / (double) mSarDen;
+        if (density == 1.0) {
+            /* No indication about the density, assuming 1:1 */
+            ar = (double) mVideoWidth / (double) mVideoHeight;
+        } else {
+            /* Use the specified aspect ratio */
+            vw = mVideoWidth * density;
+            ar = vw / mVideoHeight;
+        }
+
+        // compute the display aspect ratio
+        double dar = (double) dw / (double) dh;
+        if (dar &lt; ar)
+            dh = (int) (dw / ar);
+        else
+            dw = (int) (dh * ar);
+
+        surfaceHolder.setFixedSize(mVideoWidth, mVideoHeight);
+        LayoutParams lp = surfaceView.getLayoutParams();
+        lp.width = dw;
+        lp.height = dh;
+        surfaceView.setLayoutParams(lp);
+        surfaceView.invalidate();
+    }
+
+    private final Handler eventHandler = new VideoPlayerEventHandler(this);
+
+    private static class VideoPlayerEventHandler extends
+            WeakHandler<videoplayerfragment> {
+        public VideoPlayerEventHandler(VideoPlayerFragment owner) {
+            super(owner);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            VideoPlayerFragment activity = getOwner();
+            if (activity == null)
+                return;
+            Log.d(TAG, "Event = " + msg.getData().getInt("event"));
+            switch (msg.getData().getInt("event")) {
+                case EventHandler.MediaPlayerPlaying:
+                    Log.i(TAG, "MediaPlayerPlaying");
+                    break;
+                case EventHandler.MediaPlayerPaused:
+                    Log.i(TAG, "MediaPlayerPaused");
+                    break;
+                case EventHandler.MediaPlayerStopped:
+                    Log.i(TAG, "MediaPlayerStopped");
+                    break;
+                case EventHandler.MediaPlayerEndReached:
+                    Log.i(TAG, "MediaPlayerEndReached");
+                    activity.getActivity().finish();
+                    break;
+                case EventHandler.MediaPlayerVout:
+                    activity.getActivity().finish();
+                    break;
+                default:
+                    Log.d(TAG, "Event not handled");
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mLibVLC != null) {
+            mLibVLC.stop();
+        }
+        EventHandler em = EventHandler.getInstance();
+        em.removeHandler(eventHandler);
+        super.onDestroy();
+    }
+
+    public void setSurfaceSize(int width, int height, int sar_num, int sar_den) {
+        if (width * height == 0)
+            return;
+
+        mVideoHeight = height;
+        mVideoWidth = width;
+        mSarNum = sar_num;
+        mSarDen = sar_den;
+        Message msg = mHandler.obtainMessage(SURFACE_SIZE);
+        mHandler.sendMessage(msg);
+    }
+
+    @Override
+    public void setSurfaceSize(int width, int height, int visible_width,
+                               int visible_height, int sar_num, int sar_den) {
+        mVideoHeight = height;
+        mVideoWidth = width;
+        mSarNum = sar_num;
+        mSarDen = sar_den;
+        Message msg = mHandler.obtainMessage(SURFACE_SIZE);
+        mHandler.sendMessage(msg);
+    }
+
+    private String getSDPath() {
+        boolean hasSDCard = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
+        if (hasSDCard) {
+            return Environment.getExternalStorageDirectory().toString();
+        } else
+            return Environment.getDownloadCacheDirectory().toString();
+    }
+
+    private Bitmap file2Bitmap(File file) {
+        if (file == null) {
+            return null;
+        }
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            return BitmapFactory.decodeStream(fis);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+}</videoplayerfragment></videoplayerfragment></bitmap></bitmap></pre>
+<p>主要看 onResume 方法<br>
+1、初始化opencv：OpenCVLoader.initDebug()<br>
+2、初始化用于人脸检测的分类级联器：<br>
+CascadeClassifier classifier = initializeOpenCVDependencies();<br>
+3、然后创建一个定时器，每个1秒截屏检测一次<br>
+mTimer = new Timer();<br>
+mTimer.schedule(….);</p>
+<h3 id="四人脸检测">四、人脸检测</h3>
+<pre class="brush:java;">public class FaceRtspUtil {
+
+    private static final String TAG = "FaceUtil";
+    private Mat grayscaleImage;
+    private CascadeClassifier cascadeClassifier = null;
+
+    public FaceRtspUtil(CascadeClassifier cascadeClassifier, int width, int height) {
+        this.cascadeClassifier = cascadeClassifier;
+        //人脸的宽高最小也要是原图的height的 10%
+        grayscaleImage = new Mat(height, width, CvType.CV_8UC4);
+    }
+
+    /**
+     * 给一个图片，检测这张图片里是否有人脸
+     *
+     * @param oldBitmap 图片
+     * @return 返回一个List集合，里面存放所有检测到的人脸
+     */
+    public List<bitmap> detectFrame(Bitmap oldBitmap) {
+
+        Mat aInputFrame = new Mat();
+
+        if (oldBitmap == null) {
+            return null;
+        }
+        Utils.bitmapToMat(oldBitmap, aInputFrame);
+        if (grayscaleImage == null) {
+            Log.i(TAG, "detectFrame: aInputFrame == null || grayscaleImage == null");
+            return null;
+        }
+        Imgproc.cvtColor(aInputFrame, grayscaleImage, Imgproc.COLOR_RGBA2RGB);
+
+        MatOfRect faces = new MatOfRect();
+
+        // 使用级联分类器 检测人脸
+        if (cascadeClassifier != null) {
+            //不获取60*60以下的人脸
+            cascadeClassifier.detectMultiScale(grayscaleImage, faces, 1.1, 2, 2,
+                    new Size(60, 60), new Size());
+        }
+        //facesArray里保存所有检测到的人脸的位置及大小
+        Rect[] facesArray = faces.toArray();
+        if (facesArray == null || facesArray.length == 0) {
+            //如果没有人脸，直接退出
+            Log.i(TAG, "detectFrame: 该图片中没有人脸");
+            return null;
+        }
+        //保存该帧中的所有人脸
+        List<bitmap> bitmaps = new ArrayList&lt;&gt;();
+
+        Bitmap tmpBitmap = Bitmap.createBitmap(aInputFrame.width(), aInputFrame.height(), Bitmap.Config.RGB_565);
+        Utils.matToBitmap(aInputFrame, tmpBitmap);
+
+        for (Rect aFacesArray : facesArray) {
+            Bitmap bitmap = Bitmap.createBitmap(tmpBitmap, aFacesArray.x, aFacesArray.y,
+                    aFacesArray.width, aFacesArray.height);
+            bitmaps.add(bitmap);
+        }
+        //回收帧图片
+        tmpBitmap.recycle();
+        return bitmaps;
+    }
+}</bitmap></bitmap></pre>
+<p>传入一张图片，返回 脸的List集合</p>
+<h3 id="五显示检测到的人脸">五、显示检测到的人脸</h3>
+<p>这里我们使用 接口回调 的方法将人脸 从Fragment中传到Activity去<br>
+在Activity中接收到人脸以后，创建ImageView将人脸显示出来</p>
+<pre class="brush:java;">final LinearLayout ll_faces = (LinearLayout) findViewById(R.id.ll_faces);
+
+fragment.setRtspCallBack(new VideoPlayerFragment.RtspCallBack() {
+            @Override
+            public void pushData(final List<bitmap> faces) {
+                //清除所有的子View
+                ll_faces.removeAllViews();
+                for (int i = 0; i &lt; faces.size(); i++) {
+                    ImageView image = new ImageView(MainActivity.this);
+                    image.setImageBitmap(faces.get(i));
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-2, -2);
+                    ll_faces.addView(image, params);
+                }
+            }
+        });</bitmap></pre>
+<p>至此，基本就弄完了</p>
+						</div>
+		</div>
+	<div id="pages" class="box_body"></div>
+	<div class="cont_ibox">
+		<!-- 2cto_左二 -->
+		
+	</div>
+	<dl class="box_Nsc">
+		<dd class="lcopy"><a class="ckcopy" onclick="copyToClipBoard()">点击复制链接 与好友分享!</a><a class="ckhome" href="https://www.2cto.com/">回本站首页</a><div class="zclip" id="zclip-ZeroClipboardMovie_1" style="position: absolute; left: 27px; top: 21224px; width: 202px; height: 26px; z-index: 99;"><embed id="ZeroClipboardMovie_1" src="zeroclipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" name="ZeroClipboardMovie_1" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=1&amp;width=202&amp;height=26" wmode="transparent" width="202" align="middle" height="26"></div></dd>
+		<dd class="Article-Tool">
+  		<!--<div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"></a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a><a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a><a href="#" class="bds_mshare" data-cmd="mshare" title="分享到一键分享"></a></div>                                -->
+	  </dd>
+	</dl>
+	<div class="more_tags"><span>相关TAG标签</span>
+																		<a href="https://www.2cto.com/tag/android.html" target="_top"> Android</a>
+								 		         															<a href="https://www.2cto.com/tag/opencv.html" target="_top"> Opencv</a>
+								 		         															<a href="https://www.2cto.com/tag/rtspshipin.html" target="_top"> RTSP视频</a>
+								 		         															<a href="https://www.2cto.com/tag/renlianjiance.html" target="_top"> 人脸检测</a>
+								 		             </div>
+	<dl class="box_NPre">
+		<dd class="TLineX"><strong>上一篇：</strong><a href="https://www.2cto.com/kf/201609/546161.html">024.RemoteViews的内部机制</a></dd>
+		<dd><strong>下一篇：</strong><a href="https://www.2cto.com/kf/201609/546164.html">自定义View控件之特殊的饼形图(环形图)</a></dd>
+	</dl>
+	<div class="inbox">
+	<div class="about">相关文章</div>
+	</div>
+	<ul class="alists clearfix">
+				<li class="alistline"><i class="dot"></i><a href="https://www.2cto.com/kf/201107/97310.html" target="_top">android libaray的创建和使用  </a></li>
+			<li class="alistline"><i class="dot"></i><a href="https://www.2cto.com/kf/201107/98168.html" target="_top">android中调用webservice  </a></li>
+			<li class="alistline"><i class="dot"></i><a href="https://www.2cto.com/kf/201108/98495.html" target="_top">android中json转换成List<map></map></a></li>
+			<li class="alistline"><i class="dot"></i><a href="https://www.2cto.com/kf/201108/98665.html" target="_top">Android ListView Adapter  </a></li>
+			<li class="alistline"><i class="dot"></i><a href="https://www.2cto.com/kf/201108/100242.html" target="_top"> android AudioTrack不能播放awr</a></li>
+			<li class="alistline"><i class="dot"></i><a href="https://www.2cto.com/kf/201109/103471.html" target="_top">Android异步操作AsyncTask </a></li>
+			<li class="alistline"><i class="dot"></i><a href="https://www.2cto.com/kf/201109/103594.html" target="_top">android-仿QQtab </a></li>
+			<li class="alistline"><i class="dot"></i><a href="https://www.2cto.com/kf/201109/104307.html" target="_top">android database sqlite的使用 </a></li>
+			<li class="alistline"><i class="dot"></i><a href="https://www.2cto.com/kf/201110/108180.html" target="_top">Android之ImageSwitcher,Gallery用法 </a></li>
+			<li class="alistline"><i class="dot"></i><a href="https://www.2cto.com/kf/201110/108440.html" target="_top">Android面试系列之一 </a></li>
+			</ul>
+	<div class="more_tags"><span class="t2">热门专题推荐</span>
+																														<a href="https://www.2cto.com/special/pjc/" target="_top"> python</a>
+													<a href="https://www.2cto.com/special/dsjc/" target="_top"> div+css</a>
+													<a href="https://www.2cto.com/special/css/" target="_top"> css教程</a>
+													<a href="https://www.2cto.com/special/html5/" target="_top"> html5</a>
+													<a href="https://www.2cto.com/special/html/" target="_top"> html教程</a>
+													<a href="https://www.2cto.com/special/jquery_ajax/" target="_top"> jquery</a>
+													<a href="https://www.2cto.com/special/Android_AndroidSDK/" target="_top"> Android SDK</a>
+													<a href="https://www.2cto.com/special/phphuanjingdajian/" target="_top"> php</a>
+													<a href="https://www.2cto.com/special/mysql/" target="_top"> mysql</a>
+													<a href="https://www.2cto.com/special/oracle/" target="_top"> oracle</a>
+										 				 				 	
+    </div>
+    <div class="inbox">
+	<div class="cont_ibox">
+		<!-- 2cto_左三 -->
+		
+	</div>
+	</div>
+	<div class="inbox">
+		<div class="about">图文推荐</div>
+	</div>
+    <div class="cont_ibox">
+	<!-- 2cto_左四 -->
+	
+	</div>
+	<ul class="picbox clearfix">
+						<li>
+			<a target="_top" class="imgbox" href="https://www.2cto.com/kf/201711/695441.html"><img src="2017110409213639.png"></a>
+			<a class="npictext" target="_top" href="https://www.2cto.com/kf/201711/695441.html">Android TextView关</a>
+		</li>
+				<li>
+			<a target="_top" class="imgbox" href="https://www.2cto.com/kf/201711/695423.html"><img src="2017110409213237.png"></a>
+			<a class="npictext" target="_top" href="https://www.2cto.com/kf/201711/695423.html">android开发实现天气</a>
+		</li>
+				<li>
+			<a target="_top" class="imgbox" href="https://www.2cto.com/kf/201711/695410.html"><img src="2017110409215266.png"></a>
+			<a class="npictext" target="_top" href="https://www.2cto.com/kf/201711/695410.html">Android中的SVG资源解</a>
+		</li>
+				<li>
+			<a target="_top" class="imgbox" href="https://www.2cto.com/kf/201711/695408.html"><img src="2017110409221185.png"></a>
+			<a class="npictext" target="_top" href="https://www.2cto.com/kf/201711/695408.html">如何把Eclipse项目迁</a>
+		</li>
+					</ul>
+	<div id="SOHUCS"></div>
+	</div>
+	<div class="box_right">
+		<div class="side-ibox h250">
+        <!-- 2cto_右一 -->
+        
+		</div>
+		<div class="box_right_box mt8">
+			<dl class="bTitle tabtitle borT" id="ltabTitle"><dd class="on">文章</dd><dd>推荐</dd></dl>
+                <div class="paddingbox tab_wrap" id="listTab" style="height: 192px;">
+				<div class="tab_main" style="width: 556px; height: 192px;">
+				<dl class="index tab_item swiper-slide-visible swiper-slide-active" style="width: 278px; height: 192px;">
+															<dd class="list">·&nbsp;<a target="_top" href="https://www.2cto.com/kf/201102/84332.html">开发适应中国网络的J2ME连网程序</a></dd>
+										<dd class="list">·&nbsp;<a target="_top" href="https://www.2cto.com/kf/201105/90597.html">Struts2.1.6+Spring2.5.6+Hibernate3.</a></dd>
+										<dd class="list">·&nbsp;<a target="_top" href="https://www.2cto.com/kf/201105/90596.html">Struts2.1.6+Spring2.5.6+Hibernate3.</a></dd>
+										<dd class="list">·&nbsp;<a target="_top" href="https://www.2cto.com/kf/201105/90595.html">Struts2.1.6+Spring2.5.6+Hibernate3.</a></dd>
+										<dd class="list">·&nbsp;<a target="_top" href="https://www.2cto.com/kf/201105/90594.html">Struts2.1.6+Spring2.5.6+Hibernate3.</a></dd>
+										<dd class="list">·&nbsp;<a target="_top" href="https://www.2cto.com/kf/201105/90593.html">Struts2.1.6+Spring2.5.6+Hibernate3.</a></dd>
+										<dd class="list">·&nbsp;<a target="_top" href="https://www.2cto.com/kf/201105/90572.html">NetBeans启动失败，提示“JVM creati</a></dd>
+										<dd class="list">·&nbsp;<a target="_top" href="https://www.2cto.com/kf/201105/90401.html">JDK6中JWS自带webservice应用</a></dd>
+														</dl>
+				<dl class="index tab_item" style="width: 278px; height: 192px;">
+					 										<dd class="list">·&nbsp;<a target="_top" href="https://www.2cto.com/special/win7jh/">win7激活工具</a></dd>
+										<dd class="list">·&nbsp;<a target="_top" href="https://www.2cto.com/os/201607/522176.html">win10激活工具</a></dd>
+										<dd class="list">·&nbsp;<a target="_top" href="https://www.2cto.com/special/win7jihuogongju/">win7激活工具旗舰版</a></dd>
+										<dd class="list">·&nbsp;<a target="_top" href="https://www.2cto.com/os/201602/489186.html">office2010激活密钥</a></dd>
+										<dd class="list">·&nbsp;<a target="_top" href="https://www.2cto.com/os/201601/456235.html">windows7激活密钥</a></dd>
+										<dd class="list">·&nbsp;<a target="_top" href="https://www.2cto.com/os/201601/488006.html">office2010激活工具</a></dd>
+										<dd class="list">·&nbsp;<a target="_top" href="https://www.2cto.com/os/201601/456247.html">小马激活工具</a></dd>
+										<dd class="list">·&nbsp;<a target="_top" href="https://www.2cto.com/os/201607/524552.html">win10激活工具</a></dd>
+														</dl>
+				</div>
+			</div>
+		</div>
+		
+		<div class="side-ibox mt8">
+		<!-- 2cto_右二 -->
+		
+		</div>
+		
+		<div class="box_right_box mt8">
+			<dl class="bTitle tabtitle borT"><dd class="on">点击排行</dd></dl>
+			<div class="paddingbox">
+				<dl class="index">
+					<dd class="picline"></dd>
+															<dd class="list">·&nbsp;<a target="_top" href="https://www.2cto.com/kf/201604/500642.html">Android Studio安装配置详细步骤（图</a></dd>
+										<dd class="list">·&nbsp;<a target="_top" href="https://www.2cto.com/kf/201507/420456.html">Android Studio中如何引用图片资源</a></dd>
+										<dd class="list">·&nbsp;<a target="_top" href="https://www.2cto.com/kf/201511/450814.html">RecyclerView完全解析,让你从此爱上它</a></dd>
+										<dd class="list">·&nbsp;<a target="_top" href="https://www.2cto.com/kf/201702/603678.html">最新2017（Android）安卓面试题级答案</a></dd>
+										<dd class="list">·&nbsp;<a target="_top" href="https://www.2cto.com/kf/201211/166631.html">Android之开发常用颜色</a></dd>
+										<dd class="list">·&nbsp;<a target="_top" href="https://www.2cto.com/kf/201506/408358.html">［Android Studio 权威教程］断点调</a></dd>
+										<dd class="list">·&nbsp;<a target="_top" href="https://www.2cto.com/kf/201703/619114.html">Android ijkplayer的使用解析</a></dd>
+										<dd class="list">·&nbsp;<a target="_top" href="https://www.2cto.com/kf/201606/517300.html">Android Studio打包全攻略---从入门到</a></dd>
+														</dl>
+			</div>
+		</div>
+		<div class="side-ibox mt8">
+		<!-- 2cto_右三 -->
+           
+		</div>
+		<div class="box_right_box mt8">
+			<div class="paddingbox">
+				<!-- <div id="cyHotnews" role="cylabs" data-use="hotnews"></div>
+				<script type="text/javascript" charset="utf-8" src="//changyan.itc.cn/js/??lib/jquery.js,changyan.labs.js?appid=cyrBEfE7C"></script> -->
+			</div>
+		</div>
+		<div class="side-ibox mt8">
+			<!-- 2cto_右四 -->
+			
+        </div>
+	</div><!--box_right  end-->
+</div>
+
+
+
+<div class="ibox p8">
+<!-- 2cto_通栏2 -->
+
+</div>
+<div class="ibox p8">
+<!-- 2cto_通栏3 -->
+<a target="_top" href="https://vip.2cto.com/"><img src="980-80.gif" class="style2" width="980" height="80"></a>
+</div>
+
+<span style="display: none;">
+</span>
+<div class="foot">
+<p>
+<a href="https://www.2cto.com/about">关于我们</a> |
+<a href="https://www.2cto.com/about/contact.html">联系我们</a> |
+<a href="https://www.2cto.com/about/ads.html">广告服务</a> |
+<a href="https://www.2cto.com/about/touzi.html">投资合作</a> |
+<a href="https://www.2cto.com/about/Copyright.html">版权申明</a> |
+<a href="https://www.2cto.com/about/faq.html">在线帮助</a> |
+<a href="https://www.2cto.com/about/map.html">网站地图</a> |
+<a href="https://www.2cto.com/about/tg.html">作品发布</a> |
+<a target="_top" href="https://vip.2cto.com/"><span class="c-red">Vip技术培训</span></a> |
+<a rel="nofollow" href="https://www.2cto.com/member/report.php">举报中心</a>
+</p>
+<p class="style4">版权所有: <a href="https://www.2cto.com/">红黑联盟</a>--致力于做实用的IT技术学习网站<span id="cnzz_stat_icon_1258398875"></span><span id="cnzz_stat_icon_1260439972"></span> 
+</p>
+<div class="hidden"><span id="cnzz_stat_icon_1259665137"></span>
+<span id="cnzz_stat_icon_1260439972"></span>
+
+
+
+</div>
+<!-- 2cto_图加 -->
+
+<!-- 2cto_视窗 -->
+
+<!-- 2cto_对联 -->
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

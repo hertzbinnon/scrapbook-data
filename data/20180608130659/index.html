@@ -1,0 +1,1722 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    <meta charset="UTF-8">
+    <link rel="canonical" href="https://blog.csdn.net/weiyuefei/article/details/64125208"> 
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="referrer" content="always">
+    <meta name="description" content="You should be able to use the&nbsp;-stream_loop
+ -1&nbsp;flag&nbsp;before&nbsp;the
+ input (-i):
+
+ffmpeg -threads 2 -re -fflags +genpts -stream_loop -1 -i ./test.mp4 -c copy ./test.m3u8
+
+
+
+The&nbsp;-fflags
+ +genpts&nbsp;wil">
+    <meta name="keywords" content="">
+    <meta http-equiv="Cache-Control" content="no-siteapp"><link rel="alternate" media="handheld" href="https://blog.csdn.net/weiyuefei/article/details/64125208#">
+    <meta name="shenma-site-verification" content="5a59773ab8077d4a62bf469ab966a63b_1497598848">
+    
+
+    <link href="favicon.ico" rel="SHORTCUT ICON">
+    <title>ffmpeg循环推流方法 - CSDN博客</title>
+    
+            
+        
+
+    
+    
+    
+    
+        
+         
+    
+
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body><div id="BAIDU_DUP_fp_wrapper" style="position: absolute; left: -1px; bottom: -1px; z-index: 0; width: 0px; height: 0px; overflow: hidden; visibility: hidden; display: none;"><iframe id="BAIDU_DUP_fp_iframe" src="index_1.html" style="width: 0px; height: 0px; visibility: hidden; display: none;"></iframe></div><div id="MathJax_Message" style="display: none;"></div>    
+    
+    
+    
+
+
+
+<header>
+	<div class="container d-flex clearfix">
+		<div class="title-box">
+			<h2 class="title-blog">
+				<a href="https://blog.csdn.net/weiyuefei">fei的专栏</a>
+			</h2>
+			<p class="description">C/C++/Go Linux/Web 全栈之路</p>
+		</div>
+		<div class="opt-box d-flex justify-content-end">
+			<a class="btn btn-sm" href="https://blog.csdn.net/weiyuefei/rss/list">
+					<svg class="icon" aria-hidden="true">
+						<use xlink:href="#csdnc-rss"></use>
+					</svg>RSS订阅</a>
+					</div>
+	</div>
+</header>
+<div class="container clearfix pt0" id="mainBox">
+    <main>
+        <div class="blog-content-box">
+	<div class="article-title-box">
+			<span class="article-type type-2 float-left">转</span>		<h1 class="title-article">ffmpeg循环推流方法</h1>
+	</div>
+	<div class="article-info-box">
+		<div class="article-bar-top d-flex">
+												<span class="time">2017年03月20日 16:30:01</span>
+			<div class="float-right">
+				<span class="read-count">阅读数：6108</span>
+											</div>
+		</div>
+	</div>
+	<article>
+		<div id="article_content" class="article_content clearfix csdn-tracking-statistics" data-pid="blog" data-mod="popu_307" data-dsm="post">
+                    
+            <div class="htmledit_views">
+                
+<p><span style="color: rgb(36, 39, 41); font-family: Arial,&quot;Helvetica Neue&quot;,Helvetica,sans-serif; font-size: 15px;">You should be able to use the&nbsp;</span><code style="margin: 0px; padding: 1px 5px; border: 0px none; font-size: 13px; font-family: Consolas,Menlo,Monaco,&quot;Lucida Console&quot;,&quot;Liberation Mono&quot;,&quot;DejaVu Sans Mono&quot;,&quot;Bitstream Vera Sans Mono&quot;,&quot;Courier New&quot;,monospace,sans-serif; background-color: rgb(239, 240, 241); white-space: pre-wrap; color: rgb(36, 39, 41);">-stream_loop
+ -1</code><span style="color: rgb(36, 39, 41); font-family: Arial,&quot;Helvetica Neue&quot;,Helvetica,sans-serif; font-size: 15px;">&nbsp;flag&nbsp;</span><span style="margin: 0px; padding: 0px; border: 0px none; font-size: 15px; color: rgb(36, 39, 41); font-family: Arial,&quot;Helvetica Neue&quot;,Helvetica,sans-serif;">before</span><span style="color: rgb(36, 39, 41); font-family: Arial,&quot;Helvetica Neue&quot;,Helvetica,sans-serif; font-size: 15px;">&nbsp;the
+ input (</span><code style="margin: 0px; padding: 1px 5px; border: 0px none; font-size: 13px; font-family: Consolas,Menlo,Monaco,&quot;Lucida Console&quot;,&quot;Liberation Mono&quot;,&quot;DejaVu Sans Mono&quot;,&quot;Bitstream Vera Sans Mono&quot;,&quot;Courier New&quot;,monospace,sans-serif; background-color: rgb(239, 240, 241); white-space: pre-wrap; color: rgb(36, 39, 41);">-i</code><span style="color: rgb(36, 39, 41); font-family: Arial,&quot;Helvetica Neue&quot;,Helvetica,sans-serif; font-size: 15px;">):</span></p>
+<p><span style="color: rgb(36, 39, 41); font-family: Arial,&quot;Helvetica Neue&quot;,Helvetica,sans-serif; font-size: 15px;"></span></p>
+<pre style="margin-top: 0px; margin-bottom: 1em; padding: 5px; border: 0px none; font-size: 13px; overflow: auto; font-family: Consolas,Menlo,Monaco,&quot;Lucida Console&quot;,&quot;Liberation Mono&quot;,&quot;DejaVu Sans Mono&quot;,&quot;Bitstream Vera Sans Mono&quot;,&quot;Courier New&quot;,monospace,sans-serif; background-color: rgb(239, 240, 241); color: rgb(36, 39, 41);"><code style="margin: 0px; padding: 0px; border: 0px none; font-family: Consolas,Menlo,Monaco,&quot;Lucida Console&quot;,&quot;Liberation Mono&quot;,&quot;DejaVu Sans Mono&quot;,&quot;Bitstream Vera Sans Mono&quot;,&quot;Courier New&quot;,monospace,sans-serif; white-space: inherit;">ffmpeg -threads 2 -re -fflags +genpts -stream_loop -1 -i ./test.mp4 -c copy ./test.m3u8
+</code></pre>
+<p></p>
+<p style="margin-top: 0px; margin-bottom: 1em; padding-top: 0px; padding-bottom: 0px; border: 0px none; font-size: 15px; clear: both; color: rgb(36, 39, 41); font-family: Arial,&quot;Helvetica Neue&quot;,Helvetica,sans-serif;">
+The&nbsp;<code style="margin: 0px; padding: 1px 5px; border: 0px none; font-size: 13px; font-family: Consolas,Menlo,Monaco,&quot;Lucida Console&quot;,&quot;Liberation Mono&quot;,&quot;DejaVu Sans Mono&quot;,&quot;Bitstream Vera Sans Mono&quot;,&quot;Courier New&quot;,monospace,sans-serif; background-color: rgb(239, 240, 241); white-space: pre-wrap;">-fflags
+ +genpts</code>&nbsp;will regenerate the pts timestamps so it loops smoothly, otherwise the time sequence will be incorrect as it loops.</p>
+<p style="margin-top: 0px; margin-bottom: 1em; padding-top: 0px; padding-bottom: 0px; border: 0px none; font-size: 15px; clear: both; color: rgb(36, 39, 41); font-family: Arial,&quot;Helvetica Neue&quot;,Helvetica,sans-serif;">
+<span style="color: rgb(36, 39, 41); font-family: Arial,&quot;Helvetica Neue&quot;,Helvetica,sans-serif; font-size: 15px;">FFmpeg &gt;= 2.8.4 is required in this case.</span><br></p>
+<br><p><span style="color: rgb(36, 39, 41); font-family: Arial,&quot;Helvetica Neue&quot;,Helvetica,sans-serif; font-size: 15px;">参考</span></p>
+<p><span style="color: rgb(36, 39, 41); font-family: Arial,&quot;Helvetica Neue&quot;,Helvetica,sans-serif; font-size: 15px;">https://www.v2ex.com/t/264280<br></span></p>
+<p><span style="color: rgb(36, 39, 41); font-family: Arial,&quot;Helvetica Neue&quot;,Helvetica,sans-serif; font-size: 15px;">http://video.stackexchange.com/questions/12905/repeat-loop-input-video-with-ffmpeg<br></span></p>
+<p><span style="color: rgb(36, 39, 41); font-family: Arial,&quot;Helvetica Neue&quot;,Helvetica,sans-serif; font-size: 15px;">http://stackoverflow.com/questions/30846719/infinite-stream-from-a-video-file-in-a-loop<br></span></p>
+            </div>
+                </div>
+				<div class="hide-article-box text-center csdn-tracking-statistics tracking-click" data-mod="popu_376">
+			<a class="btn btn-red-hollow" id="btn-readmore">阅读更多</a>
+		</div>
+        	</article>
+	
+		<div class="article-bar-bottom">
+								<div class="tags-box">
+			<span class="label">个人分类：</span>
+						<a class="tag-link" href="https://blog.csdn.net/weiyuefei/article/category/6271603" target="_top">ffmpeg						</a>
+		</div>
+					</div>
+	
+	<!-- !empty($pre_next_article[0]) -->
+		</div>
+
+
+
+
+        <div class="edu-promotion"></div>
+        <a id="commentBox"></a>
+<div class="comment-box">
+	  	<div class="unlogin-box text-center">
+		想对作者说点什么？
+		<!-- $curl 当前地址 -->
+		<a href="https://passport.csdn.net/account/login?from=https://blog.csdn.net/weiyuefei/article/details/64125208#commentBox" class="btn btn-sm btn-red">我来说一句</a>
+	</div>
+			<div class="comment-list-container">
+		<a id="comments"></a>
+		<div class="comment-list-box">
+		</div>
+		<div id="commentPage" class="pagination-box d-none"></div>
+		<div class="opt-box text-center">
+			<button class="btn btn-sm btn-link-blue" id="btnMoreComment"></button>
+		</div>
+	</div>
+</div>        <div class="recommend-box">
+            		<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_614" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/cai6811376/article/details/74783269" target="_top" strategy="BlogCommendFromBaidu_1">
+				使用<em>ffmpeg</em><em>循环</em>推流(<em>循环</em>读取视频文件)推送EasyDSS RTMP流媒体服务器的<em>方法</em>			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/cai6811376/article/details/74783269" target="_top">
+				需求在做EasyDSS开发时，总是在测试推流效果。当然，可以使用libEasyRTMP进行推流测试。有时候，我们想使用OBS进行推流测试，也可以，这很好。以及其他RTMP推流工具。但是，别忘了，还有f...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/cai6811376" title="cai6811376" target="_blank">
+					<img src="3_cai6811376.jpg" alt="cai6811376" class="avatar-pic">
+					<span class="name">cai6811376</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2017-07-08 00:36:51</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：7467</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_614" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/iloveyin/article/details/26002771" target="_top" strategy="BlogCommendFromBaidu_0">
+				<em>ffmpeg</em>参数详解			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/iloveyin/article/details/26002771" target="_top">
+				a)
+ 通用选项
+
+
+
+
+-L license
+-h 帮助
+-fromats 显示可用的格式，编解码的，协议的...
+-f fmt 强迫采用格式fmt
+-I filename 输入文件
+-y 覆盖输出...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/iloveyin" title="iloveyin" target="_blank">
+					<img src="3_iloveyin.jpg" alt="iloveyin" class="avatar-pic">
+					<span class="name">iloveyin</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2014-05-16 18:37:04</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：2567</span>
+			</p>
+		</div>
+	</div>
+								<div class="recommend-item-box recommend-ad-box" id="ad1"></div>
+				
+
+			
+				<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_614" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/Nil88/article/details/54695951" target="_top" strategy="BlogCommendFromBaidu_2">
+				<em>FFmpeg</em>的视频添加GIF，Gif要<em>循环</em>播放的命令			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/Nil88/article/details/54695951" target="_top">
+				<em>ffmpeg</em> -y -i test1.mp4 -ignore_loop 0 -i tes2.gif&nbsp; -filter_complex overlay=x=0:0:shortest=1 test_out...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/Nil88" title="Nil88" target="_blank">
+					<img src="3_nil88.jpg" alt="Nil88" class="avatar-pic">
+					<span class="name">Nil88</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2017-01-23 21:36:03</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：1648</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_614" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/u013010310/article/details/52371440" target="_top" strategy="BlogCommendFromBaidu_3">
+				<em>FFMPEG</em>推流到RTMP服务器命令			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/u013010310/article/details/52371440" target="_top">
+				1、将文件当作源推送到RTMP服务器<em>ffmpeg</em> -re -i localFile.mp4 -c copy -f flv rtmp://server/live/streamName 参数解释-r 以本...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/u013010310" title="u013010310" target="_blank">
+					<img src="3_u013010310.jpg" alt="u013010310" class="avatar-pic">
+					<span class="name">u013010310</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2016-08-30 17:35:28</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：4049</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_614" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/zqf_office/article/details/56309412" target="_top" strategy="BlogCommendFromBaidu_4">
+				<em>FFmpeg</em>常用推流命令			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/zqf_office/article/details/56309412" target="_top">
+				一、<em>FFmpeg</em>推RTMP流准备工作
+
+首先确保自已已经安装了nginx + rtmp服务器。
+打开配置文件nginx.conf
+完成如下配置
+
+
+
+nginx配置.1
+
+
+
+...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/zqf_office" title="zqf_office" target="_blank">
+					<img src="3_zqf_office.jpg" alt="zqf_office" class="avatar-pic">
+					<span class="name">zqf_office</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2017-02-21 21:40:28</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：1446</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_614" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/wangmanjie/article/details/77850154" target="_top" strategy="BlogCommendFromBaidu_5">
+				<em>ffmpeg</em> 使用笔记(一)			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/wangmanjie/article/details/77850154" target="_top">
+				推流
+<em>ffmpeg</em> -re -i a.mp4 -c copy -f flv rtmp://192.168.2.169/live?vhost=play/11-re 按照时间戳顺序推流 不加的话直接把所有...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/wangmanjie" title="wangmanjie" target="_blank">
+					<img src="3_wangmanjie.jpg" alt="wangmanjie" class="avatar-pic">
+					<span class="name">wangmanjie</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2017-09-05 12:47:42</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：396</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box recommend-ad-box" id="a_d_feed_0"></div>
+			
+			<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_614" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/achang21/article/details/77870066" target="_top" strategy="BlogCommendFromBaidu_6">
+				使用<em>ffmpeg</em><em>循环</em>推流(<em>循环</em>读取视频文件)<em>方法</em>以及局限			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/achang21/article/details/77870066" target="_top">
+				使用<em>ffmpeg</em><em>循环</em>推流(<em>循环</em>读取视频文件)<em>方法</em>
+命令如下：
+<em>ffmpeg</em> -re -stream_loop -1 -i 2minTransformers6281_trailer1080p.flv...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/achang21" title="achang21" target="_blank">
+					<img src="3_achang21.jpg" alt="achang21" class="avatar-pic">
+					<span class="name">achang21</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2017-09-06 19:10:19</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：1392</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_614" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/qq_36562933/article/details/78987582" target="_top" strategy="BlogCommendFromBaidu_7">
+				<em>ffmpeg</em>学习笔记1-----&gt;udp流多路节目实现分离			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/qq_36562933/article/details/78987582" target="_top">
+				环境:centos/ubuntu 安装好<em>ffmpeg</em>即可
+安装教程：https://trac.<em>ffmpeg</em>.org/wiki/CompilationGuide
+准备需要一个udp组播流（含有多路节...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/qq_36562933" title="qq_36562933" target="_blank">
+					<img src="3_qq_36562933.jpg" alt="qq_36562933" class="avatar-pic">
+					<span class="name">qq_36562933</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2018-01-06 11:36:06</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：294</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_614" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/happydeer/article/details/52735694" target="_top" strategy="BlogCommendFromBaidu_8">
+				使用<em>FFmpeg</em>转录网络直播流			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/happydeer/article/details/52735694" target="_top">
+				使用<em>FFmpeg</em>抓取网络视频流，保存为本地文件			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/happydeer" title="happydeer" target="_blank">
+					<img src="3_happydeer.jpg" alt="happydeer" class="avatar-pic">
+					<span class="name">happydeer</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2016-10-04 22:12:12</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：11554</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_614" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/xiejiashu/article/details/74783875" target="_top" strategy="BlogCommendFromBaidu_9">
+				<em>ffmpeg</em>+EasyDSS流媒体服务器实现稳定的rtmp推流直播			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/xiejiashu/article/details/74783875" target="_top">
+				本文转自EasyDarwin团队成员Alex的博客：http://blog.csdn.net/cai6811376/article/details/74783269需求在做EasyDSS开发时，总是在...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/xiejiashu" title="xiejiashu" target="_blank">
+					<img src="3_xiejiashu.jpg" alt="xiejiashu" class="avatar-pic">
+					<span class="name">xiejiashu</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2017-07-08 09:43:57</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：13620</span>
+			</p>
+		</div>
+	</div>
+			            <div class="recommend-loading-box">
+                <img src="feedloading.gif">
+            </div>
+            <div class="recommend-end-box">
+                <p class="text-center">没有更多推荐了，<a href="https://blog.csdn.net/" class="c-blue c-blue-hover c-blue-focus">返回首页</a></p>
+            </div>
+        </div>
+    </main>
+    <aside>
+		    <div id="asideProfile" class="aside-box">
+    <h3 class="aside-title">个人资料</h3>
+    <div class="profile-intro d-flex">
+        <div class="avatar-box d-flex justify-content-center flex-column">
+            <a href="https://blog.csdn.net/weiyuefei">
+                <img src="3_weiyuefei.jpg" class="avatar_pic">
+            </a>
+        </div>
+        <div class="user-info d-flex justify-content-center flex-column">
+            <p class="name csdn-tracking-statistics tracking-click" data-mod="popu_379">
+                <a href="https://blog.csdn.net/weiyuefei" target="_top" class="text-truncate" id="uid">weiyuefei</a>
+            </p>
+                    </div>
+                <div class="opt-box d-flex justify-content-center flex-column">
+            <span class="csdn-tracking-statistics tracking-click" data-mod="popu_379">
+                                <a class="btn btn-sm btn-red-hollow" href="https://passport.csdn.net/account/login?from=https://blog.csdn.net/weiyuefei/article/details/64125208" target="_self">关注</a>
+                            </span>
+                    </div>
+            </div>
+    <div class="data-info d-flex item-tiling">
+                <dl class="text-center" title="141">
+                        <dt><a href="https://blog.csdn.net/weiyuefei?t=1">原创</a></dt>
+            <dd><a href="https://blog.csdn.net/weiyuefei?t=1"><span class="count">141</span></a></dd>
+                    </dl>
+        <dl class="text-center" title="250">
+            <dt>粉丝</dt>
+            <dd><span class="count" id="fan">250</span></dd>
+        </dl>
+        <dl class="text-center" title="112">
+            <dt>喜欢</dt>
+            <dd><span class="count">112</span></dd>
+        </dl>
+        <dl class="text-center" title="50">
+            <dt>评论</dt>
+            <dd><span class="count">50</span></dd>
+        </dl>
+    </div>
+    <div class="grade-box clearfix">
+        <dl>
+            <dt>等级：</dt>
+            <dd>
+                <a href="https://blog.csdn.net/home/help.html#level" title="7级,点击查看等级说明" target="_top">
+                    <svg class="icon icon-level" aria-hidden="true">
+                        <use xlink:href="#csdnc-bloglevel-7"></use>
+                    </svg>
+                </a>
+            </dd>
+        </dl>
+        <dl>
+            <dt>访问：</dt>
+            <dd title="1117253">
+                111万+            </dd>
+        </dl>
+        <dl>
+            <dt>积分：</dt>
+            <dd title="12991">
+                1万+            </dd>
+        </dl>
+        <dl title="1374">
+            <dt>排名：</dt>
+            <dd>1374</dd>
+        </dl>
+    </div>
+        <div class="badge-box d-flex">
+        <span>勋章：</span>
+                        <a class="icon-badge" title="持之以恒">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#csdnc-m-lasting"></use>
+            </svg>
+            <div class="icon-arrow"></div>
+            <div class="grade-detail-box item2">
+                <div class="pos-box">
+                    <div class="left-box d-flex justify-content-center align-items-center flex-column">
+                        <svg class="icon" aria-hidden="true">
+                            <use xlink:href="#csdnc-m-lasting"></use>
+                        </svg>
+                        <p>持之以恒</p>
+                    </div>
+                    <div class="right-box d-flex justify-content-center align-items-center">
+                        授予每个自然月内发布4篇或4篇以上原创或翻译IT博文的用户。不积跬步无以至千里，不积小流无以成江海，程序人生的精彩需要坚持不懈地积累！
+                    </div>
+                </div>
+            </div>
+        </a>
+                            </div>
+    </div>		    <div class="csdn-tracking-statistics mb8 box-shadow" data-pid="blog" data-mod="popu_4" style="height: 250px;">
+    <div class="aside-content text-center" id="cpro_u2734133">
+        <!-- 投放代码 -->
+        <div style="width: 100%;"><div id="ugarhpbzxf" style="visibility: visible;"><div id="bqgnjj" style="zoom:1;"><iframe scrolling="no" src="index_2.html" width="300" height="250" frameborder="0"></iframe><div style="display: none;"></div></div></div></div>
+    </div>
+</div>
+		    <!--自定义模块-->
+<div id="asideCustom42582412" class="aside-box custom-box">
+    <h3 class="aside-title">友情链接</h3>
+    <div class="aside-content clearfix">
+        
+<a href="http://blog.csdn.net/coloriy">专注流媒体技术与方案</a><br>
+<a href="http://nginx.org/">Nginx官网</a><br>
+<a href="http://www.ideawu.net/blog/">高性能分布式 Web 和网络应用开发, 架构设计</a><br>
+<a href="https://github.com/arut/nginx-rtmp-module/wiki/Directives">nginx-rtmp-module</a><br>
+<a href="http://dunkels.com/adam/pt/api.html">Protothreads</a><br>
+<a href="http://blog.csdn.net/haima1998/article/details/10455481">haima1998的专栏</a><br>
+<a href="http://lib.csdn.net/liveplay/node/701">直播技术知识库</a><br>
+<a href="http://blog.csdn.net/leixiaohua1020">雷霄骅(leixiaohua1020)的专栏</a><br>
+<a href="http://blog.csdn.net/simongyley">simon的天空</a><br>
+<a href="http://blog.csdn.net/zhuweigangzwg/article/details/25815851">朱韦刚(zhuweigangzwg)的技术博客</a><br>
+<a href="http://coolshell.cn/featured">左耳朵耗子的酷壳</a><br>
+<a href="http://vimer.me/">More Than Vimer</a><br>
+<a href="http://www.raychase.net/">四火的唠叨</a><br>
+<a href="https://www.cppfans.org/">C++爱好者博客</a><br>
+<a href="http://www.coderli.com/">OneCoder</a><br>
+<a href="https://github.com/CDN-Union">CDN-Union</a><br>
+<a href="https://github.com/ossrs/srs/releases">SRS</a><br>
+<a href="http://ssldump.sourceforge.net/">ssldump</a><br>
+<a href="http://ffmpeg.org/documentation.html">FFmpeg</a><br>
+<a href="https://openresty.org/cn/">openresty</a><br>
+<a href="https://github.com/openresty/lua-nginx-module/">lua-nginx-module</a><br>
+<a href="https://github.com/nodejs/node">nodejs</a><br>
+<a href="http://blog.studygolang.com/category/package/">Go语言中文网博客</a><br>
+<a href="https://www.golangtc.com/">Golang中国</a><br>
+<a href="http://nsq.io/">开源消息系统 NSQ</a><br>
+<a href="https://www.mercurial-scm.org/guide">Mercurial Guide</a><br>
+<a href="https://github.com/http2/http2-spec">http2-spec</a><br>
+<a href="http://www.rpmfind.net/linux/rpm2html/search.php">rpm-search</a><br>
+<a href="http://www.gluster.org/">gluster</a><br>
+<a href="http://lustre.org/download/">Lustre</a><br>
+<a href="https://github.com/ceph">ceph</a><br>
+<a href="https://moosefs.com/">moosefs</a>
+    </div>
+</div>
+		    <div id="asideNewArticle" class="aside-box">
+    <h3 class="aside-title">最新文章</h3>
+    <div class="aside-content">
+        <ul class="inf_list clearfix csdn-tracking-statistics tracking-click" data-mod="popu_382">
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/weiyuefei/article/details/80395316" target="_top">十分钟学会 Haskell</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/weiyuefei/article/details/80391268" target="_top">Rust语言介绍【维基百科】</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/weiyuefei/article/details/79925216" target="_top">Linux内核参数配置</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/weiyuefei/article/details/79925157" target="_top">构建高并发高可用的电商平台架构实践</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/weiyuefei/article/details/79925112" target="_top">mysql的事务性，锁和隔离性</a>
+            </li>
+                    </ul>
+    </div>
+</div>
+		    		    <div id="asideCategory" class="aside-box flexible-box">
+    <h3 class="aside-title">个人分类</h3>
+    <div class="aside-content">
+        <ul>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/1555345">
+                    Nginx                    <span class="count float-right">41篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/2393795">
+                    Lua                    <span class="count float-right">35篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/1555347">
+                    gdb/gcc/makefile                    <span class="count float-right">30篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/1555351">
+                    C/C++                    <span class="count float-right">86篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/2362159">
+                    interview                    <span class="count float-right">72篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/1799911">
+                    linux/unix                    <span class="count float-right">120篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/2333725">
+                    python                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/2430421">
+                    ngx_lua                    <span class="count float-right">12篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/2745797">
+                    leetcode                    <span class="count float-right">22篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/2510541">
+                    shell                    <span class="count float-right">25篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/2516967">
+                    select/poll/epoll                    <span class="count float-right">21篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/2908451">
+                    Algorithms                    <span class="count float-right">26篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/5841973">
+                    HLS                    <span class="count float-right">11篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6062640">
+                    ZMQ                    <span class="count float-right">15篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/5966881">
+                    Golang                    <span class="count float-right">58篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6046878">
+                    linux                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6054589">
+                    STL                    <span class="count float-right">16篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6067578">
+                    leveldb                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/2821641">
+                    网络编程                    <span class="count float-right">27篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/2908449">
+                    数据结构                    <span class="count float-right">8篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6046879">
+                    linux多线程                    <span class="count float-right">17篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6063267">
+                    负载均衡技术                    <span class="count float-right">12篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6063266">
+                    数据加密技术                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6067515">
+                    分布式存储                    <span class="count float-right">18篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6069617">
+                    libev                    <span class="count float-right">10篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6069626">
+                    TCP/IP协议                    <span class="count float-right">27篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6089126">
+                    GStreamer                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6152281">
+                    LVS+keepalived                    <span class="count float-right">14篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6179965">
+                    tcpcopy                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6181219">
+                    NAT                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6183860">
+                    架构设计                    <span class="count float-right">10篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6184184">
+                    MySQL                    <span class="count float-right">10篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6189936">
+                    HTTP协议                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6229929">
+                    Git                    <span class="count float-right">9篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6231456">
+                    libcurl                    <span class="count float-right">11篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6243555">
+                    Apache                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6271603">
+                    ffmpeg                    <span class="count float-right">46篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6274893">
+                    ftp                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6307396">
+                    linux性能调优                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6333732">
+                    加密算法                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6342950">
+                    操作系统                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6347733">
+                    nginx-rtmp-module                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6350068">
+                    内存管理                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6350428">
+                    集群                    <span class="count float-right">11篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6350557">
+                    共享存储                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6356077">
+                    LVS集群                    <span class="count float-right">12篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6356078">
+                    OSPF                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6366015">
+                    序列化协议                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6370286">
+                    JSON                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6371700">
+                    VRRP                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6371849">
+                    P2P                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6371850">
+                    BT                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6381813">
+                    消息队列                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6381814">
+                    SquirrelMQ                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6382999">
+                    MooseFS                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6384157">
+                    存储技术                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6384158">
+                    RAID                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6384569">
+                    文件系统格式                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6386592">
+                    智力题                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6394501">
+                    分布式                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6394502">
+                    数据同步                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6408936">
+                    CDN                    <span class="count float-right">8篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6426035">
+                    hash算法                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6450969">
+                    SSDB                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6456435">
+                    Docker                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6460102">
+                    SRS                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6460144">
+                    流媒体前沿动态                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6460877">
+                    State Threads                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6461320">
+                    流媒体技术                    <span class="count float-right">21篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6488920">
+                    vi/vim                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6495682">
+                    音视频编解码技术                    <span class="count float-right">27篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6515168">
+                    OpenResty                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6521850">
+                    SPDY协议                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6533647">
+                    编程语言                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6550193">
+                    SQLite                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6576132">
+                    大数据                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6601348">
+                    HTTP/2                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6679694">
+                    DASH                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6705466">
+                    数据加密技术;技术前沿                    <span class="count float-right">9篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6844842">
+                    版本控制                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6861546">
+                    FLV                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6861548">
+                    TS                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6873698">
+                    HLS+                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6877458">
+                    MP4                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6877459">
+                    H264                    <span class="count float-right">21篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6877460">
+                    AAC                    <span class="count float-right">15篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6877601">
+                    DRM                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6877968">
+                    jsoncpp                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6924795">
+                    Linux系统编程；信号处理                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6927814">
+                    技术前沿                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6927815">
+                    openssl                    <span class="count float-right">16篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6927816">
+                    AES                    <span class="count float-right">10篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6927832">
+                    MD5                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6927833">
+                    RSA                    <span class="count float-right">7篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6927947">
+                    SSL                    <span class="count float-right">11篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6927948">
+                    HTTPS                    <span class="count float-right">11篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6927970">
+                    Libgcrypt                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6998257">
+                    UDP                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6998258">
+                    组播                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/6998962">
+                    RTMP                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/7000148">
+                    readline                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/7012747">
+                    work                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/7019249">
+                    数字签名/数字证书                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/7019544">
+                    DNS                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/7019634">
+                    REST API                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/7025007">
+                    ssldump                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/7041263">
+                    tcpdump                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/7059918">
+                    Node.js                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/7087979">
+                    rsync                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/7110616">
+                    代码托管                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/7110617">
+                    hg                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/7173069">
+                    MP3                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/7231533">
+                    libpcap                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/7231539">
+                    FUSE                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/7228627">
+                    LizardFS                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/7238551">
+                    NFS                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/7220219">
+                    MooseFS                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/7243330">
+                    GlusterFS                    <span class="count float-right">9篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/7246071">
+                    CephFS                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/7292410">
+                    YAML                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/7292411">
+                    配置文件                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/7340259">
+                    数据库（MySQL/PostgreSQL）                    <span class="count float-right">12篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/7679246">
+                    Rust                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/category/7680049">
+                    haskell                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                    </ul>
+    </div>
+        <p class="text-center">
+        <a class="btn btn-link-blue flexible-btn" data-fbox="aside-archive">展开</a>
+    </p>
+    </div>
+		    <div id="asideArchive" class="aside-box flexible-box">
+    <h3 class="aside-title">归档</h3>
+    <div class="aside-content">
+        <ul class="archive-list">
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2018/05">
+                    2018年5月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2018/04">
+                    2018年4月                    <span class="count float-right">14篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2018/03">
+                    2018年3月                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2018/02">
+                    2018年2月                    <span class="count float-right">6篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2018/01">
+                    2018年1月                    <span class="count float-right">31篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2017/12">
+                    2017年12月                    <span class="count float-right">36篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2017/11">
+                    2017年11月                    <span class="count float-right">26篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2017/10">
+                    2017年10月                    <span class="count float-right">17篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2017/09">
+                    2017年9月                    <span class="count float-right">45篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2017/08">
+                    2017年8月                    <span class="count float-right">24篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2017/07">
+                    2017年7月                    <span class="count float-right">27篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2017/06">
+                    2017年6月                    <span class="count float-right">21篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2017/05">
+                    2017年5月                    <span class="count float-right">46篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2017/04">
+                    2017年4月                    <span class="count float-right">57篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2017/03">
+                    2017年3月                    <span class="count float-right">24篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2017/02">
+                    2017年2月                    <span class="count float-right">11篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2017/01">
+                    2017年1月                    <span class="count float-right">13篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2016/12">
+                    2016年12月                    <span class="count float-right">14篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2016/11">
+                    2016年11月                    <span class="count float-right">14篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2016/10">
+                    2016年10月                    <span class="count float-right">31篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2016/09">
+                    2016年9月                    <span class="count float-right">19篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2016/08">
+                    2016年8月                    <span class="count float-right">105篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2016/07">
+                    2016年7月                    <span class="count float-right">57篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2016/06">
+                    2016年6月                    <span class="count float-right">33篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2016/05">
+                    2016年5月                    <span class="count float-right">13篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2016/04">
+                    2016年4月                    <span class="count float-right">39篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2016/03">
+                    2016年3月                    <span class="count float-right">18篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2016/02">
+                    2016年2月                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2016/01">
+                    2016年1月                    <span class="count float-right">26篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2015/12">
+                    2015年12月                    <span class="count float-right">9篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2015/11">
+                    2015年11月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2015/10">
+                    2015年10月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2015/09">
+                    2015年9月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2015/08">
+                    2015年8月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2015/06">
+                    2015年6月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2015/05">
+                    2015年5月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2015/04">
+                    2015年4月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2015/03">
+                    2015年3月                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2015/02">
+                    2015年2月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2015/01">
+                    2015年1月                    <span class="count float-right">8篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2014/12">
+                    2014年12月                    <span class="count float-right">9篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2014/11">
+                    2014年11月                    <span class="count float-right">14篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2014/09">
+                    2014年9月                    <span class="count float-right">5篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2014/08">
+                    2014年8月                    <span class="count float-right">14篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2014/07">
+                    2014年7月                    <span class="count float-right">16篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2014/06">
+                    2014年6月                    <span class="count float-right">21篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2014/05">
+                    2014年5月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2014/03">
+                    2014年3月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2013/12">
+                    2013年12月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2013/11">
+                    2013年11月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2013/10">
+                    2013年10月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/weiyuefei/article/month/2013/08">
+                    2013年8月                    <span class="count float-right">2篇</span>
+                </a>
+            </li>
+                    </ul>
+    </div>
+        <p class="text-center">
+        <a class="btn btn-link-blue flexible-btn" data-fbox="aside-archive">展开</a>
+    </p>
+    </div>
+		    <div id="asideHotArticle" class="aside-box">
+	<h3 class="aside-title">热门文章</h3>
+	<div class="aside-content">
+		<ul class="hotArticle-list csdn-tracking-statistics tracking-click" data-mod="popu_521">
+							<li>
+					<a href="https://blog.csdn.net/weiyuefei/article/details/52351712">C/C++笔试题（很多）</a>
+					<p class="read">阅读量：<span>38520</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/weiyuefei/article/details/51678582">ffmpeg 常用命令汇总</a>
+					<p class="read">阅读量：<span>33199</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/weiyuefei/article/details/51285765">FTP连接报错530 Permission denied解决方法</a>
+					<p class="read">阅读量：<span>31772</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/weiyuefei/article/details/38487475">ngx_lua模块中的共享内存字典项API</a>
+					<p class="read">阅读量：<span>21904</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/weiyuefei/article/details/51564367">史上最详细的vsftpd配置文件讲解</a>
+					<p class="read">阅读量：<span>20804</span></p>
+				</li>
+					</ul>
+	</div>
+</div>
+		    <div id="asideNewComments" class="aside-box">
+    <h3 class="aside-title">最新评论</h3>
+    <div class="aside-content">
+        <ul class="newcomment-list">
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/weiyuefei/article/details/77963810#comments">Golang面试题解析</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/johnhjwsosd" class="user-name" target="_top">johnhjwsosd</a>：第3题答案不太对，runtime.GOMAXPROCS(1)时 执行结果应该是一定的，而不是无序的。                </p>
+            </li>
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/weiyuefei/article/details/51719735#comments">av_seek_frame中fla...</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/qiuqiu173" class="user-name" target="_top">qiuqiu173</a>：AVSEEK_FLAG_ANY是跳到指定的帧，不一定是关键帧，而AVSEEK_FLAG_FRAME...                </p>
+            </li>
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/weiyuefei/article/details/51939103#comments">再议libcurl编程</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/qq_34738261" class="user-name" target="_top">qq_34738261</a>：您好，我刚接触到curl这个库，有些问题想咨询下，句柄怎么重复使用啊？因为我需要不断的向服务器发送...                </p>
+            </li>
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/weiyuefei/article/details/52238684#comments">进程地址空间分布</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/qq_27613719" class="user-name" target="_top">qq_27613719</a>：堆（heap）栈（stack），博主写东西能不能用点心                </p>
+            </li>
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/weiyuefei/article/details/51491936#comments">linux下Apache服务器使用...</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/Noobmy" class="user-name" target="_top">Noobmy</a>：请问mod_dnssd.conf这个文件主要管理什么工作？？ 刚学到www的这个配置文件 看见这个...                </p>
+            </li>
+                    </ul>
+    </div>
+</div>
+		<div id="asideFooter">
+			
+		<div class="aside-box">
+						<div id="_du3n2u3etzd"><iframe scrolling="no" src="index_3.html" width="300" height="250" frameborder="0"></iframe></div>
+					</div>
+				<div class="aside-box">
+			<div class="persion_article">
+			</div>
+		</div>
+	</div>
+</aside>
+
+
+</div>
+<div class="mask-dark"></div>
+<div class="pulllog-box" style="display: block;">
+	<div class="pulllog clearfix">
+		<span class="text float-left">加入CSDN，享受更精准的内容推荐，与500万程序员共同成长！</span>
+		<div class="pulllog-btn float-right clearfix">
+            <button class="pulllog-login float-left csdn-tracking-statistics tracking-click" data-mod="popu_557">
+                登录
+            </button>
+            <div class="pulllog-sigin float-left csdn-tracking-statistics tracking-click" data-mod="popu_558">
+                <a href="https://passport.csdn.net/account/mobileregister" target="_top">注册</a>
+            </div>
+            <button class="btn-close">
+                <svg class="icon" aria-hidden="true">
+                    <use xlink:href="#csdnc-times"></use>
+                </svg>
+            </button>
+		</div>
+	</div>
+</div>
+<div id="loginWrap" style="display: none;"></div>
+<div class="tool-box">
+	<ul class="meau-list">
+		<li>
+			<button class="btn-like " title="点赞">
+				<svg class="icon active" aria-hidden="true">
+					<use xlink:href="#csdnc-thumbsup-ok"></use>
+				</svg><svg class="icon no-active" aria-hidden="true">
+					<use xlink:href="#csdnc-thumbsup"></use>
+				</svg>
+				<p>2</p>
+			</button>
+		</li>
+		<li class="toc-container-box" id="liTocBox">
+			<button class="btn-toc" title="目录">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-contents"></use>
+				</svg><br>目录
+			</button>
+			<div class="toc-container">
+				<div class="pos-box">
+					<div class="icon-arrow"></div>
+					<div class="scroll-box">
+						<div class="toc-box"></div>
+					</div>
+				</div>
+				<div class="opt-box">
+					<button class="btn-opt prev nomore" title="向上">
+						<svg class="icon" aria-hidden="true">
+							<use xlink:href="#csdnc-chevronup"></use>
+						</svg>
+					</button>
+					<button class="btn-opt next">
+						<svg class="icon" aria-hidden="true">
+							<use xlink:href="#csdnc-chevrondown"></use>
+						</svg>
+					</button>
+				</div>
+			</div>
+		</li>
+		<li>
+			<button class="btn-bookmark" title="收藏">
+				<svg class="icon active" aria-hidden="true">
+					<use xlink:href="#csdnc-bookmark-ok"></use>
+				</svg><svg class="icon no-active" aria-hidden="true">
+					<use xlink:href="#csdnc-bookmark"></use>
+				</svg><br>收藏
+			</button>
+		</li>
+		<li>
+			<a class="btn-comments" title="评论" href="#commentBox">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-comments"></use>
+				</svg><br>评论
+			</a>
+		</li>
+				<li class="bdsharebuttonbox">
+			<a class="btn-comments bds_weixin" data-cmd="weixin" title="微信分享">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-wechat"></use>
+				</svg><br>微信
+			</a>
+		</li>
+		<li class="bdsharebuttonbox">
+			<a class="btn-comments bds_tsina" data-cmd="tsina" title="微博分享">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-weibo"></use>
+				</svg><br>微博
+			</a>
+		</li>
+		<li class="bdsharebuttonbox">
+			<a class="btn-comments bds_qzone" data-cmd="qzone" title="QQ分享">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-qq"></use>
+				</svg><br>QQ
+			</a>
+		</li>
+	</ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="box-box-default">
+    <a class="btn-remove">
+        关闭
+    </a>
+    <div id="_infrx55jx6m"><div style="padding-left: 0px;"><iframe scrolling="no" src="index_4.html" width="160" height="600" frameborder="0"></iframe></div></div>
+</div>
+<div class="box-box-large">
+    <a class="btn-remove">
+        关闭
+    </a>
+    <div id="_n1cs3l6y9h"><ins style="display: none;"></ins><iframe scrolling="no" src="index_5.html" width="250" height="250" frameborder="0"></iframe></div>
+</div>
+</body>
+</html>

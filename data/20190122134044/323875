@@ -1,0 +1,911 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html  lang="zh-hans" dir="ltr" prefix="content: http://purl.org/rss/1.0/modules/content/  dc: http://purl.org/dc/terms/  foaf: http://xmlns.com/foaf/0.1/  og: http://ogp.me/ns#  rdfs: http://www.w3.org/2000/01/rdf-schema#  schema: http://schema.org/  sioc: http://rdfs.org/sioc/ns#  sioct: http://rdfs.org/sioc/types#  skos: http://www.w3.org/2004/02/skos/core#  xsd: http://www.w3.org/2001/XMLSchema# ">
+  <head>
+    <meta charset="utf-8" />
+<script>var _paq = _paq || [];(function(){var u=(("https:" == document.location.protocol) ? "https://matomo.e-learn.cn/" : "http://matomo.e-learn.cn/");_paq.push(["setSiteId", "1"]);_paq.push(["setTrackerUrl", u+"piwik.php"]);_paq.push(["setDoNotTrack", 1]);_paq.push(["trackPageView"]);_paq.push(["setIgnoreClasses", ["no-tracking","colorbox"]]);_paq.push(["enableLinkTracking"]);var d=document,g=d.createElement("script"),s=d.getElementsByTagName("script")[0];g.type="text/javascript";g.defer=true;g.async=true;g.src=u+"piwik.js";s.parentNode.insertBefore(g,s);})();</script>
+<meta name="title" content="How to create video thumbnails with Python and Gstreamer | 易学教程" />
+<link rel="canonical" href="https://www.e-learn.cn/content/wangluowenzhang/323875" />
+<meta name="dcterms.creator" content="Larry Li" />
+<meta name="description" content="问题：I&#039;d like to create thumbnails for MPEG-4 AVC videos using Gstreamer and Python. Essentially:  Open the video file Seek to a certain point in time (e.g. 5 seconds) Grab the frame at that time Save the ..." />
+<meta name="keywords" content="易学,易学教程,编程,编程教程,编程技术,drupal,laravel,html,css,drupal教程,php,php学习,How to create video thumbnails with Python and Gstreamer ,网络文章" />
+<meta name="referrer" content="no-referrer" />
+<meta name="Generator" content="Drupal 8 (https://www.drupal.org)" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="shortcut icon" href="/themes/bootstrap/favicon.ico" type="image/vnd.microsoft.icon" />
+<link rel="revision" href="/content/wangluowenzhang/323875" />
+
+    <title>How to create video thumbnails with Python and Gstreamer | 易学教程</title>
+    <meta name="google-site-verification" content="VseVHNshC4KAJmJjfMcoxJ5NZN82E7rc03DH9Jm9Cfc" />
+    <meta name="shenma-site-verification" content="f8560d5131e4043829a769a8f3fe9b4e_1521300712">
+    <meta name="msvalidate.01" content="B9AE4364B2B0316BF8397624F732C09E" />
+    <link rel="stylesheet" href="/sites/default/files/css/css_jmH5QeoSMri-uKijKkuo6-eMgK6pn1Ffw0d5JWxNbpI.css?plkdzf" media="all" />
+<link rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap/3.3.7/css/bootstrap.min.css" media="all" />
+<link rel="stylesheet" href="/sites/default/files/css/css_rVbvbaVNIvoDi1xKQys0wNb5Z8qH1Orpupn5FQ9HrvI.css?plkdzf" media="all" />
+
+        
+<!--[if lte IE 8]>
+<script src="/sites/default/files/js/js_VtafjXmRvoUgAzqzYTA3Wrjkx9wcWhjP0G4ZnnqRamA.js"></script>
+<![endif]-->
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-5408099190056760",
+        enable_page_level_ads: true
+      });
+    </script>
+    <script type="text/javascript" src="//js.users.51.la/19852583.js"></script>
+    <script src="//msite.baidu.com/sdk/c.js?appid=1585457991659294"></script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://ziyuan.baidu.com/contexts/cambrian.jsonld",
+        "@id": "https://www.e-learn.cn/content/wangluowenzhang/323875",
+        "appid": "1585457991659294",
+        "title": "How to create video thumbnails with Python and Gstreamer | 易学教程",
+        "images": [],
+        "description": "问题：I&#039;d like to create thumbnails for MPEG-4 AVC videos using Gstreamer and Python. Essentially:  Open the video file Seek to a certain point in time (e.g. 5 seconds) Grab the frame at that time Save the ...",
+        "pubDate": "2018-04-06T02:26:58",
+        "upDate": "2018-04-06T02:26:58"
+      }
+    </script>
+
+  </head>
+    <script charset="utf-8" id="ParadigmSDKv3" src="https://nbrecsys.4paradigm.com/sdk/js/ParadigmSDK_v3.js">
+</script>
+<script>
+    ParadigmSDKv3.init("91e78256742942d2ac5f619c1f7a3145");
+    ParadigmSDKv3.trackDetailPageShow(546);
+</script>
+  <body class="path-node page-node-type-jingpinwenzhang has-glyphicons">
+    <a href="#main-content" class="visually-hidden focusable skip-link">
+      跳转到主要内容
+    </a>
+    
+      <div class="dialog-off-canvas-main-canvas" data-off-canvas-main-canvas>
+              <header class="navbar navbar-default container" id="navbar" role="banner">
+            <div class="navbar-header">
+          <div class="region region-navigation">
+          <a class="logo navbar-btn pull-left" href="/" title="首页" rel="home">
+      <img src="/themes/bootstrap/logo.svg" alt="首页" />
+    </a>
+        <a class="name navbar-brand" href="/" title="首页" rel="home">易学教程</a>
+        <p class="navbar-text">天道酬勤 学无止境</p>
+  
+  </div>
+
+                          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+              </div>
+
+                    <div id="navbar-collapse" class="navbar-collapse collapse">
+            <div class="region region-navigation-collapsible">
+    <nav role="navigation" aria-labelledby="block-mainnavigation-menu" id="block-mainnavigation">
+            <h2 class="sr-only" id="block-mainnavigation-menu">Main navigation</h2>
+
+      
+              <ul class="menu nav navbar-nav">
+                            <li class="expanded dropdown">
+        <a href="/" class="dropdown-toggle" data-toggle="dropdown">所有教程 <span class="caret"></span></a>
+                                  <ul class="menu dropdown-menu">
+                            <li>
+        <a href="/java-technology" data-drupal-link-system-path="taxonomy/term/23">Java技术</a>
+                  </li>
+                        <li>
+        <a href="/script-lang" data-drupal-link-system-path="taxonomy/term/29">脚本语言</a>
+                  </li>
+                        <li>
+        <a href="/web" data-drupal-link-system-path="taxonomy/term/24">Web技术</a>
+                  </li>
+                        <li>
+        <a href="/database" data-drupal-link-system-path="taxonomy/term/27">数据库</a>
+                  </li>
+                        <li>
+        <a href="/hightlang" data-drupal-link-system-path="taxonomy/term/30">高级语言</a>
+                  </li>
+                        <li>
+        <a href="/misc" data-drupal-link-system-path="taxonomy/term/25">其他技术</a>
+                  </li>
+                        <li>
+        <a href="/all-course" data-drupal-link-system-path="taxonomy/term/72">查看所有教程</a>
+                  </li>
+        </ul>
+  
+            </li>
+                        <li class="expanded dropdown">
+        <a href="/script-lang" class="dropdown-toggle" data-toggle="dropdown">脚本语言 <span class="caret"></span></a>
+                                  <ul class="menu dropdown-menu">
+                            <li>
+        <a href="/php" data-drupal-link-system-path="node/5">PHP教程</a>
+                  </li>
+        </ul>
+  
+            </li>
+                        <li>
+        <a href="/content" data-drupal-link-system-path="content">码农之家</a>
+                  </li>
+                        <li>
+        <a href="/news" data-drupal-link-system-path="news">科技资讯</a>
+                  </li>
+                        <li>
+        <a href="http://tool.yiixue.com?from=www.e-learn.cn">易学工具箱</a>
+                  </li>
+                        <li>
+        <a href="https://www.manongdao.com?from=www.e-learn.cn" title="易学问答">易问</a>
+                  </li>
+        </ul>
+  
+
+
+  </nav>
+<nav role="navigation" aria-labelledby="block-useraccountmenu-menu" id="block-useraccountmenu">
+            <h2 class="sr-only" id="block-useraccountmenu-menu">User account menu</h2>
+
+      
+              <ul class="menu nav navbar-nav navbar-right">
+                            <li>
+        <a href="/user/login" data-drupal-link-system-path="user/login">登录</a>
+                  </li>
+        </ul>
+  
+
+
+  </nav>
+
+  </div>
+
+        </div>
+                </header>
+  
+  <div role="main" class="main-container container js-quickedit-main-content">
+    <div class="row">
+
+                              <div class="col-sm-12" role="heading">
+              <div class="region region-header">
+    <section id="block-bannervps" class="block block-block-content block-block-contenta0b17efc-82d2-4e6d-bd06-666a100c5419 clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><p><a rel="external nofollow" href="http://www.idcc.cn" target="_blank"><img src="https://ws3.sinaimg.cn/large/005BYqpggy1fyl2srfcn1j30vo02it96.jpg" style="width: 100%;max-height:90px" title="" alt="" border="0" vspace="0" /></a></p></div>
+      
+  </section>
+
+<section id="block-ggbanner" class="block block-block-content block-block-content87cf0f81-b41a-49ee-9b17-efc8ff080793 clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><p><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5408099190056760" data-ad-slot="3782713676" data-ad-format="auto" data-full-width-responsive="true"></ins></p><script>
+<!--//--><![CDATA[// ><!--
+
+<!--//--><![CDATA[// ><!--
+(adsbygoogle = window.adsbygoogle || []).push({});
+//--><!]]]]><![CDATA[>
+
+//--><!]]>
+</script></div>
+      
+  </section>
+
+<section id="block-wenzilianjie" class="block block-block-content block-block-content8d66823e-19a5-4fc1-bec4-3bea5b665975 clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><table align="center" class="character-links"><tbody><tr class="firstRow"><td width="158" valign="top" style="border-width: 1px;border-style: solid;text-align: center;"><a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=320182422" target="_blank" title="顶级域名注册10元起" rel="nofollow" textvalue="顶级域名注册10元起"><span style="font-size: 14px; color: rgb(0, 176, 240);">顶级域名注册10元起</span></a></td><td width="158" valign="top" style="border-width: 1px; border-style: solid;text-align:center"><a href="https://www.manongdao.com" target="_blank" title="码农岛" textvalue="码农岛" rel="external nofollow" style="color: rgb(255, 192, 0); text-decoration: underline;"><span style="color: rgb(255, 192, 0);">码农岛</span></a></td><td width="158" valign="top" style="border-width: 1px; border-style: solid; text-align: center; word-break: break-all;"><a href="http://www.kuajieji.com" target="_blank" title="老伟德" textvalue="老伟德" rel="external nofollow" style="text-decoration: underline; color: rgb(112, 48, 160);"><span style="color: rgb(112, 48, 160);">老伟德</span></a></td><td width="158" valign="top" style="border-width: 1px; border-style: solid;text-align:center"><a href="http://www.zihaitao.com" target="_blank" title="好待遇→招代理" rel="external nofollow" style="text-decoration: underline; font-size: 14px; color: rgb(0, 176, 80);"><span style="font-size: 14px; color: rgb(0, 176, 80);">好待遇→招代理</span></a></td><td width="158" valign="top" style="border-width: 1px; border-style: solid;text-align:center"><a href="https://jq.qq.com/?_wv=1027&amp;k=5xC9C01" target="_blank" title="联系上链" rel="nofollow" style="font-size: 14px; color: rgb(255, 0, 0); text-decoration: underline;"><span style="font-size: 14px; color: rgb(255, 0, 0);">文字链接</span></a></td><td width="158" valign="top" style="border-width: 1px; border-style: solid;text-align:center"><a href="https://jq.qq.com/?_wv=1027&amp;k=5xC9C01" target="_blank" title="联系上链" rel="nofollow" style="font-size: 14px; color: rgb(255, 0, 0); text-decoration: underline;"><span style="font-size: 14px; color: rgb(255, 0, 0);">文字链接</span></a></td><td width="158" valign="top" style="border-width: 1px; border-style: solid;text-align:center"><a href="https://jq.qq.com/?_wv=1027&amp;k=5xC9C01" target="_blank" title="联系上链" rel="nofollow" style="font-size: 14px; color: rgb(255, 0, 0); text-decoration: underline;"><span style="font-size: 14px; color: rgb(255, 0, 0);">文字链接</span></a></td></tr><tr style="display:none"><td width="158" valign="top" style="border-width: 1px; border-style: solid;text-align:center"><a href="https://jq.qq.com/?_wv=1027&amp;k=5xC9C01" target="_blank" title="联系上链" rel="nofollow" style="font-size: 14px; color: rgb(255, 0, 0); text-decoration: underline;"><span style="font-size: 14px; color: rgb(255, 0, 0);">文字链接</span></a></td><td width="158" valign="top" style="border-width: 1px; border-style: solid;text-align:center"><a href="https://jq.qq.com/?_wv=1027&amp;k=5xC9C01" target="_blank" title="联系上链" rel="nofollow" style="font-size: 14px; color: rgb(255, 0, 0); text-decoration: underline;"><span style="font-size: 14px; color: rgb(255, 0, 0);">文字链接</span></a></td><td width="158" valign="top" style="border-width: 1px; border-style: solid;text-align:center"><a href="https://jq.qq.com/?_wv=1027&amp;k=5xC9C01" target="_blank" title="联系上链" rel="nofollow" style="font-size: 14px; color: rgb(255, 0, 0); text-decoration: underline;"><span style="font-size: 14px; color: rgb(255, 0, 0);">文字链接</span></a></td><td width="158" valign="top" style="border-width: 1px; border-style: solid;text-align:center"><a href="https://jq.qq.com/?_wv=1027&amp;k=5xC9C01" target="_blank" title="联系上链" rel="nofollow" style="font-size: 14px; color: rgb(255, 0, 0); text-decoration: underline;"><span style="font-size: 14px; color: rgb(255, 0, 0);">文字链接</span></a></td><td width="158" valign="top" style="border-width: 1px; border-style: solid;text-align:center"><a href="https://jq.qq.com/?_wv=1027&amp;k=5xC9C01" target="_blank" title="联系上链" rel="nofollow" style="font-size: 14px; color: rgb(255, 0, 0); text-decoration: underline;"><span style="font-size: 14px; color: rgb(255, 0, 0);">文字链接</span></a></td><td width="158" valign="top" style="border-width: 1px; border-style: solid;text-align:center"><a href="https://jq.qq.com/?_wv=1027&amp;k=5xC9C01" target="_blank" title="联系上链" rel="nofollow" style="font-size: 14px; color: rgb(255, 0, 0); text-decoration: underline;"><span style="font-size: 14px; color: rgb(255, 0, 0);">文字链接</span></a></td><td width="158" valign="top" style="border-width: 1px; border-style: solid;text-align:center"><a href="https://jq.qq.com/?_wv=1027&amp;k=5xC9C01" target="_blank" title="联系上链" rel="nofollow" style="font-size: 14px; color: rgb(255, 0, 0); text-decoration: underline;"><span style="font-size: 14px; color: rgb(255, 0, 0);">文字链接</span></a></td></tr><tr style="display:none"><td width="158" valign="top" style="border-width: 1px; border-style: solid;text-align:center"><a href="https://jq.qq.com/?_wv=1027&amp;k=5xC9C01" target="_blank" title="联系上链" rel="nofollow"><span style="font-size: 14px;">文字链接</span></a></td><td width="158" valign="top" style="border-width: 1px; border-style: solid;text-align:center"><a href="https://jq.qq.com/?_wv=1027&amp;k=5xC9C01" target="_blank" title="联系上链" rel="nofollow"><span style="font-size: 14px;">文字链接</span></a></td><td width="158" valign="top" style="border-width: 1px; border-style: solid;text-align:center"><a href="https://jq.qq.com/?_wv=1027&amp;k=5xC9C01" target="_blank" title="联系上链" rel="nofollow"><span style="font-size: 14px;">文字链接</span></a></td><td width="158" valign="top" style="border-width: 1px; border-style: solid;text-align:center"><a href="https://jq.qq.com/?_wv=1027&amp;k=5xC9C01" target="_blank" title="联系上链" rel="nofollow"><span style="font-size: 14px;">文字链接</span></a></td><td width="158" valign="top" style="border-width: 1px; border-style: solid;text-align:center"><a href="https://jq.qq.com/?_wv=1027&amp;k=5xC9C01" target="_blank" title="联系上链" rel="nofollow"><span style="font-size: 14px;">文字链接</span></a></td><td width="158" valign="top" style="border-width: 1px; border-style: solid;text-align:center"><a href="https://jq.qq.com/?_wv=1027&amp;k=5xC9C01" target="_blank" title="联系上链" rel="nofollow"><span style="font-size: 14px;">文字链接</span></a></td><td width="158" valign="top" style="border-width: 1px; border-style: solid;text-align:center"><a href="https://jq.qq.com/?_wv=1027&amp;k=5xC9C01" target="_blank" title="联系上链" rel="nofollow"><span style="font-size: 14px;">文字链接</span></a></td></tr></tbody></table><p><br /></p></div>
+      
+  </section>
+
+    <ol class="breadcrumb">
+          <li >
+                  <a href="/content">码农之家</a>
+              </li>
+          <li  class="active">
+                  How to create video thumbnails with Python and Gstreamer
+              </li>
+      </ol>
+
+
+<section id="block-baiduurlpush" class="block block-block-content block-block-contente795675f-7395-4a8f-864e-180053c15737 clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><script>
+(function(){
+    var src = (document.location.protocol == "http:") ? "http://js.passport.qihucdn.com/11.0.1.js?031ce7a3aeda4820feb99e5f566e2b84":"https://jspassport.ssl.qhimg.com/11.0.1.js?031ce7a3aeda4820feb99e5f566e2b84";document.write('<script src="' + src + '" id="sozz"><\/script>');
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+</div>
+      
+  </section>
+
+
+  </div>
+
+          </div>
+              
+            
+                  <section class="col-sm-9">
+
+                
+                                      
+                  
+                          <a id="main-content"></a>
+            <div class="region region-content">
+        <h1 class="page-header"><span>How to create video thumbnails with Python and Gstreamer</span>
+</h1>
+
+<section id="block-ggttitexia" class="block block-block-content block-block-content28901a46-a5ac-46bd-9991-e494187fb44a clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><!-- e-learn title 下 --><p><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5408099190056760" data-ad-slot="9504893770" data-ad-format="auto" data-full-width-responsive="true"></ins></p><script>
+<!--//--><![CDATA[// ><!--
+
+<!--//--><![CDATA[// ><!--
+(adsbygoogle = window.adsbygoogle || []).push({});
+//--><!]]]]><![CDATA[>
+
+//--><!]]>
+</script></div>
+      
+  </section>
+
+  <article data-history-node-id="323875" role="article" about="/content/wangluowenzhang/323875" class="jingpinwenzhang full clearfix">
+
+  
+    
+
+      <footer>
+      <article typeof="schema:Person" about="/user/0">
+  </article>
+
+      <div class="author">
+	        由 <span><span lang="" typeof="schema:Person" property="schema:name" datatype="">匿名 (未验证)</span></span>
+ 提交于 2018-04-06 14:26:58        
+      </div>
+    </footer>
+  
+  <div class="content">
+    <ul class="links inline list-inline"><li class="comment-forbidden"><a href="/user/login?destination=/content/wangluowenzhang/323875%23comment-form">登录</a>或<a href="/user/register?destination=/content/wangluowenzhang/323875%23comment-form">注册</a>以发表评论</li><li class="statistics-counter">10 次浏览</li></ul>
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><div class="alert alert-success" role="alert">可以将文章内容翻译成中文,广告屏蔽插件可能会导致该功能失效(如失效，请关闭广告屏蔽插件后再试):<div id="google_translate_element"></div></div><h1>问题:</h1><div class="post-text" itemprop="text">
+
+<p>I'd like to create thumbnails for MPEG-4 AVC videos using Gstreamer and Python. Essentially:</p>
+
+<ol><li>Open the video file</li>
+<li>Seek to a certain point in time (e.g. 5 seconds)</li>
+<li>Grab the frame at that time</li>
+<li>Save the frame to disc as a .jpg file</li>
+</ol><p>I've been looking at <a href="https://stackoverflow.com/questions/12003663/gstreamer-how-to-extract-video-frame-from-the-flow" rel="nofollow">this other similar question</a>, but I cannot quite figure out how to do the seek and frame capture automatically without user input.</p>
+
+<p>So in summary, how can I capture a video thumbnail with Gstreamer and Python as per the steps above? </p>
+    </div><h1>回答1:</h1><div class="post-text" itemprop="text">
+<p>To elaborate on <a href="https://stackoverflow.com/users/598905/ensonic" rel="nofollow">ensonic</a>'s answer, here's an example:</p>
+
+<pre><code>import os
+import sys
+
+import gst
+
+def get_frame(path, offset=5, caps=gst.Caps('image/png')):
+    pipeline = gst.parse_launch('playbin2')
+    pipeline.props.uri = 'file://' + os.path.abspath(path)
+    pipeline.props.audio_sink = gst.element_factory_make('fakesink')
+    pipeline.props.video_sink = gst.element_factory_make('fakesink')
+    pipeline.set_state(gst.STATE_PAUSED)
+    # Wait for state change to finish.
+    pipeline.get_state()
+    assert pipeline.seek_simple(
+        gst.FORMAT_TIME, gst.SEEK_FLAG_FLUSH, offset * gst.SECOND)
+    # Wait for seek to finish.
+    pipeline.get_state()
+    buffer = pipeline.emit('convert-frame', caps)
+    pipeline.set_state(gst.STATE_NULL)
+    return buffer
+
+def main():
+    buf = get_frame(sys.argv[1])
+
+    with file('frame.png', 'w') as fh:
+        fh.write(str(buf))
+
+if __name__ == '__main__':
+    main()
+</code></pre>
+
+<p>This generates a PNG image. You can get raw image data using <code>gst.Caps("video/x-raw-rgb,bpp=24,depth=24")</code> or something like that.</p>
+
+<p>Note that in GStreamer 1.0 (as opposed to 0.10), <code>playbin2</code> has been renamed to <code>playbin</code> and the <code>convert-frame</code> signal is named <code>convert-sample</code>. </p>
+
+<p>The mechanics of seeking are explained in <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/manual/html/section-eventsseek.html" rel="nofollow">this chapter of the GStreamer Application Development Manual</a>. The 0.10 <code>playbin2</code> documentation no longer seems to be online, but the documentation for 1.0 is <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-plugins/html/gst-plugins-base-plugins-playbin.html" rel="nofollow">here</a>.</p>
+    </div><br /><br /><h1>回答2:</h1><div class="post-text" itemprop="text">
+<p>Use playbin2. set the uri to the media file, use gst_element_seek_simple to seek to the desired time position and then use g_signal_emit to invoke the "convert-frame" action signal.</p>
+    </div><br /><br /><h1>回答3:</h1><div class="post-text" itemprop="text">
+<p>An example in Vala, with GStreamer 1.0 :
+</p>
+
+<pre><code>var playbin = Gst.ElementFactory.make ("playbin", null);
+playbin.set ("uri", "file:///path/to/file");
+// some code here.
+var caps = Gst.Caps.from_string("image/png");
+Gst.Sample sample;
+Signal.emit_by_name(playbin, "convert-sample", caps, out sample);
+if(sample == null)
+    return;
+var sample_caps = sample.get_caps ();
+if(sample_caps == null)
+    return;
+unowned Gst.Structure structure = sample_caps.get_structure(0);
+int width = (int)structure.get_value ("width");
+int height = (int)structure.get_value ("height");
+var memory = sample.get_buffer().get_memory (0);
+Gst.MapInfo info;
+memory.map (out info, Gst.MapFlags.READ);
+uint8[] data = info.data;
+</code></pre>
+    </div><br /><br /><h1>回答4:</h1><div class="post-text" itemprop="text">
+<p>It's an old question but I still haven't found it documented anywhere.<br />
+I found that the following worked on a playing video with Gstreamer 1.0</p>
+
+<pre><code>import gi
+import time
+gi.require_version('Gst', '1.0')
+from gi.repository import Gst
+
+def get_frame():
+    caps = Gst.Caps('image/png')
+    pipeline = Gst.ElementFactory.make("playbin", "playbin")
+    pipeline.set_property('uri','file:///home/rolf/GWPE.mp4')
+    pipeline.set_state(Gst.State.PLAYING)
+    #Allow time for it to start
+    time.sleep(0.5)
+    # jump 30 seconds
+    seek_time = 30 * Gst.SECOND
+    pipeline.seek(1.0, Gst.Format.TIME,(Gst.SeekFlags.FLUSH | Gst.SeekFlags.ACCURATE),Gst.SeekType.SET, seek_time , Gst.SeekType.NONE, -1)
+
+    #Allow video to run to prove it's working, then take snapshot
+    time.sleep(1)
+    buffer = pipeline.emit('convert-sample', caps)
+    buff = buffer.get_buffer()
+    result, map = buff.map(Gst.MapFlags.READ)
+    if result:
+        data = map.data
+        pipeline.set_state(Gst.State.NULL)
+        return data
+    else:
+        return
+
+if __name__ == '__main__':
+    Gst.init(None)
+    image = get_frame()
+    with open('frame.png', 'wb') as snapshot:
+        snapshot.write(image)
+</code></pre>
+
+<p>The code should run with both Python2 and Python3, I hope it helps someone.</p>
+    </div><br /><br /><div class="zhuanzai"></div>
+<div>文章来源: <a href="https://stackoverflow.com/questions/15789652/how-to-create-video-thumbnails-with-python-and-gstreamer" target="_blank" rel="nofollow">How to create video thumbnails with Python and Gstreamer</a></div></div>
+      <div class="vote-widget vote-widget--like-and-dislike">
+      <div class="vote-like type-node" id="like-container-node-323875">
+      <a  title="Like" data-entity-id="323875" data-entity-type="node" class="disable-status">Like</a>
+      <span class="count">0</span>
+    </div>
+      <div class="vote-dislike type-node" id="dislike-container-node-323875">
+      <a  title="Dislike" data-entity-id="323875" data-entity-type="node" class="disable-status">Dislike</a>
+      <span class="count">0</span>
+    </div>
+  </div>
+
+  </div>
+
+</article>
+
+<section id="block-stackarticle" class="block block-block-content block-block-contentdbfd7eac-03fc-4e95-81b7-416168fd4a06 clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><link href="https://cdn.bootcss.com/prettify/r298/prettify.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/prettify/r298/prettify.min.js"></script>
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="/themes/bootstrap/js/jquery.jumpto.js"></script>
+<script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({pageLanguage: 'zh-CN', includedLanguages: 'en,ja,zh-CN,zh-TW', multilanguagePage: true}, 'google_translate_element');
+}
+</script>
+<script type="text/javascript" src="//translate.google.cn/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script>
+$( document ).ready(function() {
+	//$("pre").addClass("prettyprint;brush:html");
+	//prettyPrint();
+	//$( '.swipebox' ).swipebox();
+});
+
+jQuery(function(){
+$("body.page-node-type-kejizixun div.content img").wrap('<span class="load-html-img loaded"></span>')
+$("div.zhuanzai").html('转载请标明出处:<a href="'+window.location.href+'" target="_blank">'+$("h1.page-header span").html()+'</a>')
+var rootH = "";
+if($("div.field--name-body > h1").size()>0)rootH= "> h1";
+if($("div.field--name-body > h2").size()>0)rootH= "> h2";
+if($("div.field--name-body > h3").size()>0)rootH= "> h3";
+console.log("rootH="+rootH);
+if(rootH!=""){
+		 $("article div.field--name-body > h2,article div.field--name-body > h3,article div.field--name-body > h1").wrap("<div class=\"jumpto-block\"></div>");  
+$("article div.field--name-body").jumpto({
+  firstLevel: rootH, 
+  secondLevel: true, 
+  innerWrapper: ".jumpto-block", 
+  offset: 400, 
+  animate: 1000, 
+  navContainer: false, 
+  anchorTopPadding: 20, 
+  showTitle: "跳转到", 
+  closeButton: true 
+});
+
+}
+})</script></div>
+      
+  </section>
+
+<section id="block-changyandashang" class="block block-block-content block-block-content634f8878-01fc-43ce-bb0c-6eb4d974b4e2 clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><div id="cyReward" role="cylabs" data-use="reward" style="text-align:center;margin-top:20px;margin-bottom:20px;"></div>
+<div id="cyEmoji" role="cylabs" data-use="emoji"></div>
+<div id="cyQing" role="cylabs" data-use="qing"></div>
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:none"
+     data-ad-client="ca-pub-5408099190056760"
+     data-ad-slot="9435106707"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<a rel="external nofollow" href="http://www.ds399.com" target="_blank"><img src="https://ws3.sinaimg.cn/large/005BYqpgly1fyj92uej1zj30m802habi.jpg" style="width: 100%;max-height:90px" title="Layui" alt="Layui" border="0" vspace="0"></a>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<div id="SOHUCS" sid="323875" ></div>
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytJfccV7'; 
+var conf = 'prod_b4a56810599559fb2873081de7e2c4f1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-5408099190056760"
+     data-ad-slot="9435106707"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+      
+  </section>
+
+<section id="block-changyananzhuang" class="block block-block-content block-block-contentbfa85b66-bfef-4f46-a08e-e786ac3d9041 clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><script charset="utf-8" id="ParadigmSDKv3" src="https://nbrecsys.4paradigm.com/sdk/js/ParadigmSDK_v3.js"></script><div id="0abd4b99d633488bb121f4238540c554"></div><script>
+<!--//--><![CDATA[// ><!--
+
+<!--//--><![CDATA[// ><!--
+//#####直接复制即可，无需修改参数#####
+    ParadigmSDKv3.init("91e78256742942d2ac5f619c1f7a3145");//###SDK初始化
+    ParadigmSDKv3.renderArticle('0abd4b99d633488bb121f4238540c554',546,1044);
+//--><!]]]]><![CDATA[>
+
+//--><!]]>
+</script><script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><p><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5408099190056760" data-ad-slot="3650498804" data-ad-format="auto" data-full-width-responsive="true"></ins></p><script>
+<!--//--><![CDATA[// ><!--
+
+<!--//--><![CDATA[// ><!--
+(adsbygoogle = window.adsbygoogle || []).push({});
+//--><!]]]]><![CDATA[>
+
+//--><!]]>
+</script><div id="5a82cc9ccd5f44e8a013e2d045b04464"></div><script>
+<!--//--><![CDATA[// ><!--
+
+<!--//--><![CDATA[// ><!--
+//#####直接复制即可，无需修改参数#####
+    ParadigmSDKv3.init("91e78256742942d2ac5f619c1f7a3145");//###SDK初始化
+    ParadigmSDKv3.renderArticle('5a82cc9ccd5f44e8a013e2d045b04464',546,1040);
+//--><!]]]]><![CDATA[>
+
+//--><!]]>
+</script><style>
+<!--/*--><![CDATA[/* ><!--*/
+
+<!--/*--><![CDATA[/* ><!--*/
+section#block-changyananzhuang .paradigm-article-img.paradigm-single,
+section#block-changyananzhuang .paradigm-article-item,
+section#block-changyananzhuang .paradigm-article-box-body,
+section#block-changyananzhuang .paradigm-box-title-bar{
+	width:auto !important;
+}
+/*--><!]]]]><![CDATA[>*/
+
+/*--><!]]>*/
+</style><script type="text/javascript" charset="utf-8" src="https://changyan.itc.cn/js/lib/jquery.js"></script><script type="text/javascript" charset="utf-8" src="https://changyan.sohu.com/js/changyan.labs.https.js?appid=cytJfccV7"></script><style>
+<!--/*--><![CDATA[/* ><!--*/
+
+<!--/*--><![CDATA[/* ><!--*/
+div.filter-wrapper#edit-comment-body-0-format{display:none}
+/*--><!]]]]><![CDATA[>*/
+
+/*--><!]]>*/
+</style><script>
+<!--//--><![CDATA[// ><!--
+
+<!--//--><![CDATA[// ><!--
+window.onload = function(){
+  var box = document.getElementById("edit-comment-body-0-format");box.parentNode.removeChild(box);
+}
+//--><!]]]]><![CDATA[>
+
+//--><!]]>
+</script></div>
+      
+  </section>
+
+
+  </div>
+
+              </section>
+
+                              <aside class="col-sm-3" role="complementary">
+              <div class="well region region-sidebar-second">
+    <section id="block-customsearchright" class="block block-block-content block-block-contenta33bcf22-013f-4ad8-81bc-60818422e577 clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><div style="float: right;"><div class="search-block-form contextual-region block block-search block-search-form-block" data-drupal-selector="search-block-form" id="block-bootstrap-search" role="search"><h2 class="visually-hidden">Search</h2><div data-contextual-id="block:block=bootstrap_search:langcode=zh-hans" class="contextual" role="form"><button class="trigger visually-hidden focusable" type="button" aria-pressed="false">开放 Search 配置选项</button><ul class="contextual-links list-paddingleft-2" hidden=""><li><p><a href="/admin/structure/block/manage/bootstrap_search?destination=search/node" rel="nofollow">配置区块</a></p></li></ul></div><form action="http://search.e-learn.cn" method="get" id="search-block-form" accept-charset="UTF-8" data-drupal-form-fields="edit-keys--2"><div class="form-item js-form-item form-type-search js-form-type-search form-item-keys js-form-item-keys form-no-label form-group"><label for="edit-keys--2" class="control-label sr-only">Search</label><div class="input-group"><input title="" data-drupal-selector="edit-keys" class="form-search form-control" placeholder="Search" type="search" id="edit-keys--2" name="q" value="" size="15" maxlength="128" data-toggle="tooltip" data-original-title="请输入您想搜索的关键词。" /><span class="input-group-btn"><button type="submit" value="Search" class="button js-form-submit form-submit btn-primary btn icon-only" name=""><span class="sr-only">Search</span><span class="icon glyphicon glyphicon-search" aria-hidden="true"></span></button></span></div></div><div class="form-actions form-group js-form-wrapper form-wrapper" data-drupal-selector="edit-actions" id="edit-actions"></div></form></div></div></div>
+      
+  </section>
+
+<section id="block-tengxunyunshuang11" class="block block-block-content block-block-content6a2f3c44-72b5-488d-a13b-944877db495f clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><p><br /></p><script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><p><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5408099190056760" data-ad-slot="6586654534" data-ad-format="auto" data-full-width-responsive="true"></ins></p><script>
+<!--//--><![CDATA[// ><!--
+
+<!--//--><![CDATA[// ><!--
+(adsbygoogle = window.adsbygoogle || []).push({});
+//--><!]]]]><![CDATA[>
+
+//--><!]]>
+</script><p><br /></p></div>
+      
+  </section>
+
+<section class="views-element-container block block-views block-views-blockjingpinwenzhang-left-bar-block-2 clearfix" id="block-views-block-jingpinwenzhang-left-bar-block-2">
+  
+      <h2 class="block-title">文章分类</h2>
+    
+
+      <div class="form-group"><div class="view view-jingpinwenzhang-left-bar view-id-jingpinwenzhang_left_bar view-display-id-block_2 js-view-dom-id-813321f4b0362fa587a1faf74a53335337cfb62b701cce0687f1c601ca60c0ab">
+  
+    
+      
+      <div class="view-content">
+          <div class="views-view-grid vertical cols-2 clearfix">
+            <div class="views-col clearfix col-1" style="width: 50%;">
+                  <div class="views-row row-1"><div class="views-field views-field-name"><span class="field-content"><a href="/content/dotnet" hreflang="zh-hans">.NET</a></span></div></div>
+                  <div class="views-row row-2"><div class="views-field views-field-name"><span class="field-content"><a href="/taxonomy/term/189" hreflang="zh-hans">Jave EE</a></span></div></div>
+                  <div class="views-row row-3"><div class="views-field views-field-name"><span class="field-content"><a href="/content/html" hreflang="zh-hans">Html</a></span></div></div>
+                  <div class="views-row row-4"><div class="views-field views-field-name"><span class="field-content"><a href="/content/java" hreflang="zh-hans">Java</a></span></div></div>
+                  <div class="views-row row-5"><div class="views-field views-field-name"><span class="field-content"><a href="/content/js" hreflang="zh-hans">JavaScript</a></span></div></div>
+                  <div class="views-row row-6"><div class="views-field views-field-name"><span class="field-content"><a href="/content/python" hreflang="zh-hans">Python</a></span></div></div>
+                  <div class="views-row row-7"><div class="views-field views-field-name"><span class="field-content"><a href="/taxonomy/term/183" hreflang="zh-hans">Redis</a></span></div></div>
+                  <div class="views-row row-8"><div class="views-field views-field-name"><span class="field-content"><a href="/content/nginx" hreflang="zh-hans">Nginx</a></span></div></div>
+                  <div class="views-row row-9"><div class="views-field views-field-name"><span class="field-content"><a href="/content/jquery" hreflang="zh-hans">JQuery</a></span></div></div>
+                  <div class="views-row row-10"><div class="views-field views-field-name"><span class="field-content"><a href="/content/php" hreflang="zh-hans">PHP</a></span></div></div>
+              </div>
+          <div class="views-col clearfix col-2" style="width: 50%;">
+                  <div class="views-row row-1"><div class="views-field views-field-name"><span class="field-content"><a href="/content/linux" hreflang="zh-hans">Linux</a></span></div></div>
+                  <div class="views-row row-2"><div class="views-field views-field-name"><span class="field-content"><a href="/content/mysql" hreflang="zh-hans">Mysql</a></span></div></div>
+                  <div class="views-row row-3"><div class="views-field views-field-name"><span class="field-content"><a href="/content/drupal" hreflang="zh-hans">Drupal</a></span></div></div>
+                  <div class="views-row row-4"><div class="views-field views-field-name"><span class="field-content"><a href="/content/laravel" hreflang="zh-hans">Laravel</a></span></div></div>
+                  <div class="views-row row-5"><div class="views-field views-field-name"><span class="field-content"><a href="/content/css" hreflang="zh-hans">CSS</a></span></div></div>
+                  <div class="views-row row-6"><div class="views-field views-field-name"><span class="field-content"><a href="/content/ssr" hreflang="zh-hans">科学上网之  SSR</a></span></div></div>
+                  <div class="views-row row-7"><div class="views-field views-field-name"><span class="field-content"><a href="/content/%E7%BD%91%E7%BB%9C%E6%96%87%E7%AB%A0" hreflang="zh-hans">网络文章</a></span></div></div>
+                  <div class="views-row row-8"><div class="views-field views-field-name"><span class="field-content"><a href="/content/motley" hreflang="zh-hans">杂谈</a></span></div></div>
+                  <div class="views-row row-9"><div class="views-field views-field-name"><span class="field-content"><a href="/content/chengxuyuanxiaohua" hreflang="zh-hans">程序猿笑话</a></span></div></div>
+                  <div class="views-row row-10"><div class="views-field views-field-name"><span class="field-content"><a href="/taxonomy/term/182" hreflang="zh-hans">其他</a></span></div></div>
+              </div>
+      </div>
+
+    </div>
+  
+          </div>
+</div>
+
+  </section>
+
+<section id="block-xianjianbianlanrewen" class="block block-block-content block-block-content62619c55-3520-4bbc-985f-9f4f1969c742 clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><script charset="utf-8" id="ParadigmSDKv3" src="https://nbrecsys.4paradigm.com/sdk/js/ParadigmSDK_v3.js"></script><div id="3b7a78a778824db68c340b12f58bcd5a"></div><script>
+<!--//--><![CDATA[// ><!--
+
+<!--//--><![CDATA[// ><!--
+//#####直接复制即可，无需修改参数#####
+    ParadigmSDKv3.init("91e78256742942d2ac5f619c1f7a3145");//###SDK初始化
+    ParadigmSDKv3.renderArticle('3b7a78a778824db68c340b12f58bcd5a',546,1042);
+//--><!]]]]><![CDATA[>
+
+//--><!]]>
+</script></div>
+      
+  </section>
+
+<section id="block-ggcebianlantop" class="block block-block-content block-block-content11fea65d-2234-4713-af71-419f59eca270 clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><p><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5408099190056760" data-ad-slot="4992047084" data-ad-format="auto" data-full-width-responsive="true"></ins></p><script>
+<!--//--><![CDATA[// ><!--
+
+<!--//--><![CDATA[// ><!--
+(adsbygoogle = window.adsbygoogle || []).push({});
+//--><!]]]]><![CDATA[>
+
+//--><!]]>
+</script></div>
+      
+  </section>
+
+<section id="block-rightsidebargoogleadsense" class="block block-block-content block-block-contentb452c221-d44b-4985-a7c2-e8e759ef22e8 clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><!-- #####PLUG SDK引入,无需修改参数 --><script charset="utf-8" id="ParadigmSDKv3" src="https://nbrecsys.4paradigm.com/sdk/js/ParadigmSDK_v3.js"></script><div id="08dac9890bec488ba59e892ee1a806fa"></div><script>
+<!--//--><![CDATA[// ><!--
+
+<!--//--><![CDATA[// ><!--
+//#####直接复制即可，无需修改参数#####
+    ParadigmSDKv3.init("91e78256742942d2ac5f619c1f7a3145");//###SDK初始化
+    ParadigmSDKv3.renderArticle('08dac9890bec488ba59e892ee1a806fa',546,2650);
+//--><!]]]]><![CDATA[>
+
+//--><!]]>
+</script><script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><!-- right side bar w260 --><p><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5408099190056760" data-ad-slot="5068947403" data-ad-format="auto"></ins></p><script>
+<!--//--><![CDATA[// ><!--
+
+<!--//--><![CDATA[// ><!--
+(adsbygoogle = window.adsbygoogle || []).push({});
+//--><!]]]]><![CDATA[>
+
+//--><!]]>
+</script><p><br /></p></div>
+      
+  </section>
+
+<section id="block-changyanremenxinwen" class="block block-block-content block-block-contenta967328b-1bd3-40ff-947a-24804e4d3c35 clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><!-- 代码1：放在页面需要展示的位置  --><!-- 如果您配置过sourceid，建议在div标签中配置sourceid、cid(分类id)，没有请忽略  --><div id="cyReping" role="cylabs" data-use="reping"></div><!-- 代码2：用来读取评论框配置，此代码需放置在代码1之后。 --><!-- 如果当前页面有评论框，代码2请勿放置在评论框代码之前。 --><!-- 如果页面同时使用多个实验室项目，以下代码只需要引入一次，只配置上面的div标签即可 --><script type="text/javascript" charset="utf-8" src="https://changyan.itc.cn/js/lib/jquery.js"></script><script type="text/javascript" charset="utf-8" src="https://changyan.sohu.com/js/changyan.labs.https.js?appid=cytJfccV7"></script><p><br /></p><p><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5408099190056760" data-ad-slot="9435106707" data-ad-format="auto" data-full-width-responsive="true"></ins></p><script>
+<!--//--><![CDATA[// ><!--
+
+<!--//--><![CDATA[// ><!--
+(adsbygoogle = window.adsbygoogle || []).push({});
+//--><!]]]]><![CDATA[>
+
+//--><!]]>
+</script></div>
+      
+  </section>
+
+
+  </div>
+
+          </aside>
+                  </div>
+  </div>
+
+      <footer class="footer container" role="contentinfo">
+        <div class="region region-footer">
+    <section id="block-youxiajiao" class="block block-block-content block-block-contentfa89158f-8cf1-4590-aaa5-4d71cea3e07e clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><div id="divObj" class="rightGG_mail"><div class="colseGG" style="display:none;">如果遮挡特效请点击关闭广告！<a title="关闭" href="javascript:hiden();" rel="nofollow">关闭×</a></div><script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins class="adsbygoogle" style="display:inline-block;width:336px;height:280px" data-ad-client="ca-pub-5408099190056760" data-ad-slot="1030636218"></ins><script>
+<!--//--><![CDATA[// ><!--
+
+<!--//--><![CDATA[// ><!--
+(adsbygoogle = window.adsbygoogle || []).push({});
+//--><!]]]]><![CDATA[>
+
+//--><!]]>
+</script></div><script type="text/javascript">
+<!--//--><![CDATA[// ><!--
+
+<!--//--><![CDATA[// ><!--
+function hiden(){
+$("#divObj").hide();
+}
+function showGGColseButton()
+{
+    $(".colseGG").show();
+}
+$(document).ready(function(){   
+ setTimeout (showGGColseButton, 15000);   
+});
+//--><!]]]]><![CDATA[>
+
+//--><!]]>
+</script><style type="text/css">
+<!--/*--><![CDATA[/* ><!--*/
+
+<!--/*--><![CDATA[/* ><!--*/
+.rightGG_mail{position:fixed;_position:absolute;z-index:1000; border:0px #CCCCCC solid;bottom:0;right:0;_right:17px;width:330px;height:270px;}
+.colseGG{position:relative;_position:absolute;z-index:1000; border-left:1px #CCCCCC solid; border-right:1px #CCCCCC solid; border-top:1px #CCCCCC solid;bottom:0;right:0;_right:17px;height:24px;width:330px;background-color:#FFFFFF;}
+.colseGG a{color: red;float: right;font: bold 14px/24px simsun;text-shadow: 0 1px 0 #DDDDDD;}
+.colseGG span{color: red;float: left;}@media screen and (max-width: 901px) { 
+  #divObj {display:none} 
+}
+/*--><!]]]]><![CDATA[>*/
+
+/*--><!]]>*/
+</style></div>
+      
+  </section>
+
+<nav role="navigation" aria-labelledby="block-bootstrap-footer-menu" id="block-bootstrap-footer">
+            
+  <h2 class="visually-hidden" id="block-bootstrap-footer-menu">Footer menu</h2>
+  
+
+        
+
+              <ul class="menu nav footer">
+                            <li>
+        <a href="/disclaimer" data-drupal-link-system-path="node/31">免责声明</a>
+                  </li>
+                        <li>
+        <a href="/about-us" data-drupal-link-system-path="node/32">关于我们</a>
+                  </li>
+                        <li>
+        <a href="/contact" data-drupal-link-system-path="contact">联系我们</a>
+                  </li>
+                        <li>
+        <a href="/advertising" data-drupal-link-system-path="node/1133814">广告位出售</a>
+                  </li>
+                        <li>
+        <a href="/AD" title="本页展示站长搜集到的促销优惠信息，总有一款是你需要的！" data-drupal-link-system-path="node/1133815">广告页</a>
+                  </li>
+                        <li>
+        <a href="/gouwu" data-drupal-link-system-path="node/1390407">购物返利</a>
+                  </li>
+        </ul>
+  
+
+
+  </nav>
+<section id="block-copyright" class="block block-block-content block-block-contentb9f0431e-1723-41b2-8a27-450ed4ff074d clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><p style="text-align: center;">QQ群①：<a href="https://jq.qq.com/?_wv=1027&amp;k=5xC9C01" target="_blank" title="点击入群" rel="nofollow">892566581</a></p><p><br /></p><p style="text-align: center;">本站部分内容来自互联网，其发布内容言论不代表本站观点，如果其链接、内容的侵犯您的权益，烦<a href="/contact" target="_self" rel="nofollow">请联系我们</a>，我们将及时予以处理。</p><p style="text-align: center;">Copyright © 2015-2018    <strong><a href="//www.e-learn.cn/" target="_blank" rel="nofollow">易学教程</a></strong>     <strong><a href="//www.e-learn.cn/" target="_blank" rel="nofollow">e-learn.cn</a></strong> All Rights Reserved. 备案号：宁ICP备15000671号-3</p></div>
+      
+  </section>
+
+<section id="block-codehighlight" class="block block-block-content block-block-contentdf7510e5-6a1f-4bb0-93c8-62289b13fbed clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><link href="https://cdn.bootcss.com/prettify/r298/prettify.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/prettify/r298/prettify.min.js"></script>
+<script>
+$( document ).ready(function() {
+	$("pre").addClass("prettyprint;brush:html");
+	prettyPrint();
+});
+</script>
+</div>
+      
+  </section>
+
+<section id="block-youcedaohang" class="block block-block-content block-block-content88c90e69-c240-414c-8b56-4c61450b2ccc clearfix">
+  
+    
+
+      
+            <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item"><div class='card-holder'>
+  <div class='card-wrapper'>
+    <a href='http://tool.yiixue.com?from=e-learn.cn' target="_blank">
+      <div class='card bg-01'>
+        <span class='card-content'>易学工具箱</span>
+      </div>
+    </a>
+  </div>
+  <div class="card-wrapper">
+    <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+      <div class="card bg-02">
+        <span class="card-content">支付宝红包</span>
+      </div>
+    </button>
+  </div>
+</div>
+
+ 
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="false" data-keyboard="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+ 
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <img src="https://ws3.sinaimg.cn/large/005BYqpggy1fvp35b2p3zj308c0ciq6b.jpg" alt="" style="width:40%;">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">不需要</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+</div>
+      
+  </section>
+
+
+  </div>
+
+    </footer>
+  
+  </div>
+
+    
+    <script type="application/json" data-drupal-selector="drupal-settings-json">{"path":{"baseUrl":"\/","scriptPath":null,"pathPrefix":"","currentPath":"node\/323875","currentPathIsAdmin":false,"isFront":false,"currentLanguage":"zh-hans"},"pluralDelimiter":"\u0003","back_to_top":{"back_to_top_button_trigger":"100","back_to_top_prevent_on_mobile":1,"back_to_top_prevent_in_admin":0,"back_to_top_button_type":"image","back_to_top_button_text":"Back to top"},"matomo":{"trackMailto":true},"bootstrap":{"forms_has_error_value_toggle":1,"modal_animation":1,"modal_backdrop":"true","modal_keyboard":1,"modal_show":1,"modal_size":"","popover_enabled":1,"popover_animation":1,"popover_container":"body","popover_content":"","popover_delay":"0","popover_html":0,"popover_placement":"right","popover_selector":"","popover_title":"","popover_trigger":"click","popover_trigger_autoclose":1,"tooltip_enabled":1,"tooltip_animation":1,"tooltip_container":"body","tooltip_delay":"0","tooltip_html":0,"tooltip_placement":"auto left","tooltip_selector":"","tooltip_trigger":"hover"},"statistics":{"data":{"nid":"323875"},"url":"\/core\/modules\/statistics\/statistics.php"},"user":{"uid":0,"permissionsHash":"a722245813e69a9e42ae96ac17e911e5524f4ecec0a6299318797da12bec9228"}}</script>
+<script src="/sites/default/files/js/js_y1-1em__CekqtBjFsgkUK_14uRFvHnFpDouwQith6M4.js"></script>
+<script src="//cdn.jsdelivr.net/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="/sites/default/files/js/js_vhq5f9o9PZye_17POlMkBRFM5RvdFENEEZeiSF8tnXE.js"></script>
+
+    <script>(function(){
+var src = (document.location.protocol == "http:") ? "http://js.passport.qihucdn.com/11.0.1.js?93730f7a3a56120ad913f48207da3e99":"https://jspassport.ssl.qhimg.com/11.0.1.js?93730f7a3a56120ad913f48207da3e99";
+document.write('<script src="' + src + '" id="sozz"><\/script>');
+})();
+</script>
+  </body>
+</html>

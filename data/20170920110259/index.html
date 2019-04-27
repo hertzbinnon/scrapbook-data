@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html class="js" lang="zh-CN">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width">
+	<link rel="profile" href="http://gmpg.org/xfn/11">
+	<link rel="pingback" href="https://servers.ustclug.org/xmlrpc.php">
+	<!--[if lt IE 9]>
+	<script src="https://servers.ustclug.org/wp-content/themes/twentyfifteen/js/html5.js"></script>
+	<![endif]-->
+	
+<title>Nginx try_files 里的一个坑 – What's up, LUG Servers</title>
+<link rel="dns-prefetch" href="https://servers.ustclug.org/">
+<link rel="dns-prefetch" href="https://fonts.googleapis.com/">
+<link rel="dns-prefetch" href="https://s.w.org/">
+<link href="https://fonts.gstatic.com/" crossorigin="" rel="preconnect">
+<link rel="alternate" type="application/rss+xml" title="What's up, LUG Servers » Feed" href="https://servers.ustclug.org/feed/">
+<link rel="alternate" type="application/rss+xml" title="What's up, LUG Servers » 评论Feed" href="https://servers.ustclug.org/comments/feed/">
+<link rel="alternate" type="application/rss+xml" title="What's up, LUG Servers » Nginx try_files 里的一个坑评论Feed" href="https://servers.ustclug.org/2014/09/nginx-try_files-fallacy/feed/">
+		
+		
+
+
+
+
+
+<!--[if lt IE 9]>
+<link rel='stylesheet' id='twentyfifteen-ie-css'  href='https://servers.ustclug.org/wp-content/themes/twentyfifteen/css/ie.css?ver=20141010' type='text/css' media='all' />
+<![endif]-->
+<!--[if lt IE 8]>
+<link rel='stylesheet' id='twentyfifteen-ie7-css'  href='https://servers.ustclug.org/wp-content/themes/twentyfifteen/css/ie7.css?ver=20141010' type='text/css' media='all' />
+<![endif]-->
+
+
+<link rel="https://api.w.org/" href="https://servers.ustclug.org/wp-json/">
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://servers.ustclug.org/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://servers.ustclug.org/wp-includes/wlwmanifest.xml"> 
+<link rel="prev" title="Freeshell 外部存储文件锁故障说明" href="https://servers.ustclug.org/2014/09/freeshell-external-storage-failure/">
+<link rel="next" title="9月18日 blog、freeshell IPv4 服务中断" href="https://servers.ustclug.org/2014/09/blog-server-down/">
+<meta name="generator" content="WordPress 4.8.1">
+<link rel="canonical" href="https://servers.ustclug.org/2014/09/nginx-try_files-fallacy/">
+<link rel="shortlink" href="https://servers.ustclug.org/?p=1228">
+<link rel="alternate" type="application/json+oembed" href="https://servers.ustclug.org/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fservers.ustclug.org%2F2014%2F09%2Fnginx-try_files-fallacy%2F">
+<link rel="alternate" type="text/xml+oembed" href="https://servers.ustclug.org/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fservers.ustclug.org%2F2014%2F09%2Fnginx-try_files-fallacy%2F&amp;format=xml">
+
+
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body class="post-template-default single single-post postid-1228 single-format-standard">
+<div id="page" class="hfeed site">
+	<a class="skip-link screen-reader-text" href="#content">跳至正文</a>
+
+	<div id="sidebar" class="sidebar" style="top: 0px;">
+		<header id="masthead" class="site-header" role="banner">
+			<div class="site-branding">
+										<p class="site-title"><a href="https://servers.ustclug.org/" rel="home">What's up, LUG Servers</a></p>
+											<p class="site-description">LUG 服务器维护小组的黑板报</p>
+									<button class="secondary-toggle">菜单和挂件</button>
+			</div><!-- .site-branding -->
+		</header><!-- .site-header -->
+
+			<div id="secondary" class="secondary">
+
+		
+		
+					<div id="widget-area" class="widget-area" role="complementary">
+				<aside id="search-2" class="widget widget_search"><form role="search" method="get" class="search-form" action="https://servers.ustclug.org/">
+				<label>
+					<span class="screen-reader-text">搜索：</span>
+					<input class="search-field" placeholder="搜索…" value="" name="s" type="search">
+				</label>
+				<input class="search-submit screen-reader-text" value="搜索" type="submit">
+			</form></aside><aside id="linkcat-2" class="widget widget_links"><h2 class="widget-title">链接</h2>
+	<ul class="xoxo blogroll">
+<li><a href="https://lug.ustc.edu.cn/wiki/lug/contribute">加入我们</a></li>
+<li><a href="https://lug.ustc.edu.cn/wiki/lug/contact">联系我们</a></li>
+<li><a href="https://lug.ustc.edu.cn/wiki/lug/donate">捐赠我们</a></li>
+
+	</ul>
+</aside>
+<aside id="categories-2" class="widget widget_categories"><h2 class="widget-title">分类目录</h2>		<ul>
+	<li class="cat-item cat-item-17"><a href="https://servers.ustclug.org/category/bbs/">bbs</a>
+</li>
+	<li class="cat-item cat-item-4"><a href="https://servers.ustclug.org/category/blog/">blog</a>
+</li>
+	<li class="cat-item cat-item-12"><a href="https://servers.ustclug.org/category/dns/">dns</a>
+</li>
+	<li class="cat-item cat-item-13"><a href="https://servers.ustclug.org/category/email/">email</a>
+</li>
+	<li class="cat-item cat-item-15"><a href="https://servers.ustclug.org/category/font/">font</a>
+</li>
+	<li class="cat-item cat-item-3"><a href="https://servers.ustclug.org/category/freeshell/">freeshell</a>
+</li>
+	<li class="cat-item cat-item-18"><a href="https://servers.ustclug.org/category/ftp/">ftp</a>
+</li>
+	<li class="cat-item cat-item-5"><a href="https://servers.ustclug.org/category/gitlab/">gitlab</a>
+</li>
+	<li class="cat-item cat-item-29"><a href="https://servers.ustclug.org/category/infra/">infra</a>
+</li>
+	<li class="cat-item cat-item-30"><a href="https://servers.ustclug.org/category/light/">light</a>
+</li>
+	<li class="cat-item cat-item-7"><a href="https://servers.ustclug.org/category/lug/">lug</a>
+</li>
+	<li class="cat-item cat-item-9"><a href="https://servers.ustclug.org/category/mirrors/">mirrors</a>
+</li>
+	<li class="cat-item cat-item-31"><a href="https://servers.ustclug.org/category/neatdns/">neatdns</a>
+</li>
+	<li class="cat-item cat-item-8"><a href="https://servers.ustclug.org/category/pxe/">pxe</a>
+</li>
+	<li class="cat-item cat-item-28"><a href="https://servers.ustclug.org/category/telegram/">telegram</a>
+</li>
+	<li class="cat-item cat-item-11"><a href="https://servers.ustclug.org/category/tips/">tips</a>
+</li>
+	<li class="cat-item cat-item-16"><a href="https://servers.ustclug.org/category/ustcnet/">ustcnet</a>
+</li>
+	<li class="cat-item cat-item-6"><a href="https://servers.ustclug.org/category/vpn/">vpn</a>
+</li>
+	<li class="cat-item cat-item-14"><a href="https://servers.ustclug.org/category/vshpere/">vshpere</a>
+</li>
+	<li class="cat-item cat-item-10"><a href="https://servers.ustclug.org/category/lug/wiki/">wiki</a>
+</li>
+	<li class="cat-item cat-item-1"><a href="https://servers.ustclug.org/category/uncategorized/">未分类</a>
+</li>
+		</ul>
+</aside><aside id="archives-2" class="widget widget_archive"><h2 class="widget-title">文章归档</h2>		<ul>
+			<li><a href="https://servers.ustclug.org/2017/09/">2017年九月</a></li>
+	<li><a href="https://servers.ustclug.org/2017/07/">2017年七月</a></li>
+	<li><a href="https://servers.ustclug.org/2017/06/">2017年六月</a></li>
+	<li><a href="https://servers.ustclug.org/2017/04/">2017年四月</a></li>
+	<li><a href="https://servers.ustclug.org/2017/03/">2017年三月</a></li>
+	<li><a href="https://servers.ustclug.org/2017/02/">2017年二月</a></li>
+	<li><a href="https://servers.ustclug.org/2017/01/">2017年一月</a></li>
+	<li><a href="https://servers.ustclug.org/2016/12/">2016年十二月</a></li>
+	<li><a href="https://servers.ustclug.org/2016/11/">2016年十一月</a></li>
+	<li><a href="https://servers.ustclug.org/2016/10/">2016年十月</a></li>
+	<li><a href="https://servers.ustclug.org/2016/09/">2016年九月</a></li>
+	<li><a href="https://servers.ustclug.org/2016/08/">2016年八月</a></li>
+	<li><a href="https://servers.ustclug.org/2016/07/">2016年七月</a></li>
+	<li><a href="https://servers.ustclug.org/2016/06/">2016年六月</a></li>
+	<li><a href="https://servers.ustclug.org/2016/04/">2016年四月</a></li>
+	<li><a href="https://servers.ustclug.org/2016/03/">2016年三月</a></li>
+	<li><a href="https://servers.ustclug.org/2016/02/">2016年二月</a></li>
+	<li><a href="https://servers.ustclug.org/2016/01/">2016年一月</a></li>
+	<li><a href="https://servers.ustclug.org/2015/12/">2015年十二月</a></li>
+	<li><a href="https://servers.ustclug.org/2015/11/">2015年十一月</a></li>
+	<li><a href="https://servers.ustclug.org/2015/10/">2015年十月</a></li>
+	<li><a href="https://servers.ustclug.org/2015/09/">2015年九月</a></li>
+	<li><a href="https://servers.ustclug.org/2015/08/">2015年八月</a></li>
+	<li><a href="https://servers.ustclug.org/2015/07/">2015年七月</a></li>
+	<li><a href="https://servers.ustclug.org/2015/06/">2015年六月</a></li>
+	<li><a href="https://servers.ustclug.org/2015/05/">2015年五月</a></li>
+	<li><a href="https://servers.ustclug.org/2015/04/">2015年四月</a></li>
+	<li><a href="https://servers.ustclug.org/2015/03/">2015年三月</a></li>
+	<li><a href="https://servers.ustclug.org/2015/02/">2015年二月</a></li>
+	<li><a href="https://servers.ustclug.org/2015/01/">2015年一月</a></li>
+	<li><a href="https://servers.ustclug.org/2014/12/">2014年十二月</a></li>
+	<li><a href="https://servers.ustclug.org/2014/11/">2014年十一月</a></li>
+	<li><a href="https://servers.ustclug.org/2014/10/">2014年十月</a></li>
+	<li><a href="https://servers.ustclug.org/2014/09/">2014年九月</a></li>
+	<li><a href="https://servers.ustclug.org/2014/08/">2014年八月</a></li>
+	<li><a href="https://servers.ustclug.org/2014/07/">2014年七月</a></li>
+	<li><a href="https://servers.ustclug.org/2014/06/">2014年六月</a></li>
+	<li><a href="https://servers.ustclug.org/2014/05/">2014年五月</a></li>
+	<li><a href="https://servers.ustclug.org/2014/04/">2014年四月</a></li>
+	<li><a href="https://servers.ustclug.org/2014/03/">2014年三月</a></li>
+	<li><a href="https://servers.ustclug.org/2014/02/">2014年二月</a></li>
+	<li><a href="https://servers.ustclug.org/2014/01/">2014年一月</a></li>
+	<li><a href="https://servers.ustclug.org/2013/12/">2013年十二月</a></li>
+	<li><a href="https://servers.ustclug.org/2013/11/">2013年十一月</a></li>
+	<li><a href="https://servers.ustclug.org/2013/10/">2013年十月</a></li>
+	<li><a href="https://servers.ustclug.org/2013/09/">2013年九月</a></li>
+	<li><a href="https://servers.ustclug.org/2013/08/">2013年八月</a></li>
+		</ul>
+		</aside><aside id="meta-2" class="widget widget_meta"><h2 class="widget-title">功能</h2>			<ul>
+						<li><a href="https://servers.ustclug.org/wp-login.php">登录</a></li>
+			<li><a href="https://servers.ustclug.org/feed/">文章<abbr title="Really Simple Syndication">RSS</abbr></a></li>
+			<li><a href="https://servers.ustclug.org/comments/feed/">评论<abbr title="Really Simple Syndication">RSS</abbr></a></li>
+			<li><a href="https://cn.wordpress.org/" title="基于WordPress，一个优美、先进的个人信息发布平台。">WordPress.org</a></li>			</ul>
+			</aside>			</div><!-- .widget-area -->
+		
+	</div><!-- .secondary -->
+
+	</div><!-- .sidebar -->
+
+	<div id="content" class="site-content">
+
+	<div id="primary" class="content-area">
+		<main id="main" class="site-main" role="main">
+
+		
+<article id="post-1228" class="post-1228 post type-post status-publish format-standard hentry category-blog">
+	
+	<header class="entry-header">
+		<h1 class="entry-title">Nginx try_files 里的一个坑</h1>	</header><!-- .entry-header -->
+
+	<div class="entry-content">
+		<p>今天下午 blog 某管理员踩到了 nginx try_files 的一个坑，导致 WordPress 博客采用了固定链接的页面无法访问。此问题持续半小时后修复。</p>
+<p>原来的配置是这样的：</p>
+<pre class="wp-code-highlight prettyprint prettyprinted" style=""><span class="pln">        location </span><span class="pun">/</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            try_files $uri $uri</span><span class="pun">/</span><span class="pln"> </span><span class="pun">/</span><span class="pln">index</span><span class="pun">.</span><span class="pln">php</span><span class="pun">;</span><span class="pln">
+            index  index</span><span class="pun">.</span><span class="pln">html index</span><span class="pun">.</span><span class="pln">htm index</span><span class="pun">.</span><span class="pln">php</span><span class="pun">;</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+        location </span><span class="pun">~</span><span class="pln"> \.php$ </span><span class="pun">{</span><span class="pln"> </span><span class="pun">...</span><span class="pln"> </span><span class="pun">}</span></pre>
+<p>修改成了</p>
+<pre class="wp-code-highlight prettyprint prettyprinted" style=""><span class="pln">        location </span><span class="pun">/</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            try_files $uri $uri</span><span class="pun">/</span><span class="pln"> </span><span class="pun">/</span><span class="pln">index</span><span class="pun">.</span><span class="pln">php </span><span class="pun">=</span><span class="lit">404</span><span class="pun">;</span><span class="pln">
+            index  index</span><span class="pun">.</span><span class="pln">html index</span><span class="pun">.</span><span class="pln">htm index</span><span class="pun">.</span><span class="pln">php</span><span class="pun">;</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+        location </span><span class="pun">~</span><span class="pln"> \.php$ </span><span class="pun">{</span><span class="pln"> </span><span class="pun">...</span><span class="pln"> </span><span class="pun">}</span></pre>
+<p>增加的这个 <code>=404</code>，似乎是让 index.php 找不到的时候返回 404。但这么一改，形如 <code>https://servers.blog.ustc.edu.cn/2014/09/ustc-telecom-link-failure/</code> 这样的链接返回的竟然是 index.php 的源码！这是怎么回事呢？</p>
+<p>这要从 nginx try_files 的工作原理说起。以 <code>try_files $uri $uri/ /index.php;</code> 为例，当用户请求 <code>http://servers.blog.ustc.edu.cn/example</code> 时，这里的 <code>$uri</code> 就是 <code>/example</code>。try_files 会到硬盘里尝试找这个文件。如果存在名为 <code>/$root/example</code>（其中 <code>$root</code> 是 WordPress 的安装目录）的文件，就直接把这个文件的内容发送给用户。显然，目录中没有叫 example 的文件。然后就看 <code>$uri/</code>，增加了一个 /，也就是看有没有名为 <code>/$root/example/</code> 的目录。又找不到，就会 fall back 到 try_files 的最后一个选项 /index.php，发起一个内部 “子请求”，也就是相当于 nginx 发起一个 HTTP 请求到 <code>http://servers.blog.ustc.edu.cn/index.php</code>。这个请求会被 <code>location ~ \.php$ { ... }</code> catch 住，也就是进入 FastCGI 的处理程序。而具体的 URI 及参数是在 REQUEST_URI 中传递给 FastCGI 和 WordPress 程序的，因此不受 URI 变化的影响。</p>
+<p>配置修改之后，<code>/index.php</code> 就不在 fall back 的位置了，也就是说 try_files 在文件系统里找到 index.php 之后，就会直接把文件内容（也就是 PHP 源码）返回给用户。这里的坑就是 try_files 的最后一个位置（fall back）是特殊的，它会发出一个内部 “子请求” 而非直接在文件系统里查找这个文件。</p>
+	</div><!-- .entry-content -->
+
+	
+	<footer class="entry-footer">
+		<span class="posted-on"><span class="screen-reader-text">发布于 </span><a href="https://servers.ustclug.org/2014/09/nginx-try_files-fallacy/" rel="bookmark"><time class="entry-date published" datetime="2014-09-14T19:20:32+00:00">2014 年 9 月 14 日</time><time class="updated" datetime="2014-09-14T19:20:57+00:00">2014 年 9 月 14 日</time></a></span><span class="byline"><span class="author vcard"><span class="screen-reader-text">作者 </span><a class="url fn n" href="https://servers.ustclug.org/author/boj/">boj</a></span></span><span class="cat-links"><span class="screen-reader-text">分类 </span><a href="https://servers.ustclug.org/category/blog/" rel="category tag">blog</a></span>			</footer><!-- .entry-footer -->
+
+</article><!-- #post-## -->
+
+<div id="comments" class="comments-area">
+
+			<h2 class="comments-title">
+			《Nginx try_files 里的一个坑》有1个想法		</h2>
+
+		
+		<ol class="comment-list">
+					<li id="comment-19253" class="comment even thread-even depth-1">
+			<article id="div-comment-19253" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="72b45d538250d50c3e4ee64e32cacc41" srcset="https://secure.gravatar.com/avatar/72b45d538250d50c3e4ee64e32cacc41?s=112&amp;d=mm&amp;r=g 2x" class="avatar avatar-56 photo" width="56" height="56">						<b class="fn">Aceslup</b><span class="says">说道：</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="https://servers.ustclug.org/2014/09/nginx-try_files-fallacy/#comment-19253">
+							<time datetime="2015-12-07T15:08:36+00:00">
+								2015 年 12 月 7 日 15:08							</time>
+						</a>
+											</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>已经开始理解了。谢谢博主细心分享。</p>
+				</div><!-- .comment-content -->
+
+							</article><!-- .comment-body -->
+</li><!-- #comment-## -->
+		</ol><!-- .comment-list -->
+
+		
+	
+			<p class="no-comments">评论已关闭。</p>
+	
+	
+</div><!-- .comments-area -->
+
+	<nav class="navigation post-navigation" role="navigation">
+		<h2 class="screen-reader-text">文章导航</h2>
+		<div class="nav-links"><div class="nav-previous"><a href="https://servers.ustclug.org/2014/09/freeshell-external-storage-failure/" rel="prev"><span class="meta-nav" aria-hidden="true">上一</span> <span class="screen-reader-text">上篇文章：</span> <span class="post-title">Freeshell 外部存储文件锁故障说明</span></a></div><div class="nav-next"><a href="https://servers.ustclug.org/2014/09/blog-server-down/" rel="next"><span class="meta-nav" aria-hidden="true">继续</span> <span class="screen-reader-text">下篇文章：</span> <span class="post-title">9月18日 blog、freeshell IPv4 服务中断</span></a></div></div>
+	</nav>
+		</main><!-- .site-main -->
+	</div><!-- .content-area -->
+
+	<!--WP Code Highlight_start-->
+	
+	
+	<!--WP Code Highlight_end-->
+
+	</div><!-- .site-content -->
+
+	<footer id="colophon" class="site-footer" role="contentinfo">
+		<div class="site-info">
+						<a href="https://cn.wordpress.org/">自豪地采用WordPress</a>
+		</div><!-- .site-info -->
+	</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

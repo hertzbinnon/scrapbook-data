@@ -1,0 +1,489 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    <title>
+      Yocto/gstreamer/multimedia – Gateworks
+    </title>
+      
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--[if IE]><script type="text/javascript">
+      if (/^#__msie303:/.test(window.location.hash))
+        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
+    </script><![endif]-->
+        <link rel="search" href="http://trac.gateworks.com/search">
+        <link rel="help" href="http://trac.gateworks.com/wiki/TracGuide">
+        <link rel="alternate" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/multimedia?format=txt" type="text/x-trac-wiki" title="Plain Text">
+        <link rel="up" href="http://trac.gateworks.com/wiki/Yocto/gstreamer" title="View parent page">
+        <link rel="start" href="http://trac.gateworks.com/wiki">
+        
+        <link rel="shortcut icon" href="trac.ico" type="image/x-icon">
+        <link rel="icon" href="trac.ico" type="image/x-icon">
+      <link type="application/opensearchdescription+xml" rel="search" href="http://trac.gateworks.com/search/opensearch" title="Search Gateworks">
+      
+      
+      
+      
+      
+    
+  
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+    <div id="banner">
+      <div id="header">
+        <a id="logo" href="http://trac.gateworks.com/"><img src="g2998.png" alt=""></a>
+      </div>
+      <form id="search" action="http://trac.gateworks.com/search" method="get">
+        <div>
+          <label for="proj-search">Search:</label>
+          <input id="proj-search" name="q" size="18" value="" type="text">
+          <input value="Search" type="submit">
+        </div>
+      </form>
+      <div id="metanav" class="nav">
+    <ul>
+      <li class="first"><a href="http://trac.gateworks.com/login">Login</a></li><li><a href="http://trac.gateworks.com/wiki/TracGuide">Help/Guide</a></li><li><a href="http://trac.gateworks.com/about">About Trac</a></li><li><a href="http://trac.gateworks.com/prefs">Preferences</a></li><li class="last"><a href="http://trac.gateworks.com/register">Register</a></li>
+    </ul>
+  </div>
+    </div>
+    <div id="mainnav" class="nav">
+    <ul>
+      <li class="first active"><a href="http://trac.gateworks.com/wiki">Wiki</a></li><li><a href="http://trac.gateworks.com/timeline">Timeline</a></li><li><a href="http://trac.gateworks.com/browser">Browse Source</a></li><li class="last"><a href="http://trac.gateworks.com/search">Search</a></li>
+    </ul>
+  </div>
+    <div id="main">
+      <div id="pagepath" class="noprint">
+  <a class="pathentry first" title="View WikiStart" href="http://trac.gateworks.com/wiki">wiki:</a><a class="pathentry" href="http://trac.gateworks.com/wiki/Yocto" title="View Yocto">Yocto</a><span class="pathentry sep">/</span><a class="pathentry" href="http://trac.gateworks.com/wiki/Yocto/gstreamer" title="View Yocto/gstreamer">gstreamer</a><span class="pathentry sep">/</span><a class="pathentry" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/multimedia" title="View Yocto/gstreamer/multimedia">multimedia</a>
+</div>
+      <div id="ctxtnav" class="nav">
+        <h2>Context Navigation</h2>
+        <ul>
+          <li class="first"><a href="http://trac.gateworks.com/wiki/Yocto/gstreamer">Up</a></li><li><a href="http://trac.gateworks.com/wiki/WikiStart">Start Page</a></li><li><a href="http://trac.gateworks.com/wiki/TitleIndex">Index</a></li><li class="last"><a href="http://trac.gateworks.com/wiki/Yocto/gstreamer/multimedia?action=history">History</a></li>
+        </ul>
+        <hr>
+      </div>
+    <div id="content" class="wiki">
+      <div class="wikipage searchable">
+        
+          <div id="wikipage" class="trac-content"><p>
+</p><div class="wiki-toc">
+<ol>
+  <li>
+    <a href="#VideoandAudio">Video and Audio</a>
+    <ol>
+      <li>
+        <a href="#NamedElementsqueuesandMultiplepipelineswithgst-launch">Named Elements, queues, and Multiple pipelines with gst-launch</a>
+      </li>
+      <li>
+        <a href="#Muxingmixedcontent">Muxing mixed content</a>
+        <ol>
+          <li>
+            <a href="#Example:CaptureMPEG4videoMP3AudiomuxedtogetherinaAVIFile">Example: Capture MPEG4 video, MP3 Audio muxed together in a AVI File</a>
+          </li>
+        </ol>
+      </li>
+      <li>
+        <a href="#De-muxingmixedcontent">De-muxing mixed content</a>
+        <ol>
+          <li>
+            <a href="#Example:PlaybackMatroskafilewithWEBMvideoandVorbisAudio">Example: Playback Matroska file with WEBM video and Vorbis Audio</a>
+          </li>
+          <li>
+            <a href="#Example:PlaybackQuicktimefilewithH.264AVCvideoandAACAudio">Example: Playback Quicktime file with H.264/AVC video and AAC Audio</a>
+          </li>
+          <li>
+            <a href="#Example:PlaybackMPEG-TSfile">Example: Playback MPEG-TS file</a>
+          </li>
+        </ol>
+      </li>
+      <li>
+        <a href="#Binelements">Bin elements</a>
+        <ol>
+          <li>
+            <a href="#GStreamerplaybin">GStreamer <tt>playbin</tt></a>
+          </li>
+          <li>
+            <a href="#GStreamerdecodebin">GStreamer <tt>decodebin</tt></a>
+          </li>
+          <li>
+            <a href="#GStreamergst-play-1.0">GStreamer <tt>gst-play-1.0</tt></a>
+          </li>
+        </ol>
+      </li>
+      <li>
+        <a href="#Howtodeterminewhatpipelineisneededtodecodeandplay">How to determine what pipeline is needed to decode and play</a>
+        <ol>
+          <li>
+            <a href="#GST_DEBUG_DUMP_DOT_DIR">GST_DEBUG_DUMP_DOT_DIR</a>
+          </li>
+          <li>
+            <a href="#gst-launch-v">gst-launch -v</a>
+          </li>
+        </ol>
+      </li>
+    </ol>
+  </li>
+</ol>
+</div><p>
+</p>
+<p>
+<span class="wikianchor" id="audio-and-video"><a class="anchor" href="#audio-and-video" title="Link to #audio-and-video"> ¶</a></span>
+</p>
+<h1 id="VideoandAudio">Video and Audio<a class="anchor" href="#VideoandAudio" title="Link to this section"> ¶</a></h1>
+<p>
+Playback of a file that has both audio and video requires a slightly more complex pipeline than the standard <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/audio">audio</a> and <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/video">video</a> pipelines.
+</p>
+<p>
+Generally, a mixed media pipeline will consist of a demuxer (to split audio and video), individualized pipelines per video stream and audio stream, and <tt>queue</tt> elements to provide asynchronous playback of each stream type (which basically relates to using multiple threads of execution so that one element doesn't block the pipeline waiting for more data).
+</p>
+<p>
+The examples on this page will refer to GStreamer-1.0. To see GStreamer-0.10 (deprecated) examples, please see this <a class="ext-link" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/multimedia?version=1"><span class="icon">​</span>older revision page</a>.
+</p>
+<p>
+<span class="wikianchor" id="named-elements"><a class="anchor" href="#named-elements" title="Link to #named-elements"> ¶</a></span>
+</p>
+<h2 id="NamedElementsqueuesandMultiplepipelineswithgst-launch">Named Elements, queues, and Multiple pipelines with gst-launch<a class="anchor" href="#NamedElementsqueuesandMultiplepipelineswithgst-launch" title="Link to this section"> ¶</a></h2>
+<p>
+When mixing audio and video elements with <tt>gst-launch</tt> one must make use of multiple pipelines using <tt>named elements</tt>. When developing GStreamer based applications you create 'Bin' elements that put multiple elements together in a bin.
+</p>
+<p>
+The <tt>name</tt> property can be specified on any element in a pipeline and by default if not specified it will be set to the previous name (if any). Multiple pipelines can be provided to <tt>gst-launch</tt> and connected together by their names by either sourcing a pipeline with a name followed by a '.' or sinking a pipeline to a name followed by a '.'.
+</p>
+<p>
+This is best explained with some examples:
+</p>
+<ul><li>encoding a stream with audio and video content into an AVI file:
+<div class="code"><pre>gst-launch-1.0 <span class="se">\
+</span>  v4l2src <span class="se">\
+</span>    ! <span class="nv">$VIDEO_CAPABILITIES</span> <span class="se">\
+</span>    ! mux. <span class="se">\
+</span>  alsasrc <span class="se">\
+</span>    ! <span class="nv">$AUDIO_CAPABILITIES</span> <span class="se">\
+</span>    ! mux. <span class="se">\
+</span>  avimux <span class="nv">name</span><span class="o">=</span>mux <span class="se">\
+</span>    ! filesink <span class="nv">location</span><span class="o">=</span>test.avi
+</pre></div><ul><li>the <tt>v4l2src</tt> pipeline ends with <tt>mux.</tt> which means its output is sent to the pipeline who's name is <tt>mux</tt>
+</li><li>the <tt>alsasrc</tt> pipeline ends with <tt>mux.</tt> which means its output is sent to the pipeline who's name is <tt>mux</tt>
+</li><li>the <tt>avimux</tt> pipeline specifies <tt>name=mux</tt> therefore it takes as a source all pipelines that ended with <tt>mux.</tt>
+</li></ul></li><li>decoding a stream with audio and video content from an AVI file:
+<div class="code"><pre>gst-launch-1.0 <span class="se">\
+</span>  filesource <span class="nv">location</span><span class="o">=</span>test.avi <span class="se">\
+</span>    ! avidemux <span class="nv">name</span><span class="o">=</span>demux <span class="se">\
+</span>  demux. ! queue ! ac3parse ! a52dec ! audioconvert ! alsasink <span class="se">\
+</span>  demux. ! queue ! mpeg4videoparse ! imxvpudec ! imxipuvideosink
+</pre></div><ul><li>the <tt>filesource</tt> pipeline ends with <tt>name=demux</tt> which means the output of this pipeline will be sent to all pipelines with a <tt>demux.</tt> source (who's types have been successfully negotiated)
+</li><li>the audio pipeline consisting of the ac3parse element will source buffers that are supported by its sink capabilities (ie audio/x-ac3, audio/x-eac3, audio/ac3)
+</li><li>the video pipeline consisting of the mpeg4videoparse element will source buffers that are supported by its sink capabilities (ie video/mpeg, video-x-divx)
+</li><li>queue elements are used to keep one pipeline or element from blocking another. For example, if the mpeg4videoparse element needs more data from the avidemux element before it can decode a frame and send it down its pipeline it would normally stall the pipeline unless a queue element was in place to allow buffering
+</li></ul></li></ul><p>
+<span class="wikianchor" id="mux"><a class="anchor" href="#mux" title="Link to #mux"> ¶</a></span>
+</p>
+<h2 id="Muxingmixedcontent">Muxing mixed content<a class="anchor" href="#Muxingmixedcontent" title="Link to this section"> ¶</a></h2>
+<p>
+Often a multi-media stream will consist of mixed audio and video streams that are multiplexed (aka 'muxed') together into a single bitstream. The GStreamer elements that perform the combining or muxiplexing on the stream creation side are called 'Muxers'.
+</p>
+<p>
+You can use <tt>gst-inspect</tt> to see a list of most of these using grep:
+</p>
+<pre class="wiki">gst-inspect-1.0 | grep -i muxer | grep -vi de
+</pre><p>
+Some common examples:
+</p>
+<ul><li>mpegtsmux: MPEG Transport Stream Muxer
+</li><li>mpegpsmux: MPEG Program Stream Muxer
+</li><li>matroskamux: Matroska muxer
+</li><li>avimux: Avi muxer
+</li><li>qtmux: QuickTime Muxer
+</li><li>oggmux: Ogg muxer
+</li></ul><p>
+To mux mixed content together include one of these elements following the audio and video pipelines.
+</p>
+<p>
+Examples:
+</p>
+<ul><li>encoding a stream with audio and video content into an AVI file:
+<div class="code"><pre>gst-launch-1.0 <span class="se">\
+</span>  videotestsrc <span class="se">\
+</span>    ! <span class="nv">$VIDEO_CAPABILITIES</span> <span class="se">\
+</span>    ! mux. <span class="se">\
+</span>  audiotestsrc <span class="se">\
+</span>    ! <span class="nv">$AUDIO_CAPABILITIES</span> <span class="se">\
+</span>    ! mux. <span class="se">\
+</span>  avimux <span class="nv">name</span><span class="o">=</span>mux <span class="se">\
+</span>    ! filesink <span class="nv">location</span><span class="o">=</span>test.avi
+</pre></div><ul><li>the <tt>videotestsrc</tt> pipeline ends with <tt>mux.</tt> which means its output is sent to the pipeline who's name is <tt>mux</tt> and who's format has been successfully negotiated.
+</li><li>the <tt>audiotestsrc</tt> pipeline ends with <tt>mux.</tt> which means its output is sent to the pipeline who's name is <tt>mux</tt> and who's format has been successfully negotiated.
+</li><li>the <tt>avimux</tt> pipeline specifies <tt>name=mux</tt> therefore it takes as a source all pipelines that ended with <tt>mux.</tt> and it understands how to multiplex the two types of data together into its output which is written to the file test.avi
+</li></ul></li></ul><h3 id="Example:CaptureMPEG4videoMP3AudiomuxedtogetherinaAVIFile">Example: Capture MPEG4 video, MP3 Audio muxed together in a AVI File<a class="anchor" href="#Example:CaptureMPEG4videoMP3AudiomuxedtogetherinaAVIFile" title="Link to this section"> ¶</a></h3>
+<p>
+To capture, encode, and output audio and video using MPEG4 video compression, MP3 audio compression, and an AVI file format you could use:
+</p>
+<div class="code"><pre>gst-launch-1.0 <span class="se">\
+</span>  imxv4l2videosrc <span class="nv">device</span><span class="o">=</span>/dev/video0 <span class="se">\
+</span>    ! imxvpuenc_mpeg4 <span class="nv">bitrate</span><span class="o">=</span>10000 <span class="se">\
+</span>    ! mux. <span class="se">\
+</span>  alsasrc <span class="nv">device</span><span class="o">=</span><span class="s2">"sysdefault:CARD=sgtl5000audio"</span> <span class="se">\
+</span>    ! audioconvert ! imxmp3audioenc <span class="nv">bitrate</span><span class="o">=</span>128 <span class="se">\
+</span>    ! mux. <span class="se">\
+</span>  avimux <span class="nv">name</span><span class="o">=</span>mux <span class="se">\
+</span>    ! filesink <span class="nv">location</span><span class="o">=</span>test.avi
+</pre></div><ul><li>the <tt>imxv4l2videosrc</tt> pipeline ends with <tt>mux.</tt> which means its output (video/mpeg) is sent to the pipeline who's name is <tt>mux</tt>
+</li><li>the <tt>alsasrc</tt> pipeline ends with <tt>mux.</tt> which means its output (audio/mpeg) is sent to the pipeline who's name is <tt>mux</tt>
+</li><li>the <tt>avimux</tt> pipeline specifies <tt>name=mux</tt> therefore it takes as a source all pipelines that ended with <tt>mux.</tt> and it understands how to multiplex the two types of data together into its output which is written to the file test.avi.
+</li></ul><p>
+<span class="wikianchor" id="demux"><a class="anchor" href="#demux" title="Link to #demux"> ¶</a></span>
+</p>
+<h2 id="De-muxingmixedcontent">De-muxing mixed content<a class="anchor" href="#De-muxingmixedcontent" title="Link to this section"> ¶</a></h2>
+<p>
+Often a multi-media stream will consist of mixed audio and video streams that are multiplexed (aka 'muxed') together into a single bitstream. The GStreamer elements that perform the de-multiplexing on the stream consumption side are called 'De-Muxers'.
+</p>
+<p>
+You can use <tt>gst-inspect</tt> to see a list of most of these using grep:
+</p>
+<pre class="wiki">gst-inspect-1.0 | grep -i 'de\?muxer'
+</pre><p>
+Some common examples:
+</p>
+<ul><li>tsparse: MPEG transport stream parser
+</li><li>tsdemux: MPEG transport stream demuxer
+</li><li>matroskademux: Matroska demuxer
+</li><li>avidemux: Avi demuxer
+</li><li>qtdemux: QuickTime demuxer
+</li><li>oggdemux: Ogg demuxer
+</li></ul><p>
+To de-mux mixed content include one of these elements following the audio and video pipelines. Note that unlike muxing typically you also need to use a <tt>parser</tt> element to parse the bitstream and break it into discrete buffers that the downstream decoder can understand.
+</p>
+<p>
+Some common parsers:
+</p>
+<ul><li>ogmaudioparse: OGM audio stream parser
+</li><li>ogmvideoparse: OGM video stream parser
+</li><li>aacparse: AAC audio stream parser
+</li><li>amrparse: AMR audio stream parser
+</li><li>ac3parse: AC3 audio stream parser
+</li><li>flacparse: FLAC audio parser
+</li><li>mpegaudioparse: MPEG1 Audio Parser
+</li><li>h263parse: H.263 parser
+</li><li>h264parse: H.264 parser
+</li><li>mpegvideoparse: MPEG video elementary stream parser
+</li><li>mpeg4videoparse: MPEG 4 video elementary stream parser
+</li><li>pngparse: PNG parser
+</li><li>vc1parse: VC1 parser
+</li></ul><p>
+Examples:
+</p>
+<ul><li>decoding a stream with audio and video content from an AVI file:
+<div class="code"><pre>gst-launch-1.0 <span class="se">\
+</span>  filesource <span class="nv">location</span><span class="o">=</span>test.avi <span class="se">\
+</span>    ! avidemux <span class="nv">name</span><span class="o">=</span>demux <span class="se">\
+</span>  demux. ! queue ! ac3parse ! a52dec ! audioconvert ! alsasink <span class="se">\
+</span>  demux. ! queue ! mpeg4videoparse ! imxvpudec ! imxipuvideosink
+</pre></div><ul><li>the <tt>filesource</tt> pipeline ends with <tt>name=demux</tt> which means the output of this pipeline will be sent to all pipelines with a <tt>demux.</tt> source (who's types have been successfully negotiated)
+</li><li>the audio pipeline consisting of the ac3parse element will source buffers that are supported by its sink capabilities (ie audio/x-ac3, audio/x-eac3, audio/ac3)
+</li><li>the video pipeline consisting of the mpeg4videoparse element will source buffers that are supported by its sink capabilities (ie video/mpeg, video-x-divx)
+</li><li>queue elements are used to keep one pipeline or element from blocking another. For example, if the mpeg4videoparse element needs more data from the avidemux element before it can decode a frame and send it down its pipeline it would normally stall the pipeline unless a queue element was in place to allow buffering
+</li></ul></li></ul><p>
+<span class="wikianchor" id="ex1"><a class="anchor" href="#ex1" title="Link to #ex1"> ¶</a></span>
+</p>
+<h3 id="Example:PlaybackMatroskafilewithWEBMvideoandVorbisAudio">Example: Playback Matroska file with WEBM video and Vorbis Audio<a class="anchor" href="#Example:PlaybackMatroskafilewithWEBMvideoandVorbisAudio" title="Link to this section"> ¶</a></h3>
+<p>
+An example file consisting of a Matroska file container that includes WEBM encoded video and Vorbis encoded audio can be found at the <a class="ext-link" href="https://mango.blender.org/download/"><span class="icon">​</span>Tears of Steel</a> download site. Tears of Steel is a relatively popular video (Creative Commons License) that has several encodings.
+</p>
+<p>
+Video file downloadable <a class="ext-link" href="http://media.xiph.org/mango/tears_of_steel_1080p.webm"><span class="icon">​</span>here</a>
+</p>
+<p>
+For this file we can use the <tt>filessrc</tt> source element, the <tt>matroskademux}} demuxer, the {{{ivorbisdec</tt> Vorbos audio decoder, and the <tt>imxg2dvideosink</tt> sink element:
+</p>
+<div class="code"><pre>gst-launch-1.0 <span class="se">\
+</span>  filesrc <span class="nv">location</span><span class="o">=</span>/media/open-media/tears_of_steel_1080p.webm <span class="k">do</span>-timestamp<span class="o">=</span><span class="nb">true </span><span class="nv">typefind</span><span class="o">=</span><span class="nb">true</span> ! <span class="se">\
+</span>    matroskademux <span class="nv">name</span><span class="o">=</span>d <span class="se">\
+</span>  d. ! queue ! ivorbisdec  ! queue ! alsasink <span class="nv">device</span><span class="o">=</span>hw:1,0 <span class="se">\
+</span>  d. ! queue ! imxvpudec   ! queue ! imxg2dvideosink <span class="nv">framebuffer</span><span class="o">=</span>/dev/fb0
+</pre></div><p>
+<span class="wikianchor" id="ex2"><a class="anchor" href="#ex2" title="Link to #ex2"> ¶</a></span>
+</p>
+<h3 id="Example:PlaybackQuicktimefilewithH.264AVCvideoandAACAudio">Example: Playback Quicktime file with H.264/AVC video and AAC Audio<a class="anchor" href="#Example:PlaybackQuicktimefilewithH.264AVCvideoandAACAudio" title="Link to this section"> ¶</a></h3>
+<p>
+An example file consisting of a Quicktime file container that includes H.264/AVC encoded video and AAC encoded audio can be found at the <a class="ext-link" href="https://durian.blender.org/download/"><span class="icon">​</span>Sintel</a> download site. Sintel is a relatively popular video (Creative Commons License) that has several encodings.
+</p>
+<p>
+Video file downloadable <a class="ext-link" href="https://download.blender.org/durian/trailer/sintel_trailer-1080p.mp4"><span class="icon">​</span>here</a>
+</p>
+<p>
+For this file we can use the <tt>filesrc</tt> source element, the <tt>h264parse</tt> parser element along with the <tt>imxvpudec</tt> decoder element, and the <tt>avdec_aac</tt> audio decoder element.
+</p>
+<div class="code"><pre> gst-launch-1.0  filesrc <span class="nv">location</span><span class="o">=</span>/home/root/sintel_trailer-1080p.mp4  ! <span class="se">\
+</span>   qtdemux <span class="nv">name</span><span class="o">=</span>d <span class="se">\
+</span> d. ! queue ! h264parse ! imxvpudec ! imxg2dvideosink <span class="se">\
+</span> d. ! queue ! avdec_aac ! audioconvert ! alsasink
+</pre></div><h3 id="Example:PlaybackMPEG-TSfile">Example: Playback MPEG-TS file<a class="anchor" href="#Example:PlaybackMPEG-TSfile" title="Link to this section"> ¶</a></h3>
+<p>
+Video only:
+</p>
+<pre class="wiki">gst-launch-1.0 \
+  filesrc location=/tmp2/T2C00201_1080p60_Crop.ts ! \
+  tsdemux ! mpegvideoparse ! imxvpudec ! imxipuvideosink sync=false async=false
+</pre><p>
+Video + Audio
+</p>
+<pre class="wiki">gst-launch-1.0 \
+  filesrc location=/tmp2/T2C00201_1080p60_Crop.ts \
+    ! tsdemux name=demux \
+  demux. ! queue ! mpegaudioparse ! queue ! mad ! audioconvert ! queue ! alsasink \
+  demux. ! queue ! mpegvideoparse ! queue ! imxvpudec ! queue ! imxg2dvideosink sync=false async=false
+
+</pre><p>
+<span class="wikianchor" id="bin"><a class="anchor" href="#bin" title="Link to #bin"> ¶</a></span>
+</p>
+<h2 id="Binelements">Bin elements<a class="anchor" href="#Binelements" title="Link to this section"> ¶</a></h2>
+<p>
+A <strong>Bin</strong> element refers to a group of elements strung together and referenced as one. However, there are stand-alone elements that provide some automatic negotiation of sub-elements which use this concept.
+</p>
+<p>
+<span class="wikianchor" id="playbin"><a class="anchor" href="#playbin" title="Link to #playbin"> ¶</a></span>
+</p>
+<h3 id="GStreamerplaybin">GStreamer <tt>playbin</tt><a class="anchor" href="#GStreamerplaybin" title="Link to this section"> ¶</a></h3>
+<p>
+GStreamer <tt>playbin</tt> element attempts to create a pipeline that will play both the audio and video portions of a file. For example:
+</p>
+<div class="code"><pre>gst-launch-1.0 playbin <span class="nv">uri</span><span class="o">=</span>file:///media/open-media/big_buck_bunny_1080p_mp4v_ac3_5.1.avi
+</pre></div><p>
+The above pipeline will attempt to output to the first video device and first audio devices found. However, you can further specify this by:
+</p>
+<div class="code"><pre>gst-launch-1.0 playbin <span class="nv">uri</span><span class="o">=</span>file:///media/open-media/big_buck_bunny_1080p_mp4v_ac3_5.1.avi audio-sink<span class="o">=</span><span class="s2">"alsasink device=hw:1,0"</span>
+</pre></div><p>
+Please type <tt>gst-inspect-1.0 playbin</tt> to see more options.
+</p>
+<p>
+<span class="wikianchor" id="decodebin"><a class="anchor" href="#decodebin" title="Link to #decodebin"> ¶</a></span>
+</p>
+<h3 id="GStreamerdecodebin">GStreamer <tt>decodebin</tt><a class="anchor" href="#GStreamerdecodebin" title="Link to this section"> ¶</a></h3>
+<p>
+The GStreamer plugin <tt>decodebin</tt> is very useful if you're unsure of which decoder to use on a stream. For example, we can replace the example under <a class="wiki" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/multimedia#ex1">the first example</a> with the following:
+</p>
+<div class="code"><pre>gst-launch-1.0 <span class="se">\
+</span>  filesrc <span class="nv">location</span><span class="o">=</span>/media/open-media/tears_of_steel_1080p.webm <span class="k">do</span>-timestamp<span class="o">=</span><span class="nb">true </span><span class="nv">typefind</span><span class="o">=</span><span class="nb">true</span> ! <span class="se">\
+</span>  matroskademux <span class="nv">name</span><span class="o">=</span>d <span class="se">\
+</span>  d. ! queue ! ivorbisdec ! queue ! alsasink <span class="nv">device</span><span class="o">=</span>hw:1,0 <span class="se">\
+</span>  d. ! queue ! decodebin  ! queue ! imxg2dvideosink <span class="nv">framebuffer</span><span class="o">=</span>/dev/fb0
+</pre></div><p>
+Note that <tt>decodebin</tt> doesn't always choose the correct decoder, so be wary of this. It is similar to <tt>playbin</tt> in that it aids in creating a dynamic pipeline.
+</p>
+<p>
+<span class="wikianchor" id="gst-play"><a class="anchor" href="#gst-play" title="Link to #gst-play"> ¶</a></span>
+</p>
+<h3 id="GStreamergst-play-1.0">GStreamer <tt>gst-play-1.0</tt><a class="anchor" href="#GStreamergst-play-1.0" title="Link to this section"> ¶</a></h3>
+<p>
+The stand-alone application <tt>gst-play</tt> is is a program that utilizes the <tt>playbin</tt> element and thus can be used for playback of many file types. The above example <tt>gst-launch-1.0 playbin uri=file:///media/open-media/big_buck_bunny_1080p_mp4v_ac3_5.1.avi</tt> can be replaced with:
+</p>
+<div class="code"><pre>gst-play-1.0 /media/open-media/big_buck_bunny_1080p_mp4v_ac3_5.1.avi
+</pre></div><p>
+<span class="wikianchor" id="determining-pipelines"><a class="anchor" href="#determining-pipelines" title="Link to #determining-pipelines"> ¶</a></span>
+</p>
+<h2 id="Howtodeterminewhatpipelineisneededtodecodeandplay">How to determine what pipeline is needed to decode and play<a class="anchor" href="#Howtodeterminewhatpipelineisneededtodecodeandplay" title="Link to this section"> ¶</a></h2>
+<p>
+Sometimes the above Bin elements are not flexible enough and you need to determine exactly what pipeline you can use to decode and play a stream.
+</p>
+<p>
+The <tt>gst-launch</tt> application provides a couple of useful debugging tools that can help with this:
+</p>
+<ul><li>using <tt>GST_DEBUG_DUMP_DOT_DIR</tt> and Graphviz
+</li><li>using <tt>gst-launch -v</tt>
+</li></ul><p>
+<span class="wikianchor" id="filter-graph"><a class="anchor" href="#filter-graph" title="Link to #filter-graph"> ¶</a></span>
+</p>
+<h3 id="GST_DEBUG_DUMP_DOT_DIR">GST_DEBUG_DUMP_DOT_DIR<a class="anchor" href="#GST_DEBUG_DUMP_DOT_DIR" title="Link to this section"> ¶</a></h3>
+<p>
+You can set the GST_DEBUG_DUMP_DOT_DIR env variable to a directory which will cause <tt>gst-launch</tt> to output a <tt>.dot</tt> file for each phase of the pipeline then use a tool such as <tt>Graphviz</tt> to visualize the <tt>.dot</tt> file.
+</p>
+<p>
+Example:
+</p>
+<ul><li>use playbin to playback a file:
+<pre class="wiki">root@ventana:~# GST_DEBUG_DUMP_DOT_DIR=/tmp/dot gst-launch-1.0 playbin uri=file:///mnt/big_buck_bunny_1080p_ac3-5.1_mp4.avi
+</pre><ul><li>hit Cntl-C after decoding starts to exit early
+</li></ul></li><li>see the dot files created:
+<pre class="wiki">root@ventana:~# ls /tmp/dot
+0.00.00.108710334-gst-launch.NULL_READY.dot
+0.00.00.490807334-gst-launch.READY_PAUSED.dot
+0.00.00.506736000-gst-launch.PAUSED_PLAYING.dot
+0.00.03.135202001-gst-launch.PLAYING_PAUSED.dot
+0.00.03.254000001-gst-launch.PAUSED_READY.dot
+</pre></li><li>transfer to a PC and use something like <tt>xdot</tt> to view:
+<pre class="wiki">xdot 0.00.03.135202001-gst-launch.PLAYING_PAUSED.dot
+</pre><ul><li>zoom in along the graph and you can see that:
+<ul><li><tt>GstFileSrc</tt> is the source,
+</li><li><tt>GstAviDemux</tt> is used to demux to audio/x-ac3,
+</li><li><tt>GstAc3Parse</tt> is used to parse the audio into audio frames,
+</li><li><tt>GstMpeg4VParse</tt> is used to parse the video into video frames,
+</li><li><tt>GstImxVpuDec</tt> is used to decode the video from video/mpeg to video/x-raw,
+</li><li><tt> GstA52Dec</tt> is used to decode the audio from audio/x-ac3 to audio/x-raw,
+</li><li>etc
+</li></ul></li><li>Note that some hunting with <tt>gst-inspect</tt> must be done to determine what elements coorespond to the above class names
+</li></ul></li></ul><p>
+Reference:
+</p>
+<ul><li><a class="ext-link" href="http://docs.gstreamer.com/display/GstSDK/Basic+tutorial+11%3A+Debugging+tools"><span class="icon">​</span>http://docs.gstreamer.com/display/GstSDK/Basic+tutorial+11%3A+Debugging+tools</a>
+</li></ul><h3 id="gst-launch-v">gst-launch -v<a class="anchor" href="#gst-launch-v" title="Link to this section"> ¶</a></h3>
+<p>
+The verbose debugging from <tt>gst-launch -v</tt> can show you the negotiation that takes place as a pipeline moves through its stages.
+</p>
+<p>
+Example:
+</p>
+<pre class="wiki">gst-launch-1.0 -v playbin uri=file:///mnt/big_buck_bunny_1080p_ac3-5.1_mp4.avi
+</pre><p>
+examining the verbose output can show you the following:
+</p>
+<ul><li>container: AVI: avidemux
+</li><li>video: MPEG-4 4481kbps min, 6668kbps max: mpeg4videoparse ! imxvpudec
+</li><li>audio: AC3 48khz 5channels: ac3parse ! a52dec
+</li></ul><p>
+Therefore you can use these pipelines to decode and play:
+</p>
+<ul><li>video only (output to imxipuvideosink fb0)
+<pre class="wiki">gst-launch-1.0 -v filesrc location=/mnt/big_buck_bunny_1080p_ac3-5.1_mp4.avi ! avidemux ! mpeg4videoparse ! imxvpudec ! imxipuvideosink
+</pre></li><li>audio only (output to hdmi audio sink)
+<pre class="wiki">gst-launch-1.0 -v filesrc location=/mnt/big_buck_bunny_1080p_ac3-5.1_mp4.avi ! avidemux ! ac3parse ! a52dec ! audioconvert ! alsasink device="sysdefault:CARD=imxhdmisoc"
+</pre></li><li>both audio and video
+<pre class="wiki">gst-launch-1.0 -v filesrc location=/mnt/big_buck_bunny_1080p_ac3-5.1_mp4.avi ! avidemux name=d \
+  d. ! queue ! mpeg4videoparse ! imxvpudec ! imxipuvideosink \
+  d. ! queue ! ac3parse ! a52dec ! audioconvert ! alsasink device="sysdefault:CARD=imxhdmisoc"
+</pre></li></ul></div>
+          
+          <div class="trac-modifiedby">
+            <span><a href="http://trac.gateworks.com/wiki/Yocto/gstreamer/multimedia?action=diff&amp;version=7" title="Version 7 by rerbstoesser: add ts example">Last modified</a> <a class="timeline" href="http://trac.gateworks.com/timeline?from=2016-08-18T16%3A32%3A38-07%3A00&amp;precision=second" title="See timeline at 08/18/16 16:32:38">10 months ago</a></span>
+            <span class="trac-print">Last modified on 08/18/16 16:32:38</span>
+          </div>
+        
+        
+      </div>
+      
+
+    </div>
+    
+    <div id="altlinks">
+      <h3>Download in other formats:</h3>
+      <ul>
+        <li class="last first">
+          <a rel="nofollow" href="http://trac.gateworks.com/wiki/Yocto/gstreamer/multimedia?format=txt">Plain Text</a>
+        </li>
+      </ul>
+    </div>
+    </div>
+    <div id="footer" xml:lang="en" lang="en"><hr>
+      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="trac_logo_mini.png" alt="Trac Powered" width="107" height="30"></a>
+      <p class="left">Powered by <a href="http://trac.gateworks.com/about"><strong>Trac 1.0</strong></a><br>
+        By <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
+      <p class="right">Visit the Trac open source project at<br><a href="http://trac.edgewall.org/">http://trac.edgewall.org/</a></p>
+    </div>
+  
+<!-- Google Analytics Widget Code -->
+
+<!-- Google Analytics Widget Code Ended -->
+
+</body>
+</html>

@@ -1,0 +1,4108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    <meta charset="UTF-8">
+    <link rel="canonical" href="https://blog.csdn.net/z827997640/article/details/81366251">
+    
+    <meta name="renderer" content="webkit">
+    <meta name="force-rendering" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="referrer" content="always">
+    <meta http-equiv="Cache-Control" content="no-siteapp"><link rel="alternate" media="handheld" href="https://blog.csdn.net/z827997640/article/details/81366251#">
+    <meta name="shenma-site-verification" content="5a59773ab8077d4a62bf469ab966a63b_1497598848">
+        <meta name="csdn-baidu-search" =="" content="{&quot;autorun&quot;:true,&quot;install&quot;:true,&quot;keyword&quot;:&quot;mfcopyimage+stride+of+the+destination+buffer%2C+in+bytes&quot;}">
+        
+
+    <link href="favicon.ico" rel="SHORTCUT ICON">
+    <title>Image Stride（内存图像行跨度） - 剑指天空的博客 - CSDN博客</title>
+
+        
+                    
+            
+            
+        
+          
+        
+    
+    
+    
+    
+    <!-- 新版上报 -->
+    
+    <!-- 新版上报end -->
+            
+    
+
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body class="nodata "><div id="BAIDU_DUP_fp_wrapper" style="position: absolute; left: -1px; bottom: -1px; z-index: 0; width: 0px; height: 0px; overflow: hidden; visibility: hidden; display: none;"><iframe id="BAIDU_DUP_fp_iframe" src="index_1.html" style="width: 0px; height: 0px; visibility: hidden; display: none;"></iframe></div><div id="MathJax_Message" style="display: none;"></div> 
+    
+    
+
+
+
+
+
+<div style="display: none;">
+	<img src="81366251" onerror="setTimeout(function(){if(!/(csdn.net|iteye.com|baiducontent.com|googleusercontent.com|360webcache.com|sogoucdn.com|bingj.com|baidu.com)$/.test(window.location.hostname)){window.location.href=&quot;\x68\x74\x74\x70\x73\x3a\x2f\x2f\x77\x77\x77\x2e\x63\x73\x64\x6e\x2e\x6e\x65\x74&quot;}},3000);">
+</div>
+
+
+<div class="container clearfix" id="mainBox">
+			<div class="recommend-right">
+  <ul class="recommend-fixed-box">
+    
+  </ul>
+</div>	
+    <main>
+        <div class="blog-content-box">
+	<div class="article-header-box">
+		<div class="article-header">
+			<div class="article-title-box">
+				<span class="article-type type-2 float-left">转</span>				<h1 class="title-article">Image Stride（内存图像行跨度）</h1>
+			</div>
+			<div class="article-info-box">
+				<div class="article-bar-top">
+																				<span class="time">2018年08月02日 19:33:51</span>
+					<a class="follow-nickName" href="https://me.csdn.net/z827997640" target="_top">alpha_Escher</a>
+						<span class="read-count">阅读数：94</span>
+						
+														<span class="tags-box artic-tag-box">
+								<span class="label">标签：</span>
+																<a data-track-click="{&quot;mod&quot;:&quot;popu_626&quot;,&quot;con&quot;:&quot;图像行跨度&quot;}" data-track-view="{&quot;mod&quot;:&quot;popu_626&quot;,&quot;con&quot;:&quot;图像行跨度&quot;}" class="tag-link" href="http://so.csdn.net/so/search/s.do?q=%E5%9B%BE%E5%83%8F%E8%A1%8C%E8%B7%A8%E5%BA%A6&amp;t=blog" target="_top">图像行跨度																</a><a data-track-click="{&quot;mod&quot;:&quot;popu_626&quot;,&quot;con&quot;:&quot;stride&quot;}" data-track-view="{&quot;mod&quot;:&quot;popu_626&quot;,&quot;con&quot;:&quot;stride&quot;}" class="tag-link" href="http://so.csdn.net/so/search/s.do?q=stride&amp;t=blog" target="_top">stride																</a><a data-track-click="{&quot;mod&quot;:&quot;popu_626&quot;,&quot;con&quot;:&quot;image stride&quot;}" data-track-view="{&quot;mod&quot;:&quot;popu_626&quot;,&quot;con&quot;:&quot;image stride&quot;}" class="tag-link" href="http://so.csdn.net/so/search/s.do?q=image%20stride&amp;t=blog" target="_top">image stride																</a>
+							</span>
+																					<div class="tags-box space">
+								<span class="label">个人分类：</span>
+																<a class="tag-link" href="https://blog.csdn.net/z827997640/article/category/7829480" target="_top">图像处理																</a>
+							</div>
+																								</div>
+				<div class="operating">
+														</div>
+			</div>
+		</div>
+	</div>
+	<article class="baidu_pl">
+		<div id="article_content" class="article_content clearfix csdn-tracking-statistics" data-pid="blog" data-mod="popu_307" data-dsm="post">
+								            <div id="content_views" class="markdown_views prism-atom-one-dark">
+							<!-- flowchart 箭头图标 勿删 -->
+							<svg xmlns="http://www.w3.org/2000/svg" style="display: none;"><path stroke-linecap="round" d="M5,0 0,2.5 5,5z" id="raphael-marker-block" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path></svg>
+							<h1 id="image-stride内存图像行跨度">Image Stride（内存图像行跨度）</h1>
+
+<p>When a video image is stored in memory, the memory buffer might contain extra padding bytes after each row of pixels. The padding bytes affect how the image is store in memory, but do not affect how the image is displayed.</p>
+
+<p>当视频图像存储在内存时，图像的每一行末尾也许包含一些扩展的内容，这些扩展的内容只影响图像如何存储在内存中，但是不影响图像如何显示出来；</p>
+
+<p>The stride is the number of bytes from one row of pixels in memory to the next row of pixels in memory. Stride is also called pitch. If padding bytes are present, the stride is wider than the width of the image, as shown in the following illustration.</p>
+
+<p>Stride 就是这些扩展内容的名称，Stride 也被称作 Pitch，如果图像的每一行像素末尾拥有扩展内容，Stride 的值一定大于图像的宽度值，就像下图所示： <br>
+<img src="20180802193112789" alt="这里写图片描述" title=""> <br>
+Two buffers that contain video frames with equal dimensions can have two different strides. If you process a video image, you must take into the stride into account.</p>
+
+<p>两个缓冲区包含同样大小（宽度和高度）的视频帧，却不一定拥有同样的 Stride 值，如果你处理一个视频帧，你必须在计算的时候把 Stride 考虑进去；</p>
+
+<p>In addition, there are two ways that an image can be arranged in memory. In a top-down image, the top row of pixels in the image appears first in memory. In a bottom-up image, the last row of pixels appears first in memory. The following illustration shows the difference between a top-down image and a bottom-up image.</p>
+
+<p>另外，一张图像在内存中有两种不同的存储序列（arranged），对于一个从上而下存储（Top-Down） 的图像，最顶行的像素保存在内存中最开头的部分，对于一张从下而上存储（Bottom-Up）的图像，最后一行的像素保存在内存中最开头的部分，下面图示展示了这两种情况： <br>
+<img src="20180802193219567" alt="这里写图片描述" title=""> <br>
+A bottom-up image has a negative stride, because stride is defined as the number of bytes need to move down a row of pixels, relative to the displayed image. YUV images should always be top-down, and any image that is contained in a Direct3D surface must be top-down. RGB images in system memory are usually bottom-up. </p>
+
+<p>一张从下而上的图像拥有一个负的 Stride 值，因为 Stride 被定义为[从一行像素移动到下一行像素时需要跨过多少个像素]，仅相对于被显示出来的图像而言；而 YUV 图像永远都是从上而下表示的，以及任何包含在 Direct3D Surface 中的图像必须是从上而下，RGB 图像保存在系统内存时通常是从下而上；</p>
+
+<p>Video transforms in particular need to handle buffers with mismatched strides, because the input buffer might not match the output buffer. For example, suppose that you want to convert a source image and write the result to a destination image. Assume that both images have the same width and height, but might not have the same pixel format or the same image stride.</p>
+
+<p>尤其是视频变换，特别需要处理不同 Stride 值的图像，因为输入缓冲也许与输出缓冲不匹配，举个例子，假设你想要将源图像转换并且将结果写入到目标图像，假设两个图像拥有相同的宽度和高度，但是其像素格式与 Stride 值也许不同；</p>
+
+<p>The following example code shows a generalized approach for writing this kind of function. This is not a complete working example, because it abstracts many of the specific details.</p>
+
+<p>下面代码演示了一种通用方法来编写这种功能，这段代码并不完整，因为这只是一个抽象的算法，没有完全考虑到真实需求中的所有细节；</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs cs"><span class="hljs-keyword">void</span> ProcessVideoImage(
+    BYTE*       pDestScanLine0,    
+    LONG        lDestStride,       
+    <span class="hljs-keyword">const</span> BYTE* pSrcScanLine0,     
+    LONG        lSrcStride,        
+    DWORD       dwWidthInPixels,    
+    DWORD       dwHeightInPixels
+    )
+{
+    <span class="hljs-keyword">for</span> (DWORD y = <span class="hljs-number">0</span>; y &lt; dwHeightInPixels; y++)
+    {
+        SOURCE_PIXEL_TYPE *pSrcPixel = (SOURCE_PIXEL_TYPE*)pDestScanLine0;
+        DEST_PIXEL_TYPE *pDestPixel = (DEST_PIXEL_TYPE*)pSrcScanLine0;
+
+        <span class="hljs-keyword">for</span> (DWORD x = <span class="hljs-number">0</span>; x &lt; dwWidthInPixels; x +=<span class="hljs-number">2</span>)
+        {
+            pDestPixel[x] = TransformPixelValue(pSrcPixel[x]);
+        }
+        pDestScanLine0 += lDestStride;
+        pSrcScanLine0 += lSrcStride;
+    }
+}</code></pre>
+
+<p>This function takes six parameters:</p>
+
+<p>A pointer to the start of scan line 0 in the destination image.</p>
+
+<p>The stride of the destination image.</p>
+
+<p>A pointer to the start of scan line 0 in the source image.</p>
+
+<p>The stride of the source image.</p>
+
+<p>The width of the image in pixels.</p>
+
+<p>The height of the image in pixels.</p>
+
+<p>这个函数需要六个参数：</p>
+
+<p>　　1. 目标图像的起始扫描行的内存指针</p>
+
+<p>　　2. 目标图像的 Stride 值</p>
+
+<p>　　3. 源图像的起始扫描行的内存指针</p>
+
+<p>　　4. 源图像的 Stride 值</p>
+
+<p>　　5. 图像的宽度值（以像素为单位）</p>
+
+<p>　　6. 图像的高度值（以像素为单位）</p>
+
+<p>The general idea is to process one row at a time, iterating over each pixel in the row. Assume that SOURCE_PIXEL_TYPE and DEST_PIXEL_TYPE are structures representing the pixel layout for the source and destination images, respectively. (For example, 32-bit RGB uses the RGBQUAD structure. Not every pixel format has a pre-defined structure.) Casting the array pointer to the structure type enables you to access the RGB or YUV components of each pixel. At the start of each row, the function stores a pointer to the row. At the end of the row, it increments the pointer by the width of the image stride, which advances the pointer to the next row.</p>
+
+<p>这里的要点是如何一次处理一行像素，遍历一行里面的每一个像素，假设源像素类型与目标像素类型各自在像素的层面上已经结构化来表示一个源图像与目标图像的像素，（举个例子，32 位 RGB 像素使用 RGBQUAD 结构体，并不是每一种像素类型都有预定义结构体的）强制转换数组指针到这样的结构体指针，可以方便你直接读写每一个像素的 RGB 或者 YUV 值，在每一行的开头，这个函数保存了一个指向这行像素的指针，函数的最后一行，通过图像的 Stride 值直接将指针跳转到图像的下一行像素的起始点；</p>
+
+<p>This example calls a hypothetical function named TransformPixelValue for each pixel. This could be any function that calculates a target pixel from a source pixel. Of course, the exact details will depend on the particular task. For example, if you have a planar YUV format, you must access the chroma planes independently from the luma plane; with interlaced video, you might need to process the fields separately; and so forth.</p>
+
+<p>To give a more concrete example, the following code converts a 32-bit RGB image into an AYUV image. The RGB pixels are accessed using an RGBQUAD structure, and the AYUV pixels are accessed using aDXVA2_AYUVSample8 Structure structure.</p>            </div>
+						
+                </div>
+									<div class="hide-article-box text-center">
+						<a class="btn" id="btn-readmore" data-track-view="{&quot;mod&quot;:&quot;popu_376&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/z827997640/article/details/81366251,&quot;}" data-track-click="{&quot;mod&quot;:&quot;popu_376&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/z827997640/article/details/81366251,&quot;}">阅读更多</a>
+					</div>
+					
+					</article>
+	
+</div>
+
+        <div id="dmp_ad_58"><div id="kp_box_58" data-pid="58" data-track-view="{&quot;mod&quot;:&quot;kp_popu_58-402&quot;,&quot;con&quot;:&quot;,,&quot;}" data-track-click="{&quot;mod&quot;:&quot;kp_popu_58-402&quot;,&quot;con&quot;:&quot;,,&quot;}"><div style="width: 100%; background: rgb(255, 255, 255) none repeat scroll 0% 0%; border: 3px solid rgb(255, 255, 255);">
+
+<div class="mediav_ad"><newsfeed class="newsfeed QIHOO__WEB__SO__1548135075930_906" id="QIHOO__WEB__SO__1548135075930_906" style="display: block; margin: 0px; padding: 0px; border: medium none; width: 900px; height: 100px; overflow: hidden; position: relative; text-align: left;"><info-div id="QIHOO__WEB__SO__1548135075930_906-info" style="zoom:1"></info-div></newsfeed></div>
+
+</div></div></div>        <a id="commentBox"></a>
+<div class="comment-box">
+	
+	<div class="comment-edit-box d-flex">
+		<a id="commentsedit"></a>
+		<div class="user-img">
+			<a href="javascript:void(0);" target="_top">
+				<img class="show_loginbox" src="anonymous-user-img.png">
+			</a>
+		</div>
+		<form id="commentform" action="https://blog.csdn.net/z827997640/article/details/81366251">
+			<input id="comment_replyId" type="hidden">
+			<textarea class="comment-content" name="comment_content" id="comment_content" placeholder="想对作者说点什么"></textarea>
+			<div class="opt-box"> <!-- d-flex -->
+				<div id="ubbtools" class="add_code">
+					<a href="#insertcode" code="code" target="_self"><i class="icon iconfont icon-daima"></i></a>
+				</div>
+				<input id="comment_replyId" name="comment_replyId" type="hidden">
+				<input id="comment_userId" name="comment_userId" value="" type="hidden">
+				<input id="commentId" name="commentId" value="" type="hidden">
+				<div style="display: none;" class="csdn-tracking-statistics tracking-click" data-mod="popu_384"><a href="#" target="_top" class="comment_area_btn">发表评论</a></div>
+				<div class="dropdown" id="myDrap">
+					<a class="dropdown-face d-flex align-items-center" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+					<div class="txt-selected text-truncate">添加代码片</div>
+					<svg class="icon d-block" aria-hidden="true">
+						<use xlink:href="#csdnc-triangledown"></use>
+					</svg>
+					</a>
+					<ul class="dropdown-menu" id="commentCode" aria-labelledby="drop4">
+						<li><a data-code="html">HTML/XML</a></li>
+						<li><a data-code="objc">objective-c</a></li>
+						<li><a data-code="ruby">Ruby</a></li>
+						<li><a data-code="php">PHP</a></li>
+						<li><a data-code="csharp">C</a></li>
+						<li><a data-code="cpp">C++</a></li>
+						<li><a data-code="javascript">JavaScript</a></li>
+						<li><a data-code="python">Python</a></li>
+						<li><a data-code="java">Java</a></li>
+						<li><a data-code="css">CSS</a></li>
+						<li><a data-code="sql">SQL</a></li>
+						<li><a data-code="plain">其它</a></li>
+					</ul>
+				</div>  
+				<div class="right-box">
+					<span id="tip_comment" class="tip">还能输入<em>1000</em>个字符</span>
+					<input class="btn btn-sm btn-red btn-comment" value="发表评论" type="submit">
+				</div>
+			</div>
+		</form>
+	</div>
+
+		<div class="comment-list-container">
+		<a id="comments"></a>
+		<div class="comment-list-box">
+		</div>
+		<div id="commentPage" class="pagination-box d-none"></div>
+		<div class="opt-box text-center">
+			<button class="btn btn-sm btn-link-blue" id="btnMoreComment"></button>
+		</div>
+	</div>
+</div>
+        <div class="recommend-box">
+            		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/lxw907304340/article/details/45396419,BlogCommendFromBaidu_3&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/lxw907304340/article/details/45396419" target="_top" title="图像处理中Stride方法理解">
+				<h4 class="text-truncate oneline">
+						<em>图像</em>处理中<em>Stride</em>方法理解				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/8/8/4/3_lxw907304340.jpg" alt="lxw907304340" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">lxw907304340</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">04-30</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							1979</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/lxw907304340/article/details/45396419" target="_top" title="图像处理中Stride方法理解">
+							<span class="desc oneline">一行有 11 个像素(Width = 11), 对一个 32 位(每个像素 4 字节)的图像, Stride = 11 * 4 = 44.
+
+　　但还有个字节对齐的问题, 譬如:
+
+　　一行有...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/lxw907304340">来自：	<span class="blog_title"> lxw907304340的专栏</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/ustcxiangchun/article/details/25893883,BlogCommendFromBaidu_0&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/ustcxiangchun/article/details/25893883" target="_top" title="图像处理中Stride的理解">
+				<h4 class="text-truncate oneline">
+						<em>图像</em>处理中<em>Stride</em>的理解				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/C/6/0/3_ustcxiangchun.jpg" alt="ustcxiangchun" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">ustcxiangchun</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">05-15</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							1.4万</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/ustcxiangchun/article/details/25893883" target="_top" title="图像处理中Stride的理解">
+							<span class="desc oneline">一行有 11 个像素(Width = 11), 对一个 32 位(每个像素 4 字节)的图像, Stride = 11 * 4 = 44.
+
+　　但还有个字节对齐的问题, 譬如:
+
+　　一行有...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/ustcxiangchun">来自：	<span class="blog_title"> 小向的专栏</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/laman819/article/details/78847528,BlogCommendFromBaidu_1&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/laman819/article/details/78847528" target="_top" title="yuv 图像里的stride和plane的解释">
+				<h4 class="text-truncate oneline">
+						yuv <em>图像</em>里的<em>stride</em>和plane的解释				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/F/A/D/3_laman819.jpg" alt="laman819" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">laman819</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">12-19</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							569</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/laman819/article/details/78847528" target="_top" title="yuv 图像里的stride和plane的解释">
+							<span class="desc oneline">转自：http://www.cnblogs.com/welhzh/p/4939613.html
+
+
+stride可以翻译为：跨距
+
+stride指在内存中每行像素所占的空间。如下图所示，为了...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/laman819">来自：	<span class="blog_title"> laman819的博客</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    <div class="recommend-item-box recommend-ad-box"><div id="kp_box_59" data-pid="59" data-track-view="{&quot;mod&quot;:&quot;kp_popu_59-718&quot;,&quot;con&quot;:&quot;,,&quot;}" data-track-click="{&quot;mod&quot;:&quot;kp_popu_59-718&quot;,&quot;con&quot;:&quot;,,&quot;}">
+<div id="_4paradigm_T3_render" class="p4courset3_target _4paradigm_box recommend-item-box clearfix "></div>
+</div></div>
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/u010186001/article/details/72354123,BlogCommendFromBaidu_2&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/u010186001/article/details/72354123" target="_top" title="图像处理、显示中的行宽（linesize）、步长（stride）、间距（pitch）">
+				<h4 class="text-truncate oneline">
+						<em>图像</em>处理、显示中的行宽（linesize）、步长（<em>stride</em>）、间距（pitch）				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/8/A/1/3_u010186001.jpg" alt="u010186001" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">u010186001</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">05-16</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							590</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/u010186001/article/details/72354123" target="_top" title="图像处理、显示中的行宽（linesize）、步长（stride）、间距（pitch）">
+							<span class="desc oneline">[转载] http://blog.csdn.net/bjrxyz/article/details/52690661 
+在图像数据传输和显示的过程中有一个不常用的参数：间距。
+间距的名称：它有很多的别名...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/u010186001">来自：	<span class="blog_title"> 时刻保持踏实努力的常态，机会总会自动找上门</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/u010842019/article/details/52086103,BlogCommendFromBaidu_4&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/u010842019/article/details/52086103" target="_top" title="YUV数据格式转换">
+				<h4 class="text-truncate oneline">
+						YUV数据格式转换				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/2/3/7/3_u010842019.jpg" alt="u010842019" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">u010842019</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">08-01</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							5379</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/u010842019/article/details/52086103" target="_top" title="YUV数据格式转换">
+							<span class="desc oneline">YUV数据格式转换
+1.&nbsp;&nbsp;&nbsp;&nbsp;YUV&nbsp;简介</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/u010842019">来自：	<span class="blog_title">  Zach-Zona的博客</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://bbs.csdn.net/topics/20229952,BlogCommendFromBaidu_5&quot;}">
+		<a href="https://bbs.csdn.net/topics/20229952" target="_top">
+			<h4 class="text-truncate oneline">
+					yuv2rgb函数中的<em>stride</em>_y,<em>stride</em>_uv什么意思？			</h4>
+			<div class="info-box d-flex align-content-center">
+				<p>
+								</p>
+				<p>
+					<span class="date">12-26</span>
+				</p>
+			</div>
+			<p class="content oneline">
+					yv12_to_rgb32(uint8_t *dst, int dst_stride, uint8_t *y_src, uint8_t *v_src, uint8_t *u_src, int stri			</p>
+		</a>
+
+	</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/qq_34711208/article/details/81567508,BlogCommendFromBaidu_6&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/qq_34711208/article/details/81567508" target="_top" title="YUV数据讲解">
+				<h4 class="text-truncate oneline">
+						YUV数据讲解				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/9/F/A/3_qq_34711208.jpg" alt="qq_34711208" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">qq_34711208</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">08-10</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							145</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/qq_34711208/article/details/81567508" target="_top" title="YUV数据讲解">
+							<span class="desc oneline">网上YUV如出一辙都是翻译的： 
+https://msdn.microsoft.com/en-us/library/windows/desktop/dd206750(v=vs.85).aspx
+
+YU...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/qq_34711208">来自：	<span class="blog_title"> 疯狂的LittleBee的博客</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/starperfection/article/details/46608123,BlogCommendFromBaidu_7&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/starperfection/article/details/46608123" target="_top" title="[视频编码] Image Stride">
+				<h4 class="text-truncate oneline">
+						[视频编码] <em>Image</em> <em>Stride</em>				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/F/B/9/3_starperfection.jpg" alt="starperfection" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">starperfection</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">07-23</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							1485</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/starperfection/article/details/46608123" target="_top" title="[视频编码] Image Stride">
+							<span class="desc oneline">image stride是图片内存存储的一个非常重要的概念，在HEVC等视频编码中经常要用到这个概念，很多初学者不理解image width 和image stride 的概念导致在编码过程中遇到了各...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/starperfection">来自：	<span class="blog_title"> 轻舞飞扬</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    <div class="recommend-item-box recommend-ad-box"><div id="kp_box_60" data-pid="60" data-track-view="{&quot;mod&quot;:&quot;kp_popu_60-43&quot;,&quot;con&quot;:&quot;,,&quot;}" data-track-click="{&quot;mod&quot;:&quot;kp_popu_60-43&quot;,&quot;con&quot;:&quot;,,&quot;}"><div class="mediav_ad"><newsfeed class="newsfeed QIHOO__WEB__SO__1548135075996_395" id="QIHOO__WEB__SO__1548135075996_395" style="display: block; margin: 0px; padding: 0px; border: medium none; width: 900px; height: 84px; overflow: hidden; position: relative; text-align: left;"><info-div id="QIHOO__WEB__SO__1548135075996_395-info" style="zoom:1"></info-div></newsfeed></div>
+
+</div></div>
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/wangyaninglm/article/details/44020489,searchFromBaidu_8&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/wangyaninglm/article/details/44020489" target="_top" title="四种简单的图像显著性区域特征提取方法-----AC/HC/LC/FT。">
+				<h4 class="text-truncate oneline">
+						四种简单的<em>图像</em>显著性区域特征提取方法-----AC/HC/LC/FT。				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/1/2/9/3_wangyaninglm.jpg" alt="wangyaninglm" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">wangyaninglm</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">03-02</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							4.7万</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/wangyaninglm/article/details/44020489" target="_top" title="四种简单的图像显著性区域特征提取方法-----AC/HC/LC/FT。">
+							<span class="desc oneline">四种简单的图像显著性区域特征提取方法-----&gt; AC/HC/LC/FT。  分类： 图像处理 2014-08-03 12:40 4088人阅读 评论(4) 收藏 举报  salient region...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/wangyaninglm">来自：	<span class="blog_title"> shiter编写程序的艺术</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+			<div class="recommend-item-box type_hot_word">
+						<div class="content clearfix oneline">
+				<h5 class="float-left">文章热词</h5>
+				<div class="word float-left">
+													<span>
+						<a href="https://edu.csdn.net/courses/o5329_s5330_k" target="_top">
+						机器学习					</a></span>
+																	<span>
+						<a href="https://edu.csdn.net/courses/o5329_s5330_k" target="_top">
+						机器学习课程					</a></span>
+																	<span>
+						<a href="https://edu.csdn.net/courses/o5329_s5330_k" target="_top">
+						机器学习教程					</a></span>
+																	<span>
+						<a href="https://edu.csdn.net/combos/o5329_s5331_l0_t" target="_top">
+						深度学习视频教程					</a></span>
+																	<span>
+						<a href="https://edu.csdn.net/combos/o5329_s5331_l0_t" target="_top">
+						深度学习学习					</a></span>
+												</div>
+			</div>
+									<div class="content clearfix oneline">
+				<h5 class="float-left">相关热词</h5>
+				<div class="float-left">
+									<span>
+						<a href="https://www.csdn.net/gather_2a/NtTaQg1sNi1ibG9n.html" target="_top">
+						c# image</a>
+					</span>
+									<span>
+						<a href="https://www.csdn.net/gather_24/NtzaAg4sMjMtYmxvZwO0O0OO0O0O.html" target="_top">
+						c++ image</a>
+					</span>
+									<span>
+						<a href="https://www.csdn.net/gather_25/MtjaMgzsMTYtYmxvZwO0O0OO0O0O.html" target="_top">
+						c# image 删除帧</a>
+					</span>
+									<span>
+						<a href="https://www.csdn.net/gather_24/MtTaUgwsNjktYmxvZwO0O0OO0O0O.html" target="_top">
+						c# 获取image大小</a>
+					</span>
+									<span>
+						<a href="https://www.csdn.net/gather_2d/MtTakgysOTItYmxvZwO0O0OO0O0O.html" target="_top">
+						c# image 旋转</a>
+					</span>
+									<span>
+						<a href="https://www.csdn.net/gather_4a/NtjaQg3sMS1lZHUO0O0O.html" target="_top">
+						python深度学习图像6</a>
+					</span>
+									<span>
+						<a href="https://www.csdn.net/gather_4a/MtTaYgzsNC1lZHUO0O0O.html" target="_top">
+						python图像教程</a>
+					</span>
+								</div>
+			</div>
+					</div>
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/scutjy2015/article/details/71214140,searchFromBaidu_9&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/scutjy2015/article/details/71214140" target="_top" title="深度学习CNN常见模型详解——包含数据库">
+				<h4 class="text-truncate oneline">
+						深度学习CNN常见模型详解——包含数据库				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/0/6/0/3_scutjy2015.jpg" alt="scutjy2015" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">scutjy2015</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">05-05</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							1749</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/scutjy2015/article/details/71214140" target="_top" title="深度学习CNN常见模型详解——包含数据库">
+							<span class="desc oneline">图像数据库
+http://blog.leanote.com/post/wjgaas@126.com/%E5%9B%BE%E5%83%8F%E6%95%B0%E6%8D%AE%E5%BA%93
+
+一、D...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/scutjy2015">来自：	<span class="blog_title"> 有些代码不应该被忘记</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	          <div class="recommend-item-box blog-expert-recommend-box">
+				<div class="d-flex">
+					<div class="blog-expert-recommend">
+						<div class="blog-expert">
+							<div class="blog-expert-flexbox"></div>
+						</div>
+					</div>
+				</div>
+      </div>
+    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/wonengguwozai/article/details/53516760,searchFromBaidu_10&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/wonengguwozai/article/details/53516760" target="_top" title="深度学习常用CNN Model总结(alex \googlenet\等)">
+				<h4 class="text-truncate oneline">
+						深度学习常用CNN Model总结(alex \googlenet\等)				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/A/0/1/3_wonengguwozai.jpg" alt="wonengguwozai" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">wonengguwozai</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">12-08</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							1420</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/wonengguwozai/article/details/53516760" target="_top" title="深度学习常用CNN Model总结(alex \googlenet\等)">
+							<span class="desc oneline">原文：http://blog.csdn.net/qq_17448289/article/details/52850223
+
+
+
+
+
+【数据库】FaceDataset常用的人脸数据库
+
+...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/wonengguwozai">来自：	<span class="blog_title"> wonengguwozai的博客</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/jxy0123456789/article/details/79572975,searchFromBaidu_11&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/jxy0123456789/article/details/79572975" target="_top" title="深度学习常用的Data Set数据集和CNN Model总结">
+				<h4 class="text-truncate oneline">
+						深度学习常用的Data Set数据集和CNN Model总结				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/E/3/D/3_jxy0123456789.jpg" alt="jxy0123456789" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">jxy0123456789</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">03-15</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							301</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/jxy0123456789/article/details/79572975" target="_top" title="深度学习常用的Data Set数据集和CNN Model总结">
+							<span class="desc oneline">
+                    
+            
+
+
+
+【数据库】FaceDataset常用的人脸数据库
+http://blog.csdn.net//chenriwei2/arti...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/jxy0123456789">来自：	<span class="blog_title"> 深度的魅力</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/hw5226349/article/details/80744233,searchFromBaidu_12&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/hw5226349/article/details/80744233" target="_top" title="TensorRT 4 基本介绍及TensorFlow模型转化Uff格式导入（二）">
+				<h4 class="text-truncate oneline">
+						TensorRT 4 基本介绍及TensorFlow模型转化Uff格式导入（二）				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/9/7/0/3_hw5226349.jpg" alt="hw5226349" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">hw5226349</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">06-20</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							1786</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/hw5226349/article/details/80744233" target="_top" title="TensorRT 4 基本介绍及TensorFlow模型转化Uff格式导入（二）">
+							<span class="desc oneline">原创作品，转载时请务必以超链接形式标明文章原始出处: http://www.dapalm.com/?p=143,作者：大数据，怕了么?
+
+从TensorRT1到TensorRT4一路跟过来，现在支持也...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/hw5226349">来自：	<span class="blog_title"> Mars_WH的专栏</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    <div class="recommend-item-box recommend-ad-box"><div id="kp_box_61" data-pid="61" data-track-view="{&quot;mod&quot;:&quot;kp_popu_61-557&quot;,&quot;con&quot;:&quot;,,&quot;}" data-track-click="{&quot;mod&quot;:&quot;kp_popu_61-557&quot;,&quot;con&quot;:&quot;,,&quot;}"><div class="mediav_ad"><newsfeed class="newsfeed QIHOO__WEB__SO__1548135076047_650" id="QIHOO__WEB__SO__1548135076047_650" style="display: block; margin: 0px; padding: 0px; border: medium none; width: 852px; height: 60px; overflow: hidden; position: relative; text-align: left;"><info-div id="QIHOO__WEB__SO__1548135076047_650-info" style="zoom:1"></info-div></newsfeed></div>
+
+</div></div>
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/qq_33266987/article/details/79203612,BlogCommendFromQuerySearch_13&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/qq_33266987/article/details/79203612" target="_top" title="图像的宽度和 pitch">
+				<h4 class="text-truncate oneline">
+						<em>图像</em>的宽度和 pitch				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/D/C/4/3_qq_33266987.jpg" alt="qq_33266987" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">qq_33266987</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">01-30</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							1043</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/qq_33266987/article/details/79203612" target="_top" title="图像的宽度和 pitch">
+							<span class="desc oneline">1、单位不同，width是像素，pitch是字节。&nbsp;因此一个640*480的8位图和640*480的32位图，他们width一样，而pitch不一样。 
+2、pitch可能大于width个像素所占字节...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/qq_33266987">来自：	<span class="blog_title"> 非常道的博客</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/tanmx219/article/details/81501996,BlogCommendFromQuerySearch_14&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/tanmx219/article/details/81501996" target="_top" title="图像处理常识：内存中的图像宽度的计算">
+				<h4 class="text-truncate oneline">
+						<em>图像</em>处理常识：<em>内存</em>中的<em>图像</em>宽度的计算				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/8/E/7/3_tanmx219.jpg" alt="tanmx219" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">tanmx219</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">08-08</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							151</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/tanmx219/article/details/81501996" target="_top" title="图像处理常识：内存中的图像宽度的计算">
+							<span class="desc oneline">先说公式，sz对齐的到n位的计算方法是
+
+(sz + n-1) &amp;amp;amp; -n;
+
+或者
+
+(sz + n-1) &amp;amp;amp; ~n;
+
+&nbsp;
+
+取决于系统要求，图像在内存中的存储，往往...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/tanmx219">来自：	<span class="blog_title"> tanmx219的博客</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/wangpengfei163/article/details/80987145,BlogCommendFromQuerySearch_15&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/wangpengfei163/article/details/80987145" target="_top" title="【TensorFlow基础】TensorFlow中函数conv2d参数stride，padding的理解以及padding模式SAME，VALID的详细说明">
+				<h4 class="text-truncate oneline">
+						【TensorFlow基础】TensorFlow中函数conv2d参数<em>stride</em>，padding的理解以及padding模式SAME，VALID的详细说明				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/B/F/7/3_wangpengfei163.jpg" alt="wangpengfei163" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">wangpengfei163</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">07-10</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							238</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/wangpengfei163/article/details/80987145" target="_top" title="【TensorFlow基础】TensorFlow中函数conv2d参数stride，padding的理解以及padding模式SAME，VALID的详细说明">
+							<span class="desc oneline">TensorFlow中函数conv2d主要实现了输入张量与设定卷积核的卷积操作，其函数形式如下：
+
+
+tf.nn.conv2d(
+    input,
+    filter,
+    strides,...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/wangpengfei163">来自：	<span class="blog_title"> AnddyWang</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/maozefa/article/details/4735303,BlogCommendFromQuerySearch_16&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/maozefa/article/details/4735303" target="_top" title="Delphi图像处理 -- 图像像素结构与图像数据转换">
+				<h4 class="text-truncate oneline">
+						Delphi<em>图像</em>处理 -- <em>图像</em>像素结构与<em>图像</em>数据转换				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/7/E/7/3_maozefa.jpg" alt="maozefa" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">maozefa</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">10-27</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							8328</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/maozefa/article/details/4735303" target="_top" title="Delphi图像处理 -- 图像像素结构与图像数据转换">
+							<span class="desc oneline">&nbsp;&nbsp;&nbsp; 《Delphi图像处理 -- 数据类型及内部过程》一文中定义了基本的图像数据类型及一些内部过程，本文进一步将Delphi常用的图像类型转换为图像处理所需的数据结构，为具体的Delphi图像处理...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/maozefa">来自：	<span class="blog_title"> 闲人阿发伯的业余编程心得</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/zhuimengshaonian66/article/details/82257139,BlogCommendFromQuerySearch_17&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/zhuimengshaonian66/article/details/82257139" target="_top" title="stride中参数含义及步长修改">
+				<h4 class="text-truncate oneline">
+						<em>stride</em>中参数含义及步长修改				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/C/1/B/3_zhuimengshaonian66.jpg" alt="zhuimengshaonian66" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">zhuimengshaonian66</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">08-31</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							125</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/zhuimengshaonian66/article/details/82257139" target="_top" title="stride中参数含义及步长修改">
+							<span class="desc oneline">步长stride是一个一维的向量，长度为4。形式是[a,x,y,z]，分别代表[batch滑动步长，水平滑动步长，垂直滑动步长，通道滑动步长]
+
+在tensorflow中，stride的一般形式是[1...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/zhuimengshaonian66">来自：	<span class="blog_title"> zhuimengshaonian66的博客</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    <div class="recommend-item-box recommend-ad-box"><div id="kp_box_62" data-pid="62" data-track-view="{&quot;mod&quot;:&quot;kp_popu_62-556&quot;,&quot;con&quot;:&quot;,,&quot;}" data-track-click="{&quot;mod&quot;:&quot;kp_popu_62-556&quot;,&quot;con&quot;:&quot;,,&quot;}"><div class="mediav_ad"><newsfeed class="newsfeed QIHOO__WEB__SO__1548135076099_154" id="QIHOO__WEB__SO__1548135076099_154" style="display: block; margin: 0px; padding: 0px; border: medium none; width: 852px; height: 60px; overflow: hidden; position: relative; text-align: left;"><info-div id="QIHOO__WEB__SO__1548135076099_154-info" style="zoom:1"></info-div></newsfeed></div>
+
+</div></div>
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/zhuweigangzwg/article/details/17222535,BlogCommendFromBaidu_18&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/zhuweigangzwg/article/details/17222535" target="_top" title="YUV(一)-数据格式分析">
+				<h4 class="text-truncate oneline">
+						YUV(一)-数据格式分析				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/F/A/4/3_zhuweigangzwg.jpg" alt="zhuweigangzwg" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">zhuweigangzwg</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">12-09</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							3576</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/zhuweigangzwg/article/details/17222535" target="_top" title="YUV(一)-数据格式分析">
+							<span class="desc oneline">本文转自：
+http://blog.chinaunix.net/uid-23215128-id-2521443.html
+&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp; 做视频采集与处理，自然少不了要学会分析YUV数据。因为从采集的角...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/zhuweigangzwg">来自：	<span class="blog_title"> 朱韦刚(zhuweigangzwg)的技术博客</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/u011432426/article/details/48055207,BlogCommendFromBaidu_19&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/u011432426/article/details/48055207" target="_top" title="YUV数据画矩形和直线">
+				<h4 class="text-truncate oneline">
+						YUV数据画矩形和直线				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/6/3/D/3_u011432426.jpg" alt="u011432426" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">u011432426</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">08-28</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							1563</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/u011432426/article/details/48055207" target="_top" title="YUV数据画矩形和直线">
+							<span class="desc oneline">YUV数据画矩形和直线
+划线函数用breshenham算法，yuv数据格式为 422sp 。
+//在YUVsp422数据上画直线，imgdata是 YUV数据指针， int width, int he...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/u011432426">来自：	<span class="blog_title"> u011432426的专栏</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/nonmarking/article/details/64173611,BlogCommendFromBaidu_20&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/nonmarking/article/details/64173611" target="_top" title="10bit YUV数据在内存中的存储格式">
+				<h4 class="text-truncate oneline">
+						10bit YUV数据在<em>内存</em>中的存储格式				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/8/6/9/3_nonmarking.jpg" alt="nonmarking" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">nonmarking</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">03-20</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							4884</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/nonmarking/article/details/64173611" target="_top" title="10bit YUV数据在内存中的存储格式">
+							<span class="desc oneline">我们知道为了获得更好的动态范围，除了常见的8bit yuv外，还有10bit，16bit这样的yuv数据。8bit的yuv数据还好理解，每一个像素8bit，在内存中自然也就是一个字节一个字节的存储咯，...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/nonmarking">来自：	<span class="blog_title"> 张晖的专栏</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/junzia/article/details/76315120,BlogCommendFromBaidu_21&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/junzia/article/details/76315120" target="_top" title="RGBA、YUV色彩格式及libyuv的使用">
+				<h4 class="text-truncate oneline">
+						RGBA、YUV色彩格式及libyuv的使用				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/C/2/C/3_junzia.jpg" alt="junzia" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">junzia</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">07-29</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							1.2万</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/junzia/article/details/76315120" target="_top" title="RGBA、YUV色彩格式及libyuv的使用">
+							<span class="desc oneline">最近一段时间因为工作的需要，要使用到libyuv。因为之前写录制视频的时候，也要用到rgb转yuv，自己结合网上的资料做了个实现，记录了点笔记，现在索性一起整理下。常用的色彩格式常见的色彩格式主要分为...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/junzia">来自：	<span class="blog_title"> 湖广午王</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/tiandd12/article/details/80271050,BlogCommendFromBaidu_22&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/tiandd12/article/details/80271050" target="_top" title="详解CNN中的stride 和 padding 到底是怎么计算的">
+				<h4 class="text-truncate oneline">
+						详解CNN中的<em>stride</em> 和 padding 到底是怎么计算的				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/9/F/1/3_tiandd12.jpg" alt="tiandd12" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">tiandd12</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">05-10</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							4807</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/tiandd12/article/details/80271050" target="_top" title="详解CNN中的stride 和 padding 到底是怎么计算的">
+							<span class="desc oneline">平时不注意的细节，别人一问的时候就会很懵逼，所以认真对待每一个参数。
+
+先看一下 tensorflow中自带的卷积操作是什么样子的呢？
+
+https://tensorflow.google.cn/ap...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/tiandd12">来自：	<span class="blog_title"> tiandd12的博客</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    <div class="recommend-item-box recommend-ad-box"><div id="kp_box_63" data-pid="63" data-track-view="{&quot;mod&quot;:&quot;kp_popu_63-555&quot;,&quot;con&quot;:&quot;,,&quot;}" data-track-click="{&quot;mod&quot;:&quot;kp_popu_63-555&quot;,&quot;con&quot;:&quot;,,&quot;}"><div class="mediav_ad"><newsfeed class="newsfeed QIHOO__WEB__SO__1548135076135_171" id="QIHOO__WEB__SO__1548135076135_171" style="display: block; margin: 0px; padding: 0px; border: medium none; width: 852px; height: 60px; overflow: hidden; position: relative; text-align: left;"><info-div id="QIHOO__WEB__SO__1548135076135_171-info" style="zoom:1"></info-div></newsfeed></div>
+
+</div></div>
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/cs123951/article/details/72870510,searchFromBaidu_23&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/cs123951/article/details/72870510" target="_top" title="DCGAN及其TensorFlow源码">
+				<h4 class="text-truncate oneline">
+						DCGAN及其TensorFlow源码				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/5/D/8/3_cs123951.jpg" alt="cs123951" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">cs123951</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">06-06</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							8258</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/cs123951/article/details/72870510" target="_top" title="DCGAN及其TensorFlow源码">
+							<span class="desc oneline">DCGAN及其源码</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/cs123951">来自：	<span class="blog_title"> cs123951的博客</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/dongweionly/article/details/72886791,searchFromBaidu_24&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/dongweionly/article/details/72886791" target="_top" title="深度学习之一：CNN初见">
+				<h4 class="text-truncate oneline">
+						深度学习之一：CNN初见				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/E/9/0/3_dongweionly.jpg" alt="dongweionly" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">dongweionly</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">06-06</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							263</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/dongweionly/article/details/72886791" target="_top" title="深度学习之一：CNN初见">
+							<span class="desc oneline">本篇是转载以下链接的网址，对CNN有很直观的介绍
+http://www.36dsj.com/archives/42065
+
+
+
+
+
+1，BP算法
+
+2，激励函数
+
+3，正则化与交叉验证等其他防止过拟合...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/dongweionly">来自：	<span class="blog_title"> William_Dong的专栏</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/chenyanqiao2010/article/details/50488075,searchFromBaidu_25&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/chenyanqiao2010/article/details/50488075" target="_top" title="ZF-net">
+				<h4 class="text-truncate oneline">
+						ZF-net				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/9/5/E/3_chenyanqiao2010.jpg" alt="chenyanqiao2010" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">chenyanqiao2010</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">01-09</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							1.1万</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/chenyanqiao2010/article/details/50488075" target="_top" title="ZF-net">
+							<span class="desc oneline">ZF -net</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/chenyanqiao2010">来自：	<span class="blog_title"> chenyanqiao2010的博客</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/App_12062011/article/details/62886113,searchFromBaidu_26&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/App_12062011/article/details/62886113" target="_top" title="系统学习深度学习（二十二）--CNN经典模型总结">
+				<h4 class="text-truncate oneline">
+						系统学习深度学习（二十二）--CNN经典模型总结				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/9/0/8/3_app_12062011.jpg" alt="App_12062011" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">App_12062011</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">03-17</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							1.4万</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/App_12062011/article/details/62886113" target="_top" title="系统学习深度学习（二十二）--CNN经典模型总结">
+							<span class="desc oneline">转自：http://www.open-open.com/lib/view/open1473213789568.html&nbsp; 略有删改。
+LeNet5
+
+LeNet5 诞生于 1994 年，是最早的卷积神...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/App_12062011">来自：	<span class="blog_title"> 工作笔记</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/fandq1223/article/details/53176101,searchFromBaidu_27&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/fandq1223/article/details/53176101" target="_top" title="邻居，咱俩关系近么---欧几里得与区域生长算法">
+				<h4 class="text-truncate oneline">
+						邻居，咱俩关系近么---欧几里得与区域生长算法				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/3/2/4/3_fandq1223.jpg" alt="fandq1223" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">fandq1223</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">11-15</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							2201</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/fandq1223/article/details/53176101" target="_top" title="邻居，咱俩关系近么---欧几里得与区域生长算法">
+							<span class="desc oneline">基于欧式距离的分割和基于区域生长的分割本质上都是用区分邻里关系远近来完成的。由于点云数据提供了更高维度的数据，故有很多信息可以提取获得。欧几里得算法使用邻居之间距离作为判定标准，而区域生长算法则利用了...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/fandq1223">来自：	<span class="blog_title"> fandq1223的博客</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    <div class="recommend-item-box recommend-ad-box"><div id="kp_box_64" data-pid="64" data-track-view="{&quot;mod&quot;:&quot;kp_popu_64-81&quot;,&quot;con&quot;:&quot;,,&quot;}" data-track-click="{&quot;mod&quot;:&quot;kp_popu_64-81&quot;,&quot;con&quot;:&quot;,,&quot;}"><div class="mediav_ad"><newsfeed class="newsfeed QIHOO__WEB__SO__1548135076181_486" id="QIHOO__WEB__SO__1548135076181_486" style="display: block; margin: 0px; padding: 0px; border: medium none; width: 852px; height: 60px; overflow: hidden; position: relative; text-align: left;"><info-div id="QIHOO__WEB__SO__1548135076181_486-info" style="zoom:1"></info-div></newsfeed></div>
+
+</div></div>
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/u011815404/article/details/79318367,BlogCommendFromQuerySearch_28&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/u011815404/article/details/79318367" target="_top" title="T1063 最大跨度值（#Ⅰ- 4 - 1）">
+				<h4 class="text-truncate oneline">
+						T1063 最大<em>跨度</em>值（#Ⅰ- 4 - 1）				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/4/B/0/3_u011815404.jpg" alt="u011815404" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">u011815404</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">02-12</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							2716</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/u011815404/article/details/79318367" target="_top" title="T1063 最大跨度值（#Ⅰ- 4 - 1）">
+							<span class="desc oneline">【题目描述】给定一个长度为n的非负整数序列，请计算序列的最大跨度值(最大跨度值 = 最大值减去最小值)【输入】一共2行，第一行为序列的个数n（1 ≤ n ≤ 1000)，第二行为序列的n个不超过100...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/u011815404">来自：	<span class="blog_title"> Alex_McAvoy的博客</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/zh_geo/article/details/48029577,BlogCommendFromQuerySearch_29&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/zh_geo/article/details/48029577" target="_top" title="用LockBits方法访问图像数据">
+				<h4 class="text-truncate oneline">
+						用LockBits方法访问<em>图像</em>数据				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/E/3/2/3_zh_geo.jpg" alt="zh_geo" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">zh_geo</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">08-27</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							1119</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/zh_geo/article/details/48029577" target="_top" title="用LockBits方法访问图像数据">
+							<span class="desc oneline">位图类包含LockBits和相应的UnlockBits方法，我们可以使用这个方法在内存中指定一片区域来存储位图的像素数据，可以通过访问这块内存来对位图中的像素数据进行修改。LockBits返回Bitm...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/zh_geo">来自：	<span class="blog_title"> zh_geo的专栏</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/dj1174232716/article/details/41039853,BlogCommendFromQuerySearch_30&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/dj1174232716/article/details/41039853" target="_top" title="NumPy攻略学习笔记(二)">
+				<h4 class="text-truncate oneline">
+						NumPy攻略学习笔记(二)				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/F/E/1/3_dj1174232716.jpg" alt="dj1174232716" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">dj1174232716</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">11-12</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							2714</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/dj1174232716/article/details/41039853" target="_top" title="NumPy攻略学习笔记(二)">
+							<span class="desc oneline">第二章.高级索引和数组概念</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/dj1174232716">来自：	<span class="blog_title"> dj1174232716的专栏</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/QPC908694753/article/details/79069837,BlogCommendFromQuerySearch_31&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/QPC908694753/article/details/79069837" target="_top" title="【Android】Bitmap类getPixels()方法中参数stride理解">
+				<h4 class="text-truncate oneline">
+						【Android】Bitmap类getPixels()方法中参数<em>stride</em>理解				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/3/6/C/3_qpc908694753.jpg" alt="QPC908694753" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">QPC908694753</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">01-15</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							331</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/QPC908694753/article/details/79069837" target="_top" title="【Android】Bitmap类getPixels()方法中参数stride理解">
+							<span class="desc oneline">在学习Graphics中遇到位图(Bitmap)中getPixels()方法，对该方法的用法大体理解，但对其中的stride参数却不明白具体的用法以及用意，经过一番折腾后，有些明了，现记述过程如下：&nbsp;...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/QPC908694753">来自：	<span class="blog_title"> 乔培宸的博客</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/QQ1113130712/article/details/51822060,BlogCommendFromQuerySearch_32&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/QQ1113130712/article/details/51822060" target="_top" title="NDK图形函数在某些机型下显示花屏的问题">
+				<h4 class="text-truncate oneline">
+						NDK图形函数在某些机型下显示花屏的问题				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/F/4/A/3_qq1113130712.jpg" alt="QQ1113130712" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">QQ1113130712</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">07-04</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							1117</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/QQ1113130712/article/details/51822060" target="_top" title="NDK图形函数在某些机型下显示花屏的问题">
+							<span class="desc oneline">NDK使用ANativeWindow渲染surface，
+大致代码如下：
+
+ANativeWindow *nativeWindow = ANativeWindow_fromSurface(env...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/QQ1113130712">来自：	<span class="blog_title"> 阶乘的闲庭信步</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    <div class="recommend-item-box recommend-ad-box"><div id="kp_box_65" data-pid="65" data-track-view="{&quot;mod&quot;:&quot;kp_popu_65-84&quot;,&quot;con&quot;:&quot;,,&quot;}" data-track-click="{&quot;mod&quot;:&quot;kp_popu_65-84&quot;,&quot;con&quot;:&quot;,,&quot;}"><div class="mediav_ad"><newsfeed class="newsfeed QIHOO__WEB__SO__1548135076187_764" id="QIHOO__WEB__SO__1548135076187_764" style="display: block; margin: 0px; padding: 0px; border: medium none; width: 852px; height: 60px; overflow: hidden; position: relative; text-align: left;"><info-div id="QIHOO__WEB__SO__1548135076187_764-info" style="zoom:1"></info-div></newsfeed></div>
+</div></div>
+	    
+    		<div class="recommend-item-box recommend-box-ident" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://bbs.csdn.net/topics/30084726,BlogCommendFromBaidu_33&quot;}">
+		<a href="https://bbs.csdn.net/topics/30084726" target="_top">
+			<h4 class="text-truncate oneline">
+					yuv420转换成yuv422的函数中的参数 <em>stride</em>_out 是什么意思？			</h4>
+			<div class="info-box d-flex align-content-center">
+				<p>
+								</p>
+				<p>
+					<span class="date">04-17</span>
+				</p>
+			</div>
+			<p class="content oneline">
+					void uyvy_out(uint8_t *puc_y, int stride_y, uint8_t *puc_u, uint8_t *puc_v, int stride_uv, uint8_t *			</p>
+		</a>
+
+	</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/occupy8/article/details/47972073,BlogCommendFromBaidu_34&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/occupy8/article/details/47972073" target="_top" title="详解YUV">
+				<h4 class="text-truncate oneline">
+						详解YUV				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/E/6/7/3_occupy8.jpg" alt="occupy8" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">occupy8</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">08-25</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							702</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/occupy8/article/details/47972073" target="_top" title="详解YUV">
+							<span class="desc oneline">YUV格式有两大类：planar和packed。
+对于planar的YUV格式，先连续存储所有像素点的Y，紧接着存储所有像素点的U，随后是所有像素点的V。
+对于packed的YUV格式，每个像素点...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/occupy8">来自：	<span class="blog_title"> occupy8的专栏</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/lanchunhui/article/details/56029748,BlogCommendFromBaidu_35&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/lanchunhui/article/details/56029748" target="_top" title="图像块的访问（填充 padding，步长 stride，窗 Window/kernel/filter）">
+				<h4 class="text-truncate oneline">
+						<em>图像</em>块的访问（填充 padding，步长 <em>stride</em>，窗 Window/kernel/filter）				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/9/4/0/3_lanchunhui.jpg" alt="lanchunhui" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">lanchunhui</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">02-20</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							1215</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/lanchunhui/article/details/56029748" target="_top" title="图像块的访问（填充 padding，步长 stride，窗 Window/kernel/filter）">
+							<span class="desc oneline">无填充是有填充的特例（填充为 1）。
+utilities（matlab）—— 图像分块（image2cols、cols2image）（未填充）1. 一个图像块 ⇒ 返回一个值输出矩阵的大小：
+out_...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/lanchunhui">来自：	<span class="blog_title"> Zhang's Wikipedia</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/oldmtn/article/details/47272115,BlogCommendFromQuerySearch_36&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/oldmtn/article/details/47272115" target="_top" title="由BMP位图到各种图片格式的来源">
+				<h4 class="text-truncate oneline">
+						由BMP位图到各种图片格式的来源				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/B/4/9/3_oldmtn.jpg" alt="oldmtn" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">oldmtn</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">08-04</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							1236</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/oldmtn/article/details/47272115" target="_top" title="由BMP位图到各种图片格式的来源">
+							<span class="desc oneline">这篇博客的内容是记录好久前所学习的知识的。
+说下BMP的来源
+BMP，也可以成为位图，位图所使用的颜色空间是RGB的，就是使用三原色来表示所有的颜色。
+计算机无法真实的显示现实世界里面的所有颜色...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/oldmtn">来自：	<span class="blog_title"> oldmtn的专栏</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/dpj110/article/details/8103517,BlogCommendFromQuerySearch_37&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/dpj110/article/details/8103517" target="_top" title="image技术中的stride">
+				<h4 class="text-truncate oneline">
+						<em>image</em>技术中的<em>stride</em>				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/8/E/7/3_dpj110.jpg" alt="dpj110" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">dpj110</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">10-23</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							860</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/dpj110/article/details/8103517" target="_top" title="image技术中的stride">
+							<span class="desc oneline">image技术中的stride
+
+网络上的解释：
+When a video image is stored in memory, the memory buffer might contain ...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/dpj110">来自：	<span class="blog_title"> dpj110的专栏</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    <div class="recommend-item-box recommend-ad-box"><div id="_9hnh7zfbyzq"><iframe scrolling="no" src="index_2.html" width="852" height="60" frameborder="0"></iframe></div></div>
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/u010418035/article/details/45038985,BlogCommendFromQuerySearch_38&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/u010418035/article/details/45038985" target="_top" title="【OpenCV】图像的内存分配与释放以及复制图像">
+				<h4 class="text-truncate oneline">
+						【OpenCV】<em>图像</em>的<em>内存</em>分配与释放以及复制<em>图像</em>				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/2/4/B/3_u010418035.jpg" alt="u010418035" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">u010418035</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">04-14</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							2855</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/u010418035/article/details/45038985" target="_top" title="【OpenCV】图像的内存分配与释放以及复制图像">
+							<span class="desc oneline">（1） 分配内存给一幅新图像:
+IplImage* cvCreateImage( CvSize size, int depth, int channels );
+size     -图像宽、高. 
+d...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/u010418035">来自：	<span class="blog_title"> Hao_09的专栏</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/lxw907304340/article/details/45480929,BlogCommendFromQuerySearch_39&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/lxw907304340/article/details/45480929" target="_top" title="C#数字图像处理的3种方法：：提取像素法、内存法和指针法">
+				<h4 class="text-truncate oneline">
+						C#数字<em>图像</em>处理的3种方法：：提取像素法、<em>内存</em>法和指针法				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/8/8/4/3_lxw907304340.jpg" alt="lxw907304340" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">lxw907304340</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">05-04</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							3214</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/lxw907304340/article/details/45480929" target="_top" title="C#数字图像处理的3种方法：：提取像素法、内存法和指针法">
+							<span class="desc oneline">本文主要通过彩色图象灰度化来介绍C#处理数字图像的3种方法，Bitmap类、BitmapData类和Graphics类是C#处理图像的的3个重要的类。
+
+Bitmap只要用于处理由像素数据定义的图...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/lxw907304340">来自：	<span class="blog_title"> lxw907304340的专栏</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/w5688414/article/details/79335232,BlogCommendFromQuerySearch_40&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/w5688414/article/details/79335232" target="_top" title="输入图片大小为200×200，依次经过一层卷积（kernel size 5×5，padding 1，stride 2）">
+				<h4 class="text-truncate oneline">
+						输入图片大小为200×200，依次经过一层卷积（kernel size 5×5，padding 1，<em>stride</em> 2）				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/B/3/F/3_w5688414.jpg" alt="w5688414" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">w5688414</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">02-18</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							3815</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/w5688414/article/details/79335232" target="_top" title="输入图片大小为200×200，依次经过一层卷积（kernel size 5×5，padding 1，stride 2）">
+							<span class="desc oneline">感想今年对我来说是非常重要的一年，面临着找工作和发论文的压力，因此，我打算把我机器学习刷题之路记录下来，我认为刷题要把原理弄明白，所以我整理了分析的内容，作为对自己的提高，也希望对大家能够有所帮助。P...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/w5688414">来自：	<span class="blog_title"> 你的朋友不及格，你很难过；你的朋友考了第一，你更难过。</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/Leichelle/article/details/45821729,BlogCommendFromBaidu_41&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/Leichelle/article/details/45821729" target="_top" title="图像处理中的跨度(stride)">
+				<h4 class="text-truncate oneline">
+						<em>图像</em>处理中的<em>跨度</em>(<em>stride</em>)				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/D/E/C/3_leichelle.jpg" alt="Leichelle" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">Leichelle</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">05-18</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							2178</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/Leichelle/article/details/45821729" target="_top" title="图像处理中的跨度(stride)">
+							<span class="desc oneline">跨度stride的理解</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/Leichelle">来自：	<span class="blog_title"> AVSharp的专栏</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/rabbit_in_android/article/details/49967461,BlogCommendFromBaidu_42&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/rabbit_in_android/article/details/49967461" target="_top" title="Bitmap四种属性">
+				<h4 class="text-truncate oneline">
+						Bitmap四种属性				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/E/6/E/3_rabbit_in_android.jpg" alt="rabbit_in_android" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">rabbit_in_android</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">11-21</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							7225</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/rabbit_in_android/article/details/49967461" target="_top" title="Bitmap四种属性">
+							<span class="desc oneline">我们知道Android系统分配给每个应用程序的内存是有限的，Bitmap作为消耗内存大户，我们对Bitmap的管理稍有不当就可能引发OutOfMemoryError，而Bitmap对象在不同的Andr...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/rabbit_in_android">来自：	<span class="blog_title"> rabbit_in_android的博客</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    <div class="recommend-item-box recommend-ad-box"><div id="kp_box_67" data-pid="67" data-track-view="{&quot;mod&quot;:&quot;kp_popu_67-761&quot;,&quot;con&quot;:&quot;,,&quot;}" data-track-click="{&quot;mod&quot;:&quot;kp_popu_67-761&quot;,&quot;con&quot;:&quot;,,&quot;}"><!-- T43 位置 -->
+
+<div id="_4paradigm_T43_render" class="_paradigm_T_ads_render _4paradigm_box recommend-item-box clearfix"></div>
+</div></div>
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/jie_qing/article/details/7259520,BlogCommendFromBaidu_43&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/jie_qing/article/details/7259520" target="_top" title="Bitmap类getPixels()方法中参数stride理解">
+				<h4 class="text-truncate oneline">
+						Bitmap类getPixels()方法中参数<em>stride</em>理解				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/8/8/9/3_jie_qing.jpg" alt="jie_qing" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">jie_qing</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">02-14</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							8288</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/jie_qing/article/details/7259520" target="_top" title="Bitmap类getPixels()方法中参数stride理解">
+							<span class="desc oneline">在学习Graphics中遇到位图(Bitmap)中getPixels()方法，对该方法的用法大体理解，但对其中的stride参数却不明白具体的用法以及用意，经过一番折腾后，有些明了，现记述过程如下：&nbsp;...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/jie_qing">来自：	<span class="blog_title"> _qing的专栏</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/zhuhuangtianzi/article/details/18316257,BlogCommendFromBaidu_44&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/zhuhuangtianzi/article/details/18316257" target="_top" title="安卓之Bitmap ，offset，stride含义">
+				<h4 class="text-truncate oneline">
+						安卓之Bitmap ，offset，<em>stride</em>含义				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/A/B/2/3_zhuhuangtianzi.jpg" alt="zhuhuangtianzi" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">zhuhuangtianzi</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">01-15</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							2560</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/zhuhuangtianzi/article/details/18316257" target="_top" title="安卓之Bitmap ，offset，stride含义">
+							<span class="desc oneline">package com.example.bitmapcreate;
+
+import java.io.ByteArrayOutputStream;
+import android.util.Log;
+im...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/zhuhuangtianzi">来自：	<span class="blog_title"> eskimoer的专栏</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://bbs.csdn.net/topics/380249715,BlogCommendFromBaidu_45&quot;}">
+		<a href="https://bbs.csdn.net/topics/380249715" target="_top">
+			<h4 class="text-truncate oneline">
+					GDI+中BitmapData的<em>Stride</em>属性问题			</h4>
+			<div class="info-box d-flex align-content-center">
+				<p>
+								</p>
+				<p>
+					<span class="date">03-30</span>
+				</p>
+			</div>
+			<p class="content oneline">
+					在使用GDI+中的Bitmap类时，经常使用LockBits函数来锁定一定区域，并读入内存进行操作。BitmapData类的Stride属性在MSND中的解释为： Offset, in bytes,			</p>
+		</a>
+
+	</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/a352611/article/details/48602207,BlogCommendFromQuerySearch_46&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/a352611/article/details/48602207" target="_top" title="【线性代数公开课MIT Linear Algebra】 第一课 矩阵的行图像与列图像">
+				<h4 class="text-truncate oneline">
+						【线性代数公开课MIT Linear Algebra】 第一课 矩阵的行<em>图像</em>与列<em>图像</em>				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/C/2/4/3_a352611.jpg" alt="a352611" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">a352611</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">09-20</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							3686</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/a352611/article/details/48602207" target="_top" title="【线性代数公开课MIT Linear Algebra】 第一课 矩阵的行图像与列图像">
+							<span class="desc oneline">本系列笔记为方便日后自己查阅而写，更多的是个人见解，也算一种学习的复习与总结，望善始善终吧~1. 从方程组到矩阵  
+矩阵的诞生是为了用一种简洁的方式表达线性方程组 
+个人理解来说就是为了更好的描述和...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/a352611">来自：	<span class="blog_title"> 三记的专栏</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/mengdicfm/article/details/82701084,BlogCommendFromQuerySearch_47&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/mengdicfm/article/details/82701084" target="_top" title="信息奥赛课课通（c++）p116-1求最大跨度值">
+				<h4 class="text-truncate oneline">
+						信息奥赛课课通（c++）p116-1求最大<em>跨度</em>值				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/3/E/A/3_mengdicfm.jpg" alt="mengdicfm" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">mengdicfm</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">09-14</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							161</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/mengdicfm/article/details/82701084" target="_top" title="信息奥赛课课通（c++）p116-1求最大跨度值">
+							<span class="desc oneline">题目描述
+
+给定一个长度为n的非负整数序列，请计算序列的最大跨度值（最大跨度值 = 最大值减去最小值）。
+
+输入
+
+输入一共两行，第1行为序列的个数n（1≤n≤1000)，第2行为序列的n个不超过10...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/mengdicfm">来自：	<span class="blog_title"> mengdicfm的博客</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    <div class="recommend-item-box recommend-ad-box"><div id="kp_box_68" data-pid="68" data-track-view="{&quot;mod&quot;:&quot;kp_popu_68-762&quot;,&quot;con&quot;:&quot;,,&quot;}" data-track-click="{&quot;mod&quot;:&quot;kp_popu_68-762&quot;,&quot;con&quot;:&quot;,,&quot;}"><!-- T48 位置 -->
+
+<div id="_4paradigm_T48_render" class="_paradigm_T_ads_render _4paradigm_box recommend-item-box clearfix"></div>
+</div></div>
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/brycegao321/article/details/75412629,BlogCommendFromQuerySearch_48&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/brycegao321/article/details/75412629" target="_top" title="Swift内存模型的那点事儿">
+				<h4 class="text-truncate oneline">
+						Swift<em>内存</em>模型的那点事儿				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/E/2/D/3_brycegao321.jpg" alt="brycegao321" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">brycegao321</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">07-20</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							2949</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/brycegao321/article/details/75412629" target="_top" title="Swift内存模型的那点事儿">
+							<span class="desc oneline">讲述测量Swift对象大小和篡改数据</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/brycegao321">来自：	<span class="blog_title"> brycegao321的博客</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/mayuan2017/article/details/77833035,BlogCommendFromQuerySearch_49&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/mayuan2017/article/details/77833035" target="_top" title="06:整数序列的元素最大跨度值">
+				<h4 class="text-truncate oneline">
+						06:整数序列的元素最大<em>跨度</em>值				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="https://avatar.csdn.net/7/1/8/3_mayuan2017.jpg" alt="mayuan2017" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">mayuan2017</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">09-04</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							3671</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/mayuan2017/article/details/77833035" target="_top" title="06:整数序列的元素最大跨度值">
+							<span class="desc oneline">原题链接
+
+
+总时间限制:&nbsp;1000ms&nbsp;内存限制:&nbsp;65536kB
+
+
+描述
+
+给定一个长度为n的非负整数序列，请计算序列的最大跨度值（最大跨度值 = 最大值减去最小值）。&nbsp;
+
+...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/mayuan2017">来自：	<span class="blog_title"> www.imayuan.com</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/qq_39343904/article/details/85111956,BlogCommendHotData_0&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/qq_39343904/article/details/85111956" target="_top" title="利用k-means算法对点云数据进行目标分割，提取其中的建筑物、房屋等">
+				<h4 class="text-truncate oneline">
+						利用k-means算法对点云数据进行目标分割，提取其中的建筑物、房屋等				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="qq_39343904" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">qq_39343904</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">12-20</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							3908</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/qq_39343904/article/details/85111956" target="_top" title="利用k-means算法对点云数据进行目标分割，提取其中的建筑物、房屋等">
+							<span class="desc oneline">原始点云数据在CloudCompare的显示如下：
+
+
+
+点云原始数据以及提取出的房屋道路等数据下载地址：https://download.csdn.net/download/qq_39343904/...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/qq_39343904">来自：	<span class="blog_title"> qq_39343904的博客</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/CSDNedu/article/details/85118920,BlogCommendHotData_1&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/CSDNedu/article/details/85118920" target="_top" title="刚发布！Python2 月再夺语言榜首！ 一二线城市月薪增长迅猛！">
+				<h4 class="text-truncate oneline">
+						刚发布！Python2 月再夺语言榜首！ 一二线城市月薪增长迅猛！				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="CSDNedu" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">CSDNedu</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">12-20</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							19037</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/CSDNedu/article/details/85118920" target="_top" title="刚发布！Python2 月再夺语言榜首！ 一二线城市月薪增长迅猛！">
+							<span class="desc oneline">几年前Python在国内还只是一门小众语言，但从2011开始到现在，Python的百度搜索指数翻了10倍，Python究竟为什么可以发展如此迅猛？
+
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/CSDNedu">来自：	<span class="blog_title"> CSDN学院</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/qq_30068487/article/details/82589347,BlogCommendHotData_2&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/qq_30068487/article/details/82589347" target="_top" title="VSCode设置中文语言显示">
+				<h4 class="text-truncate oneline">
+						VSCode设置中文语言显示				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="qq_30068487" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">qq_30068487</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">09-10</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							69416</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/qq_30068487/article/details/82589347" target="_top" title="VSCode设置中文语言显示">
+							<span class="desc oneline">&nbsp; Vscode是一款开源的跨平台编辑器。默认情况下，vscode使用的语言为英文(us)，如何将其显示语言修改成中文了？
+
+1）打开vscode工具；
+
+2）使用快捷键组合【Ctrl+Shift+p...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/qq_30068487">来自：	<span class="blog_title"> 飞扬的博客</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/xiaochunblog/article/details/83351987,BlogCommendHotData_3&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/xiaochunblog/article/details/83351987" target="_top" title="基于XMLHttpRequest对象的ajax拦截">
+				<h4 class="text-truncate oneline">
+						基于XMLHttpRequest对象的ajax拦截				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="xiaochunblog" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">xiaochunblog</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">10-24</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							2521</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/xiaochunblog/article/details/83351987" target="_top" title="基于XMLHttpRequest对象的ajax拦截">
+							<span class="desc oneline">导读
+    在web前端开发中，我们经常会与后端进行数据的交互，ajax即是其中的一种方式；它是通过XMLHttpRequest（简称xhr）对象进行的http请求；在发起请求时，首先会创建一个xh...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/xiaochunblog">来自：	<span class="blog_title"> 幽幽小春</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/weixin_41838683/article/details/84990689,BlogCommendHotData_4&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/weixin_41838683/article/details/84990689" target="_top" title="微服务Springcloud超详细教程+实战（十）">
+				<h4 class="text-truncate oneline">
+						微服务Springcloud超详细教程+实战（十）				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="weixin_41838683" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">weixin_41838683</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">12-13</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							24869</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/weixin_41838683/article/details/84990689" target="_top" title="微服务Springcloud超详细教程+实战（十）">
+							<span class="desc oneline">本人正在找深圳Java实习工作，求大佬带飞 QQ：1172796094
+如在文档中遇到什么问题请联系作者
+——————————————————————————————————————
+服务消费者
+
+获...</span>
+						</a>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/voke_/article/details/76418116,BlogCommendHotData_5&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/voke_/article/details/76418116" target="_top" title="webstorm 2018 激活破解方法大全">
+				<h4 class="text-truncate oneline">
+						webstorm 2018 激活破解方法大全				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="voke_" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">voke_</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">07-31</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							707407</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/voke_/article/details/76418116" target="_top" title="webstorm 2018 激活破解方法大全">
+							<span class="desc oneline">webstorm 作为最近最火的前端开发工具,也确实对得起那个价格,但是秉着勤俭节约的传统美德,我们肯定是能省则省啊。
+
+方法一：（更新时间：2018/4/8）v3.3
+
+
+
+注册时，在打开的Lice...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/voke_">来自：	<span class="blog_title"> 唐大帅的编程之路</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/zixiao217/article/details/82942476,BlogCommendHotData_6&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/zixiao217/article/details/82942476" target="_top" title="IntelliJ IDEA IDEA 2018 激活注册码（可用）">
+				<h4 class="text-truncate oneline">
+						IntelliJ IDEA IDEA 2018 激活注册码（可用）				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="zixiao217" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">zixiao217</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">10-05</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							44359</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/zixiao217/article/details/82942476" target="_top" title="IntelliJ IDEA IDEA 2018 激活注册码（可用）">
+							<span class="desc oneline">K03CHKJCFT-eyJsaWNlbnNlSWQiOiJLMDNDSEtKQ0ZUIiwibGljZW5zZWVOYW1lIjoibnNzIDEwMDEiLCJhc3NpZ25lZU5hbWUiO...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/zixiao217">来自：	<span class="blog_title"> 东陆之滇的技术博客</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/qq_24309787/article/details/81354678,BlogCommendHotData_7&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/qq_24309787/article/details/81354678" target="_top" title="Webstorm 最新激活码 多种破解方式(持续更新...)">
+				<h4 class="text-truncate oneline">
+						Webstorm 最新激活码 多种破解方式(持续更新...)				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="qq_24309787" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">qq_24309787</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">08-02</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							98616</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/qq_24309787/article/details/81354678" target="_top" title="Webstorm 最新激活码 多种破解方式(持续更新...)">
+							<span class="desc oneline">方法：License server 注册
+
+安装完成，打开Webstorm，在弹出的License Activation窗口中选择“License server”，在输入框输入下面的网址：&nbsp;
+
+htt...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/qq_24309787">来自：	<span class="blog_title"> 老妖儿的博客</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/u014044812/article/details/78727496,BlogCommendHotData_8&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/u014044812/article/details/78727496" target="_top" title="pyCharm最新2019激活码">
+				<h4 class="text-truncate oneline">
+						pyCharm最新2019激活码				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="u014044812" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">u014044812</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">12-06</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							1294794</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/u014044812/article/details/78727496" target="_top" title="pyCharm最新2019激活码">
+							<span class="desc oneline">本教程对jetbrains全系列可用例：IDEA、WebStorm、phpstorm、clion等
+
+因公司的需求，需要做一个爬取最近上映的电影、列车号、航班号、机场、车站等信息，所以需要我做一个爬虫...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/u014044812">来自：	<span class="blog_title"> 昌昌</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/fxbin123/article/details/80428216,BlogCommendHotData_9&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/fxbin123/article/details/80428216" target="_top" title="Postman  使用方法详解">
+				<h4 class="text-truncate oneline">
+						Postman  使用方法详解				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="fxbin123" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">fxbin123</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">05-24</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							199864</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/fxbin123/article/details/80428216" target="_top" title="Postman  使用方法详解">
+							<span class="desc oneline">一、Postman背景介绍
+
+用户在开发或者调试网络程序或者是网页B/S模式的程序的时候是需要一些方法来跟踪网页请求的，用户可以使用一些网络的监视工具比如著名的Firebug等网页调试工具。今天给大家...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/fxbin123">来自：	<span class="blog_title"> fxbin123的博客</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/Kinb_huangwei/article/details/2032746,BlogCommendHotData_10&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/Kinb_huangwei/article/details/2032746" target="_top" title="很黄很暴力的十个网站">
+				<h4 class="text-truncate oneline">
+						很黄很暴力的十个网站				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="Kinb_huangwei" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">Kinb_huangwei</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">01-09</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							92040</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/Kinb_huangwei/article/details/2032746" target="_top" title="很黄很暴力的十个网站">
+							<span class="desc oneline">13岁的北京学生张某，在去年12月27日19时新闻联播一则关于净化网络视听的新闻里，接受采访时说的话激起了轩然大波：“上次我上网查资料，突然弹出来一个网页，很黄很暴力，我赶紧把它给关了。”这个片段被C...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/Kinb_huangwei">来自：	<span class="blog_title"> Kinb_huangwei的专栏</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/weixin_42255362/article/details/81207763,BlogCommendHotData_11&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/weixin_42255362/article/details/81207763" target="_top" title="整理了10个干净、好用的BT、磁力链搜索网站给大家">
+				<h4 class="text-truncate oneline">
+						整理了10个干净、好用的BT、磁力链搜索网站给大家				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="weixin_42255362" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">weixin_42255362</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">07-25</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							134115</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/weixin_42255362/article/details/81207763" target="_top" title="整理了10个干净、好用的BT、磁力链搜索网站给大家">
+							<span class="desc oneline">
+现在越来越流行在线看视频了，但是对于我得收藏癖爱好者，还是希望可以有比较好的资源网站的，尤其是种子、磁力链网站。所以就整理了一份干净、好用的TOP10出来：
+
+
+先推荐一个下载磁力链的工具：
+
+
+马...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/weixin_42255362">来自：	<span class="blog_title"> YXAPP的技术分享</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/wfy2695766757/article/details/85128695,BlogCommendHotData_12&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/wfy2695766757/article/details/85128695" target="_top" title="“戏”说设计模式——外观（门面）模式">
+				<h4 class="text-truncate oneline">
+						“戏”说设计模式——外观（门面）模式				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="wfy2695766757" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">wfy2695766757</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">12-20</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							7931</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/wfy2695766757/article/details/85128695" target="_top" title="“戏”说设计模式——外观（门面）模式">
+							<span class="desc oneline">首先请出今天的主人公——“黑旋风”李逵
+
+
+
+李逵：“我是不是萌萌哒？”&nbsp;
+
+一部《水浒传》说尽了一群英雄好汉的悲欢离合！经典著作的水浒，含蓄地概括了中国各个朝代的变迁和演变，客观地揭露了顽固的中国伦...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/wfy2695766757">来自：	<span class="blog_title"> 青衣煮茶</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/weixin_41838683/article/details/84981382,BlogCommendHotData_13&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/weixin_41838683/article/details/84981382" target="_top" title="微服务Springcloud超详细教程+实战（八）">
+				<h4 class="text-truncate oneline">
+						微服务Springcloud超详细教程+实战（八）				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="weixin_41838683" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">weixin_41838683</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">12-12</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							28131</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/weixin_41838683/article/details/84981382" target="_top" title="微服务Springcloud超详细教程+实战（八）">
+							<span class="desc oneline">如在文档中遇到什么问题请联系作者 QQ：1172796094
+本人正在找深圳Java实习工作，求大佬带飞
+——————————————————————————————————————
+消费者从Eure...</span>
+						</a>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/shengshengshiwo/article/details/79599761,BlogCommendHotData_14&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/shengshengshiwo/article/details/79599761" target="_top" title="Intellij IDEA的激活（使用破解补丁永久激活）（已更新）">
+				<h4 class="text-truncate oneline">
+						Intellij IDEA的激活（使用破解补丁永久激活）（已更新）				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="shengshengshiwo" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">shengshengshiwo</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">03-18</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							98487</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/shengshengshiwo/article/details/79599761" target="_top" title="Intellij IDEA的激活（使用破解补丁永久激活）（已更新）">
+							<span class="desc oneline">
+  你本文主要讲解使用破解补丁永久激活Intellij IDEA（到2099.12.31，时间也可以更长）
+
+
+下载并安装IDEA
+
+甩个链接，官网：https://www.jetbrains.co...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/shengshengshiwo">来自：	<span class="blog_title"> shengshengshiwo</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/xiaochunblog/article/details/78981519,BlogCommendHotData_15&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/xiaochunblog/article/details/78981519" target="_top" title="js常用的正则验证">
+				<h4 class="text-truncate oneline">
+						js常用的正则验证				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="xiaochunblog" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">xiaochunblog</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">01-05</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							3997</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/xiaochunblog/article/details/78981519" target="_top" title="js常用的正则验证">
+							<span class="desc oneline">一、手机号码验证
+（一）中国电信号段：
+133、149、153、173、177、180、181、189、199
+（二）中国联通号段
+130、131、132、145、155、156、166、17...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/xiaochunblog">来自：	<span class="blog_title"> 幽幽小春</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/qq_35246620/article/details/80522720,BlogCommendHotData_16&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/qq_35246620/article/details/80522720" target="_top" title="IntelliJ IDEA 最新注册码（截止到2019年5月4日）">
+				<h4 class="text-truncate oneline">
+						IntelliJ IDEA 最新注册码（截止到2019年5月4日）				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="qq_35246620" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">qq_35246620</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">05-31</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							155610</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/qq_35246620/article/details/80522720" target="_top" title="IntelliJ IDEA 最新注册码（截止到2019年5月4日）">
+							<span class="desc oneline">
+  温馨提示：本教程的 GitHub 地址为「intellij-idea-tutorial」，欢迎感兴趣的童鞋Star、Fork，纠错。
+
+
+
+
+IntelliJ IDEA 注册码
+
+...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/qq_35246620">来自：	<span class="blog_title"> 维C果糖的博客</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/weixin_39528277/article/details/81114048,BlogCommendHotData_17&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/weixin_39528277/article/details/81114048" target="_top" title="Beyond Compare 4注册码|Beyond Compare 4注册激活码下载(附破解教)">
+				<h4 class="text-truncate oneline">
+						Beyond Compare 4注册码|Beyond Compare 4注册激活码下载(附破解教)				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="weixin_39528277" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">weixin_39528277</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">07-19</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							48136</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/weixin_39528277/article/details/81114048" target="_top" title="Beyond Compare 4注册码|Beyond Compare 4注册激活码下载(附破解教)">
+							<span class="desc oneline">下载来源出处：Beyond Compare 4注册码
+
+Beyond Compare 4注册码是一款针对“Beyond Compare 4”而制作的激活工具，用户利用该工具可以完美的激活“Beyond...</span>
+						</a>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/forezp/article/details/70148833,BlogCommendHotData_18&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/forezp/article/details/70148833" target="_top" title="史上最简单的 SpringCloud 教程 | 终章">
+				<h4 class="text-truncate oneline">
+						史上最简单的 SpringCloud 教程 | 终章				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="forezp" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">forezp</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">04-12</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							1262114</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/forezp/article/details/70148833" target="_top" title="史上最简单的 SpringCloud 教程 | 终章">
+							<span class="desc oneline">
+  转载请标明出处：  http://blog.csdn.net/forezp/article/details/70148833 
+  本文出自方志朋的博客
+
+
+错过了这一篇，你可能再也学不会 Sp...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/forezp">来自：	<span class="blog_title"> 方志朋的专栏</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/wdlhao/article/details/79079660,BlogCommendHotData_19&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/wdlhao/article/details/79079660" target="_top" title="2018最新Web前端经典面试试题及答案">
+				<h4 class="text-truncate oneline">
+						2018最新Web前端经典面试试题及答案				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="wdlhao" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">wdlhao</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">01-16</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							372184</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/wdlhao/article/details/79079660" target="_top" title="2018最新Web前端经典面试试题及答案">
+							<span class="desc oneline">本篇收录了一些面试中经常会遇到的经典面试题以及自己面试过程中遇到的一些问题，并且都给出了我在网上收集的答案。马上就要过春节了，开年就是崭新的一年，相信很多的前端开发者会有一些跳槽的悸动，通过对本篇知识...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/wdlhao">来自：	<span class="blog_title"> wdlhao的博客</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/xyisv/article/details/79595711,BlogCommendHotData_20&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/xyisv/article/details/79595711" target="_top" title="最新迅雷“应版权方要求，文件无法下载”的解决办法">
+				<h4 class="text-truncate oneline">
+						最新迅雷“应版权方要求，文件无法下载”的解决办法				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="xyisv" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">xyisv</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">03-17</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							241722</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/xyisv/article/details/79595711" target="_top" title="最新迅雷“应版权方要求，文件无法下载”的解决办法">
+							<span class="desc oneline">迅雷下载有的电影电视剧的时候会出现：应版权方要求，文件无法下载，或者显示迅雷任务包含违规内容 无法继续下载。这个是因为版权方和迅雷公司交涉，迅雷公司通过技术手段阻止了迅雷任务的下载，比如下载最近的《人...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/xyisv">来自：	<span class="blog_title"> 徐奕的专栏</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/john_dung/article/details/84838451,BlogCommendHotData_21&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/john_dung/article/details/84838451" target="_top" title="颈椎病怎么能治好，看我用Python对接">
+				<h4 class="text-truncate oneline">
+						颈椎病怎么能治好，看我用Python对接				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="john_dung" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">john_dung</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">12-05</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							30351</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/john_dung/article/details/84838451" target="_top" title="颈椎病怎么能治好，看我用Python对接">
+							<span class="desc oneline">盘点现代社会中年轻人常见病例，很显然“颈椎病”一定是排在第一的。年轻人长期伏案工作、长期面对电脑、长期低头玩手机等,这些行为都是导致颈椎病的发病率急剧升高的最基本原因。但是，还有一个危险因素就潜伏在我...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/john_dung">来自：	<span class="blog_title"> john_dung的博客</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/dupeng0811/article/details/6565360,BlogCommendHotData_22&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/dupeng0811/article/details/6565360" target="_top" title="检查页面Session是否过期，过期执行相应操作 解决方法">
+				<h4 class="text-truncate oneline">
+						检查页面Session是否过期，过期执行相应操作 解决方法				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="dupeng0811" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">dupeng0811</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">06-24</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							5354</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/dupeng0811/article/details/6565360" target="_top" title="检查页面Session是否过期，过期执行相应操作 解决方法">
+							<span class="desc oneline">how to check session is expired or not if expired then redirect to login page  &nbsp;  在项目中，如果客户打开页面时间过久容...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/dupeng0811">来自：	<span class="blog_title"> 每天都有新发现</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/Tang5ge/article/details/85049067,BlogCommendHotData_23&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/Tang5ge/article/details/85049067" target="_top" title="Redis(内存高速缓存数据库)简介及安装">
+				<h4 class="text-truncate oneline">
+						Redis(内存高速缓存数据库)简介及安装				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="Tang5ge" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">Tang5ge</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">12-20</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							4282</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/Tang5ge/article/details/85049067" target="_top" title="Redis(内存高速缓存数据库)简介及安装">
+							<span class="desc oneline">一.Redis
+1.什么是Redis
+Redis是REmote DIctionary Server（远程数据服务）的缩写，是一个开源的使用ANSI C语言编写
+它的数据模型为Key-Value数据库
+...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/Tang5ge">来自：	<span class="blog_title"> Tang5ge的博客</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/weixin_43694144/article/details/84557044,BlogCommendHotData_24&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/weixin_43694144/article/details/84557044" target="_top" title="java缓冲区">
+				<h4 class="text-truncate oneline">
+						java缓冲区				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="weixin_43694144" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">weixin_43694144</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">11-26</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							21011</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/weixin_43694144/article/details/84557044" target="_top" title="java缓冲区">
+							<span class="desc oneline">1 缓冲区的分类
+ByteBuffer
+CharBuffer
+ShortBuffer
+IntBuffer
+LongBuffer
+FloatBuffer
+DoubleBuffer
+2 ByteBuffe...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/weixin_43694144">来自：	<span class="blog_title"> weixin_43694144的博客</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/sinat_42338962/article/details/84314428,BlogCommendHotData_25&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/sinat_42338962/article/details/84314428" target="_top" title="PageInfo介绍及使用">
+				<h4 class="text-truncate oneline">
+						PageInfo介绍及使用				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="sinat_42338962" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">sinat_42338962</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">11-21</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							230</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/sinat_42338962/article/details/84314428" target="_top" title="PageInfo介绍及使用">
+							<span class="desc oneline">PageInfo介绍及使用1.MyBatis分页插件－PageHelper的配置与应用2.参考封装PageInfo类3.PageInfo属性表
+下载PageInfo文档
+1.MyBatis分页插件－P...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/sinat_42338962">来自：	<span class="blog_title"> 猪精的博客</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/wang_yong_hui_1234/article/details/81476954,BlogCommendHotData_26&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/wang_yong_hui_1234/article/details/81476954" target="_top" title="Kotlin详解：第三章，实战">
+				<h4 class="text-truncate oneline">
+						Kotlin详解：第三章，实战				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="wang_yong_hui_1234" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">wang_yong_hui_1234</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">10-08</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							15181</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/wang_yong_hui_1234/article/details/81476954" target="_top" title="Kotlin详解：第三章，实战">
+							<span class="desc oneline">一，搭建开发环境
+
+1，安装Android Studio 3.0及以上版本 
+2，升级Gradle插件版本至少为4.1 
+3，升级Kotlin插件版本 
+4，工程配置 
+①，配置工程bui...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/wang_yong_hui_1234">来自：	<span class="blog_title"> wang_yong_hui_1234的博客</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/u011054333/article/details/83448671,BlogCommendHotData_27&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/u011054333/article/details/83448671" target="_top" title="安装和激活Office 2019">
+				<h4 class="text-truncate oneline">
+						安装和激活Office 2019				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="u011054333" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">u011054333</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">10-27</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							40175</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/u011054333/article/details/83448671" target="_top" title="安装和激活Office 2019">
+							<span class="desc oneline">有条件请支持正版！相比费尽力气找一个可能不太安全的激活工具，直接买随时随地更新的Office 365确实是最好的办法。暂时没有经济实力的，可以看看这篇文章。
+下载OTP工具
+首先到Office Too...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/u011054333">来自：	<span class="blog_title"> 过了即是客</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/Tang5ge/article/details/85042414,BlogCommendHotData_28&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/Tang5ge/article/details/85042414" target="_top" title="vue-cli(vue脚手架)快速搭建前端项目——Vue系列博客一">
+				<h4 class="text-truncate oneline">
+						vue-cli(vue脚手架)快速搭建前端项目——Vue系列博客一				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="Tang5ge" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">Tang5ge</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">12-16</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							4438</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/Tang5ge/article/details/85042414" target="_top" title="vue-cli(vue脚手架)快速搭建前端项目——Vue系列博客一">
+							<span class="desc oneline">vue脚手架vue-cli搭建前端项目，并且路由分模块
+
+</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/Tang5ge">来自：	<span class="blog_title"> Tang5ge的博客</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/shadandeajian/article/details/80349939,BlogCommendHotData_29&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/shadandeajian/article/details/80349939" target="_top" title="Proxyee-down的下载与安装教程">
+				<h4 class="text-truncate oneline">
+						Proxyee-down的下载与安装教程				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="shadandeajian" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">shadandeajian</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">05-17</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							155434</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/shadandeajian/article/details/80349939" target="_top" title="Proxyee-down的下载与安装教程">
+							<span class="desc oneline">Proxyee-down是monkeyWie在Github上的一个开源项目，向作者致敬。
+
+最新版的Proxyee-down为3.12（2018.10更新），因为作者在3.x后的版本中并未发布exe版...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/shadandeajian">来自：	<span class="blog_title"> shadandeajian的博客</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/ling_wang/article/details/78821630,BlogCommendHotData_30&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/ling_wang/article/details/78821630" target="_top" title="军事理论课答案（西安交大版）">
+				<h4 class="text-truncate oneline">
+						军事理论课答案（西安交大版）				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="ling_wang" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">ling_wang</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">12-16</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							1177368</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/ling_wang/article/details/78821630" target="_top" title="军事理论课答案（西安交大版）">
+							<span class="desc oneline">1.1 
+1 
+【单选题】我国陆地领土面积排名世界第几？（C） 
+A、1 
+B、2 
+C、3 
+D、4 
+2 
+【单选题】以下哪个国家不属于金砖五国（BRICS）？（B） 
+A、中国 
+B、日本 
+C...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/ling_wang">来自：	<span class="blog_title"> ling_wang的博客</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/qq_33429968/article/details/72852710,BlogCommendHotData_31&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/qq_33429968/article/details/72852710" target="_top" title="杂学－－变量命名神器codeif的学习和使用">
+				<h4 class="text-truncate oneline">
+						杂学－－变量命名神器codeif的学习和使用				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="qq_33429968" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">qq_33429968</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">06-03</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							7089</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/qq_33429968/article/details/72852710" target="_top" title="杂学－－变量命名神器codeif的学习和使用">
+							<span class="desc oneline">There are only two hard things in Computer Science: cache invalidation and naming things. 
+　　　　　　　　　...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/qq_33429968">来自：	<span class="blog_title"> 高自强的博客</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/weixin_41838683/article/details/84981459,BlogCommendHotData_32&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/weixin_41838683/article/details/84981459" target="_top" title="微服务Springcloud超详细教程+实战（九）">
+				<h4 class="text-truncate oneline">
+						微服务Springcloud超详细教程+实战（九）				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="weixin_41838683" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">weixin_41838683</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">12-13</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							21591</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/weixin_41838683/article/details/84981459" target="_top" title="微服务Springcloud超详细教程+实战（九）">
+							<span class="desc oneline">如在文档中遇到什么问题请联系作者 QQ：1172796094
+本人正在找深圳Java实习工作，求大佬带飞
+——————————————————————————————————————
+八在审核中，请见...</span>
+						</a>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/linzhiqiang0316/article/details/80473906,BlogCommendHotData_33&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/linzhiqiang0316/article/details/80473906" target="_top" title="史上最全Java面试题（带全部答案）">
+				<h4 class="text-truncate oneline">
+						史上最全Java面试题（带全部答案）				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="linzhiqiang0316" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">linzhiqiang0316</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">05-27</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							135778</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/linzhiqiang0316/article/details/80473906" target="_top" title="史上最全Java面试题（带全部答案）">
+							<span class="desc oneline">今天要谈的主题是关于求职，求职是在每个技术人员的生涯中都要经历多次。对于我们大部分人而言，在进入自己心仪的公司之前少不了准备工作，有一份全面细致面试题将帮助我们减少许多麻烦。在跳槽季来临之前,特地做这...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/linzhiqiang0316">来自：	<span class="blog_title"> 林老师带你学编程</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/lizhengnanhua/article/details/41531579,BlogCommendHotData_34&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/lizhengnanhua/article/details/41531579" target="_top" title="各大磁力种子搜索引擎对比">
+				<h4 class="text-truncate oneline">
+						各大磁力种子搜索引擎对比				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="lizhengnanhua" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">lizhengnanhua</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">11-27</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							459401</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/lizhengnanhua/article/details/41531579" target="_top" title="各大磁力种子搜索引擎对比">
+							<span class="desc oneline">现在磁力种子搜索引擎质量参差不齐，现在就重点整理几个常用的种子搜索站，做个对比分析
+1.屌丝搜-最懂屌丝的搜索引擎（www.diaosisou.com）
+号称最懂屌丝的BT搜索引擎，确实名副其实，屌丝...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/lizhengnanhua">来自：	<span class="blog_title"> lizhengnanhua的专栏</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/hdp134793/article/details/81530472,BlogCommendHotData_35&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/hdp134793/article/details/81530472" target="_top" title="webstorm 2018.11月 License server 最新激活码（持续更新）">
+				<h4 class="text-truncate oneline">
+						webstorm 2018.11月 License server 最新激活码（持续更新）				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="hdp134793" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">hdp134793</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">08-09</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							79207</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/hdp134793/article/details/81530472" target="_top" title="webstorm 2018.11月 License server 最新激活码（持续更新）">
+							<span class="desc oneline">webstorm激活码如下： 
+本人实锤亲测可用，希望造福广大读者 
+08-03 
+http://idea.wrbugtest.tk/ 
+08-06 
+http://active.china...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/hdp134793">来自：	<span class="blog_title"> 赏樱看雪撸代码</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/xfxf996/article/details/80860792,BlogCommendHotData_36&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/xfxf996/article/details/80860792" target="_top" title="microsoft visio 2013简体中文破解版">
+				<h4 class="text-truncate oneline">
+						microsoft visio 2013简体中文破解版				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="xfxf996" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">xfxf996</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">06-29</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							57301</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/xfxf996/article/details/80860792" target="_top" title="microsoft visio 2013简体中文破解版">
+							<span class="desc oneline"> 
+     说到办公绘图软件，最强大的莫过于微软新推出的visio 2013简体中文版，该软件可以帮助用户快速绘制工作中常用的业务流程图、组织结构图、项目管理图、网络图、日程表、甘特图、思维导图等等...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/xfxf996">来自：	<span class="blog_title"> xfxf996的博客</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/qq_22644927/article/details/80529208,BlogCommendHotData_37&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/qq_22644927/article/details/80529208" target="_top" title="智慧树走进故宫章节测试答案智慧树走进故宫刷课插件2018年智慧树走进故宫期末考试答案">
+				<h4 class="text-truncate oneline">
+						智慧树走进故宫章节测试答案智慧树走进故宫刷课插件2018年智慧树走进故宫期末考试答案				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="qq_22644927" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">qq_22644927</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">05-31</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							125490</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/qq_22644927/article/details/80529208" target="_top" title="智慧树走进故宫章节测试答案智慧树走进故宫刷课插件2018年智慧树走进故宫期末考试答案">
+							<span class="desc oneline">欢迎通过微信客户端搜索jiutu2019或者扫描下方二维码关注樛图公众号获取智慧树刷题插件。
+
+智慧树刷课插件获取方法：微信关注公众号（jiutu2019）后，后台回复“智慧树刷课插件”即可获取。
+
+...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/qq_22644927">来自：	<span class="blog_title"> 柠檬很酸的博客</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/weixin_43694144/article/details/84312097,BlogCommendHotData_38&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/weixin_43694144/article/details/84312097" target="_top" title="tcp的java代码">
+				<h4 class="text-truncate oneline">
+						tcp的java代码				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="weixin_43694144" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">weixin_43694144</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">11-20</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							19226</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/weixin_43694144/article/details/84312097" target="_top" title="tcp的java代码">
+							<span class="desc oneline">服务器端
+package com.car.client;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.ne...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/weixin_43694144">来自：	<span class="blog_title"> weixin_43694144的博客</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    		<div class="recommend-item-box recommend-box-ident type_blog clearfix" data-track-click="{&quot;mod&quot;:&quot;popu_387&quot;,&quot;con&quot;:&quot;,https://blog.csdn.net/xiaochunblog/article/details/85148970,BlogCommendHotData_39&quot;}">
+			<div class="content">
+				<a href="https://blog.csdn.net/xiaochunblog/article/details/85148970" target="_top" title="学习Webpack（一）之 初识webpack">
+				<h4 class="text-truncate oneline">
+						学习Webpack（一）之 初识webpack				</h4>
+				<div class="info-box d-flex align-content-center">
+					<!-- <p class="avatar">
+							<img src="" alt="xiaochunblog" class="avatar-pic">
+							<span class="namebox">
+								<span class="name">xiaochunblog</span>
+								<span class="triangle"></span>
+							</span>
+					</p> -->
+					<p class="date-and-readNum">
+						<span class="date hover-show">12-21</span>
+						<span class="read-num hover-hide">
+							<svg class="icon csdnc-yuedushu" aria-hidden="true">
+								<use xlink:href="#csdnc-m-passwords-visible"></use>
+							</svg>
+							2386</span>
+						</p>
+					</div>
+				</a>
+					<p class="content">
+						<a href="https://blog.csdn.net/xiaochunblog/article/details/85148970" target="_top" title="学习Webpack（一）之 初识webpack">
+							<span class="desc oneline">学习Webpack（一）之 初识webpack
+webpack简介
+
+在官网中说，webpack是一个现代javaScript应用程序的静态模块打包器。他可以分为入口（entry）、出口（output...</span>
+						</a>
+                        						<span class="blog_title_box oneline"><a target="_top" href="https://blog.csdn.net/xiaochunblog">来自：	<span class="blog_title"> 幽幽小春</span></a></span>
+                        					</p>
+			</div>
+					</div>
+	
+    
+	    
+    
+
+            <div class="recommend-loading-box">
+                <img src="feedloading.gif">
+            </div>
+            <div class="recommend-end-box">
+                <p class="text-center">没有更多推荐了，<a href="https://blog.csdn.net/" class="c-blue c-blue-hover c-blue-focus">返回首页</a></p>
+            </div>
+        </div>
+    </main>
+
+    <aside>
+		    <div id="asideProfile" class="aside-box">
+    <!-- <h3 class="aside-title">个人资料</h3> -->
+    <div class="profile-intro d-flex">
+        <div class="avatar-box d-flex justify-content-center flex-column">
+            <a href="https://blog.csdn.net/z827997640">
+                <img src="3_z827997640.jpg" class="avatar_pic">
+            </a>
+                                </div>
+        <div class="user-info d-flex justify-content-center flex-column">
+            <p class="name csdn-tracking-statistics tracking-click" data-mod="popu_379">
+                <a href="https://blog.csdn.net/z827997640" target="_top" class="" id="uid">alpha_Escher</a>
+            </p>
+                    </div>
+                <div class="opt-box d-flex justify-content-center flex-column">
+            <span class="csdn-tracking-statistics tracking-click" data-mod="popu_379">
+                <a class="btn btn-sm btn-red-hollow attention" id="btnAttent">关注</a>
+            </span>
+                    </div>
+            </div>
+    <div class="data-info d-flex item-tiling">
+                <dl class="text-center" title="25">
+                        <dt><a href="https://blog.csdn.net/z827997640?t=1">原创</a></dt>
+            <dd><a href="https://blog.csdn.net/z827997640?t=1"><span class="count">25</span></a></dd>
+                    </dl>
+        <dl class="text-center" id="fanBox" title="8">
+            <dt>粉丝</dt>
+            <dd><span class="count" id="fan">8</span></dd>
+        </dl>
+        <dl class="text-center" title="6">
+            <dt>喜欢</dt>
+            <dd><span class="count">6</span></dd>
+        </dl>
+        <dl class="text-center" title="2">
+            <dt>评论</dt>
+            <dd><span class="count">2</span></dd>
+        </dl>
+    </div>
+    <div class="grade-box clearfix">
+        <dl>
+            <dt>等级：</dt>
+            <dd>
+                <a href="https://blog.csdn.net/home/help.html#level" title="2级,点击查看等级说明" target="_top">
+                    <svg class="icon icon-level" aria-hidden="true">
+                        <use xlink:href="#csdnc-bloglevel-2"></use>
+                    </svg>
+                </a>
+            </dd>
+        </dl>
+        <dl>
+            <dt>访问：</dt>
+            <dd title="9520">
+                9520            </dd>
+        </dl>
+        <dl>
+            <dt>积分：</dt>
+            <dd title="387">
+                387            </dd>
+        </dl>
+        <dl title="226388">
+            <dt>排名：</dt>
+            <dd>22万+</dd>
+        </dl>
+    </div>
+        <div class="badge-box d-flex">
+        <span>勋章：</span>
+                        <div class="icon-badge" title="持之以恒">
+            <div class="mouse-box">
+                <svg class="icon" aria-hidden="true">
+                    <use xlink:href="#csdnc-m-lasting"></use>
+                </svg>
+                <div class="icon-arrow"></div>
+            </div>
+            <div class="grade-detail-box">
+                <div class="pos-box">
+                    <div class="left-box d-flex justify-content-center align-items-center flex-column">
+                        <svg class="icon" aria-hidden="true">
+                            <use xlink:href="#csdnc-m-lasting"></use>
+                        </svg>
+                        <p>持之以恒</p>
+                    </div>
+                    <div class="right-box d-flex justify-content-center align-items-center">
+                        授予每个自然月内发布4篇或4篇以上原创或翻译IT博文的用户。不积跬步无以至千里，不积小流无以成江海，程序人生的精彩需要坚持不懈地积累！
+                    </div>
+                </div>
+            </div>
+        </div>
+                                                
+    </div>
+    </div>
+		    <div class="csdn-tracking-statistics mb8 box-shadow" data-pid="blog" data-mod="popu_4" style="height: 250px;">
+    <div class="aside-content text-center" id="cpro_u2734133">
+      <div id="kp_box_56" data-pid="56" data-track-view="{&quot;mod&quot;:&quot;kp_popu_56-76&quot;,&quot;con&quot;:&quot;,,&quot;}" data-track-click="{&quot;mod&quot;:&quot;kp_popu_56-76&quot;,&quot;con&quot;:&quot;,,&quot;}"><div style="" id="_nges5la3k67"><iframe id="iframeu3032528_0" name="iframeu3032528_0" src="index_3.html" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" style="border: 0px none; vertical-align: bottom; margin: 0px; width: 300px; height: 250px;" allowtransparency="true" width="300" height="250" frameborder="0" align="center,center"></iframe></div>
+<!-- 多条广告如下脚本只需引入一次 -->
+</div>    </div>
+</div>
+		    <div id="asideNewArticle" class="aside-box">
+    <h3 class="aside-title">最新文章</h3>
+    <div class="aside-content">
+        <ul class="inf_list clearfix csdn-tracking-statistics tracking-click" data-mod="popu_382">
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/z827997640/article/details/83626463" target="_top">android系统负载如何获取1-简单利用系统命令</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/z827997640/article/details/81263704" target="_top">图像格式【YUV Format】</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/z827997640/article/details/81175692" target="_top">夜间降噪与多帧降噪的原理</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/z827997640/article/details/81055672" target="_top">机器学习入门相关书籍</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/z827997640/article/details/80968464" target="_top">JPEG文件中的EXIF（上）</a>
+            </li>
+                    </ul>
+    </div>
+</div>
+		    		    <div id="asideCategory" class="aside-box">
+    <h3 class="aside-title">个人分类</h3>
+    <div class="aside-content">
+        <ul>
+                        <li>
+                <a class="clearfix" href="https://blog.csdn.net/z827997640/article/category/7255458">
+                    <span class="title oneline">androiud</span>
+                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <li>
+                <a class="clearfix" href="https://blog.csdn.net/z827997640/article/category/7256381">
+                    <span class="title oneline">c++</span>
+                    <span class="count float-right">13篇</span>
+                </a>
+            </li>
+                        <li>
+                <a class="clearfix" href="https://blog.csdn.net/z827997640/article/category/7563942">
+                    <span class="title oneline">open cv</span>
+                    <span class="count float-right">50篇</span>
+                </a>
+            </li>
+                        <li>
+                <a class="clearfix" href="https://blog.csdn.net/z827997640/article/category/7805051">
+                    <span class="title oneline">机器学习</span>
+                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <li>
+                <a class="clearfix" href="https://blog.csdn.net/z827997640/article/category/7829480">
+                    <span class="title oneline">图像处理</span>
+                    <span class="count float-right">4篇</span>
+                </a>
+            </li>
+                    </ul>
+    </div>
+    </div>
+		    <div id="asideArchive" class="aside-box flexible-box">
+    <h3 class="aside-title">归档</h3>
+    <div class="aside-content">
+        <ul class="archive-list">
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/z827997640/article/month/2018/11">
+                    2018年11月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/z827997640/article/month/2018/09">
+                    2018年9月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/z827997640/article/month/2018/08">
+                    2018年8月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/z827997640/article/month/2018/07">
+                    2018年7月                    <span class="count float-right">3篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/z827997640/article/month/2018/06">
+                    2018年6月                    <span class="count float-right">11篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/z827997640/article/month/2018/05">
+                    2018年5月                    <span class="count float-right">11篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/z827997640/article/month/2018/04">
+                    2018年4月                    <span class="count float-right">31篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/z827997640/article/month/2017/10">
+                    2017年10月                    <span class="count float-right">1篇</span>
+                </a>
+            </li>
+                    </ul>
+    </div>
+        <p class="text-center">
+        <a class="btn btn-link-blue flexible-btn" data-fbox="aside-archive">展开</a>
+    </p>
+    </div>
+		    <div id="asideHotArticle" class="aside-box">
+	<h3 class="aside-title">热门文章</h3>
+	<div class="aside-content">
+		<ul class="hotArticle-list csdn-tracking-statistics tracking-click" data-mod="popu_521">
+							<li>
+					<a href="https://blog.csdn.net/z827997640/article/details/80708154">白平衡算法实现</a>
+					<p class="read">阅读量：<span>1123</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/z827997640/article/details/80585252">OTSU阈值分割</a>
+					<p class="read">阅读量：<span>1002</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/z827997640/article/details/80710933">肤色检测</a>
+					<p class="read">阅读量：<span>910</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/z827997640/article/details/81175692">夜间降噪与多帧降噪的原理</a>
+					<p class="read">阅读量：<span>758</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/z827997640/article/details/80461240">距离变换-distanceTransform</a>
+					<p class="read">阅读量：<span>591</span></p>
+				</li>
+					</ul>
+	</div>
+</div>
+		    <div id="asideNewComments" class="aside-box">
+    <h3 class="aside-title">最新评论</h3>
+    <div class="aside-content">
+        <ul class="newcomment-list">
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/z827997640/article/details/79962834#comments">26局部与分割-平均背景法和cod...</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/LaputaFallen" class="user-name" target="_top">LaputaFallen</a>：顶！博主加油！                </p>
+            </li>
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/z827997640/article/details/79841785#comments">19轮廓-视频颜色跟踪</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/liaobiaowie" class="user-name" target="_top">liaobiaowie</a>：666                </p>
+            </li>
+                    </ul>
+    </div>
+</div>
+		<div id="asideFooter">
+			
+		<div class="aside-box">
+			<div id="kp_box_57" data-pid="57" data-track-view="{&quot;mod&quot;:&quot;kp_popu_57-77&quot;,&quot;con&quot;:&quot;,,&quot;}" data-track-click="{&quot;mod&quot;:&quot;kp_popu_57-77&quot;,&quot;con&quot;:&quot;,,&quot;}"><div style="" id="_jh5r5cbvft"><iframe id="iframeu3163270_0" name="iframeu3163270_0" src="index_4.html" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" style="border: 0px none; vertical-align: bottom; margin: 0px; width: 300px; height: 250px;" allowtransparency="true" width="300" height="250" frameborder="0" align="center,center"></iframe></div>
+<!-- 多条广告如下脚本只需引入一次 -->
+</div>		</div>
+				<div class="aside-box">
+			<div class="persion_article">
+			</div>
+		</div>
+	</div>
+</aside>
+
+
+</div>
+<div class="mask-dark"></div>
+<div class="pulllog-box" style="display: block;">
+	<div class="pulllog clearfix">
+		<span class="text float-left">
+            <div id="dmp_ad_69"><div id="kp_box_69" data-pid="69" data-track-view="{&quot;mod&quot;:&quot;kp_popu_69-75&quot;,&quot;con&quot;:&quot;,,&quot;}" data-track-click="{&quot;mod&quot;:&quot;kp_popu_69-75&quot;,&quot;con&quot;:&quot;,,&quot;}"><div style="float: left; margin-right: 5px; border: 1px solid rgb(241, 61, 61); padding: 2px 5px 0px;">
+<a href="https://edu.csdn.net/topic/ai30?utm_source=ditong" target="_top" style="color: rgb(241, 61, 61); font-weight: bold; text-decoration: none; font-size: 15px;">2019人工智能薪资</a>
+</div>
+
+<div style="float: left; margin-right: 5px; border: 1px solid rgb(0, 0, 0); padding: 2px 5px 0px; background: rgb(0, 0, 0) none repeat scroll 0% 0%;">
+<a href="https://edu.csdn.net/topic/python115?utm_source=ditong" target="_top" style="color: rgb(255, 255, 255); font-weight: bold; text-decoration: none; font-size: 15px;">Python资料免费领</a>
+</div>
+
+<div style="float: left; margin-right: 5px; border: 1px solid rgb(241, 61, 61); padding: 2px 5px 0px;">
+<a href="https://mall.csdn.net/vip_code?utm_source=blogtextlink" target="_top" style="color: rgb(241, 61, 61); font-weight: bold; text-decoration: none; font-size: 15px;">会员任意学</a>
+</div>
+<div style="float: left; margin-right: 5px; border: 1px solid rgb(0, 0, 0); padding: 2px 5px 0px; background: rgb(0, 0, 0) none repeat scroll 0% 0%;">
+<a href="https://www.csdn.net/cps/csdn-java/index.html?utm_source=ditongkeyword" target="_top" style="color: rgb(255, 255, 255); font-weight: bold; text-decoration: none; font-size: 15px;">Java薪资多少</a>
+</div>
+<div style="float: left; margin-right: 5px; border: 1px solid rgb(241, 61, 61); padding: 2px 5px 0px;">
+<a href="https://gitbook.cn/m/mazi/geekBooks?tag=%E7%89%B9%E4%BB%B7&amp;utm_source=wzl1224" target="_top" style="color: rgb(241, 61, 61); font-weight: bold; text-decoration: none; font-size: 15px;">电子书限时特价</a>
+</div>
+<div style="float: left;">
+<div id="_uc14y03qnok"><div style="margin-right: 0px;"><iframe scrolling="no" src="index_5.html" width="286" height="36" frameborder="0"></iframe></div></div>
+<!-- 长文字链
+<script type="text/javascript" src="//rabc1.iteye.com/common/5klj5.js?kfxbghx=bx"></script>
+-->
+</div></div></div>            		</span>
+		<div class="pulllog-btn float-right clearfix">
+            <div class="float-left csdn-tracking-statistics tracking-click" data-mod="popu_557">
+                <a class="pulllog-login">登录</a>
+            </div>
+            <div class="pulllog-sigin float-left csdn-tracking-statistics tracking-click" data-mod="popu_558">
+                <a href="https://passport.csdn.net/account/mobileregister" target="_top">注册</a>
+            </div>
+            <button class="btn-close">
+                <svg class="icon" aria-hidden="true">
+                    <use xlink:href="#csdnc-times"></use>
+                </svg>
+            </button>
+		</div>
+	</div>
+</div>
+<div id="loginWrap" style="display: none;"></div>
+<div class="tool-box">
+	<ul class="meau-list">
+		<li class="btn-like-box ">
+			<button class=" low-height hover-box btn-like " title="点赞">
+				<svg class="icon active hover-hide" aria-hidden="true">
+					<use xlink:href="#csdnc-thumbsup-ok"></use>
+				</svg>
+				<svg class="icon no-active hover-hide" aria-hidden="true">
+					<use xlink:href="#csdnc-thumbsup"></use>
+				</svg>
+				<span class="hover-show text-box text">
+					<span class="no-active">点赞</span>
+					<span class="active">取消点赞</span>
+				</span>
+				<p>0</p>
+			</button>
+		</li>
+		<li class="">
+						<a class="btn-comments low-height hover-box" title="写评论" href="#commentBox">
+				<svg class="icon hover-hide" aria-hidden="true">
+					<use xlink:href="#csdnc-comments"></use>
+				</svg>
+				<span class="hover-show text">评论</span>
+				<p class="">
+										</p>
+			</a>
+		</li>
+		<li class="toc-container-box" id="liTocBox">
+			<button class="btn-toc low-height hover-box" title="目录">
+				<svg class="icon hover-hide" aria-hidden="true">
+					<use xlink:href="#csdnc-contents"></use>
+				</svg>
+				<span class="hover-show text">目录</span>
+			</button>
+			<div class="toc-container">
+				<div class="pos-box">
+					<div class="icon-arrow"></div>
+					<div class="scroll-box">
+						<div class="toc-box"></div>
+					</div>
+				</div>
+				<div class="opt-box">
+					<button class="btn-opt prev nomore" title="向上">
+						<svg class="icon" aria-hidden="true">
+							<use xlink:href="#csdnc-chevronup"></use>
+						</svg>
+					</button>
+					<button class="btn-opt next">
+						<svg class="icon" aria-hidden="true">
+							<use xlink:href="#csdnc-chevrondown"></use>
+						</svg>
+					</button>
+				</div>
+			</div>
+		</li>
+		<li>
+			<button class="btn-bookmark low-height hover-box" title="收藏">
+				<svg class="icon active hover-hide" aria-hidden="true">
+					<use xlink:href="#csdnc-bookmark-ok"></use>
+				</svg>
+				<svg class="icon no-active hover-hide" aria-hidden="true">
+					<use xlink:href="#csdnc-bookmark"></use>
+				</svg>
+					<span class="hover-show text">收藏</span>
+				<!-- <span class="hover-show text-box text">
+					<span class="no-active">收藏</span>
+					<span class="active">取消收藏</span>
+				</span> -->
+			</button>
+		</li>
+				<li class="bdsharebuttonbox">
+			<button class="btn-comments low-height hover-box">
+				<a href="#" class="bds_weixin clear-share-style" data-cmd="weixin" title="手机看"></a>
+				<svg class="icon hover-hide" aria-hidden="true">
+					<use xlink:href="#csdnc-usephone"></use>
+				</svg>
+				<span class="hover-show text text3">
+					手机看
+				</span>
+			</button>
+		</li>
+							<li class="widescreen-hide">
+				<a class="btn-comments low-height hover-box" href="https://blog.csdn.net/z827997640/article/details/81263704" title="图像格式【YUV Format】">
+					<svg class="icon hover-hide" aria-hidden="true">
+						<use xlink:href="#csdnc-chevronleft"></use>
+					</svg>
+					<span class="hover-show text text3">上一篇</span>
+				</a>
+			</li>
+								<li class="widescreen-hide">
+			<a class="btn-comments hover-box low-height" href="https://blog.csdn.net/z827997640/article/details/83626463" title="android系统负载如何获取1-简单利用系统命令">
+				<svg class="icon hover-hide" aria-hidden="true">
+					<use xlink:href="#csdnc-chevronright"></use>
+				</svg>
+				<span class="hover-show text text3">下一篇</span>
+			</a>
+		</li>
+				<li class="bdsharebuttonbox _360_interactive" style="margin-top: 8px;"><div id="kp_box_73" data-pid="73" data-track-view="{&quot;mod&quot;:&quot;kp_popu_73-97&quot;,&quot;con&quot;:&quot;,,&quot;}" data-track-click="{&quot;mod&quot;:&quot;kp_popu_73-97&quot;,&quot;con&quot;:&quot;,,&quot;}"> 
+			
+			<div id="_360_interactive"><info-div style="width: 60px; height: 60px;" id="QIHOO__INTERACTIVE_PLUGIN1548135076443" class="QIHOO__INTERACTIVE_PLUGIN1548135076443-thumbnail" data-pv="https://xdssp.mediav.com/s?type=14&amp;of=4&amp;newf=1&amp;showid=N0ufqn&amp;uid=91660227154813507644164277675&amp;r=20"><info class="QIHOO__INTERACTIVE_PLUGIN1548135076443-singleDay"></info></info-div></div>
+			<img src="201608021757063065.png" style="margin: 0px auto; display: block;" alt=""></div></li>		<!-- 宽屏更多按钮 -->
+		<li class="widescreen-more">
+			<a class="btn-comments chat-ask-button low-height hover-box" title="快问" href="#chatqa">
+				<svg class="icon hover-hide" aria-hidden="true">
+					<use xlink:href="#csdnc-more"></use>
+				</svg>
+				<span class="hover-show text">更多</span>
+				
+			</a>
+			<ul class="widescreen-more-box">
+													<li class="widescreen-more">
+						<a class="btn-comments low-height hover-box" href="https://blog.csdn.net/z827997640/article/details/81263704" title="图像格式【YUV Format】">
+							<svg class="icon hover-hide" aria-hidden="true">
+								<use xlink:href="#csdnc-chevronleft"></use>
+							</svg>
+							<span class="hover-show text text3">上一篇</span>
+						</a>
+					</li>
+																<li class="widescreen-more">
+					<a class="btn-comments hover-box low-height" href="https://blog.csdn.net/z827997640/article/details/83626463" title="android系统负载如何获取1-简单利用系统命令">
+						<svg class="icon hover-hide" aria-hidden="true">
+							<use xlink:href="#csdnc-chevronright"></use>
+						</svg>
+						<span class="hover-show text text3">下一篇</span>
+					</a>
+				</li>
+							</ul>
+		</li>
+	</ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="fourth_column">
+	<div class="title-box">
+		<b class="title">猿学习</b>
+		<span class="fourth_column_close">    
+			<svg class="icon" aria-hidden="true">
+				<use xlink:href="#csdnc-times"></use>
+			</svg>
+		</span>
+		
+	</div>
+	<ul class="">
+		<li><div id="kp_box_456" data-pid="456" data-track-view="{&quot;mod&quot;:&quot;kp_popu_456-721&quot;,&quot;con&quot;:&quot;,,&quot;}" data-track-click="{&quot;mod&quot;:&quot;kp_popu_456-721&quot;,&quot;con&quot;:&quot;,,&quot;}"><a href="https://www.csdn.net/cps/csdn-java/index.html?utm_source=blogleft" target="_top">  <div class="blogkp1"><img src="201812111042404587.png" width="100" height="100"><h6>零基础学JAVA</h6></div></a></div></li>		<li><div id="kp_box_457" data-pid="457" data-track-view="{&quot;mod&quot;:&quot;kp_popu_457-680&quot;,&quot;con&quot;:&quot;,,&quot;}" data-track-click="{&quot;mod&quot;:&quot;kp_popu_457-680&quot;,&quot;con&quot;:&quot;,,&quot;}"><img src="201811231403057859.jpg" width="100" height="100"></div></li>		<li><div id="kp_box_458" data-pid="458" data-track-view="{&quot;mod&quot;:&quot;kp_popu_458-638&quot;,&quot;con&quot;:&quot;,,&quot;}" data-track-click="{&quot;mod&quot;:&quot;kp_popu_458-638&quot;,&quot;con&quot;:&quot;,,&quot;}"><a href="https://edu.csdn.net/topic/ai30?utm_source=blogright" target="_top">  <div class="blogkp1"><img src="201812181217034101.png" width="100" height="100"><h6>转行人工智能工程师</h6></div></a></div></li>		<li><div id="kp_box_459" data-pid="459" data-track-view="{&quot;mod&quot;:&quot;kp_popu_459-687&quot;,&quot;con&quot;:&quot;,,&quot;}" data-track-click="{&quot;mod&quot;:&quot;kp_popu_459-687&quot;,&quot;con&quot;:&quot;,,&quot;}"><img src="201811231432284520.jpg" width="100" height="100"></div></li>	</ul>
+</div>
+
+<!-- 右侧第四栏end -->
+<!-- 高亮未与 markdown兼容  -->
+	
+	
+	
+	<!-- <script type="text/javascript" src="https://csdnimg.cn/release/phoenix/production/markdownCopy-3e5d9ef4b0.js" /></script> -->
+
+
+
+
+
+	
+
+
+<!-- <script type="text/javascript" src="//g.csdnimg.cn/check-adb/1.0.2/check-adb.js"></script> -->
+
+
+
+
+
+
+<info-div id="QIHOO__INTERACTIVE_PLUGIN1548135076443-gameBg" style="width: 430px; height: 430px; visibility: hidden; position: fixed; opacity: 0;"><iframe id="QIHOO__INTERACTIVE_PLUGIN1548135076443-popupIframe" scrolling="no" allowtransparency="true" src="index_7.html" data-type="click" data-id="QIHOO__INTERACTIVE_PLUGIN1548135076443" data-pv="https://xdssp.mediav.com/s?type=12&amp;r=20&amp;uai=FZDBmAIlMhUAJfIIJaPz954DNR4A&amp;ubi=FdSuIxXittkBFdrpjg8V+oTUSBUCFRgWxtLlhQcW0pf3q4vf5bzMAWUAFe/Pm7MDJQA2AAA&amp;ugi=FcTgigEVyNtrTBUCFSgVKBUAACaAQBXIAQA&amp;dj_transp=FdLhoswFFtKX96uL3%2BW8zAEVPBUIFTgA" width="320.8955223880597" height="320.8955223880597" frameborder="no"></iframe></info-div></body>
+</html>

@@ -1,0 +1,1098 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+<meta name="shenma-site-verification" content="5a59773ab8077d4a62bf469ab966a63b_1497598848"/>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="referrer" content="always">
+<link href="http://csdnimg.cn//public/favicon.ico" rel="shortcut icon" />
+<link href="http://blog.csdn.net/sdjhs/article/details/51444934"  rel="canonical" />
+<link href="http://blog.csdn.net/sdjhs/rss/list" id="RSSLink" title="RSS" type="application/rss+xml" rel="alternate" />
+<script src="//csdnimg.cn/public/common/libs/jquery/jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="http://dup.baidustatic.com/js/ds.js" type="text/javascript"></script>
+<script type="text/javascript">
+    var CFG={
+        BASE_URL : "http://csdnimg.cn/release/phoenix/",    //当前页面对应的虚拟路径,静态资源对应目录同<base href="">
+        API_URL  : "http://blog.csdn.net/",                 //当前项目默认的后端API地址
+        ROOT_URL  : "http://blog.csdn.net/",          //当前项目根路径, JS跳转
+        STATIC_URL : "http://csdnimg.cn/release/phoenix/",          //本项目静态资源根目录
+        STATIC_GLOBAL_URL : "http://csdnimg.cn/",    //公共静态资源根目录
+        CUR_URL : "http://blog.csdn.net/sdjhs/article/details/51444934",
+        SO_URL : "http://so.csdn.net/so/search/s.do"  // 站内搜索路径
+    }
+</script>
+    <title>基于Gstreamer的实时视频流的分发 - CSDN博客</title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="1  Overview
+Gstreamer是一款功能强大、易扩展、可复用的、跨平台的用流媒体应用程序的框架。
+该框架大致包含了应用层接口、主核心框架以及扩展插件三个部分。
+
+
+
+
+   Fig 1.0Gstreamer
+
+
+
+应用层接口主要是给各类应用程序提供接口如：多媒体播放器、流媒体服务器、视频编辑器等；接口的形式多样化，可以是信号、回调函数、函数调用等。
+主核心框架就" />
+    <link href="http://csdnimg.cn/blog/csdn_public_blog_detail.min.css" type="text/css" rel="stylesheet"/>
+    <link href="http://csdnimg.cn/release/phoenix/dotnet/css/blog_detail-5fa1e5c9d8.css" type="text/css" rel="stylesheet" />
+    <link href="http://csdnimg.cn/release/phoenix/bloglist/iconfont/iconfont.css" type="text/css" rel="stylesheet"/>
+    <link href="http://csdnimg.cn/release/phoenix/dotnet/skin/skin-yellow/css/style.css?v=201802281934"  type="text/css" rel="stylesheet" />
+    <script>
+        var username = "sdjhs";
+        var _blogger = username;
+        var blog_address = "http://blog.csdn.net/sdjhs";
+        var static_host = "http://csdnimg.cn/release/phoenix/";
+        var currentUserName = "";
+        var islock = false;
+        var fileName = "51444934";
+        var commentscount = 3;
+        var curUserFace = "http://avatar.csdn.net/D/4/1/3_.jpg";
+
+        document.domain = "csdn.net";
+        var title="基于Gstreamer的实时视频流的分发";
+        window.quickReplyflag = true;
+        var isBole = false;
+        var fasrc="http://my.csdn.net//my/favoriteminiadd?dt=基于Gstreamer的实时视频流的分发&u=http://blog.csdn.net/sdjhs/article/details/51444934";
+        var baiduKey = "gstreamer+rtmp%E6%8E%A8%E6%B5%81";
+        var needInsertBaidu = false;
+    </script>
+      <script src="//csdnimg.cn/search/baidu_search-1.0.0.js?v=201802071056&autorun=true&install=true&keyword=java"  type="text/javascript"></script>
+      <script src="http://csdnimg.cn/release/phoenix/dotnet/js/blog_detail-ab6fe8c9b6.js" type="text/javascript"></script>
+    <style type="text/css">
+        .embody{
+            padding:10px 10px 10px;
+            margin:0 -20px;
+            border-bottom:solid 1px #ededed;
+        }
+        .embody_b{
+            margin:0 ;
+            padding:10px 0;
+        }
+        .embody .embody_t,.embody .embody_c{
+            display: inline-block;
+            margin-right:10px;
+        }
+        .embody_t{
+            font-size: 12px;
+            color:#999;
+        }
+        .embody_c{
+            font-size: 12px;
+        }
+        .embody_c img,.embody_c em{
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .embody_c img{
+            width:30px;
+            height:30px;
+        }
+        .embody_c em{
+            margin: 0 20px 0 10px;
+            color:#333;
+            font-style: normal;
+        }
+    </style>
+</head>
+<body>
+<link rel="stylesheet" href="http://csdnimg.cn/public/common/toolbar/content_toolbar_css/content_toolbar.css">
+<script id="toolbar-tpl-scriptId" src="http://csdnimg.cn/public/common/toolbar/js/content_toolbar.js" type="text/javascript" domain="http://blog.csdn.net/"></script>
+<div id="container">
+    <!--header+navigator-->
+    <div id="header">
+    <div class="header">
+        <div id="blog_title">
+            <h2>
+                <a href="http://blog.csdn.net/sdjhs">sdjhs的博客</a>
+            </h2>
+            <h3>
+                             </h3>
+            <div class="clear">
+            </div>
+        </div>
+        <div class="clear">
+        </div>
+    </div>
+</div>
+<div id="navigator">
+    <div class="navigator_bg">
+    </div>
+    <div class="navigator">
+        <ul>
+            <li id="btnContents"><a href="http://blog.csdn.net/sdjhs?viewmode=contents"><span
+                    onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_mulu'])">
+                    <img src="http://csdnimg.cn/release/phoenix/images/ico_list.gif">目录视图</span></a></li>
+            <li id="btnView"><a href="http://blog.csdn.net/sdjhs?viewmode=list"><span
+                    onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_zhaiyao'])">
+                    <img src="http://csdnimg.cn/release/phoenix/images/ico_summary.gif">摘要视图</span></a></li>
+            <li id="btnRss"><a href="http://blog.csdn.net/sdjhs/rss/list"><span
+                    onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_RSS'])">
+                    <img src="http://csdnimg.cn/release/phoenix/images/ico_rss.gif">订阅</span></a></li>
+                    </ul>
+    </div>
+</div>
+    <div id="body">
+        <div id="main">
+            <div class="main">
+               <div class="main">
+    <div class="ad_class">
+    </div>
+    <!--文章详情-->
+    <div id="article_details" class="details">
+        <div class="article_title">
+            <span class="ico ico_type_Original"></span>
+            <h1>
+                <span class="link_title">
+                    <a href="http://blog.csdn.net/sdjhs/article/details/51444934">
+                        
+                                                基于Gstreamer的实时视频流的分发                    </a>
+                </span>
+            </h1>
+        </div>
+        <div class="article_manage clearfix">
+        <div class="article_r">
+        <span class="link_postdate">2016年05月18日 16:13:48</span>
+        <span class="link_view" title="阅读次数">8124人阅读</span>
+        <span class="link_comments" title="评论次数"> <a href="javascript:void(0);" class="btn-pinglun">评论</a>(3)</span>
+        <span class="link_collect csdn-tracking-statistics" data-pid="blog"  data-mod="popu_171">
+            <a href="javascript:void(0);" onclick="javascript:collectArticle('基于Gstreamer的实时视频流的分发','51444934');return false;" title="收藏">收藏</a>
+        </span>
+                <span class="link_report">
+            <a href="javascript:void(0);" onclick="javascript:report(51444934, 2);return false;" title="举报">举报</a>
+        </span>
+                    </div>
+</div>
+<script  type="text/javascript">
+    $(function () {
+        try
+        {
+            var lib = eval("("+$("#lib").attr("value")+")");
+            var html = "";
+            if (lib.err == 0) {
+                $.each(lib.data, function (i) {
+                    var obj = lib.data[i];
+                    //html += '<img src="' + obj.logo + '"/>' + obj.name + "&nbsp;&nbsp;";
+                    html += ' <a href="' + obj.url + '" target="_blank">';
+                    html += ' <img src="' + obj.logo + '">';
+                    html += ' <em><b>' + obj.name + '</b></em>';
+                    html += ' </a>';
+                });
+                if (html != "") {
+                    setTimeout(function () {
+                        $("#lib").html(html);
+                        $("#embody").show();
+                    }, 100);
+                }
+            }
+        } catch (err)
+        { }
+
+    });
+</script>
+                <div class="bog_copyright">
+                    </div>
+        <div id="article_content" class="article_content csdn-tracking-statistics" data-pid="blog"  data-mod=popu_307  data-dsm = "post" >
+                    <link rel="stylesheet" href="http://csdnimg.cn/release/phoenix/production/htmledit_views-b569b0e3ef.css" />
+            <div class="htmledit_views">
+                
+<p></p>
+<p><strong>1  Overview</strong></p>
+<p>Gstreamer是一款功能强大、易扩展、可复用的、跨平台的用流媒体应用程序的框架。</p>
+<p>该框架大致包含了<strong>应用层接口</strong>、<strong>主核心框架</strong>以及<strong>扩展插件</strong>三个部分。</p>
+<p><br /></p>
+<p><img src="http://img.blog.csdn.net/20160518161626378?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" /><br /></p>
+<p>   Fig 1.0Gstreamer<br /></p>
+<p><br /></p>
+<p>应用层接口主要是给各类应用程序提供接口如：多媒体播放器、流媒体服务器、视频编辑器等；接口的形式多样化，可以是信号、回调函数、函数调用等。</p>
+<p>主核心框架就是流媒体的实际运行框架，其包含了媒体处理、内部消息处理、数据的网络传输、以及插件系统实现的功能等；主核心框架又包含了一系列的子模块称之为element，<strong>每个element完成一项单一的功能，通过Pipeline把其串联起来实现一条媒体流的实现。</strong></p>
+<p>扩展插件还是以主核心框架为基础，提供一些额外的服务，如：协议的组件、部分格式编解码的实现、以及第三方的一些Utility。核心框架会提供一些虚化的接口给各类插件，各类插件只需按照规则实现那些虚化的接口，核心框架就会具有相应的能力（类似父类和子类的关系）。</p>
+<p>以Gstreamer为核心，构造了一套关于流媒体实时视频的获取、存储、转发综合方案，并实现了数据获取与转发相分离、支持多协议并发输出、低延迟、高可靠等特性。</p>
+<p>该方案用到了Gstreamer的元素作为支撑，包括了数据的获取和转发两大功能体。因为获取到的数据要支持多路径转发，所以必须将其转换成ts包格式。</p>
+<p><br /></p>
+<p><img src="http://img.blog.csdn.net/20160518161806396?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" /><br /></p>
+<p></p>
+<p> fig 1.1 module chart</p>
+<br /><p></p>
+<p><strong>2. 视频获取单元</strong></p>
+<p><strong>总体功能</strong>：从IPC获取实时视频数据，可用于转发或存贮。</p>
+<p><strong>总体实现</strong>：视频获取单元用Gstreamer的一条Pipeline实现，包含如下元素：</p>
+<p>rtspsrc: 连接rtsp 服务器，并获取RTP 包，所有行为遵守RFC2326；</p>
+<p>rtph264depay: 从RTP 包中解出H264包，所有行为遵守RFC3984；</p>
+<p>mpegtsmux: 把mpeg的传输流封装成ts包；</p>
+<img src="http://img.blog.csdn.net/20160518162009097?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" /><br /><p></p>
+<p>fig 2.0 video fetch pipeline </p>
+<p> </p>
+<p><strong>2.1rtspsrc</strong></p>
+<p><strong>模块功能</strong>：rtspsrc用于连接rtsp Server（IPC端）并获取数据。</p>
+<p>其做为一个SRC仅仅是用于接收数据，并不做任何处理直接交给下游模块。所以他的输入和输出数据都是RTP包。接收数据前，rtsp Session的建立是通过与对端交互SDP消息完成的，完全遵守了RFC2326。</p>
+<p>用户层使用rtspsrc时，只需要正确配置所有控制参数，该模块就会完成如下功能：SDP消息交互，RTP stream的接收，RTP包的输出（PUSH mode）。同时，rtspSrc给应用层提供一系列接口，使其可以参与整个Session建立过程，这些接口都是以Callback形式给出。</p>
+<p>handle-request : Gstreamer可以让应用去处理服务器的rtsprequest 和 response；</p>
+<p>on-sdp:每收到sdp消息，Gstreamer可以让应用层增加处理；</p>
+<p>select-stream: 每次Gstreamer对接收到的stream加以caps设定时，让应用层有机会处理；</p>
+<p>如果应用层忽略这些Callback，那Gstreamer就会按照标准流程走下去。</p>
+<p>下图中列出了rtspsrc支持的控制参数，包含了：底层的传输协议选择、发送队列缓存区的大小、是否支持丢包重传等参数。</p>
+<p> </p>
+<p>把该模块加入Pipeline中并开启Pipeline，完成如下功能：</p>
+<p>1.  与服务器交互SDP报文，建立rtsp session;</p>
+<p>2.  通过Session获取RTP 流；</p>
+<p>3.  通过PUSH的模式把RTP包交给下游模块；</p>
+<p> <img src="http://img.blog.csdn.net/20160518162128884?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" /></p>
+<p></p>
+<p align="left">  fig 2.1 rtspsrc work scope</p>
+<p align="left"><br /></p>
+<p align="left"><strong>模块实现</strong>：Gstreamer</p>
+<p align="left"> </p>
+<p align="left"> </p>
+<p align="left"> </p>
+<p><strong>2.2 rtph264depay</strong></p>
+<p><strong>模块功能</strong>：</p>
+<p>1.  做为rtspsrc的下游模块，可以接收到rtp包，</p>
+<p>2.  并遵循RFC3984的规范解包，解完的包会按照NAL的格式对齐；</p>
+<p>3.  NAL包以PUSH的模式交给下游模块。</p>
+<p> </p>
+<p><strong>模块实现</strong>：Gstreamer</p>
+<p> </p>
+<p><strong>2.3 mpegtsmux</strong></p>
+<p><strong>模块功能</strong>：把媒体流数据（mpeg格式的）封装成ts包的格式并输出给下游模块。</p>
+<p> </p>
+<p><strong>模块可选的控制参数</strong>：</p>
+<p>m2ts-mode：选择188字节或192字节的ts包；</p>
+<p><code>prog-map</code><code>：节目流映射；<span style="color:#FF0000;">（此参数不明白）</span></code></p>
+<p><code>pat-interval</code><code>：发送ts包净荷是节目关联表的时间间隔；</code></p>
+<p><code>pmt-interval</code><code>：发送ts包净荷是单路节目复用信息的时间间隔；</code></p>
+<p><code>alignment</code><code>：发送给下游模块的每块Buffer的TS包的个数；</code></p>
+<p><code>si-interval</code><code>：发送Service Information的时间间隔；</code></p>
+<p><code> </code></p>
+<p><strong>模块</strong><code><strong>实现</strong></code><code>：Gstreamer</code></p>
+<p><code> </code></p>
+<p><code><strong>2.4 </strong></code><code><strong>appsink</strong></code></p>
+<p><strong>模块</strong><code><strong>功能</strong></code><code>：允许应用程序获取处理后的数据。</code></p>
+<p><code> </code></p>
+<p><strong>模块</strong><code><strong>可选的控制参数</strong></code><code>：</code></p>
+<p><code>drop</code><code>：丢弃策略，当Buffer满了以后是否丢弃数据；</code></p>
+<p><code>max-buffers</code><code>：设定Buffer队列的个数；</code></p>
+<p><code>GST_PAD_PROBE_TYPE_BUFFER</code><code>：可以注册回调函数获取经过appsink的所有Buffer；</code></p>
+<p><code> </code></p>
+<p><strong>模块</strong><code><strong>实现</strong></code><code>：Gstreamer</code></p>
+<p><code> </code></p>
+<p><code>Appsink</code><code>获取的Buffer都是ts包格式的，获取后有多种处理方式</code></p>
+<p><code>1.  </code><code>以ts文件的形式保存；</code></p>
+<p><code>2.  </code><code>以buffer的形式进行管理；</code></p>
+<p><code>3.  </code><code>直接丢给各个转发模块；</code></p>
+<br /><p><code><strong>3  转发实体</strong></code><code>：</code></p>
+<p><code>对于获取的视频数据有3种转发的方式</code></p>
+<p><code><strong>3.1 </strong></code><code><strong>HLS</strong></code><code><strong>转发</strong></code></p>
+<p><code><strong>总体功能</strong></code><code>：</code></p>
+<p><code>控制面，建立HttpServer，接受客户端的请求并给出回应；</code></p>
+<p><code>数据面，通过Socket接口，把接收到的ts包Buffer传给客户端；</code></p>
+<code><strong>总体实现</strong></code><code>：与Gstreamer无关，HttpServer用Libevent实现；</code><br /><p><code><img src="http://img.blog.csdn.net/20160518162450646?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" /><br /></code></p>
+<p><code></code></p>
+<p>Figure 2-1 HLSSolution Service Flow</p>
+<p> </p>
+<p>Step1 : 开启Gstreamer去捕获IPC的RtpStreaming并交给PipeLine，经过h264depay和Mpegtsmux 的处理后，AppSink的probe可以hook到ts packet Buffer ;</p>
+<p>Step2: 开启HttpServer监听指定端口;</p>
+<p>Step3：Client发送Get m3u8File Request，Server收到后回复200OK和相应m3u8文件；</p>
+<p>Step4:  Client根据m3u8文件里的ts文件列表RequestGET;（这里是segment00.ts）</p>
+<p>Step5:  Server收到segment00.ts文件请求后Response200 OK 和“Connection keep alive”;</p>
+<p>Step6: HttpServer驱动Appsink 的Probe通过Socket把hook到的buffer实时往Client发送; （如果多个客户端，将轮询所有客户端进行转发）</p>
+<p>Step7: Client侧的HttpClient收到Buffer后实时PUSH ts Buffer to Gstreamer Appsrc；</p>
+<p>Step8: Client侧的Gstreamer的PipeLine经过Appsrc,tsdemux, h264parse, avdec_h264, glimagesink对live streaming media进行播放；</p>
+<br /><p><code></code></p>
+<p><code><strong>3.2 </strong></code><code><strong>rtsp server </strong></code><code><strong>转发</strong></code></p>
+<p><code><strong>总体功能</strong></code><code>：</code></p>
+<p><code>控制面，构造rtsp server，负责与客户端的rtsp请求与回复；</code></p>
+<p><code>数据面，构造rtp stream, 把上游输入的ts包buffer转换成rtp格式，并通过Rtsp协议发送给客户端；</code></p>
+<p><code> </code></p>
+<p><code><strong>总体实现</strong></code><code>：Gstreamer</code></p>
+<img src="http://img.blog.csdn.net/20160518162709240?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" /><br /><p><code></code></p>
+<p>  fig 3.0 rtp stream produce</p>
+<p> </p>
+<p><code>由Gstreamer构造的一条Pipeline，从上游的appsink接受数据，进行格式转换并交给rtsp server 发送出去。</code></p>
+<p><code> </code></p>
+<p><code><strong>3.2.1  </strong></code><code><strong>Appsrc</strong></code></p>
+<p><code><strong>模块功能</strong></code><code>：做为Pipeline的开始节点，允许应用程序往Pipeline“喂送”数据。</code></p>
+<p><code> </code></p>
+<p><code><strong>模块控制参数</strong></code><code>：</code></p>
+<p><code>block: </code><code>每块推送buffer块的最大字节；</code></p>
+<p>current-level-bytes：当前队列的大小；</p>
+<p>is-live：当前推送的是否直播数据；</p>
+<p><code>max-bytes</code><code>：缓存队列的最大容量；</code></p>
+<p>max-latency：流数据在该模块的最大延迟时间；</p>
+<p>min-latency：流数据在该模块的最小延迟时间；该值设为-1表示无延时发送。</p>
+<p><code>min-percent</code><code>：设定队列缓存数据的比例，当缓存数据小于该值时appsrc向pipeline发出“need data”信号；</code></p>
+<p><code>size</code><code>：流媒体数据的字节数，一般用-1表示未知；</code></p>
+<p><code>stream-type</code><code>：流媒体类型，</code>GST_APP_STREAM_TYPE_STREAM表示实时数据不支持seeking操作；</p>
+<p> </p>
+<p><strong>注册的信号</strong>：</p>
+<p>“need data”：每当appsrc的Buffer需要数据时，该信号会被抛出，回调函数被触发；</p>
+<p>“enough data”：每当appsrc的buffer即将溢出时，该信号会被抛出，回调函数被触发；</p>
+<p> </p>
+<p><strong>注册的接口</strong>：</p>
+<p>“push buffer”: 应用程序需要往往appsrc喂数据，该接口可以被调用；</p>
+<p> </p>
+<p><strong>3.2.2 tsdemux</strong></p>
+<p><code><strong>模块功能</strong></code><code>：mpegtsmux的逆操作，把ts包恢复成mpeg2格式。</code></p>
+<p><code> </code></p>
+<p><code><strong>模块实现</strong></code><code>：Gstreamer</code></p>
+<p><code> </code></p>
+<p><code><strong>3.2.3 </strong></code><code><strong>h264parse</strong></code></p>
+<p><code><strong>模块功能</strong></code><code>：解析H264流，输出数据为AU对齐的流</code></p>
+<p><code> </code></p>
+<p><code><strong>模块控制参数</strong></code><code>：</code></p>
+<p><code>disable_passthrough: </code><code>为1表示强制按照h264规格解析输入数据，主要是针对一些不被信任的输入数据；为0表示根据标准行为去解析或不解析输入数据；一般选择0；</code></p>
+<p><code>config-interval:</code><code>发送PPS,SPS的时间间隔（SPS会被复用在数据流中）；</code></p>
+<p><code> </code></p>
+<p><code><strong>模块实现</strong></code><code>：Gstreamer</code></p>
+<p><code> </code></p>
+<p><code><strong>3.2.4  </strong></code><code><strong>rtph264pay</strong></code></p>
+<p><code><strong>模块功能</strong></code><code>：把H264 视频数据编码进RTP包（遵循RFC3984）</code></p>
+<p><code> </code></p>
+<p><code><strong>模块控制参数</strong></code><code>：</code></p>
+<p><code>Mtu:</code><code>包的最大字节数；</code></p>
+<p><code>Pt</code><code>：包负载的类型；</code></p>
+<p><code>Ssrc</code><code>：指定包的ssrc值，默认是随机值；</code></p>
+<p><code>Timestamp-offset:</code><code>时间戳起始值，默认随机值；</code></p>
+<p><code>Sequencenumber-offset: sequence number</code><code>的起始值，默认随机值；</code></p>
+<p><code>Max-ptime:</code><code>一个包含的视频最大长度（ns为单位），-1表示无限制，取决于MTU；</code></p>
+<p><code>Min-ptime:</code><code>一个包含的视频最小长度（ns为单位），-1表示无限制，取决于MTU；</code></p>
+<p><code>Timestamp:</code><code>最后一个包的时间戳；</code></p>
+<p><code>Sequencenum:</code><code>最后一个包sequence num ；</code></p>
+<p><code>Ptime-multiple: buffer</code><code>大小需是packet time的倍数；</code></p>
+<p><code>config-interval:</code><code>发送PPS,SPS的包的时间间隔，也就是IDR frame的时间间隔（SPS会被复用在数据流中）；</code></p>
+<p><code> </code></p>
+<p><code><strong>模块实现</strong></code><code>：Gstreamer</code></p>
+<p><code> </code></p>
+<p><code><strong>3.2.5 </strong></code><code><strong>rtpbin </strong></code></p>
+<p><code><strong>模块功能</strong></code><code>：rtpsession +rtpjitterbuffer + rtprtxsend + rtprtxreceive</code></p>
+<p><code>Rtpsession:</code><code>建立rtp session 并分配SSRC，接收发送RTP包，调度发送接收RTCP包，实现了RFC3550；以上行为需要基于RTSP Session的协商结果。</code></p>
+<p><code>Rtpjitterbuffer</code><code>：缓存数据流，根据配置等待需要重传的RTP包，并及时察觉未收到的RTP包触发rtpsession发送FBNACK(RFC4585),发送重传事件给 Rtprtxreceive；</code></p>
+<p><code>Rtprtxsend</code><code>：按照配置保存一定量的RTP包，收到rtpsession的重传指示，查找目标RTP包按照RFC4588的规范重新发送；</code></p>
+<p><code>Rtprtxreceive</code><code>：根据从Rtpjitterbuffer接受到的重传指示，按照RFC4588的要求，把重传流的SSRC2映射到主数据流SSRC1(RFC 4588)，把数据包交给下游的Rtpjitterbuffer；</code></p>
+<p><img src="http://img.blog.csdn.net/20160518162904538?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" /><br /></p>
+<p></p>
+<p><code>   Fig 3.1  Lost rtp packet retransmission with both peer</code></p>
+<p><code>      </code></p>
+<p><code>如果不考虑重传，rtpbin的功能就等同于rtpsession(RFC 3550)</code></p>
+<p><code> </code></p>
+<p><code><strong>rtpsession</strong></code><code><strong>控制参数</strong></code><code>：</code></p>
+<p><code>Bandwidth</code><code>：RTP Session的带宽；</code></p>
+<p><code>Internal-session:</code></p>
+<p><code>ntp-ns-base:</code><code>基于</code>running_time0的网络基准时间；</p>
+<p><code>num-active-sources</code><code>：</code></p>
+<p>num-sources：</p>
+<p><code>rtcp-fraction</code><code>：RTCP的带宽；</code></p>
+<p><code>sdes:</code><code>数据加密算法的选择；</code></p>
+<p>rtcp-rr-bandwidth：用于接收RTCP的带宽；</p>
+<p>rtcp-rs-bandwidth：用于发送RTCP的带宽；</p>
+<p><code>use-pipeline-clock</code><code>：用Pipeline的时钟去设定RTCP SR的ntp；</code></p>
+<p>probation：为了判断Source是否有效的，用于试用的连续报文个数；<code></code></p>
+<p>rtp-profile：一般是视频音频类型，GST_RTP_PROFILE_AVP；</p>
+<p><br /></p>
+<p><code><strong>rtpbin</strong></code><code><strong>控制参数</strong></code><code>：</code></p>
+<p>do-lost：是否丢包后往下游发送事件；</p>
+<p>latency：jitterbuffer中缓存的buffer长度；</p>
+<p><code>ignore-pt</code><code>：是否忽略pt值；</code></p>
+<p>autoremove：自动删除超时的数据源；<code></code></p>
+<p>JitterBufferMode：控制jitter里buffer和时间戳的模式；</p>
+<p>ntp-sync：buffer里的时间是否和ntp同步；</p>
+<p>rtcp-sync：rtcp包里的时间和ntp的同步模式；</p>
+<p><code>rtcp-sync-interval</code><code>：rtcp数据的发送间隔；</code></p>
+<p><code>drop-on-latency</code><code>：超过jitterbuffer缓存区范围是否丢弃；</code></p>
+<p><code>do-sync-event</code><code>：是否可以向流的下游模块发送同步事件；</code></p>
+<p><code>do-retransmission</code><code>：是否支持rtp包的重传；</code></p>
+<p><span style="font-family:Arial, Helvetica, sans-serif;"> </span></p>
+<p><code><strong>模块实现：</strong></code><code>Gstreamer</code></p>
+<p><code> </code></p>
+<p><code><strong>rtsp server</strong></code></p>
+<p><code><strong>模块功能</strong></code><code>：</code></p>
+<p><code>构建rtsp server，与客户端进行信令交互，控制数据收发；</code></p>
+<p><code> </code></p>
+<p><code><strong>模块工作原理</strong></code><code>：</code></p>
+<p><code><img src="http://img.blog.csdn.net/20160518163021240?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" /></code></p>
+<p><code></code></p>
+<p>控制层面：</p>
+<p>1.  服务器端每接入一个客户connection就会创建一个Client对象，所有的rtsp信令层的交互都由Client对象处理；</p>
+<p>2.  Client和客户端SDP协商完毕会创建Media对象；</p>
+<p>3.  Client收到SETUP请求会创建Session，并把Media加入到该Session；</p>
+<p>4.  所有的控制层面的信令都由Client-〉Session-〉Media去处理；</p>
+<p>5.  Media会通过Factory接口创建Pipeline，并把Pipeline和RtpBin连接生成Stream对象；</p>
+<p>6.  Rtsp Session通过StreamTransport对象把数据通道的一些参数交给Stream；</p>
+<p>7.  Stream建立数据传输的通道；</p>
+<p>转发层面：</p>
+<p>1.  Stream建立并收到对端的PLAY请求，RtpBin会向Pipeline的源头Appsrc要数据；</p>
+<p>2.  Appsrc产生“need_data”的信号；</p>
+<p>3.  上游的appsink模块会把数据（ts packet）buffer，feed给Appsrc；</p>
+<p>4.  ts包经过Pipeline的处理组成RTP包到达rtpbin；</p>
+<p>5.  rtpbin，最主要的是rtpsession会把收到的rtp包交给udpsink模块做下一步发送；</p>
+<p><code> </code></p>
+<p><code><strong>模块实现</strong></code><code>：Gstreamer</code></p>
+<p><code> </code></p>
+<p><code><strong>3.3 </strong></code><code><strong>rtmp </strong></code><code><strong>转发</strong></code></p>
+<p><code><strong>总体功能</strong></code><code>：</code></p>
+<p><code>控制面，构造rtmp server；</code></p>
+<p><code>数据面，构造rtmp stream,把接收到的ts buffer转换成rtmp stream格式,交给rtmp服务器发送给客户端；</code></p>
+<p><code><strong>实现</strong></code><code>：控制面由SRS实现，数据面由Gstreamer实现；</code></p>
+<br /><img src="http://img.blog.csdn.net/20160518163136148?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" /><br /><p></p>
+<p> Fig3.3 <strong> ts transfer to rtmp stream</strong></p>
+<p><strong> </strong></p>
+<p><code>encodebin:</code><code>把h264数据转换成flv格式，由Gstreamer实现；</code></p>
+<p><code>rtmpsink:</code><code>把flv数据转换成rtmp stream并传送给rtmpserver，由Gstreamer实现；</code></p>
+<p><code>rtmpserver:</code><code>模块把rtmp stream按rtmp协议转发给客户端； </code></p>
+<p><code> </code><span style="font-family:Arial, Helvetica, sans-serif;"> </span></p>
+<p><code><strong>3.4 </strong></code><code><strong>Service model</strong></code></p>
+<img src="http://img.blog.csdn.net/20160518163322572?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" /><br /><p></p>
+<p>     fig 3.4 service model</p>
+<p> </p>
+<p>1.      一台Server可在多个IPC上获取数据；</p>
+<p>2.      获取的数据可以多路协议转发；</p>
+<p>3.      每路协议支持多客户端实时转发；</p>
+<p> </p>
+<p> </p>
+<p><code><strong>4  </strong></code><code><strong>Prototypeverification</strong></code></p>
+<p>经过原型验证，RTMP、HLS和RTSP的转发，在网络效果良好的情况下经过参数合理配置，可以达到低延时的效果（300ms）。</p>
+<p>RTMP、HLS的底层传输都是TCP连接，提供了可靠的传输环境；Rtsp Server的RTP可选UDP，并引入RTP的重传机制，也可保证传输质量。</p>
+<p>因为是实时编码，所以IPC输出的H264是不包含B帧的，Gstreamer为解析H264的B帧所设定的700ms的帧同步延时可以省略，提高了实时性。<code></code></p>
+<br /><p><br /></p>
+<br /><p><br /></p>
+<p><br /></p>
+<p><br /></p>
+            </div>
+                    <script>
+                $(".MathJax").remove();
+            </script>
+            <script type="text/javascript" src="//static.blog.csdn.net/mdeditor/public/res/bower-libs/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        </div>
+        <div class="readall_box csdn-tracking-statistics tracking-click"  data-pid="blog"  data-mod="popu_596">
+        <div class="read_more_mask"></div>
+            <a class="btn btn-large btn-gray-fred read_more_btn" target="_self">阅读全文</a>
+        </div>
+        <ul class="article_next_prev">
+                                    <li class="prev_article">
+                <span  onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_shangyipian']);location.href='http://blog.csdn.net/sdjhs/article/details/51287908';">上一篇</span>
+                <a href="http://blog.csdn.net/sdjhs/article/details/51287908" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_shangyipian'])">libevent 构造httpServer</a>
+            </li>
+            
+                    </ul>
+        <div style="clear:both; height:10px;"></div>
+    </div>
+
+        <!--文章底部广告位-->
+    <div id="article_ad">
+        <!-- 广告位：PC端-博客详情页底部banner-960*90 -->
+        <script>
+            (function() {
+                var s = "_" + Math.random().toString(36).slice(2);
+                document.write('<div id="' + s + '"></div>');
+                (window.slotbydup=window.slotbydup || []).push({
+                    id: '4770928',
+                    container: s,
+                    size: '960,90',
+                    display: 'inlay-fix'
+                });
+            })();
+        </script>
+    </div>
+    
+    <!--评论区-->
+    <div class="comment_class">
+        <div class="commentform" id="comments"></div>
+        <div id="comment_form">
+
+        </div>
+        <div id="comment_title" class="panel_head">
+            <span class="see_comment">查看评论</span><a name="comments" ></a></div>
+        <div id="comment_list">
+
+        </div>
+        <div id="comment_bar">
+        </div>
+    </div>
+
+    <!--推荐列表-->
+    <div class="recommend_list">
+                                            <dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_614" data-poputype="feed"  data-feed-show="false"  data-dsm="post">
+                <a href="http://blog.csdn.net/fkdsla/article/details/52153688"  target="_blank" strategy="BlogCommendFromBaidu_0">
+                    <dd>
+                        <h2>gstreamer --从appsrc 到 rtmpsink推流</h2>
+                        <div class="summary">
+                            gstreamer中appsrc可以进行填充数据，所以经常用到appsrc原件到各种sink，下面介绍一个从appsrc到rtmpsink的过程
+
+
+  pipeline = gst_pipel...                        </div>
+
+                        <ul>
+                            <li class="avatar_img"><img src="http://avatar.csdn.net/E/3/E/3_fkdsla.jpg" alt="fkdsla" title="fkdsla"></li>
+                            <li class="user_name">fkdsla</li>
+                            <li class="time">2016年08月08日 17:26</li>
+                            <li class="visited_num"><i class="icon iconfont icon-read"></i><span>1221</span></li>
+                        </ul>
+                    </dd>
+                </a>
+            </dl>
+                                                    <dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_614" data-poputype="feed"  data-feed-show="false"  data-dsm="post">
+                <a href="http://blog.csdn.net/fkdsla/article/details/52192629"  target="_blank" strategy="BlogCommendFromBaidu_1">
+                    <dd>
+                        <h2>gstreamer  -- appsrc 到 rtsp推流</h2>
+                        <div class="summary">
+                            经常用到将appsrc中填充数据后，以rtsp流的形式推出。和rtmp不同的是，rtmp需要用ngnix做为server，而rtsp就是通过代码自己搭建一个server，代码如下
+static int...                        </div>
+
+                        <ul>
+                            <li class="avatar_img"><img src="http://avatar.csdn.net/E/3/E/3_fkdsla.jpg" alt="fkdsla" title="fkdsla"></li>
+                            <li class="user_name">fkdsla</li>
+                            <li class="time">2016年08月12日 16:08</li>
+                            <li class="visited_num"><i class="icon iconfont icon-read"></i><span>2571</span></li>
+                        </ul>
+                    </dd>
+                </a>
+            </dl>
+                                          <dl class="">
+            <script>
+            (function() {
+              var s = "_" + Math.random().toString(36).slice(2);
+              document.write('<div id="' + s + '"></div>');
+              (window.slotbydup=window.slotbydup || []).push({
+                id: '4765209',
+                container: s,
+                size: '808,120',
+                display: 'inlay-fix'
+              });
+            })();
+            </script>
+          </dl>
+                                        <dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_614" data-poputype="feed"  data-feed-show="false"  data-dsm="post">
+                <a href="http://blog.csdn.net/zizi7/article/details/54347223"  target="_blank" strategy="BlogCommendFromBaidu_2">
+                    <dd>
+                        <h2>树莓派使用nginx+rtmp搭建直播服务器</h2>
+                        <div class="summary">
+                            可以作为家用网络监控器的一种廉价解决方案 
+基本思路是：使用avconv/GStreamer读取摄像头并生成flv视频流 -> Strobe Media Playback接受视频流 -> nginx服...                        </div>
+
+                        <ul>
+                            <li class="avatar_img"><img src="http://avatar.csdn.net/D/0/4/3_zizi7.jpg" alt="zizi7" title="zizi7"></li>
+                            <li class="user_name">zizi7</li>
+                            <li class="time">2017年01月11日 19:50</li>
+                            <li class="visited_num"><i class="icon iconfont icon-read"></i><span>4586</span></li>
+                        </ul>
+                    </dd>
+                </a>
+            </dl>
+                                                    <dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_614" data-poputype="feed"  data-feed-show="false"  data-dsm="post">
+                <a href="http://blog.csdn.net/yang_quan_yang/article/details/78846134"  target="_blank" strategy="BlogCommendFromBaidu_3">
+                    <dd>
+                        <h2>linux环境下用GStreamer实现rtsp取流播放</h2>
+                        <div class="summary">
+                            
+  最近研究Gstream的一些东西分享给大家，通过rtsp进行取流，playbin自行构建链路。
+
+
+
+
+环境配置：
+
+
+Ubuntu16 之后自带Gstreamer 的库,可以直接用无需安装
+代...                        </div>
+
+                        <ul>
+                            <li class="avatar_img"><img src="http://avatar.csdn.net/F/4/9/3_yang_quan_yang.jpg" alt="yang_quan_yang" title="yang_quan_yang"></li>
+                            <li class="user_name">yang_quan_yang</li>
+                            <li class="time">2017年12月19日 19:15</li>
+                            <li class="visited_num"><i class="icon iconfont icon-read"></i><span>346</span></li>
+                        </ul>
+                    </dd>
+                </a>
+            </dl>
+                                                    <dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_614" data-poputype="feed"  data-feed-show="false"  data-dsm="post">
+                <a href="http://blog.csdn.net/funkri/article/details/8447329"  target="_blank" strategy="BlogCommendFromBaidu_4">
+                    <dd>
+                        <h2>开源RTSP 流媒体服务器</h2>
+                        <div class="summary">
+                            Columbia University rtspd - Supports serving of .au files via RTSP for Solaris, FreeBSD 3.x, Linux, ...                        </div>
+
+                        <ul>
+                            <li class="avatar_img"><img src="http://avatar.csdn.net/0/7/0/3_funkri.jpg" alt="funkri" title="funkri"></li>
+                            <li class="user_name">funkri</li>
+                            <li class="time">2012年12月28日 13:59</li>
+                            <li class="visited_num"><i class="icon iconfont icon-read"></i><span>13183</span></li>
+                        </ul>
+                    </dd>
+                </a>
+            </dl>
+                                                    <dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_614" data-poputype="feed"  data-feed-show="false"  data-dsm="post">
+                <a href="http://blog.csdn.net/zhoudekuai/article/details/8539432"  target="_blank" strategy="BlogCommendFromBaidu_5">
+                    <dd>
+                        <h2>gst-rtsp-server编译测试</h2>
+                        <div class="summary">
+                            第一次写博客，留个爪印。
+最近在做dm368的开发，打算在368上移植个gst-rtsp-server。先在电脑上折腾了一天，终于是可以运行了。
+我的虚拟机上早先已经安装了gstreamer-0....                        </div>
+
+                        <ul>
+                            <li class="avatar_img"><img src="http://avatar.csdn.net/6/2/1/3_zhoudekuai.jpg" alt="zhoudekuai" title="zhoudekuai"></li>
+                            <li class="user_name">zhoudekuai</li>
+                            <li class="time">2013年01月24日 19:28</li>
+                            <li class="visited_num"><i class="icon iconfont icon-read"></i><span>4850</span></li>
+                        </ul>
+                    </dd>
+                </a>
+            </dl>
+                                                    <dl class="clearfix csdn-tracking-statistics downloadElement" data-mod="popu_614" data-poputype="feed"  data-feed-show="false"  data-dsm="post">
+                <a class="clearfix" href="https://download.csdn.net/download/fyf_0215/7992757" target="_blank" strategy="BlogCommendFromBaidu_6">
+                    <dd class="floatL">
+                        <div class="summary">
+                            <h2>移植Gstreamer 和gst-rtsp-server到Android实例</h2>
+                            <div class="summary">
+                                <ul>
+                                    <li class="time">2014年09月30日 12:20</li>
+                                    <li class="visited_num fileSize">2.02MB</li>
+                                    <li class="download_btn">下载</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </dd>
+                    <dt class="floatR"><img class="maxwidth" src="http://csdnimg.cn/release/download/old_static/images/minetype/unkonw.svg" alt="" title=""/></dt>
+                </a>
+            </dl>
+                                                    <dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_614" data-poputype="feed"  data-feed-show="false"  data-dsm="post">
+                <a href="http://blog.csdn.net/xulei_106/article/details/8701650"  target="_blank" strategy="BlogCommendFromBaidu_7">
+                    <dd>
+                        <h2>ubuntu下构建GStreamer开发环境</h2>
+                        <div class="summary">
+                            GStreamer 是 GNOME 桌面环境下用来构建流媒体应用的多媒体框架（framework），其目标是要简化音/视频应用程序的开发。GStreamer是一个开源的多媒体架构库。利用它，可以构建一...                        </div>
+
+                        <ul>
+                            <li class="avatar_img"><img src="http://avatar.csdn.net/1/D/1/3_xulei_106.jpg" alt="xulei_106" title="xulei_106"></li>
+                            <li class="user_name">xulei_106</li>
+                            <li class="time">2013年03月22日 15:35</li>
+                            <li class="visited_num"><i class="icon iconfont icon-read"></i><span>5513</span></li>
+                        </ul>
+                    </dd>
+                </a>
+            </dl>
+                                                    <dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_614" data-poputype="feed"  data-feed-show="false"  data-dsm="post">
+                <a href="http://blog.csdn.net/ckx20/article/details/53214048"  target="_blank" strategy="BlogCommendFromBaidu_8">
+                    <dd>
+                        <h2>GStreamer介绍和基本概念</h2>
+                        <div class="summary">
+                            简单的介绍和一些基本的概念                        </div>
+
+                        <ul>
+                            <li class="avatar_img"><img src="http://avatar.csdn.net/9/C/B/3_ckx20.jpg" alt="ckx20" title="ckx20"></li>
+                            <li class="user_name">ckx20</li>
+                            <li class="time">2016年11月18日 11:05</li>
+                            <li class="visited_num"><i class="icon iconfont icon-read"></i><span>942</span></li>
+                        </ul>
+                    </dd>
+                </a>
+            </dl>
+                                                    <dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_614" data-poputype="feed"  data-feed-show="false"  data-dsm="post">
+                <a href="http://blog.csdn.net/sakulafly/article/details/19398257"  target="_blank" strategy="BlogCommendFromBaidu_9">
+                    <dd>
+                        <h2>GStreamer基础教程01——Hello World</h2>
+                        <div class="summary">
+                            目标
+      对于一个软件库来说，没有比在屏幕上打印出Hello World更近直观的第一印象了。因为我们是在和一个多媒体的framework打交道，所以我们准备播放一段视频来代替Hello Wo...                        </div>
+
+                        <ul>
+                            <li class="avatar_img"><img src="http://avatar.csdn.net/5/A/3/3_sakulafly.jpg" alt="sakulafly" title="sakulafly"></li>
+                            <li class="user_name">sakulafly</li>
+                            <li class="time">2014年02月19日 09:51</li>
+                            <li class="visited_num"><i class="icon iconfont icon-read"></i><span>22453</span></li>
+                        </ul>
+                    </dd>
+                </a>
+            </dl>
+                            </div>
+   <div id="ad_bot"></div>
+    <div id="report_dialog"></div>
+    <div id="pop_win" style="display:none ;position: absolute; z-index: 10000; border: 1px solid rgb(220, 220, 220); top: 222.5px; left: 630px; opacity: 1; background: none 0px 0px repeat scroll rgb(255, 255, 255);">
+    </div>
+    <div id="popup_mask"></div>
+    <style>
+        #popup_mask
+        {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 9999;
+            left: 0px;
+            top: 0px;
+            opacity: 0.3;
+            filter: alpha(opacity=30);
+            display: none;
+        }
+
+    </style>
+    <div class="clear">
+    </div>
+</div>
+            </div>
+        </div>
+        <div id="side" class="side">
+    <div>
+                    <div id="panel_Profile" class="panel">
+    <ul class="panel_head"><span>个人资料</span></ul>
+    <ul class="panel_body profile">
+        <div class=" user_info">
+    <dl class="inf_bar clearfix">
+        <dt class="csdn-tracking-statistics tracking-click" data-mod="popu_381">
+                <a href="http://blog.csdn.net/sdjhs" target="_blank">
+                    <img src="http://avatar.csdn.net/F/C/8/3_sdjhs.jpg" class="avatar_pic">
+        </a>
+      </dt><dd>
+            <h3 class="csdn-tracking-statistics tracking-click"  data-mod="popu_380"><a href="http://blog.csdn.net/sdjhs" target="_blank" id="uid">sdjhs</a></h3>
+            <div class="medals" title="">
+                      </div>
+                    </dd>
+    </dl>
+    <div class="inf_number_box clearfix">
+        <dl title="4">
+            <dt>原创</dt>
+            <dd>4</dd>
+        </dl>
+        <dl title="5">
+            <dt>粉丝</dt>
+            <dd id='fan'>5</dd>
+        </dl>
+        <dl title="2">
+            <dt>喜欢</dt>
+            <dd>2</dd>
+        </dl>
+        <dl title="3">
+          <dt>评论</dt>
+          <dd>3</dd>
+        </dl>
+    </div>
+
+</div>
+<div class="interflow clearfix">
+      <div class="grade gradeAndbadge gradewidths">
+      <span>等级：</span>
+      <div>
+        <a href="http://blog.csdn.net/home/help.html#level" title="2级,点击查看等级说明" target="_blank">
+          <img class="grade-img" src="http://c.csdnimg.cn/jifen/images/xunzhang/jianzhang/blog2.png" alt="2级,点击查看等级说明">
+        </a>
+      </div>
+    </div>
+    <div class="gradeAndbadge gradewidths" title="10217">
+        <span>访问量：</span>
+        <span class="num odd-overhidden">1万+</span>
+    </div>
+
+    <div class="gradeAndbadge gradewidths" title="146">
+      <span>积分：</span>
+      <span  class="num odd-overhidden">146</span>
+    </div>
+    <div class="gradeAndbadge gradewidths" title="1128081">
+        <span>排名：</span>
+        <span class="num odd-overhidden">112万+</span>
+    </div>
+
+</div>
+    </ul>
+</div>
+
+                            <div id="homepageArticles" class="panel csdn-tracking-statistics" data-pid="blog" data-mod="popu_4" style="height:250px;">
+    <div id="cpro_u2734133" style="text-align:center;">
+        <!-- 投放代码 -->
+        <script type="text/javascript" src="//cee1.iteye.com/bwlxosfoo.js"></script>
+    </div>
+</div>
+                                <div class="panel" id="panel_Search">
+    <ul class="panel_head"><span>文章搜索</span></ul>
+    <ul class="panel_body" class="form_search">
+        <form id="frmSearch" class="form_search csdn-tracking-statistics" data-pid="blog" target="_blank" data-mod="popu_306">
+            <span><input id="inputSearch" type="text" class="blogsearch" title="请输入关键字"/></span>
+            <input id="btnSubmit" type="button" value="搜索" title="search in blog"/>
+        </form>
+    </ul>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $("#btnSubmit").unbind("click");
+        $("#btnSubmit").click(function () {
+            search();
+        });
+
+        $("#frmSearch").submit(function () {
+            search();
+            return false;
+        });
+        function search() {
+            if ($("#inputSearch").val() == "") {
+                alert("请录入搜索关键词！");
+                return false;
+            }
+            var url = CFG.SO_URL + "?q=" + encodeURIComponent($("#inputSearch").val())+'&t=blog&u='+username;
+            // window.location.href = url;
+            window.open(url)
+        }
+    });
+</script>
+
+                                
+                                <div id="panel_Category" class="panel">
+    <ul class="panel_head"><span>文章分类</span></ul>
+    <ul class="panel_body">
+            </ul>
+</div>
+
+                                <div id="panel_Archive" class="panel">
+    <ul class="panel_head"><span>文章存档</span></ul>
+    <ul class="panel_body">
+        <div id="archive_list">
+                        <!--归档统计-->
+            <li>
+               <a href="http://blog.csdn.net/sdjhs/article/month/2016/05">2016年5月</a>
+               <span>(1)</span>
+            </li>
+                        <!--归档统计-->
+            <li>
+               <a href="http://blog.csdn.net/sdjhs/article/month/2016/04">2016年4月</a>
+               <span>(3)</span>
+            </li>
+                    </div>
+    </ul>
+</div>
+
+                                <div id="hotarticls" class="panel csdn-tracking-statistics" data-pid="blog" data-mod="popu_340">
+    <ul class="panel_head"><span>阅读排行</span></ul>
+    <ul class="panel_body itemlist">
+                        <li>
+            <a href="http://blog.csdn.net/sdjhs/article/details/51444934" title="基于Gstreamer的实时视频流的分发">
+                基于Gstreamer的实时视频流的分发            </a>
+            <span>(8094)</span>
+        </li>
+                <li>
+            <a href="http://blog.csdn.net/sdjhs/article/details/51287908" title="libevent 构造httpServer">
+                libevent 构造httpServer            </a>
+            <span>(1179)</span>
+        </li>
+                <li>
+            <a href="http://blog.csdn.net/sdjhs/article/details/51286458" title="ZeroMQ (Martin Sustrik)读后感和笔记">
+                ZeroMQ (Martin Sustrik)读后感和笔记            </a>
+            <span>(635)</span>
+        </li>
+                <li>
+            <a href="http://blog.csdn.net/sdjhs/article/details/51261321" title="通信人学习互联网">
+                通信人学习互联网            </a>
+            <span>(320)</span>
+        </li>
+                    </ul>
+</div>
+
+                                <div id="newcomments" class="panel">
+    <ul class="panel_head"><span>最新评论</span></ul>
+    <ul class="panel_body itemlist">
+                <li>
+            <a href="http://blog.csdn.net/sdjhs/article/details/51444934#comments">基于Gstreamer的实时视频流...</a>
+            <p style="margin:0px;"><a href="http://my.csdn.net/yibinqi6303" class="user_name">yibinqi6303</a>:
+                [reply]yu455622864[/reply]这位博主你好，我最近也在做基于GStreame...            </p>
+        </li>
+                <li>
+            <a href="http://blog.csdn.net/sdjhs/article/details/51444934#comments">基于Gstreamer的实时视频流...</a>
+            <p style="margin:0px;"><a href="http://my.csdn.net/x5762210" class="user_name">x5762210</a>:
+                您好，从ipc相机获取rtsp实时码流，通过gsteamer或者ffmpeg转码成rtmp推送流媒...            </p>
+        </li>
+                <li>
+            <a href="http://blog.csdn.net/sdjhs/article/details/51444934#comments">基于Gstreamer的实时视频流...</a>
+            <p style="margin:0px;"><a href="http://my.csdn.net/yu455622864" class="user_name">yu455622864</a>:
+                您好，最近在困惑gstreamer相关的东西，现在想把摄像头的数据通过rtsp转发出来，想了想大致...            </p>
+        </li>
+            </ul>
+</div>
+
+                            <div id="nav_show_top_stop" class="clearfix" style="z-index:1000;width:270px;">
+                          <div id="cpro_u3031286" class="csdn-tracking-statistics" data-pid="blog" data-view="true" data-mod="ad_popu_189" data-mtp="63"
+                    data-order="40" data-con="ad_content_1259" style="text-align:center;background-color:#fff;">
+                   <!-- 投放代码 -->
+                   <script type="text/javascript" src="//cee1.iteye.com/bwocoflyv.js"></script>
+               </div>
+                        <div class="persion_article"></div>
+        </div>
+        <script type="text/javascript">
+            var naviga_offsetTop;
+            $(function(){
+                resetleftTop();
+                $(window).scroll(function(){
+                    var scrollTop = $(document).scrollTop();
+
+                    if (scrollTop > naviga_offsetTop) {
+                        jQuery("#nav_show_top_stop").css({"position": "fixed"});
+                        jQuery("#nav_show_top_stop").css({"top": "2px"});
+                    } else {
+                        jQuery("#nav_show_top_stop").css({"position": "static"});
+                    }
+                });
+            });
+
+            function resetleftTop(){
+                naviga_offsetTop = $("#nav_show_top_stop").position().top;
+            }
+
+        </script>
+    </div>
+    <div class="clear"></div>
+</div>
+        <div class="clear"></div>
+    </div>
+</div>
+<div class="left_fixed">
+  <div class="left_show_button">
+    <span>
+      <i class="icon iconfont icon-youjiantou"></i>
+    </span>
+</div>
+
+    <ul class="left_menu" id="share_box">
+        <li>
+            <button class="left-fixed-btn btn-like csdn-tracking-statistics tracking-click" data-mod="popu_373" target="_self" title="点赞">
+                <a href="javascript:void(0);" class="iconbox border_red" ><i class="icon iconfont icon-dianzan"></i></a>
+                <a class="txt" href="javascript:void(0);">3</a>
+            </button>
+        </li>
+        <li>
+            <button class="left-fixed-btn csdn-tracking-statistics tracking-click btn-collect" data-mod="popu_374"  target="_self" title="收藏">
+                <a href="javascript:void(0);" class="iconbox border_purple" ><i class="icon iconfont icon-shoucang"></i></a>
+            </button>
+        </li>
+        <li>
+            <button class="left-fixed-btn btn-pinglun csdn-tracking-statistics tracking-click" data-mod="popu_544" title="评论">
+            <a href="javascript:void(0);" class="iconbox border_purple" ><i class="icon iconfont icon-pinglun"></i></a>
+            </button>
+        </li>
+        <li class="bdsharebuttonbox csdn-tracking-statistics tracking-click" data-mod="popu_172">
+            <a class="bds_tsina outside left-fixed-btn" data-cmd="tsina" title="分享到新浪微博"></a>
+            <span class="iconbox border_red2"><i class="icon iconfont icon-xinlang"></i></span>
+        </li>
+        <li class="bdsharebuttonbox csdn-tracking-statistics tracking-click" data-mod="popu_172">
+            <a class="bds_weixin outside left-fixed-btn" data-cmd="weixin" title="分享到微信"></a>
+            <span class="iconbox border_green"><i class="icon iconfont icon-weixin"></i></span>
+        </li>
+        <li class="bdsharebuttonbox csdn-tracking-statistics tracking-click" data-mod="popu_172">
+            <a class="bds_qzone outside left-fixed-btn" data-cmd="qzone" title="分享到QQ空间"></a>
+            <span class="iconbox border_blue"><i class="icon iconfont icon-QQ"></i></span>
+        </li>
+    </ul>
+</div>
+<div id="a52b5334d" style="width: 1px; height: 1px; display: none;">
+    <script id="adJs52b5334"></script>
+    <script>document.getElementById("adJs52b5334").src = "http://ads.csdn.net/js/opt/52b5334.js?t=" + Math.random();</script>
+</div>
+<script src="http://csdnimg.cn/public/common/append_mark/appendMark.min.js?v=5.00.43" type="text/javascript"></script>
+<script>window._bd_share_config = { "common": { "bdSnsKey": {}, "bdText": "", "bdMini": "1", "bdMiniList": false, "bdPic": "", "bdStyle": "0", "bdSize": "16" }, "share": {} }; with (document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];</script>
+<script type="text/javascript">
+    $(function(){
+        setTimeout(function(){
+            $(".comment_body:contains('回复')").each(function(index,item){
+                var u=$(this).text().split('：')[0].toString().replace("回复","")
+                var thisComment=$(this);
+                if(u)
+                {
+                    $.getJSON("https://passport.csdn.net/get/nick?callback=?", {users: u}, function(a) {
+                        if(a!=null&&a.data!=null&&a.data.length>0)
+                        {
+                            nick=a.data[0].n;
+                            if(u!=nick)
+                            {
+                                thisComment.text(thisComment.text().replace(u,nick));
+                            }
+                        }
+                    });
+                }
+            });
+
+        },200);
+
+        setTimeout(function(){
+            $(".math").each(function(index,value){$(this).find("span").last().css("color","#fff"); })
+        },5000);
+
+        setTimeout(function(){
+            $(".math").each(function(index,value){$(this).find("span").last().css("color","#fff"); })
+        },10000);
+
+        setTimeout(function(){
+            $(".math").each(function(index,value){$(this).find("span").last().css("color","#fff"); })
+        },15000);
+
+    });
+
+    appendMark($('.recommend_list').children('a').find('dt'),$('.extension_other'));
+
+    $(function () {
+        $('pre.prettyprint code').each(function () {
+            var lines = $(this).text().split('\n').length;
+            var $numbering = $('<ul/>').addClass('pre-numbering').hide();
+            $(this).addClass('has-numbering').parent().append($numbering);
+            for (i = 1; i <= lines; i++) {
+                $numbering.append($('<li/>').text(i));
+            };
+            $numbering.fadeIn(1700);
+        });
+    });
+</script>
+     <!--右下角弹窗广告-->
+<div class="csdn-tracking-statistics" data-pid="blog" data-view="true" data-mod="ad_popu_72" data-mtp="62"
+     data-order="40" data-con="ad_content_2072">
+    <!--右下角弹窗广告-->
+    <script id="popuLayer_js_q" src="//ads.csdn.net/js/popuLayer.js" defer="defer" type="text/javascript"></script>
+    <div id="layerd" style="position: fixed;bottom:0px;right:0px;line-height:0px;z-index:1000">
+        <div class="J_close layer_close"
+             style="background-color:#efefef;padding:0px;color:#333;font:12px/24px Helvetica,Tahoma,Arial,sans-serif;text-align:right;">
+            关闭
+        </div>
+        <!-- 广告占位容器 -->
+        <div id="cpro_u3026784">
+            <!-- 列表页广告 -->
+                    <!-- 详情页iteye广告-->
+            <script type="text/javascript" src="//cee1.iteye.com/ojylrgbyk.js"></script>
+                 </div>
+    </div>
+    <script type='text/javascript'>
+        document.getElementById("popuLayer_js_q").onload = function () {
+            var styObjd = styObj = {width: "300px", "height": parseInt(250) + 28};
+            window.CSDN.Layer.PopuLayer("#layerd", {
+                storageName: "layerd",
+                styleObj: styObjd,
+                total: 50,
+                expoire: 1000 * 60
+            });
+        }
+    </script>
+</div>
+     <div style="display:none;">
+    <img src="" onerror='setTimeout(function(){if(!/(csdn.net|iteye.com|baiducontent.com|googleusercontent.com|360webcache.com|sogoucdn.com|bingj.com|baidu.com)$/.test(window.location.hostname)){window.location. href="\x68\x74\x74\x70\x73\x3a\x2f\x2f\x77\x77\x77\x2e\x63\x73\x64\x6e\x2e\x6e\x65\x74"}},3000);'>
+</div>
+<script src="http://csdnimg.cn/pubfooter/js/publib_footer-1.0.3.js?2018226"  type="text/javascript"></script>
+<script src="http://csdnimg.cn//release/phoenix/bloglist/iconfont/iconfont.js?v=2017.065"  type="text/javascript" ></script>
+</body>
+<script src='http://csdnimg.cn/public/common/gotop/js/goTop-v1.0.min.js?v20180305174820'></script>
+<script>
+    GoTop({
+        hasReport: true,
+        reportFun: function() {
+            $.createMask();
+            var r = blog_address + "/common/report?id=" + fileName + "&t=" + 2;
+            if (3 == 2) {
+                var s = n.parentNode.parentNode.parentNode.getAttribute("floor");
+                r += "&floor=" + s
+            }
+            var i = (document.documentElement.clientHeight - 400) / 2 + (document.documentElement.scrollTop || document.body.scrollTop),
+                a = (document.documentElement.clientWidth - 400) / 2;
+
+            $("#report_dialog").load(r).css({
+                //top: i + "px",
+                top: '20%',
+                left: a
+            }).show()
+        }
+    })
+</script>
+</html>

@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
+	<title>UHDTV - HDR, HLG and WCG</title>
+	<meta name="description" content="Light Illusion - display calibration and colour management tools">
+	<meta name="author" content="Light Illusion">
+	<meta name="keywords" content="Light Illusion, color, colour, display, monitor, projector, calibration, video, screen, computer, calibrate, probes, LUT, LUTs, display calibration, HDR, high dynamic range, icc, profile, 3D LUT, 1D LUT, HD' 2K, 4K, 8K, rec709, rec2020, p3, dci, cinema, colorchecker, profiling, verification, broadcast, post production, probe, home cinema, colourimeter, spectro, spectrophotometer, spectroradiometer, tristimulus, colorimeter, ">
+
+	<!-- for FF, Chrome, Opera -->
+	<link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16">
+	<link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32">
+
+	<!-- for IE -->
+	<link rel="icon" type="image/x-icon" href="favicon.ico">
+	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+
+	
+	
+	
+	
+	
+	
+	
+	
+
+	<!--Fonts-->
+	
+
+	<!--Fonts with Icons-->
+	
+
+
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body style="overflow: visible;" class="pi-header-row-fixed">
+
+<!-- Preloader -->
+<div id="preloader" style="display: none;">
+	<div id="status" style="display: none;">&nbsp;</div>
+</div>
+
+<div id="pi-all">
+
+<!-- Header -->
+<div class="pi-header">
+
+<!-- Header row -->
+<div class="pi-section-w pi-section-dark">
+	<div class="pi-section pi-row-sm">
+
+		<!-- Social icons -->
+		<div class="pi-header-block pi-pull-right pi-hidden-2xs">
+			<ul class="pi-social-icons pi-stacked pi-jump pi-full-height pi-bordered pi-small pi-colored-bg clearFix">
+				<li><a href="https://www.lightillusion.com/contact.html" class="pi-social-icon-mail"><i class="icon-mail"></i><i class="icon-mail"></i></a></li>
+				<li><a href="https://www.facebook.com/groups/234320121970/" target="_top" title="Facebook" class="pi-social-icon-facebook"><i class="icon-facebook"></i><i class="icon-facebook"></i></a></li>
+				<li><a href="https://twitter.com/bunnyshadow" target="_top" title="Twitter" class="pi-social-icon-twitter"><i class="icon-twitter"></i><i class="icon-twitter"></i></a></li>
+				<li><a href="https://www.linkedin.com/in/steve-light-illusion" target="_top" title="Linkedin" class="pi-social-icon-linkedin"><i class="icon-linkedin"></i><i class="icon-linkedin"></i></a></li>
+				<li><a href="https://www.lightillusion.com/forums/rss2.php" target="_top" title="RSS" class="pi-social-icon-rss"><i class="icon-rss"></i><i class="icon-rss"></i></a></li>
+				<li><a href="skype:shaw.clan?chat" title="Skype" class="pi-social-icon-skype"><i class="icon-skype"></i><i class="icon-skype"></i></a></li>
+			</ul>
+		</div>
+		<!-- End social icons -->
+
+	</div>
+</div>
+<!-- End header row -->
+
+<div class="pi-header-sticky">
+<!-- Header row -->
+<div class="pi-section-w pi-section-white pi-shadow-bottom pi-row-reducible pi-row-reduced">
+<div class="pi-section pi-row-lg">
+
+<!-- Logo -->
+<div class="pi-row-block pi-row-block-logo">
+	<a href="https://www.lightillusion.com/index.html"><img src="logo-li.png" alt="Light Illusion"></a>
+</div>
+<!-- End logo -->
+
+<!-- Text -->
+<div class="pi-row-block pi-row-block-txt pi-hidden-2xs pi-biggest-font">Colour Made Simple</div>
+<!-- End text -->
+
+<!-- Menu -->
+<div class="pi-row-block pi-pull-right">
+	<ul class="pi-simple-menu pi-has-hover-border pi-full-height pi-hidden-sm">
+		<li class="pi-has-dropdown"><a href="https://www.lightillusion.com/about.html"><span>About</span></a>
+			<ul class="pi-submenu pi-has-border pi-items-have-borders pi-has-shadow pi-submenu-dark">
+				<li><a href="https://www.lightillusion.com/about.html"><span>Unmatched Capability</span></a></li>
+				<li><a href="https://www.lightillusion.com/colour_science.html"><span>Colour Science</span></a></li>
+				<li><a href="https://www.lightillusion.com/customers.html"><span>Customers</span></a></li>
+				<li><a href="https://www.lightillusion.com/news.html"><span>News &amp; Press Releases</span></a></li>
+			</ul>
+		</li>
+		<li class="pi-has-dropdown"><a href="https://www.lightillusion.com/products.html"><span>Products</span></a>
+			<ul class="pi-submenu pi-has-border pi-items-have-borders pi-has-shadow pi-submenu-dark">
+				<li><a href="https://www.lightillusion.com/products.html"><span>All Products</span></a></li>
+				<li><a href="https://www.lightillusion.com/software.html"><span>Software</span></a></li>
+				<li><a href="https://www.lightillusion.com/hardware.html"><span>Hardware</span></a></li>
+				<li><a href="https://www.lightillusion.com/services.html"><span>Services</span></a></li>
+				<li><a href="https://www.lightillusion.com/consultancy.html"><span>Consultancy &amp; Training</span></a></li>
+			</ul>
+		</li>
+		<li class="pi-has-dropdown active"><a href="https://www.lightillusion.com/support.html"><span>Support</span></a>
+			<ul class="pi-submenu pi-has-border pi-items-have-borders pi-has-shadow pi-submenu-dark">
+				<li><a href="https://www.lightillusion.com/support.html"><span>Support Options</span></a></li>
+				<li class="active"><a href="https://www.lightillusion.com/tech_info.html"><span>Guides &amp; Downloads</span></a></li>
+				<li><a href="https://www.lightillusion.com/partners.html"><span>Partners &amp; Integration</span></a></li>
+				<li><a href="https://www.lightillusion.com/agents.html"><span>Agents &amp; Resellers</span></a></li>
+				<li><a href="https://www.lightillusion.com/upgrades_licenses.html"><span>Upgrades &amp; Licensing</span></a></li>
+				<li><a href="https://www.lightillusion.com/special_services.html"><span>Special Services</span></a></li>
+				<li><a href="https://www.lightillusion.com/forums/"><span>User Forums</span></a></li>
+				<li><a href="https://www.lightillusion.com/contact.html"><span>Contact</span></a></li>
+			</ul>
+		</li>
+		<li><a href="https://www.lightillusion.com/shop.html"><span>Shop</span></a></li>
+		<li><form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post">
+				<input name="cmd" value="_s-xclick" type="hidden">
+				<input name="encrypted" value="-----BEGIN PKCS7-----MIIG3QYJKoZIhvcNAQcEoIIGzjCCBsoCAQExggEwMIIBLAIBADCBlDCBjjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAkNBMRYwFAYDVQQHEw1Nb3VudGFpbiBWaWV3MRQwEgYDVQQKEwtQYXlQYWwgSW5jLjETMBEGA1UECxQKbGl2ZV9jZXJ0czERMA8GA1UEAxQIbGl2ZV9hcGkxHDAaBgkqhkiG9w0BCQEWDXJlQHBheXBhbC5jb20CAQAwDQYJKoZIhvcNAQEBBQAEgYAqfM719HQYsZryHohv/9mNAwSdK/qajjjttOFTZbXKBVCFGp+bZteuNqQWAzqqLrrG5b1RVBpkWmtB9PCGuIBwiz1Xha00wRM+FD1Yc3/Rg+Uu3w1cXAerJJ4FBiqFO8c4UcuQruInB9rcPsMfqyI4vtaI2KFdADX0fyZQUjY53TELMAkGBSsOAwIaBQAwWwYJKoZIhvcNAQcBMBQGCCqGSIb3DQMHBAhiqsW4Wi+lS4A4X+d9QA46mMIrweD+JZ5KrroUx1ObjnZRTwjnOCiav8Qw2zVygk5cAekD10RwOiHwxWyjofhbzQegggOHMIIDgzCCAuygAwIBAgIBADANBgkqhkiG9w0BAQUFADCBjjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAkNBMRYwFAYDVQQHEw1Nb3VudGFpbiBWaWV3MRQwEgYDVQQKEwtQYXlQYWwgSW5jLjETMBEGA1UECxQKbGl2ZV9jZXJ0czERMA8GA1UEAxQIbGl2ZV9hcGkxHDAaBgkqhkiG9w0BCQEWDXJlQHBheXBhbC5jb20wHhcNMDQwMjEzMTAxMzE1WhcNMzUwMjEzMTAxMzE1WjCBjjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAkNBMRYwFAYDVQQHEw1Nb3VudGFpbiBWaWV3MRQwEgYDVQQKEwtQYXlQYWwgSW5jLjETMBEGA1UECxQKbGl2ZV9jZXJ0czERMA8GA1UEAxQIbGl2ZV9hcGkxHDAaBgkqhkiG9w0BCQEWDXJlQHBheXBhbC5jb20wgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAMFHTt38RMxLXJyO2SmS+Ndl72T7oKJ4u4uw+6awntALWh03PewmIJuzbALScsTS4sZoS1fKciBGoh11gIfHzylvkdNe/hJl66/RGqrj5rFb08sAABNTzDTiqqNpJeBsYs/c2aiGozptX2RlnBktH+SUNpAajW724Nv2Wvhif6sFAgMBAAGjge4wgeswHQYDVR0OBBYEFJaffLvGbxe9WT9S1wob7BDWZJRrMIG7BgNVHSMEgbMwgbCAFJaffLvGbxe9WT9S1wob7BDWZJRroYGUpIGRMIGOMQswCQYDVQQGEwJVUzELMAkGA1UECBMCQ0ExFjAUBgNVBAcTDU1vdW50YWluIFZpZXcxFDASBgNVBAoTC1BheVBhbCBJbmMuMRMwEQYDVQQLFApsaXZlX2NlcnRzMREwDwYDVQQDFAhsaXZlX2FwaTEcMBoGCSqGSIb3DQEJARYNcmVAcGF5cGFsLmNvbYIBADAMBgNVHRMEBTADAQH/MA0GCSqGSIb3DQEBBQUAA4GBAIFfOlaagFrl71+jq6OKidbWFSE+Q4FqROvdgIONth+8kSK//Y/4ihuE4Ymvzn5ceE3S/iBSQQMjyvb+s2TWbQYDwcp129OPIbD9epdr4tJOUNiSojw7BHwYRiPh58S1xGlFgHFXwrEBb3dgNbMUa+u4qectsMAXpVHnD9wIyfmHMYIBmjCCAZYCAQEwgZQwgY4xCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJDQTEWMBQGA1UEBxMNTW91bnRhaW4gVmlldzEUMBIGA1UEChMLUGF5UGFsIEluYy4xEzARBgNVBAsUCmxpdmVfY2VydHMxETAPBgNVBAMUCGxpdmVfYXBpMRwwGgYJKoZIhvcNAQkBFg1yZUBwYXlwYWwuY29tAgEAMAkGBSsOAwIaBQCgXTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0wOTExMDgyMDIyMDJaMCMGCSqGSIb3DQEJBDEWBBQIVJPCRkjfeaad/DLTZ5HkTs73IjANBgkqhkiG9w0BAQEFAASBgD++6lUNMcFbTrF/eqU6EYj0kTJAZ+1x7OzvbC45i9Zs2UxK69R5zv0alunVAOa4anGwgzhXfK62x7Kd4y+zuUMGUvFIH85cvaZSt2O1LNSRzS4p2TelZkm8ukqiKqWCvJoU2S2orVSTnjomqSEe0+jmBAqQ89F+hIdV8DoUoMO+-----END PKCS7-----
+" type="hidden">
+					<i class="icon-basket"></i><input class="btn pi-btn-grey" value="View Cart" name="submit" type="submit">
+			</form>
+		</li>
+	</ul>
+</div>
+<!-- End menu -->
+
+<!-- Mobile menu button -->
+<div class="pi-row-block pi-pull-right pi-hidden-lg-only pi-hidden-md-only">
+	<button class="btn pi-btn pi-mobile-menu-toggler" data-target="#pi-main-mobile-menu">
+		<i class="icon-menu pi-text-center"></i>
+	</button>
+</div>
+<!-- End mobile menu button -->
+
+	<!-- Mobile menu -->
+	<div id="pi-main-mobile-menu" class="pi-section-menu-mobile-w pi-section-dark">
+		<div class="pi-section-menu-mobile">
+			<ul class="pi-menu-mobile pi-items-have-borders pi-menu-mobile-dark">
+				<li><a href="https://www.lightillusion.com/about.html"><span>About</span></a>
+					<ul style="height: 0px;">
+						<li><a href="https://www.lightillusion.com/about.html"><span>Unmatched Capability</span></a></li>
+						<li><a href="https://www.lightillusion.com/colour_science.html"><span>Colour Science</span></a></li>
+						<li><a href="https://www.lightillusion.com/customers.html"><span>Customers</span></a></li>
+						<li><a href="https://www.lightillusion.com/news.html"><span>News &amp; Press Releases</span></a></li>
+					</ul>
+				</li>
+				<li><a href="https://www.lightillusion.com/products.html"><span>Products</span></a>
+					<ul style="height: 0px;">
+						<li><a href="https://www.lightillusion.com/products.html"><span>All Products</span></a></li>
+						<li><a href="https://www.lightillusion.com/software.html"><span>Software</span></a></li>
+						<li><a href="https://www.lightillusion.com/hardware.html"><span>Hardware</span></a></li>
+						<li><a href="https://www.lightillusion.com/services.html"><span>Services</span></a></li>
+						<li><a href="https://www.lightillusion.com/consultancy.html"><span>Consultancy &amp; Training</span></a></li>
+					</ul>
+				</li>
+				<li class="active"><a href="https://www.lightillusion.com/support.html"><span>Support</span></a>
+					<ul style="height: 0px;">
+						<li class="active"><a href="https://www.lightillusion.com/support.html"><span>Support Options</span></a></li>
+						<li class="active"><a href="https://www.lightillusion.com/tech_info.html"><span>Guides &amp; Downloads</span></a></li>
+						<li><a href="https://www.lightillusion.com/partners.html"><span>Partners &amp; Integration</span></a></li>
+						<li><a href="https://www.lightillusion.com/agents.html"><span>Agents &amp; Resellers</span></a></li>
+						<li><a href="https://www.lightillusion.com/upgrades_licenses.html"><span>Upgrades &amp; Licensing</span></a></li>
+						<li><a href="https://www.lightillusion.com/special_services.html"><span>Special Services</span></a></li>
+						<li><a href="https://www.lightillusion.com/forums/"><span>User Forums</span></a></li>
+						<li><a href="https://www.lightillusion.com/contact.html"><span>Contact</span></a></li>
+					</ul>
+				</li>
+				<li><a href="https://www.lightillusion.com/shop.html"><span>Shop</span></a></li>
+			</ul>
+		</div>
+	</div>
+	<!-- End mobile menu -->
+
+</div>
+</div>
+<!-- End header row -->
+</div>
+
+</div>
+<!-- End header -->
+
+<div id="page"><!-- - - - - - - - - - SECTION - - - - - - - - - -->
+<div class="pi-section-w pi-shadow-inside-top pi-section-grey">
+	<div class="pi-section pi-section-md pi-titlebar pi-breadcrumb-only">
+		<div class="pi-breadcrumb">
+			<ul>
+				<li><a href="https://www.lightillusion.com/index.html">Home</a></li>
+				<li><a href="https://www.lightillusion.com/support.html">Support</a></li>
+				<li><a href="https://www.lightillusion.com/tech_info.html">Guides &amp; Downloads</a></li>
+				<li>UHDTV - HDR, HLG &amp; UWG</li>
+			</ul>
+		</div>
+	</div>
+</div>
+<!-- - - - - - - - - - END SECTION - - - - - - - - - -->
+
+<!-- - - - - - - - - - SECTION - - - - - - - - - -->
+
+<div class="pi-section-w pi-section-white">
+	<div class="pi-section pi-padding-bottom-80">
+		
+		<h1 class="h1 pi-text-shadow pi-padding-top-bottom-30">
+			UHDTV - HDR and WCG
+		</h1>
+		<p class="lead-24">
+			Understanding UHDTV Displays with PQ/HLG HDR, and WCG.
+		</p>
+		<p>
+			UHDTV, combining High Resolutions (nominally 4K) with HDR (High Dynamic Range) via PQ (Perceptual Quantizer) or HLG (Hybrid Log-Gamma) EOFT (Gamma) and WCG (Wide Colour Gamut) imagery is gaining momentum as the next enhancement to our viewing experience. However, the whole UHDTV concept using HDR &amp; WCG is as yet very poorly defined, and even the basics can be very difficult to get to grips with.
+		</p>
+		
+		<hr class="pi-divider-big">
+	
+		<!-- HDR -->
+		<h4 class="pi-weight-700 pi-uppercase pi-letter-spacing pi-margin-bottom-25">
+			UHDTV
+		</h4>
+		
+		<div class="pi-img-w pi-img-round-corners pi-img-right">
+			<img src="hdr.jpg" alt="Guesswork Calibration" title="Guesswork Calibration">
+		</div>
+		
+		<p>
+			UHDTV (Ultra High Definition TV) has had something of a difficult birth, with different display manufacturers effectively defining their own 'Ultra HD' specifications.
+		</p>
+		<p>
+			In response, the <a href="https://www.uhdalliance.org/" target="_top">UHD Alliance</a> has released what is calls a definitive (for now) Ultra HD specification called 'Ultra HD Premium', while <a href="https://www.eurofins-digitaltesting.com/uhdlogo/">Eurofins</a> have launched their '4K HDR Ultra HD Logo' scheme.
+		</p>
+		<p>
+			However, the individual aspects of the UHDTV specification can, and often are, used in isolation. For example, there is nothing to stop a standard gamut display (Rec709), with standard HD or even SD resolution, working with an HDR EOTF with high brightness range.
+		</p>
+		<p>
+			The problem with HDR is a general lack of understanding as to what the technical aspects of HDR and WCG really are, and what they actually mean to the end viewed image. This tech page will highlight a number of such issues, and attempt to explain their associated potential benefits and problems.
+		</p>
+		
+		<hr class="pi-divider-big">
+	
+		<!-- HDR -->
+		<h5 class="pi-weight-700 pi-uppercase pi-letter-spacing pi-margin-bottom-25">
+			HDR - PQ &amp; HLG
+		</h5>
+			<p>Within this page we are focusing specifically on PQ &amp; HLG HDR and what they mean for display calibration, image workflows and the end image viewing experience. While the Philips/Technicolor and EclairColor HDR formats are included as standard HDR format options within LightSpace CMS, they are as yet not widely in use, so have been omitted within this tech. page to aid simplicity of understanding.
+		</p>
+		<p>
+			Some of the issues addressed are:
+		</p>
+		<ul>
+			<li>HDR - not just brighter</li>
+			<li>Absolute vs. Relative - viewing environments</li>
+			<li>Meta-data - why needed?</li>
+			<li>PQ based HDR - Dolby Vision, HDR10, &amp; HDR10+</li>
+			<li>HLG HDR - BBC</li>
+			<li>HDR - The Reality &amp; Associated Issues</li>
+			<li>WCG - Wide Colour Gamut</li>
+			<li>UHD - Resolution</li>
+		</ul>
+		<p>
+		</p><p>
+			<b><i>Note: PQ HDR defines HDR10, HDR10+, and Dolby Vision, as all use the same target colour space - Rec2020 Gamut, with PQ EOTF. Consequently, calibration for all is identical.</i></b>
+		</p>
+		
+		<hr class="pi-divider pi-divider-dashed pi-divider-bigger">
+		
+		<h4 class="pi-weight-700 pi-uppercase pi-letter-spacing pi-margin-bottom-15">
+			HDR &amp; Brightness
+		</h4>
+		<p>
+			The biggest confusion with regard to HDR is that it is not attempting to make the whole image brighter, which unfortunately seems to be the way most people think of HDR, but aims to provide additional brightness headroom for spectral highlight detail - such as chrome reflections, sun illuminated clouds, fire, explosions, lamp bulb filaments, etc.
+		</p>
+		<p>
+			Obviously, during the grading process the colourist/DoP, and any other hanger-on that has input into the look of the final image, is at liberty to use the extended brightness range as they see fit. But, moving away from the expected application of maintaining the average picture level consistent with SDR will generate unexpected results, and what will be assessed by the final viewer as being of poor image quality.
+		</p>
+		<p>
+			<i>It has to be remembered that most HDR displays cannot maintain a linear output brightness response to input signal brightness changes, if the average area of the picture that is 'bright' is high. Only a small percentage of screen area can be 'HDR bright'. The Eizo CG3145 Prominence is one of the few HDR displays that can maintain a linear output brightness response to input signal brightness, due to the use of what is effectively a 'backlight per pixel'.</i>
+		</p>
+		<!-- End -->
+		
+	</div>
+</div>
+<!-- - - - - - - - - - END SECTION - - - - - - - - - -->
+
+<!-- - - - - - - - - - SECTION - - - - - - - - - -->
+<div class="pi-section-w pi-shadow-inside pi-section-grey">
+	<div class="pi-section">
+		
+		<!-- PR row -->
+		<div class="pi-row">
+			<h4 class="pi-weight-700 pi-uppercase pi-letter-spacing pi-margin-bottom-25">
+				HDR - What it really means for picture levels
+			</h4>
+			<p>
+				The following is taken directly from the ST2084 (PQ EOTF) specification.
+			</p>
+			<p>
+				<i>This EOTF (ST2084) is intended to enable the creation of video images with an increased luminance range;  not for creation of video images with overall higher luminance levels. For consistency of presentation across devices with different output brightness, average picture levels in content would likely remain similar to current luminance levels; i.e. mid-range scene exposures would produce currently expected luminance levels appropriate to video or cinema.</i>
+			</p>
+			
+		</div>
+		<!-- End -->
+
+	</div>
+</div>
+<!-- - - - - - - - - - END SECTION - - - - - - - - - -->
+
+<!-- - - - - - - - - - SECTION - - - - - - - - - -->
+<div class="pi-section-w pi-section-white">
+	<div class="pi-section pi-padding-bottom-80">
+	
+		<!-- Resume -->
+		<p>
+			The PQ based ST2084 HDR specification defines reference white (normal diffuse white) as being 100 nits, which is exactly the same as for SDR (Standard Dynamic Range) displays, as specified for mastering (grading) grade-1 applications. With PQ HDR, above 100 nits is for spectral highlight detail only. This shows that the Average Picture Level (APL) of a PQ HDR display will not be significantly different to a SDR display.
+		</p>
+		<p>
+			Regardless of the maximum peak brightness the display can generate, diffuse white will always be around 100 nits.
+		</p>
+		<p>
+			The BBC's HLG HDR standard uses 75% of the signal (input) range as nominal diffuse white, which is obviously a 'variable, as the HLG standard is a 'relative' standard, not 'absolute' as with PQ. This is consistent with any existing SDR TV, and running it at higher peak luma levels for daytime viewing, as is the case in most home lounges.
+		</p>
+		<p>
+			The nominal nits value for diffuse white will vary with the peak brightness of the display, with a 1000 nit display having diffuse white around 175 nits, and a 4000 nits display around 600 nits, depending system gamma (see later for info on HLG system gamma).
+		</p>
+		<p>
+			So the reality is that HDR should just ADD to the existing brightness range of SDR displays, meaning that more detail can be seen in the brighter areas of the image, where existing SDR images simply clip, or at least roll-off, the image detail.
+		</p>
+		<p>
+			The following histogram is a simplified view of the difference between a SDR (Standard Dynamic Range) image, and its PQ HDR equivalent.
+			<br><i>Note that the APL (Average Picture Level) remains approximately consistent between the SDR and ST2084 HDR images, with just the contrast range and specular highlight levels increasing.</i>
+		</p>
+		<p>
+			<img src="hdr_range.png" alt="HDR Range" title="HDR Range">
+		</p>
+		<p>
+			While this is a PQ based graph, the same is true of HLG based HDR.
+		</p>
+		<p>
+			If this approach to HDR is understood, and images created based on using the additional brightness range for specular highlights, the true potential of HDR will be realised.
+		</p>
+		
+		<hr class="pi-divider-small">
+	
+		<!-- HDR -->
+		<h5 class="pi-weight-700 pi-uppercase pi-letter-spacing pi-margin-bottom-15">
+			Absolute vs. Relative
+		</h5>
+		<p>
+			One of the things we have simply come to accept when watching TV at home is that we set the peak brightness of the TV to accommodate the existing viewing environment within the room that houses the TV - most commonly the lounge. This is obviously ignoring the videophiles that have environment controlled man-caves with true home cinema setups, but they re not the norm for home TV viewing.
+		</p>
+		<p>
+			Whilst we know and understand that the SDR grading display will have been calibrated to 100 nits, we also understand that it will have been housed in a controlled grading environment, with little ambient light. The beauty of SDR's relative approach to gamma is that the TV can simply be made brighter to overcome uncontrollable light contaminated environments, including the use of different gamma values.
+		</p>
+		<p>
+			One of the often overlooked potential issues with PQ based HDR for home viewing is that because the standard is 'absolute' there is no way to increase the display's light output to overcome surrounding room light levels - the peak brightness cannot be increased, and neither can the fixed gamma (EOTF) curve.
+		</p>
+		<p>
+			As mentioned above, with HDR the Average Picture Level (APL) will match that of regular SDR (standard dynamic range) imagery. The result is that in less than ideal viewing environments, where the surrounding room brightness level is relatively high, the bulk of the HDR image will appear very dark, with shadow detail potentially becoming very difficult to see.
+		</p>
+		<p>
+			To be able to view PQ based 'absolute' HDR imagery environmental light levels will have to be very carefully controlled. Far more so than for SDR viewing. This really does mean using a true home cinema environment.
+		</p>
+		<p>
+			To back this statement up, the average surround illumination level that is specified as being required for PQ based HDR viewing is 5 nits, while for SDR it is specified as 10% of the maximum brightness of the display.
+		</p>
+				<!-- End -->
+		
+	</div>
+</div>
+<!-- - - - - - - - - - END SECTION - - - - - - - - - -->
+
+<!-- - - - - - - - - - SECTION - - - - - - - - - -->
+<div class="pi-section-w pi-shadow-inside pi-section-grey">
+	<div class="pi-section">
+		
+		<!-- PR row -->
+		<div class="pi-row">
+			<h4 class="pi-weight-700 pi-uppercase pi-letter-spacing pi-margin-bottom-25">
+				PQ - An Absolute Standard
+			</h4>
+			<p>
+				Referring to PQ as an 'absolute' standard means that for each input data level there is an absolute output luminance value, which has to be adhered to. There is no allowance for variation, such as changing the gamma curve (EOTF), or increasing the display's light output, as that is already maxed out.
+				<br><i>(This statement ignores dynamic meta-data, more on which later.</i>
+			</p>
+			<p>
+				The following table shows an example PQ EOTF for a 1000 nit TV.
+			</p>
+			<!-- Table -->
+		<div class="pi-responsive-table-sm">
+			<table class="pi-table pi-table-complex pi-table-hovered pi-round pi-table-shadow pi-table-all-borders">
+			
+				<!-- Table head -->
+				<thead>
+					
+					<!-- Table row -->
+					<tr>
+						<th class="h6 pi-weight-700 pi-letter-spacing">
+							Input Data - 10 bit
+						</th>
+						<th class="h6 pi-weight-700 pi-letter-spacing">
+							Output Luminance - nits
+						</th>
+					</tr>
+					<!-- End table row -->
+				
+				<!-- End Table Head -->
+				</thead>
+				
+				<!-- Table Body -->
+				<tbody>
+				
+					<!-- Table row -->
+					<tr>
+						<td style="text-align: center;">
+							0
+						</td>
+						<td style="text-align: center;">
+							0
+						</td>
+					</tr>
+					<!-- End table row -->
+					
+					<!-- Table row -->
+					<tr>
+						<td style="text-align: center;">
+							100
+						</td>
+						<td style="text-align: center;">
+							0.306
+						</td>
+					</tr>
+					<!-- End table row -->
+							
+					<!-- Table row -->
+					<tr>
+						<td style="text-align: center;">
+							200
+						</td>
+						<td style="text-align: center;">
+							2.258
+						</td>
+					</tr>
+					<!-- End table row -->
+					
+					<!-- Table row -->
+					<tr>
+						<td style="text-align: center;">
+							300
+						</td>
+						<td style="text-align: center;">
+							9.211
+						</td>
+					</tr>
+					<!-- End table row -->
+							
+					<!-- Table row -->
+					<tr>
+						<td style="text-align: center;">
+							400
+						</td>
+						<td style="text-align: center;">
+							29.386
+						</td>
+					</tr>
+					<!-- End table row -->
+							
+					<!-- Table row -->
+					<tr>
+						<td style="text-align: center;">
+							500
+						</td>
+						<td style="text-align: center;">
+							82.382
+						</td>
+					</tr>
+					<!-- End table row -->
+					
+					<!-- Table row -->
+					<tr>
+						<td style="text-align: center;">
+							600
+						</td>
+						<td style="text-align: center;">
+							214.612
+						</td>
+					</tr>
+					<!-- End table row -->
+					
+					<!-- Table row -->
+					<tr>
+						<td style="text-align: center;">
+							700
+						</td>
+						<td style="text-align: center;">
+							536.845
+						</td>
+					</tr>
+					<!-- End table row -->
+					
+					<!-- Table row -->
+					<tr>
+						<td style="text-align: center;">
+							769
+						</td>
+						<td style="text-align: center;">
+							998.932
+						</td>
+					</tr>
+					<!-- End table row -->
+				
+				</tbody>
+				<!-- End table body -->
+			</table>
+		</div>
+		<!-- End -->
+
+	</div>
+</div>
+<!-- - - - - - - - - - END SECTION - - - - - - - - - -->
+
+<!-- - - - - - - - - - SECTION - - - - - - - - - -->
+<div class="pi-section-w pi-section-white">
+	<div class="pi-section pi-padding-bottom-80">
+	
+		<!-- Resume -->
+		<p>
+			However, with HLG based 'relative' HDR this is less of an issue, as the HDR standard can be scaled in exactly the same way as traditional SDR TVs, and further, includes a system gamma variable based on surround illuminance, specifically aimed at overcoming environmental lighting issues.
+		</p>
+		<p>
+			See later for more specific info on the PQ and HLG standard's EOTF curves.
+		</p>
+		
+		<hr class="pi-divider pi-divider-dashed pi-divider-bigger">
+	
+		<!-- HDR -->
+		<h4 class="pi-weight-700 pi-uppercase pi-letter-spacing pi-margin-bottom-15">
+			Meta-data
+		</h4>
+		<p>
+			PQ based HDR uses meta-data embedded within the signal to provide the receiving display with information on parameters of the grading display, and the picture content, which the receiving display uses to 'guess' its best configuration to display the picture content.
+		</p>
+		<p>
+			<i>Note: The term 'guess' is used not to be negative, but because the application of the meta-data depends on the underlying display to be accurately calibrated, and unfortunately there is no really viable way to calibrate HDR TVs as yet - see: <a href="https://www.lightillusion.com/hdr_calibration.html">UHD/HDR/WCG Calibration</a>.</i>
+		</p>
+		<p>
+			PQ based HDR meta-data has two forms - Static and Dynamic. 
+		</p>
+		<p>
+			Both Static and Dynamic meta-data includes the chromaticity coordinates for the mastering display's RGB primaries, white point chromaticity, and min/max luminance. It also includes the Max Frame-Average Light Level (MaxFALL) which is the highest frame average brightness within the given program/sequence, and Max Content Light Level (MaxCLL) which defines the luma of the brightest pixel.
+		</p>
+		<p>
+			Static meta-data, as you would assume, uses the same values for the entire duration of a given program, while Dynamic meta-data changes as often as needed - potentially on a frame-by-frame basis.
+		</p>
+		<p>
+			HDR10 uses Static meta-data, while Dolby Vision and HDR10+ use Dynamic.
+		</p>
+        
+        <hr class="pi-divider-small">
+        
+		<h5 class="pi-weight-700 pi-uppercase pi-letter-spacing pi-margin-bottom-15">
+			But, why do we need meta-data?
+		</h5>
+		<p>
+			Meta-data is really needed only for one reason - when HDR was introduced there were no TVs that could match the peak luma and gamut coverage of the mastering/grading displays - specifically peak luma. With the 'absolute' nature of PQ based HDR, not having the same peak luma as the mastering display is something of an issue, as the image will clip. To attempt to overcome this, meta-data was introduced to allow the HDR TV to re-map the image content to attempt to overcome its lesser capabilities - apply a Tone Map roll-off to the EOTF/gamma curve.
+		</p>
+		
+		<p>
+			How this Dynamic meta-data is generated also helps define the way it works for playback, assisting with understanding of the overall approach.
+		</p>
+        <p>
+           But, the reality is that the use of meta-data simply distorts the viewed image from the director's &amp; colourist's intent, potentially losing the intended emotional response generated by the colour grade.
+        </p>
+        <p>
+           See <b>HDR - The Reality &amp; Associated Issues</b> below.
+        </p>
+		
+		<hr class="pi-divider-small">
+	
+		<!-- HDR -->
+		<h5 class="pi-weight-700 pi-uppercase pi-letter-spacing pi-margin-bottom-15">
+			Meta-data Generation &amp; Application
+		</h5>
+		<p>
+			The basic approach to the generation of meta-data during grading/mastering is to first grade the HDR content on a professional HDR display, without any form of roll-off/tone mapping, using the highest brightness and colour gamut available (nominally P3 gamut, and between 1000 and 4000 nits). The HDR graded footage is then passed through an analysing system that will re-map the HDR images to SDR, attempting to maintain the original HDR intent, adding Dynamic Meta-data to define the changes between the HDR original and the SDR version. Often, the grading colourist will assist with a 'trim' pass grade to help in maintaining the original artistic intent.
+		</p>
+		<p>
+			In this way the Meta-data describes the 'grading' changes from the HDR master to the SDR version.
+		</p>
+		<p>
+			With this meta-data available, when the HDR footage is played back on an HDR display with a lesser peak brightness and/or colour gamut than the original mastering display the dynamic meta-data is used by the display to re-map the footage to a point between the SDR grade and the full HDR grade, based on the capabilities of the playback TV.
+		</p>
+        <p>
+           The issue is few home TVs accurately apply the correct mapping, grossly distorting the original artistic intent of the footage.
+        </p>
+		<p>
+			However, many home TVs are now getting close to matching the grading display's peak luma and gamut capabilities, especially as most HDR masters are graded on displays with between 1000 and 2000 nits, making the requirement for meta-data an interesting question going forward. If the viewing TV can match the grading display why is there a need for meta-data? The answer is, there isn't...
+		</p>
+		<p>
+			And non-PQ based HDR, such as HLG, has no need for meta-data. One of the major differences in using a relative based HDR standard, rather than absolute.
+		</p>
+		<!-- End -->
+		
+	</div>
+</div>
+<!-- - - - - - - - - - END SECTION - - - - - - - - - -->
+
+<!-- - - - - - - - - - SECTION - - - - - - - - - -->
+<div class="pi-section-w pi-shadow-inside pi-section-grey">
+	<div class="pi-section">
+		
+		<!-- PR row -->
+		<div class="pi-row">
+			<h4 class="pi-weight-700 pi-uppercase pi-letter-spacing pi-margin-bottom-25">
+				HDR Display Calibration Comparisons
+			</h4>
+			<p>
+				Understanding the above regarding the need, or not, for meta-data brings up an interesting thought on how different HDR displays could be compared.
+			</p>
+			<p>
+				Assuming that modern HDR displays can all reach a given minimum peak luma level, say 1000 nits, an HDR source mastered at 1000 nits, using a gamut that is within the UHD specification of 90% P3, should not trigger any 'meta-data' based processing (tone mapping/roll-off)within the playback display, allowing for a direct comparison of the different display's underlying calibration accuracy.
+			</p>
+			<p>
+				From this first comparison, it would then be a relatively simple additional step to compare the same displays with different source material mastered at 2000+ nits, with full P3 gamut, enabling the display's tone mapping/roll-off to be compared separately.
+			</p>
+            <p>
+               Based on this concept, we have added a 'Colour Sub-Space capability to LightSpace, for example enabling P3 to be profiled with a Rec2020 container.
+            </p>
+			<p>
+			   <img src="colour-sub-space.png" alt="HDR ST2084 Gamma" title="HDR ST2084 Gamma">
+		    </p>
+		</div>
+		<!-- End -->
+
+	</div>
+</div>
+<!-- - - - - - - - - - END SECTION - - - - - - - - - -->
+
+<!-- - - - - - - - - - SECTION - - - - - - - - - -->
+<div class="pi-section-w pi-section-white">
+	<div class="pi-section pi-padding-bottom-80">
+	
+		<!-- Resume -->
+        <p>
+		   <i>Note: Another potential reason for the use of meta-data is to enable the receiving TV to understand what component of the image stream it should use, on dual-stream HDR discs. HDR that has this form of meta-data uses a dual-layer image stream, with an SDR base-layer and an enhancement layer for HDR and WCG. SDR TVs, with no understanding of HDR, just use the base-layer, while HDR compatible TVs can combine the base-layer with the enhancement layer. But this meta-data has no impact on the display's image colourimetry &amp; calibration.</i>
+		</p>
+        
+        <hr class="pi-divider pi-divider-dashed pi-divider-bigger">
+        
+		<h4 class="pi-weight-700 pi-uppercase pi-letter-spacing pi-margin-bottom-25">
+			PQ HDR - Dolby Vision, HRD10 and  HDR10+
+		</h4>
+		<p>
+			ST2084 defines the EOTF (Gamma) for the the PQ based Dolby Vision, HDR10, and HDR10+ HDR formats.
+		</p>
+		<p>
+			PQ HDR is based on a theoretical 'Reference' display with 10,000 nits max luminance capability, with all 'real world' displays referenced to this theoretical display, and has a gamma curve (EOTF - Electro Optical Transfer Function) as below.
+		</p>
+		<p>
+			<i>It is worth noting that the PQ based HDR specification 'aims to define an EOTF that is intended to enable the creation of video images with an increased luminance range, not for the creation of video images with overall higher luminance levels'. This means that reference white (normal diffuse white) remains at 100 nits, which is exactly the same as for SDR displays (Standard Dynamic Range) calibrated to 100 nits peak. With PQ HDR, above 100 nits shows spectral highlights only. This shows that the Average Picture Level (APL) of a PQ based HDR display will not be significantly different to a standard SDR display (see the Histogram diagram above)</i>
+		</p>
+		<p>
+			<img src="parametric_gamma_st2084.png" alt="HDR ST2084 Gamma" title="HDR ST2084 Gamma">
+		</p>
+		<p>
+			If you compare this to a standard Rec709 gamma curve the difference is obvious.
+		</p>
+		<p>
+			<img src="parametric_gamma_rec709.png" alt="Rec709 Gamma" title="Rec709 Gamma">
+		</p>
+		<p>
+		<i>Note: as PQ based HDR is an 'Absolute' standard, based on a peak luma of 10,000 nits, and Rec709 is a relative standard with no set peak luma value it is actually very difficult to compare the gamma (EOTF) curves directly. The closest is to compare to a selection of Rec709 peak luma values to a 1000 nit ST2084 display, as follows.</i>
+		</p>
+		<p>
+			<img src="gamma_st2084_1000_rec709.png" alt="ST2084 vs. Rec709 Gamma" title="ST2084 vs. Rec709 Gamma">
+		</p>
+		<p>
+			Interestingly, what this shows is how 'dark' PQ based HDR is in the shadows when compared to Rec709 based display calibration, especially when the peak luma of the Rec709 display is lifted. This is one of the main issues with PQ based HDR - the overall picture brightness is a lot lower than most home users are used to, making viewing in normal bright 'living room' conditions very difficult. This is discussed further in the <b>Viewing Environment Considerations</b> section below.
+		</p>
+		<p>
+			For PQ HDR, different displays will have different peak brightness levels and therefore require modified gamma curves, such as for Dolby's 4000 nit Pulsar monitor, which requires a HDR gamma curve that peaks at around 90% of the PQ standard.
+			<br><i>Note: it is ONLY the clipping point that is different. The curve is absolute, so remains consistent - see the 4th image in this section.</i>
+		</p>
+		<p>
+			<img src="parametric_gamma_4000-nits.png" alt="Dolby HDR Gamma" title="Dolby HDR Gamma">
+		</p>
+		<p>
+			Sony's BVM-X300 monitor requires a gamma curve that peaks at 75% of the PQ standard, as the BVM-X300 monitor has a peak value of 1,000 nits vs. the maximum of 10,000 nits for the PQ 'Reference' display.
+		</p>
+		<p>
+			<img src="parametric_gamma_sony.png" alt="Sony HDR Gamma" title="Sony HDR Gamma">
+		</p>
+		<p>
+			And the following PQ HDR EOTF curve shows by comparison what a 100 Nit monitor would display.
+		</p>
+		<p>
+			<img src="parametric_gamma_100-nits.png" alt="100 Nit HDR Gamma" title="100 Nit HDR Gamma">
+		</p>
+		<p>
+			<i>Note: The above graphs are all standardised to a 0 to 1 range. For a more understandable comparison we really need to map all the curves to their true absolute values, as follows.
+				<br>(Remember these graphs are linear, not logarithmic, so the visual effect as seen by the human eye is exaggerated!)</i>
+		</p>
+		<p>
+			<img src="st2084_peak_levels.png" alt="ST2084 EOTF comparisons" title="ST2084 EOTF comparisonsa">
+		</p>
+		<p>
+			If we change the graph to show Log scaling, so the output is perceptually correct for the human eye, we get the following.
+		</p>
+		<p>
+			<img src="perception_st2084.png" alt="ST2084 EOTF perceptual comparisons" title="ST2084 EOTF perceptual comparisonsa">
+		</p>
+		<p>
+			The same can be seen in the 'HDR White Levels' graph further down this page.
+		</p>
+		<p>
+			<i>Note: It is worth noting that no matter what is said elsewhere, no HDR standard can produce 'darker blacks', as they are set by the min black level the display technology can attain, and the present day SDR (Standard Dynamic Range) Rec709 standard already uses the minimum black attainable on any given display. And equally, HDR cannot generate improved shadow detail, ignoring the difference in today's 8 bit SDR Blu-ray standard, vs. 10 bit for HDR. 10 Bit SDR would have far better actual shadow detail.</i>
+		</p>
+		<!-- End -->
+		
+	</div>
+</div>
+<!-- - - - - - - - - - END SECTION - - - - - - - - - -->
+
+<!-- - - - - - - - - - SECTION - - - - - - - - - -->
+<div class="pi-section-w pi-shadow-inside pi-section-grey">
+	<div class="pi-section">
+		
+		<!-- PR row -->
+		<div class="pi-row">
+			<h4 class="pi-weight-700 pi-uppercase pi-letter-spacing pi-margin-bottom-25">
+				HDR - The Reality of Black
+			</h4>
+			<p>
+				The following statement is taken from Dolby's own 'Dolby Vision for the Home' white paper.
+			</p>
+			<p>
+				<i>"The current TV and Blu-ray standards limit maximum brightness to 100 nits and minimum brightness to 0.117 nits..."</i>
+			</p>
+			<p>
+				Unfortunately, at best this is an inaccurate statement, at worse it is marketing hyperbole, as the Blu-ray format has no such limits for min or max brightness levels, as these values are defined by the display's set-up - remember SDR is a relative standard, not absolute. The minimum level (the black level) is usually just the minimum the display can attain, and can range from very dark (0.0001 nits for example) on OLED displays to higher levels (around 0.03 nits or even higher) on cheaper LCD displays. The maximum brightness is often set far higher on home TVs to overcome surrounding room light levels, with many home TVs set to 300 nits, or more.
+			</p>
+			<p>
+				<i>Note: The statement that 'The minimum level (the black level) is usually just the minimum the display can attain' refers to the fact that often OLED black can be too low, and users often chose to lift it to prevent shadow detail clipping/crushing, and that becomes even more apparent with home HDR OLEDs.</i>
+			</p>
+			<p>
+				When the original SDR Blu-ray material is graded, the displays used will be calibrated to 80-120 nits (100 nits being the common average value), within a controlled grading environment (a dark environment), with the black level being from around 0.001-0.03 nits, depending on the display used (although the higher value is often used to maintain 'pleasant' images when viewed on the wider range of home TVs, with variable black levels!). And as mentioned above, when the Blu-ray is viewed in a home environment it is often necessary to set the TV to brighter levels to overcome surrounding room light levels.
+			</p>
+			
+			<hr class="pi-divider-small">
+			
+			<h5 class="pi-weight-700 pi-uppercase pi-letter-spacing pi-margin-bottom-15">
+				HDR - Shadows Too
+			</h5>
+			<p>
+				As we have seen, the reality is PQ based HDR does nothing for black levels, and that is true of shadow detail too - no matter what those less knowledgeable or marketing material may say.
+			</p>
+			<p>
+				A good example of inaccurate information used to promote 'benefits' of HDR can be seen in this presentation on <a href="https://m.youtube.com/watch?v=JrOG7o7Gdio" target="_top">YouTube</a>, where improved shadow detail was stated as being an example of the benefits HDR brings over SDR... which is incorrect. The reality is the SDR image is probably just poorly graded, even potentially deliberately so, to promote HDR. HDR provides no such benefit over SDR shadow detail.
+			</p>
+			<p>
+				And in reality, due to the EOTF curve in use on PQ based HDR the black under normal home viewing conditions will often be 'crushed' when compared to SDR versions of the same image. This is born out by the surround illumination level that is specified as being preferred for HDR as being 5 nits, while for SDR it is specified as 10% of the maximum brightness of the display. That is a huge discrepancy, and shows that HDR black/shadows will often be washed-out/clipped when viewed in any environment where the ambient light levels cannot be controlled.
+			</p>
+			<p>
+				In reality a 10 bit SDR image will have potentially better black/shadow detail than a PQ based HDR image.
+			</p>
+			<p>
+				<b><i>Different viewing environments really need different display gamma, which the 'Absolute' PQ based HDR standard cannot address.</i></b>
+			</p>
+			
+			<hr class="pi-divider-small">
+			
+			<h5 class="pi-weight-700 pi-uppercase pi-letter-spacing pi-margin-bottom-15">
+				Black Clipping/Crushing
+			</h5>
+			<p>
+				There is a further potential issue with black levels, as no display can hit zero black, and so would natively clip the input signal at the bit level relative to its min black due to the 'absolute' nature of the PQ EPTF. This means any PQ display requires some form of 'shadow' roll-off to prevent clipping, but this in-turn will exasperate shadow crushing on displays with higher black levels.
+			</p>
+			<p>
+				This issue has been widely ignored, and yes can be the cause of very poor shadow clipping/crushing of HDR displays with poor PQ EOTF implementation.
+			</p>
+    	</div>
+		</div>
+		<!-- End -->
+
+	</div>
+</div>
+<!-- - - - - - - - - - END SECTION - - - - - - - - - -->
+
+<!-- - - - - - - - - - SECTION - - - - - - - - - -->
+<div class="pi-section-w pi-section-white">
+	<div class="pi-section pi-padding-bottom-80">
+	
+		<!-- Resume -->
+		<p>
+			The following images simulate the comparison of an SDR image with its PQ HDR equivalent.
+			<br>(Obviously, as your display can not adjust its peak brightness this simulation is rather compromised! But, it does show the main body of the image remains consistent in brightness, with the extended dynamic range allowing additional detail to be seen in the highlights.)
+		</p>
+		<div class="pi-row">
+    		<div class="pi-col-sm-6">
+				<b>SDR</b>
+				<div class="pi-img-w pi-img-shadow">
+    				<img src="sdr_simulation_normalised.jpg" alt="SDR Simulation" title="SDR Simulation">
+					<div class="pi-img-overlay pi-img-overlay-darker">
+						<div class="pi-caption-centered">
+							<a href="https://www.lightillusion.com/img_li/sdr_simulation_normalised.jpg" class="pi-colorbox cboxElement" data-colorbox-group="normalised">
+							<span class="pi-caption-icon pi-caption-scale icon-search"></span></a>
+						</div>
+					</div>
+				</div>
+    		</div>
+    		<div class="pi-col-sm-6">
+    			<b>PQ HDR</b>
+    			<div class="pi-img-w pi-img-shadow">
+    				<img src="hdr_simulation_normalised.jpg" alt="ST2084 HDR Simulation" title="St2084 HDR Simulation">
+					<div class="pi-img-overlay pi-img-overlay-darker">
+						<div class="pi-caption-centered">
+							<a href="https://www.lightillusion.com/img_li/hdr_simulation_normalised.jpg" class="pi-colorbox cboxElement" data-colorbox-group="normalised">
+							<span class="pi-caption-icon pi-caption-scale icon-search"></span></a>
+						</div>
+					</div>
+				</div>
+    		</div>
+    	</div>
+		<p>
+			Unfortunately, most HDR demonstrations do not map the contrast range correctly, with the result that the overall image is simply much, much brighter, which is not the main intent of HDR, as shown above.
+		</p>
+		<p>
+			Obviously, in the real world the extra dynamic range available with HDR would be used to re-grade the image creatively to benefit from the additional dynamic range - but extended highlight detail is the true reality and potential benefit of HDR.
+		</p>
+		
+		<hr class="pi-divider-small">
+		
+		<h5 class="pi-weight-700 pi-uppercase pi-letter-spacing pi-margin-bottom-15">
+			Different Displays &amp; PQ based HDR
+		</h5>
+		<p>
+			Different HDR displays obviously have different peak luminance capabilities, and so the displayed image will need to clip to the peak nits value available, as defined by the above PQ EOTF graphs. This 'peak luma clip' is controlled by meta-data within the signal, defining the peak luma of the display used to perform grading, which is used by the presentation display to set the correct 'clip' level.
+		</p>
+		<p>
+			How this clip is performed - a hard clip, as per the above EOTF curves - or a soft clip, with roll-off, has not been defined outside of Dolby Vision, which is a fully defined HDR standard, with all aspects from generation through to delivery managed to pre-set specifications, but incurs a license fee for any display manufacturer adopting it.
+		</p>
+		<p>
+			The reality therefore, is that it is unlikely two displays will present the same image in the same way, even if they have the exact same peak nits capability, as the process used for peak luma tone-mapping will not be identical.
+		</p>
+		
+		<hr class="pi-divider-small">
+		
+		<h5 class="pi-weight-700 pi-uppercase pi-letter-spacing pi-margin-bottom-15">
+			Peak Luminance &amp; Bit Levels
+		</h5>
+		<p>
+			As the PQ standard is an absolute standard, not relative, each and every luminance level has an equivalent bit level. For a 10 bit signal the levels are as follows.
+		</p>
+		<div class="pi-row">
+    		<div class="pi-col-sm-2">
+				<ul>
+					<li>10,000 nits = 1023</li>
+					<li>5,000 nits = 948</li>
+					<li>4,000 nits = 924</li>
+					<li>2,000 nits = 847</li>
+					<li>1,000 nits = 769</li>
+					<li>400 nits = 668</li>
+					<li>100 nits = 519</li>
+					<li>0 nits = 0</li>
+				</ul>
+			</div>
+			<div class="pi-col-sm-10">
+				<div class="pi-img-w pi-img-right">
+    				<img src="hdr_luminance_levels.png" alt="HDR Luma Levels" title="HDR Luma Levels">
+					<div class="pi-img-overlay pi-img-overlay-darker">
+						<div class="pi-caption-centered">
+							<a href="https://www.lightillusion.com/img_li/hdr_luminance_levels.png" class="pi-colorbox cboxElement" data-colorbox-group="hdr luma levels">
+							<span class="pi-caption-icon pi-caption-scale icon-search"></span></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<p>
+			This means any given PQ based HDR display will only use a sub-set of the full signal range, with a 1,000 nits display max'ing out at 769 bits level, with the remaining 254 levels clipped.
+		</p>
+		<p>
+			<i>Note: This use of a sub-set range for the displayed image is a big part of why Dolby specify 12 bit, not 10 bit, for PQ based HDR.</i>
+		</p>
+		<p>
+			Further, and as mentioned above, there is an issue with black, as no display can hit zero black, and so would natively clip the input signal at the bit level relative to its min black due to the absolute nature of the PQ EPTF. This means any PQ display requires some form of 'shadow' roll-off to prevent clipping, but this in-turn will exasperate shadow crushing on displays with higher black levels.
+		</p>
+		<p>
+			<i>The alternative HLG standard is a relative standard, so always uses the full bit levels, regardless of the peak luma of any given display, and displays the image mapped between the displays min black and max white, so suffers no black clipping/crushing.</i>
+		</p>
+		<!-- End ST2084 HDR -->
+		
+		<hr class="pi-divider pi-divider-dashed pi-divider-bigger">
+	
+		<!-- Start -->
+		<h4 class="pi-weight-700 pi-uppercase pi-letter-spacing pi-margin-bottom-25">
+			HLG HDR
+		</h4>
+		<p>
+			Unlike PQ based HDR, the BBC HLG HDR standard is not an absolute standard; instead it is relative, with the EOTF gamma curve always being full range, regardless of any given display's actual peak Luma value. Additionally, the HLG standard also includes an EOTF modifier that alters the EOTF based on the display's surround illumination.
+		</p>
+		<p>
+			<i>Note: The BBC HLG standard doesn't use a specified reference white point in nits, but instead places it at 75% of the input signal.</i>
+		</p>
+		<p>
+			<img src="bbc_hlg_nits.png" alt="BBC HLG Gamma" title="BBC HLG Gamma">
+		</p>
+		<p>
+			The BBC HLG standard is designed for displays up to 5,000 nits, so lower than the ST2084 standard's 10,000 nits, but with the reality of what peak brightness levels HDR displays will actually be capable of is likely more than enough.
+		</p>
+		<p>
+			All the above BBC HLG curves are based on a low 'Surround' illumination of 10 nits.
+		</p>
+		<p>
+			It is this 'Surround' value that is especially important for home TV use, as in addition to using the display's peak Luma value to calculate the EOTF, the BBC's HLG standard also uses the display's surround illumination to alter the system gamma, as shown below for a 1000 Nit display.
+		</p>
+		<p>
+			<img src="bbc_hlg_surround.png" alt="BBC HLG Gamma" title="BBC HLG Gamma">
+		</p>
+		
+		<hr class="pi-divider-small">
+		
+		<h5 class="pi-weight-700 pi-uppercase pi-letter-spacing pi-margin-bottom-15">
+			Different Displays &amp; HLG
+		</h5>
+		<p>
+			As the HLG format has no reliance on meta-data there is a far better level of likely image consistency across different displays.
+		</p>
+		<p>
+			Additionally, the use of the display's surround illumination to alter the system gamma attempts to adjust display calibration to counter for differing viewing environments. A first real attempt to offer 'viewing consistency' across differing viewing environments.
+		</p>
+		<p>
+			This is an area where PQ based HDR struggles, as it requires a well controlled viewing environment...
+		</p>
+		
+		<hr class="pi-divider-small">
+		
+		<h5 class="pi-weight-700 pi-uppercase pi-letter-spacing pi-margin-bottom-15">
+			HLG &amp; RGB Separation
+		</h5>
+		<p>
+			The BBC's HLG standard has built into it a compensation for variable system gamma.
+		</p>
+		<p>
+			The standard first calculates the luminance of the source (before system gamma) using a weighted sum of the RGB components, as normal. The destination luminance is calculated by applying a pure mathematical gamma function to the source luminance, with the RGB channels scaled by the ratio of the source to destination luminance.
+		</p>
+        <p>
+		   <img src="hlg_rgb-separation.png" alt="HLG RGB Separation">
+		</p>
+		<p>
+			This introduces colour cross coupling, as will be seen via the RGB Separation graph, and is both expected, and nothing to worry about when calibrating HLG displays.
+		</p>
+		
+		<hr class="pi-divider pi-divider-dashed pi-divider-bigger">
+		
+		<!-- Start -->
+		<h4 class="pi-weight-700 pi-uppercase pi-letter-spacing pi-margin-bottom-25">
+			HDR - The Reality &amp; Associated Issues
+		</h4>
+		<p>
+			There are a number of issues with HD, specifically PQ based, and one of the biggest potential issues is they can actually be painful to watch, due to what is often termed as excessive eye fatigue.
+		</p>
+        
+        <hr class="pi-divider-small">
+        
+        <h5 class="pi-weight-700 pi-uppercase pi-letter-spacing pi-margin-bottom-15">
+			Brightness &amp; The Human Eye
+		</h5>
+        
+		<p>
+			The problem with excessive brightness is the difference between the human eye's huge Dynamic Range, which has a dynamic contrast ratio of around 1,000,000:1, or about 24 stops, and the eye's static dynamic range.
+		</p>
+		<p>
+			It is the eye's dynamic adaptation capability that enables us to see detail in dark environments, as well as in bright sunlight.
+		</p>
+		<p>
+			However, at any single given time the human visual system is only capable of operating at a fraction of this huge range. It is this static dynamic range, which occurs when the human visual system is in a state of full adaptation, that is active when watching home TV and some theatrical presentations at 'normal' viewing distances. While there are few exact figures for the human eye's static dynamic range, many agree it is around 10,000:1, for average viewing environments, which is around 12 Stops.
+		</p>
+		<p>
+			<img src="human-eye.gif" alt="Human Eye Dynamic Range" title="Human Eye Dynamic Range">
+		</p>
+		<div class="pi-img-w pi-img-round-corners pi-img-right">
+			<img src="human-eye-adaption.gif" alt="Human Eye Adaption" title="Human Eye Adaption">
+		</div>
+		<p>
+			Additionally, the human visual systems adaptive response needs to be taken into consideration - the time it takes to adapt between dark scenes to bright scenes, and vice versa, with bright to dark transitions typically taking many minutes to adapt, while dark to bright adaptation is significantly quicker, but still often measured in many 10's of seconds, if not minutes.
+		</p>
+		<p>
+			This is easy to experience by looking out a windows from within a dark room, and panning your eyes from the window to within the room. The room detail slowly resolves itself as the eye adapts to the change in brightness.
+		</p>
+		<p>
+			Further, with the relatively small size of TVs, combined with the standard viewing distance - 3m or so - the whole TV screen is within the high-acuity, central angle of view of the human eye (5° to 15°), meaning the human visual system cannot respond independently to different areas of brightness - being stuck within a state of full adaptation, so the viewer is only able to use the static dynamic range of the human eye.
+		</p>
+		<p>
+			To actually gain benefit from the concept of HDR the actual viewing angle the display would need to occupy would be in the order of 45°, which with an average large TV of 55" would means sitting just 65" from the screen.
+			<br><i>(See also the section on 'Resolution'.)</i>
+		</p>
+		<p>
+			<img src="viewing_position.jpg" alt="Viewing Distance" title="Viewing Distance">
+		</p>
+		<p>
+			Do you really sit this close to your TV?
+		</p>
+		<p>
+			What all this really means is a display with an excessive HDR will potentially cause real eye fatigue at normal viewing distances, and will very likely be be difficult to watch.
+		</p>
+		
+		<hr class="pi-divider-small">
+		
+		<h5 class="pi-weight-700 pi-uppercase pi-letter-spacing pi-margin-bottom-15">
+			HDR - Incorrect Assumptions
+		</h5>
+		<p>
+			An example of the way HDR is often portrayed is by using a diagram similar to the following, showing how the wide dynamic range of the real world is presently reduced to the limited dynamic range of SDR TV (Standard Dynamic Range TV), and how HDR will maintain more of the original scene range.
+		</p>
+		
+		<div class="pi-img-w pi-img-shadow">
+    		<img src="the_eye_and_hdr_incorrect.jpg" alt="HDR Assumptions" title="HDR Assumptions">
+			<div class="pi-img-overlay pi-img-overlay-darker">
+				<div class="pi-caption-centered">
+					<a href="https://www.lightillusion.com/img_li/the_eye_and_hdr_incorrect.jpg" class="pi-colorbox cboxElement" data-colorbox-group="assumption">
+					<span class="pi-caption-icon pi-caption-scale icon-search"></span></a>
+				</div>
+			</div>
+    	</div>
+
+		<p>
+			The above image has been widely distributed on the internet, although it seems the image originated with an AMD presentation, and is used to show the assumed benefits of HDR vs. SDR. But, the image contains a number of errors and incorrect assumptions.
+		</p>
+		<blockquote>
+		<ul>
+			<li>As defined previously, the human eye cannot simultaneously 'see' a dynamic range above about 10,000:1</li>
+			<li>Based on the above point, the description of the left hand side images as being 'Human Dynamic Range' is wrong
+			<br>(The description should be 'Original Scene Dynamic Range')</li>
+			<li>The black level of any display has nothing to do with SDR vs. HDR - black is always just the blackest black the display can attain.
+			<br>(The same display technology used for SDR or HDR will generated the exact same black level, ignoring the impact of high brightness areas of the screen in HDR projection, which will 'lift' the overall black level)</li>
+			<li>Due to the above point, the top right image is false, erroneously showing lifted blacks</li>
+			<li>Also due to the above, quoting 0.05 nits min for SDR and 0.0005 nits min for HDR is incorrect</li>
+			<li>No HDR display can attain 10,000 nits</li>
+			<li>Most home TVs are already well above 100 nits - usually in the range 250-400 nits</li>
+		</ul>
+		</blockquote>
+		<p>
+			If we correct the display, we get the following, even being kind and quoting 0.0005 nits for black, combined with 1000 nits for HDR, which as we can see below is not viable with today's display technology as any display with such a high peak white will have a much higher black level.
+		</p>
+		
+		<div class="pi-img-w pi-img-shadow">
+    		<img src="the_eye_and_hdr_corrected.jpg" alt="HDR Assumptions" title="HDR Assumptions">
+			<div class="pi-img-overlay pi-img-overlay-darker">
+				<div class="pi-caption-centered">
+					<a href="https://www.lightillusion.com/img_li/the_eye_and_hdr_corrected.jpg" class="pi-colorbox cboxElement" data-colorbox-group="assumption">
+					<span class="pi-caption-icon pi-caption-scale icon-search"></span></a>
+				</div>
+			</div>
+    	</div>
+		<!-- End -->
+		
+	</div>
+</div>
+<!-- - - - - - - - - - END SECTION - - - - - - - - - -->
+
+<!-- - - - - - - - - - SECTION - - - - - - - - - -->
+<div class="pi-section-w pi-shadow-inside pi-section-grey">
+	<div class="pi-section">
+		
+		<!-- PR row -->
+		<div class="pi-row">
+			<h4 class="pi-weight-700 pi-uppercase pi-letter-spacing pi-margin-bottom-25">
+				HDR - Black Levels
+			</h4>
+			<p>
+				It is worth reiterating again that no matter what is said elsewhere, no HDR standard can produce 'darker blacks', as they are set by the max black level the display technology can attain, and the present day SDR (Standard Dynamic Range) Rec709 standard already uses the minimum black attainable on any given display. 
+			</p>
+		</div>
+		<!-- End -->
+
+	</div>
+</div>
+<!-- - - - - - - - - - END SECTION - - - - - - - - - -->
+
+<!-- - - - - - - - - - SECTION - - - - - - - - - -->
+<div class="pi-section-w pi-section-white">
+	<div class="pi-section pi-padding-bottom-80">
+	
+		<!-- Resume -->
+		<p>
+			In the reality of the real world, an excessive HDR display would be one with a peak brightness over around 650 to 1000 nits.
+			<br>(The darker the viewing environment the lower the peak value before eye fatigue occurs, which causes another issue for HDR - see 'Viewing Environment Considerations' below.)
+		</p>
+		<p>
+			The Ultra HD Alliance seems to be aware of this, and actually has two different specifications for today's HDR displays:
+		</p><p>
+		</p><blockquote>
+		<ul>
+			<li>0.05 nits to ≥1000 nits</li>
+			<li>0.0005 nits to ≥540 nits</li>
+		</ul>
+		</blockquote>
+		
+		<p>
+			This dual specification exists as any display with a high peak luma will also have a higher black point, while displays with a lower black point will have far lower peak white values - LCD vs OLED, for example.
+		</p>
+		<!-- End -->
+		
+	</div>
+</div>
+<!-- - - - - - - - - - END SECTION - - - - - - - - - -->
+
+<!-- - - - - - - - - - SECTION - - - - - - - - - -->
+<div class="pi-section-w pi-shadow-inside pi-section-grey">
+	<div class="pi-section">
+		
+		<!-- PR row -->
+		<div class="pi-row">
+			<h4 class="pi-weight-700 pi-uppercase pi-letter-spacing pi-margin-bottom-25">
+				PQ HDR - White Levels
+			</h4>
+			<p>
+				It is worth pointing out that due to the logarithmic response of the human eye to changes in light levels, the present day SDR (Standard Dynamic Range) Rec709 'standard' of 100 nits is actually around 50% of PQ based HDR's 10,000 nits peak level.
+				<br><i>(Note: 'standard' is in commas as Rec709 is a relative standard, and so scaling the peak luma levels to overcome environmental light issues is an acceptable approach, while PQ HDR is an absolute nits based standard, and so cannot be scaled)</i>
+			</p>
+			<p>
+				The following image shows the reality of this when referenced to different peak white levels.
+			</p>
+			<div class="pi-img-w">
+    			<img src="hdr_peak_luma.png" alt="HDR Peak Luma" title="HDR Peak Luma">
+				<div class="pi-img-overlay pi-img-overlay-darker">
+					<div class="pi-caption-centered">
+						<a href="https://www.lightillusion.com/img_li/hdr_peak_luma.png" class="pi-colorbox cboxElement" data-colorbox-group="hdr luma">
+						<span class="pi-caption-icon pi-caption-scale icon-search"></span></a>
+					</div>
+				</div>
+    		</div>
+		</div>
+		<!-- End -->
+
+	</div>
+</div>
+<!-- - - - - - - - - - END SECTION - - - - - - - - - -->
+
+<!-- - - - - - - - - - SECTION - - - - - - - - - -->
+<div class="pi-section-w pi-section-white">
+	<div class="pi-section pi-padding-bottom-80">
+	
+		<!-- Resume -->
+        <h5 class="pi-weight-700 pi-uppercase pi-letter-spacing pi-margin-bottom-15">
+			Display Brightness Variations
+		</h5>
+		<p>
+			One of the biggest issues, specifically with PQ based HDR although HLG can be affected too, is screen brightness/luminance variations, due to a range of associated problems with the way HDR works on most displays.
+        </p>
+        <p>
+           The basic issue is HDR can 'change' the screen/image brightness/luminance in ways that cause fundamental variations in the viewed image, potentially in ways that distort the original artistic intent of the graded footage, as defined by the film's director and colourist.
+        </p>
+        <p>
+           Such issues can be defined as part of the 'expected' HDR workflow, such as Dynamic meta-data, technical limitations with the display technology used such as ABL (Auto Brightness Limiting) and Local Dimming, or unexpected brightness/luminance changes due to incorrect implementation within the display, specifically home TVs, where the display deviates from the expected HDR standard, due to the manufacturers believing they are generating a 'better' final image.
+        </p>
+		
+        <p><b>Dynamic Meta-data</b>
+           <br>The use of meta-data to dynamically define the brightness of the displayed image is something that is marketed by many HDR aficionados as a real benefit of PQ based HD, enabling dark scenes to be 'brightened', and bright scenes to be darkened to preserve hight detail.
+        </p>
+		<p>
+			But, is that really good?
+		</p>
+		<p>
+			When a film is graded, the 'look' is used to help define emotion, setting the viewer's expectation as to what the director is attempting to portray. Messing with the brightness dynamically risks upsetting the planned look, and hence destroying the original artistic intent of the film/program.
+		</p>
+		<p>
+			While Dynamic meta-data is intended to be defined by the colourist/director via a secondary grading pass, inherent limitations in the visual perception of the process mean it is unlikely that the same visual intent will be maintained.
+		</p>
+		<p>
+			<i>In reality, as nominal diffuse white is defined to be approximately 100 nits, with just spectral highlight information beyond that level, the inherent visual intent of the image will be contained below the 100 nits level, meaning that for correctly graded HDR, the theoretical 'best' approach to displaying the image on a lower peak luminance display would be to simply clip at the display's maximum luminance, potentially with the use of roll-off to prevent highlight 'blocking', with no use of dynamic meta-data at all.</i>
+		</p>
+		<p>
+			And as mentioned previously, the increase in achievable peak brightness levels for many displays and TVs also negates the need for any meta-data, dynamic or static.
+		</p>
+		
+		<p><b>ABL</b>
+			<br>Another of the often overlooked potential issues with HDR has to do with the (legal) need to limit the power requirement of the display, as obviously extreme brightness causes excessive power consumption. That in itself is a cause for concern, based both on the power costs, and potential environmental issues. Hopefully, both those can be overcome with more efficient display back-lighting technologies.
+		</p>
+		<p>
+			However, in an attempt to overcome extreme power requirements, just about all HDR displays use one form or another of ABL (Auto Brightness Limiting - often called Power Limiting in HDR terminology). In very simple terms ABL reduces the power to the screen dependant on the percentage screen area that goes over a predetermined brightness level, so reducing the overall brightness of the scene. The PQ HDR specification defines what is known as MaxCLL (Maximum Content Light Level) and MaxFALL (Maximum Frame-Average Light Level) which are intended to be part of the HDR mastering meta-data, from which the viewing display will calculate how to show the image, limiting potentially high power requirements.
+		</p>
+		<p>
+			Obviously, this causes the same image to be viewed differently on different displays, with different shots of the same scene, with different framing, to also be seen differently on the same display as the average picture brightness level will be different depending on the shot framing, potentially causing different power limiting to be applied by the display in an almost perceptually random way.
+		</p>
+		<p>
+			Such variations cause serious issues with accurate display calibration and image playback.
+		</p>
+		
+		<p>
+			<b>Local Dimming</b>
+			<br>Local Dimming is used in LCD based HDR displays, and consists of an array of back-lights to provide localised 'bright' image areas, without having to have a single backlight that is always 'bright', as that would greatly lift the black level, so greatly compromising the display.
+		</p>
+		<p>
+			A 'partial' solution is to divide the backlight into multiple zones, that can be independently controlled based on the image content, so 'dimming' the backlight areas/zones with dark content, compared to areas with bright content.
+		</p>
+		<p>
+			The obvious issue with this approach is that the backlight areas/zones will have a defined size/position, so will cause light bleed, or 'clouding', around objects that demand a bright backlight area/zone.
+		</p>
+		<p>
+			The greater the number of backlight areas/zones, the less visible the clouding issue.
+		</p>
+		<p>
+			Some newer LCD displays have what is effectively a backlight per pixel, such as the new Eizo Prominence CG3145, and FSI's XM310K, totally overcoming the Local Dimming issue.
+		</p>
+		<p>
+			<i>OLED displays inherently have a backlight per pixel, as each pixel is self illuminating, but cannot reach the high peak luminance levels of LCD displays.</i>
+		</p>
+		
+		<p>
+			<b>Deviation from the HDR Specification</b>
+			<br>A final issue with a lot of displays, specifically home TVs, is the manufacturers deliberately deviating from the HDR specification, in an attempt to generate what they view as 'better' images.
+		</p>
+		<p>
+			This obviously means the same source footage will be seen very differently on different displays, even if the displays are defined as being 'calibrated'.
+		</p>
+		<p>
+			However, this issue is actually something we have sympathy for, because as mentioned previously above, the PQ HDR specification is flawed, as the standard is 'absolute', and includes no option to increase the display's light output to overcome surrounding room light levels. The result is that in less than ideal viewing environments, where the surrounding room brightness level is relatively high, the bulk of the HDR image will appear very dark, with shadow detail potentially becoming very difficult to see.
+		</p>
+		<p>
+			Many home TV manufacturers therefore deliberately 'distort' the PQ HDR EOTF (gamma curve) to attempt to overcome this issue.
+		</p>
+		
+		<hr class="pi-divider pi-divider-dashed pi-divider-bigger">
+		
+		<!-- Start WCG-->
+		<h4 class="pi-weight-700 pi-uppercase pi-letter-spacing pi-margin-bottom-25">
+			WCG - Wide Colour Gamut
+		</h4>
+		<p>
+			As part of the evolving UHDTV standard, WCG is being combined with HDR to add greater differentiation from the existing HDTV standards, using the Rec2020 colour gamut as the target colour space.
+		</p>
+		<p>
+			The problem is that no (realistically) commercially available display can achieve Rec2020, meaning different UHDTV displays will have to 'adjust' the displayed image gamut based on the actual gamut capabilities of the display. This is provided for by the use of embedded meta-data within the UHDTV signal (associated with HDR meta-data, mentioned above) defining the source image gamut, aiming to allow the display to 'intelligently' re-map to the available gamut of the display.
+		</p>
+		<p>
+			The issue is that once again, and as with HDR meta-data and peak luma clipping, there is no set gamut re-mapping technique proposed. The result is that different displays will manage the required gamut re-mapping in different ways, generating differing end image results.
+		</p>
+		<p>
+			<img src="uwg_clipping.png" alt="Gamut Clipping" title="Gamut Clipping">
+		</p>
+		<p>
+			The above image shows the issue with attempting to display a wide gamut on a display with a smaller gamut. In this instance the display has a gamut similar to, but not identical to, DCI-P3, which is the stated 'preference' for smallest gamut for UHDTV displays (the smaller internal gamut triangle), while the larger gamut triangle shows Rec2020.
+		</p>
+		<p>
+			The display has been calibrated to Rec2020, within the constraints of its available gamut, as shown by the gamut sweep plots (the measured crosses match with the target circles). However, the de-saturated area outside the display's available gamut, and within Rec2020, shows colours that will not be displayed correctly, with any colour within this area being effectively pulled-back to the gamut edge of the display.
+		</p>
+		<p>
+			Obviously, the wider the display's actual gamut capability the less the clipping, and the less the different gamut capability will be visible, especially as within the real world that are few colours that get anywhere near the edges of Rec2020 gamut.
+		</p>
+		<p>
+			To reduce the hardness of gamut clipping, gamut re-mapping can be used to 'soften' the crossover from in-gamut, to out-of-gamut.
+		</p>
+		<p>
+			<img src="uwg_gamut_re-mapping.png" alt="Gamut re-Mapping" title="Gamut re-Mapping">
+		</p>
+		<p>
+			In the above diagram, the area between the new, smaller inner triangle, and the actual display gamut triangle shows an area where the display calibration is 'rolled-off' to better preserve image colour detail, at the cost of colour inaccuracy, effectively compressing all the colours in the de-saturated area into the smaller area between the display's max gamut and the reduced gamut inner triangle.
+		</p>
+		<p>
+			In reality, gamut re-mapping needs to be far more complex, taking into account the fact that human colour perception reacts differently to different colours, so the re-mapping really needs to take this into account.
+		</p>
+		<p>
+			The problem is that the UHDTV specifications do not specify the gamut re-mapping to use.
+		</p>
+		<p>
+			However, from this it can be seen that in the real world no two Ultra HD displays will ever look the same when displaying the same images...
+		</p>
+		<p>
+			Additionally, the Ultra HD specification, while using Rec2020 as the target (envelope) colours space, actually specifies that any Ultra HD display only has to reach 90% of DCI-P3 to be accepted as a UHDTV display - and a volumetrically, 90% of DCI-P3 is basically Rec709!
+		</p>
+		<p>
+			<img src="uhdtv_gamut.png" alt="Target Gamut" title="Target Gamut">
+		</p>
+		<p> The above CIEuv diagram (CIEuv has been used as it is more perceptually uniform than CIExy) shows the gamut difference between 100% DCI-P3 and Rec709, as well as showing Rec2020.
+		</p>
+		<p>
+			As can be seen, 90% of the DCI-P3 colour space is not much larger than Rec709...
+		</p>
+		
+		<hr class="pi-divider-small">
+		
+		<h5 class="pi-weight-700 pi-uppercase pi-letter-spacing pi-margin-bottom-15">
+			Issues specifying Percentage Gamut Coverage
+		</h5>
+		<p>
+			A real issue with the way the UHDTV specification has been defined for gamut is that it uses a generic percentage value of 90% coverage of the P3 Gamut, but P3 gamut primaries are not aligned with Rec2020 primaries, which can mean a display with a lesser gamut coverage value may actually be better than one with a higher value, if the display with the lower gamut coverage has primaries that are aligned better with Rec2020 promaries.
+		</p>
+		<p>
+			<img src="uhdtv_gamut_issues.png" alt="UHDTV Gamut Issues" title="UHDTV Gamut Issues">
+		</p>
+		<p>
+			The above chart shows the problem, with an (approx.) 90% P3 gamut coverage compared to Rec2020 primaries. As can be seen, the peak primaries of the 90% P3 Green and Red are significantly different to Rec2020 primaries, meaning that colours that should be along the Rec2020 primary vectors will be distorted, making the true gamut coverage of the display significantly below the stated 90% coverage.
+		</p>
+		
+		<hr class="pi-divider-small">
+		
+		<h5 class="pi-weight-700 pi-uppercase pi-letter-spacing pi-margin-bottom-15">
+			Colour Perception
+		</h5>
+		<p>
+			And to end, a question regarding colour perception, for those of you Home Cinema enthusiasts...
+		</p>
+		<p>
+			You watch a new film release in the cinema, in digital projection, using a DCI-XYZ colour space envelope for projection, containing DCI-P3 imagery.
+		</p>
+		<p>
+			You then purchase the same film on Bluray, and watch it on your Rec709/BT1886 calibrated Home Cinema environment.
+		</p>
+		<p>
+			Do you perceive any loss in image colour fidelity, assuming the Bluray master has been generated correctly?
+		</p>
+		<p>
+			The reality is there are few colours in the natural world that exist outside of the Rec709/BT1886 gamut. Colours that do exist outside Rec709/BT1886 gamut tend to be man-made colours, such as neon signs, and the like...
+		</p>
+		<!-- End WCG-->
+		
+		<hr class="pi-divider pi-divider-dashed pi-divider-bigger">
+		
+		<!-- Start Resolution-->
+		<h4 class="pi-weight-700 pi-uppercase pi-letter-spacing pi-margin-bottom-25">
+			UHD - Resolution
+		</h4>
+		<p>
+			Another component of UHD is the increase in resolution to 4K (3840x2160).
+		</p>
+		<p>
+			While at first glance such an increase in resolution would appear to be a real benefit of UHDTV, it actually brings with it the question 'can the the benefits really be appreciated?' 
+		</p>
+		<!-- End -->
+		
+	</div>
+</div>
+<!-- - - - - - - - - - END SECTION - - - - - - - - - -->
+
+<!-- - - - - - - - - - SECTION - - - - - - - - - -->
+<div class="pi-section-w pi-shadow-inside pi-section-grey">
+	<div class="pi-section">
+		
+		<!-- PR row -->
+		<div class="pi-row">
+			<h4 class="pi-weight-700 pi-uppercase pi-letter-spacing pi-margin-bottom-25">
+				Resolution vs. Viewing Distance
+			</h4>
+			<p>
+				The higher the resolution, the shorter the viewing distance needs to be from the screen.
+			</p>
+			<p>
+				Conversely, the greater the viewing distance, the lower the actual display resolution can be for the same apparent image resolution/quality.
+			</p>
+    	</div>
+		<!-- End -->
+
+	</div>
+</div>
+<!-- - - - - - - - - - END SECTION - - - - - - - - - -->
+
+<!-- - - - - - - - - - SECTION - - - - - - - - - -->
+<div class="pi-section-w pi-section-white">
+	<div class="pi-section pi-padding-bottom-80">
+	
+		<!-- Resume -->
+		<p>
+			What this means in very simple terms is that a 'large' 55" 4K UHD screen will require the viewer to sit no further than 4 feet from the screen to gain benefit over a 55" HD resolution screen...
+		</p>
+		<p>
+			This is shown in the following Screen Size &amp; Resolution vs. Viewing Distance chart.
+		</p>
+		<p>
+    		<img src="screen_resolution.png" alt="HDR Peak Luma" title="HDR Peak Luma">
+		</p>
+		<!-- End Resolution-->
+		
+	</div>
+</div>
+<!-- - - - - - - - - - END SECTION - - - - - - - - - --></div>
+
+<!-- Footer -->
+
+<!-- Copyright area -->
+<div class="pi-section-w pi-section-dark pi-border-top-light pi-border-bottom-strong-base">
+	<div class="pi-section pi-row-lg pi-center-text-2xs pi-clearfix">
+
+		<!-- Footer logo -->
+		<div class="pi-row-block pi-row-block-logo pi-row-block-bordered">
+			<a href="https://www.lightillusion.com/index.html"><img src="logo-li_footer.png" alt="Light Illusion Logo"></a>
+		</div>
+		<!-- End footer logo -->
+
+		<!-- Text -->
+		<span class="pi-row-block pi-row-block-txt pi-hidden-xs">
+			© Light Illusion - All rights reserved
+		</span>
+		<!-- End text -->
+	
+		<!-- Search form -->
+		<div class="pi-row-block pi-pull-right">
+			<form class="form-inline pi-search-form-wide ng-pristine ng-valid" action="https://www.google.com/cse">
+				<div class="pi-input-with-icon">
+					<div class="pi-input-icon"><i class="icon-search"></i></div>
+					<input name="cx" value="008156907836622937577:oowbbs_yvyy" type="hidden">
+					<input name="ie" value="UTF-8" type="hidden">
+					<input name="q" class="form-control pi-input-wide" placeholder="Search.." value="" type="text">
+				</div>
+			</form>
+		</div>
+		<!-- End search form -->
+
+	</div>
+</div>
+<!-- End copyright area -->
+
+<!-- End footer -->
+
+</div>
+<div class="pi-scroll-top-arrow pi-active" data-scroll-to="0"></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Preloader -->
+
+
+<!-- Cookies -->
+
+
+
+
+<div id="cboxOverlay" style="display: none;"></div><div id="colorbox" class="" role="dialog" tabindex="-1" style="display: none;"><div id="cboxWrapper"><div><div id="cboxTopLeft" style="float: left;"></div><div id="cboxTopCenter" style="float: left;"></div><div id="cboxTopRight" style="float: left;"></div></div><div style="clear: left;"><div id="cboxMiddleLeft" style="float: left;"></div><div id="cboxContent" style="float: left;"><div id="cboxTitle" style="float: left;"></div><div id="cboxCurrent" style="float: left;"></div><button type="button" id="cboxPrevious"></button><button type="button" id="cboxNext"></button><button id="cboxSlideshow"></button><div id="cboxLoadingOverlay" style="float: left;"></div><div id="cboxLoadingGraphic" style="float: left;"></div></div><div id="cboxMiddleRight" style="float: left;"></div></div><div style="clear: left;"><div id="cboxBottomLeft" style="float: left;"></div><div id="cboxBottomCenter" style="float: left;"></div><div id="cboxBottomRight" style="float: left;"></div></div></div><div style="position: absolute; width: 9999px; visibility: hidden; display: none; max-width: none;"></div></div></body>
+</html>

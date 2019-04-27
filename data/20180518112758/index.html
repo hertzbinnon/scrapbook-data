@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    <meta charset="UTF-8">
+    <link rel="canonical" href="https://blog.csdn.net/vn9PLgZvnPs1522s82g/article/details/79957647"> 
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="referrer" content="always">
+    <meta name="description" content="在AV1刚刚完成定稿后，Facebook公布了AV1的测试结果，测试结果显示AV1至少有30%以上的性能提升，这多少给了AV1的潜在用户一定的信心。Facebook还表示，将在内部继续推广AV1。LiveVideoStack对测试结果进行了翻译。文 / Yu Liu译 / 蒋默邱泽审校 / 包研改进视频压缩对于更敏捷、更高质量地传输视频文件非常重要，同时使用更少的带宽和存储空间。从4K流媒体传输到">
+    <meta name="keywords" content="">
+    <meta http-equiv="Cache-Control" content="no-siteapp"><link rel="alternate" media="handheld" href="https://blog.csdn.net/vn9PLgZvnPs1522s82g/article/details/79957647#">
+    <meta name="shenma-site-verification" content="5a59773ab8077d4a62bf469ab966a63b_1497598848">
+    
+
+    <link href="favicon.ico" rel="SHORTCUT ICON">
+    <title>Facebook：AV1比x264和libvpx-VP9提升至少30% - CSDN博客</title>
+    
+            
+        
+
+    
+    
+    
+    
+        
+         
+    
+
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body><div id="BAIDU_DUP_fp_wrapper" style="position: absolute; left: -1px; bottom: -1px; z-index: 0; width: 0px; height: 0px; overflow: hidden; visibility: hidden; display: none;"><iframe id="BAIDU_DUP_fp_iframe" src="index_1.html" style="width: 0px; height: 0px; visibility: hidden; display: none;"></iframe></div><div id="MathJax_Message" style="display: none;"></div>    
+    
+    
+    
+
+
+
+
+<header>
+	<div class="container d-flex clearfix">
+		<div class="title-box">
+			<h6 class="title-blog">
+				<a href="https://blog.csdn.net/vn9plgzvnps1522s82g">LiveVideoStack</a>
+			</h6>
+			<p class="description">分享音视频直播相关技术干货，产品研究与行业趋势。</p>
+		</div>
+		<div class="opt-box d-flex justify-content-end">
+			<a class="btn btn-sm" href="https://blog.csdn.net/vn9plgzvnps1522s82g/rss/list">
+					<svg class="icon" aria-hidden="true">
+						<use xlink:href="#csdnc-rss"></use>
+					</svg>RSS订阅</a>
+					</div>
+	</div>
+</header>
+<div class="container clearfix pt0" id="mainBox">
+    <aside>
+		    <div id="asideProfile" class="aside-box">
+    <h3 class="aside-title">个人资料</h3>
+    <div class="profile-intro d-flex">
+        <div class="avatar-box d-flex justify-content-center flex-column">
+            <a href="https://blog.csdn.net/vn9plgzvnps1522s82g">
+                <img src="3_vn9plgzvnps1522s82g.jpg" class="avatar_pic">
+            </a>
+        </div>
+        <div class="user-info d-flex justify-content-center flex-column">
+            <p class="name csdn-tracking-statistics tracking-click" data-mod="popu_379">
+                <a href="https://blog.csdn.net/vn9plgzvnps1522s82g" target="_top" class="text-truncate" id="uid">vn9plgzvnps1522s82g</a>
+            </p>
+                    </div>
+                <div class="opt-box d-flex justify-content-center flex-column">
+            <span class="csdn-tracking-statistics tracking-click" data-mod="popu_379">
+                                <a class="btn btn-sm btn-red-hollow" href="https://passport.csdn.net/account/login?from=https://blog.csdn.net/vn9PLgZvnPs1522s82g/article/details/79957647" target="_self">关注</a>
+                            </span>
+            
+        </div>
+            </div>
+    <div class="data-info d-flex item-tiling">
+        <dl class="text-center" title="96">
+            <dt>原创</dt>
+            <dd><span class="count">96</span></dd>
+        </dl>
+        <dl class="text-center" title="58">
+            <dt>粉丝</dt>
+            <dd><span class="count" id="fan">58</span></dd>
+        </dl>
+        <dl class="text-center" title="41">
+            <dt>喜欢</dt>
+            <dd><span class="count">41</span></dd>
+        </dl>
+        <dl class="text-center" title="12">
+            <dt>评论</dt>
+            <dd><span class="count">12</span></dd>
+        </dl>
+    </div>
+    <div class="grade-box clearfix">
+        <dl>
+            <dt>等级：</dt>
+            <dd>
+                <a href="https://blog.csdn.net/home/help.html#level" title="3级,点击查看等级说明" target="_top">
+                    <svg class="icon icon-level" aria-hidden="true">
+                        <use xlink:href="#csdnc-bloglevel-3"></use>
+                    </svg>
+                </a>
+            </dd>
+        </dl>
+        <dl>
+            <dt>访问：</dt>
+            <dd title="26609">
+                2万+            </dd>
+        </dl>
+        <dl>
+            <dt>积分：</dt>
+            <dd title="515">
+                515            </dd>
+        </dl>
+        <dl title="101386">
+            <dt>排名：</dt>
+            <dd>10万+</dd>
+        </dl>
+    </div>
+        <div class="badge-box d-flex">
+        <span>勋章：</span>
+                <a class="icon-badge" title="专栏达人">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#csdnc-m-columns"></use>
+            </svg>
+            <div class="icon-arrow"></div>
+            <div class="grade-detail-box item1">
+                <div class="pos-box">
+                    <div class="left-box d-flex justify-content-center align-items-center flex-column">
+                        <svg class="icon" aria-hidden="true">
+                            <use xlink:href="#csdnc-m-columns"></use>
+                        </svg>
+                        <p>专栏达人</p>
+                    </div>
+                    <div class="right-box d-flex justify-content-center align-items-center">
+                        授予成功创建个人博客专栏的用户。专栏中添加五篇以上博文即可点亮！撰写博客专栏浓缩技术精华，专栏达人就是你！
+                    </div>
+                </div>
+            </div> 
+        </a>  
+                        <a class="icon-badge" title="持之以恒">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#csdnc-m-lasting"></use>
+            </svg>
+            <div class="icon-arrow"></div>
+            <div class="grade-detail-box item2">
+                <div class="pos-box">
+                    <div class="left-box d-flex justify-content-center align-items-center flex-column">
+                        <svg class="icon" aria-hidden="true">
+                            <use xlink:href="#csdnc-m-lasting"></use>
+                        </svg>
+                        <p>持之以恒</p>
+                    </div>
+                    <div class="right-box d-flex justify-content-center align-items-center">
+                        授予每个自然月内发布4篇或4篇以上原创或翻译IT博文的用户。不积跬步无以至千里，不积小流无以成江海，程序人生的精彩需要坚持不懈地积累！
+                    </div>
+                </div>
+            </div>
+        </a>
+                            </div>
+    </div>		    <div class="csdn-tracking-statistics mb8 box-shadow" data-pid="blog" data-mod="popu_4" style="height: 250px;">
+    <div class="aside-content text-center" id="cpro_u2734133">
+        <!-- 投放代码 -->
+        <div><iframe scrolling="no" src="index_2.html" width="300" height="250" frameborder="0"></iframe></div>
+    </div>
+</div>
+		    <div id="asideNewArticle" class="aside-box">
+    <h3 class="aside-title">最新文章</h3>
+    <div class="aside-content">
+        <ul class="inf_list clearfix csdn-tracking-statistics tracking-click" data-mod="popu_382">
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/vn9PLgZvnPs1522s82g/article/details/80345393" target="_top">倒计时2天，WebRTCon 2018有哪些有趣有料分享与活动？</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/vn9PLgZvnPs1522s82g/article/details/80331774" target="_top">FFmpeg 硬件加速方案概览 （下）</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/vn9PLgZvnPs1522s82g/article/details/80327188" target="_top">孙俊伟：60帧帧率、4K分辨率是视频会议的趋势</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/vn9PLgZvnPs1522s82g/article/details/80327187" target="_top">黄开宁：搞多媒体开发要掌握好信号处理、统计和数理分析</a>
+            </li>
+                        <li class="clearfix">
+                <a href="https://blog.csdn.net/vn9PLgZvnPs1522s82g/article/details/80327186" target="_top">激进or务实？HEVC、AV1 和私有Codecs现状</a>
+            </li>
+                    </ul>
+    </div>
+</div>
+		    <div id="asideColumn" class="aside-box">
+    <h3 class="aside-title">博主专栏</h3>
+    <div class="aside-content">
+        <ul class="column-box csdn-tracking-statistics tracking-click" data-mod="popu_520">
+                            <li class="clearfix">
+                    <div class="img-box float-left">
+                        <a class="d-flex align-items-center" href="https://blog.csdn.net/column/details/19589.html">
+                            <img src="column" alt="">
+                        </a>
+                    </div>
+                    <div class="info">
+                        <p class="title"><a href="https://blog.csdn.net/column/details/19589.html">展望2018</a></p>
+                        <div class="data">阅读量：<span>4115</span><span class="count">13 篇</span></div>
+                    </div>
+                </li>
+                    </ul>
+    </div>
+    </div>
+		    		    <div id="asideArchive" class="aside-box flexible-box">
+    <h3 class="aside-title">归档</h3>
+    <div class="aside-content">
+        <ul class="archive-list">
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/vn9plgzvnps1522s82g/article/month/2018/05">
+                    2018年5月                    <span class="count float-right">14篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/vn9plgzvnps1522s82g/article/month/2018/04">
+                    2018年4月                    <span class="count float-right">29篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/vn9plgzvnps1522s82g/article/month/2018/03">
+                    2018年3月                    <span class="count float-right">24篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/vn9plgzvnps1522s82g/article/month/2018/02">
+                    2018年2月                    <span class="count float-right">14篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/vn9plgzvnps1522s82g/article/month/2018/01">
+                    2018年1月                    <span class="count float-right">28篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/vn9plgzvnps1522s82g/article/month/2017/12">
+                    2017年12月                    <span class="count float-right">17篇</span>
+                </a>
+            </li>
+                        <!--归档统计-->
+            <li>
+                <a href="https://blog.csdn.net/vn9plgzvnps1522s82g/article/month/2017/11">
+                    2017年11月                    <span class="count float-right">8篇</span>
+                </a>
+            </li>
+                    </ul>
+    </div>
+        <p class="text-center">
+        <a class="btn btn-link-blue flexible-btn" data-fbox="aside-archive">展开</a>
+    </p>
+    </div>
+		    <div id="asideHotArticle" class="aside-box">
+	<h3 class="aside-title">热门文章</h3>
+	<div class="aside-content">
+		<ul class="hotArticle-list csdn-tracking-statistics tracking-click" data-mod="popu_521">
+							<li>
+					<a href="https://blog.csdn.net/vn9plgzvnps1522s82g/article/details/79124926">“抖音”式的酷炫短视频开发进阶</a>
+					<p class="read">阅读量：<span>1729</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/vn9plgzvnps1522s82g/article/details/78910849">U3D激发拍照新活力，Camera360优化之旅</a>
+					<p class="read">阅读量：<span>1277</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/vn9plgzvnps1522s82g/article/details/78960171">展望2018音视频技术：AV1，AI，区块链，WebRTC</a>
+					<p class="read">阅读量：<span>1218</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/vn9plgzvnps1522s82g/article/details/78920874">微信小程序开放直播能力，你怎么看？</a>
+					<p class="read">阅读量：<span>952</span></p>
+				</li>
+							<li>
+					<a href="https://blog.csdn.net/vn9plgzvnps1522s82g/article/details/78920875">深度学习让系统“看”懂短视频内容</a>
+					<p class="read">阅读量：<span>950</span></p>
+				</li>
+					</ul>
+	</div>
+</div>
+		    <div id="asideNewComments" class="aside-box">
+    <h3 class="aside-title">最新评论</h3>
+    <div class="aside-content">
+        <ul class="newcomment-list">
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/vn9plgzvnps1522s82g/article/details/80104773#comments">YouTube高效传输策略：节省1...</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/wjf1997" class="user-name" target="_top">wjf1997</a>：节省14%带宽 用户体验提升                </p>
+            </li>
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/vn9plgzvnps1522s82g/article/details/80061553#comments">齐聚上海，get多媒体开发新技能（...</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/wjf1997" class="user-name" target="_top">wjf1997</a>：get多媒体开发新技能                </p>
+            </li>
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/vn9plgzvnps1522s82g/article/details/79739096#comments">AOM联盟：AV1完成1.0版定稿</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/gxrsprite" class="user-name" target="_top">gxrsprite</a>：喜大普奔                </p>
+            </li>
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/vn9plgzvnps1522s82g/article/details/79622567#comments">AV1的五种编码进展</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/gxrsprite" class="user-name" target="_top">gxrsprite</a>：先等浏览器更新支持这些网站就能用了吧，相比H265 这个实用化速度应该比较快                </p>
+            </li>
+                        <li>
+                <a class="title text-truncate" target="_top" href="https://blog.csdn.net/vn9plgzvnps1522s82g/article/details/79551738#comments">张军：围绕“WebRTC+AI+大...</a>
+                <p class="comment">
+                    <a href="https://my.csdn.net/weixin_37686372" class="user-name" target="_top">weixin_37686372</a>：吓我一跳  我还以为我上啥头条了呢                </p>
+            </li>
+                    </ul>
+    </div>
+</div>
+		<div id="asideFooter">
+			
+		<div class="aside-box">
+						<div id="_h4407j927nh"><abbr class="rfttgr" style="width: 0px; height: 0px;"></abbr><iframe scrolling="no" src="index_3.html" width="300" height="250" frameborder="0"></iframe></div>
+					</div>
+				<div class="aside-box">
+			<div class="persion_article">
+			</div>
+		</div>
+	</div>
+</aside>
+
+
+    <main>
+        <div class="blog-content-box">
+	<div class="article-title-box">
+			<span class="article-type type-1 float-left">原</span>		<h6 class="title-article">Facebook：AV1比x264和libvpx-VP9提升至少30%</h6>
+	</div>
+	<div class="article-info-box">
+		<div class="article-bar-top d-flex">
+												<span class="time">2018年04月16日 00:00:00</span>
+			<div class="float-right">
+				<span class="read-count">阅读数：202</span>
+											</div>
+		</div>
+	</div>
+	<article>
+		<div id="article_content clearfix" class="article_content csdn-tracking-statistics" data-pid="blog" data-mod="popu_307" data-dsm="post">
+                    
+            <div class="htmledit_views">
+                
+    <div class="rich_media_content" id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><img src="p" style="visibility: visible !important;" alt="640?wx_fmt=jpeg&amp;wxfrom=5&amp;wx_lazy=1"></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><br></p><blockquote><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);">在AV1刚刚完成定稿后，Facebook公布了AV1的测试结果，测试结果显示AV1至少有30%以上的性能提升，这多少给了AV1的潜在用户一定的信心。Facebook还表示，将在内部继续推广AV1。LiveVideoStack对测试结果进行了翻译。</span></p></blockquote><p><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);">文 / Yu Liu</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);">译 / 蒋默邱泽</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);">审校 / 包研</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">改进视频压缩对于更敏捷、更高质量地传输视频文件非常重要，同时使用更少的带宽和存储空间。从4K流媒体传输到智能手机的视频聊天及笔记本电脑的屏幕共享一切都可以通过更强质量更小的压缩编码视频。</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">AOM开放媒体联盟立于2015年，由很多视频点播提供商组成，包括亚马逊，Facebook，谷歌，微软和Netflix以及网络浏览器开发商和芯片公司 - <a href="http://mp.weixin.qq.com/s?__biz=MzU1NTEzOTM5Mw==&amp;mid=2247485426&amp;idx=1&amp;sn=2bcecfae18cce3d9950297b648e25a02&amp;scene=21#wechat_redirect">最近刚刚发布了AV1（AOMedia Video 1.0）</a>这是一种全新的开放式而且免费的视频格式，有望成将视频压缩效率推向新的纪元。</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">我们在Facebook视频中运用了最新的编码器进行测试常见的真实使用环境条件。我们去测试观察AV1的性能与实际生产系统中开源编码器情况，当然不仅仅是测试效率和标准参考中软编码（即H.264 AVC组合模型或JM）的效率。通过以这种方式构建测试模型，我们能够展示编解码如何在真正的生产环境中执行与当前广泛使用的案例（如x264和libvpx-vp9）抗衡。</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">我们的测试表明AV1超越了预计其规定的压缩率比VP9好30％，参照x264 main profile，x264 high profile和libvpx-vp9相比，分别获得了50.3％，46.2％和34.0％的提升。由于AV1增加了复杂性，新的编码要比现有vp9和x264实际方案中还需要较长时间来验证替换它。</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">我们的测试主要是使用标准清（SD）和高清（HD）视频文件，因为这些是目前Facebook上最流行的视频格式。但是由于AV1的质量随着视频分辨率的提高而提升，我们得出结论：新的压缩编码可能在UHD、 4K和8K内容的情况下提升更高的效率。</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">随着2018年3月28日正式公开发布AV1，这些结果应该能够增强这项技术在实际应用中提升压缩率的信心。</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">随后我们的测试过程和结果的细节将有助于工程师详细评估AV1压缩性能。</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);"><br></span><span style="color: rgb(247, 150, 70); font-size: 18px;">测试方法和评估设置</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">我们的实验并没有使用无损压缩的测试视频序列而是常见测试序列或https://media.xiph.org/video/derf/中的公开测试序列，其中选择了400个来自Facebook的首页公开视频这些视频具有以下特点： &nbsp;</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><br></p><ul class="list-paddingleft-2" style="list-style-type: disc;"><li><p style="margin-left: 1em; margin-right: 1em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">大部分视频都由智能手机录制</span></p></li><li><p style="margin-left: 1em; margin-right: 1em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">在上传到Facebook服务器前，它们先在终端进行了压缩</span></p></li><li><p style="margin-left: 1em; margin-right: 1em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">大多数是SD或HD，而不是UHD、4K或8K</span></p><p style="margin-left: 1em; margin-right: 1em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p></li></ul><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">由于标准明确了测试内容是从视频标准条件下进行测试的，在未压缩和UHD测试序列是需要最新的视频标准质量评价与我们这次评测相关性不大。我们要将已经压缩的测试内容先进行解压缩然后再被将所有测试编码器重新压缩。 只有这种方法使我们能够衡量AV1在真实世界的生产环境中的表现。</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">为了测量这些视频的质量，内容分析按照ITU-T P.910 主观视频质量评估方法进行。由于压缩量化与视频的空间和时间息息相关，所以这种内容分析对于显示在各种可用视频中发现的相对空间信息和时间信息是必要的。</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">由于视频内的场景变化，除了ITU-T P.910建议的标准偏差的最大值外，还计算了空间和时间信息的中值公式如下：&nbsp;</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><img class="img_loading" src="p_001.dat" alt="640?wx_fmt=jpeg"></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">图1显示了所有400个FB热度视频（前10秒）的空间和时间信息的散点图。这些图表显示了广泛的内容覆盖范围，包括慢/快动作和低/高空间复杂度。&nbsp;</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><img class="img_loading" src="p_002.dat" alt="640?wx_fmt=jpeg"></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);">图1a--400个FB热度视频的空间和时间信息散点图（最大值）&nbsp;</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="color: rgb(247, 150, 70); font-size: 18px;"></span><img class="img_loading" src="p_002.dat" alt="640?wx_fmt=jpeg"></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);">图1b--400个FB热度视频的空间和时间信息散点图（中值）</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 18px; color: rgb(247, 150, 70);">编码器实施</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"></span><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">对于AV1编码，我们使用了AOM AV1参考的快照版本。对于H.264 AVC和VP9编码，我们使用了FFmpeg版本3.3.3以及相应的libx264和libvpx-vp9库版本。表1列出了我们测试设置中使用的编码器版本。</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><img class="img_loading" src="p_003.dat" alt="640?wx_fmt=jpeg"></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);">上表1.测试设置中使用的视频编码版本</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="color: rgb(247, 150, 70); font-size: 18px;">AV1<span style="font-size: 18px; color: rgb(247, 150, 70);"></span></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 18px; color: rgb(247, 150, 70);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">此快照版本是从AOM AV1版本库取出时，AV1在2018年3月28日正式发布，因为这快照版本AV1的编码性能是目前最稳定的。目前AV1重任是提升速度优化使其在现实生产环境中产生效果。</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="color: rgb(247, 150, 70); font-size: 18px;">X264</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="color: rgb(247, 150, 70); font-size: 18px;"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">X264是用于H.264 AVC中公认的视频编码器并提供质量最好性能压缩，X264与MSU测试报告中（第六代MPEG-4 AVC / H.264编码器比较）相比其编码效果、压缩率和特性都提高了24％；x264被广泛用于许多网络视频服务核心，包括Facebook还有电视广播公司和互联网服务提供商。</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 18px; color: rgb(247, 150, 70);">libvpx-VP9</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 18px; color: rgb(247, 150, 70);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">免费视频编码器libvpx库由Google开发，可用作视频编码格式VP8和VP9来参照。随着1.5和1.6的版本发布，使得libvpx-vp9可以在生产系统中为编码和解码提供了显着的提速。</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 18px; color: rgb(247, 150, 70);">编码配置</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 18px; color: rgb(247, 150, 70);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">为了以内容自适应的方式确定比特率，首先使用具有6个CRF / QP值的恒定速率因子（CRF）或量化参数（QP）模型对每个视频进行编码; 同时在CRF / QP编码阶段的输出码率会被输出自适应（ABR）2-pass进行编码。为了匹配编码器中的质量/码率范围，使用了以下CRF / QP值：</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);"><br></span></p><blockquote><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);">x264 CRF = {19, 23, 27, 31, 35, 39}, VP9/AV1 CRF/QP = {27, 33, 39, 45, 51, 57}</span></p></blockquote><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">CRF / QP和ABR ffmpeg配置如下：</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><img class="img_loading" src="p_004.dat" alt="640?wx_fmt=jpeg"></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">我们的设置选择了Facebook视频点播（VOD）应用程序中使用的最常见的x264和libvpx-vp9编码设置。由于x264的main profile和high profile都用于Facebook视频编码，因此会分别报告。AV1会尝试匹配x264和libvpx-vp9的编码设置。注意：为了与其他编解码器的设置相匹配接近，我们的测试对AV1使用了“--kf-max-dist = 60 --kf-min-dist = 60”，而不是Google的WebM团队最初推荐的参数（“ -kf-max-dist = 150 -kf-min-dist = 0“）。</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 18px; color: rgb(247, 150, 70);">实验结果</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">压缩效率是通过Bjontegaard-Delta rate（BD-rate）度量来测量的，该度量计算相同失真速率 - 失真（RD）曲线之间的平均码率差异，例如：对于相同的峰值信噪比（PSNR）或结构相似性（SSIM）。请注意！BD-rate负数值表示实际的码率节省率。如上所述我们测试使用400个FB视频，以30fps-16：9宽高比-1：1像素长宽比和8 bit位深的不同分辨率（360p / 480p / 720p / 1080p）从每个视频中提取前10秒进行编码测试。</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 18px; color: rgb(247, 150, 70);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 18px; color: rgb(247, 150, 70);">CRF / QP的实验结果</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">图2和图3显示了针对x264 main，x264 high和libvpx-vp9的CRF / QP模式下的AV1 BD速率节省。 就PSNR而言：AV1相对于x264 main，x264 high和libvpx-vp9的平均BD节省率分别为50.0％，45.8％和32.9％。 就SSIM而言：AV1相对于x264 main，x264 high和libvpx-vp9的平均BD节省率分别为49.8％，45.7％和40.5％。</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">另一方面对于CRF / QP模型，AV1与x264 main，x264 high和libvpx-vp9对比的编码计算复杂度（编码运行时间而言）分别增加5721.5倍，5869.9倍和658.5倍 如图4所示。</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">为了总结CRF / QP模型下所有测试编码的BD-rate性能，表3提供了关于PSNR和SSIM方面的交叉编解码器对比的概述。&nbsp;</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><img class="img_loading" src="p_005.dat" alt="640?wx_fmt=jpeg"></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);">图2.针对x264 main，x264 high和libvpx-vp9的CRF / QP模型的PSNR以AV1 BD码率节省&nbsp;</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);"><img class="img_loading" src="p_006.dat" alt="640?wx_fmt=jpeg"></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);">图3.针对x264 main，x264 high和libvpx-vp9的CRF / QP模型的SSIM方面的AV1 BD码率节省&nbsp;</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);"><img class="img_loading" src="p_007.dat" alt="640?wx_fmt=jpeg"></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);">图4.针对x264 main，x264 high和libvpx-vp9的CRF / QP模式的AV1编码时间复杂率&nbsp;</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);"><img class="img_loading" src="p_008.dat" alt="640?wx_fmt=jpeg"></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);">表3.所有CRF / QP模型的测试编码在PSNR和SSIM方面的BD-rate性能汇总</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);"></span><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 18px; color: rgb(247, 150, 70);">ABR的实验结果</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 18px; color: rgb(247, 150, 70);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">图5和图6显示了针对x264 main、x264 high和libvpx-vp9的ABR模式的AV1 BD-rate节省。 就PSNR而言AV1相对于x264 main，x264 high和libvpx-vp9的平均BD性能节省分别为51.0％，47.0％和29.9％。 就SSIM而言AV1相对于x264 main，x264 high和libvpx-vp9的平均BD性能节省分别为50.3％，46.3％和32.5％。</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">然而在ABR模式下的x264 main，x264 high和libvpx-vp9相比，AV1的编码计算复杂度有所增加。编码运行时间提升分别为9226.4倍，8139.2倍和667.1倍，如图7所示。</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">为了总结ABR模式下所有测试编码器的BD-rate性能，下面表4提供了关于PSNR和SSIM方面的交叉编解码器对比概述。&nbsp;</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><img class="img_loading" src="p_009.dat" alt="640?wx_fmt=jpeg"></span><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);">图5.根据ABR模式的PSNR情况下x264 main，x264 high和libvpx-vp9的AV1 BD节省率&nbsp;</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);"><img class="img_loading" src="p_010.dat" alt="640?wx_fmt=jpeg"></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="color: rgb(165, 165, 165); font-size: 14px;">图6.针对ABR模式的SSIM情况下x264 main，x264 high和libvpx-vp9的AV1 BD节省率&nbsp;</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="color: rgb(165, 165, 165); font-size: 14px;"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="color: rgb(165, 165, 165); font-size: 14px;"><img class="img_loading" src="p_011.dat" alt="640?wx_fmt=jpeg"></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);">图7.针对x264 main，x264 high和libvpx-vp9的ABR模式的AV1编码时间复杂度</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);"><img class="img_loading" src="p_012.dat" alt="640?wx_fmt=jpeg"></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);">表4.所有ABR模式测试编码在PSNR和SSIM方面的BD-rate性能汇总</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 18px; color: rgb(247, 150, 70);">最后</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">这些结果应该让工程师们对AV1如何在生产系统中执行并加速AV1的采用充满信心。 根据我们的调查结果发现更多软件开发人员很期待用上AV1他们知道在现实条件下效率能够优于原有生产环境。</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">Facebook将继续在我们的生产系统中推广AV1。将来Chrome和Firefox等主流网页浏览器正式支持AV1我们必将为流行的Facebook视频在网络上提供AV1编码内容。同VP9或H.264 AVC内容相比，观看AV1内容的用户可以以相同的码率享受更好的质量，并以相同的画面质量减少30％至50％的缓冲等待。</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em; text-align: center;"><span style="font-size: 18px; color: rgb(247, 150, 70);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em; text-align: center;"><span style="font-size: 18px; color: rgb(247, 150, 70);"><br>WebRTCon 2018</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em; text-align: center;"><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">继2017年第一届LiveVideoStackCon音视频技术大会之后，LiveVideoStack又一次出发——WebRTCon 2018，将于5月在上海举行，这是一次对过去几年WebRTC技术实践与应用落地的总结。</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">WebRTCon 2018设立了主题演讲，WebRTC与前端，行业应用专场，测试监控和服务保障，娱乐多媒体开发应用实践，WebRTC深度开发，解决方案专场，WebRTC服务端开发，新技术跨界，WebRTC与Codec等多个专场。邀请30余位全球领先的WebRTC技术专家，为参会者带来全球同步的技术实践与趋势解读。</span><span style="color: rgb(89, 89, 89); line-height: 1.5em;">扫描下图二维码了解详情。</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="color: rgb(89, 89, 89); line-height: 1.5em;"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="color: rgb(89, 89, 89); line-height: 1.5em;"><img class="img_loading" src="p_013.dat" alt="640?wx_fmt=jpeg"></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);"></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="color: rgb(165, 165, 165); font-size: 14px;"></span></p>
+                </div>
+              </div>
+                </div>
+				<div class="hide-article-box text-center csdn-tracking-statistics tracking-click" data-mod="popu_376">
+			<a class="btn btn-red-hollow" id="btn-readmore">阅读更多</a>
+		</div>
+        	</article>
+	
+		<div class="article-bar-bottom">
+				<div class="article-copyright">
+			版权声明：本文为博主原创文章，未经博主允许不得转载。			https://blog.csdn.net/vn9PLgZvnPs1522s82g/article/details/79957647		</div>
+									</div>
+	
+	<!-- !empty($pre_next_article[0]) -->
+		</div>
+
+
+
+        <div class="edu-promotion"></div>
+        <a id="commentBox"></a>
+<div class="comment-box">
+	  	<div class="unlogin-box text-center">
+		想对作者说点什么？
+		<!-- $curl 当前地址 -->
+		<a href="https://passport.csdn.net/account/login?from=https://blog.csdn.net/vn9PLgZvnPs1522s82g/article/details/79957647#commentBox" class="btn btn-sm btn-red">我来说一句</a>
+	</div>
+			<div class="comment-list-container">
+		<a id="comments"></a>
+		<div class="comment-list-box">
+		</div>
+		<div id="commentPage" class="pagination-box d-none"></div>
+		<div class="opt-box text-center">
+			<button class="btn btn-sm btn-link-blue" id="btnMoreComment"></button>
+		</div>
+	</div>
+</div>        <div class="recommend-box">
+            		<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/vn9PLgZvnPs1522s82g/article/details/79739096" target="_top" strategy="BlogCommendFromBaidu_0">
+				AOM联盟：<em>AV1</em>完成1.0版定稿			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/vn9PLgZvnPs1522s82g/article/details/79739096" target="_top">
+				在2018年第一季度结束前，AOM联盟完成了<em>AV1</em> 1.0版定稿，这是这一新兴生态的最新胜利。文 / 包研图：AOM官网发布消息：今天，<em>AV1</em>的规格、参考代码和绑定格式向开发者开放。（来源：AOM官网...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/vn9PLgZvnPs1522s82g" title="vn9PLgZvnPs1522s82g" target="_blank">
+					<img src="3_vn9plgzvnps1522s82g.jpg" alt="vn9PLgZvnPs1522s82g" class="avatar-pic">
+					<span class="name">vn9PLgZvnPs1522s82g</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2018-03-29 00:00:00</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：538</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/u011652271/article/details/79839471" target="_top" strategy="BlogCommendFromBaidu_1">
+				<em>AV1</em> 1.0 发布			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/u011652271/article/details/79839471" target="_top">
+				最近几天发生了一个重大的事情，<em>AV1</em> 1.0 发布了，并且号称最先进的codec，并且是免费的codec，这个codec的竞争对手就是H.265.&nbsp;<em>AV1</em>编码的放出包含以下内容：比特流（Bitstre...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/u011652271" title="u011652271" target="_blank">
+					<img src="3_u011652271.jpg" alt="u011652271" class="avatar-pic">
+					<span class="name">u011652271</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2018-04-07 10:42:20</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：213</span>
+			</p>
+		</div>
+	</div>
+				<div class="recommend-item-box recommend-ad-box" id="ad1">
+
+							
+
+			
+		</div>
+				<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/coloriy/article/details/78585472" target="_top" strategy="BlogCommendFromBaidu_2">
+				全新的视频编码标准——<em>AV1</em>			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/coloriy/article/details/78585472" target="_top">
+				在线视频作为互联网第一大应用已经毋庸置疑，通过网络看直播，看电影综艺，发布小视频正在成为我们每天的生活常态。更高清晰度、更高比特率、更节省网络流量是当下在线视频几个最核心的需求。而支撑和推动这些需求的...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/coloriy" title="coloriy" target="_blank">
+					<img src="3_coloriy.jpg" alt="coloriy" class="avatar-pic">
+					<span class="name">coloriy</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2017-11-20 19:04:16</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：1116</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/vn9PLgZvnPs1522s82g/article/details/78780579" target="_top" strategy="BlogCommendFromBaidu_3">
+				<em>AV1</em>：为互联网提供开放、免费的视频编解码工具			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/vn9PLgZvnPs1522s82g/article/details/78780579" target="_top">
+				从学术研究到进入工业界，Zoe Liu一直在算法和音视频领域，目前在谷歌编解码团队为编解码器<em>AV1</em>做开发支持。Zoe畅谈了评定编解码器的标准，以及<em>AV1</em>的最新进度。本文是『下一代编码器』系列采访之一，...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/vn9PLgZvnPs1522s82g" title="vn9PLgZvnPs1522s82g" target="_blank">
+					<img src="3_vn9plgzvnps1522s82g.jpg" alt="vn9PLgZvnPs1522s82g" class="avatar-pic">
+					<span class="name">vn9PLgZvnPs1522s82g</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2017-12-06 00:00:00</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：708</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/vn9PLgZvnPs1522s82g/article/details/79237848" target="_top" strategy="BlogCommendFromBaidu_4">
+				<em>AV1</em>显著超越H.265和VP9?—MSU最新比较公布			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/vn9PLgZvnPs1522s82g/article/details/79237848" target="_top">
+				本文转载自“煤矿工厂”。莫斯科国立大学（MSU）开启了一项从主观层面对比视频质量的服务，本文是他们对<em>AV1</em>和VP9、HEVC编码质量的测试结果。前言最新的编码质量对比研究表明，视频编码标准<em>AV1</em>在质量...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/vn9PLgZvnPs1522s82g" title="vn9PLgZvnPs1522s82g" target="_blank">
+					<img src="3_vn9plgzvnps1522s82g.jpg" alt="vn9PLgZvnPs1522s82g" class="avatar-pic">
+					<span class="name">vn9PLgZvnPs1522s82g</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2018-02-02 00:00:00</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：451</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/FRD2009041510/article/details/72896449" target="_top" strategy="BlogCommendFromBaidu_5">
+				<em>AV1</em>视频编码标准资源汇总			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/FRD2009041510/article/details/72896449" target="_top">
+				<em>AV1</em>视频编码标准资源汇总A Progress Report: The Alliance for Open Media and the <em>AV1</em> Codechttp://www.streamingmed...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/FRD2009041510" title="FRD2009041510" target="_blank">
+					<img src="3_frd2009041510.jpg" alt="FRD2009041510" class="avatar-pic">
+					<span class="name">FRD2009041510</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2017-06-07 09:48:48</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：1572</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box recommend-ad-box" id="a_d_feed_0">
+			
+		</div>
+			<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/cabbage2008/article/details/76711043" target="_top" strategy="searchFromBaidu_6">
+				谁将引领新一代视频编码标准：HEVC、AVS2、<em>AV1</em>性能对比报告			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/cabbage2008/article/details/76711043" target="_top">
+				2013年1月，新一代视频编码标准H.265/HEVC正式发布。然而它并没有像H.264那样占据市场。在这期间，AVS2、<em>AV1</em>等竞争者也在逐步推出，究竟谁才能引领新一代视频编码标准呢？...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/cabbage2008" title="cabbage2008" target="_blank">
+					<img src="3_cabbage2008.jpg" alt="cabbage2008" class="avatar-pic">
+					<span class="name">cabbage2008</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2017-08-05 11:39:13</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：2874</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://download.csdn.net/download/anailson1/4580370" target="_top" strategy="searchFromBaidu_7">
+				gspc&lt;em&gt;<em>av1</em>&lt;/em&gt;-20071224.tar.tar			</a>
+		</h4>
+		<p class="content">
+			<a href="https://download.csdn.net/download/anailson1/4580370" target="_top" strategy="searchFromBaidu_7">
+				举报人:  被举报人: anailson1  举报的资源分: 3  *类型:  *详细原因:  取&nbsp;&nbsp;消 提&nbsp;&nbsp;交 gspc&lt;em&gt;<em>av1</em>&lt;/em&gt;-20071224.tar.gz 3 积分 立即下载 ...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+							<span class="read-num">下载</span>
+				
+			</p>
+			<p>
+				<span class="date">2018年05月09日 00:00</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://download.csdn.net/download/yellowhk/10320207" target="_top" strategy="searchFromBaidu_8">
+				视频编码&lt;em&gt;<em>AV1</em>&lt;/em&gt;规范《&lt;em&gt;<em>AV1</em>&lt;/em&gt; Bitstream &amp;amp; Decoding Process ...			</a>
+		</h4>
+		<p class="content">
+			<a href="https://download.csdn.net/download/yellowhk/10320207" target="_top" strategy="searchFromBaidu_8">
+				2018-03-31 上传大小:3.59MB 视频编码&lt;em&gt;<em>AV1</em>&lt;/em&gt; 高清完整PDF版本,带目录,标签可以跳转到具体章节,高质量版本。综合评分:0(0位用户评分) 收藏评论举报 所需: 2积分...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+							<span class="read-num">下载</span>
+				
+			</p>
+			<p>
+				<span class="date">2018年04月01日 00:00</span>
+			</p>
+		</div>
+	</div>
+					<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+		<h4 class="text-truncate">
+			<a href="https://blog.csdn.net/vn9PLgZvnPs1522s82g/article/details/79622567" target="_top" strategy="searchFromBaidu_9">
+				<em>AV1</em>的五种编码进展			</a>
+		</h4>
+		<p class="content">
+			<a href="https://blog.csdn.net/vn9PLgZvnPs1522s82g/article/details/79622567" target="_top">
+				<em>AV1</em>正在做着最后的定稿工作，可以预见的是，Netflix、Youtube都将是第一批<em>AV1</em>的使用者。视频PaaS服务商Bitmovin撰文对<em>AV1</em>的最新特性进行了解读，LiveVideoStack对...			</a>
+		</p>
+		<div class="info-box d-flex align-content-center">
+			<p>
+				<a class="avatar" src="https://blog.csdn.net/vn9PLgZvnPs1522s82g" title="vn9PLgZvnPs1522s82g" target="_blank">
+					<img src="3_vn9plgzvnps1522s82g.jpg" alt="vn9PLgZvnPs1522s82g" class="avatar-pic">
+					<span class="name">vn9PLgZvnPs1522s82g</span>
+				</a>
+			</p>
+			<p>
+				<span class="date">2018-03-20 00:00:00</span>
+			</p>
+			<p>
+				<span class="read-num">阅读数：229</span>
+			</p>
+		</div>
+	</div>
+			            <div class="recommend-loading-box">
+                <img src="feedloading.gif">
+            </div>
+            <div class="recommend-end-box">
+                <p class="text-center">没有更多推荐了，<a href="https://blog.csdn.net/" class="c-blue c-blue-hover c-blue-focus">返回首页</a></p>
+            </div>
+        </div>
+    </main>
+</div>
+<div class="mask-dark"></div>
+<div class="report-box">
+    <div class="pos-box">
+        <h2 class="title">不良信息举报</h2>
+        <a class="btn-close">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#csdnc-times"></use>
+            </svg>
+        </a>
+        <form id="frmReport" action="https://blog.csdn.net/vn9PLgZvnPs1522s82g/article/details/79957647">
+            <div class="form-box">
+                <div class="txt-row-box">
+                    <label class="title" id="reptTit">举报内容：</label>
+                    <p class="rpt-title text-truncate">Facebook：AV1比x264和libvpx-VP9提升至少30%</p>
+                </div>
+                <div class="txt-row-box">
+                    <label class="title">举报原因：</label>
+                    <div class="rdo-box">
+                        <label><input class="rdo-chk report-type" id="report_sex" name="report_type" value="1" type="radio">色情</label>
+                        <label><input class="rdo-chk report-type" id="report_Politics" name="report_type" value="2" type="radio">政治</label>
+                        <label><input class="rdo-chk report-type" id="report_copy" name="report_type" value="3" type="radio">抄袭</label>
+                        <label><input class="rdo-chk report-type" id="report_ad" name="report_type" value="4" type="radio">广告</label>
+                        <label><input class="rdo-chk report-type" id="report_want" name="report_type" value="5" type="radio">招聘</label>
+                        <label><input class="rdo-chk report-type" id="report_call" name="report_type" value="6" type="radio">骂人</label>
+                        <label><input class="rdo-chk report-type" id="report_other" name="report_type" value="7" type="radio">其他</label>
+                    </div>
+                </div>
+                <div class="txt-row-box" id="rptOriginalurl">
+                    <label class="title">原文地址：</label>
+                    <div class="txt-box">
+                        <input class="ipt" name="originalurl" value="" type="text">
+                    </div>
+                </div>
+                <div class="txt-row-box">
+                    <label class="title">原因补充：</label>
+                    <div class="txt-box">
+                        <textarea class="ipt ipt-textarea" name="description" maxlength="30"></textarea>
+                        <p class="remark">最多只允许输入30个字</p>
+                    </div>
+                </div>
+            </div>
+            <div class="opt-box text-right">
+                <input class="btn btn-link-gray btn-close" value="取消" type="reset">
+                <input class="btn btn-red btn-submit" value="提交" type="submit">
+            </div>
+        </form>
+    </div>
+</div>
+<div class="pulllog-box" style="display: block;">
+	<div class="pulllog clearfix">
+		<span class="text float-left">加入CSDN，享受更精准的内容推荐，与500万程序员共同成长！</span>
+		<div class="pulllog-btn float-right clearfix">
+            <button class="pulllog-login float-left csdn-tracking-statistics tracking-click" data-mod="popu_557">
+                登录
+            </button>
+            <div class="pulllog-sigin float-left csdn-tracking-statistics tracking-click" data-mod="popu_558">
+                <a href="https://passport.csdn.net/account/mobileregister" target="_top">注册</a>
+            </div>
+            <button class="btn-close">
+                <svg class="icon" aria-hidden="true">
+                    <use xlink:href="#csdnc-times"></use>
+                </svg>
+            </button>
+		</div>
+	</div>
+</div>
+<div id="loginWrap" style="display: none;"></div>
+<div class="tool-box">
+	<ul class="meau-list">
+		<li>
+			<button class="btn-like " title="点赞">
+				<svg class="icon active" aria-hidden="true">
+					<use xlink:href="#csdnc-thumbsup-ok"></use>
+				</svg><svg class="icon no-active" aria-hidden="true">
+					<use xlink:href="#csdnc-thumbsup"></use>
+				</svg>
+				<p>0</p>
+			</button>
+		</li>
+		<li class="toc-container-box" id="liTocBox">
+			<button class="btn-toc" title="目录">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-contents"></use>
+				</svg><br>目录
+			</button>
+			<div class="toc-container">
+				<div class="pos-box">
+					<div class="icon-arrow"></div>
+					<div class="scroll-box">
+						<div class="toc-box"></div>
+					</div>
+				</div>
+				<div class="opt-box">
+					<button class="btn-opt prev nomore" title="向上">
+						<svg class="icon" aria-hidden="true">
+							<use xlink:href="#csdnc-chevronup"></use>
+						</svg>
+					</button>
+					<button class="btn-opt next">
+						<svg class="icon" aria-hidden="true">
+							<use xlink:href="#csdnc-chevrondown"></use>
+						</svg>
+					</button>
+				</div>
+			</div>
+		</li>
+		<li>
+			<button class="btn-bookmark" title="收藏">
+				<svg class="icon active" aria-hidden="true">
+					<use xlink:href="#csdnc-bookmark-ok"></use>
+				</svg><svg class="icon no-active" aria-hidden="true">
+					<use xlink:href="#csdnc-bookmark"></use>
+				</svg><br>收藏
+			</button>
+		</li>
+		<li>
+			<a class="btn-comments" title="评论" href="#commentBox">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-comments"></use>
+				</svg><br>评论
+			</a>
+		</li>
+				<li class="bdsharebuttonbox">
+			<a class="btn-comments bds_weixin" data-cmd="weixin" title="微信分享">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-wechat"></use>
+				</svg><br>微信
+			</a>
+		</li>
+		<li class="bdsharebuttonbox">
+			<a class="btn-comments bds_tsina" data-cmd="tsina" title="微博分享">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-weibo"></use>
+				</svg><br>微博
+			</a>
+		</li>
+		<li class="bdsharebuttonbox">
+			<a class="btn-comments bds_qzone" data-cmd="qzone" title="QQ分享">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#csdnc-qq"></use>
+				</svg><br>QQ
+			</a>
+		</li>
+	</ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+<div class="box-box-default">
+    <a class="btn-remove">
+        关闭
+    </a>
+    <div style="width: 100%;"><iframe scrolling="no" src="index_4.html" width="160" height="600" frameborder="0"></iframe></div>
+</div>
+<div class="box-box-large">
+    <a class="btn-remove">
+        关闭
+    </a>
+    <div><iframe scrolling="no" src="index_5.html" width="250" height="250" frameborder="0"></iframe></div>
+</div>
+</body>
+</html>

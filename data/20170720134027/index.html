@@ -1,0 +1,876 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+  
+        
+            <link rel="canonical" href="http://blog.csdn.net/mediapro/article/details/50393685"> 
+ <meta http-equiv="Cache-Control" content="no-siteapp"><link rel="alternate" media="handheld" href="http://blog.csdn.net/mediapro/article/details/50393685#">
+
+    <meta name="shenma-site-verification" content="5a59773ab8077d4a62bf469ab966a63b_1497598848"> 
+       
+    <title>使用FEC改善UDP（RTP）音视频传输效果 - mediapro的博客
+        - CSDN博客</title>
+    
+    <meta name="description" content="实时音视频领域UDP才是王道 &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;在&nbsp;Internet&nbsp;上进行音视频实时互动采用的传输层方案有TCP（如：RTMP）和UDP（如：RTP）两种。TCP协议能为两个端点间的数据传输提供相对可靠的保障，这种保障是通过一个握手机制实现的。当数据传给接收者时，接收者要检查数据的正确性。发送者只有接到接收者的正确性认可才能发送下一个数据块。如果没有接到确认报文，这个数据块就得重传。">
+
+    <meta name="keywords" content="UDP,丢包,FEC">
+
+   
+    
+
+    
+        <!--new top-->
+       
+       
+        <!--new top-->
+    
+      <!-- ad begin -->
+         
+    <!-- ad end-->
+
+    
+
+    
+
+    <link id="RSSLink" title="RSS" type="application/rss+xml" rel="alternate" href="http://blog.csdn.net/mediapro/rss/list">
+    <link rel="shortcut icon" href="favicon.ico">
+    
+ 
+
+
+
+    
+     
+         
+
+  
+
+
+    <!-- 请置于所有广告位代码之前 --> 
+            
+
+<link rel="stylesheet" type="text/css" id="SL_Style" href="chrome://imtranslator/content/css/translator.css">
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body><div id="MathJax_Message" style="display: none;"></div><iframe style="display: none;" src="index_1.html" frameborder="0"></iframe><div class="csdn-toolbar csdn-toolbar-skin-black ">        <div class="container row center-block ">          <div class="col-md-3 pull-left logo clearfix"><a href="http://www.csdn.net/?ref=toolbar" title="CSDN首页" target="_top" class="icon"></a><a title="频道首页" href="http://blog.csdn.net/?ref=toolbar_logo" class="img blog-icon"></a></div>          <div class="pull-right login-wrap ">            <ul class="btns">              <li class="loginlink"><a href="https://passport.csdn.net/account/login?ref=toolbar" target="_top">登录&nbsp;</a>|<a target="_top" href="http://passport.csdn.net/account/mobileregister?ref=toolbar&amp;action=mobileRegister">&nbsp;注册</a></li>              <li class="search">                <div class="icon on-search-icon">                  <div class="wrap">                    <div class="curr-icon-wrap">                      <div class="curr-icon"></div>                    </div>                    <form action="http://so.csdn.net/search" id="toolbar_search" method="get" target="_blank">                      <input value="toolbar" name="ref" accesskey="2" type="hidden">                      <div class="border">                        <input placeholder="搜索" value="" name="q" accesskey="2" type="text"><span class="icon-enter-sm"></span>                      </div>                    </form>                  </div>                </div>              </li>              <li class="favor">                <div class="icon on-favor-icon">                  <div class="wrap">                    <div class="curr-icon-wrap">                      <div class="curr-icon"></div>                    </div>                    <div style="display: none;" class="favor-success"><span class="msg">收藏成功</span>                      <div class="btns"><span class="btn btn-primary ok">确定</span></div>                    </div>                    <div style="display: none;" class="favor-failed"><span class="icon-danger-lg"></span><span class="msg">收藏失败，请重新收藏</span>                      <div class="btns"><span class="btn btn-primary ok">确定</span></div>                    </div>                    <form role="form" class="form-horizontal favor-form" action="http://blog.csdn.net/mediapro/article/details/50393685">                      <div class="form-group">                        <div class="clearfix">                          <label for="input-title" class="col-sm-2 control-label"><span class="red_txt">*</span>标题</label>                          <div class="col-sm-10">                            <input id="inputTitle" placeholder="" class="title form-control" value="使用FEC改善UDP（RTP）音视频传输效果 - mediapro的博客 - CSDN博客" type="text">                          </div>                        </div>                        <div class="alert alert-danger"><strong></strong>标题不能为空</div>                      </div>                      <div class="form-group" style="display: none;">                        <label for="input-url" class="col-sm-2 control-label">网址</label>                        <div class="col-sm-10">                          <input id="input-url" placeholder="" class="url form-control" value="http://blog.csdn.net/mediapro/article/details/50393685" type="text">                        </div>                      </div>                      <div class="form-group">                        <label for="input-tag" class="col-sm-2 tag control-label">标签</label>                        <div class="col-sm-10">                          <input id="input-tag" class="form-control tag" value="" type="text">                        </div>                      </div>                      <div class="form-group">                        <label for="input-description" class="description col-sm-2 control-label">位置</label>                        <div class="col-sm-10">                          <div class="my_lib_box">                            个人主页&nbsp;-&nbsp;<a href="http://my.csdn.net/" target="_top">我的知识</a>                          </div>                          <div class="checkbox">                            <div class="pull-left">                              <label>                                <input name="share" class="save_lib_map" checked="checked" type="checkbox">同时保存至：                              </label>                            </div>                            <div class="pull-left">                              <div class="dropdown">                                <button id="toolbar_sele_map" type="button">                                  选择知识图谱                                  <i class="fa fa-chevron-down"></i>                                </button>                                <div class="top_arr"></div>                                <div class="outside">                                  <ul class="dropdown-menu" id="toolbar_Design_knowledge"><li>选择知识图谱</li></ul>                                </div>                              </div>                            </div>                            <div class="pull-left new_txt">                              <a href="http://lib.csdn.net/my/create/structure" target="_top">新建？</a>                            </div>                          </div>                        </div>                      </div>                      <div class="form-group">                        <div class="col-sm-offset-2 col-sm-10 ft">                          <div class="col-sm-4 pull-left" style="display: none;">                            <div class="checkbox">                              <label>                                <input name="share" checked="checked" class="share" type="checkbox">公开                              </label>                            </div>                          </div>                          <div class="col-sm-8 pull-right favor-btns">                            <button type="button" class="cancel btn btn-default">取消</button>                            <button type="submit" class="submit btn btn-primary">收藏</button>                          </div>                        </div>                      </div>                    </form>                  </div>                </div>              </li>              <li class="notify">                <div style="display: none;" class="number"></div>                <div style="" class="icon-hasnotes-sm"></div>                <div id="header_notice_num"><div class="icon-hasnotes" style=""></div></div>                <div class="icon on-notify-icon">                  <div class="wrap">                    <div class="curr-icon-wrap">                      <div class="curr-icon"></div>                    </div>                    <div id="note1" class="csdn_note" style="left: -212px; top: 157px; display: none;">                      <div class="box"><div class="notifications notice_list_con curr">  <div class="menu_title">    <span class="title"><a href="http://msg.csdn.net/letters" target="_top" class="read_all">查看所有私信</a><a href="http://msg.csdn.net/" target="_top" class="go_all">查看所有通知</a></span>  </div>  <div class="loading"></div>  <div class="empty">暂没有新通知</div>  <div class="notice_content" style="overflow-y: auto; max-height: 270px;"></div></div><div class="notifications detail_con" style="display: none;">  <div class="menu_title">    <span class="title">      <a class="go_back" href="javascript:void%200;">返回通知列表</a>      <a class="notifications_page_none nextnote" href="javascript:void%200;">下一条</a>      <a class="notifications_page prvnote" href="javascript:void%200;">上一条</a>    </span>  </div>  <div class="notice_content" style="overflow-y: scroll; height: 250px;"></div></div><div class="error"></div></div>                    <iframe src="index_2.html" allowtransparency="true" style="z-index: -1; position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; background: transparent none repeat scroll 0% 0%;" frameborder="0"></iframe></div>                  </div>                </div>              </li>              <li class="ugc">                <div class="icon on-ugc-icon">                  <div class="wrap clearfix">                    <div class="curr-icon-wrap">                      <div class="curr-icon"></div>                    </div>                    <dl>                      <dt><a href="http://geek.csdn.net/news/expert?ref=toolbar" target="_top" class="p-news clearfix" style="display: none;"><em class="icon"></em><span>分享资讯</span></a></dt>                      <dt style="border: medium none;"><a href="http://u.download.csdn.net/upload?ref=toolbar" target="_top" class="p-doc clearfix"><em class="icon"></em><span>传PPT/文档</span></a></dt>                      <dt><a href="http://bbs.csdn.net/topics/new?ref=toolbar" target="_top" class="p-ask clearfix"><em class="icon"></em><span>提问题</span></a></dt>                      <dt><a href="http://write.blog.csdn.net/postedit?ref=toolbar" target="_top" class="p-blog clearfix"><em class="icon"></em><span>写博客</span></a></dt>                      <dt><a href="http://u.download.csdn.net/upload?ref=toolbar" target="_top" class="p-src clearfix"><em class="icon"></em><span>传资源</span></a></dt>                      <dt><a href="https://code.csdn.net/projects/new?ref=toolbar" target="_top" class="c-obj clearfix"><em class="icon"></em><span>创建项目</span></a></dt>                      <dt><a href="https://code.csdn.net/snippets/new?ref=toolbar" target="_top" class="c-code clearfix"><em class="icon"></em><span>创建代码片</span></a></dt>                    </dl>                  </div>                </div>              </li>              <li class="profile">                <div class="icon on-profile-icon"><img src="2_smsz7931.jpg" class="curr-icon-img">                  <div class="wrap clearfix">                    <div class="curr-icon-wrap">                      <div class="curr-icon"></div>                    </div>                    <div class="bd">                      <dl class="clearfix">                        <dt class="pull-left img"><a target="_top" href="http://my.csdn.net/?ref=toolbar" class="avatar"><img src="2_smsz7931.jpg"></a></dt>                        <dd class="info" style="border: medium none;"><a target="_top" href="http://my.csdn.net/?ref=toolbar" class="nickname">smsz7931</a><span class="dec"><a class="fill-dec" href="http://my.csdn.net/" target="_top">编辑自我介绍，让更多人了解你<span class="write-icon"></span></a></span></dd>                      </dl>                    </div>                    <div class="ft clearfix"><a target="_top" href="http://my.csdn.net/my/account/changepwd?ref=toolbar" class="pull-left"><span class="icon-cog"></span>帐号设置</a><a href="https://passport.csdn.net/account/logout?ref=toolbar" target="_top" class="pull-left" style="margin-left: 132px; width: 18px; height: 27px; white-space: nowrap; overflow: hidden;"><span class="icon-signout"></span><span class="out">退出</span></a></div>                  </div>                </div>              </li>              <li class="apps">                <div id="chasnew123" class="hasnew" style="display: none;"></div>                <div id="cappsarea123" class="icon on-apps-icon">                  <div class="wrap clearfix">                    <div class="curr-icon-wrap">                      <div class="curr-icon"></div>                    </div>                  <div class="detail">                    <dl>                      <dt>                        <h5>社区</h5>                      </dt>                      <dd> <a href="http://blog.csdn.net/?ref=toolbar" target="_top">博客</a></dd>                      <dd> <a href="http://bbs.csdn.net/?ref=toolbar" target="_top">论坛</a></dd>                      <dd> <a href="http://download.csdn.net/?ref=toolbar" target="_top">下载</a></dd>                      <dd> <a href="http://lib.csdn.net/?ref=toolbar" target="_top">知识库</a></dd>                      <dd><a href="http://ask.csdn.net/?ref=toolbar" target="_top">技术问答</a></dd>                      <dd><a href="http://geek.csdn.net/?ref=toolbar" target="_top">极客头条</a></dd>                      <dd style="display: none;"> <a href="http://hero.csdn.net/?ref=toolbar" target="_top">英雄会</a></dd>                    </dl>                  </div>                  <div class="detail">                    <dl>                      <dt>                        <h5>服务</h5>                      </dt>                      <dd style="display: none;"> <a href="http://job.csdn.net/?ref=toolbar" target="_top">JOB<img src="new.gif" style="display: none; margin-top: -26px; width: 23px;"></a></dd>                      <dd> <a href="http://edu.csdn.net/?ref=toolbar" target="_top">学院<img src="new.gif" style="display: none; margin-top: -26px; width: 23px;"></a></dd>                      <dd> <a href="https://code.csdn.net/?ref=toolbar" target="_top">CODE</a></dd>                      <dd> <a href="http://huiyi.csdn.net/?ref=toolbar" target="_top">活动</a></dd>                      <dd> <a href="http://www.csto.com/?ref=toolbar" target="_top">CSTO</a></dd>                      <dd> <a href="http://mall.csdn.net/?ref=toolbar" target="_top">C币兑换<img src="new.gif" style="display: none; margin-top: -26px; width: 23px;"></a></dd>                    </dl>                  </div>                  <div class="detail last">                    <dl>                      <dt>                        <h5>俱乐部</h5>                      </dt>                      <dd> <a href="http://cto.csdn.net/?ref=toolbar" target="_top">CTO俱乐部</a></dd>                      <dd> <a href="http://student.csdn.net/?ref=toolbar" target="_top">高校俱乐部</a></dd>                    </dl>                  </div>                </div>              </div>            </li>            </ul>          </div>        </div>    </div>
+     
+        <div class="tracking-ad" data-view="true" data-mod="ad_popu_72" data-mtp="62" data-order="40" data-con="ad_content_2072">
+                     
+                <div id="layerd" style="position: fixed; bottom: 0px; right: 0px; line-height: 0px; z-index: 1000; width: 300px; height: 278px; display: none;">
+    	                <div class="J_close layer_close" style="background-color: rgb(239, 239, 239); padding: 0px; color: rgb(51, 51, 51); font: 12px/24px Helvetica,Tahoma,Arial,sans-serif; text-align: right;">关闭</div><!-- 广告占位容器 --><div id="cpro_u2895327"><iframe id="iframeu2895327_0" src="index_3.html" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" style="border: 0px none; vertical-align: bottom; margin: 0px; width: 300px; height: 250px;" allowtransparency="true" width="300" height="250" align="center,center" frameborder="0"></iframe></div></div>
+                <!-- 投放代码 -->  
+     
+        </div>
+
+    <!-- 广告位开始 -->
+        
+    <!-- 广告位结束 -->
+
+    
+   
+      <!--new top-->
+    
+     <!--new top-->
+    <div id="container">
+        <div id="header">
+    <div class="header">
+        <div id="blog_title">
+            <h2>
+                <a href="http://blog.csdn.net/mediapro">mediapro的博客</a></h2>
+            <h3></h3>
+            <div class="clear">
+            </div>
+        </div>
+        <div class="clear">
+        </div>
+        
+     
+    </div>
+</div>
+<div id="navigator">
+    <div class="navigator_bg">
+    </div>
+    <div class="navigator">
+        <ul>           
+                <li id="btnContents"><a href="http://blog.csdn.net/mediapro?viewmode=contents"><span onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_mulu'])">
+                    <img src="ico_list.gif">目录视图</span></a></li>
+                <li id="btnView"><a href="http://blog.csdn.net/mediapro?viewmode=list"><span onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_zhaiyao'])">
+                    <img src="ico_summary.gif">摘要视图</span></a></li>
+                <li id="btnRss"><a href="http://blog.csdn.net/mediapro/rss/list"><span onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_RSS'])">
+                    <img src="ico_rss.gif">订阅</span></a></li>                
+            
+
+            </ul>
+    </div>
+</div>
+
+
+        <div id="body">
+            <div id="main">
+                <div class="main">
+                        <div class="ad_class">
+<div class="notice tracking-ad" data-mod="popu_3"> 
+
+
+<a href="http://blog.csdn.net/broadview2006/article/details/75423492" target="_top">
+<font color="red"><strong>评论送书 | 云原生、Docker、Web算法 </strong></font></a>
+
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a href="http://blog.csdn.net/blogdevteam/article/details/74550215" target="_top">
+<font color="blue"><strong>征文 | 你会为 AI 转型么？</strong></font></a>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+<a href="http://blog.csdn.net/soledadzz/article/details/75312484" target="_top">
+<font color="red"><strong>福利 | 免费参加 2017 OpenStack Days China</strong></font></a>
+
+
+</div>                        </div>
+
+                        
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+<div id="article_details" class="details">
+    <div class="article_title">   
+         <span class="ico ico_type_Original"></span>
+
+    <h1>
+        <span class="link_title"><a href="http://blog.csdn.net/mediapro/article/details/50393685">
+        使用FEC改善UDP（RTP）音视频传输效果        
+           
+        </a>
+        </span>
+
+         
+    </h1>
+</div>
+
+   
+
+        <div class="article_manage clearfix">
+        <div class="article_l">
+            <span class="link_categories">
+            标签：
+              <a href="http://www.csdn.net/tag/UDP" target="_top" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_tag']);">UDP</a><a href="http://www.csdn.net/tag/%e4%b8%a2%e5%8c%85" target="_top" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_tag']);">丢包</a><a href="http://www.csdn.net/tag/FEC" target="_top" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_tag']);">FEC</a><a href="http://www.csdn.net/tag/QOS" target="_top" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_tag']);">QOS</a><a href="http://www.csdn.net/tag/RTP" target="_top" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_tag']);">RTP</a>
+            </span>
+        </div>
+        <div class="article_r">
+            <span class="link_postdate">2015-12-24 12:33</span>
+            <span class="link_view" title="阅读次数">6147人阅读</span>
+            <span class="link_comments" title="评论次数"> <a href="#comments" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_pinglun'])">评论</a>(7)</span>
+            <span class="link_collect tracking-ad" data-mod="popu_171"> <a href="javascript:void(0);" onclick="javascript:collectArticle('%e4%bd%bf%e7%94%a8FEC%e6%94%b9%e5%96%84UDP%ef%bc%88RTP%ef%bc%89%e9%9f%b3%e8%a7%86%e9%a2%91%e4%bc%a0%e8%be%93%e6%95%88%e6%9e%9c','50393685');return false;" title="收藏" target="_top">收藏</a></span>
+             <span class="link_report"> <a href="#report" onclick="javascript:report(50393685,2);return false;" title="举报">举报</a></span>
+
+        </div>
+    </div>    
+    
+      <div class="category clearfix">
+        <div class="category_l">
+           <img src="category_icon.jpg">
+            <span>分类：</span>
+        </div>
+        <div class="category_r">
+                    <label onclick="GetCategoryArticles('6043084','mediapro','top','50393685');">
+                        <span onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_fenlei']);">音视频传输<em>（2）</em></span>
+                      <img class="arrow-down" src="arrow_triangle@20_down.jpg" style="display: none;">
+                      <img class="arrow-up" src="arrow_triangle_up.jpg" style="">
+                        <div class="subItem" style="display: block;">
+                            <div class="subItem_t"><a href="http://blog.csdn.net/mediapro/article/category/6043084" target="_top">作者同类文章</a><i class="J_close">X</i></div>
+                            <ul class="subItem_l" id="top_6043084"><li class="tracking-ad" data-mod="popu_140"><em>•</em><a href="http://blog.csdn.net/mediapro/article/details/53423851" id="top_aritcle_53423851undefined6852588141056841" target="_top" title="RTP直播分发服务器集群方案">RTP直播分发服务器集群方案</a></li> <li class="tracking-ad" data-mod="popu_140"><em>•</em><a href="http://blog.csdn.net/mediapro/article/details/51979904" id="top_aritcle_51979904undefined15386786946574305" target="_top" title="UDP RTP 丢包 解决方案AVCom模块API接口使用说明">UDP RTP 丢包 解决方案AVCom模块API接口使用说明</a></li> </ul>
+                        </div>
+                    </label>                    
+        </div>
+    </div>
+        <div class="bog_copyright">         
+            <p class="copyright_p">版权声明：本文为博主原创文章，未经博主允许不得转载。</p>
+        </div>
+
+  
+
+  
+  
+     
+
+
+<div id="article_content" class="article_content tracking-ad" data-mod="popu_307" data-dsm="post">
+
+<p><span style="font-family: &quot;Microsoft YaHei&quot;;"><strong><span style="font-size: 24px;">实时音视频领域UDP才是王道 &nbsp; &nbsp; &nbsp;&nbsp;</span></strong></span></p>
+<p><span style="font-family: &quot;Microsoft YaHei&quot;; font-size: 18px;">&nbsp; &nbsp; &nbsp; &nbsp;在&nbsp;Internet&nbsp;上进行音视频实时互动采用的传输层方案有TCP（如：RTMP）和UDP（如：RTP）两种。</span><span style="font-family: &quot;Microsoft YaHei&quot;; font-size: 18px;">TCP协议能为两个端点间的数据传输提供相对可靠的保障，这种保障是通过一个握手机制实现的。当数据传给接收者时，接收者要检查数据的正确性。发送者只有接到接收者的正确性认可才能发送下一个数据块。如果没有接到确认报文，这个数据块就得重传。尽管这种机制对传送数据来说是非常合理的，但当用它在Internet传输实时音视频数据时就会引发很多问题。首先就是延迟问题，在传输信道丢包率较高时，TCP的传输质量下滑严重，重传拥塞导致音视频延时非常大，失去实时互通的意义。特别是无线信道（WIFI、4G、3G）下，使用TCP做双向互通通讯稳定性欠佳，易出现音视频长时间卡住不动然后快放的现象。&nbsp;</span></p>
+<p><span style="font-size: 18px;"><span style="font-family: Microsoft YaHei;">&nbsp; &nbsp; &nbsp; 更多的产品选择采用的协议是UDP（一般上层应用层协议为RTP，以提供序号和音视频同步的服务）。UDP同&nbsp;TCP&nbsp;相比能提供更高的吞吐量和较低的延迟，非常适合低延时的音视频互动场合。</span></span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;">&nbsp; &nbsp; &nbsp;&nbsp;</span></p>
+<p><span style="font-family: &quot;Microsoft YaHei&quot;;"><strong><span style="font-size: 24px;">UDP传输存在的问题：</span></strong></span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;"></span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;"><span style="white-space: pre;"></span>UDP性能的提高是以不能保障数据完整性为代价的，它不能对所传数据提供担保，常见的问题有包乱序、包丢失、包重复。无线信道（WIFI、4G、3G）下，UDP包乱序和包丢失可以说是常态。</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;">关于包乱序和包丢失的原因，参考诸多文献总结如下：</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;">乱序原因：</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;">&nbsp; &nbsp;（A） 路由器的存储队列导致的包乱序。</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;">&nbsp;&nbsp;&nbsp;（B） UDP包据经过不同的路由造成了发送数据的混乱。&nbsp;</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;">丢包原因：<br>
+&nbsp; &nbsp;（A） 当路由器和网关发生拥塞时，某些包可能被丢弃，发生这种情况一般是由于网络中传输的数据包大于网络信道的承载能力。<br>
+&nbsp; &nbsp;（B） 分组数据在传送时有生存时间限制以避免路由中死循环的出现，网络状况恶劣时，分组可能超时丢失。<br>
+&nbsp; &nbsp;（C） 接收端工作超载运行时可能因调度困难而不能及时处理网口数据。</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;">&nbsp; &nbsp; &nbsp; &nbsp;视频码流的少量丢失都会导致解码后的视频出现花屏的现象。H264、HEVC这样的高压缩率视频压缩标准使得压缩的冗余度非常低，码流的丢失除了影响本帧的解码外，还将影响以此为参考的视频帧解码，导致花屏的累积扩散，直至下一个关键帧的到来视频画面方能恢复。虽然解码器内部会做一定的错误掩盖处理，但效果并不理想，特别是采用ffmpeg这类开源的解码器，其错误掩盖<a href="http://lib.csdn.net/base/datastructure" class="replace_word" title="算法与数据结构知识库" target="_top" style="color: rgb(223, 52, 52); font-weight: bold;">算法</a>做得比较简单。为此，在很多产品中不得不采用较小的GOP（较小的I帧间隔），以期在出现丢包花屏后能尽快的用I帧码流刷新画面。这种方法副作用较大，而且某些场合下甚至会适得其反。因为I帧压缩效率远不如P帧、B帧，I帧往往比P帧、B帧大很多，频繁的I帧将给传输信道带来持续的波动压力，造成更严重的丢包、乱序。另外，因为编码器码率控制的缘故，I帧占用较多的码流后，紧接着的P、B帧将不得不采用较大的QP量化参数（较差的图像质量）以保证码率的局部可控，这样带来的直观感受是图像随着I帧间隔周期性的发虚、马赛克。乱序的UDP包不经过顺序恢复直接送解码器同样会导致解码花屏，因为解码器内部会将迟到的数据包丢弃。</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;">&nbsp; &nbsp; &nbsp; &nbsp;综上所述，工程中急需一种抗丢包、抗乱序的增强型UDP方案来提升实时音视频传输效果，经过多年的积累与完善，我们推出了一套基于RTP并采用FEC前向纠错和后端QOS处理的完整解决方案，效果非常明显。</span></p>
+<p><br>
+</p>
+<p><strong><span style="font-size: 24px;">使用FEC\QOS武装RTP</span></strong></p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;<span style="white-space: pre;"> </span><span style="font-family: Microsoft YaHei; font-size: 18px;">对于丢包，我们采用改进型的vandermonde矩阵FEC(Forward&nbsp;Error/Erasure&nbsp;Correction）前向纠错技术来进行丢包恢复，由发送方进行FEC编码引入冗余包，接收方进行FEC解码并恢复丢失的数据包。</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;"><span style="white-space: pre;"></span>对于包乱序和包重复，我们采用QOS乱序恢复处理，该QOS方案特点是在没有丢包的情况下，不引入任何系统延时，并且可以通过可控的丢包等待时延来适应不同的信道乱序程度。QOS需要在接收端进行FEC解码前进行，确保送FEC解码模块的数据包序号是正确的（不存在乱序，仅存在丢包）。</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;"><span style="white-space: pre;"></span>众多产品案例表明：采用FEC+QOS+RTP的组合，能显著提升UDP传输的丢包、乱序抵抗力，为上层音视频服务提供有力保障。下图1是各模块在系统中的位置说明。</span></p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;<span style="white-space: pre;"> 　　　　　　　　</span><img src="20151224124323978" alt=""><br>
+</p>
+<p></p>
+<p><span style="font-size: 18px;"><span style="white-space: pre;"></span><span style="white-space: pre;"></span>　　　　　　　　　　　　　　　　图1&nbsp;FEC、QOS在RTP系统中的位置</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;">需要说明如下几点：</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;"><span style="white-space: pre;"></span>（A）从差错控制角度看，传输信道可以分为随机信道、突发信道和混合信道。在随机信道中，丢包出现是随机的，且相互统计独立，满足正态分布。在突发信道中，丢包是集中出现的，在一些短促的时间区间会出现大量的丢包，而在这些时间区间之外又存在较长的无丢包区间。混合信道则是上述二者的合体。本方案侧重于对具备随机信道特性的传输链路进行改进优化。</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;">&nbsp; &nbsp; &nbsp; &nbsp;对&nbsp;Internet信道的丢包特性研究发现，大多数情况下其满足随机信道的特点，丢失的都是单个包。连续两个或以上包同时丢失的概率虽然比纯随机过程要高，但发生的概率还是要比单包丢失低，发生连续丢失10个以上包的概率就更低了。由于单包丢失出现的最频繁，我们的抗丢包方案主要侧重于对单包丢失的修复，同时也应该兼顾连续丢失的少量包的修复。对大量连续丢失的包的修复相对来说就显得不那么重要了（出现概率低，修复的代价大）。</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;"><br>
+</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;"><span style="white-space: pre;"></span>（B）当然，任何差错控制方案都是有其最大纠错能力限制，当丢包率超出当前系统的纠错能力时，丢包无法恢复，对于视频应用来说意味着视频将出现花屏。</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;">&nbsp; &nbsp; &nbsp; 为了改善系统在高丢包率下的用户体验，避免长时间花屏无法刷新的现象，我们建议使用者采用ARQ（自动请求重发）+FEC机制，这里的ARQ请求并不是请求远端重发丢失的数据包，因为那样相当于走了TCP这类内嵌ARQ功能协议的老路，必然引入不可控的延时。这里的ARQ只是请求远端即刻编码视频关键帧，避免长时间花屏无法刷新的现象，ARQ请求一般通过额外的TCP信道发出（在绝大多数的系统中，通讯双方一般会有TCP的信令通道，用于双方业务层信令的交互）。ARQ的发起是根据FEC解码输出视频码流是否丢包作为判断依据，发送端和接收端都需要对ARQ的频率做一定的保护措施，避免频繁的发起和响应，造成过多的I帧（过多I帧的副作用前面已有列举）。</span></p>
+<p><br>
+</p>
+<p><strong><span style="font-size: 24px;"><a href="http://lib.csdn.net/base/softwaretest" class="replace_word" title="软件测试知识库" target="_top" style="color: rgb(223, 52, 52); font-weight: bold;">测试</a>效果</span></strong></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;">本方案为C++开发，提供PC、<a href="http://lib.csdn.net/base/android" class="replace_word" title="Android知识库" target="_top" style="color: rgb(223, 52, 52); font-weight: bold;">Android</a>（JNI）、<a href="http://lib.csdn.net/base/ios" class="replace_word" title="iOS知识库" target="_top" style="color: rgb(223, 52, 52); font-weight: bold;">iOS</a>跨平台的支持。为了方便测试，我们在PC下开发了几个简易测试DEMO用于验证演示。</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;">（A）数据验证DEMO</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;"><span style="white-space: pre;"></span>下图所示为数据验证DEMO界面，它以指定的数据作为测试源，可帮助用户更好的理解处理流程。</span></p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span style="white-space: pre;"></span>&nbsp; &nbsp; &nbsp; 　　<img src="20151224125223154" alt=""><br>
+</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: Microsoft YaHei; font-size: 18px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 　　　<span style="white-space: pre;"></span>图2 &nbsp;数据流程验证DEMO<br>
+<br>
+</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;">&nbsp; &nbsp; &nbsp; &nbsp;<span style="white-space: pre;"></span>测试工具为点对点工作模式，可在两台PC上各自运行（同时也支持单机模式，只需将收发IP地址均设置为本地IP即可），以实现双方之间RTP（FEC+QOS）通讯。</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;">&nbsp; &nbsp; &nbsp; &nbsp;软件收发自定义的测试包数据，提供了模拟丢包功能，支持按固定间隔丢包或者按随机比率丢包；支持设置FEC冗余度或者选择冗余度自适应，支持设置QOS丢包等待时延等参数。</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;">&nbsp; &nbsp; &nbsp; &nbsp;测试工具内部默认使用10个媒体包外加冗余度（数量由选择的冗余度决定）作为一个GROUP，当选择冗余度20%时，一个GROUP由10个媒体包附加2个冗余包组成。下图是Wireshark的观察情况，10个媒体包后面紧接着2个冗余包。</span></p>
+<p><span style="font-size: 18px;">&nbsp; &nbsp; &nbsp; &nbsp;　　　　　　　<img src="20151224125458084" alt=""><br>
+</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;"><span style="white-space: pre;"></span><span style="white-space: pre;"></span>图3 Wireshark观察冗余包情况</span></p>
+<p></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;">需要说明的是：程序主动丢包是在UDP发送层进行，所以即可能丢媒体包也可能丢冗余包。</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;">下面我们以20%冗余度为例说明系统对各类丢包率的抵抗能力。</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;"><br>
+</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;">&nbsp; &nbsp; &nbsp; &nbsp;当选择每10个包丢1个包时（丢包率10%），一个GROUP中最多只会丢弃1个包，20%的冗余度足够抵抗这一丢包率，测试结果也验证了这一结论，接收到的所有媒体包序号均保持连续，丢包率从10%降为0%，实验情况如上图2所示。</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;">&nbsp; &nbsp; &nbsp; &nbsp;当选择每5个包丢弃1个包时（丢包率20%），丢包情况如下图4所示：<span style="white-space: pre;"></span></span></p>
+<p><span style="font-size: 18px;"><span style="white-space: pre;"></span><span style="white-space: pre;"></span>　　　　　　　　　<img src="20151224125659639" alt=""></span></p>
+<p><span style="font-size: 18px;"><span style="white-space: pre;"></span><span style="white-space: pre;"></span>　　　　　　　　　　　　　　图4 &nbsp;<span style="font-family: &quot;Microsoft YaHei&quot;;">每5个包丢弃1个包时的情况</span></span></p>
+<p><span style="font-size: 18px;"><span style="font-family: &quot;Microsoft YaHei&quot;;"></span></span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;"><span style="white-space: pre;"></span><span style="white-space: pre;"></span>对于第一个GROUP，一共丢弃了三个包，包括0号媒体包、5号媒体包、0号冗余包。因为接收的媒体包数为8个加接收的冗余包数1个，总数小于总媒体包数（10个），因此接收端FEC无法恢复。对于第二个GROUP，只丢失了两个媒体包，可以正常恢复。实验结果如下图5所示，说明了推断的正确性，0号媒体包、5号媒体包丢失，13号、18号媒体包被成功恢复，系统丢包率从20%降低到10%左右。</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;"><br>
+</span></p>
+<span style="font-size: 18px;">&nbsp;<span style="white-space: pre;"> 　　　　　　　　<span style="white-space: pre;"></span></span><img src="20151224125900190" alt=""><br>
+</span>
+<p><span style="font-family: &quot;Microsoft YaHei&quot;;"><span style="white-space: pre;"><span style="font-size: 18px;"><span style="font-family: &quot;Microsoft YaHei&quot;;"><span style="white-space: pre;"></span>　　　　　　　　　　　图5 &nbsp;20%冗余度时，</span><span style="font-family: &quot;Microsoft YaHei&quot;;">每5个包丢弃1个包时的恢复情况</span></span></span></span></p>
+<p><span style="font-family: &quot;Microsoft YaHei&quot;;"><span style="font-size: 18px;"><br>
+</span></span></p>
+<p><span style="font-family: &quot;Microsoft YaHei&quot;;"><span style="font-size: 18px;">（B）音视频实测DEMO</span></span></p>
+<p><span style="font-family: &quot;Microsoft YaHei&quot;;"><span style="font-size: 18px;"><span style="white-space: pre;"></span><span style="white-space: pre;"></span>　　　　　　<img src="20151224130108927" alt=""><br>
+</span></span></p>
+<p><span style="font-family: &quot;Microsoft YaHei&quot;;"><span style="font-size: 18px;"><span style="white-space: pre;"></span><span style="white-space: pre;"></span>　　　　　　　　　　　　　　　　　　　图6 音视频实测DEMO</span></span></p>
+<p><span style="font-size: 18px;"><span style="font-family: &quot;Microsoft YaHei&quot;;"></span></span></p>
+<p><span style="font-size: 18px;"><span style="white-space: pre;"></span></span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;">本DEMO支持如下特性：</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;">（1）使用Direct进行摄像头、麦克风的采集和输出</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;">（2）使用ffmpeg进行高效图像缩放等前置filter</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;">（3）视频H264&nbsp;HighProfile编码、解码</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;">（4）音频AAC-LC、AAC-LD、AAC-ELD编码、解码（三种标准可选，44.1KHZ&nbsp;16bit&nbsp;2通道立体声）</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;">（5）音视频RTP传输（带FEC\QOS功能）</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;">（6）人为丢包测试功能</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;">（7）实时统计输出线路丢包延时情况</span></p>
+<p><span style="font-size: 18px;"><br>
+</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;">DEMO的内部框架如下图7所示：</span></p>
+<span style="font-size: 18px;"><span style="white-space: pre;"></span>　　　　　　　<img src="20151224130405657" alt=""></span>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;"><span style="white-space: pre;"><span style="white-space: pre;"></span><span style="white-space: pre;"></span>　　　　　　　　　　　　　　图</span>7 &nbsp;DEMO内部线程框架</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;"><span style="white-space: pre;"></span></span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;"><span style="white-space: pre;"></span><span style="white-space: pre;"></span>　　在视频采集缩放线程与视频编码线程之间，我们采用高效的双队列机制（队列元素为指针，进出队列无数据拷贝），如果视频编码性能非常充足的情况下，我们也可以将二者合并为一个线程。编码线程与网络发送线程分离，避免网络拥塞影响编码线程（这个对于UDP来说不成立，但对于RTMP这类TCP系统来说，网络收发线程与音视频编解码线程的分离是必须的，因为网络的抖动将影响音视频处理环节。站在系统设计的角度，我们为UDP和TCP统一使用上述<a href="http://lib.csdn.net/base/architecture" class="replace_word" title="大型网站架构知识库" target="_top" style="color: rgb(223, 52, 52); font-weight: bold;">架构</a>）。</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;"><span style="white-space: pre;"></span><span style="white-space: pre;"></span>　　在音视频发送模块内，我们都配有定时握手包发送线程，这个线程与音视频使用相同的发送通道（端口），仅在包头上予以区别。它的作用非常重要，主要包括两个方面：为NAT穿越提供保障，当我们的客户端（内网IP）向服务器（公网IP）发送数据时，链路路由器会为该通讯链路映射“端口”，这样服务器（公网IP）向该客户端发送数据时，只需将收到的数据包的IP地址和端口翻转作为发送目标IP和端口便能向其发送数据。路由器在收到服务器的数据包时，检查本地存在对应的映射“端口”，予以放行，否则将丢弃这一数据包（这是基于安全的考虑，外网向内网发送数据不得不防）。值得注意的是，路由器上“端口”是有时效性的，超过一定时间即会失效，为了保证服务器能持续有效的向客户端发送数据，客户端必须以心跳包的方式向服务器发送数据以保持“端口”的有效性（客户端根据业务情况不一定向服务器持续发送数据包，可能只作为接收者）。以上是对C/S模式下NAT的简要描述，P2P模式等其他情况请参考专门的资料。定时握手包的另一个作用是传输自定义的信道统计数据，这个类似于RTCP协议，接收方统计出下行丢包率后可以通过本握手包告知发送方，以便通知对方调整发送甚至编码策略。</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;"><span style="white-space: pre;"></span>　　音频的处理流程与视频类似，因为音频编码耗时非常低，我们一般将音频采集与编码放到一个线程内进行。音频的输出与视频不同，因为它需要按固定的输出频率工作，驱动将发起定时输出线程，我们只需要在该线程内向指定内存存入指定数量的PCM数据即可。（输出频率、存放数量由音频输出通道数、采样率、采样点字节数的配置而定）</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;"><span style="white-space: pre;"></span><span style="white-space: pre;"></span>若本地IP与远端IP设置一样，DEMO则进入本地回环模式，此时将不存在任何网络丢包，我们可以通过设置手动丢包来模拟测试。若本地IP与远端IP不同，且不属于同一网段，我们可以使用开源的WANEM来进行模拟丢包、延时、抖动、重复包等情况，这一方式后面我们将专门予以介绍。</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;"><span style="white-space: pre;"></span><strong>注意：真实的视频对比效果请跳转<a target="_top" href="http://www.mediapro.cc/?page_id=14">视频对比效果</a> 观看</strong></span></p>
+<p><span style="font-size: 18px;"><br>
+</span></p>
+<span style="font-size: 18px;"><span style="white-space: pre;"></span><span style="white-space: pre;"></span>　　　　　　　<img src="20151224130659646" alt=""><br>
+<span style="white-space: pre;"></span>&nbsp;<span style="white-space: pre;"> 　　　　　　　　</span><span style="font-family: Microsoft YaHei;">图8 使用4%随机丢包，关闭FEC时经常性花屏，声音间歇断续</span></span>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;"></span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;"><span style="white-space: pre;"></span><span style="white-space: pre;"></span>当使用4%随机丢包时，若关闭发端FEC功能，接收端视频将出现经常性花屏，声音出现丢失断续。若使用20%冗余度，视频花屏概率将大幅降低（不会完全消除，因为丢包是随机的，短时间内可能出现连续大量丢包的情况，超过20%冗余度的无失真抗丢包率是16.67%即会出现花屏）</span></p>
+<p><span style="font-family: Microsoft YaHei; font-size: 18px;"><span style="white-space: pre;"></span><span style="white-space: pre;"></span>若使用按间隔丢包，每6个包丢一个（丢包率将恒定为16.67%），此时选择20%冗余度可以实现无失真恢复，视频流畅无花屏，音质良好无断续。</span></p>
+<span style="font-size: 18px;"><span style="white-space: pre;"></span></span><span style="font-size: 18px; white-space: pre;"></span><span style="font-size: 18px;">　　　　　　<img src="20151224131131995" alt=""></span><br>
+<p><span style="font-size: 18px; font-family: &quot;Microsoft YaHei&quot;;">　　　　　　　　&nbsp;<span style="white-space: pre;"></span><span style="white-space: pre;"></span></span><span style="font-size: 18px; font-family: &quot;Microsoft YaHei&quot;;">图7 使用<span style="font-family: &quot;Microsoft YaHei&quot;;">16.67%</span>恒定丢包，FEC使用20%冗余度时音视频效果良好</span></p>
+<p><span style="font-size: 18px; font-family: &quot;Microsoft YaHei&quot;;"><br>
+</span></p>
+<br>
+<strong><span style="font-size: 24px;">更多</span></strong>
+<p><span style="font-family: &quot;Microsoft YaHei&quot;;"><span style="font-size: 18px;">　　更多FEC相关的文章请参考 www.mediapro.cc</span></span></p>
+   
+</div>
+
+
+
+
+<!-- Baidu Button BEGIN -->
+
+
+
+
+<div class="bdsharebuttonbox tracking-ad bdshare-button-style0-16" style="float: right;" data-mod="popu_172" data-bd-bind="1500529136369">
+<a href="#" class="bds_more" data-cmd="more" style="background-position:0 0 !important; background-image: url(http://bdimg.share.baidu.com/static/api/img/share/icons_0_16.png?v=d754dcc0.png) !important" target="_top"></a>
+<a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间" style="background-position:0 -52px !important" target="_top"></a>
+<a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博" style="background-position:0 -104px !important" target="_top"></a>
+<a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博" style="background-position:0 -260px !important" target="_top"></a>
+<a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网" style="background-position:0 -208px !important" target="_top"></a>
+<a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信" style="background-position:0 -1612px !important" target="_top"></a>
+</div>
+
+<!-- Baidu Button END -->
+
+   
+
+<!--172.16.140.15-->
+
+<!-- Baidu Button BEGIN -->
+
+
+
+<!-- Baidu Button END -->
+
+
+
+ 
+
+
+        <div id="digg" articleid="50393685">
+            <dl id="btnDigg" class="digg digg_enable" onclick="btndigga();">
+               
+                 <dt>顶</dt>
+                <dd>2</dd>
+            </dl>
+           
+              
+            <dl id="btnBury" class="digg digg_enable" onclick="btnburya();">
+              
+                  <dt>踩</dt>
+                <dd>0</dd>               
+            </dl>
+            
+        </div>
+     <div class="tracking-ad" data-mod="popu_222"><a href="javascript:void(0);" target="_top">&nbsp;</a>   </div>
+    <div class="tracking-ad" data-mod="popu_223"> <a href="javascript:void(0);" target="_top">&nbsp;</a></div>
+    
+
+   <ul class="article_next_prev">
+                <li class="next_article"><span onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_xiayipian']);location.href='http://blog.csdn.net/mediapro/article/details/50395888';">下一篇</span><a href="http://blog.csdn.net/mediapro/article/details/50395888" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_xiayipian'])">ffmpeg生成HLS（M3U8）非定长切片(提高用户观影体验)</a></li>
+    </ul>
+
+    <div style="clear: both; height: 10px;"></div>
+
+
+            <div class="similar_article">
+                    <h4></h4>
+                    <div class="similar_c" style="margin: 20px 0px 0px;">
+                        <div class="similar_c_t">
+                          &nbsp;&nbsp;相关文章推荐
+                        </div>
+                   
+                        <div class="similar_wrap tracking-ad" data-mod="popu_36">                       
+                            <ul class="similar_list fl">    
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://blog.csdn.net/zjqlovell/article/details/50997669" title="FEC之我见四" strategy="BlogCommendFromBaidu" target="_top">FEC之我见四</a>
+                                   </li>
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://blog.csdn.net/rootusers/article/details/49097257" title="FEC原理及其实现" strategy="BlogCommendFromBaidu" target="_top">FEC原理及其实现</a>
+                                   </li>
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://blog.csdn.net/mandagod/article/details/58045010" title="目前的FEC标准以及实现" strategy="BlogCommendFromBaidu" target="_top">目前的FEC标准以及实现</a>
+                                   </li>
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://blog.csdn.net/killmice/article/details/8522436" title="前向纠错码(FEC)的RTP荷载格式" strategy="BlogCommendFromBaidu" target="_top">前向纠错码(FEC)的RTP荷载格式</a>
+                                   </li>
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://blog.csdn.net/blade2001/article/details/9094709" title="IP视频通信中的丢包—“恢复技术”" strategy="BlogCommendFromBaidu" target="_top">IP视频通信中的丢包—“恢复技术”</a>
+                                   </li>
+                            </ul>
+                              <ul class="similar_list fr">      
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://blog.csdn.net/mediapro/article/details/50585608" title="ffmpeg使用filter生成H264测试视频（带时间戳OSD）" strategy="BlogCommendFromBaidu" target="_top">ffmpeg使用filter生成H264测试视频（带时间戳OSD）</a>
+                                   </li>
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://blog.csdn.net/dai_xiangjun/article/details/43195675" title="RTP视频传输播放延时（时间戳）" strategy="BlogCommendFromBaidu" target="_top">RTP视频传输播放延时（时间戳）</a>
+                                   </li>
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://blog.csdn.net/ljz9425/article/details/7627949" title="RTP视频传输播放延时（时间戳）" strategy="BlogCommendFromBaidu" target="_top">RTP视频传输播放延时（时间戳）</a>
+                                   </li>
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://blog.csdn.net/caoshangpa/article/details/53037980" title="浅析低延迟直播协议设计：RTP/RTCP" strategy="BlogCommendFromBaidu" target="_top">浅析低延迟直播协议设计：RTP/RTCP</a>
+                                   </li>
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://blog.csdn.net/xiaojun111111/article/details/41723293" title="RTSP流媒体数据传输的两种方式（TCP和UDP）" strategy="BlogCommendFromBaidu" target="_top">RTSP流媒体数据传输的两种方式（TCP和UDP）</a>
+                                   </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>   
+      
+</div>
+
+     <div>
+           
+
+       
+                           
+            <!-- 广告位：PC端-博客内容页-banner1-960*90 --> 
+            <div id="_ew9mi6zvdjq"></div>
+<div id="BAIDU_SSP__wrapper_u2998112_0"><iframe id="iframeu2998112_0" src="index_4.html" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" style="border: 0px none; vertical-align: bottom; margin: 0px; width: 960px; height: 90px;" allowtransparency="true" width="960" height="90" align="center,center" frameborder="0"></iframe></div>
+
+    </div>
+
+<div id="suggest">
+
+</div>
+           
+
+        <dl class="blog-ass-articl tracking-ad" id="res-relatived" data-mod="popu_84"> 
+             <dt><span>猜你在找</span></dt>    
+           
+    
+           
+
+                        <dd style="background: rgba(0, 0, 0, 0) url('blog-dot-red3.gif') no-repeat scroll 0px 10px; white-space: nowrap;">
+                             <a href="http://edu.csdn.net/combo/detail/30" title="C语言及程序设计（讲师：贺利坚）" strategy="undefined" target="_top">C语言及程序设计（讲师：贺利坚）</a>
+                        </dd>
+                        <dd style="background: rgba(0, 0, 0, 0) url('blog-dot-red3.gif') no-repeat scroll 0px 10px; white-space: nowrap;">
+                             <a href="http://edu.csdn.net/combo/detail/379" title="Python爬虫工程师培养课程全套（讲师:韦玮）" strategy="undefined" target="_top">Python爬虫工程师培养课程全套（讲师:韦玮）</a>
+                        </dd>
+                        <dd style="background: rgba(0, 0, 0, 0) url('blog-dot-red3.gif') no-repeat scroll 0px 10px; white-space: nowrap;">
+                             <a href="http://edu.csdn.net/combo/detail/468" title="Python全栈开发入门与实战课（讲师：李杰）" strategy="undefined" target="_top">Python全栈开发入门与实战课（讲师：李杰）</a>
+                        </dd>
+                        <dd style="background: rgba(0, 0, 0, 0) url('blog-dot-red3.gif') no-repeat scroll 0px 10px; white-space: nowrap;">
+                             <a href="http://edu.csdn.net/combo/detail/233" title="2017软考网络规划设计师视频套餐（讲师：任铄）" strategy="undefined" target="_top">2017软考网络规划设计师视频套餐（讲师：任铄）</a>
+                        </dd>
+                        <dd style="background: rgba(0, 0, 0, 0) url('blog-dot-red3.gif') no-repeat scroll 0px 10px; white-space: nowrap;">
+                             <a href="http://edu.csdn.net/combo/detail/169" title="2017软考软件设计师视频套餐（讲师：任铄）" strategy="undefined" target="_top">2017软考软件设计师视频套餐（讲师：任铄）</a>
+                        </dd>
+                        <dd style="background: rgba(0, 0, 0, 0) url('blog-dot-red3.gif') no-repeat scroll 0px 10px; white-space: nowrap;">
+                             <a href="http://edu.csdn.net/combo/detail/144" title="2017软考-信息系统项目管理师视频套餐（讲师：任铄）" strategy="undefined" target="_top">2017软考-信息系统项目管理师视频套餐（讲师：任铄）</a>
+                        </dd>
+                        <dd style="background: rgba(0, 0, 0, 0) url('blog-dot-red3.gif') no-repeat scroll 0px 10px; white-space: nowrap;">
+                             <a href="http://edu.csdn.net/combo/detail/58" title="软考(高级)项目经理实战营（讲师：张传波）" strategy="undefined" target="_top">软考(高级)项目经理实战营（讲师：张传波）</a>
+                        </dd>
+                        <dd style="background: rgba(0, 0, 0, 0) url('blog-dot-red3.gif') no-repeat scroll 0px 10px; white-space: nowrap;">
+                             <a href="http://edu.csdn.net/combo/detail/58" title="微信公众平台开发套餐（讲师：刘运强）" strategy="undefined" target="_top">微信公众平台开发套餐（讲师：刘运强）</a>
+                        </dd>
+                        <dd style="background: rgba(0, 0, 0, 0) url('blog-dot-red3.gif') no-repeat scroll 0px 10px; white-space: nowrap;">
+                             <a href="http://edu.csdn.net/combo/detail/422" title="深度学习原理+实战+算法+主流框架套餐（讲师：唐宇迪）" strategy="undefined" target="_top">深度学习原理+实战+算法+主流框架套餐（讲师：唐宇迪）</a>
+                        </dd>
+                        <dd style="background: rgba(0, 0, 0, 0) url('blog-dot-red3.gif') no-repeat scroll 0px 10px; white-space: nowrap;">
+                             <a href="http://edu.csdn.net/combo/detail/471" title="2017系统集成项目管理工程师通关套餐（讲师：徐朋）" strategy="undefined" target="_top">2017系统集成项目管理工程师通关套餐（讲师：徐朋）</a>
+                        </dd>
+        </dl>
+
+
+
+
+            
+                                    
+            
+                                    
+
+        <!-- 广告位开始 -->
+        <!-- 广告位结束 -->
+
+
+<div class="comment_class">
+    <div id="comment_title" class="panel_head">
+        <span class="see_comment">查看评论</span><a name="comments"></a></div>
+    <div id="comment_list"><dl class="comment_item comment_topic" id="comment_item_6982997"><dt class="comment_head" floor="6">6楼 <span class="user"><a class="username" href="http://blog.csdn.net/hunauking" target="_top">hunauking</a> <span class="ptime">6天前 16:25发表</span>  <a href="#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display: none;" commentid="6982997" username="hunauking"> <a href="#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/hunauking" target="_top"><img src="3_hunauking.jpg" width="40" height="40"></a></dd><dd class="comment_body">在最大利用分组包负载的情况下，音频数据要积累很长一段时间，这样音频的延时会不会特别大?</dd></dl><dl class="comment_item comment_topic" id="comment_item_6982996"><dt class="comment_head" floor="5">5楼 <span class="user"><a class="username" href="http://blog.csdn.net/hunauking" target="_top">hunauking</a> <span class="ptime">6天前 16:24发表</span>  <a href="#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display: none;" commentid="6982996" username="hunauking"> <a href="#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/hunauking" target="_top"><img src="3_hunauking.jpg" width="40" height="40"></a></dd><dd class="comment_body">在最大利用分组包负载的情况下，音频数据要积累很长一段时间，这样音频的延时会不会特别大?</dd></dl><dl class="comment_item comment_topic" id="comment_item_6982993"><dt class="comment_head" floor="4">4楼 <span class="user"><a class="username" href="http://blog.csdn.net/hunauking" target="_top">hunauking</a> <span class="ptime">6天前 16:23发表</span>  <a href="#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display: none;" commentid="6982993" username="hunauking"> <a href="#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/hunauking" target="_top"><img src="3_hunauking.jpg" width="40" height="40"></a></dd><dd class="comment_body">在最大利用分组包负载的情况下，音频数据要积累很长一段时间，这样音频的延时会不会特别大?</dd></dl><dl class="comment_item comment_topic" id="comment_item_6333598"><dt class="comment_head" floor="3">3楼 <span class="user"><a class="username" href="http://blog.csdn.net/mediapro" target="_top">mediapro</a> <span class="ptime">2016-10-12 09:40发表</span>  <a href="#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display: none;" commentid="6333598" username="mediapro"> <a href="#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/mediapro" target="_top"><img src="3_mediapro.jpg" width="40" height="40"></a></dd><dd class="comment_body">RTP-FEC-QOS模块<br>特点：<br>（1）可靠的RTP音视频传输模块，最高抵抗30%网络丢包。<br>（2）支持FEC前向纠错、QOS后端质量保证，显著提高音视频在恶劣网络环境下的抵抗力。<br>（3）支持自适应FEC冗余度，根据用户网络情况，灵活调整发端冗余。（常用于服务器下行通讯链路，可有效降低带宽成本）<br>（4）超低延时。FEC经过大量优化，算法高效，代码精简，内部均采用指针引用队列。QOS设计合理，在未发生丢包乱序时，不引入任何延时。<br>（5）API接口简洁（C、C++），可以迅速合入现有系统<br>（6）提供传输数据反馈，可与发端码率自适应、收端IDR帧请求等技术结合使用。<br>（7）自带校验功能，抵抗UDP攻击能力。<br>（8）完善的文档和演示DEMO，便于充分理解和掌握模块的使用。<br>  DEMO包括：<br>      （A）数据验证型DEMO(WIN)，开发人员可与查看FEC\QOS的每个环节，以及丢包后模块的工作情况。<br>      （B）音视频实时互动DEMO（WIN &amp; Android），包括了音视频采集、编码、传输、解码、渲染输出的完整流程。<br>（9）跨平台支持，支持Windows\Linux\Android\Ios<br>（10）自主知识产权，该模块已经在商业产品中运用多年，可靠性高。</dd></dl><dl class="comment_item comment_topic" id="comment_item_6085830"><dt class="comment_head" floor="2">2楼 <span class="user"><a class="username" href="http://blog.csdn.net/lixiangnan051" target="_top">lixiangnan051</a> <span class="ptime">2016-06-16 17:40发表</span>  <a href="#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display: none;" commentid="6085830" username="lixiangnan051"> <a href="#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/lixiangnan051" target="_top"><img src="3_lixiangnan051.jpg" width="40" height="40"></a></dd><dd class="comment_body">正需要，加我q，460369545</dd></dl><dl class="comment_item comment_topic" id="comment_item_5740923"><dt class="comment_head" floor="1">1楼 <span class="user"><a class="username" href="http://blog.csdn.net/xiaocainiao320" target="_top">xiaocainiao320</a> <span class="ptime">2015-12-24 14:09发表</span>  <a href="#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display: none;" commentid="5740923" username="xiaocainiao320"> <a href="#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/xiaocainiao320" target="_top"><img src="3_xiaocainiao320.jpg" width="40" height="40"></a></dd><dd class="comment_body">好东西啊，求源码</dd><dl class="comment_item comment_reply" id="comment_item_5741273"><dt class="comment_head" floor="1">Re: <span class="user"><a class="username" href="http://blog.csdn.net/mediapro" target="_top">mediapro</a> <span class="ptime">2015-12-24 17:32发表</span>  <a href="#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display: none;" commentid="5741273" username="mediapro"> <a href="#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/mediapro" target="_top"><img src="3_mediapro.jpg" width="40" height="40"></a></dd><dd class="comment_body">回复xiaocainiao320：不是开源的</dd></dl></dl><div class="clear"></div></div>
+    <div id="comment_bar" style="display: none;">
+    </div>
+    <div id="comment_form"><a name="commentbox"></a><a name="reply"></a><a name="quote"></a><form action="http://blog.csdn.net/mediapro/comment/submit?id=50393685" method="post" onsubmit="return subform(this);"><div class="commentform"><div class="panel_head">发表评论</div><ul><li class="left">用 户 名：</li><li class="right">smsz7931</li></ul><ul><li class="left">评论内容：</li><li class="right" style="position: relative;"><div id="ubbtools"><a href="#insertcode" code="code"><img src="code.gif" alt="插入代码" title="插入代码" border="0"></a></div><div id="lang_list" style="position: absolute; top: 28px; left: 0px; display: none;"><a class="long_name" href="#html">HTML/XML</a><a class="long_name" href="#objc">objective-c</a><a class="zhong_name" href="#delphi">Delphi</a><a class="zhong_name" href="#ruby">Ruby</a><a href="#php">PHP</a><a class="duan_name" href="#csharp">C#</a><a style=" border-right: none;" class="duan_name" href="#cpp">C++</a><a style=" border-bottom:none;" class="long_name" href="#javascript">JavaScript</a><a style=" border-bottom:none;" class="long_name" href="#vb">Visual Basic</a><a style=" border-bottom:none;" class="zhong_name" href="#python">Python</a><a style=" border-bottom:none;" class="zhong_name" href="#java">Java</a><a style="border-bottom:none;" class="duan_name" href="#css">CSS</a><a style="border-bottom:none;" class="duan_name" href="#sql">SQL</a><a style="border:none;" class="duan_name" href="#plain">其它</a></div><textarea class="comment_content" name="comment_content" id="comment_content" style="width: 400px; height: 200px;"></textarea></li></ul><ul><input id="comment_replyId" name="comment_replyId" type="hidden"><input id="comment_userId" name="comment_userId" value="521203" type="hidden"><input id="commentId" name="commentId" value="" type="hidden"><input class="comment_btn" value="提交" type="submit">&nbsp;&nbsp;<span id="tip_comment" style="color: Red; display: none;"></span></ul></div></form></div>
+    <div class="announce">
+        * 以上用户言论只代表其个人观点，不代表CSDN网站的观点或立场<a name="reply"></a><a name="quote"></a></div>
+</div>
+
+
+
+    <div id="ad_bot">
+    </div>
+<div id="report_dialog">
+</div>
+
+<div id="d-top" style="bottom: 60px;">
+
+        <a id="quick-reply" class="btn btn-top q-reply" title="快速回复" style="display:none;">
+            <img src="blog-icon-reply.png" alt="快速回复">
+        </a>    
+    <a id="d-top-a" class="btn btn-top backtop" style="display: none;" title="返回顶部" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_huidaodingbu'])">         
+         <img src="top.png" alt="TOP">
+    </a>
+</div>
+
+
+
+
+
+
+
+<div id="pop_win" style="display: none; position: absolute; z-index: 10000; border: 1px solid rgb(220, 220, 220); top: 222.5px; left: 630px; opacity: 1; background: rgb(255, 255, 255) none repeat scroll 0px 0px;">
+    
+</div>
+<div id="popup_mask"></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        <div class="clear">
+                        </div>
+                    </div>                   
+                
+            </div>
+                   
+           <div id="side">
+               
+    <div class="side">
+<div id="panel_Profile" class="panel">
+<ul class="panel_head"><span>个人资料</span></ul>
+<ul class="panel_body profile">
+<div id="blog_userface">
+    <a href="http://my.csdn.net/mediapro" target="_top">
+    <img src="1_mediapro.jpg" title="访问我的空间" style="max-width: 90%;">
+    </a>
+    <br>
+    <span><a href="http://my.csdn.net/mediapro" class="user_name" target="_top">mediapro</a></span>
+</div>
+<div class="interact">
+
+    <a href="javascript:void(0);" class="attent" id="span_add_follow" title="[加关注]"></a>
+
+ <a href="http://msg.csdn.net/letters/model?receiver=mediapro" class="letter" title="[发私信]"></a>  
+</div>
+<div id="blog_medal">
+                <div id="bms_box">
+               </div>
+</div>
+<ul id="blog_rank">
+    <li>访问：<span>12762次</span></li>
+    <li>积分：<span>191</span> </li>    
+    <li>等级： <span style="position: relative; display: inline-block; z-index: 1;">
+            <img src="blog2.png" alt="" style="vertical-align: middle;" id="leveImg">
+            <div id="smallTittle" style="position: absolute; left: -24px; top: 25px; text-align: center; width: 101px; height: 32px; background-color: rgb(255, 255, 255); line-height: 32px; border: 2px solid rgb(221, 221, 221); display: none; z-index: 999;">
+            <div style="left: 42%; top: -8px; position: absolute; width: 0px; height: 0px; border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 8px solid rgb(234, 234, 234);"></div>
+            积分：191 </div>
+        </span>  </li>
+    <li>排名：<span>千里之外</span></li>
+</ul>
+<ul id="blog_statistics">
+    <li>原创：<span>5篇</span></li>
+    <li>转载：<span>0篇</span></li>
+    <li>译文：<span>0篇</span></li>
+    <li>评论：<span>10条</span></li>
+</ul>
+</ul>
+</div>
+
+
+<div class="panel" id="panel_Search">
+    <ul class="panel_head"><span>文章搜索</span></ul>
+    <ul class="panel_body">
+        <form id="frmSearch" action="http://so.csdn.net/search" class="form_search csdn-tracking-statistics" target="_blank" data-mod="popu_306">
+        <span><input id="inputSearch" class="blogsearch" title="请输入关键字" value="" type="text"></span>
+        <input id="btnSubmit" value="搜索" title="search in blog" type="button">
+        <input name="q" id="inputQ" type="hidden">
+        <input name="t" value="blog" type="hidden">
+        <a id="btnSearchBlog" target="_blank"></a>
+        </form>
+    </ul>
+</div>
+
+<div id="panel_Category" class="panel">
+<ul class="panel_head"><span>文章分类</span></ul>
+<ul class="panel_body">    
+                 <li>
+                    <a href="http://blog.csdn.net/mediapro/article/category/6043084" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">音视频传输</a><span>(3)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/mediapro/article/category/6043085" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">音视频编解码</a><span>(2)</span>
+                </li>
+</ul>
+</div><div id="panel_Archive" class="panel">
+<ul class="panel_head"><span>文章存档</span></ul>
+<ul class="panel_body">
+<div id="archive_list">
+<!--归档统计-->
+<li><a href="http://blog.csdn.net/mediapro/article/month/2016/12">2016年12月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/mediapro/article/month/2016/07">2016年07月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/mediapro/article/month/2016/01">2016年01月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/mediapro/article/month/2015/12">2015年12月</a><span>(2)</span></li>
+</div>
+</ul>
+</div>
+<div id="hotarticls" class="panel tracking-ad" data-mod="popu_340">
+<ul class="panel_head">
+    <span>       
+阅读排行    </span>
+</ul>
+
+<ul class="panel_body itemlist">
+<li>
+<a href="http://blog.csdn.net/mediapro/article/details/50393685" title="使用FEC改善UDP（RTP）音视频传输效果" target="_top">使用FEC改善UDP（RTP）音视频传输效果</a><span>(6140)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/mediapro/article/details/50395888" title="ffmpeg生成HLS（M3U8）非定长切片(提高用户观影体验)" target="_top">ffmpeg生成HLS（M3U8）非定长切片(提高用户观影体验)</a><span>(2934)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/mediapro/article/details/53423851" title="RTP直播分发服务器集群方案" target="_top">RTP直播分发服务器集群方案</a><span>(1463)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/mediapro/article/details/50585608" title="ffmpeg使用filter生成H264测试视频（带时间戳OSD）" target="_top">ffmpeg使用filter生成H264测试视频（带时间戳OSD）</a><span>(1303)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/mediapro/article/details/51979904" title="UDP RTP 丢包 解决方案AVCom模块API接口使用说明" target="_top">UDP RTP 丢包 解决方案AVCom模块API接口使用说明</a><span>(777)</span>
+</li>
+</ul>
+</div>
+<div id="hotarticls2" class="panel tracking-ad" data-mod="popu_341">
+<ul class="panel_head"><span>评论排行</span></ul>
+<ul class="panel_body itemlist">
+<li>
+<a href="http://blog.csdn.net/mediapro/article/details/50393685" title="使用FEC改善UDP（RTP）音视频传输效果" target="_top">使用FEC改善UDP（RTP）音视频传输效果</a><span>(7)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/mediapro/article/details/51979904" title="UDP RTP 丢包 解决方案AVCom模块API接口使用说明" target="_top">UDP RTP 丢包 解决方案AVCom模块API接口使用说明</a><span>(2)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/mediapro/article/details/50395888" title="ffmpeg生成HLS（M3U8）非定长切片(提高用户观影体验)" target="_top">ffmpeg生成HLS（M3U8）非定长切片(提高用户观影体验)</a><span>(0)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/mediapro/article/details/50585608" title="ffmpeg使用filter生成H264测试视频（带时间戳OSD）" target="_top">ffmpeg使用filter生成H264测试视频（带时间戳OSD）</a><span>(0)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/mediapro/article/details/53423851" title="RTP直播分发服务器集群方案" target="_top">RTP直播分发服务器集群方案</a><span>(0)</span>
+</li>
+</ul>
+</div>
+<div id="homepageArticles" class="panel tracking-ad" data-mod="popu_4">
+<ul class="panel_head"><span>推荐文章</span></ul>
+<ul class="panel_body" id="ad_commend">
+<ul>
+<li><a href="http://blog.csdn.net/blogdevteam/article/details/75116901" target="_top">* CSDN日报20170714——《从创业到再就业，浅述对程序员职业生涯的看法》</a></li>
+<li><a href="http://blog.csdn.net/jiangwei0910410003/article/details/74886918" target="_top">* Android 逆向 | 锁屏密码算法解析以及破解方案</a></li>
+<li><a href="http://blog.csdn.net/hopeztm/article/details/75201823" target="_top">* 从单一WAR到多活，记述一个创业公司的架构演变</a></li>
+<li><a href="http://blog.csdn.net/sileixinhua/article/details/75203725" target="_top">* 我的AI转型之路与AI之我见（非985211的奋斗路程与视角）</a></li>
+<li><a href="http://blog.csdn.net/u013709270/article/details/74892124" target="_top">* AI大行其道，你准备好了吗？—谨送给徘徊于转行AI的程序员</a></li>
+<li><a href="http://blog.csdn.net/chancein007/article/details/74943322" target="_top">* AI转型中的思考和洞见</a></li>
+
+</ul></ul>
+</div>
+
+
+<div id="newcomments" class="panel">
+<ul class="panel_head"><span>最新评论</span></ul>
+<ul class="panel_body itemlist">
+    <li>
+   
+         <a href="http://blog.csdn.net/mediapro/article/details/50393685#comments">使用FEC改善UDP（RTP）音视频传输效果</a>
+    <p style="margin: 0px;"><a href="http://blog.csdn.net/hunauking" class="user_name">hunauking</a>:
+在最大利用分组包负载的情况下，音频数据要积累很长一段时间，这样音频的延时会不会特别大?
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/mediapro/article/details/50393685#comments">使用FEC改善UDP（RTP）音视频传输效果</a>
+    <p style="margin: 0px;"><a href="http://blog.csdn.net/hunauking" class="user_name">hunauking</a>:
+在最大利用分组包负载的情况下，音频数据要积累很长一段时间，这样音频的延时会不会特别大?
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/mediapro/article/details/50393685#comments">使用FEC改善UDP（RTP）音视频传输效果</a>
+    <p style="margin: 0px;"><a href="http://blog.csdn.net/hunauking" class="user_name">hunauking</a>:
+在最大利用分组包负载的情况下，音频数据要积累很长一段时间，这样音频的延时会不会特别大?
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/xiaocainiao320/article/details/54909932#comments">曝光黑店：丢爸奢侈品护理中心</a>
+    <p style="margin: 0px;"><a href="http://blog.csdn.net/mediapro" class="user_name">mediapro</a>:
+微商就这点 没得保障 不出问题就好 出了麻烦，这种没有担当的多了去
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/xiaocainiao320/article/details/54909932#comments">使用FEC改善UDP（RTP）音视频传输效果</a>
+    <p style="margin: 0px;"><a href="http://blog.csdn.net/mediapro" class="user_name">mediapro</a>:
+RTP-FEC-QOS模块特点：（1）可靠的RTP音视频传输模块，最高抵抗30%网络丢包。（2）支持...
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/mediapro/article/details/51979904#comments">UDP RTP 丢包 解决方案AVCom模块API接口使用说明</a>
+    <p style="margin: 0px;"><a href="http://blog.csdn.net/mediapro" class="user_name">mediapro</a>:
+有JNI的API接口，提供Android的音视频采集编码传输DEMO
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/mediapro/article/details/51979904#comments">UDP RTP 丢包 解决方案AVCom模块API接口使用说明</a>
+    <p style="margin: 0px;"><a href="http://blog.csdn.net/xiaocainiao320" class="user_name">xiaocainiao320</a>:
+有JNI接口么？
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/mediapro/article/details/51979904#comments">使用FEC改善UDP（RTP）音视频传输效果</a>
+    <p style="margin: 0px;"><a href="http://blog.csdn.net/lixiangnan051" class="user_name">lixiangnan051</a>:
+正需要，加我q，460369545
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/mediapro/article/details/51979904#comments">使用FEC改善UDP（RTP）音视频传输效果</a>
+    <p style="margin: 0px;"><a href="http://blog.csdn.net/mediapro" class="user_name">mediapro</a>:
+@xiaocainiao320:不是开源的
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/mediapro/article/details/51979904#comments">使用FEC改善UDP（RTP）音视频传输效果</a>
+    <p style="margin: 0px;"><a href="http://blog.csdn.net/xiaocainiao320" class="user_name">xiaocainiao320</a>:
+好东西啊，求源码
+    </p>
+    </li>
+</ul>
+</div>
+    </div>
+    <div class="clear">
+    </div>
+
+                 <!-- 广告位开始 --> 
+                <!-- 广告位结束 -->
+                   <div class="tracking-ad" data-view="true" data-mod="ad_popu_189" data-mtp="63" data-order="40" data-con="ad_content_1259" style="width: 250px; height: 500px;">
+                        <div id="nav_show_top_stop" style="width: 250px; height: 500px; z-index: 1000; position: fixed; top: 2426.77px;"><div id="cpro_u2734133"><iframe id="iframeu2734133_0" src="index_5.html" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" style="border: 0px none; vertical-align: bottom; margin: 0px; width: 250px; height: 250px;" allowtransparency="true" width="250" height="250" align="center,center" frameborder="0"></iframe></div><div id="cpro_u3031286"><iframe id="iframeu3031286_0" src="index_6.html" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" style="border: 0px none; vertical-align: bottom; margin: 0px; width: 250px; height: 250px;" allowtransparency="true" width="250" height="250" align="center,center" frameborder="0"></iframe></div></div>
+                   </div>
+                    
+                   
+
+
+
+
+           </div>   
+
+            <div class="clear">
+            </div>
+        </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </div><div id="SL_balloon_obj" style="display: block;"><div id="SL_button" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: none; width: 24px; height: 24px; position: absolute; cursor: pointer; opacity: 1;"></div><div id="SL_shadow_translation_result2" style="display: none; margin-top: 30px; margin-left: 1px; direction: ltr; text-align: left; min-height: 40px;"><div></div></div><div id="SL_shadow_translator" style="display: none;"><div id="SL_providers"><div class="SL_BL_LABLE_ON" title="Google" id="SL_P0">G</div><div class="SL_BL_LABLE_ON" title="Microsoft" id="SL_P1">M</div><div class="SL_BL_LABLE_ON" title="Translator" id="SL_P2">T</div></div><div id="SL_planshet" style="background: rgb(244, 245, 245) url('undefined') repeat scroll 0% 0%;"><div id="SL_arrow_up"></div><div id="SL_TB"><div id="bubblelogo" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 24px; height: 24px; position: absolute;"></div><table id="SL_tables"><tr><td width="10%" align="right"><input id="SLloc" title="鎖定語言" type="checkbox"></td><td width="20%" align="left"><select id="SL_lng_from"><option value="auto">檢測語言</option><option value="sq">阿尔巴尼亚语</option><option value="ar">阿拉伯语</option><option value="az">阿塞拜疆语</option><option value="ga">爱尔兰语</option><option value="et">爱沙尼亚语</option><option value="eu">巴斯克语</option><option value="be">白俄罗斯语</option><option value="bg">保加利亚语</option><option value="is">冰岛语</option><option value="pl">波兰语</option><option value="bs">波斯尼亚语</option><option value="fa">波斯语</option><option value="af">布尔语(南非荷兰语)</option><option value="da">丹麦语</option><option value="de">德语</option><option value="ru">俄语</option><option value="fr">法语</option><option value="tl">菲律宾语</option><option value="fi">芬兰语</option><option value="km">高棉语</option><option value="ka">格鲁吉亚语</option><option value="gu">古吉拉特语</option><option value="kk">哈萨克语</option><option value="ht">海地克里奥尔语</option><option value="ko">韩语</option><option value="ha">豪萨语</option><option value="nl">荷兰语</option><option value="gl">加利西亚语</option><option value="ca">加泰罗尼亚语</option><option value="cs">捷克语</option><option value="kn">卡纳达语</option><option value="hr">克罗地亚语</option><option value="la">拉丁语</option><option value="lv">拉脱维亚语</option><option value="lo">老挝语</option><option value="lt">立陶宛语</option><option value="ro">罗马尼亚语</option><option value="mg">马尔加什语</option><option value="mt">马耳他语</option><option value="mr">马拉地语</option><option value="ml">马拉雅拉姆语</option><option value="ms">马来语</option><option value="mk">马其顿语</option><option value="mi">毛利语</option><option value="mn">蒙古语</option><option value="bn">孟加拉语</option><option value="my">缅甸语</option><option value="hmn">苗语</option><option value="zu">南非祖鲁语</option><option value="ne">尼泊尔语</option><option value="no">挪威语</option><option value="pa">旁遮普语</option><option value="pt">葡萄牙语</option><option value="ny">齐切瓦语</option><option value="ja">日语</option><option value="sv">瑞典语</option><option value="sr">塞尔维亚语</option><option value="st">塞索托语</option><option value="si">僧伽罗语</option><option value="eo">世界语</option><option value="sk">斯洛伐克语</option><option value="sl">斯洛文尼亚语</option><option value="sw">斯瓦希里语</option><option value="ceb">宿务语</option><option value="so">索马里语</option><option value="tg">塔吉克语</option><option value="te">泰卢固语</option><option value="ta">泰米尔语</option><option value="th">泰语</option><option value="tr">土耳其语</option><option value="cy">威尔士语</option><option value="ur">乌尔都语</option><option value="uk">乌克兰语</option><option value="uz">乌兹别克语</option><option value="iw">希伯来语</option><option value="el">希腊语</option><option value="es">西班牙语</option><option value="hu">匈牙利语</option><option value="hy">亚美尼亚语</option><option value="ig">伊博语</option><option value="it">意大利语</option><option value="yi">意第绪语</option><option value="hi">印地语</option><option value="su">印尼巽他语</option><option value="id">印尼语</option><option value="jw">印尼爪哇语</option><option value="en">英语</option><option value="yo">约鲁巴语</option><option value="vi">越南语</option><option value="zh-CN">中文简体</option><option value="zh-TW">中文繁体</option></select></td><td width="5%" align="center"><div id="SL_switch_b" title="切換語言" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 10px; height: 10px; cursor: pointer;" align="center"></div></td><td width="20%" align="left"><select id="SL_lng_to"><option value="sq">阿尔巴尼亚语</option><option value="ar">阿拉伯语</option><option value="az">阿塞拜疆语</option><option value="ga">爱尔兰语</option><option value="et">爱沙尼亚语</option><option value="eu">巴斯克语</option><option value="be">白俄罗斯语</option><option value="bg">保加利亚语</option><option value="is">冰岛语</option><option value="pl">波兰语</option><option value="bs">波斯尼亚语</option><option value="fa">波斯语</option><option value="af">布尔语(南非荷兰语)</option><option value="da">丹麦语</option><option value="de">德语</option><option value="ru">俄语</option><option value="fr">法语</option><option value="tl">菲律宾语</option><option value="fi">芬兰语</option><option value="km">高棉语</option><option value="ka">格鲁吉亚语</option><option value="gu">古吉拉特语</option><option value="kk">哈萨克语</option><option value="ht">海地克里奥尔语</option><option value="ko">韩语</option><option value="ha">豪萨语</option><option value="nl">荷兰语</option><option value="gl">加利西亚语</option><option value="ca">加泰罗尼亚语</option><option value="cs">捷克语</option><option value="kn">卡纳达语</option><option value="hr">克罗地亚语</option><option value="la">拉丁语</option><option value="lv">拉脱维亚语</option><option value="lo">老挝语</option><option value="lt">立陶宛语</option><option value="ro">罗马尼亚语</option><option value="mg">马尔加什语</option><option value="mt">马耳他语</option><option value="mr">马拉地语</option><option value="ml">马拉雅拉姆语</option><option value="ms">马来语</option><option value="mk">马其顿语</option><option value="mi">毛利语</option><option value="mn">蒙古语</option><option value="bn">孟加拉语</option><option value="my">缅甸语</option><option value="hmn">苗语</option><option value="zu">南非祖鲁语</option><option value="ne">尼泊尔语</option><option value="no">挪威语</option><option value="pa">旁遮普语</option><option value="pt">葡萄牙语</option><option value="ny">齐切瓦语</option><option value="ja">日语</option><option value="sv">瑞典语</option><option value="sr">塞尔维亚语</option><option value="st">塞索托语</option><option value="si">僧伽罗语</option><option value="eo">世界语</option><option value="sk">斯洛伐克语</option><option value="sl">斯洛文尼亚语</option><option value="sw">斯瓦希里语</option><option value="ceb">宿务语</option><option value="so">索马里语</option><option value="tg">塔吉克语</option><option value="te">泰卢固语</option><option value="ta">泰米尔语</option><option value="th">泰语</option><option value="tr">土耳其语</option><option value="cy">威尔士语</option><option value="ur">乌尔都语</option><option value="uk">乌克兰语</option><option value="uz">乌兹别克语</option><option value="iw">希伯来语</option><option value="el">希腊语</option><option value="es">西班牙语</option><option value="hu">匈牙利语</option><option value="hy">亚美尼亚语</option><option value="ig">伊博语</option><option value="it">意大利语</option><option value="yi">意第绪语</option><option value="hi">印地语</option><option value="su">印尼巽他语</option><option value="id">印尼语</option><option value="jw">印尼爪哇语</option><option value="en">英语</option><option value="yo">约鲁巴语</option><option value="vi">越南语</option><option value="zh-CN">中文简体</option><option value="zh-TW">中文繁体</option></select></td><td width="5%" align="center"> </td><td width="6%" align="center"><div id="SL_TTS_voice" title="聆聽" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="6%" align="center"><div id="SL_copy" title="複製譯文" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="6%" align="center"><div id="SL_bbl_font_patch" title="此功能在字典中禁用"></div><div id="SL_bbl_font" title="字體大小" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="6%" align="center"><div id="SL_TH" title="翻譯歷史" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="10%"></td><td width="6%" align="right"><div id="SL_pin" title="固定彈出窗口" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 16px; height: 16px; cursor: pointer;"></div></td></tr></table></div><div id="SL_alert_bbl" style="display: none;"><div id="SLHKclose"></div><div id="SL_alert_cont"></div></div></div><div id="SL_shadow_translation_result" style="background: rgb(255, 255, 255) url('undefined') repeat scroll 0% 0%; visibility: visible; min-height: 40px;"><div></div></div><div id="SL_loading" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; position: absolute; width: 35px; margin-left: 180px; margin-top: -40px; height: 35px;"></div><div id="SL_player2" style="display: none; height: 0px; width: 0px;"></div><div id="SL_alert100" style="display: none;">語言功能限200個字符</div><div id="SL_Balloon_options" style="background: rgb(255, 255, 255) none repeat scroll 0% 0%;"><div id="SL_arrow_down"></div><table width="100%"><tr><td width="18%" height="16" align="left"><div id="SL_bbl_donate" title="進行一點捐款" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="68%" align="center"><a href="#" id="OPlnk" title="顯示選項">選項</a> : <a href="#" id="HISTlnk" title="翻譯歷史">歷史</a> : <a href="http://about.imtranslator.net/tutorials/presentations/imtranslator-translator-for-firefox/popup-bubble-application/" target="_top" id="HELPlnk" title="幫助">幫助</a> : <a href="#" id="FBlnk" title="反饋">反饋</a></td><td width="15%" align="right"><a id="SL_Balloon_Close" href="#" title="關閉">關閉</a></td></tr></table></div></div></div>
+      <!--new top-->
+    
+
+     
+
+   
+   
+     <!--new top-->
+   
+   
+
+    
+    
+    
+   
+
+   
+
+
+       
+          
+    
+    <div class="pub_fo"><div id="pub_footerall" class="pub_footer_new"><dl><dt></dt> <dd class="foot_sub_menu"><a href="http://www.csdn.net/company/about.html" target="_top">公司简介</a><span>|</span><a href="http://www.csdn.net/company/recruit.html" target="_top">招贤纳士</a><span>|</span><a href="http://www.csdn.net/company/marketing.html" target="_top">广告服务</a><span>|</span><a href="http://www.csdn.net/company/contact.html" target="_top">联系方式</a><span>|</span><a href="http://www.csdn.net/company/statement.html" target="_top">版权声明</a><span>|</span><a href="http://www.csdn.net/company/layer.html" target="_top">法律顾问</a><span>|</span><a href="mailto:webmaster@csdn.net">问题报告</a><span>|</span><a target="_top" href="http://www.csdn.net/friendlink.html">合作伙伴</a><span>|</span><a href="http://bbs.csdn.net/forums/Service" target="_top">论坛反馈</a></dd><dd class="foot_contact"><a href="javascript:void(0);" target="_top" class="qq">网站客服</a><a href="http://wpa.qq.com/msgrd?v=3&amp;uin=2251809102&amp;site=qq&amp;menu=yes" target="_top" class="qq">杂志客服</a><a href="http://e.weibo.com/csdnsupport/profile" target="_top" class="weibo">微博客服</a><a href="mailto:webmaster@csdn.net" class="email" title="联系邮箱">webmaster@csdn.net</a><span class="phone" title="服务热线">400-660-0108</span><span class="interval">|</span><span>北京创新乐知信息技术有限公司 版权所有</span><span class="interval">|</span><span>江苏知之为计算机有限公司</span><span class="interval">|</span><span>江苏乐知网络技术有限公司</span></dd><dd class="foot_copyright"><span>京&nbsp;ICP&nbsp;证&nbsp;09002463&nbsp;号</span><span class="interval">|</span><span>Copyright © 1999-2017, CSDN.NET, All Rights Reserved&nbsp;</span><a href="http://www.hd315.gov.cn/beian/view.asp?bianhao=010202001032100010" target="_top"><img src="gongshang_logos.gif" alt="GongshangLogo" title=""></a></dd></dl></div></div><div id="note1" class="csdn_note" style="display: none; position: absolute; z-index: 9999; width: 440px;">  <span class="notice_top_arrow"><span class="inner"></span></span>  <div class="box"></div></div><div class="csdn_notice_tip" style="position: absolute; z-index: 9990; width: 170px; left: -72px; top: 150px; display: block;">  <iframe src="index_7.html" scrolling="no" style="z-index: -1; position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; background: transparent none repeat scroll 0% 0%;" frameborder="0"></iframe>  <div class="tip_text">您有<strong>147</strong>条新通知</div>  <a href="javascript:void%200" class="close2"></a></div><input id="aa_g_data_ids" type="hidden">
+        
+    
+
+    
+
+     
+    
+
+
+  <div id="a52b5334d" style="width: 1px; height: 1px; display: none;">
+                    
+                    
+   </div>
+
+    
+    
+        
+     
+
+    
+          
+    <div class="pop_CA_cover" style="display: none;"></div>
+    <div class="pop pop_CA" style="display: none;">
+          <div class="CA_header">
+            收藏助手
+            <span class="cancel_icon" id="fapancle" onclick="$('.pop_CA').hide();$('.pop_CA_cover').hide();"></span>
+          </div>
+          <iframe src="index_8.html" id="fa" scrolling="no" width="100%" height="360" frameborder="0"></iframe>
+    </div>
+
+
+        
+
+
+   
+<div id="tag-suggest-pop">
+  <div class="relative">
+    <div class="close"></div>
+    <div class="content"></div>
+  </div>
+</div><div id="mask_code"></div><div class="gist_edit"><div class="save_snippets clearfix"><div class="tit"><h3>保存代码片</h3><span>整理和分享保存的代码片，请访问<a href="https://code.csdn.net/snippets_manage" target="_top">代码笔记</a></span></div><div class="con_form"><ul class="gist_edit_list clearfix"><li><span class="red">*</span><span class="txt">标题</span><input id="form_title" class="form-input" placeholder="使用FEC改善UDP（RTP）音视频传输效果" value="" type="text"></li><li><span class="red">*</span><span class="txt">描述</span><textarea id="form-textarea" class="form-textarea" placeholder="使用FEC改善UDP（RTP）音视频传输效果： http://blog.csdn.net/mediapro/article/details/50393685"></textarea></li><li><span class="red">&nbsp;</span><span class="txt">标签</span><div id="divSearchTags"><span class="label blog_tag"><span>UDP</span><a title="Removing tag" href="javascript:;">x</a></span><span class="label blog_tag"><span>丢包</span><a title="Removing tag" href="javascript:;">x</a></span><span class="label blog_tag"><span>FEC</span><a title="Removing tag" href="javascript:;">x</a></span><span class="label blog_tag"><span>QOS</span><a title="Removing tag" href="javascript:;">x</a></span><span class="label blog_tag"><span>RTP</span><a title="Removing tag" href="javascript:;">x</a></span><input id="insertTag" class="insertTag" placeholder="请输入标签，按Enter生成(最多5项)" value="" name="insertTag" maxlength="21" style="color: rgb(51, 51, 51);" type="text"><input id="OrganTag" class="OrganTag" name="OrganTag" value="UDP,丢包,FEC,QOS,RTP," type="hidden"><input id="OldOrganTag" class="OldOrganTag" name="OldOrganTag" value="" type="hidden"><input name="txtSearchTags" type="hidden"></div></li></ul></div><div class="bottom-bar"><a href="javascript:;" class="btn-submit btn-cancel">取消</a><span class="tracking-ad" data-mod="popu_250"><a class="btn-submit btn-confirm" href="javascript:;" target="_top">确定</a></span></div></div></div><div data-mod="popu_64" class="csdn-tracking-statistics" chg-blk="0"><a id="com-quick-QRcode" class="QRcodebg1" title="扫描二维码" style="top:195px"><span class="closeQR"></span></a><a id="com-quick-reply" title="快速回复" style="top:329px"></a><a id="com-quick-collect" title="我要收藏" style="top:367px"></a><a id="com-d-top-a" style="top: 405px; display: none;" title="返回顶部" onclick=""></a></div><div class="pop_edit ask_second comm_ask_second"><h3>提问</h3><span class="ask_float_span">您的问题将会被发布在“<a class="ask_float_channel" href="http://ask.csdn.net/" target="_top" style="cursor: pointer;">技术问答</a>”频道</span><a href="#" nodetype="close" class="close">×</a><div class="context"><div class="err_div"><span class="err_ico"></span><span class="err_txt">该问题已存在，请勿重复提问</span></div><div class="input_div"><input id="askInputSecond" style="font-size: 14px;" placeholder="问题标题" value="" type="text"></div><div class="cm_box"><div class="cm_dialog"></div> <div class="pop_cm cm_add_link"><input placeholder="链接内容" id="af_cm_link_txt" value="" type="text"><input placeholder="链接地址" id="af_cm_link_url" value="" type="text"><input placeholder="链接提示" id="af_cm_link_tit" value="" type="text"><div class="text-right"><span class="btn btn-default btn-sm" id="add_link_btn">插入链接</span> </div> </div><div class="pop_cm cm_add_img"><div class="nav-tabs"><a class="img_tab active" href="#tab_upload">本地上传</a><a class="img_tab" href="#tab_weburl">网络图片</a></div><div class="tab_panel active" id="tab_upload"><div class="set_img"><iframe src="http://ask.csdn.net/upload.html"></iframe></div></div><div class="tab_panel" id="tab_weburl"><input placeholder="图片地址" id="af_cm_img_url" value="" type="text"><input placeholder="图片说明" id="af_cm_img_alt" value="" type="text"><div class="text-right"><span class="btn btn-default btn-sm" id="add_img_btn">插入图片</span> </div></div> </div></div> <textarea id="editor_all" rows="8" style="display: none;"></textarea><div class="editor-toolbar"><i class="separator">|</i><a class="icon-headline" title="标题一（Ctrl+Alt+1）"></a><a class="icon-heading" title="标题二（Ctrl+Alt+2）"></a><a class="icon-bold" title="粗体（Ctrl+B）"></a><a class="icon-italic" title="斜体（Ctrl+I）"></a><i class="separator">|</i><a class="icon-quote-left" title="引用（Ctrl+’）"></a><a class="icon-code" title="插入代码片（Ctrl+,）"></a><a class="icon-list-ul" title="无序列表（Ctrl+L）"></a><a class="icon-list-ol" title="有序列表（Ctrl+Alt+L）"></a><i class="separator">|</i><a class="icon-link" title="添加链接（Ctrl+K）"></a><a class="icon-picture" title="添加图片（Ctrl+Alt+I）"></a><i class="separator">|</i><a class="icon-reply" title="撤退（Ctrl+Z）"></a><a class="icon-share-alt" title="前进（Ctrl+Shift+Z）"></a><i class="separator">|</i><a class="icon-info" href="http://ask.csdn.net/pages/markdown" target="_top" title="markdown语法参考"></a><a class="icon-preview" title="预览"></a><i class="separator">|</i></div><div class="CodeMirror cm-s-paper CodeMirror-focused"><div style="overflow: hidden; position: relative; width: 3px; height: 0px;"><textarea style="position: absolute; padding: 0px; width: 1px; height: 1em; outline: medium none; font-size: 4px;" autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" wrap="off"></textarea></div><div class="CodeMirror-hscrollbar"><div style="height: 1px;"></div></div><div class="CodeMirror-vscrollbar"><div style="width: 1px;"></div></div><div class="CodeMirror-scrollbar-filler"></div><div class="CodeMirror-gutter-filler"></div><div class="CodeMirror-scroll" tabindex="-1" draggable="true"><div class="CodeMirror-sizer" style="min-width: 33px;"><div style="position: relative;"><div class="CodeMirror-lines"><div style="position: relative; outline: medium none;"><div class="CodeMirror-measure"><pre>&nbsp;<span style="display: inline-block; width: 1px; margin-right: -1px;">&nbsp;</span></pre></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-code"></div><div class="CodeMirror-cursor" style="visibility: hidden;">&nbsp;</div><div class="CodeMirror-cursor CodeMirror-secondarycursor" style="visibility: hidden;">&nbsp;</div></div></div></div></div><div style="position: absolute; height: 30px; width: 1px;"></div><div class="CodeMirror-gutters" style="display: none;"></div></div></div><div class="editor-statusbar"><span class="lines">0</span><span class="words">0</span><span class="cursor">0:0</span></div><div class="div_tags clearfix"><div id="divSearchTags" class="tags_con"><input value="" type="text"></div><input name="txtSearchTags" type="hidden"></div><div id="ask2_tagRecomm_div" class="drt_tagRecomm tracking-ad" data-mod="popu_73"><span class="drt_tit">推荐标签：</span></div></div><div class="success"><div class="left_area"><input id="chk_cb" type="checkbox"><span class="wyxs">我要悬赏</span><input id="cb_num" class="cb_num" readonly="true" value=""><span class="phib_rii"><span> 币</span></span></div><a href="#" nodetype="cancel" class="cancel">取消</a><a href="#" nodetype="ok" class="ok">发布</a></div></div><div id="common_ask_div_sc" class="searchContainer"><div class="sTitle">可能存在类似的问题：</div><div class="sFooter"><a class="sFirstNewAsk">我想提一个新问题</a></div></div><div style="position: fixed; top: 0px; left: 0px; overflow: hidden;"><input style="position: absolute; left: -300px;" value="" id="focus_retriever" readonly="true" type="text"></div></body>
+</html>

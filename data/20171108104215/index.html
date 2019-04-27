@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>python websocket学习使用 - MikeZhou - 博客园</title>
+
+
+
+<link title="RSS" type="application/rss+xml" rel="alternate" href="http://www.cnblogs.com/jinjiangongzuoshi/rss">
+<link title="RSD" type="application/rsd+xml" rel="EditURI" href="http://www.cnblogs.com/jinjiangongzuoshi/rsd.xml">
+<link type="application/wlwmanifest+xml" rel="wlwmanifest" href="http://www.cnblogs.com/jinjiangongzuoshi/wlwmanifest.xml">
+  
+
+
+
+<link rel="stylesheet" type="text/css" id="SL_Style" href="chrome://imtranslator/content/css/translator.css">
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<a name="top"></a>
+
+
+<div id="container">
+    <a class="minyx" href="http://www.cnblogs.com/">代码改变世界</a>
+    <ul id="topMnu">
+        <!-- 统计数据 -->
+        <li>
+            
+                
+            
+        </li>
+        <!-- 这边可以增加一些链接 -->
+        <!-- 博客园 -->
+        <li><a href="http://www.cnblogs.com/">Cnblogs</a></li>
+        <!-- 管理 -->
+        <li id="topMnu-dashboard">
+            <a id="lnkDashboard" href="http://www.cnblogs.com/jinjiangongzuoshi/admin/EditPosts.aspx">Dashboard</a></li>
+        <li>
+            <a id="lnkLogin" href="http://passport.cnblogs.com/login.aspx?ReturnUrl=http://www.cnblogs.com/jinjiangongzuoshi/p/5062092.html">Login</a></li>
+    </ul>
+
+    
+
+    <div id="header">
+        <ul id="menu">
+            <!-- 首页，当前section加上current类 -->
+            <li id="menu-home" class="current">
+                <a id="lnkHome" href="http://www.cnblogs.com/jinjiangongzuoshi/">Home</a></li>
+            <!-- 联系 -->
+            <li id="menu-contact">
+                <a id="lnkContact" href="http://space.cnblogs.com/msg/send/MikeZhou">Contact</a></li>
+            <!-- 相册 -->
+            <li id="menu-gallary">
+                <a id="lnkGallery" href="http://www.cnblogs.com/jinjiangongzuoshi/gallery.html">Gallery</a></li>
+            <!-- Rss订阅 -->
+            <li id="rss">
+                <a id="lnkRss" href="http://www.cnblogs.com/jinjiangongzuoshi/rss">RSS</a></li>
+        </ul>
+        <div id="newmsg"></div>
+        <h1>
+            <!-- 主标题 -->
+            <a id="lnkBlogTitle" href="http://www.cnblogs.com/jinjiangongzuoshi/">狂师</a>
+            <!-- 子标题 -->
+            <small>
+                技术改变世界！  --狂诗绝剑</small>
+        </h1>
+    </div>
+
+    
+
+    <div id="wrapper">
+        <div id="content">
+            
+            
+<div id="post_detail">
+<div class="post" id="post">
+    <a name="top"></a>
+    <h2><a id="cb_post_title_url" href="http://www.cnblogs.com/jinjiangongzuoshi/p/5062092.html">python websocket学习使用</a></h2>
+    <small>2015-12-20 22:31 by MikeZhou, <span id="post_view_count">9916</span> 阅读, <span id="post_comment_count">1</span> 评论, <a href="#" onclick="AddToWz(5062092);return false;">收藏</a>,  <a href="https://i.cnblogs.com/EditPosts.aspx?postid=5062092" rel="nofollow">编辑</a></small>
+    <div class="entry">
+        <div id="cnblogs_post_body"><p><span style="font-size: 16px;"><strong>前言</strong></span></p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="color: rgb(0, 0, 0);">今天看了一些资料，记录一下心得。
+
+websocket是html5引入的一个新特性，传统的web应用是通过http协议来提供支持，如果要实时同步传输数据，需要轮询，效率低下
+
+websocket是类似socket通信，web端连接服务器后，握手成功，一直保持连接，可以理解为长连接，这时服务器就可以主动给客户端发送数据，实现数据的自动更新。
+
+使用websocket需要注意浏览器和当前的版本，不同的浏览器提供的支持不一样，因此设计服务器的时候，需要考虑。<br><br><br></span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div></div>
+<p>&nbsp;</p>
+<p><span style="font-size: 16px;"><strong>进一步简述</strong></span></p>
+<p>&nbsp;</p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="color: rgb(0, 0, 0);">websocket是一个浏览器和服务器通信的新的协议，一般而言，浏览器和服务器通信最常用的是http协议，但是http协议是无状态的，每次浏览器请求信息，服务器返回信息后这个浏览器和服务器通信的信道就被关闭了，这样使得服务器如果想主动给浏览器发送信息变得不可能了，服务器推技术在http时代的解决方案一个是客户端去轮询，或是使用comet技术，而websocket则和一般的socket一样，使得浏览器和服务器建立了一个双工的通道。
+具体的websocket协议在rfc6455里面有，这里简要说明一下。websocket通信需要先有个握手的过程，使得协议由http转变为webscoket协议，然后浏览器和服务器就可以利用这个socket来通信了。
+
+首先浏览器发送握手信息，要求协议转变为websocket
+
+GET / HTTP/1.1
+Host: example.com
+Upgrade: websocket
+Connection: Upgrade
+Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==
+Origin: http://example.com
+服务器接收到信息后，取得其中的Sec-WebSocket-Key，将他和一个固定的字符串258EAFA5-E914-47DA-95CA-C5AB0DC85B11做拼接，得到的字符串先用sha1做一下转换，再用base64转换一下，就得到了回应的字符串，这样服务器端发送回的消息是这样的
+
+HTTP/1.1 101 Switching Protocols
+Upgrade: websocket
+Connection: Upgrade
+Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=
+这样握手就完成了，用python来实现这段握手过程的话就是下面这样。
+
+ def handshake(conn):
+    key =None
+    data = conn.recv(8192)
+    if not len(data):
+       return False
+    for line in data.split('\r\n\r\n')[0].split('\r\n')[1:]:
+        k, v = line.split(': ')
+        if k =='Sec-WebSocket-Key':
+            key =base64.b64encode(hashlib.sha1(v +'258EAFA5-E914-47DA-95CA-C5AB0DC85B11').digest())
+    if not key:
+        conn.close()
+        return False
+    response ='HTTP/1.1 101 Switching Protocols\r\n'\
+               'Upgrade: websocket\r\n'\
+               'Connection: Upgrade\r\n'\
+               'Sec-WebSocket-Accept:'+ key +'\r\n\r\n'
+    conn.send(response)
+    return True
+握手过程完成之后就是信息传输了，websocket的数据信息格式是这样的。
+
++-+-+-+-+-------+-+-------------+-------------------------------+
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-------+-+-------------+-------------------------------+
+|F|R|R|R| opcode|M| Payload len |    Extended payload length    |
+|I|S|S|S|  (4)  |A|     (7)     |             (16/64)           |
+|N|V|V|V|       |S|             |   (if payload len==126/127)   |
+| |1|2|3|       |K|             |                               |
++-+-+-+-+-------+-+-------------+ - - - - - - - - - - - - - - - +
+|     Extended payload length continued, if payload len == 127  |
++ - - - - - - - - - - - - - - - +-------------------------------+
+|                               | Masking-key, if MASK set to 1 |
++-------------------------------+-------------------------------+
+| Masking-key (continued)       |          Payload Data         |
++-------------------------------- - - - - - - - - - - - - - - - +
+:                     Payload Data continued ...                :
++ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +
+|                     Payload Data continued ...                |
++---------------------------------------------------------------+
+值得注意的是payload len这项，表示数据的长度有多少，如果小于126，那么payload len就是数据的长度，如果是126那么接下来2个字节是数据长度，如果是127表示接下来8个字节是数据长度，然后后面会有四个字节的mask，真实数据要由payload data和mask做异或才能得到，这样就可以得到数据了。发送数据的格式和接受的数据类似，具体细节可以去参考rfc6455，这里就不过多赘述了。　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div></div>
+<p>&nbsp;</p>
+<h3>Python的Websocket客户端：Websocket-Client</h3>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div>
+<pre>Websocket-Client 是 Python 上的 Websocket 客户端。它只支持 hybi-13，且所有的 Websocket API 都支持同步。</pre>
+<h2>Installation</h2>
+<p>This module is tested on Python 2.7 and Python 3.x.</p>
+<p>Type "python setup.py install" or "pip install websocket-client" to install.</p>
+<div>
+<p>Caution!</p>
+<p>from v0.16.0, we can install by "pip install websocket-client" for python 3.</p>
+</div>
+<p>This module depend on</p>
+<ul>
+<li>six</li>
+<li>backports.ssl_match_hostname for Python 2.x</li>
+</ul>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div></div>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h1 class="YaHei">Python通过websocket与js客户端通信示例分析</h1>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div>
+<p>这里，介绍如何使用 Python 与前端 js 进行通信。</p>
+<p>websocket 使用 HTTP 协议完成握手之后，不通过 HTTP 直接进行 websocket 通信。</p>
+<p>于是，使用 websocket 大致两个步骤：使用 HTTP 握手，通信。</p>
+<p>js 处理 websocket 要使用 ws 模块； Python 处理则使用 socket 模块建立 TCP 连接即可，比一般的 socket ，只多一个握手以及数据处理的步骤。</p>
+<p>&nbsp;</p>
+<p>包格式</p>
+<p>js 客户端先向服务器端 python 发送握手包，格式如下：</p>
+<div class="container">
+<div class="line number1 index0 alt2"><code class="xhtml plain">GET /chat HTTP/1.1</code></div>
+<div class="line number2 index1 alt1"><code class="xhtml plain">Host: server.example.com</code></div>
+<div class="line number3 index2 alt2"><code class="xhtml plain">Upgrade: websocket</code></div>
+<div class="line number4 index3 alt1"><code class="xhtml plain">Connection: Upgrade</code></div>
+<div class="line number5 index4 alt2"><code class="xhtml plain">Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==</code></div>
+<div class="line number6 index5 alt1"><code class="xhtml plain">Origin: <a href="http://example.com/">http://example.com</a></code></div>
+<div class="line number7 index6 alt2"><code class="xhtml plain">Sec-WebSocket-Protocol: chat, superchat</code></div>
+<div class="line number8 index7 alt1"><code class="xhtml plain">Sec-WebSocket-Version: 13</code></div>
+<div class="line number8 index7 alt1">&nbsp;</div>
+<div class="line number8 index7 alt1">&nbsp;</div>
+<div class="line number8 index7 alt1">服务器回应包格式：</div>
+<div class="line number8 index7 alt1">
+<div class="container">
+<div class="line number1 index0 alt2"><code class="xhtml plain">HTTP/1.1 101 Switching Protocols</code></div>
+<div class="line number2 index1 alt1"><code class="xhtml plain">Upgrade: websocket</code></div>
+<div class="line number3 index2 alt2"><code class="xhtml plain">Connection: Upgrade</code></div>
+<div class="line number4 index3 alt1"><code class="xhtml plain">Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=</code></div>
+<div class="line number5 index4 alt2"><code class="xhtml plain">Sec-WebSocket-Protocol: chat</code></div>
+<div class="line number5 index4 alt2">&nbsp;</div>
+<div class="line number5 index4 alt2">
+<p>其中， Sec-WebSocket-Key 是随机的，服务器用这些数据构造一个 SHA-1 信息摘要。</p>
+<p>方法为： key+migic ， SHA-1&nbsp; 加密， base-64 加密</p>
+<p>&nbsp;</p>
+<p>Python 中的处理代码:</p>
+<div class="container">
+<div class="line number1 index0 alt2"><code class="py plain">MAGIC_STRING </code><code class="py keyword">=</code> <code class="py string">'258EAFA5-E914-47DA-95CA-C5AB0DC85B11'</code></div>
+<div class="line number2 index1 alt1"><code class="py plain">res_key </code><code class="py keyword">=</code> <code class="py plain">base64.b64encode(hashlib.sha1(sec_key </code><code class="py keyword">+</code> <code class="py plain">MAGIC_STRING).digest())</code></div>
+<div class="line number2 index1 alt1">&nbsp;</div>
+<div class="line number2 index1 alt1">&nbsp;</div>
+<div class="line number2 index1 alt1">
+<p>握手完整代码</p>
+<p>js 端</p>
+<p>js 中有处理 websocket 的类，初始化后自动发送握手包，如下：</p>
+<p>var socket = new WebSocket('ws://localhost:3368');</p>
+<p>Python 端</p>
+<p>Python 用 socket 接受得到握手字符串，处理后发送</p>
+<div class="container">
+<div class="line number1 index0 alt2"><code class="py plain">HOST </code><code class="py keyword">=</code> <code class="py string">'localhost'</code></div>
+<div class="line number2 index1 alt1"><code class="py plain">PORT </code><code class="py keyword">=</code> <code class="py value">3368</code></div>
+<div class="line number3 index2 alt2"><code class="py plain">MAGIC_STRING </code><code class="py keyword">=</code> <code class="py string">'258EAFA5-E914-47DA-95CA-C5AB0DC85B11'</code></div>
+<div class="line number4 index3 alt1"><code class="py plain">HANDSHAKE_STRING </code><code class="py keyword">=</code> <code class="py string">"HTTP/1.1 101 Switching Protocols\r\n"</code> <code class="py plain">\</code></div>
+<div class="line number5 index4 alt2"><code class="py spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="py string">"Upgrade:websocket\r\n"</code> <code class="py plain">\</code></div>
+<div class="line number6 index5 alt1"><code class="py spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="py string">"Connection: Upgrade\r\n"</code> <code class="py plain">\</code></div>
+<div class="line number7 index6 alt2"><code class="py spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="py string">"Sec-WebSocket-Accept: {1}\r\n"</code> <code class="py plain">\</code></div>
+<div class="line number8 index7 alt1"><code class="py spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="py string">"WebSocket-Location: <a href="http://www.cnblogs.com/ws:">ws://</a>{2}/chat\r\n"</code> <code class="py plain">\</code></div>
+<div class="line number9 index8 alt2"><code class="py spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="py string">"WebSocket-Protocol:chat\r\n\r\n"</code></div>
+<div class="line number10 index9 alt1"><code class="py spaces">&nbsp;</code>&nbsp;</div>
+<div class="line number11 index10 alt2"><code class="py keyword">def</code> <code class="py plain">handshake(con):</code></div>
+<div class="line number12 index11 alt1"><code class="py comments">#con为用socket，accept()得到的socket</code></div>
+<div class="line number13 index12 alt2"><code class="py comments">#这里省略监听，accept的代码,具体可见blog：<a href="http://blog.csdn.net/ice110956/article/details/29830627">http://blog.csdn.net/ice110956/article/details/29830627</a></code></div>
+<div class="line number14 index13 alt1"><code class="py spaces">&nbsp;</code><code class="py plain">headers </code><code class="py keyword">=</code> <code class="py plain">{}</code></div>
+<div class="line number15 index14 alt2"><code class="py spaces">&nbsp;</code><code class="py plain">shake </code><code class="py keyword">=</code> <code class="py plain">con.recv(</code><code class="py value">1024</code><code class="py plain">)</code></div>
+<div class="line number16 index15 alt1"><code class="py spaces">&nbsp;</code>&nbsp;</div>
+<div class="line number17 index16 alt2"><code class="py spaces">&nbsp;</code><code class="py keyword">if</code> <code class="py keyword">not</code> <code class="py functions">len</code><code class="py plain">(shake):</code></div>
+<div class="line number18 index17 alt1"><code class="py spaces">&nbsp;&nbsp;</code><code class="py keyword">return</code> <code class="py color1">False</code></div>
+<div class="line number19 index18 alt2"><code class="py spaces">&nbsp;</code>&nbsp;</div>
+<div class="line number20 index19 alt1"><code class="py spaces">&nbsp;</code><code class="py plain">header, data </code><code class="py keyword">=</code> <code class="py plain">shake.split(</code><code class="py string">'\r\n\r\n'</code><code class="py plain">, </code><code class="py value">1</code><code class="py plain">)</code></div>
+<div class="line number21 index20 alt2"><code class="py spaces">&nbsp;</code><code class="py keyword">for</code> <code class="py plain">line </code><code class="py keyword">in</code> <code class="py plain">header.split(</code><code class="py string">'\r\n'</code><code class="py plain">)[</code><code class="py value">1</code><code class="py plain">:]:</code></div>
+<div class="line number22 index21 alt1"><code class="py spaces">&nbsp;&nbsp;</code><code class="py plain">key, val </code><code class="py keyword">=</code> <code class="py plain">line.split(</code><code class="py string">': '</code><code class="py plain">, </code><code class="py value">1</code><code class="py plain">)</code></div>
+<div class="line number23 index22 alt2"><code class="py spaces">&nbsp;&nbsp;</code><code class="py plain">headers[key] </code><code class="py keyword">=</code> <code class="py plain">val</code></div>
+<div class="line number24 index23 alt1"><code class="py spaces">&nbsp;</code>&nbsp;</div>
+<div class="line number25 index24 alt2"><code class="py spaces">&nbsp;</code><code class="py keyword">if</code> <code class="py string">'Sec-WebSocket-Key'</code> <code class="py keyword">not</code> <code class="py keyword">in</code> <code class="py plain">headers:</code></div>
+<div class="line number26 index25 alt1"><code class="py spaces">&nbsp;&nbsp;</code><code class="py functions">print</code> <code class="py plain">(</code><code class="py string">'This socket is not websocket, client close.'</code><code class="py plain">)</code></div>
+<div class="line number27 index26 alt2"><code class="py spaces">&nbsp;&nbsp;</code><code class="py plain">con.close()</code></div>
+<div class="line number28 index27 alt1"><code class="py spaces">&nbsp;&nbsp;</code><code class="py keyword">return</code> <code class="py color1">False</code></div>
+<div class="line number29 index28 alt2"><code class="py spaces">&nbsp;</code>&nbsp;</div>
+<div class="line number30 index29 alt1"><code class="py spaces">&nbsp;</code><code class="py plain">sec_key </code><code class="py keyword">=</code> <code class="py plain">headers[</code><code class="py string">'Sec-WebSocket-Key'</code><code class="py plain">]</code></div>
+<div class="line number31 index30 alt2"><code class="py spaces">&nbsp;</code><code class="py plain">res_key </code><code class="py keyword">=</code> <code class="py plain">base64.b64encode(hashlib.sha1(sec_key </code><code class="py keyword">+</code> <code class="py plain">MAGIC_STRING).digest())</code></div>
+<div class="line number32 index31 alt1"><code class="py spaces">&nbsp;</code>&nbsp;</div>
+<div class="line number33 index32 alt2"><code class="py spaces">&nbsp;</code><code class="py plain">str_handshake </code><code class="py keyword">=</code> <code class="py plain">HANDSHAKE_STRING.replace(</code><code class="py string">'{1}'</code><code class="py plain">, res_key).replace(</code><code class="py string">'{2}'</code><code class="py plain">, HOST </code><code class="py keyword">+</code> <code class="py string">':'</code> <code class="py keyword">+</code> <code class="py functions">str</code><code class="py plain">(PORT))</code></div>
+<div class="line number34 index33 alt1"><code class="py spaces">&nbsp;</code><code class="py functions">print</code> <code class="py plain">str_handshake</code></div>
+<div class="line number35 index34 alt2"><code class="py spaces">&nbsp;</code><code class="py plain">con.send(str_handshake)</code></div>
+<div class="line number36 index35 alt1"><code class="py keyword">return</code> <code class="py color1">True</code></div>
+<div class="line number36 index35 alt1">&nbsp;</div>
+<div class="line number36 index35 alt1">&nbsp;</div>
+<div class="line number36 index35 alt1">
+<p>通信</p>
+<p>不同版本的浏览器定义的数据帧格式不同， Python 发送和接收时都要处理得到符合格式的数据包，才能通信。</p>
+<p>Python 接收</p>
+<p>Python 接收到浏览器发来的数据，要解析后才能得到其中的有用数据。</p>
+<p>&nbsp;</p>
+<p>固定字节：</p>
+<p>（ 1000 0001 或是 1000 0002 ）这里没用，忽略</p>
+<p>包长度字节：</p>
+<p>第一位肯定是 1 ，忽略。剩下 7 个位可以得到一个整数 (0 ~ 127) ，其中</p>
+<p>（ 1-125 ）表此字节为长度字节，大小即为长度；</p>
+<p>（126）表接下来的两个字节才是长度；</p>
+<p>（127）表接下来的八个字节才是长度；</p>
+<p>用这种变长的方式表示数据长度，节省数据位。</p>
+<p>mark 掩码：</p>
+<p>mark 掩码为包长之后的 4 个字节，之后的兄弟数据要与 mark 掩码做运算才能得到真实的数据。</p>
+<p>兄弟数据：</p>
+<p>得到真实数据的方法：将兄弟数据的每一位 x ，和掩码的第 i%4 位做 xor 运算，其中 i 是 x 在兄弟数据中的索引。</p>
+<p>&nbsp;</p>
+<p>完整代码</p>
+<div class="container">
+<div class="line number1 index0 alt2"><code class="py keyword">def</code> <code class="py plain">recv_data(</code><code class="py color1">self</code><code class="py plain">, num):</code></div>
+<div class="line number2 index1 alt1"><code class="py spaces">&nbsp;</code><code class="py keyword">try</code><code class="py plain">:</code></div>
+<div class="line number3 index2 alt2"><code class="py spaces">&nbsp;&nbsp;</code><code class="py plain">all_data </code><code class="py keyword">=</code> <code class="py color1">self</code><code class="py plain">.con.recv(num)</code></div>
+<div class="line number4 index3 alt1"><code class="py spaces">&nbsp;&nbsp;</code><code class="py keyword">if</code> <code class="py keyword">not</code> <code class="py functions">len</code><code class="py plain">(all_data):</code></div>
+<div class="line number5 index4 alt2"><code class="py spaces">&nbsp;&nbsp;&nbsp;</code><code class="py keyword">return</code> <code class="py color1">False</code></div>
+<div class="line number6 index5 alt1"><code class="py spaces">&nbsp;</code><code class="py keyword">except</code><code class="py plain">:</code></div>
+<div class="line number7 index6 alt2"><code class="py spaces">&nbsp;&nbsp;</code><code class="py keyword">return</code> <code class="py color1">False</code></div>
+<div class="line number8 index7 alt1"><code class="py spaces">&nbsp;</code><code class="py keyword">else</code><code class="py plain">:</code></div>
+<div class="line number9 index8 alt2"><code class="py spaces">&nbsp;&nbsp;</code><code class="py plain">code_len </code><code class="py keyword">=</code> <code class="py functions">ord</code><code class="py plain">(all_data[</code><code class="py value">1</code><code class="py plain">]) &amp; </code><code class="py value">127</code></div>
+<div class="line number10 index9 alt1"><code class="py spaces">&nbsp;&nbsp;</code><code class="py keyword">if</code> <code class="py plain">code_len </code><code class="py keyword">=</code><code class="py keyword">=</code> <code class="py value">126</code><code class="py plain">:</code></div>
+<div class="line number11 index10 alt2"><code class="py spaces">&nbsp;&nbsp;&nbsp;</code><code class="py plain">masks </code><code class="py keyword">=</code> <code class="py plain">all_data[</code><code class="py value">4</code><code class="py plain">:</code><code class="py value">8</code><code class="py plain">]</code></div>
+<div class="line number12 index11 alt1"><code class="py spaces">&nbsp;&nbsp;&nbsp;</code><code class="py plain">data </code><code class="py keyword">=</code> <code class="py plain">all_data[</code><code class="py value">8</code><code class="py plain">:]</code></div>
+<div class="line number13 index12 alt2"><code class="py spaces">&nbsp;&nbsp;</code><code class="py keyword">elif</code> <code class="py plain">code_len </code><code class="py keyword">=</code><code class="py keyword">=</code> <code class="py value">127</code><code class="py plain">:</code></div>
+<div class="line number14 index13 alt1"><code class="py spaces">&nbsp;&nbsp;&nbsp;</code><code class="py plain">masks </code><code class="py keyword">=</code> <code class="py plain">all_data[</code><code class="py value">10</code><code class="py plain">:</code><code class="py value">14</code><code class="py plain">]</code></div>
+<div class="line number15 index14 alt2"><code class="py spaces">&nbsp;&nbsp;&nbsp;</code><code class="py plain">data </code><code class="py keyword">=</code> <code class="py plain">all_data[</code><code class="py value">14</code><code class="py plain">:]</code></div>
+<div class="line number16 index15 alt1"><code class="py spaces">&nbsp;&nbsp;</code><code class="py keyword">else</code><code class="py plain">:</code></div>
+<div class="line number17 index16 alt2"><code class="py spaces">&nbsp;&nbsp;&nbsp;</code><code class="py plain">masks </code><code class="py keyword">=</code> <code class="py plain">all_data[</code><code class="py value">2</code><code class="py plain">:</code><code class="py value">6</code><code class="py plain">]</code></div>
+<div class="line number18 index17 alt1"><code class="py spaces">&nbsp;&nbsp;&nbsp;</code><code class="py plain">data </code><code class="py keyword">=</code> <code class="py plain">all_data[</code><code class="py value">6</code><code class="py plain">:]</code></div>
+<div class="line number19 index18 alt2"><code class="py spaces">&nbsp;&nbsp;</code><code class="py plain">raw_str </code><code class="py keyword">=</code> <code class="py plain">""</code></div>
+<div class="line number20 index19 alt1"><code class="py spaces">&nbsp;&nbsp;</code><code class="py plain">i </code><code class="py keyword">=</code> <code class="py value">0</code></div>
+<div class="line number21 index20 alt2"><code class="py spaces">&nbsp;&nbsp;</code><code class="py keyword">for</code> <code class="py plain">d </code><code class="py keyword">in</code> <code class="py plain">data:</code></div>
+<div class="line number22 index21 alt1"><code class="py spaces">&nbsp;&nbsp;&nbsp;</code><code class="py plain">raw_str </code><code class="py keyword">+</code><code class="py keyword">=</code> <code class="py functions">chr</code><code class="py plain">(</code><code class="py functions">ord</code><code class="py plain">(d) ^ </code><code class="py functions">ord</code><code class="py plain">(masks[i </code><code class="py keyword">%</code> <code class="py value">4</code><code class="py plain">]))</code></div>
+<div class="line number23 index22 alt2"><code class="py spaces">&nbsp;&nbsp;&nbsp;</code><code class="py plain">i </code><code class="py keyword">+</code><code class="py keyword">=</code> <code class="py value">1</code></div>
+<div class="line number24 index23 alt1"><code class="py spaces">&nbsp;&nbsp;</code><code class="py keyword">return</code> <code class="py plain">raw_str</code></div>
+<div class="line number24 index23 alt1">
+<p>js 端的 ws 对象，通过 ws.send(str) 即可发送</p>
+<p>ws.send(str)</p>
+<p>&nbsp;</p>
+<p>Python 发送</p>
+<p>Python 要包数据发送，也需要处理</p>
+</div>
+<div class="line number24 index23 alt1">
+<p>固定字节：固定的 1000 0001( ‘ \x81 ′ )</p>
+<p>包长：根据发送数据长度是否超过 125 ， 0xFFFF(65535) 来生成 1 个或 3 个或 9 个字节，来代表数据长度。</p>
+</div>
+<div class="line number24 index23 alt1">
+<div class="container">
+<div class="line number1 index0 alt2"><code class="py keyword">def</code> <code class="py plain">send_data(</code><code class="py color1">self</code><code class="py plain">, data):</code></div>
+<div class="line number2 index1 alt1"><code class="py spaces">&nbsp;</code><code class="py keyword">if</code> <code class="py plain">data:</code></div>
+<div class="line number3 index2 alt2"><code class="py spaces">&nbsp;&nbsp;</code><code class="py plain">data </code><code class="py keyword">=</code> <code class="py functions">str</code><code class="py plain">(data)</code></div>
+<div class="line number4 index3 alt1"><code class="py spaces">&nbsp;</code><code class="py keyword">else</code><code class="py plain">:</code></div>
+<div class="line number5 index4 alt2"><code class="py spaces">&nbsp;&nbsp;</code><code class="py keyword">return</code> <code class="py color1">False</code></div>
+<div class="line number6 index5 alt1"><code class="py spaces">&nbsp;</code><code class="py plain">token </code><code class="py keyword">=</code> <code class="py string">"\x81"</code></div>
+<div class="line number7 index6 alt2"><code class="py spaces">&nbsp;</code><code class="py plain">length </code><code class="py keyword">=</code> <code class="py functions">len</code><code class="py plain">(data)</code></div>
+<div class="line number8 index7 alt1"><code class="py spaces">&nbsp;</code><code class="py keyword">if</code> <code class="py plain">length &lt; </code><code class="py value">126</code><code class="py plain">:</code></div>
+<div class="line number9 index8 alt2"><code class="py spaces">&nbsp;&nbsp;</code><code class="py plain">token </code><code class="py keyword">+</code><code class="py keyword">=</code> <code class="py plain">struct.pack(</code><code class="py string">"B"</code><code class="py plain">, length)</code></div>
+<div class="line number10 index9 alt1"><code class="py spaces">&nbsp;</code><code class="py keyword">elif</code> <code class="py plain">length &lt;</code><code class="py keyword">=</code> <code class="py value">0xFFFF</code><code class="py plain">:</code></div>
+<div class="line number11 index10 alt2"><code class="py spaces">&nbsp;&nbsp;</code><code class="py plain">token </code><code class="py keyword">+</code><code class="py keyword">=</code> <code class="py plain">struct.pack(</code><code class="py string">"!BH"</code><code class="py plain">, </code><code class="py value">126</code><code class="py plain">, length)</code></div>
+<div class="line number12 index11 alt1"><code class="py spaces">&nbsp;</code><code class="py keyword">else</code><code class="py plain">:</code></div>
+<div class="line number13 index12 alt2"><code class="py spaces">&nbsp;&nbsp;</code><code class="py plain">token </code><code class="py keyword">+</code><code class="py keyword">=</code> <code class="py plain">struct.pack(</code><code class="py string">"!BQ"</code><code class="py plain">, </code><code class="py value">127</code><code class="py plain">, length)</code></div>
+<div class="line number14 index13 alt1"><code class="py spaces">&nbsp;</code><code class="py comments">#struct为Python中处理二进制数的模块，二进制流为C，或网络流的形式。</code></div>
+<div class="line number15 index14 alt2"><code class="py spaces">&nbsp;</code><code class="py plain">data </code><code class="py keyword">=</code> <code class="py string">'%s%s'</code> <code class="py keyword">%</code> <code class="py plain">(token, data)</code></div>
+<div class="line number16 index15 alt1"><code class="py spaces">&nbsp;</code><code class="py color1">self</code><code class="py plain">.con.send(data)</code></div>
+<div class="line number17 index16 alt2"><code class="py spaces">&nbsp;</code><code class="py keyword">return</code> <code class="py color1">True</code></div>
+<div class="line number17 index16 alt2">&nbsp;</div>
+<div class="line number17 index16 alt2">js 端通过回调函数 ws.onmessage() 接受数据</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>&nbsp;</p>
+<div class="container">
+<div class="line number1 index0 alt2"><code class="js plain">ws.onmessage = </code><code class="js keyword">function</code><code class="js plain">(result,nTime){</code></div>
+<div class="line number2 index1 alt1"><code class="js plain">alert(</code><code class="js string">"从服务端收到的数据:"</code><code class="js plain">);</code></div>
+<div class="line number3 index2 alt2"><code class="js plain">alert(</code><code class="js string">"最近一次发送数据到现在接收一共使用时间:"</code> <code class="js plain">+ nTime);</code></div>
+<div class="line number4 index3 alt1"><code class="js plain">console.log(result);</code></div>
+<div class="line number5 index4 alt2"><code class="js plain">}</code></div>
+<div class="line number5 index4 alt2">&nbsp;</div>
+<div class="line number5 index4 alt2">&nbsp;</div>
+<div class="line number5 index4 alt2">
+<p>最终代码</p>
+<p>Python服务端</p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="color: rgb(0, 128, 0);">#</span><span style="color: rgb(0, 128, 0);"> _*_ coding:utf-8 _*_</span>
+<span style="color: rgb(128, 0, 128);">__author__</span> = <span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(128, 0, 0);">Patrick</span><span style="color: rgb(128, 0, 0);">'</span>
+ 
+<span style="color: rgb(0, 0, 255);">import</span><span style="color: rgb(0, 0, 0);"> socket
+</span><span style="color: rgb(0, 0, 255);">import</span><span style="color: rgb(0, 0, 0);"> threading
+</span><span style="color: rgb(0, 0, 255);">import</span><span style="color: rgb(0, 0, 0);"> sys
+</span><span style="color: rgb(0, 0, 255);">import</span><span style="color: rgb(0, 0, 0);"> os
+</span><span style="color: rgb(0, 0, 255);">import</span><span style="color: rgb(0, 0, 0);"> MySQLdb
+</span><span style="color: rgb(0, 0, 255);">import</span><span style="color: rgb(0, 0, 0);"> base64
+</span><span style="color: rgb(0, 0, 255);">import</span><span style="color: rgb(0, 0, 0);"> hashlib
+</span><span style="color: rgb(0, 0, 255);">import</span><span style="color: rgb(0, 0, 0);"> struct
+  
+</span><span style="color: rgb(0, 128, 0);">#</span><span style="color: rgb(0, 128, 0);"> ====== config ======</span>
+HOST = <span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(128, 0, 0);">localhost</span><span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(0, 0, 0);">
+PORT </span>= 3368<span style="color: rgb(0, 0, 0);">
+MAGIC_STRING </span>= <span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(128, 0, 0);">258EAFA5-E914-47DA-95CA-C5AB0DC85B11</span><span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(0, 0, 0);">
+HANDSHAKE_STRING </span>= <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">HTTP/1.1 101 Switching Protocols\r\n</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);"> \
+      </span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">Upgrade:websocket\r\n</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);"> \
+      </span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">Connection: Upgrade\r\n</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);"> \
+      </span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">Sec-WebSocket-Accept: {1}\r\n</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);"> \
+      </span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">WebSocket-Location: ws://{2}/chat\r\n</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);"> \
+      </span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">WebSocket-Protocol:chat\r\n\r\n</span><span style="color: rgb(128, 0, 0);">"</span>
+  
+<span style="color: rgb(0, 0, 255);">class</span><span style="color: rgb(0, 0, 0);"> Th(threading.Thread):
+ </span><span style="color: rgb(0, 0, 255);">def</span> <span style="color: rgb(128, 0, 128);">__init__</span><span style="color: rgb(0, 0, 0);">(self, connection,):
+  threading.Thread.</span><span style="color: rgb(128, 0, 128);">__init__</span><span style="color: rgb(0, 0, 0);">(self)
+  self.con </span>=<span style="color: rgb(0, 0, 0);"> connection
+  
+ </span><span style="color: rgb(0, 0, 255);">def</span><span style="color: rgb(0, 0, 0);"> run(self):
+  </span><span style="color: rgb(0, 0, 255);">while</span><span style="color: rgb(0, 0, 0);"> True:
+   </span><span style="color: rgb(0, 0, 255);">try</span><span style="color: rgb(0, 0, 0);">:
+     </span><span style="color: rgb(0, 0, 255);">pass</span><span style="color: rgb(0, 0, 0);">
+  self.con.close()
+  
+ </span><span style="color: rgb(0, 0, 255);">def</span><span style="color: rgb(0, 0, 0);"> recv_data(self, num):
+  </span><span style="color: rgb(0, 0, 255);">try</span><span style="color: rgb(0, 0, 0);">:
+   all_data </span>=<span style="color: rgb(0, 0, 0);"> self.con.recv(num)
+   </span><span style="color: rgb(0, 0, 255);">if</span> <span style="color: rgb(0, 0, 255);">not</span><span style="color: rgb(0, 0, 0);"> len(all_data):
+    </span><span style="color: rgb(0, 0, 255);">return</span><span style="color: rgb(0, 0, 0);"> False
+  </span><span style="color: rgb(0, 0, 255);">except</span><span style="color: rgb(0, 0, 0);">:
+   </span><span style="color: rgb(0, 0, 255);">return</span><span style="color: rgb(0, 0, 0);"> False
+  </span><span style="color: rgb(0, 0, 255);">else</span><span style="color: rgb(0, 0, 0);">:
+   code_len </span>= ord(all_data[1]) &amp; 127
+   <span style="color: rgb(0, 0, 255);">if</span> code_len == 126<span style="color: rgb(0, 0, 0);">:
+    masks </span>= all_data[4:8<span style="color: rgb(0, 0, 0);">]
+    data </span>= all_data[8<span style="color: rgb(0, 0, 0);">:]
+   </span><span style="color: rgb(0, 0, 255);">elif</span> code_len == 127<span style="color: rgb(0, 0, 0);">:
+    masks </span>= all_data[10:14<span style="color: rgb(0, 0, 0);">]
+    data </span>= all_data[14<span style="color: rgb(0, 0, 0);">:]
+   </span><span style="color: rgb(0, 0, 255);">else</span><span style="color: rgb(0, 0, 0);">:
+    masks </span>= all_data[2:6<span style="color: rgb(0, 0, 0);">]
+    data </span>= all_data[6<span style="color: rgb(0, 0, 0);">:]
+   raw_str </span>= <span style="color: rgb(128, 0, 0);">""</span><span style="color: rgb(0, 0, 0);">
+   i </span>=<span style="color: rgb(0, 0, 0);"> 0
+   </span><span style="color: rgb(0, 0, 255);">for</span> d <span style="color: rgb(0, 0, 255);">in</span><span style="color: rgb(0, 0, 0);"> data:
+    raw_str </span>+= chr(ord(d) ^ ord(masks[i % 4<span style="color: rgb(0, 0, 0);">]))
+    i </span>+= 1
+   <span style="color: rgb(0, 0, 255);">return</span><span style="color: rgb(0, 0, 0);"> raw_str
+  
+ </span><span style="color: rgb(0, 128, 0);">#</span><span style="color: rgb(0, 128, 0);"> send data</span>
+ <span style="color: rgb(0, 0, 255);">def</span><span style="color: rgb(0, 0, 0);"> send_data(self, data):
+  </span><span style="color: rgb(0, 0, 255);">if</span><span style="color: rgb(0, 0, 0);"> data:
+   data </span>=<span style="color: rgb(0, 0, 0);"> str(data)
+  </span><span style="color: rgb(0, 0, 255);">else</span><span style="color: rgb(0, 0, 0);">:
+   </span><span style="color: rgb(0, 0, 255);">return</span><span style="color: rgb(0, 0, 0);"> False
+  token </span>= <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">\x81</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">
+  length </span>=<span style="color: rgb(0, 0, 0);"> len(data)
+  </span><span style="color: rgb(0, 0, 255);">if</span> length &lt; 126<span style="color: rgb(0, 0, 0);">:
+   token </span>+= struct.pack(<span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">B</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">, length)
+  </span><span style="color: rgb(0, 0, 255);">elif</span> length &lt;= 0xFFFF<span style="color: rgb(0, 0, 0);">:
+   token </span>+= struct.pack(<span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">!BH</span><span style="color: rgb(128, 0, 0);">"</span>, 126<span style="color: rgb(0, 0, 0);">, length)
+  </span><span style="color: rgb(0, 0, 255);">else</span><span style="color: rgb(0, 0, 0);">:
+   token </span>+= struct.pack(<span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">!BQ</span><span style="color: rgb(128, 0, 0);">"</span>, 127<span style="color: rgb(0, 0, 0);">, length)
+  </span><span style="color: rgb(0, 128, 0);">#</span><span style="color: rgb(0, 128, 0);">struct为Python中处理二进制数的模块，二进制流为C，或网络流的形式。</span>
+  data = <span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(128, 0, 0);">%s%s</span><span style="color: rgb(128, 0, 0);">'</span> %<span style="color: rgb(0, 0, 0);"> (token, data)
+  self.con.send(data)
+  </span><span style="color: rgb(0, 0, 255);">return</span><span style="color: rgb(0, 0, 0);"> True
+  
+  
+ </span><span style="color: rgb(0, 128, 0);">#</span><span style="color: rgb(0, 128, 0);"> handshake</span>
+ <span style="color: rgb(0, 0, 255);">def</span><span style="color: rgb(0, 0, 0);"> handshake(con):
+  headers </span>=<span style="color: rgb(0, 0, 0);"> {}
+  shake </span>= con.recv(1024<span style="color: rgb(0, 0, 0);">)
+  
+  </span><span style="color: rgb(0, 0, 255);">if</span> <span style="color: rgb(0, 0, 255);">not</span><span style="color: rgb(0, 0, 0);"> len(shake):
+   </span><span style="color: rgb(0, 0, 255);">return</span><span style="color: rgb(0, 0, 0);"> False
+  
+  header, data </span>= shake.split(<span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(128, 0, 0);">\r\n\r\n</span><span style="color: rgb(128, 0, 0);">'</span>, 1<span style="color: rgb(0, 0, 0);">)
+  </span><span style="color: rgb(0, 0, 255);">for</span> line <span style="color: rgb(0, 0, 255);">in</span> header.split(<span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(128, 0, 0);">\r\n</span><span style="color: rgb(128, 0, 0);">'</span>)[1<span style="color: rgb(0, 0, 0);">:]:
+   key, val </span>= line.split(<span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(128, 0, 0);">: </span><span style="color: rgb(128, 0, 0);">'</span>, 1<span style="color: rgb(0, 0, 0);">)
+   headers[key] </span>=<span style="color: rgb(0, 0, 0);"> val
+  
+  </span><span style="color: rgb(0, 0, 255);">if</span> <span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(128, 0, 0);">Sec-WebSocket-Key</span><span style="color: rgb(128, 0, 0);">'</span> <span style="color: rgb(0, 0, 255);">not</span> <span style="color: rgb(0, 0, 255);">in</span><span style="color: rgb(0, 0, 0);"> headers:
+   </span><span style="color: rgb(0, 0, 255);">print</span> (<span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(128, 0, 0);">This socket is not websocket, client close.</span><span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(0, 0, 0);">)
+   con.close()
+   </span><span style="color: rgb(0, 0, 255);">return</span><span style="color: rgb(0, 0, 0);"> False
+  
+  sec_key </span>= headers[<span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(128, 0, 0);">Sec-WebSocket-Key</span><span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(0, 0, 0);">]
+  res_key </span>= base64.b64encode(hashlib.sha1(sec_key +<span style="color: rgb(0, 0, 0);"> MAGIC_STRING).digest())
+  
+  str_handshake </span>= HANDSHAKE_STRING.replace(<span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(128, 0, 0);">{1}</span><span style="color: rgb(128, 0, 0);">'</span>, res_key).replace(<span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(128, 0, 0);">{2}</span><span style="color: rgb(128, 0, 0);">'</span>, HOST + <span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(128, 0, 0);">:</span><span style="color: rgb(128, 0, 0);">'</span> +<span style="color: rgb(0, 0, 0);"> str(PORT))
+  </span><span style="color: rgb(0, 0, 255);">print</span><span style="color: rgb(0, 0, 0);"> str_handshake
+  con.send(str_handshake)
+  </span><span style="color: rgb(0, 0, 255);">return</span><span style="color: rgb(0, 0, 0);"> True
+  
+</span><span style="color: rgb(0, 0, 255);">def</span><span style="color: rgb(0, 0, 0);"> new_service():
+ </span><span style="color: rgb(128, 0, 0);">"""</span><span style="color: rgb(128, 0, 0);">start a service socket and listen
+ when coms a connection, start a new thread to handle it</span><span style="color: rgb(128, 0, 0);">"""</span><span style="color: rgb(0, 0, 0);">
+  
+ sock </span>=<span style="color: rgb(0, 0, 0);"> socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+ </span><span style="color: rgb(0, 0, 255);">try</span><span style="color: rgb(0, 0, 0);">:
+  sock.bind((</span><span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(128, 0, 0);">localhost</span><span style="color: rgb(128, 0, 0);">'</span>, 3368<span style="color: rgb(0, 0, 0);">))
+  sock.listen(</span>1000<span style="color: rgb(0, 0, 0);">)
+  </span><span style="color: rgb(0, 128, 0);">#</span><span style="color: rgb(0, 128, 0);">链接队列大小</span>
+  <span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">bind 3368,ready to use</span><span style="color: rgb(128, 0, 0);">"</span>
+ <span style="color: rgb(0, 0, 255);">except</span><span style="color: rgb(0, 0, 0);">:
+  </span><span style="color: rgb(0, 0, 255);">print</span>(<span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">Server is already running,quit</span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">)
+  sys.exit()
+  
+ </span><span style="color: rgb(0, 0, 255);">while</span><span style="color: rgb(0, 0, 0);"> True:
+  connection, address </span>=<span style="color: rgb(0, 0, 0);"> sock.accept()
+  </span><span style="color: rgb(0, 128, 0);">#</span><span style="color: rgb(0, 128, 0);">返回元组（socket,add），accept调用时会进入waite状态</span>
+  <span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">Got connection from </span><span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(0, 0, 0);">, address
+  </span><span style="color: rgb(0, 0, 255);">if</span><span style="color: rgb(0, 0, 0);"> handshake(connection):
+   </span><span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">"</span><span style="color: rgb(128, 0, 0);">handshake success</span><span style="color: rgb(128, 0, 0);">"</span>
+   <span style="color: rgb(0, 0, 255);">try</span><span style="color: rgb(0, 0, 0);">:
+    t </span>=<span style="color: rgb(0, 0, 0);"> Th(connection, layout)
+    t.start()
+    </span><span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(128, 0, 0);">new thread for client ...</span><span style="color: rgb(128, 0, 0);">'</span>
+   <span style="color: rgb(0, 0, 255);">except</span><span style="color: rgb(0, 0, 0);">:
+    </span><span style="color: rgb(0, 0, 255);">print</span> <span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(128, 0, 0);">start new thread error</span><span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(0, 0, 0);">
+    connection.close()
+  
+  
+</span><span style="color: rgb(0, 0, 255);">if</span> <span style="color: rgb(128, 0, 128);">__name__</span> == <span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(128, 0, 0);">__main__</span><span style="color: rgb(128, 0, 0);">'</span><span style="color: rgb(0, 0, 0);">:
+ new_service()</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div></div>
+<p>js客户 端</p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div>
+<pre>&lt;script&gt;
+<span style="color: rgb(0, 0, 255);">var</span> socket = <span style="color: rgb(0, 0, 255);">new</span> WebSocket('ws://localhost:3368'<span style="color: rgb(0, 0, 0);">);
+ws.onmessage </span>= <span style="color: rgb(0, 0, 255);">function</span><span style="color: rgb(0, 0, 0);">(result,nTime){
+alert(</span>"从服务端收到的数据:"<span style="color: rgb(0, 0, 0);">);
+alert(</span>"最近一次发送数据到现在接收一共使用时间:" +<span style="color: rgb(0, 0, 0);"> nTime);
+console.log(result);
+}
+</span>&lt;/script&gt;</pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div></div>
+<p>&nbsp;</p>
+</div>
+<div class="line number5 index4 alt2">&nbsp;</div>
+</div>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="copycode.gif" alt="复制代码"></a></span></div></div></div><div id="MySignature" style="display: block;">技术改变世界！
+         --狂诗绝剑</div>
+        <div class="clear"></div>
+        <div id="blog_post_info_block">
+        <div id="blog_post_info"><div id="green_channel">
+        <a href="javascript:void(0);" id="green_channel_digg" onclick="DiggIt(5062092,cb_blogId,1);green_channel_success(this,'谢谢推荐！');">好文要顶</a>
+            <a id="green_channel_follow" onclick="follow('9d83363a-e1db-e211-8d02-90b11c0b17d6');" href="javascript:void(0);">关注我</a>
+    <a id="green_channel_favorite" onclick="AddToWz(cb_entryId);return false;" href="javascript:void(0);">收藏该文</a>
+    <a id="green_channel_weibo" href="javascript:void(0);" title="分享至新浪微博" onclick="ShareToTsina()"><img src="icon_weibo_24.png" alt=""></a>
+    <a id="green_channel_wechat" href="javascript:void(0);" title="分享至微信" onclick="shareOnWechat()"><img src="wechat.png" alt=""></a>
+</div>
+<div id="author_profile">
+    <div id="author_profile_info" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/jinjiangongzuoshi/" target="_top"><img src="20160228141816.png" class="author_avatar" alt=""></a>
+        <div id="author_profile_detail" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/jinjiangongzuoshi/">MikeZhou</a><br>
+            <a href="http://home.cnblogs.com/u/jinjiangongzuoshi/followees">关注 - 29</a><br>
+            <a href="http://home.cnblogs.com/u/jinjiangongzuoshi/followers">粉丝 - 60</a>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div id="author_profile_honor"></div>
+    <div id="author_profile_follow">
+                <a href="javascript:void(0);" onclick="follow('9d83363a-e1db-e211-8d02-90b11c0b17d6');return false;">+加关注</a>
+    </div>
+</div>
+<div id="div_digg">
+    <div class="diggit" onclick="votePost(5062092,'Digg')">
+        <span class="diggnum" id="digg_count">0</span>
+    </div>
+    <div class="buryit" onclick="votePost(5062092,'Bury')">
+        <span class="burynum" id="bury_count">1</span>
+    </div>
+    <div class="clear"></div>
+    <div class="diggword" id="digg_tips">
+    </div>
+</div>
+</div>
+        <div class="clear"></div>
+        <div id="post_next_prev"><a href="http://www.cnblogs.com/jinjiangongzuoshi/p/5061958.html" class="p_n_p_prefix">« </a> 上一篇：<a href="http://www.cnblogs.com/jinjiangongzuoshi/p/5061958.html" title="发布于2015-12-20 21:54">Debug / Inspect WebSocket traffic with Fiddler【转】</a><br><a href="http://www.cnblogs.com/jinjiangongzuoshi/p/5080868.html" class="p_n_p_prefix">» </a> 下一篇：<a href="http://www.cnblogs.com/jinjiangongzuoshi/p/5080868.html" title="发布于2015-12-27 21:13">每天200亿次查询 – MongoDB在奇虎360【转】</a><br></div>
+    </div>
+</div>
+    <ul class="postmetadata">
+        <li class="icon_cat" id="BlogPostCategory">分类: <a href="http://www.cnblogs.com/jinjiangongzuoshi/category/617314.html" target="_top">Python</a></li>
+        <li class="icon_bullet" id="EntryTag"></li>
+    </ul>
+</div>
+
+
+
+</div><a name="!comments"></a><div id="blog-comments-placeholder"><div id="comments_pager_top"></div>
+<a class="addcomment" href="#comment_tip">Add your comment</a>
+<h3 id="comments"></h3>
+<div class="feedbackNoItems"></div>
+
+
+<ol class="commentlist" id="commentList">	
+
+		<li class="alt">
+			<h5>
+				<cite><a href="#3605697" class="layer">#1楼</a><a name="3605697" id="comment_anchor_3605697"></a><span id="comment-maxId" style="display: none;">3605697</span><span id="comment-maxDate" style="display: none;">2017/1/18 9:49:05</span></cite> <a id="a_comment_author_3605697" href="http://home.cnblogs.com/u/971506/" target="_top">xihongshi</a> <a href="http://msg.cnblogs.com/send/xihongshi" title="发送站内短消息" class="sendMsg2This">&nbsp;</a><small> <span class="comment_date">2017-01-18 09:49</span></small>
+			</h5>
+			<div id="comment_body_3605697" class="blog_comment_body">我喜欢代码简洁易读，服务稳定的推送服务，前段时间研究了一下goeasy，java后台推送只需要两行代码， js前端推送也只需要3，4行，而且文档齐全，还提供了后台查询信息收发情况，所以我觉得GoEasy推送服务是个不错的选择。官网: <a href="https://goeasy.io/" target="_top">https://goeasy.io/</a></div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3605697,'Digg',this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3605697,'Bury',this)">反对(1)</a></div>
+			<div class="opt_comment"><span class="comment_actions"></span></div>
+		</li>
+	
+</ol>
+
+<div id="comments_pager_bottom"></div></div>
+<div id="comment_form" class="commentform">
+<a name="commentform"></a>
+<div id="divCommentShow"></div>
+<div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+<div id="comment_form_container"><div class="login_tips">注册用户登录后才能发表评论，请 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return login('commentform');">登录</a> 或 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return register();">注册</a>，<a href="http://www.cnblogs.com/">访问</a>网站首页。</div></div>
+<div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+<div id="ad_t2"><a href="http://www.ucancode.com/index.htm" target="_top">【推荐】50万行VC++源码: 大型组态工控、电力仿真CAD与GIS源码库</a><br><a href="https://group.cnblogs.com/topic/77995.html" target="_top">【活动】阿里云双11活动开始预热 云服务器限时2折起</a><br><a href="http://click.aliyun.com/m/33696/" target="_top">【调查】有奖调研即刻参与，你竟然是酱紫程序猿！</a><br><a href="http://xc.hubwiz.com/course/592ee9b2b343f27b0ae1ba99?affid=cnblogs" target="_top">【推荐】Vue.js 2.x 快速入门，大量高效实战示例</a><br></div>
+<div id="opt_under_post"></div>
+<div id="cnblogs_c1" class="c_ad_block"><a href="http://www.gcpowertools.com.cn/products/activereports_overview.htm?utm_source=cnblogs&amp;utm_medium=blogpage&amp;utm_term=bottom&amp;utm_content=AR&amp;utm_campaign=community" target="_top"><img src="24442-20171031213643701-1551350337.jpg" alt="葡萄城" width="300" height="250"></a></div>
+<div id="under_post_news"><div class="itnews c_ad_block"><b>最新IT新闻</b>:<br> ·  <a href="http://news.cnblogs.com/n/582047/" target="_top">Twitter结束测试 将推文字符长度拓展到280个字符</a><br> ·  <a href="http://news.cnblogs.com/n/582039/" target="_top">从下周回国到暂不回国 贾跃亭：套现资金用于造车了</a><br> ·  <a href="http://news.cnblogs.com/n/582006/" target="_top">《周鸿祎自传》书摘：和计算机世界一见钟情</a><br> ·  <a href="http://news.cnblogs.com/n/582046/" target="_top">免费下载：Windows 10 RS4首个ISO镜像17025发布</a><br> ·  <a href="http://news.cnblogs.com/n/582045/" target="_top">陈天桥5亿元试水中国“脑计划”：不想着赚钱</a><br>» <a href="http://news.cnblogs.com/" title="IT新闻" target="_top">更多新闻...</a></div></div>
+<div id="cnblogs_c2" class="c_ad_block"><a href="http://click.aliyun.com/m/32986/" target="_top"><img src="24442-20171027070203758-1397753435.jpg" alt="阿里云双11" width="468" height="60"></a></div>
+<div id="under_post_kb"><div class="itnews c_ad_block" id="kb_block"><b>最新知识库文章</b>:<br><div id="kb_recent"> ·  <a href="http://kb.cnblogs.com/page/563790/" target="_top">关于编程，你的练习是不是有效的？</a><br> ·  <a href="http://kb.cnblogs.com/page/581467/" target="_top">改善程序员生活质量的 3+10 习惯</a><br> ·  <a href="http://kb.cnblogs.com/page/568841/" target="_top">NASA的10条代码编写原则</a><br> ·  <a href="http://kb.cnblogs.com/page/578502/" target="_top">为什么你参加了那么多培训，却依然表现平平？</a><br> ·  <a href="http://kb.cnblogs.com/page/579832/" target="_top">写给初学前端工程师的一封信</a><br></div>» <a href="http://kb.cnblogs.com/" target="_top">更多知识库文章...</a></div></div>
+<div id="HistoryToday" class="c_ad_block"></div>
+
+</div>
+
+
+        </div>
+
+        
+
+        <div id="sidebar">
+            
+<div id="about">
+<div>
+<h2 id="about_title">About</h2>
+<div id="about_body">
+<div id="blog-news"><div class="cnblogs_code"><strong style="font-size: 12pt; font-family: Arial;">作者：狂师</strong></div><hr><div class="cnblogs_code"><span style="line-height: 1.5;">&nbsp; 英文名：mikezhou ，目前就职于国内一家移动互联网金融公司，担任资深测试开发工程师，主要负责公共平台开发、质量流程提升建设等工作，之前从事过研发管理建设、测试管理、测试开发等工作，此前曾在酷狗音乐，主导过后端接口自动化、APP UI自动化、CI持续集成、公共WEB测试开发等项目。</span></div><div class="cnblogs_code"><div>&nbsp; 测试开发技术联盟QQ群：50316345</div><p>&nbsp; **作者QQ号:762357658** （加好友时，需备注博客园）&nbsp;</p><p>&nbsp; **作者微信号:jinjian_762357658** （加好友时，需备注博客园）&nbsp;</p><div class="cnblogs_code">&nbsp;<a href="http://www.cnblogs.com/jinjiangongzuoshi/category/792137.html" title="RF接口公开课程" target="_top">公开课一：Robot FrameWork接口系列课程（暂开放公司内部人员）</a><br><br><a href="http://mp.weixin.qq.com/s?__biz=MzA4NDUyNzA0Ng==&amp;mid=2247483805&amp;idx=1&amp;sn=ad45683f12efb75da42da7d03648f2f7&amp;chksm=9fe49334a8931a224a4c4d32e82ff087223f770742c4ebf04b91bcc321152fe0e0b6364634f6&amp;mpshare=1&amp;scene=23&amp;srcid=1009AvR2CTc3BhLJCyKUgVqk#rd" title="RobotFramework框架系统免费课程目录" target="_top">公开课二：Robot FrameWork自动化系列免费课程（对外公开，扫描微信技术公众号：mikezhou_talk）</a></div></div>
+
+<div> <p>欢迎扫描微信公众号:<br><img style="line-height: 1.5;" src="541408-20170427225637350-1567079799.jpg" alt="" width="135px" height="135px"><img style="line-height: 1.5;" src="541408-20170827220229714-1129376806.jpg" alt<br="" width="135px" height="135px"></p><p style="color: red;">或直接加公众号:mikezhou_talk</p></div><div id="profile_block">昵称：<a href="http://home.cnblogs.com/u/jinjiangongzuoshi/">MikeZhou</a><br>园龄：<a href="http://home.cnblogs.com/u/jinjiangongzuoshi/" title="入园时间：2013-06-23">4年4个月</a><br>粉丝：<a href="http://home.cnblogs.com/u/jinjiangongzuoshi/followers/">59</a><br>关注：<a href="http://home.cnblogs.com/u/jinjiangongzuoshi/followees/">29</a><div id="p_b_follow"><a href="javascript:void(0);" onclick="follow('9d83363a-e1db-e211-8d02-90b11c0b17d6')">+加关注</a></div></div></div>
+
+</div>
+</div>
+</div>
+
+            
+            
+<div id="mySearchWrapper">
+    <div id="mySearch">
+        <input src="btnsearch.gif" id="btnZzk" class="submit" onclick="zzk_go();return false;" type="image">
+        <label class="lb_search"><input id="q" onkeydown="return zzk_go_enter(event);" class="keyword" value="" type="text"></label>
+    </div>
+</div>
+
+            
+            <div id="sideMain">
+            </div>
+            <div id="sideRight">
+            <div id="side-archives">
+        <h2>随笔档案</h2>
+        <ul class="date">
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2017/11.html">2017年11月(1)</a></li>
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2017/10.html">2017年10月(5)</a></li>
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2017/08.html">2017年8月(2)</a></li>
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2017/04.html">2017年4月(1)</a></li>
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2017/03.html">2017年3月(8)</a></li>
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2016/11.html">2016年11月(1)</a></li>
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2016/07.html">2016年7月(9)</a></li>
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2016/06.html">2016年6月(1)</a></li>
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2016/04.html">2016年4月(6)</a></li>
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2016/03.html">2016年3月(5)</a></li>
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2016/02.html">2016年2月(19)</a></li>
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2015/12.html">2015年12月(18)</a></li>
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2015/11.html">2015年11月(29)</a></li>
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2015/10.html">2015年10月(6)</a></li>
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2015/09.html">2015年9月(3)</a></li>
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2015/06.html">2015年6月(1)</a></li>
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2015/04.html">2015年4月(1)</a></li>
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2015/03.html">2015年3月(2)</a></li>
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2015/02.html">2015年2月(1)</a></li>
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2015/01.html">2015年1月(2)</a></li>
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2014/12.html">2014年12月(5)</a></li>
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2014/11.html">2014年11月(4)</a></li>
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2014/10.html">2014年10月(13)</a></li>
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2014/09.html">2014年9月(1)</a></li>
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2014/08.html">2014年8月(22)</a></li>
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2014/07.html">2014年7月(39)</a></li>
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2014/06.html">2014年6月(21)</a></li>
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2014/05.html">2014年5月(23)</a></li>
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2014/04.html">2014年4月(29)</a></li>
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2014/03.html">2014年3月(2)</a></li>
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2014/02.html">2014年2月(2)</a></li>
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2013/12.html">2013年12月(5)</a></li>
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2013/11.html">2013年11月(10)</a></li>
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2013/10.html">2013年10月(5)</a></li>
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2013/09.html">2013年9月(35)</a></li>
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2013/08.html">2013年8月(21)</a></li>
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2013/07.html">2013年7月(13)</a></li>
+                <li><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2013/06.html">2013年6月(23)</a></li>
+        </ul>
+    </div><div id="side-link-697007">
+            <h2>WEB前端</h2>
+            <ul class="chain">
+                        <li>
+                            <a href="http://www.css88.com/" target="_self">Web前端开发</a>
+                        </li>
+            </ul>
+        </div><div id="side-link-734061">
+            <h2>安全工具类网站</h2>
+            <ul class="chain">
+                        <li>
+                            <a href="http://www.moonsos.com/" target="_self">米安网</a>
+                        </li>
+            </ul>
+        </div><div id="side-link-553906">
+            <h2>测试论坛地址</h2>
+            <ul class="chain">
+                        <li>
+                            <a href="http://www.51testing.com/html/index.html" target="_top">51testing软件测试网</a>
+                        </li>
+                        <li>
+                            <a href="http://www.7dtest.com/site/" target="_top">7点测试网 性能测试|调优|测试工具</a>
+                        </li>
+                        <li>
+                            <a href="http://www.besttest.cn/blog.html" target="_top">BestTest</a>
+                        </li>
+                        <li>
+                            <a href="http://blog.csdn.net/zzxxbb112/" target="_self">iQuickTest 领先技术研究专栏</a>
+                        </li>
+                        <li>
+                            <a href="http://www.codesec.net/view/50049.html" target="_top">WEB前端攻防</a>
+                        </li>
+                        <li>
+                            <a href="http://hitest.aliyun.com/front/share/shareList.htm?spm=0.0.0.0.K7WNNm" target="_self">阿里巴巴众测服务市场</a>
+                        </li>
+                        <li>
+                            <a href="http://www.boobooke.com/" target="_self">播布客免费教学视频</a>
+                        </li>
+                        <li>
+                            <a href="http://www.jb51.net/" target="_top">脚本之家</a>
+                        </li>
+                        <li>
+                            <a href="http://www.ltesting.net/" target="_top">领测软件测试网</a>
+                        </li>
+                        <li>
+                            <a href="http://www.iquicktest.com/" target="_self">软件测试工作室--领先技术研究中心</a>
+                        </li>
+                        <li>
+                            <a href="http://testingunion.com/gunion/" target="_top">软件测试联盟</a>
+                        </li>
+                        <li>
+                            <a href="http://www.testtao.com/forum-124-1.html" target="_top">软件测试论坛</a>
+                        </li>
+                        <li>
+                            <a href="http://uniontesting.com/portal.php" target="_top">软件测试网-测试之道</a>
+                        </li>
+                        <li>
+                            <a href="http://www.fengfly.com/" target="_top">雨枫技术教程网</a>
+                        </li>
+            </ul>
+        </div><div id="side-link-553908">
+            <h2>工具论坛地址</h2>
+            <ul class="chain">
+                        <li>
+                            <a href="http://www.ielastix.com/" target="_top">Elastix实验室</a>
+                        </li>
+                        <li>
+                            <a href="http://www.jetbrains.com/" target="_self">jetbrains常用工具IDE官网</a>
+                        </li>
+                        <li>
+                            <a href="http://pro.jsonlint.com/" target="_self">JSON</a>
+                        </li>
+                        <li>
+                            <a href="http://bbs.voip88.com/" target="_self">VOIP社区</a>
+                        </li>
+                        <li>
+                            <a href="http://www.whatismyip.com/" target="_top">What Is MyIP</a>
+                        </li>
+                        <li>
+                            <a href="https://technet.microsoft.com/zh-cn/sysinternals" target="_self">windows 实用工具下载</a>
+                        </li>
+                        <li>
+                            <a href="http://msdn.itellyou.cn/" target="_top">Windows工具下载大全</a>
+                        </li>
+                        <li>
+                            <a href="http://tool.9dufz.com/" target="_top">九度工具网</a>
+                        </li>
+                        <li>
+                            <a href="https://www.juhe.cn/" target="_self">聚合数据--API数据接口（开发者数据定制）</a>
+                        </li>
+                        <li>
+                            <a href="http://www.bejson.com/" target="_self">前端在线调试大全</a>
+                        </li>
+                        <li>
+                            <a href="http://www.spasvo.com/ceshi/xmgl/" target="_self">软件项目管理</a>
+                        </li>
+                        <li>
+                            <a href="http://www.xfocus.net/index.html" target="_top">网络安全焦点</a>
+                        </li>
+                        <li>
+                            <a href="http://open.weibo.com/wiki/%E5%BE%AE%E5%8D%9AAPI" target="_self">微博开放平台API</a>
+                        </li>
+                        <li>
+                            <a href="https://technet.microsoft.com/en-us/sysinternals/" target="_top">微软实用工具下载</a>
+                        </li>
+                        <li>
+                            <a href="https://mp.weixin.qq.com/" target="_self">微信公众平台接口</a>
+                        </li>
+                        <li>
+                            <a href="http://www.iplaysoft.com/" target="_top">异次元软件世界</a>
+                        </li>
+                        <li>
+                            <a href="http://apistore.baidu.com/apiworks/servicedetail/864.html" target="_self">易源_笑话大全_API服务</a>
+                        </li>
+                        <li>
+                            <a href="http://www.bejson.com/" target="_self">在线JSON校验格式化工具</a>
+                        </li>
+                        <li>
+                            <a href="http://www.aizhan.com/" target="_top">站长工具--爱站网</a>
+                        </li>
+                        <li>
+                            <a href="http://tool.chinaz.com/" target="_self">站长工具-站长之家</a>
+                        </li>
+                        <li>
+                            <a href="http://rubular.com/" target="_self">正则表达式在线工具</a>
+                        </li>
+                        <li>
+                            <a href="http://dl.oschina.net/" target="_top">中国源软件下载</a>
+                        </li>
+                        <li>
+                            <a href="http://sourceforge.net/" target="_top">资源下载</a>
+                        </li>
+            </ul>
+        </div><div id="side-link-556032">
+            <h2>其它网站</h2>
+            <ul class="chain">
+                        <li>
+                            <a href="http://115.com/" target="_top">115网盘</a>
+                        </li>
+                        <li>
+                            <a href="http://c28.yunpan.360.cn/" target="_self">360云盘</a>
+                        </li>
+                        <li>
+                            <a href="http://www.mpd.so/" target="_self">MPD麦思博</a>
+                        </li>
+                        <li>
+                            <a href="http://www.ip138.com/" target="_self">www.ip138.com 查询网</a>
+                        </li>
+                        <li>
+                            <a href="http://comingcode.com/?p=357" target="_self">肥龙的博客</a>
+                        </li>
+                        <li>
+                            <a href="http://www.gloryroad.cn/content/?t=87&amp;id=100" target="_top">光荣之路免费公开课视频下载大全</a>
+                        </li>
+                        <li>
+                            <a href="http://203.88.202.87:7001/gzlss_web/business/tomain/main.xhtml" target="_top">广州市人力资源和社会保障</a>
+                        </li>
+                        <li>
+                            <a href="http://wenku.spasvo.com/" target="_self">国内最全在线软件测试文库</a>
+                        </li>
+            </ul>
+        </div></div>
+            <div id="sideLeft">
+            <div id="side-calendar">
+        <h2>日历</h2>
+        <div id="blog-calendar"><table id="blogCalendar" class="Cal" title="Calendar" cellspacing="0" cellpadding="0">
+	<tbody><tr><td colspan="7"><table class="CalTitle" cellspacing="0">
+		<tbody><tr><td class="CalNextPrev"><a href="http://www.cnblogs.com/jinjiangongzuoshi/p/2017/10/01">&lt;</a></td><td align="center">2017年11月</td><td class="CalNextPrev" align="right"><a href="http://www.cnblogs.com/jinjiangongzuoshi/p/2017/12/01">&gt;</a></td></tr>
+	</tbody></table></td></tr><tr><th class="CalDayHeader" abbr="日" scope="col" align="center">日</th><th class="CalDayHeader" abbr="一" scope="col" align="center">一</th><th class="CalDayHeader" abbr="二" scope="col" align="center">二</th><th class="CalDayHeader" abbr="三" scope="col" align="center">三</th><th class="CalDayHeader" abbr="四" scope="col" align="center">四</th><th class="CalDayHeader" abbr="五" scope="col" align="center">五</th><th class="CalDayHeader" abbr="六" scope="col" align="center">六</th></tr><tr><td class="CalOtherMonthDay" align="center">29</td><td class="CalOtherMonthDay" align="center">30</td><td class="CalOtherMonthDay" align="center">31</td><td align="center">1</td><td align="center">2</td><td align="center"><a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2017/11/03.html"><u>3</u></a></td><td class="CalWeekendDay" align="center">4</td></tr><tr><td class="CalWeekendDay" align="center">5</td><td align="center">6</td><td class="CalTodayDay" align="center">7</td><td align="center">8</td><td align="center">9</td><td align="center">10</td><td class="CalWeekendDay" align="center">11</td></tr><tr><td class="CalWeekendDay" align="center">12</td><td align="center">13</td><td align="center">14</td><td align="center">15</td><td align="center">16</td><td align="center">17</td><td class="CalWeekendDay" align="center">18</td></tr><tr><td class="CalWeekendDay" align="center">19</td><td align="center">20</td><td align="center">21</td><td align="center">22</td><td align="center">23</td><td align="center">24</td><td class="CalWeekendDay" align="center">25</td></tr><tr><td class="CalWeekendDay" align="center">26</td><td align="center">27</td><td align="center">28</td><td align="center">29</td><td align="center">30</td><td class="CalOtherMonthDay" align="center">1</td><td class="CalOtherMonthDay" align="center">2</td></tr><tr><td class="CalOtherMonthDay" align="center">3</td><td class="CalOtherMonthDay" align="center">4</td><td class="CalOtherMonthDay" align="center">5</td><td class="CalOtherMonthDay" align="center">6</td><td class="CalOtherMonthDay" align="center">7</td><td class="CalOtherMonthDay" align="center">8</td><td class="CalOtherMonthDay" align="center">9</td></tr>
+</tbody></table></div>
+    </div><div id="side-categories">
+        <h2>随笔分类</h2>
+        <ul class="folder">
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/jinjiangongzuoshi/category/621065.html">Android(25)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/jinjiangongzuoshi/category/736201.html">Appium(2)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/jinjiangongzuoshi/category/491748.html">C++(7)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/jinjiangongzuoshi/category/736198.html">Django(2)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/jinjiangongzuoshi/category/491761.html">Electronic technology(3)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/jinjiangongzuoshi/category/570044.html">English(1)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/jinjiangongzuoshi/category/758509.html">Git(5)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/jinjiangongzuoshi/category/491752.html">Java(3)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/jinjiangongzuoshi/category/736202.html">Jemter(1)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/jinjiangongzuoshi/category/758510.html">Jenkins(4)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/jinjiangongzuoshi/category/491745.html">Linux(70)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/jinjiangongzuoshi/category/491746.html">LoadRunner(14)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/jinjiangongzuoshi/category/492406.html">MFC(36)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/jinjiangongzuoshi/category/516408.html">Myself(11)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/jinjiangongzuoshi/category/491753.html">Mysql(16)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/jinjiangongzuoshi/category/600512.html">Oracle(2)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/jinjiangongzuoshi/category/617314.html">Python(38)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/jinjiangongzuoshi/category/491747.html">QTP(9)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/jinjiangongzuoshi/category/736199.html">RobotFramework(15)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/jinjiangongzuoshi/category/792137.html">RobotFrameWork接口自动化系列课程(14)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/jinjiangongzuoshi/category/491750.html">VBS(50)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/jinjiangongzuoshi/category/492405.html">Visual C++(7)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/jinjiangongzuoshi/category/630767.html">Web Service(1)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/jinjiangongzuoshi/category/491751.html">Windows(35)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/jinjiangongzuoshi/category/748029.html">接口测试(1)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/jinjiangongzuoshi/category/569665.html">网络知识(14)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/jinjiangongzuoshi/category/768064.html">移动互联网(8)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/jinjiangongzuoshi/category/789344.html">移端测试(6)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/jinjiangongzuoshi/category/652281.html">自动化测试(2)</a>
+                </li>
+        </ul>
+    </div><div id="side-top-posts-custom">
+    <h2>推荐排行榜</h2>
+    <div id="TopDiggPostsBlock"><ul><li><a href="http://www.cnblogs.com/jinjiangongzuoshi/p/3821381.html">1. VBS控制鼠标移动和点击(附源代码下载)(2)</a></li><li><a href="http://www.cnblogs.com/jinjiangongzuoshi/p/3696904.html">2. mysql出现Can't connect to MySQL server on 'localhost' (10061）的解决方法(2)</a></li><li><a href="http://www.cnblogs.com/jinjiangongzuoshi/p/5240280.html">3. 缓存雪崩，缓存穿透解决方案(2)</a></li><li><a href="http://www.cnblogs.com/jinjiangongzuoshi/p/5061892.html">4. 利用Fiddler抓取websocket包(1)</a></li><li><a href="http://www.cnblogs.com/jinjiangongzuoshi/p/4946998.html">5. Robot Framework使用技巧(1)</a></li><li><a href="http://www.cnblogs.com/jinjiangongzuoshi/p/6623793.html">6. Django表单介绍(1)</a></li><li><a href="http://www.cnblogs.com/jinjiangongzuoshi/p/6596268.html">7. 哪些 Python 库让你相见恨晚？【转】(1)</a></li><li><a href="http://www.cnblogs.com/jinjiangongzuoshi/p/6538321.html">8. Docker在windows下的使用【一】(1)</a></li><li><a href="http://www.cnblogs.com/jinjiangongzuoshi/p/5638680.html">9. 微信朋友圈投票活动的刷票案例分析(1)</a></li><li><a href="http://www.cnblogs.com/jinjiangongzuoshi/p/5272787.html">10. 模拟恶劣网络环境常用的几种解决方案(1)</a></li></ul></div>
+</div><div id="side-top-posts">
+    <h2>阅读排行榜</h2>
+    <div id="TopViewPostsBlock"><ul><li><a href="http://www.cnblogs.com/jinjiangongzuoshi/p/3696904.html">1. mysql出现Can't connect to MySQL server on 'localhost' (10061）的解决方法(41437)</a></li><li><a href="http://www.cnblogs.com/jinjiangongzuoshi/p/5638706.html">2. 利用PyCharm进行Python远程调试(13800)</a></li><li><a href="http://www.cnblogs.com/jinjiangongzuoshi/p/4946998.html">3. Robot Framework使用技巧(12104)</a></li><li><a href="http://www.cnblogs.com/jinjiangongzuoshi/p/5272787.html">4. 模拟恶劣网络环境常用的几种解决方案(10851)</a></li><li><a href="http://www.cnblogs.com/jinjiangongzuoshi/p/5062092.html">5. python websocket学习使用(9911)</a></li><li><a href="http://www.cnblogs.com/jinjiangongzuoshi/p/4978273.html">6. python 字典排序，列表排序详细(7748)</a></li><li><a href="http://www.cnblogs.com/jinjiangongzuoshi/p/5638680.html">7. 微信朋友圈投票活动的刷票案例分析(7662)</a></li><li><a href="http://www.cnblogs.com/jinjiangongzuoshi/p/3907900.html">8. oracle账户锁定解决方法(7455)</a></li><li><a href="http://www.cnblogs.com/jinjiangongzuoshi/p/3778926.html">9. Windows如何压缩tar.gz格式(6550)</a></li><li><a href="http://www.cnblogs.com/jinjiangongzuoshi/p/3740218.html">10. 用不同的用户名和密码登录网络上的共享文件夹(6459)</a></li></ul></div>
+</div>    
+    
+    
+
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+<div id="side-link-676140">
+            <h2>Python网站</h2>
+            <ul class="chain">
+                        <li>
+                            <a href="http://www.pythondoc.com/flask-mega-tutorial/index.html" target="_self">Flask</a>
+                        </li>
+                        <li>
+                            <a href="http://dormousehole.readthedocs.org/en/latest/" target="_self">Flask官方文档</a>
+                        </li>
+                        <li>
+                            <a href="http://www.yiibai.com/python/python_gui_programming.html" target="_top">Python GUI编程</a>
+                        </li>
+                        <li>
+                            <a href="http://www.zhidaow.com/post/python-requests-install-and-brief-introduction" target="_top">Python requests(HTTP客户端库)</a>
+                        </li>
+                        <li>
+                            <a href="http://docs.python-requests.org/" target="_self">Python requests官方文档</a>
+                        </li>
+                        <li>
+                            <a href="http://simple-is-better.com/sites/" target="_top">python 中文网站导航/开源项目/技术博客/</a>
+                        </li>
+                        <li>
+                            <a href="http://www.pythonfan.org/forum.php" target="_top">Python爱好者</a>
+                        </li>
+                        <li>
+                            <a href="http://www.icoolxue.com/album/affix/python/1/8?orderBy=create_time" target="_self">Python-爱酷学习网</a>
+                        </li>
+                        <li>
+                            <a href="https://pypi.python.org/pypi" target="_top">Python包索引</a>
+                        </li>
+                        <li>
+                            <a href="http://www.nowamagic.net/academy/category/13/#" target="_self">Python程序设计—现代魔法学院</a>
+                        </li>
+                        <li>
+                            <a href="http://nullege.com/" target="_self">Python的文档和示例</a>
+                        </li>
+                        <li>
+                            <a href="http://en.wikipedia.org/wiki/List_of_Python_software" target="_top">python的一些软件列表 </a>
+                        </li>
+                        <li>
+                            <a href="http://www.lfd.uci.edu/~gohlke/pythonlibs/#python-lzo" target="_self">Python第三方库网址</a>
+                        </li>
+                        <li>
+                            <a href="http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000" target="_self">Python教程-廖雪峰的官方网站</a>
+                        </li>
+                        <li>
+                            <a href="http://www.pythontab.com/" target="_self">python开发者门户</a>
+                        </li>
+                        <li>
+                            <a href="http://www.pythoner.cn/course/" target="_top">Python课程|Python程序员</a>
+                        </li>
+                        <li>
+                            <a href="http://www.iplaypython.com/module/threading.html" target="_self">Python学习与分享平台</a>
+                        </li>
+                        <li>
+                            <a href="http://www.csvt.net/courses/python-appdev/" target="_top">Python应用开发</a>
+                        </li>
+                        <li>
+                            <a href="http://www.pythontab.com/" target="_top">Python中文开发者社区</a>
+                        </li>
+                        <li>
+                            <a href="http://automationtesting.sinaapp.com/" target="_top">Python自动化测试</a>
+                        </li>
+                        <li>
+                            <a href="http://robotframework.org/" target="_top">Robot Framework</a>
+                        </li>
+                        <li>
+                            <a href="https://code.google.com/p/robotframework/wiki/SupportingTools" target="_self">robotframework 扩展工具</a>
+                        </li>
+                        <li>
+                            <a href="http://selenium-python.readthedocs.org/en/latest/api.html" target="_top">WebDriver API</a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/easonhan007/webdriver_guide/blob/master/README.md" target="_self">webdriver实用指南</a>
+                        </li>
+                        <li>
+                            <a href="http://www.robotframework.net/" target="_self">帮助中心 - RobotframeWork社交化知识社区</a>
+                        </li>
+            </ul>
+        </div><div id="side-link-491763">
+            <h2>开发论坛地址</h2>
+            <ul class="chain">
+                        <li>
+                            <a href="http://blog.51cto.com/" target="_top">51CTO技术博客-领先的IT技术博客</a>
+                        </li>
+                        <li>
+                            <a href="http://www.cncentos.com/forum.php" target="_self">CentOS中文论坛</a>
+                        </li>
+                        <li>
+                            <a href="http://www.csdn.net/" target="_self">CSDN全球最大的IT论坛</a>
+                        </li>
+                        <li>
+                            <a href="http://www.itpub.net/" target="_self">ITPUB技术论坛</a>
+                        </li>
+                        <li>
+                            <a href="http://www.mianwww.com/" target="_self">IT公司面试手册</a>
+                        </li>
+                        <li>
+                            <a href="http://www.linuxidc.com/index.htm" target="_self">Linux公社</a>
+                        </li>
+                        <li>
+                            <a href="http://www.manning.com/sande/" target="_self">Manning</a>
+                        </li>
+                        <li>
+                            <a href="http://www.phpchina.com/" target="_top">PHPChina开源社区门户</a>
+                        </li>
+                        <li>
+                            <a href="http://www.uml.org.cn/" target="_self">UML软件工程组织</a>
+                        </li>
+                        <li>
+                            <a href="http://tool.chinaz.com/Tools/unixtime.aspx" target="_self">Unix时间戳(Unix timestamp)转换工具 - 站长工具</a>
+                        </li>
+                        <li>
+                            <a href="http://www.vckbase.com/" target="_self">VC知识库</a>
+                        </li>
+                        <li>
+                            <a href="http://www.css88.com/" target="_self">WEB前端开发</a>
+                        </li>
+                        <li>
+                            <a href="http://www.codeproject.com/" target="_top">www.codeproject.com</a>
+                        </li>
+                        <li>
+                            <a href="http://blog.jobbole.com/" target="_self">博客--伯乐在线</a>
+                        </li>
+                        <li>
+                            <a href="http://www.pudn.com/" target="_self">程序员联合开发网站</a>
+                        </li>
+                        <li>
+                            <a href="http://code.google.com/" target="_self">谷歌代码</a>
+                        </li>
+                        <li>
+                            <a href="http://www.jikexueyuan.com/" target="_self">极客学院</a>
+                        </li>
+                        <li>
+                            <a href="http://www.oschina.net/" target="_top">开源中国社区</a>
+                        </li>
+                        <li>
+                            <a href="http://coolshell.cn/" target="_top">酷壳--coolshell</a>
+                        </li>
+                        <li>
+                            <a href="http://www.ituring.com.cn/" target="_top">图灵社区</a>
+                        </li>
+                        <li>
+                            <a href="http://mirrors.163.com/" target="_self">网易开源镜像站</a>
+                        </li>
+                        <li>
+                            <a href="http://www.yiibai.com/" target="_self">易百教程-专注于IT教程和实例</a>
+                        </li>
+                        <li>
+                            <a href="http://www.chinaitlab.com/" target="_self">中国IT实验室</a>
+                        </li>
+                        <li>
+                            <a href="http://bbs.21ic.com/" target="_top">中国电子工程师社区</a>
+                        </li>
+            </ul>
+        </div><div id="side-link-746679">
+            <h2>移动端网站</h2>
+            <ul class="chain">
+                        <li>
+                            <a href="http://mt.sogou.com/Pages/index.aspx#/taskList/index" target="_top">搜狗云测</a>
+                        </li>
+                        <li>
+                            <a href="https://testerhome.com/" target="_self">移动测试社区testerhome</a>
+                        </li>
+            </ul>
+        </div><div id="side-link-973173">
+            <h2>站点地图</h2>
+            <ul class="chain">
+                        <li>
+                            <a href="http://www.runoob.com/sitemap" target="_top">菜鸟教程</a>
+                        </li>
+            </ul>
+        </div></div>
+            
+                <div id="sideContainer"></div>
+                
+            
+        </div>
+
+        
+
+        <div id="footer">
+            
+<p id="logoFoot">
+    <a href="http://www.spiga.com.mx/" title="Agencia Interactiva Spiga">www.spiga.com.mx</a>
+</p>
+<div class="footText">
+<p>
+Copyright ©2017 MikeZhou
+</p>
+<p>
+<a href="http://www.cnblogs.com/">博客园</a>
+</p>
+</div>
+        </div>
+    </div>
+
+    
+
+</div>
+
+
+
+<div id="SL_balloon_obj" style="display: none;"><div id="SL_button" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 24px; height: 24px; position: absolute; cursor: pointer;"></div><div id="SL_shadow_translation_result2" style="display: none;"></div><div id="SL_shadow_translator"><div id="SL_providers"><div class="SL_BL_LABLE_ON" title="Google" id="SL_P0">G</div><div class="SL_BL_LABLE_ON" title="Microsoft" id="SL_P1">M</div><div class="SL_BL_LABLE_ON" title="Translator" id="SL_P2">T</div></div><div id="SL_planshet" style="background: rgb(244, 245, 245) url('undefined') repeat scroll 0% 0%;"><div id="SL_arrow_up"></div><div id="SL_TB"><div id="bubblelogo" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 24px; height: 24px; position: absolute;"></div><table id="SL_tables"><tr><td width="10%" align="right"><input id="SLloc" title="鎖定語言" type="checkbox"></td><td width="20%" align="left"><select id="SL_lng_from"><option value="auto">檢測語言</option><option value="sq">阿尔巴尼亚语</option><option value="ar">阿拉伯语</option><option value="az">阿塞拜疆语</option><option value="ga">爱尔兰语</option><option value="et">爱沙尼亚语</option><option value="eu">巴斯克语</option><option value="be">白俄罗斯语</option><option value="bg">保加利亚语</option><option value="is">冰岛语</option><option value="pl">波兰语</option><option value="bs">波斯尼亚语</option><option value="fa">波斯语</option><option value="af">布尔语(南非荷兰语)</option><option value="da">丹麦语</option><option value="de">德语</option><option value="ru">俄语</option><option value="fr">法语</option><option value="tl">菲律宾语</option><option value="fi">芬兰语</option><option value="km">高棉语</option><option value="ka">格鲁吉亚语</option><option value="gu">古吉拉特语</option><option value="kk">哈萨克语</option><option value="ht">海地克里奥尔语</option><option value="ko">韩语</option><option value="ha">豪萨语</option><option value="nl">荷兰语</option><option value="gl">加利西亚语</option><option value="ca">加泰罗尼亚语</option><option value="cs">捷克语</option><option value="kn">卡纳达语</option><option value="hr">克罗地亚语</option><option value="la">拉丁语</option><option value="lv">拉脱维亚语</option><option value="lo">老挝语</option><option value="lt">立陶宛语</option><option value="ro">罗马尼亚语</option><option value="mg">马尔加什语</option><option value="mt">马耳他语</option><option value="mr">马拉地语</option><option value="ml">马拉雅拉姆语</option><option value="ms">马来语</option><option value="mk">马其顿语</option><option value="mi">毛利语</option><option value="mn">蒙古语</option><option value="bn">孟加拉语</option><option value="my">缅甸语</option><option value="hmn">苗语</option><option value="zu">南非祖鲁语</option><option value="ne">尼泊尔语</option><option value="no">挪威语</option><option value="pa">旁遮普语</option><option value="pt">葡萄牙语</option><option value="ny">齐切瓦语</option><option value="ja">日语</option><option value="sv">瑞典语</option><option value="sr">塞尔维亚语</option><option value="st">塞索托语</option><option value="si">僧伽罗语</option><option value="eo">世界语</option><option value="sk">斯洛伐克语</option><option value="sl">斯洛文尼亚语</option><option value="sw">斯瓦希里语</option><option value="ceb">宿务语</option><option value="so">索马里语</option><option value="tg">塔吉克语</option><option value="te">泰卢固语</option><option value="ta">泰米尔语</option><option value="th">泰语</option><option value="tr">土耳其语</option><option value="cy">威尔士语</option><option value="ur">乌尔都语</option><option value="uk">乌克兰语</option><option value="uz">乌兹别克语</option><option value="iw">希伯来语</option><option value="el">希腊语</option><option value="es">西班牙语</option><option value="hu">匈牙利语</option><option value="hy">亚美尼亚语</option><option value="ig">伊博语</option><option value="it">意大利语</option><option value="yi">意第绪语</option><option value="hi">印地语</option><option value="su">印尼巽他语</option><option value="id">印尼语</option><option value="jw">印尼爪哇语</option><option value="en">英语</option><option value="yo">约鲁巴语</option><option value="vi">越南语</option><option value="zh-CN">中文简体</option><option value="zh-TW">中文繁体</option></select></td><td width="5%" align="center"><div id="SL_switch_b" title="切換語言" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 10px; height: 10px; cursor: pointer;" align="center"></div></td><td width="20%" align="left"><select id="SL_lng_to"><option value="sq">阿尔巴尼亚语</option><option value="ar">阿拉伯语</option><option value="az">阿塞拜疆语</option><option value="ga">爱尔兰语</option><option value="et">爱沙尼亚语</option><option value="eu">巴斯克语</option><option value="be">白俄罗斯语</option><option value="bg">保加利亚语</option><option value="is">冰岛语</option><option value="pl">波兰语</option><option value="bs">波斯尼亚语</option><option value="fa">波斯语</option><option value="af">布尔语(南非荷兰语)</option><option value="da">丹麦语</option><option value="de">德语</option><option value="ru">俄语</option><option value="fr">法语</option><option value="tl">菲律宾语</option><option value="fi">芬兰语</option><option value="km">高棉语</option><option value="ka">格鲁吉亚语</option><option value="gu">古吉拉特语</option><option value="kk">哈萨克语</option><option value="ht">海地克里奥尔语</option><option value="ko">韩语</option><option value="ha">豪萨语</option><option value="nl">荷兰语</option><option value="gl">加利西亚语</option><option value="ca">加泰罗尼亚语</option><option value="cs">捷克语</option><option value="kn">卡纳达语</option><option value="hr">克罗地亚语</option><option value="la">拉丁语</option><option value="lv">拉脱维亚语</option><option value="lo">老挝语</option><option value="lt">立陶宛语</option><option value="ro">罗马尼亚语</option><option value="mg">马尔加什语</option><option value="mt">马耳他语</option><option value="mr">马拉地语</option><option value="ml">马拉雅拉姆语</option><option value="ms">马来语</option><option value="mk">马其顿语</option><option value="mi">毛利语</option><option value="mn">蒙古语</option><option value="bn">孟加拉语</option><option value="my">缅甸语</option><option value="hmn">苗语</option><option value="zu">南非祖鲁语</option><option value="ne">尼泊尔语</option><option value="no">挪威语</option><option value="pa">旁遮普语</option><option value="pt">葡萄牙语</option><option value="ny">齐切瓦语</option><option value="ja">日语</option><option value="sv">瑞典语</option><option value="sr">塞尔维亚语</option><option value="st">塞索托语</option><option value="si">僧伽罗语</option><option value="eo">世界语</option><option value="sk">斯洛伐克语</option><option value="sl">斯洛文尼亚语</option><option value="sw">斯瓦希里语</option><option value="ceb">宿务语</option><option value="so">索马里语</option><option value="tg">塔吉克语</option><option value="te">泰卢固语</option><option value="ta">泰米尔语</option><option value="th">泰语</option><option value="tr">土耳其语</option><option value="cy">威尔士语</option><option value="ur">乌尔都语</option><option value="uk">乌克兰语</option><option value="uz">乌兹别克语</option><option value="iw">希伯来语</option><option value="el">希腊语</option><option value="es">西班牙语</option><option value="hu">匈牙利语</option><option value="hy">亚美尼亚语</option><option value="ig">伊博语</option><option value="it">意大利语</option><option value="yi">意第绪语</option><option value="hi">印地语</option><option value="su">印尼巽他语</option><option value="id">印尼语</option><option value="jw">印尼爪哇语</option><option value="en">英语</option><option value="yo">约鲁巴语</option><option value="vi">越南语</option><option value="zh-CN">中文简体</option><option value="zh-TW">中文繁体</option></select></td><td width="5%" align="center"> </td><td width="6%" align="center"><div id="SL_TTS_voice" title="聆聽" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="6%" align="center"><div id="SL_copy" title="複製譯文" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="6%" align="center"><div id="SL_bbl_font_patch" title="此功能在字典中禁用"></div><div id="SL_bbl_font" title="字體大小" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="6%" align="center"><div id="SL_TH" title="翻譯歷史" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="10%"></td><td width="6%" align="right"><div id="SL_pin" title="固定彈出窗口" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 16px; height: 16px; cursor: pointer;"></div></td></tr></table></div><div id="SL_alert_bbl"><div id="SLHKclose"></div><div id="SL_alert_cont"></div></div></div><div id="SL_shadow_translation_result" style="background: rgb(255, 255, 255) url('undefined') repeat scroll 0% 0%;"></div><div id="SL_loading" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; position: absolute; width: 35px; margin-left: 180px; margin-top: -40px; height: 35px;"></div><div id="SL_player2"></div><div id="SL_alert100">語言功能限200個字符</div><div id="SL_Balloon_options" style="background: rgb(255, 255, 255) none repeat scroll 0% 0%;"><div id="SL_arrow_down"></div><table width="100%"><tr><td width="18%" align="left" height="16"><div id="SL_bbl_donate" title="進行一點捐款" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="68%" align="center"><a href="#" id="OPlnk" title="顯示選項">選項</a> : <a href="#" id="HISTlnk" title="翻譯歷史">歷史</a> : <a href="http://about.imtranslator.net/tutorials/presentations/imtranslator-translator-for-firefox/popup-bubble-application/" target="_top" id="HELPlnk" title="幫助">幫助</a> : <a href="#" id="FBlnk" title="反饋">反饋</a></td><td width="15%" align="right"><a id="SL_Balloon_Close" href="#" title="關閉">關閉</a></td></tr></table></div></div></div></body>
+</html>

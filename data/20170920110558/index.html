@@ -1,0 +1,1515 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    
+    <title>MSRP Module</title>
+    
+    <meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+    <link rel="home" href="https://www.kamailio.org/docs/modules/4.4.x/modules/msrp.html#idp36641964" title="MSRP Module">
+    <link rel="next" href="https://www.kamailio.org/docs/modules/4.4.x/modules/msrp.html#idp44181620" title="Chapter&nbsp;1.&nbsp;Admin Guide">
+  <link rel="stylesheet" type="text/css" id="SL_Style" href="chrome://imtranslator/content/css/translator.css">
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+    <div class="book">
+      <div class="titlepage">
+        <div>
+          <div>
+            <h1 class="title"><a id="idp36641964"></a>MSRP Module</h1>
+          </div>
+          <div>
+            <div class="authorgroup">
+              <div class="author">
+                <h3 class="author"><span class="firstname">Daniel-Constantin</span> <span class="surname">Mierla</span></h3>
+                <code class="email">&lt;<a class="email" href="mailto:miconda@gmail.com">miconda@gmail.com</a>&gt;</code>
+              </div>
+              <div class="editor">
+                <h4 class="editedby">Edited by</h4>
+                <h3 class="editor"><span class="firstname">Daniel-Constantin</span> <span class="surname">Mierla</span></h3>
+                <code class="email">&lt;<a class="email" href="mailto:miconda@gmail.com">miconda@gmail.com</a>&gt;</code>
+              </div>
+              <div class="editor">
+                <h4 class="editedby">Edited by</h4>
+                <h3 class="editor"><span class="firstname">Alex</span> <span class="surname">Balashov</span></h3>
+                <code class="email">&lt;<a class="email" href="mailto:abalashov@evaristesys.com">abalashov@evaristesys.com</a>&gt;</code>
+              </div>
+            </div>
+          </div>
+          <div>
+            <p class="copyright">Copyright © 2012 asipto.com</p>
+          </div>
+        </div>
+        <hr>
+      </div>
+      <div class="toc">
+        <p>
+          <strong>Table of Contents</strong>
+        </p>
+        <dl class="toc">
+          <dt>
+            <span class="chapter">
+              <a href="#idp44181620">1. Admin Guide</a>
+            </span>
+          </dt>
+          <dd>
+            <dl>
+              <dt>
+                <span class="section">
+                  <a href="#msrp.overview">1. Overview</a>
+                </span>
+              </dt>
+              <dt>
+                <span class="section">
+                  <a href="#idp43842172">2. Dependencies</a>
+                </span>
+              </dt>
+              <dd>
+                <dl>
+                  <dt>
+                    <span class="section">
+                      <a href="#idp41152580">2.1. Kamailio Modules</a>
+                    </span>
+                  </dt>
+                  <dt>
+                    <span class="section">
+                      <a href="#idp43540052">2.2. External Libraries or Applications</a>
+                    </span>
+                  </dt>
+                </dl>
+              </dd>
+              <dt>
+                <span class="section">
+                  <a href="#idp42776652">3. Parameters</a>
+                </span>
+              </dt>
+              <dd>
+                <dl>
+                  <dt>
+                    <span class="section">
+                      <a href="#msrp.p.sipmsg">3.1. <code class="varname">sipmsg</code> (int)</a>
+                    </span>
+                  </dt>
+                  <dt>
+                    <span class="section">
+                      <a href="#msrp.p.cmap_size">3.2. <code class="varname">cmap_size</code> (int)</a>
+                    </span>
+                  </dt>
+                  <dt>
+                    <span class="section">
+                      <a href="#msrp.p.timer_interval">3.3. <code class="varname">timer_interval</code> (int)</a>
+                    </span>
+                  </dt>
+                  <dt>
+                    <span class="section">
+                      <a href="#msrp.p.auth_min_expires">3.4. <code class="varname">auth_min_expires</code> (int)</a>
+                    </span>
+                  </dt>
+                  <dt>
+                    <span class="section">
+                      <a href="#msrp.p.auth_max_expires">3.5. <code class="varname">auth_max_expires</code> (int)</a>
+                    </span>
+                  </dt>
+                  <dt>
+                    <span class="section">
+                      <a href="#msrp.p.use_path_addr">3.6. <code class="varname">use_path_addr</code> (str)</a>
+                    </span>
+                  </dt>
+                </dl>
+              </dd>
+              <dt>
+                <span class="section">
+                  <a href="#idp41088972">4. Functions</a>
+                </span>
+              </dt>
+              <dd>
+                <dl>
+                  <dt>
+                    <span class="section">
+                      <a href="#msrp.f.msrp_relay">4.1. 
+		<code class="function">msrp_relay()</code>
+	    </a>
+                    </span>
+                  </dt>
+                  <dt>
+                    <span class="section">
+                      <a href="#msrp.f.msrp_reply">4.2. 
+		<code class="function">msrp_reply(code, text [, hdrs])</code>
+	    </a>
+                    </span>
+                  </dt>
+                  <dt>
+                    <span class="section">
+                      <a href="#msrp.f.msrp_is_request">4.3. 
+		<code class="function">msrp_is_request()</code>
+	    </a>
+                    </span>
+                  </dt>
+                  <dt>
+                    <span class="section">
+                      <a href="#msrp.f.msrp_is_reply">4.4. 
+		<code class="function">msrp_is_reply()</code>
+	    </a>
+                    </span>
+                  </dt>
+                  <dt>
+                    <span class="section">
+                      <a href="#msrp.f.msrp_set_dst">4.5. 
+		<code class="function">msrp_set_dst(addr, sock)</code>
+	    </a>
+                    </span>
+                  </dt>
+                  <dt>
+                    <span class="section">
+                      <a href="#msrp.f.msrp_relay_flags">4.6. 
+		<code class="function">msrp_relay_flags(flags)</code>
+	    </a>
+                    </span>
+                  </dt>
+                  <dt>
+                    <span class="section">
+                      <a href="#msrp.f.msrp_reply_flags">4.7. 
+		<code class="function">msrp_reply_flags(flags)</code>
+	    </a>
+                    </span>
+                  </dt>
+                  <dt>
+                    <span class="section">
+                      <a href="#msrp.f.msrp_cmap_save">4.8. 
+		<code class="function">msrp_cmap_save()</code>
+	    </a>
+                    </span>
+                  </dt>
+                  <dt>
+                    <span class="section">
+                      <a href="#msrp.f.msrp_cmap_lookup">4.9. 
+		<code class="function">msrp_cmap_lookup()</code>
+	    </a>
+                    </span>
+                  </dt>
+                </dl>
+              </dd>
+              <dt>
+                <span class="section">
+                  <a href="#idp41029188">5. Pseudo Variables</a>
+                </span>
+              </dt>
+              <dt>
+                <span class="section">
+                  <a href="#idp41030644">6. RPC Commands</a>
+                </span>
+              </dt>
+              <dd>
+                <dl>
+                  <dt>
+                    <span class="section">
+                      <a href="#msrp.r.msrp.cmaplist">6.1. 
+		<code class="function">msrp.cmaplist</code>
+		</a>
+                    </span>
+                  </dt>
+                </dl>
+              </dd>
+              <dt>
+                <span class="section">
+                  <a href="#idp41032828">7. Event Routes</a>
+                </span>
+              </dt>
+              <dt>
+                <span class="section">
+                  <a href="#msrp.usage">8. Usage</a>
+                </span>
+              </dt>
+            </dl>
+          </dd>
+        </dl>
+      </div>
+      <div class="list-of-examples">
+        <p>
+          <strong>List of Examples</strong>
+        </p>
+        <dl>
+          <dt>1.1. <a href="#idp43046580">Set <code class="varname">sipmsg</code> parameter</a></dt>
+          <dt>1.2. <a href="#idp41134148">Set <code class="varname">cmap_size</code> parameter</a></dt>
+          <dt>1.3. <a href="#idp41136612">Set <code class="varname">timer_interval</code> parameter</a></dt>
+          <dt>1.4. <a href="#idp41082452">Set <code class="varname">auth_min_expires</code> parameter</a></dt>
+          <dt>1.5. <a href="#idp41085108">Set <code class="varname">auth_max_expires</code> parameter</a></dt>
+          <dt>1.6. <a href="#idp41087700">Set <code class="varname">use_path_addr</code> parameter</a></dt>
+          <dt>1.7. <a href="#idp41090996"><code class="function">msrp_relay</code> usage</a></dt>
+          <dt>1.8. <a href="#idp41093940"><code class="function">msrp_reply</code> usage</a></dt>
+          <dt>1.9. <a href="#idp41096548"><code class="function">msrp_is_request</code> usage</a></dt>
+          <dt>1.10. <a href="#idp41099220"><code class="function">msrp_is_reply</code> usage</a></dt>
+          <dt>1.11. <a href="#idp41016308"><code class="function">msrp_set_dst</code> usage</a></dt>
+          <dt>1.12. <a href="#idp41019332"><code class="function">msrp_relay_flags</code> usage</a></dt>
+          <dt>1.13. <a href="#idp41022340"><code class="function">msrp_reply_flags</code> usage</a></dt>
+          <dt>1.14. <a href="#idp41025044"><code class="function">msrp_cmap_save</code> usage</a></dt>
+          <dt>1.15. <a href="#idp41027724"><code class="function">msrp_cmap_lookup</code> usage</a></dt>
+          <dt>1.16. <a href="#idp41038716">Event Route (using htable for MSRP connection tracking)</a></dt>
+          <dt>1.17. <a href="#idp41043140">Event Route (using msrp_cmap_ functions for connection tracking)</a></dt>
+        </dl>
+      </div>
+      <div class="chapter">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h1 class="title"><a id="idp44181620"></a>Chapter&nbsp;1.&nbsp;Admin Guide</h1>
+            </div>
+          </div>
+        </div>
+        <div class="toc">
+          <p>
+            <strong>Table of Contents</strong>
+          </p>
+          <dl class="toc">
+            <dt>
+              <span class="section">
+                <a href="#msrp.overview">1. Overview</a>
+              </span>
+            </dt>
+            <dt>
+              <span class="section">
+                <a href="#idp43842172">2. Dependencies</a>
+              </span>
+            </dt>
+            <dd>
+              <dl>
+                <dt>
+                  <span class="section">
+                    <a href="#idp41152580">2.1. Kamailio Modules</a>
+                  </span>
+                </dt>
+                <dt>
+                  <span class="section">
+                    <a href="#idp43540052">2.2. External Libraries or Applications</a>
+                  </span>
+                </dt>
+              </dl>
+            </dd>
+            <dt>
+              <span class="section">
+                <a href="#idp42776652">3. Parameters</a>
+              </span>
+            </dt>
+            <dd>
+              <dl>
+                <dt>
+                  <span class="section">
+                    <a href="#msrp.p.sipmsg">3.1. <code class="varname">sipmsg</code> (int)</a>
+                  </span>
+                </dt>
+                <dt>
+                  <span class="section">
+                    <a href="#msrp.p.cmap_size">3.2. <code class="varname">cmap_size</code> (int)</a>
+                  </span>
+                </dt>
+                <dt>
+                  <span class="section">
+                    <a href="#msrp.p.timer_interval">3.3. <code class="varname">timer_interval</code> (int)</a>
+                  </span>
+                </dt>
+                <dt>
+                  <span class="section">
+                    <a href="#msrp.p.auth_min_expires">3.4. <code class="varname">auth_min_expires</code> (int)</a>
+                  </span>
+                </dt>
+                <dt>
+                  <span class="section">
+                    <a href="#msrp.p.auth_max_expires">3.5. <code class="varname">auth_max_expires</code> (int)</a>
+                  </span>
+                </dt>
+                <dt>
+                  <span class="section">
+                    <a href="#msrp.p.use_path_addr">3.6. <code class="varname">use_path_addr</code> (str)</a>
+                  </span>
+                </dt>
+              </dl>
+            </dd>
+            <dt>
+              <span class="section">
+                <a href="#idp41088972">4. Functions</a>
+              </span>
+            </dt>
+            <dd>
+              <dl>
+                <dt>
+                  <span class="section">
+                    <a href="#msrp.f.msrp_relay">4.1. 
+		<code class="function">msrp_relay()</code>
+	    </a>
+                  </span>
+                </dt>
+                <dt>
+                  <span class="section">
+                    <a href="#msrp.f.msrp_reply">4.2. 
+		<code class="function">msrp_reply(code, text [, hdrs])</code>
+	    </a>
+                  </span>
+                </dt>
+                <dt>
+                  <span class="section">
+                    <a href="#msrp.f.msrp_is_request">4.3. 
+		<code class="function">msrp_is_request()</code>
+	    </a>
+                  </span>
+                </dt>
+                <dt>
+                  <span class="section">
+                    <a href="#msrp.f.msrp_is_reply">4.4. 
+		<code class="function">msrp_is_reply()</code>
+	    </a>
+                  </span>
+                </dt>
+                <dt>
+                  <span class="section">
+                    <a href="#msrp.f.msrp_set_dst">4.5. 
+		<code class="function">msrp_set_dst(addr, sock)</code>
+	    </a>
+                  </span>
+                </dt>
+                <dt>
+                  <span class="section">
+                    <a href="#msrp.f.msrp_relay_flags">4.6. 
+		<code class="function">msrp_relay_flags(flags)</code>
+	    </a>
+                  </span>
+                </dt>
+                <dt>
+                  <span class="section">
+                    <a href="#msrp.f.msrp_reply_flags">4.7. 
+		<code class="function">msrp_reply_flags(flags)</code>
+	    </a>
+                  </span>
+                </dt>
+                <dt>
+                  <span class="section">
+                    <a href="#msrp.f.msrp_cmap_save">4.8. 
+		<code class="function">msrp_cmap_save()</code>
+	    </a>
+                  </span>
+                </dt>
+                <dt>
+                  <span class="section">
+                    <a href="#msrp.f.msrp_cmap_lookup">4.9. 
+		<code class="function">msrp_cmap_lookup()</code>
+	    </a>
+                  </span>
+                </dt>
+              </dl>
+            </dd>
+            <dt>
+              <span class="section">
+                <a href="#idp41029188">5. Pseudo Variables</a>
+              </span>
+            </dt>
+            <dt>
+              <span class="section">
+                <a href="#idp41030644">6. RPC Commands</a>
+              </span>
+            </dt>
+            <dd>
+              <dl>
+                <dt>
+                  <span class="section">
+                    <a href="#msrp.r.msrp.cmaplist">6.1. 
+		<code class="function">msrp.cmaplist</code>
+		</a>
+                  </span>
+                </dt>
+              </dl>
+            </dd>
+            <dt>
+              <span class="section">
+                <a href="#idp41032828">7. Event Routes</a>
+              </span>
+            </dt>
+            <dt>
+              <span class="section">
+                <a href="#msrp.usage">8. Usage</a>
+              </span>
+            </dt>
+          </dl>
+        </div>
+        <div class="section">
+          <div class="titlepage">
+            <div>
+              <div>
+                <h2 class="title"><a id="msrp.overview"></a>1.&nbsp;Overview</h2>
+              </div>
+            </div>
+          </div>
+          <p>
+		This module provides a MSRP routing engine, a.k.a. MSRP relay.
+		MSRP (Message Session Relay Protocol) is defined by RFC4975,
+		and the extensions for an MSRP relay are covered in RFC4976.
+	</p>
+          <p>
+		A typical use of MSRP is instant messaging sessions initiated
+		via SIP. Unlike page-mode instant messaging, which is done via the SIP
+		MESSAGE request, MSRP uses a different communication channel which
+		is negotiated via INVITE-200 OK-ACK.
+	</p>
+          <p>
+		However, MSRP is still a text-based protocol. It uses several routing
+		mechanisms similar to what exists in SIP. Furthermore,
+		MSRP requires TCP, and recommends TLS for confidentiality and security.
+		In light of the scalability and performance of Kamailio in handling
+		TCP/TLS, this module reuses Kamailio's core framework to
+		offer MSRP routing capabilities. Along with embedded Presence and XCAP
+		servers, Kamailio now offers a complete solution for SIP beyond VoIP.
+	</p>
+          <p>
+		One of the main benefits of this module is the ability to reuse
+		all the other extensions that exist in the SIP server, including 
+	        accounting, authentication, authorization to database connectors, 
+		security and DoS attack protections.
+	</p>
+          <p>
+		Kamailio can handle SIP and MSRP traffic received on the same port;
+		the appropriate configuration file block being executed based on the
+		type of message. Therefore, you can use Kamailio as a stand-alone
+		MSRP relay or you can have an instance handling both SIP and MSRP. Another
+		option is to configure Kamailio to listen on multiple ports, some
+		of them for SIP and others for MSRP.
+	</p>
+        </div>
+        <div class="section">
+          <div class="titlepage">
+            <div>
+              <div>
+                <h2 class="title"><a id="idp43842172"></a>2.&nbsp;Dependencies</h2>
+              </div>
+            </div>
+          </div>
+          <div class="section">
+            <div class="titlepage">
+              <div>
+                <div>
+                  <h3 class="title"><a id="idp41152580"></a>2.1.&nbsp;Kamailio Modules</h3>
+                </div>
+              </div>
+            </div>
+            <p>
+		The following modules must be loaded before this module:
+			</p>
+            <div class="itemizedlist">
+              <ul class="itemizedlist" type="disc">
+                <li class="listitem">
+                  <p>
+				<span class="emphasis"><em>None</em></span>.
+			</p>
+                </li>
+              </ul>
+            </div>
+            <p>
+		</p>
+            <p>
+		The following modules are required to make proper use of this
+		module:
+			</p>
+            <div class="itemizedlist">
+              <ul class="itemizedlist" type="disc">
+                <li class="listitem">
+                  <p>
+				<span class="emphasis"><em>tls</em></span>.
+			</p>
+                </li>
+              </ul>
+            </div>
+            <p>
+		</p>
+          </div>
+          <div class="section">
+            <div class="titlepage">
+              <div>
+                <div>
+                  <h3 class="title"><a id="idp43540052"></a>2.2.&nbsp;External Libraries or Applications</h3>
+                </div>
+              </div>
+            </div>
+            <p>
+		The following libraries or applications must be installed before running
+		Kamailio with this module loaded:
+			</p>
+            <div class="itemizedlist">
+              <ul class="itemizedlist" type="disc">
+                <li class="listitem">
+                  <p>
+				<span class="emphasis"><em>None</em></span>
+			</p>
+                </li>
+              </ul>
+            </div>
+            <p>
+		</p>
+          </div>
+        </div>
+        <div class="section">
+          <div class="titlepage">
+            <div>
+              <div>
+                <h2 class="title"><a id="idp42776652"></a>3.&nbsp;Parameters</h2>
+              </div>
+            </div>
+          </div>
+          <div class="section">
+            <div class="titlepage">
+              <div>
+                <div>
+                  <h3 class="title"><a id="msrp.p.sipmsg"></a>3.1.&nbsp;<code class="varname">sipmsg</code> (int)</h3>
+                </div>
+              </div>
+            </div>
+            <p>
+			If set to 1, the module will build a SIP message from MSRP frame headers,
+			providing it to <span class="quote">“<span class="quote">event_route[msrp:frame-in]</span>”</span>.
+			All the config file functions (apart from SIP request relay) that can be used
+			in a request route block can be used in the MSRP event_route.
+		</p>
+            <p>
+		<span class="emphasis"><em>
+			Default value is '1'.
+		</em></span>
+		</p>
+            <div class="example">
+              <a id="idp43046580"></a>
+              <p class="title">
+                <strong>Example&nbsp;1.1.&nbsp;Set <code class="varname">sipmsg</code> parameter</strong>
+              </p>
+              <div class="example-contents">
+                <pre class="programlisting">...
+modparam("msrp", "sipmsg", 1)
+...</pre>
+              </div>
+            </div>
+            <br class="example-break">
+          </div>
+          <div class="section">
+            <div class="titlepage">
+              <div>
+                <div>
+                  <h3 class="title"><a id="msrp.p.cmap_size"></a>3.2.&nbsp;<code class="varname">cmap_size</code> (int)</h3>
+                </div>
+              </div>
+            </div>
+            <p>
+		The size of connection map table, to be computed as power of 2 (e.g.,
+		if the value is 4, then the number of slots in map table is 2^4 = 16).
+		</p>
+            <p>
+		<span class="emphasis"><em>
+			Default value is '0' (no internal map table to be used).
+		</em></span>
+		</p>
+            <div class="example">
+              <a id="idp41134148"></a>
+              <p class="title">
+                <strong>Example&nbsp;1.2.&nbsp;Set <code class="varname">cmap_size</code> parameter</strong>
+              </p>
+              <div class="example-contents">
+                <pre class="programlisting">...
+modparam("msrp", "cmap_size", 8)
+...</pre>
+              </div>
+            </div>
+            <br class="example-break">
+          </div>
+          <div class="section">
+            <div class="titlepage">
+              <div>
+                <div>
+                  <h3 class="title"><a id="msrp.p.timer_interval"></a>3.3.&nbsp;<code class="varname">timer_interval</code> (int)</h3>
+                </div>
+              </div>
+            </div>
+            <p>
+		The timer interval in seconds to run the procedure for cleaning
+		expired connections.
+		</p>
+            <p>
+		<span class="emphasis"><em>
+			Default value is '60'.
+		</em></span>
+		</p>
+            <div class="example">
+              <a id="idp41136612"></a>
+              <p class="title">
+                <strong>Example&nbsp;1.3.&nbsp;Set <code class="varname">timer_interval</code> parameter</strong>
+              </p>
+              <div class="example-contents">
+                <pre class="programlisting">...
+modparam("msrp", "timer_interval", 90)
+...</pre>
+              </div>
+            </div>
+            <br class="example-break">
+          </div>
+          <div class="section">
+            <div class="titlepage">
+              <div>
+                <div>
+                  <h3 class="title"><a id="msrp.p.auth_min_expires"></a>3.4.&nbsp;<code class="varname">auth_min_expires</code> (int)</h3>
+                </div>
+              </div>
+            </div>
+            <p>
+		The minimum value accepted for the <span class="quote">“<span class="quote">Expires</span>”</span> header in AUTH requests.
+		</p>
+            <p>
+		<span class="emphasis"><em>
+			Default value is '60'.
+		</em></span>
+		</p>
+            <div class="example">
+              <a id="idp41082452"></a>
+              <p class="title">
+                <strong>Example&nbsp;1.4.&nbsp;Set <code class="varname">auth_min_expires</code> parameter</strong>
+              </p>
+              <div class="example-contents">
+                <pre class="programlisting">...
+modparam("msrp", "auth_min_expiresl", 90)
+...</pre>
+              </div>
+            </div>
+            <br class="example-break">
+          </div>
+          <div class="section">
+            <div class="titlepage">
+              <div>
+                <div>
+                  <h3 class="title"><a id="msrp.p.auth_max_expires"></a>3.5.&nbsp;<code class="varname">auth_max_expires</code> (int)</h3>
+                </div>
+              </div>
+            </div>
+            <p>
+		The maximum value accepted for <span class="quote">“<span class="quote">Expires</span>”</span> header in AUTH requests.
+		</p>
+            <p>
+		<span class="emphasis"><em>
+			Default value is '3600'.
+		</em></span>
+		</p>
+            <div class="example">
+              <a id="idp41085108"></a>
+              <p class="title">
+                <strong>Example&nbsp;1.5.&nbsp;Set <code class="varname">auth_max_expires</code> parameter</strong>
+              </p>
+              <div class="example-contents">
+                <pre class="programlisting">...
+modparam("msrp", "auth_max_expiresl", 1800)
+...</pre>
+              </div>
+            </div>
+            <br class="example-break">
+          </div>
+          <div class="section">
+            <div class="titlepage">
+              <div>
+                <div>
+                  <h3 class="title"><a id="msrp.p.use_path_addr"></a>3.6.&nbsp;<code class="varname">use_path_addr</code> (str)</h3>
+                </div>
+              </div>
+            </div>
+            <p>
+		The hostname:port to be used when building the Path header.
+		</p>
+            <p>
+		<span class="emphasis"><em>
+			Default value is NULL (server IP and port are used).
+		</em></span>
+		</p>
+            <div class="example">
+              <a id="idp41087700"></a>
+              <p class="title">
+                <strong>Example&nbsp;1.6.&nbsp;Set <code class="varname">use_path_addr</code> parameter</strong>
+              </p>
+              <div class="example-contents">
+                <pre class="programlisting">...
+modparam("msrp", "use_path_addr", "msrp.kamailio.org:5061")
+...</pre>
+              </div>
+            </div>
+            <br class="example-break">
+          </div>
+        </div>
+        <div class="section">
+          <div class="titlepage">
+            <div>
+              <div>
+                <h2 class="title"><a id="idp41088972"></a>4.&nbsp;Functions</h2>
+              </div>
+            </div>
+          </div>
+          <div class="section">
+            <div class="titlepage">
+              <div>
+                <div>
+                  <h3 class="title"><a id="msrp.f.msrp_relay"></a>4.1.&nbsp;
+		<code class="function">msrp_relay()</code>
+	    </h3>
+                </div>
+              </div>
+            </div>
+            <p>
+			Relay MSRP frame according to the To-Path. This function has to be 
+			executed for each MSRP request or reply that has to be forwarded. Note
+			that due to nature of the MSRP transport layer, which is reliable
+			(TCP/TLS), there is no retransmission of MSRP frames.
+		</p>
+            <p>
+		This function can be used in ANY_ROUTE.
+		</p>
+            <div class="example">
+              <a id="idp41090996"></a>
+              <p class="title">
+                <strong>Example&nbsp;1.7.&nbsp;<code class="function">msrp_relay</code> usage</strong>
+              </p>
+              <div class="example-contents">
+                <pre class="programlisting">...
+event_route[msrp:frame-in] {
+    msrp_relay();
+}
+...</pre>
+              </div>
+            </div>
+            <br class="example-break">
+          </div>
+          <div class="section">
+            <div class="titlepage">
+              <div>
+                <div>
+                  <h3 class="title"><a id="msrp.f.msrp_reply"></a>4.2.&nbsp;
+		<code class="function">msrp_reply(code, text [, hdrs])</code>
+	    </h3>
+                </div>
+              </div>
+            </div>
+            <p>
+		Send a reply for the current MSRP request, adding optional headers.
+		</p>
+            <p>
+		The parameter can be a pseudo-variable.
+		</p>
+            <p>
+		This function can be used in ANY_ROUTE.
+		</p>
+            <div class="example">
+              <a id="idp41093940"></a>
+              <p class="title">
+                <strong>Example&nbsp;1.8.&nbsp;<code class="function">msrp_reply</code> usage</strong>
+              </p>
+              <div class="example-contents">
+                <pre class="programlisting">...
+event_route[msrp:frame-in] {
+    msrp_reply("403", "Not allowed");
+}
+...</pre>
+              </div>
+            </div>
+            <br class="example-break">
+          </div>
+          <div class="section">
+            <div class="titlepage">
+              <div>
+                <div>
+                  <h3 class="title"><a id="msrp.f.msrp_is_request"></a>4.3.&nbsp;
+		<code class="function">msrp_is_request()</code>
+	    </h3>
+                </div>
+              </div>
+            </div>
+            <p>
+			Return true if the MSRP frame is a request.
+		</p>
+            <p>
+		This function can be used in ANY_ROUTE.
+		</p>
+            <div class="example">
+              <a id="idp41096548"></a>
+              <p class="title">
+                <strong>Example&nbsp;1.9.&nbsp;<code class="function">msrp_is_request</code> usage</strong>
+              </p>
+              <div class="example-contents">
+                <pre class="programlisting">...
+event_route[msrp:frame-in] {
+    if(msrp_is_request())
+    {
+        msrp_relay();
+        exit;
+    }
+}
+...</pre>
+              </div>
+            </div>
+            <br class="example-break">
+          </div>
+          <div class="section">
+            <div class="titlepage">
+              <div>
+                <div>
+                  <h3 class="title"><a id="msrp.f.msrp_is_reply"></a>4.4.&nbsp;
+		<code class="function">msrp_is_reply()</code>
+	    </h3>
+                </div>
+              </div>
+            </div>
+            <p>
+			Return true if the MSRP frame is a reply.
+		</p>
+            <p>
+		This function can be used in ANY_ROUTE.
+		</p>
+            <div class="example">
+              <a id="idp41099220"></a>
+              <p class="title">
+                <strong>Example&nbsp;1.10.&nbsp;<code class="function">msrp_is_reply</code> usage</strong>
+              </p>
+              <div class="example-contents">
+                <pre class="programlisting">...
+event_route[msrp:frame-in] {
+    if(msrp_is_reply())
+    {
+        msrp_relay();
+        exit;
+    }
+}
+...</pre>
+              </div>
+            </div>
+            <br class="example-break">
+          </div>
+          <div class="section">
+            <div class="titlepage">
+              <div>
+                <div>
+                  <h3 class="title"><a id="msrp.f.msrp_set_dst"></a>4.5.&nbsp;
+		<code class="function">msrp_set_dst(addr, sock)</code>
+	    </h3>
+                </div>
+              </div>
+            </div>
+            <p>
+		Set destination attributes: addr - target address as MSRP URI;
+		sock - local socket to be used (format 'proto:ip:port').
+		</p>
+            <p>
+		The parameter can be a pseudo-variable.
+		</p>
+            <p>
+		This function can be used in ANY_ROUTE.
+		</p>
+            <div class="example">
+              <a id="idp41016308"></a>
+              <p class="title">
+                <strong>Example&nbsp;1.11.&nbsp;<code class="function">msrp_set_dst</code> usage</strong>
+              </p>
+              <div class="example-contents">
+                <pre class="programlisting">...
+event_route[msrp:frame-in] {
+    ...
+    msrp_set_dst("msrp://127.0.0.1:8000", "tcp:127.0.0.1:5060");
+    ...
+}
+...</pre>
+              </div>
+            </div>
+            <br class="example-break">
+          </div>
+          <div class="section">
+            <div class="titlepage">
+              <div>
+                <div>
+                  <h3 class="title"><a id="msrp.f.msrp_relay_flags"></a>4.6.&nbsp;
+		<code class="function">msrp_relay_flags(flags)</code>
+	    </h3>
+                </div>
+              </div>
+            </div>
+            <p>
+		Set transport layer sending flags for forwarding current MSRP frame;
+		flags - a bitmask of flags - 1 (don't create a new connection), 2
+		(close connection after send).
+		</p>
+            <p>
+		The parameter can be a pseudo-variable.
+		</p>
+            <p>
+		This function can be used in ANY_ROUTE.
+		</p>
+            <div class="example">
+              <a id="idp41019332"></a>
+              <p class="title">
+                <strong>Example&nbsp;1.12.&nbsp;<code class="function">msrp_relay_flags</code> usage</strong>
+              </p>
+              <div class="example-contents">
+                <pre class="programlisting">...
+event_route[msrp:frame-in] {
+    ...
+    msrp_relay_flags("1");
+    ...
+}
+...</pre>
+              </div>
+            </div>
+            <br class="example-break">
+          </div>
+          <div class="section">
+            <div class="titlepage">
+              <div>
+                <div>
+                  <h3 class="title"><a id="msrp.f.msrp_reply_flags"></a>4.7.&nbsp;
+		<code class="function">msrp_reply_flags(flags)</code>
+	    </h3>
+                </div>
+              </div>
+            </div>
+            <p>
+		Set transport layer sending flags for replies to the current MSRP frame;
+		flags - a bitmask of flags - 1 (don't create a new connection),
+		2 (close connection after send).
+		</p>
+            <p>
+		The parameter can be a pseudo-variable.
+		</p>
+            <p>
+		This function can be used in ANY_ROUTE.
+		</p>
+            <div class="example">
+              <a id="idp41022340"></a>
+              <p class="title">
+                <strong>Example&nbsp;1.13.&nbsp;<code class="function">msrp_reply_flags</code> usage</strong>
+              </p>
+              <div class="example-contents">
+                <pre class="programlisting">...
+event_route[msrp:frame-in] {
+    ...
+    msrp_reply_flags("1");
+    ...
+}
+...</pre>
+              </div>
+            </div>
+            <br class="example-break">
+          </div>
+          <div class="section">
+            <div class="titlepage">
+              <div>
+                <div>
+                  <h3 class="title"><a id="msrp.f.msrp_cmap_save"></a>4.8.&nbsp;
+		<code class="function">msrp_cmap_save()</code>
+	    </h3>
+                </div>
+              </div>
+            </div>
+            <p>
+		Save details of a MSRP connection upon AUTH request inside
+		the internal map table, indexed by session id.
+		</p>
+            <p>
+		This function can be used in ANY_ROUTE.
+		</p>
+            <div class="example">
+              <a id="idp41025044"></a>
+              <p class="title">
+                <strong>Example&nbsp;1.14.&nbsp;<code class="function">msrp_cmap_save</code> usage</strong>
+              </p>
+              <div class="example-contents">
+                <pre class="programlisting">...
+event_route[msrp:frame-in] {
+    ...
+	if(method=="AUTH") { msrp_cmap_save(); exit; }
+    ...
+}
+...</pre>
+              </div>
+            </div>
+            <br class="example-break">
+          </div>
+          <div class="section">
+            <div class="titlepage">
+              <div>
+                <div>
+                  <h3 class="title"><a id="msrp.f.msrp_cmap_lookup"></a>4.9.&nbsp;
+		<code class="function">msrp_cmap_lookup()</code>
+	    </h3>
+                </div>
+              </div>
+            </div>
+            <p>
+		Lookup MSRP connection details for current session id.
+		</p>
+            <p>
+		This function can be used in ANY_ROUTE.
+		</p>
+            <div class="example">
+              <a id="idp41027724"></a>
+              <p class="title">
+                <strong>Example&nbsp;1.15.&nbsp;<code class="function">msrp_cmap_lookup</code> usage</strong>
+              </p>
+              <div class="example-contents">
+                <pre class="programlisting">...
+event_route[msrp:frame-in] {
+    ...
+	if(method=="SEND" and $msrp(nexthops)==1) {
+		if(msrp_cmap_lookup()) {
+			msrp_relay();
+		} else {
+			msrp_reply("481", "Session not found");
+		}
+	}
+    ...
+}
+...</pre>
+              </div>
+            </div>
+            <br class="example-break">
+          </div>
+        </div>
+        <div class="section">
+          <div class="titlepage">
+            <div>
+              <div>
+                <h2 class="title"><a id="idp41029188"></a>5.&nbsp;Pseudo Variables</h2>
+              </div>
+            </div>
+          </div>
+          <p>
+			The module exports a pseudo-variable class, $msrp(key), to access
+			the MSRP frame (e.g. first line attributes, body, all frame
+			content).
+		</p>
+          <p>
+			The module exports a transformations class, 'msrpuri', to allow
+			access attributes of a MSRP URI.
+		</p>
+          <p>
+			These are documented in the appropriate Wiki pages hosted on the
+			project web site.
+		</p>
+        </div>
+        <div class="section">
+          <div class="titlepage">
+            <div>
+              <div>
+                <h2 class="title"><a id="idp41030644"></a>6.&nbsp;RPC Commands</h2>
+              </div>
+            </div>
+          </div>
+          <div class="section">
+            <div class="titlepage">
+              <div>
+                <div>
+                  <h3 class="title"><a id="msrp.r.msrp.cmaplist"></a>6.1.&nbsp;
+		<code class="function">msrp.cmaplist</code>
+		</h3>
+                </div>
+              </div>
+            </div>
+            <p>
+		List active MSRP connections.
+		</p>
+            <p>
+		Example:
+		</p>
+            <pre class="programlisting">...
+kamcmd msrp.cmaplist
+...</pre>
+          </div>
+        </div>
+        <div class="section">
+          <div class="titlepage">
+            <div>
+              <div>
+                <h2 class="title"><a id="idp41032828"></a>7.&nbsp;Event Routes</h2>
+              </div>
+            </div>
+          </div>
+          <p>
+			For each MSRP frame received from the network, the module executes
+			event_route[msrp:frame-in] block in the config file.
+		</p>
+        </div>
+        <div class="section">
+          <div class="titlepage">
+            <div>
+              <div>
+                <h2 class="title"><a id="msrp.usage"></a>8.&nbsp;Usage</h2>
+              </div>
+            </div>
+          </div>
+          <p>
+			When the <code class="varname">sipmsg</code> parameter is set to 1 (which is the
+			default), the module internally builds a SIP request from the MSRP frame
+			and exposes it to the config file interpreter. This way, all the functions
+			that are valid for SIP requests can be used safely in event_route[msrp:frame-in].
+		</p>
+          <p>
+			To build the SIP request, the module takes the first line and the
+			headers from an MSRP message and appends them to a static buffer. The 
+			next two examples show an MSRP frame and the resulting SIP request.
+		</p>
+          <pre class="programlisting">...
+MSRP 6aef SEND
+To-Path: msrps://a.example.org:9000/kjfjan;tcp \
+  msrps://b.example.net:9000/aeiug;tcp \
+  msrps://bob.example.net:8145/foo;tcp
+From-Path: msrps://alice.example.org:7965/bar;tcp
+Success-Report: yes
+Byte-Range: 1-*/*
+Message-ID: 87652
+Content-Type: text/plain
+
+Hi Bob, I'm about to send you a photo.
+-------6aef$
+...</pre>
+          <pre class="programlisting">...
+MSRP sip:a@127.0.0.1 SIP/2.0
+Via: SIP/2.0/UDP 127.0.0.1:9;branch=z9hG4bKa
+From: &lt;b@127.0.0.1&gt;;tag=a
+To: &lt;a@127.0.0.1&gt;
+Call-ID: a
+CSeq: 1 MSRP
+Content-Length: 0
+MSRP-First-Line: MSRP 6aef SEND
+To-Path: msrps://a.example.org:9000/kjfjan;tcp \
+  msrps://b.example.net:9000/aeiug;tcp \
+  msrps://bob.example.net:8145/foo;tcp
+From-Path: msrps://alice.example.org:7965/bar;tcp
+Success-Report: yes
+Byte-Range: 1-*/*
+Message-ID: 87652
+Content-Type: text/plain
+
+...</pre>
+          <p>
+			Note that MSRP does not permit line folding.  A "\" in the examples
+			shows a line continuation due to the limitations of line length of this
+			document.  Neither the backslash nor the extra CRLF is included in
+			the actual request or response.
+		</p>
+          <p>
+			As can be observed, the MSRP frame content starts with the body
+			of the 'MSRP-First-Line:' header. Using static content to get to a
+			valid SIP request is a perfect trade-off for performance.
+		</p>
+          <p>
+			Besides the option to access parts of MSRP frame via an 
+			internally-built SIP message, the module exports a new pseudo-variable 
+			class $msrp(key) which returns attributes from the MSRP frame. There is
+			also a new transformation, {msrpuri.key}, to get access to parts
+			of an MSRP URI. See the appropriate Wiki pages on the project's
+			web site for full details about new pseudo-variable and 
+			transformation classes.
+		</p>
+          <p>
+			Next is an example of configuration file with the routing block
+			for MSRP frames. In this config, the SIP traffic is rejected.
+		</p>
+          <div class="example">
+            <a id="idp41038716"></a>
+            <p class="title">
+              <strong>Example&nbsp;1.16.&nbsp;Event Route (using htable for MSRP connection tracking)</strong>
+            </p>
+            <div class="example-contents">
+              <pre class="programlisting">...
+
+#!KAMAILIO
+
+debug=2
+memdbg=5
+memlog=5
+
+children=4
+
+log_stderror=yes
+auto_aliases=no
+
+tcp_accept_no_cl=yes
+tcp_connection_lifetime=1810
+
+listen=127.0.0.1:5060
+
+mpath="modules_k/:modules/"
+
+loadmodule "sl.so"
+loadmodule "kex.so"
+loadmodule "mi_fifo.so"
+loadmodule "ctl.so"
+loadmodule "msrp.so"
+loadmodule "pv.so"
+loadmodule "auth.so"
+loadmodule "cfgutils.so"
+loadmodule "htable.so"
+loadmodule "xlog.so"
+
+modparam("mi_fifo", "fifo_name", "/tmp/kamailio_fifo")
+
+modparam("auth", "nonce_count", 1)
+modparam("auth", "qop", "auth")
+
+#!substdef "!MSRP_MIN_EXPIRES!1800!g"
+#!substdef "!MSRP_MAX_EXPIRES!3600!g"
+modparam("htable", "htable", "msrp=&gt;size=8;autoexpire=MSRP_MAX_EXPIRES;")
+
+request_route {
+	sl_send_reply("403", "No SIP Here");
+	exit;
+}
+
+reply_route {
+	drop;
+}
+
+event_route[msrp:frame-in] {
+	xdbg("============#[[$msrp(method)]]===========\n");
+	xdbg("============*[[$si:$sp]]\n");
+	xdbg("============ crthop:   [$msrp(crthop)]\n");
+	xdbg("============ prevhop:  [$msrp(prevhop)]\n");
+	xdbg("============ nexthop:  [$msrp(nexthop)]\n");
+	xdbg("============ firsthop: [$msrp(firsthop)]\n");
+	xdbg("============ lasthop:  [$msrp(lasthop)]\n");
+	xdbg("============ prevhops: [$msrp(prevhops)]\n");
+	xdbg("============ nexthops: [$msrp(nexthops)]\n");
+	xdbg("============ srcaddr:  [$msrp(srcaddr)]\n");
+	xdbg("============ srcsock:  [$msrp(srcsock)]\n");
+	xdbg("============ sessid:   [$msrp(sessid)]\n");
+
+	msrp_reply_flags("1");
+
+	if(msrp_is_reply())
+	{
+		msrp_relay();
+	}
+	else if($msrp(method)=="AUTH")
+	{
+		if($msrp(nexthops)&gt;0)
+		{
+			msrp_relay();
+			exit;
+		}
+
+		# frame for local server - send Use-Path
+		# -- passwd can be loaded from DB based on $au
+		$var(passwd) = "xyz123";
+		if(!pv_www_authenticate("myrealm", "$var(passwd)", "0",
+					"$msrp(method)"))
+		{
+			if(auth_get_www_authenticate("myrealm", "1",
+							"$var(wauth)"))
+			{
+				msrp_reply("401", "Unauthorized",
+						"$var(wauth)");
+			} else {
+				msrp_reply("500", "Server Error");
+			}
+			exit;
+		}
+
+		if ($hdr(Expires) != $null) {
+			$var(expires) = (int) $hdr(Expires);
+			if ($var(expires) &lt; MSRP_MIN_EXPIRES) {
+				msrp_reply("423", "Interval Out-of-Bounds",
+					"Min-Expires: MSRP_MIN_EXPIRES\r\n");
+				exit;
+			} else {
+				msrp_reply("423", "Interval Out-of-Bounds",
+					"Max-Expires: MSRP_MAX_EXPIRES\r\n");
+				exit;
+			}
+
+		} else
+			$var(expires) = MSRP_MAX_EXPIRES;
+		
+		$var(cnt) = $var(cnt) + 1;
+		pv_printf("$var(sessid)", "s.$(pp).$(var(cnt)).$(RANDOM)");
+		$sht(msrp=&gt;$var(sessid)::srcaddr) = $msrp(srcaddr);
+		$sht(msrp=&gt;$var(sessid)::srcsock) = $msrp(srcsock);
+		$shtex(msrp=&gt;$var(sessid)) = $var(expires) + 5;
+		# - Use-Path: the MSRP address for server + session id
+		$var(headers) = "Use-Path: msrp://127.0.0.1:5060/"
+				+ $var(sessid) + ";tcp\r\n"
+				+ "Expires: " + $var(expires) + "\r\n";
+		msrp_reply("200", "OK", "$var(headers)");
+	}
+	else if($msrp(method)=="SEND" || $msrp(method)=="REPORT")
+	{
+		if($msrp(nexthops)&gt;1)
+		{
+			if ($msrp(method)!="REPORT")
+			{
+				msrp_reply("200", "OK");
+			}
+			msrp_relay();
+			exit;
+		}
+		$var(sessid) = $msrp(sessid);
+		if($sht(msrp=&gt;$var(sessid)::srcaddr) == $null)
+		{
+			# one more hop, but we don't have address in htable
+			if ($msrp(method)!="REPORT")
+			{
+				msrp_reply("481", "Session-does-not-exist");
+			}
+			exit;
+		}
+		else if($msrp(method)!="REPORT")
+		{
+			msrp_reply("200", "OK");
+		}
+		msrp_relay_flags("1");
+		msrp_set_dst("$sht(msrp=&gt;$var(sessid)::srcaddr)",
+				"$sht(msrp=&gt;$var(sessid)::srcsock)");
+		msrp_relay();
+	}
+	else
+	{
+		msrp_reply("501", "Request-method-not-understood");
+	}
+}
+
+...</pre>
+            </div>
+          </div>
+          <br class="example-break">
+          <div class="example">
+            <a id="idp41043140"></a>
+            <p class="title">
+              <strong>Example&nbsp;1.17.&nbsp;Event Route (using msrp_cmap_ functions for connection tracking)</strong>
+            </p>
+            <div class="example-contents">
+              <pre class="programlisting">...
+
+#!KAMAILIO
+
+debug=2
+memdbg=5
+memlog=5
+
+children=4
+
+log_stderror=yes
+auto_aliases=no
+
+tcp_accept_no_cl=yes
+tcp_connection_lifetime=1810
+
+listen=127.0.0.1:5060
+
+mpath="modules_k/:modules/"
+
+loadmodule "sl.so"
+loadmodule "kex.so"
+loadmodule "mi_fifo.so"
+loadmodule "ctl.so"
+loadmodule "msrp.so"
+loadmodule "pv.so"
+loadmodule "auth.so"
+loadmodule "cfgutils.so"
+loadmodule "xlog.so"
+
+modparam("mi_fifo", "fifo_name", "/tmp/kamailio_fifo")
+
+modparam("auth", "nonce_count", 1)
+modparam("auth", "qop", "auth")
+
+modparam("msrp", "cmap_size", 8)
+modparam("msrp", "use_path_addr", "msrp://127.0.0.1:5060")
+
+request_route {
+	sl_send_reply("403", "No SIP Here");
+	exit;
+}
+
+reply_route {
+	drop;
+}
+
+event_route[msrp:frame-in] {
+	xdbg("============#[[$msrp(method)]]===========\n");
+	xdbg("============*[[$si:$sp]]\n");
+	xdbg("============ crthop:   [$msrp(crthop)]\n");
+	xdbg("============ prevhop:  [$msrp(prevhop)]\n");
+	xdbg("============ nexthop:  [$msrp(nexthop)]\n");
+	xdbg("============ firsthop: [$msrp(firsthop)]\n");
+	xdbg("============ lasthop:  [$msrp(lasthop)]\n");
+	xdbg("============ prevhops: [$msrp(prevhops)]\n");
+	xdbg("============ nexthops: [$msrp(nexthops)]\n");
+	xdbg("============ srcaddr:  [$msrp(srcaddr)]\n");
+	xdbg("============ srcsock:  [$msrp(srcsock)]\n");
+	xdbg("============ sessid:   [$msrp(sessid)]\n");
+
+	msrp_reply_flags("1");
+
+	if (msrp_is_reply())
+	{
+		msrp_relay();
+	}
+	else if($msrp(method)=="AUTH")
+	{
+		if($msrp(nexthops)&gt;0)
+		{
+			msrp_relay();
+			exit;
+		}
+
+		# frame for local server - send Use-Path
+		# -- passwd can be loaded from DB based on $au
+		$var(passwd) = "xyz123";
+		if(!pv_www_authenticate("myrealm", "$var(passwd)", "0",
+					"$msrp(method)"))
+		{
+			if(auth_get_www_authenticate("myrealm", "1",
+							"$var(wauth)"))
+			{
+				msrp_reply("401", "Unauthorized",
+						"$var(wauth)");
+			} else {
+				msrp_reply("500", "Server Error");
+			}
+			exit;
+		}
+
+		msrp_cmap_save();
+	}
+	else if ($msrp(method)=="SEND" || $msrp(method)=="REPORT")
+	{
+		if ($msrp(nexthops)&gt;1)
+		{
+			if ($msrp(method)!="REPORT")
+			{
+				msrp_reply("200", "OK");
+			}
+			msrp_relay();
+			exit;
+		}
+
+		if (msrp_cmap_lookup())
+		{
+			if ($msrp(method)!="REPORT")
+			{
+				msrp_reply("200", "OK");
+			}
+			msrp_relay_flags("1");
+			msrp_relay();
+		}
+		else
+		{
+			msrp_reply("481", "Session-does-not-exist");
+		}
+	}
+	else
+	{
+		msrp_reply("501", "Request-method-not-understood");
+	}
+}
+
+...</pre>
+            </div>
+          </div>
+          <br class="example-break">
+        </div>
+      </div>
+    </div>
+  
+
+<div id="SL_balloon_obj" style="display: block;"><div id="SL_button" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: none; width: 24px; height: 24px; position: absolute; cursor: pointer; opacity: 1;"></div><div id="SL_shadow_translation_result2" style="display: none; margin-top: 30px; margin-left: 1px; direction: ltr; text-align: left; min-height: 40px;"><div></div></div><div id="SL_shadow_translator" style="display: none;"><div id="SL_providers"><div class="SL_BL_LABLE_ON" title="Google" id="SL_P0">G</div><div class="SL_BL_LABLE_ON" title="Microsoft" id="SL_P1">M</div><div class="SL_BL_LABLE_ON" title="Translator" id="SL_P2">T</div></div><div id="SL_planshet" style="background: rgb(244, 245, 245) url('undefined') repeat scroll 0% 0%;"><div id="SL_arrow_up"></div><div id="SL_TB"><div id="bubblelogo" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 24px; height: 24px; position: absolute;"></div><table id="SL_tables"><tr><td width="10%" align="right"><input id="SLloc" title="鎖定語言" type="checkbox"></td><td width="20%" align="left"><select id="SL_lng_from"><option value="auto">檢測語言</option><option value="sq">阿尔巴尼亚语</option><option value="ar">阿拉伯语</option><option value="az">阿塞拜疆语</option><option value="ga">爱尔兰语</option><option value="et">爱沙尼亚语</option><option value="eu">巴斯克语</option><option value="be">白俄罗斯语</option><option value="bg">保加利亚语</option><option value="is">冰岛语</option><option value="pl">波兰语</option><option value="bs">波斯尼亚语</option><option value="fa">波斯语</option><option value="af">布尔语(南非荷兰语)</option><option value="da">丹麦语</option><option value="de">德语</option><option value="ru">俄语</option><option value="fr">法语</option><option value="tl">菲律宾语</option><option value="fi">芬兰语</option><option value="km">高棉语</option><option value="ka">格鲁吉亚语</option><option value="gu">古吉拉特语</option><option value="kk">哈萨克语</option><option value="ht">海地克里奥尔语</option><option value="ko">韩语</option><option value="ha">豪萨语</option><option value="nl">荷兰语</option><option value="gl">加利西亚语</option><option value="ca">加泰罗尼亚语</option><option value="cs">捷克语</option><option value="kn">卡纳达语</option><option value="hr">克罗地亚语</option><option value="la">拉丁语</option><option value="lv">拉脱维亚语</option><option value="lo">老挝语</option><option value="lt">立陶宛语</option><option value="ro">罗马尼亚语</option><option value="mg">马尔加什语</option><option value="mt">马耳他语</option><option value="mr">马拉地语</option><option value="ml">马拉雅拉姆语</option><option value="ms">马来语</option><option value="mk">马其顿语</option><option value="mi">毛利语</option><option value="mn">蒙古语</option><option value="bn">孟加拉语</option><option value="my">缅甸语</option><option value="hmn">苗语</option><option value="zu">南非祖鲁语</option><option value="ne">尼泊尔语</option><option value="no">挪威语</option><option value="pa">旁遮普语</option><option value="pt">葡萄牙语</option><option value="ny">齐切瓦语</option><option value="ja">日语</option><option value="sv">瑞典语</option><option value="sr">塞尔维亚语</option><option value="st">塞索托语</option><option value="si">僧伽罗语</option><option value="eo">世界语</option><option value="sk">斯洛伐克语</option><option value="sl">斯洛文尼亚语</option><option value="sw">斯瓦希里语</option><option value="ceb">宿务语</option><option value="so">索马里语</option><option value="tg">塔吉克语</option><option value="te">泰卢固语</option><option value="ta">泰米尔语</option><option value="th">泰语</option><option value="tr">土耳其语</option><option value="cy">威尔士语</option><option value="ur">乌尔都语</option><option value="uk">乌克兰语</option><option value="uz">乌兹别克语</option><option value="iw">希伯来语</option><option value="el">希腊语</option><option value="es">西班牙语</option><option value="hu">匈牙利语</option><option value="hy">亚美尼亚语</option><option value="ig">伊博语</option><option value="it">意大利语</option><option value="yi">意第绪语</option><option value="hi">印地语</option><option value="su">印尼巽他语</option><option value="id">印尼语</option><option value="jw">印尼爪哇语</option><option value="en">英语</option><option value="yo">约鲁巴语</option><option value="vi">越南语</option><option value="zh-CN">中文简体</option><option value="zh-TW">中文繁体</option></select></td><td width="5%" align="center"><div id="SL_switch_b" title="切換語言" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 10px; height: 10px; cursor: pointer;" align="center"></div></td><td width="20%" align="left"><select id="SL_lng_to"><option value="sq">阿尔巴尼亚语</option><option value="ar">阿拉伯语</option><option value="az">阿塞拜疆语</option><option value="ga">爱尔兰语</option><option value="et">爱沙尼亚语</option><option value="eu">巴斯克语</option><option value="be">白俄罗斯语</option><option value="bg">保加利亚语</option><option value="is">冰岛语</option><option value="pl">波兰语</option><option value="bs">波斯尼亚语</option><option value="fa">波斯语</option><option value="af">布尔语(南非荷兰语)</option><option value="da">丹麦语</option><option value="de">德语</option><option value="ru">俄语</option><option value="fr">法语</option><option value="tl">菲律宾语</option><option value="fi">芬兰语</option><option value="km">高棉语</option><option value="ka">格鲁吉亚语</option><option value="gu">古吉拉特语</option><option value="kk">哈萨克语</option><option value="ht">海地克里奥尔语</option><option value="ko">韩语</option><option value="ha">豪萨语</option><option value="nl">荷兰语</option><option value="gl">加利西亚语</option><option value="ca">加泰罗尼亚语</option><option value="cs">捷克语</option><option value="kn">卡纳达语</option><option value="hr">克罗地亚语</option><option value="la">拉丁语</option><option value="lv">拉脱维亚语</option><option value="lo">老挝语</option><option value="lt">立陶宛语</option><option value="ro">罗马尼亚语</option><option value="mg">马尔加什语</option><option value="mt">马耳他语</option><option value="mr">马拉地语</option><option value="ml">马拉雅拉姆语</option><option value="ms">马来语</option><option value="mk">马其顿语</option><option value="mi">毛利语</option><option value="mn">蒙古语</option><option value="bn">孟加拉语</option><option value="my">缅甸语</option><option value="hmn">苗语</option><option value="zu">南非祖鲁语</option><option value="ne">尼泊尔语</option><option value="no">挪威语</option><option value="pa">旁遮普语</option><option value="pt">葡萄牙语</option><option value="ny">齐切瓦语</option><option value="ja">日语</option><option value="sv">瑞典语</option><option value="sr">塞尔维亚语</option><option value="st">塞索托语</option><option value="si">僧伽罗语</option><option value="eo">世界语</option><option value="sk">斯洛伐克语</option><option value="sl">斯洛文尼亚语</option><option value="sw">斯瓦希里语</option><option value="ceb">宿务语</option><option value="so">索马里语</option><option value="tg">塔吉克语</option><option value="te">泰卢固语</option><option value="ta">泰米尔语</option><option value="th">泰语</option><option value="tr">土耳其语</option><option value="cy">威尔士语</option><option value="ur">乌尔都语</option><option value="uk">乌克兰语</option><option value="uz">乌兹别克语</option><option value="iw">希伯来语</option><option value="el">希腊语</option><option value="es">西班牙语</option><option value="hu">匈牙利语</option><option value="hy">亚美尼亚语</option><option value="ig">伊博语</option><option value="it">意大利语</option><option value="yi">意第绪语</option><option value="hi">印地语</option><option value="su">印尼巽他语</option><option value="id">印尼语</option><option value="jw">印尼爪哇语</option><option value="en">英语</option><option value="yo">约鲁巴语</option><option value="vi">越南语</option><option value="zh-CN">中文简体</option><option value="zh-TW">中文繁体</option></select></td><td width="5%" align="center"> </td><td width="6%" align="center"><div id="SL_TTS_voice" title="聆聽" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="6%" align="center"><div id="SL_copy" title="複製譯文" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="6%" align="center"><div id="SL_bbl_font_patch" title="此功能在字典中禁用"></div><div id="SL_bbl_font" title="字體大小" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="6%" align="center"><div id="SL_TH" title="翻譯歷史" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="10%"></td><td width="6%" align="right"><div id="SL_pin" title="固定彈出窗口" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 16px; height: 16px; cursor: pointer;"></div></td></tr></table></div><div id="SL_alert_bbl" style="display: none;"><div id="SLHKclose"></div><div id="SL_alert_cont"></div></div></div><div id="SL_shadow_translation_result" style="background: rgb(255, 255, 255) url('undefined') repeat scroll 0% 0%; visibility: visible; min-height: 40px;"><div></div></div><div id="SL_loading" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; position: absolute; width: 35px; margin-left: 180px; margin-top: -40px; height: 35px;"></div><div id="SL_player2" style="display: none; height: 0px; width: 0px;"></div><div id="SL_alert100" style="display: none;">語言功能限200個字符</div><div id="SL_Balloon_options" style="background: rgb(255, 255, 255) none repeat scroll 0% 0%;"><div id="SL_arrow_down"></div><table width="100%"><tr><td width="18%" height="16" align="left"><div id="SL_bbl_donate" title="進行一點捐款" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="68%" align="center"><a href="#" id="OPlnk" title="顯示選項">選項</a> : <a href="#" id="HISTlnk" title="翻譯歷史">歷史</a> : <a href="http://about.imtranslator.net/tutorials/presentations/imtranslator-translator-for-firefox/popup-bubble-application/" target="_top" id="HELPlnk" title="幫助">幫助</a> : <a href="#" id="FBlnk" title="反饋">反饋</a></td><td width="15%" align="right"><a id="SL_Balloon_Close" href="#" title="關閉">關閉</a></td></tr></table></div></div></div></body>
+</html>

@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+
+<link rel="icon" href="avatar.png" sizes="32x32">
+
+    <meta charset="UTF-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="renderer" content="webkit">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+    <title>「自己开发直播」实现nginx-rtmp-module多频道输入输出与权限控制 - Postbird - 招猫逗狗的开发者</title>
+
+    
+
+
+
+
+
+
+
+
+	
+    <!--[if lt IE 9]>
+
+    <script src="//cdnjscn.b0.upaiyun.com/libs/html5shiv/r29/html5.min.js"></script>
+
+    <script src="//cdnjscn.b0.upaiyun.com/libs/respond.js/1.3.0/respond.min.js"></script>
+
+    <![endif]-->
+
+  
+
+
+<meta name="description" content="之前写了一篇文章，利用nginx和nginx-rtmp-module实现直播。不过，之前只是做到了能够直播而已，只能一个人推流，并没有实现多人多频道输入输出，也没有权限控制，只要知道rtmp的U...">
+<meta name="keywords" content="rtmp,nginx-rtmp-module">
+<link rel="alternate" type="application/rss+xml" title="「自己开发直播」实现nginx-rtmp-module多频道输入输出与权限控制 » Postbird - 招猫逗狗的开发者 » RSS 2.0" href="http://www.ptbird.cn/feed/nginx-rtmp-multi-channel.html">
+<link rel="alternate" type="application/rdf+xml" title="「自己开发直播」实现nginx-rtmp-module多频道输入输出与权限控制 » Postbird - 招猫逗狗的开发者 » RSS 1.0" href="http://www.ptbird.cn/feed/rss/nginx-rtmp-multi-channel.html">
+<link rel="alternate" type="application/atom+xml" title="「自己开发直播」实现nginx-rtmp-module多频道输入输出与权限控制 » Postbird - 招猫逗狗的开发者 » ATOM 1.0" href="http://www.ptbird.cn/feed/atom/nginx-rtmp-multi-channel.html">
+
+
+
+
+
+
+
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body class=" single"><div style="" class="postbird-img-glass-box"><img style="width: auto; height: auto;"></div>
+
+<!--[if lt IE 8]>
+
+    <div class="browsehappy" role="dialog">当前网页 <strong>不支持</strong> 你正在使用的浏览器. 为了正常的访问, 请 <a href="http://browsehappy.com/">升级你的浏览器</a>.</div>
+
+<![endif]-->
+
+<div id="nav">
+
+	
+	<nav class="nav-menu">
+
+		<a class="site-name" href="http://www.ptbird.cn/" title="There I am , in the world more exciting! Postbird 一个喜欢招猫逗狗的开发者">P</a>
+
+		<a class="site-index" href="http://www.ptbird.cn/"><i class="fa fa-home"></i><span>首页</span></a>
+
+		
+		
+		<a href="http://www.ptbird.cn/list.html" title="分类目录"><i class="fa fa-list"></i><span>分类目录</span></a>
+
+		
+		<a href="http://www.ptbird.cn/th-large.html" title="文章归档"><i class="fa fa-th-large"></i><span>文章归档</span></a>
+
+		
+		<a href="http://www.ptbird.cn/tags.html" title="标签"><i class="fa fa-tags"></i><span>标签</span></a>
+
+		
+		<a href="http://www.ptbird.cn/link.html" title="友情链接"><i class="fa fa-link"></i><span>友情链接</span></a>
+
+		
+		<a href="http://www.ptbird.cn/phone.html" title="联系方式"><i class="fa fa-phone"></i><span>联系方式</span></a>
+
+		
+		<a href="http://www.ptbird.cn/comments.html" title="给我留言"><i class="fa fa-comments"></i><span>给我留言</span></a>
+
+		
+		<!--<a class="site-index"  href="http://work.ptbird.cn"><i class="fa fa-cogs"></i><span>我的作品</span></a>
+
+		<a class="site-index" href="http://person.ptbird.cn"><i class="fa fa-user-secret"></i><span>个人信息</span></a>-->
+
+
+
+	</nav>
+
+	
+
+</div><!-- end #header -->
+
+<div class="nav-user">
+
+	<a class="btn-search" href="#"><i class="fa fa-search"></i></a>
+
+	<a class="btn-read-mode" href="#"><i class="fa fa-sun-o"></i></a>
+
+	
+		<a href="http://www.ptbird.cn/admin/login.php">登录</a>
+
+	
+</div>
+
+<div id="wrapper" class="clearfix">
+
+<div id="cover" style="display: none;">
+
+	<div class="cover-img" style="background-image: url('bg.jpg');"></div>
+
+	<div class="cover-info">
+
+	
+		<img class="avatar" src="avatar.jpg" alt="" width="72">
+
+<h3 style="color: rgb(51, 51, 51);">Postbird</h3>
+
+	
+      <p style="color: rgb(51, 51, 51);">There I am , in the world more exciting!</p>
+
+
+
+    </div>
+
+</div>
+
+
+
+<div id="body">
+
+<div class="main " id="main"><div class="page-title">
+	<ul>
+		<li><a href="http://www.ptbird.cn/">最新</a></li>
+				<li class="active">
+							<a href="http://www.ptbird.cn/category/php/">php</a>
+					</li>
+						
+               
+		<li class="page-search">
+			<form id="search" method="post" action="http://www.ptbird.cn/" role="search">
+				<label for="s" class="sr-only">搜索关键字</label>
+				<input name="s" class="text" placeholder="输入关键字搜索" value="" type="text">
+				<button type="submit" class="submit" title="搜索"><i class="fa fa-search"></i></button>
+			</form>
+		</li>
+	</ul>
+</div>
+
+
+	<div class="main-inner">
+
+	    <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+
+	        <div class="post-header">
+
+				<div class="post-author clearfix">
+
+					<a class="avatar fleft" href="http://www.ptbird.cn/author/1/"><img src="avatar_001.jpg" alt="postbird" width="50px"></a>
+
+					<p><span class="label">作者</span> <a href="http://www.ptbird.cn/author/1/">Postbird</a> <span title="最后编辑于2017.05.19 22:50:17">2017.03.20 11:20:00</span></p>
+
+					
+					<p>写了480篇文章,回复372人,</p>
+
+					
+				</div>
+
+				<h2 class="post-title">「自己开发直播」实现nginx-rtmp-module多频道输入输出与权限控制</h2>
+
+				<div class="post-meta">
+
+					<a href="http://www.ptbird.cn/nginx-rtmp-multi-channel.html#comments">评论：5</a>
+
+					
+					<em>·</em>
+
+					<a href="http://www.ptbird.cn/nginx-rtmp-multi-channel.html">阅读：11661</a><em>·</em>
+
+					<span>喜欢：6</span>
+
+					
+				</div>
+
+			</div>
+
+	        <div class="post-content markdown-body">
+
+	            <p>之前写了一篇文章，利用nginx和nginx-rtmp-module实现直播。</p><p>不过，之前只是做到了能够直播而已，只能一个人推流，并没有实现多人多频道输入输出，也没有权限控制，只要知道rtmp的URL就能够推送。</p><p>本文是在之前文章的基础上继续的。</p><ul><li>原文地址：<a href="http://www.ptbird.cn/nginx-rtmp-module-server.html">通过Nginx-rtmp-module搭建直播服务器并实现直播</a></li></ul><span id="menu_index_1" name="menu_index_1"></span><h1>一、权限控制方面</h1><p>说实话，我查这个查了很久，也没查出个所以然，最后还是花了半天的时间，研究了一下nginx-rtmp-module的文档，最后搞了半天才弄明白。</p><p>文档中主要有两个部分需要注意：</p><ul><li><p><strong>live配置的publish_notify部分</strong></p><ul><li><a href="https://github.com/arut/nginx-rtmp-module/wiki/Directives#publish_notify"></a><a href="https://github.com/arut/nginx-rtmp-module/wiki/Directives#publish_notify">https://github.com/arut/nginx-rtmp-module/wiki/Directives#publish_notify</a></li></ul></li><li><p><strong>publish_notify中Notify的配置部分</strong></p><ul><li><a href="https://github.com/arut/nginx-rtmp-module/wiki/Directives#notify"></a><a href="https://github.com/arut/nginx-rtmp-module/wiki/Directives#notify">https://github.com/arut/nginx-rtmp-module/wiki/Directives#notify</a></li></ul></li></ul><span id="menu_index_2" name="menu_index_2"></span><h2>1、live的publish_notify</h2><p>所谓的publish_notify是涉及publish_notify默认是off的，主要涉及推送的过程中一些事件。</p><p>开启publish_notify即可进行Notify的配置操作。</p><pre class="line-numbers  language-bash"><code class="  language-bash">publish_notify on<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><span id="menu_index_3" name="menu_index_3"></span><h2>2、Notify的配置</h2><p>Notify的配置相关是涉及直播的事件并执行回调代码。</p><p>比如：推流链接、直播开启、直播结束状态，然后异步调用http的链接，进行一些逻辑的处理。</p><p>主要的配置参数有下面这些：</p><ul><li>on_connect</li><li>on_play</li><li>on_publish</li><li>on_done</li><li>on_play_done</li><li>on_publish_done</li><li>on_record_done</li><li>on_update</li><li>......</li></ul><p>从上面的配置参数可以看出，能够触发连接、直播、输出、直播结束等等，从而能够进行权限验证、</p><p>比如，<font color="red">当触发推流的时候，通过 on_publish <a href="http://www.example.com/uri">http://www.example.com/uri</a> 进行权限控制，接收相关参数并进行控制，如果用户不存在，则不允许推流。</font></p><span id="menu_index_4" name="menu_index_4"></span><h1>二、多频道输入输出</h1><p>这里的<font color="red">多频道输入输出意思是:多个人直播，每个人有不同的输出地址。</font></p><span id="menu_index_5" name="menu_index_5"></span><h2>1、直播推流端</h2><p><font color="red">多个人有不同的推流和直播地址，就涉及了直播参数，而实际上，各大平台直播的时候，除了地址，都有一个直播密钥或者是直播码。</font></p><p>以OBS举例，<strong>串流类型选择自定义流媒体服务器，然后会出现一个URL和流密钥</strong>。</p><p><img src="1478188502.jpg" alt="rtmp1.jpg" title="rtmp1.jpg" style="cursor: zoom-in;"></p><p>而流密钥就是实现多频道输入输出的重点。</p><span id="menu_index_6" name="menu_index_6"></span><h2>2、rtmp Publish配置</h2><p>既然需要进行权限控制，就要使用publish，首先进行权限的验证，证明有推流权限。</p><p>所以rtmp的配置如下（最后会给出一个完整的配置示例）：</p><p>因为只是探讨权限控制，因此hls之类的不需要关心，我也注释了。</p><pre class="line-numbers  language-bash"><code class="  language-bash">    <span class="token comment">#设置直播的application名称是 myapp</span>
+    application myapp<span class="token punctuation">{</span> 
+         live on<span class="token punctuation">;</span> <span class="token comment">#live on表示开启直播模式        </span>
+         publish_notify on<span class="token punctuation">;</span>
+         on_publish http://tp5.ptbird-ubuntu/on_publish.html<span class="token punctuation">;</span>
+         <span class="token comment">#hls on;</span>
+         <span class="token comment">#hls_path /tmp/hls;</span>
+         <span class="token comment">#hls_fragment 2s;</span>
+         <span class="token comment">#hls_playlist_length 6s;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p>关键配置是：<font color="red"><strong>on_publish <a href="http://tp5.ptbird-ubuntu/on_publish.html">http://tp5.ptbird-ubuntu/on_publish.html</a>;</strong></font></p><p>后面的 <strong><a href="http://tp5.ptbird-ubuntu/on_publish.html">http://tp5.ptbird-ubuntu/on_publish.html</a></strong> 是假设在web服务器上的处理程序，网上有的将这个逻辑假设在本机nginx，我是建议不要混在一起，直接在别的能够连接的web服务器上部署即可。</p><p>我是架设在我的另一台ubuntu kylin的web服务器上。</p><p><strong>反正能访问的php处理就可以了，别的说多了也没用。hhhh</strong></p><span id="menu_index_7" name="menu_index_7"></span><h2>3、权限验证URL</h2><p>一个示例的配置如下所示，这是一个模板配置示例。</p><p><img src="2805500523.jpg" alt="rtmp2.jpg" title="rtmp2.jpg" style="cursor: zoom-in;"></p><p>流密钥的格式是：<font color="red">test?pass=123456</font>，可以看出这个非常像url的get参数配置，test就是用户的name，而pass就是密码。</p><p><font color="red">为什么没有name=test</font></p><ul><li>因为name是rtmp on_publish的默认参数，name是不能更改的。</li></ul><p><font color="red">绝对不能使用GET['name']，而应该使用POST</font></p><ul><li>一开始我总是使用get去获取参数，但是发现一直无法成功，也没办法验证 - -</li><li>后来网上查了查，发现不能使用get获取，虽然流密钥的格式像是get类型，但是必须使用POST获取参数。</li></ul><p><font color="red">自定义参数</font></p><ul><li>除了name不能更改之外，其他的都是可以自定义参数的</li><li>比如pass=123456&amp;check=123456这样的</li></ul><span id="menu_index_8" name="menu_index_8"></span><h1>三、代码验证权限</h1><span id="menu_index_9" name="menu_index_9"></span><h2>1、ThinkPHP5版本</h2><p>这里使用php进行验证，我顺便将上面<font color="red"> <a href="http://tp5.ptbird-ubuntu/on_publish.html">http://tp5.ptbird-ubuntu/on_publish.html</a> </font> 这个url部署在一个thinkphp5的框架中。</p><p>因此实际上我是有一个路由的，才会使用html后缀的URL。</p><pre class="line-numbers  language-php"><code class="  language-php"><span class="token comment">// 配置直播推送的url</span>
+<span class="token scope">Route<span class="token punctuation">::</span></span><span class="token function">rule</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'on_publish'</span><span class="token punctuation">,</span><span class="token single-quoted-string string">'index/Publish/index'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><p><strong>实际的逻辑很简单</strong>：</p><ol><li>接收两个参数</li><li>通过数据库进行验证</li><li><p>返回验证信息</p><ul><li><font color="red">必须返回http头，返回2xx表示成功,3xx表示跳转,4xx表示失败</font></li><li><font color="red">一般验证失败都是返回404就可以，一定返回标准的404头（一开始我一直验证失败，后面发现，就是返回的头的问题）</font></li></ul></li></ol><p><strong>而处理的代码如下</strong>：</p><p><font color="red">下面代码是基于thinkphp5来处理的，其中没有涉及数据库的操作，只是有两个参数test和test2两个用户，两个密码</font></p><p><font color="red">而返回http头的状态也是用的thinkphp5的返回方式，下面会有第二种普通的处理方式。</font></p><pre class="line-numbers  language-php"><code class="  language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
+<span class="token comment">/**
+ * Author: root
+ * Date  : 17-3-19
+ * time  : 下午4:58
+ * Site  : www.ptbird.cn
+ * There I am , in the world more exciting!
+ */</span>
+<span class="token keyword keyword-namespace">namespace</span> <span class="token package">app<span class="token punctuation">\</span>index<span class="token punctuation">\</span>controller</span><span class="token punctuation">;</span>
+<span class="token keyword keyword-use">use</span> <span class="token package">think<span class="token punctuation">\</span>Request</span><span class="token punctuation">;</span>
+<span class="token keyword keyword-class">class</span> <span class="token class-name">Publish</span> <span class="token punctuation">{</span>
+    <span class="token comment">// index</span>
+    <span class="token keyword keyword-public">public</span> <span class="token keyword keyword-function">function</span> <span class="token function">index</span><span class="token punctuation">(</span>Request <span class="token variable">$request</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token comment">// 接受name和pass param可以自动选择get或者是post</span>
+        <span class="token variable">$name</span><span class="token operator">=</span><span class="token variable">$request</span><span class="token operator">-</span><span class="token operator">&gt;</span><span class="token function">param</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'name'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token variable">$pass</span><span class="token operator">=</span><span class="token variable">$request</span><span class="token operator">-</span><span class="token operator">&gt;</span><span class="token function">param</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'pass'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// 设置用户名和密码</span>
+        <span class="token variable">$savename</span><span class="token operator">=</span> <span class="token double-quoted-string string">"test"</span><span class="token punctuation">;</span>
+        <span class="token variable">$savepass</span> <span class="token operator">=</span> <span class="token double-quoted-string string">"123456"</span><span class="token punctuation">;</span>
+        <span class="token keyword keyword-if">if</span><span class="token punctuation">(</span><span class="token function">empty</span><span class="token punctuation">(</span><span class="token variable">$name</span><span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token function">empty</span><span class="token punctuation">(</span><span class="token variable">$pass</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token keyword keyword-echo">echo</span> <span class="token double-quoted-string string">"串码流不正确"</span><span class="token punctuation">;</span>
+            <span class="token comment">// 这个是thinkphp5的返回头信息的函数</span>
+            <span class="token keyword keyword-return">return</span> <span class="token function">json</span><span class="token punctuation">(</span><span class="token single-quoted-string string">''</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">&gt;</span><span class="token function">code</span><span class="token punctuation">(</span><span class="token number">404</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">&gt;</span><span class="token function">header</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token single-quoted-string string">'Not Found'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token keyword keyword-else">else</span><span class="token punctuation">{</span>
+            <span class="token keyword keyword-if">if</span><span class="token punctuation">(</span><span class="token function">strcmp</span><span class="token punctuation">(</span><span class="token variable">$name</span><span class="token punctuation">,</span><span class="token variable">$savename</span><span class="token punctuation">)</span><span class="token operator">==</span><span class="token number">0</span> <span class="token operator">&amp;&amp;</span> <span class="token function">strcmp</span><span class="token punctuation">(</span><span class="token variable">$pass</span><span class="token punctuation">,</span><span class="token variable">$savepass</span><span class="token punctuation">)</span><span class="token operator">==</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+                <span class="token comment">// 默认是返回2xx的头，因此不需要进行控制</span>
+                <span class="token keyword keyword-echo">echo</span> <span class="token double-quoted-string string">"串码流正确"</span><span class="token punctuation">;</span>
+                <span class="token comment">// 我在这里添加了另一个test2 和 123456的用户</span>
+            <span class="token punctuation">}</span><span class="token keyword keyword-else">else</span> <span class="token keyword keyword-if">if</span><span class="token punctuation">(</span><span class="token function">strcmp</span><span class="token punctuation">(</span><span class="token variable">$name</span><span class="token punctuation">,</span><span class="token single-quoted-string string">'test2'</span><span class="token punctuation">)</span><span class="token operator">==</span><span class="token number">0</span> <span class="token operator">&amp;&amp;</span> <span class="token function">strcmp</span><span class="token punctuation">(</span><span class="token variable">$pass</span><span class="token punctuation">,</span><span class="token single-quoted-string string">'123456'</span><span class="token punctuation">)</span><span class="token operator">==</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+                <span class="token keyword keyword-echo">echo</span> <span class="token double-quoted-string string">"串码流正确"</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span><span class="token keyword keyword-else">else</span><span class="token punctuation">{</span>
+                <span class="token keyword keyword-echo">echo</span> <span class="token double-quoted-string string">"串码流不正确"</span><span class="token punctuation">;</span>
+                <span class="token keyword keyword-return">return</span> <span class="token function">json</span><span class="token punctuation">(</span><span class="token single-quoted-string string">''</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">&gt;</span><span class="token function">code</span><span class="token punctuation">(</span><span class="token number">404</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">&gt;</span><span class="token function">header</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token single-quoted-string string">'Not Found'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><span id="menu_index_10" name="menu_index_10"></span><h2>2、普通的php验证</h2><p>下面的代码，是网上的代码，一个道理，就不多说了。</p><pre class="line-numbers language-php"><code class=" language-php"><span class="token comment">// ?user=user&amp;pass=pass</span>
+
+@<span class="token variable">$name</span> <span class="token operator">=</span> <span class="token global">$_POST</span><span class="token punctuation">[</span><span class="token single-quoted-string string">'name'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+@<span class="token variable">$pass</span> <span class="token operator">=</span> <span class="token global">$_POST</span><span class="token punctuation">[</span><span class="token single-quoted-string string">'pass'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+<span class="token variable">$savename</span><span class="token operator">=</span> test<span class="token punctuation">;</span>
+<span class="token variable">$savepass</span> <span class="token operator">=</span> password<span class="token punctuation">;</span>
+<span class="token keyword keyword-if">if</span><span class="token punctuation">(</span><span class="token function">empty</span><span class="token punctuation">(</span><span class="token variable">$name</span><span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token function">empty</span><span class="token punctuation">(</span><span class="token variable">$pass</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword keyword-echo">echo</span> <span class="token double-quoted-string string">"串码流不正确!"</span><span class="token punctuation">;</span>
+    <span class="token function">header</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'HTTP/1.0 404 Not Found'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token keyword keyword-else">else</span><span class="token punctuation">{</span>
+    <span class="token keyword keyword-if">if</span> <span class="token punctuation">(</span><span class="token function">strcmp</span><span class="token punctuation">(</span><span class="token variable">$name</span><span class="token punctuation">,</span> <span class="token variable">$savename</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> <span class="token function">strcmp</span><span class="token punctuation">(</span><span class="token variable">$pass</span><span class="token punctuation">,</span> <span class="token variable">$savepass</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword keyword-echo">echo</span> <span class="token double-quoted-string string">"串码流正确!"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword keyword-else">else</span> <span class="token punctuation">{</span>
+        <span class="token keyword keyword-echo">echo</span> <span class="token double-quoted-string string">"串码流不正确!"</span><span class="token punctuation">;</span>
+        <span class="token function">header</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'HTTP/1.0 404 Not Found'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><span id="menu_index_11" name="menu_index_11"></span><h1>四、直播与观看直播</h1><p>经过上面的配置，现在可以进行多人直播。</p><p><font color="red">上面的操作中我有两个用户，一个是test，另一个是test2</font>，现在分别使用这两个用户进行直播。</p><span id="menu_index_12" name="menu_index_12"></span><h2>1、test用户的直播 使用<strong>OBS 18</strong></h2><p><img src="2900719135.jpg" alt="rtmp3.jpg" title="rtmp3.jpg" style="cursor: zoom-in;"></p><span id="menu_index_13" name="menu_index_13"></span><h2>2、test2用户的直播 使用<strong>obs 0.65</strong></h2><p><img src="720592456.jpg" alt="rtmp4.jpg" title="rtmp4.jpg" style="cursor: zoom-in;"></p><span id="menu_index_14" name="menu_index_14"></span><h2>3、test3用户的直播（失败）</h2><p>将用户名设置成test3</p><p><img src="1366808502.jpg" alt="rtmp5.jpg" title="rtmp5.jpg" style="cursor: zoom-in;"></p><p>因为返回了404，因此直播失败。</p><p><img src="3068361959.jpg" alt="rtmp6.jpg" title="rtmp6.jpg" style="cursor: zoom-in;"></p><span id="menu_index_15" name="menu_index_15"></span><h1>五、总结</h1><p>on_publish可以实现权限控制，而其他的notify参数，比如on_connect可以设置当用户进行推流之后，就可以设置用户的直播状态为进行直播等等。</p><p>之后再继续研究....</p>
+			<!-- <div class="with-line">文章已经结束啦</div> -->
+			<ul id="nav-footer">
+				<li class="item1"></li>
+				<li class=""><a href="#"><span>文章已经结束啦</span></a></li>
+			</ul>
+	        </div>
+			<div style="padding: 10px; border: 1px dotted rgb(0, 133, 115); margin-bottom: 15px; margin-top: 10px;">
+				<div class="post-tags"><font color="#008573">标签：</font><a href="http://www.ptbird.cn/tag/rtmp/">rtmp</a><a href="http://www.ptbird.cn/tag/nginx-rtmp-module/">nginx-rtmp-module</a></div>
+			</div>
+			 
+			<div class="" style="background-color: rgb(246, 246, 246); padding: 10px; margin-bottom: 10px;">
+
+				<p>文章版权：<a style="color: rgb(21, 167, 240);" href="http://www.ptbird.cn/">Postbird-There I am , in the world more exciting!</a></p>
+
+				<p>本文链接：<a style="color: rgb(21, 167, 240);" href="http://www.ptbird.cn/nginx-rtmp-multi-channel.html">http://www.ptbird.cn/nginx-rtmp-multi-channel.html</a></p>
+
+				<p>转载请注明文章原始出处 !</p>
+
+			</div>
+				<div style="text-align: center;">
+					<div id="qrcodeContent"><img src="data:image/png;base64,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"></div> 
+					<div style="padding: 10px;">
+						<span>扫描二维码,在手机阅读！</span>
+					</div>
+				</div>
+				 
+
+			<div class="post-tool">
+
+				
+				<a class="btn-like" href="javascript:void(0);" data-cid="1285" title="6"><i class="fa fa-heart-o"></i> 赞 | <span>6</span></a>
+
+				
+				<a class="btn-donate" href="javascript:void(0);">赏</a>
+
+			</div>
+
+	        
+
+	    </article>
+
+		
+
+	    <div id="comments">
+        	<p>
+		<span>5</span> 条评论		<a class="fright" href="#respond-post-1285"><i class="fa fa-pencil"></i> 添加新评论</a>
+	</p>
+    <ol class="comment-list"><li itemscope="" itemtype="http://schema.org/UserComments" id="comment-569" class="comment-body comment-parent comment-odd">
+    <div class="comment-avatar">
+		<img class="avatar" src="1e11c71fe8bffe724f4f2da642e73f1f" width="32">
+	</div>
+    <div class="comment-meta">
+        <div class="comment-meta-author">长寿村的神奇海螺</div>
+        <div class="comment-meta-time">
+        <a href="http://www.ptbird.cn/nginx-rtmp-multi-channel.html/comment-page-1#comment-569"><time itemprop="commentTime" datetime="2019-02-12T13:53:29+08:00">February 12th, 2019 at 01:53 pm</time></a>
+        </div>
+                <div class="comment-meta-reply">
+            <a href="http://www.ptbird.cn/nginx-rtmp-multi-channel.html/comment-page-1?replyTo=569#respond-post-1285" rel="nofollow" onclick="return TypechoComment.reply('comment-569', 569);">回复</a>        </div>
+    </div>
+    <div class="comment-content" itemprop="commentText">
+    <p>网上怎么找都找不好解决方法 在你这得到解决 3q 回答很简洁明了 谢谢</p>    </div>
+    
+    </li>
+<li itemscope="" itemtype="http://schema.org/UserComments" id="comment-452" class="comment-body comment-parent comment-even">
+    <div class="comment-avatar">
+		<img class="avatar" src="6c6717aab55d7ea7cb53aa798ea49fb2" width="32">
+	</div>
+    <div class="comment-meta">
+        <div class="comment-meta-author">oldzhang</div>
+        <div class="comment-meta-time">
+        <a href="http://www.ptbird.cn/nginx-rtmp-multi-channel.html/comment-page-1#comment-452"><time itemprop="commentTime" datetime="2018-08-29T17:09:09+08:00">August 29th, 2018 at 05:09 pm</time></a>
+        </div>
+                <div class="comment-meta-reply">
+            <a href="http://www.ptbird.cn/nginx-rtmp-multi-channel.html/comment-page-1?replyTo=452#respond-post-1285" rel="nofollow" onclick="return TypechoComment.reply('comment-452', 452);">回复</a>        </div>
+    </div>
+    <div class="comment-content" itemprop="commentText">
+    <p>notify_method可设置GET，Default is POST<br>https://github.com/arut/nginx-rtmp-module/wiki/Directives#notify_method</p>    </div>
+    
+    </li>
+<li itemscope="" itemtype="http://schema.org/UserComments" id="comment-319" class="comment-body comment-parent comment-odd">
+    <div class="comment-avatar">
+		<img class="avatar" src="5dfc8c6d580cb38256838103a92d457d" width="32">
+	</div>
+    <div class="comment-meta">
+        <div class="comment-meta-author"><a href="http://edkbcfefeadkaccd.blogspot.com/" rel="external nofollow">Smithg257</a></div>
+        <div class="comment-meta-time">
+        <a href="http://www.ptbird.cn/nginx-rtmp-multi-channel.html/comment-page-1#comment-319"><time itemprop="commentTime" datetime="2017-11-26T17:14:57+08:00">November 26th, 2017 at 05:14 pm</time></a>
+        </div>
+                <div class="comment-meta-reply">
+            <a href="http://www.ptbird.cn/nginx-rtmp-multi-channel.html/comment-page-1?replyTo=319#respond-post-1285" rel="nofollow" onclick="return TypechoComment.reply('comment-319', 319);">回复</a>        </div>
+    </div>
+    <div class="comment-content" itemprop="commentText">
+    <p>Thank you for some other informative website. Where else may I get that type of info written in such an ideal way? I've a mission that I'm just now operating on, and I've been on the look out for such information. edkbcfefeadkaccd</p>    </div>
+    
+    </li>
+<li itemscope="" itemtype="http://schema.org/UserComments" id="comment-306" class="comment-body comment-parent comment-even">
+    <div class="comment-avatar">
+		<img class="avatar" src="04848647b521f3ec9e9e9391541a6803" width="32">
+	</div>
+    <div class="comment-meta">
+        <div class="comment-meta-author">蔡泽华</div>
+        <div class="comment-meta-time">
+        <a href="http://www.ptbird.cn/nginx-rtmp-multi-channel.html/comment-page-1#comment-306"><time itemprop="commentTime" datetime="2017-09-25T10:30:51+08:00">September 25th, 2017 at 10:30 am</time></a>
+        </div>
+                <div class="comment-meta-reply">
+            <a href="http://www.ptbird.cn/nginx-rtmp-multi-channel.html/comment-page-1?replyTo=306#respond-post-1285" rel="nofollow" onclick="return TypechoComment.reply('comment-306', 306);">回复</a>        </div>
+    </div>
+    <div class="comment-content" itemprop="commentText">
+    <p>大哥,最近在搞rtmp直播的,能加个QQ交流下不?</p>    </div>
+    
+    </li>
+</ol>        
+        <div id="respond-post-1285" class="respond">
+        <div class="cancel-comment-reply">
+        <a id="cancel-comment-reply-link" href="http://www.ptbird.cn/nginx-rtmp-multi-channel.html#respond-post-1285" rel="nofollow" style="display: none;" onclick="return TypechoComment.cancelReply();">取消回复</a>        </div>
+    	<h3 id="response">添加新评论</h3>
+    	<form method="post" action="http://www.ptbird.cn/nginx-rtmp-multi-channel.html/comment" id="comment-form" role="form">
+            <p>
+								
+                <textarea rows="4" cols="50" name="text" id="textarea" class="textarea" required="" placeholder="如评论不显示，请等候管理员人工审核"></textarea>
+            </p>
+			<div class="comment-fields">
+			    		<p>
+    			<input name="author" id="author" class="text" value="" required="" type="text">
+				 <label for="author" class="required">称呼</label>
+    		</p>
+    		<p> 
+    			<input name="mail" id="mail" class="text" value="" required="" type="email">
+				<label for="mail" class="required">邮箱</label>
+			</p>
+    		<p> 
+    			<input name="url" id="url" class="text" placeholder="http://" value="" type="url">
+				<label for="url">网站</label>
+			</p>
+                		
+    		<p>
+                <button type="submit" class="btn">提交评论</button>
+            </p>
+			</div>
+    	<input name="_" value="ebf7317a4b7b9bb7144104c3c9a30184" type="hidden"></form>
+    </div>
+    </div>
+
+
+
+	</div>
+
+	</div><!-- end #main-->
+
+
+
+	
+
+	</div><!-- end #main-->
+
+</div><!-- end #body -->
+
+
+
+
+<footer class="footer">
+
+	<div class="footer-inner">
+
+<p><a href="https://github.com/postbird/" target="_top">Github</a>&nbsp;|&nbsp;<a href="https://git.oschina.net/postbird" target="_top">Git@OSC</a>&nbsp;|&nbsp;<a href="http://www.singee77.com/" target="_top">Singee77</a>&nbsp;|&nbsp;<a href="https://www.cnbanwagong.com/" target="_top">搬瓦工VPS</a>&nbsp;|&nbsp;<a href="https://www.zhaojin97.cn/" target="_top">赵</a>&nbsp;|&nbsp;<a href="https://qqdie.com/links.html" target="_top">QQ爹の博客</a>&nbsp;|&nbsp;<a href="https://www.dustit.me/" target="_top">言告言归 </a>&nbsp;|&nbsp;<a href="http://www.lmsail.com/" target="_top">LmSail社区 </a>&nbsp;|&nbsp;<a href="https://togln.com/links" target="_top" title="使人成熟的是经历，而不是岁月！">同良小栈 </a>&nbsp;|&nbsp;<a href="https://www.williamjing.com/" target="_top" title="William" s="" blog'="">William's Blog </a>&nbsp;|&nbsp;</p>
+		
+		
+		<p>
+
+		
+		<a href="http://www.ptbird.cn/list.html" title="分类目录">分类目录</a>
+
+		
+		<a href="http://www.ptbird.cn/th-large.html" title="文章归档">文章归档</a>
+
+		
+		<a href="http://www.ptbird.cn/tags.html" title="标签">标签</a>
+
+		
+		<a href="http://www.ptbird.cn/link.html" title="友情链接">友情链接</a>
+
+		
+		<a href="http://www.ptbird.cn/phone.html" title="联系方式">联系方式</a>
+
+		
+		<a href="http://www.ptbird.cn/comments.html" title="给我留言">给我留言</a>
+
+		
+		</p>
+
+		
+		<p>© 2019 <a href="http://www.ptbird.cn/">Postbird - 招猫逗狗的开发者</a>
+
+			<em>·</em> <a href="http://www.typecho.org/" target="_top">Typecho</a>
+
+			 <em>·</em> <a href="http://www.miitbeian.gov.cn/" target="blank">鲁ICP备16034533号-1</a>
+			<em>·</em> Theme By <a href="http://lixianhua.com/" target="_top">绛木子</a> <em>·</em> 
+
+			<span>
+
+
+
+
+</span>
+ <a href="https://www.cnzz.com/stat/website.php?web_id=1274011266" target="_top" title="站长统计">站长统计</a>
+
+		</p>
+
+	</div>
+
+</footer><!-- end #footer -->
+
+
+
+<div class="fixed-btn" style="display:none!import;>
+
+	<a class=" btn-gotop"="" onclick="jBlog.goTop();"> <i class="fa fa-angle-up"></i>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

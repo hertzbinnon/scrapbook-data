@@ -1,0 +1,1038 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="zh-CN">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+	<meta name="Content-Type" content="text/html;charset=utf-8">
+    <meta name="Referrer" content="unsafe-url">
+	<meta content="True" name="HandheldFriendly">
+    <meta name="theme-color" content="#333344">
+	
+    <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="detectify-verification" content="d0264f228155c7a1f72c3d91c17ce8fb">
+<meta name="p:domain_verify" content="b87e3b55b409494aab88c1610b05a5f0">
+<meta name="alexaVerifyID" content="OFc8dmwZo7ttU4UCnDh1rKDtLlY">
+<meta name="baidu-site-verification" content="D00WizvYyr">
+<meta name="msvalidate.01" content="D9B08FEA08E3DA402BF07ABAB61D77DE">
+<meta property="wb:webmaster" content="f2f4cb229bda06a4">
+<meta name="google-site-verification" content="LM_cJR94XJIqcYJeOCscGVMWdaRUvmyz6cVOqkFplaU">
+    
+    <title>Cgroup － 从 CPU 的资源隔离说起（四） - V2EX</title>
+    <link rel="dns-prefetch" href="https://static.v2ex.com/">
+    <link rel="dns-prefetch" href="https://cdn.v2ex.com/">
+    <link rel="dns-prefetch" href="https://cdn.v2ex.co/">
+    <link rel="dns-prefetch" href="https://i.v2ex.co/">
+    <link rel="dns-prefetch" href="https://v2ex.assets.uxengine.net/">
+    
+	   
+    
+    
+    
+    
+    
+    
+    <link rel="icon" sizes="192x192" href="v2ex_192.png">
+    <link rel="shortcut icon" href="icon_rayps_64.png" type="image/png">
+    
+	
+	
+	
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <meta name="description" content="Linux - @jerry017cn - ##CPU 资源隔离在 sys 较高的情况下是什么表现？###内核资源不冲突的情况首先我们简单说一下什么叫 sys 较高。先看 mpstat 命令的输出：	[root@zo">
+    
+    
+    <link rel="canonical" href="https://www.v2ex.com/t/246923">
+    
+    
+    
+    <meta property="og:locale" content="zh_CN">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Cgroup － 从 CPU 的资源隔离说起（四） - V2EX">
+<meta property="og:description" content="Linux - @jerry017cn - ##CPU 资源隔离在 sys 较高的情况下是什么表现？###内核资源不冲突的情况首先我们简单说一下什么叫 sys 较高。先看 mpstat 命令的输出：	[root@zo">
+<meta property="og:url" content="https://www.v2ex.com/t/246923">
+<meta property="og:site_name" content="V2EX">
+
+<meta property="article:tag" content="linux">
+<meta property="article:section" content="Linux">
+<meta property="article:published_time" content="2015-12-29T06:59:27Z">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:description" content="Linux - @jerry017cn - ##CPU 资源隔离在 sys 较高的情况下是什么表现？###内核资源不冲突的情况首先我们简单说一下什么叫 sys 较高。先看 mpstat 命令的输出：	[root@zo">
+<meta name="twitter:title" content="Cgroup － 从 CPU 的资源隔离说起（四） - V2EX">
+<meta name="twitter:image" content="https://cdn.v2ex.com/avatar/277d/4b34/136983_large.png?m=1441503103">
+<meta name="twitter:site" content="@V2EX">
+<meta name="twitter:creator" content="@V2EX">
+    <link rel="top" title="回到顶部" href="https://www.v2ex.com/t/246923#">
+    
+    
+    <link rel="amphtml" href="https://www.v2ex.com/amp/t/246923">
+	
+    
+
+
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+    <div id="Top">
+        <div class="content">
+            <div style="padding-top: 6px;">
+            <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tbody><tr>
+                    <td width="110" align="left"><a href="https://www.v2ex.com/" name="top" title="way to explore"><div id="Logo"></div></a></td>
+                    <td width="auto" align="left">
+                        <div id="Search"><form action="https://www.google.com/" onsubmit="return dispatch()" target="_blank"><div id="qbar"><input maxlength="40" name="q" id="q" value="" onfocus="$('#qbar').addClass('qbar_focus')" onblur="$('#qbar').removeClass('qbar_focus')" type="text"></div></form></div>
+                    </td>
+                    <td style="padding-top: 2px;" width="570" align="right"><a href="https://www.v2ex.com/" class="top">首页</a>&nbsp;&nbsp;&nbsp;<a href="https://www.v2ex.com/signup" class="top">注册</a>&nbsp;&nbsp;&nbsp;<a href="https://www.v2ex.com/signin" class="top">登录</a></td>
+                </tr>
+            </tbody></table>
+            </div>
+        </div>
+    </div>
+    <div id="Wrapper">
+        <div class="content">
+            
+            <div id="Leftbar"></div>
+            <div id="Rightbar">
+                <div class="sep20"></div>
+                
+                    
+                    <div class="box">
+                        <div class="cell">
+                            <strong>V2EX = way to explore</strong>
+                            <div class="sep5"></div>
+                            <span class="fade">V2EX 是一个关于分享和探索的地方</span>
+                        </div>
+                        <div class="inner">
+                            <div class="sep5"></div>
+                            <div align="center"><a href="https://www.v2ex.com/signup" class="super normal button">现在注册</a>
+                            <div class="sep5"></div>
+                            <div class="sep10"></div>
+                            已注册用户请 &nbsp;<a href="https://www.v2ex.com/signin">登录</a></div>
+                        </div>
+                    </div>
+                    
+                    
+
+
+    
+    <div class="sep20"></div>
+    <div class="box">
+        <div class="inner">
+            <div class="sidebar_units">
+  <a href="http://www.oray.com/jump/45599" target="_top"><img src="huashengke_20181219.gif" alt="花生壳" width="100%" border="0"></a>
+  <div class="sep10"></div>
+  <a href="http://csvc.qiniu.com/?hmsr=v2exbanner&amp;hmpl=csvc&amp;hmcu=csvc_v2exbanner&amp;hmkw=&amp;hmci=" target="_top"><img src="qiniu_20181213.png" alt="七牛云" width="100%" border="0"></a>
+  <div class="sep10"></div>
+  <a href="https://datapacket.com/?utm_source=v2ex&amp;utm_medium=cpc&amp;utm_campaign=linux&amp;utm_content=static1" target="_top"><img src="datapacket_20181010.png" alt="DataPacket" width="100%" border="0"></a>
+  <div class="sep10"></div>
+  <a href="https://www.cdn77.com/cn?utm_source=v2ex&amp;utm_medium=cpc&amp;utm_campaign=linux&amp;utm_content=static2" target="_top"><img src="cdn77_20180806.jpg" alt="CDN77" width="100%" border="0"></a>
+  <div class="sep10"></div>
+</div>
+<strong class="green">Distributions</strong>
+<div class="sep5"></div>
+<span class="chevron">›</span> <a href="http://www.ubuntu.com/" target="_top">Ubuntu</a>
+<div class="sep5"></div>
+<span class="chevron">›</span> <a href="http://fedoraproject.org/" target="_top">Fedora</a>
+<div class="sep5"></div>
+<span class="chevron">›</span> <a href="http://www.centos.org/" target="_top">CentOS</a>
+<div class="sep10"></div>
+<strong class="fade">中文资源站</strong>
+<div class="sep5"></div>
+<span class="chevron">›</span> <a href="http://mirrors.163.com/" target="_top">网易开源镜像站</a>
+            
+        </div>
+        <div class="sidebar_compliance"><a href="https://www.v2ex.com/advertise" target="_top">广告</a></div>
+    </div>
+    
+
+
+                    
+                    <div class="sep20"></div>
+                    <div class="box">
+    <div class="inner" align="center">
+        <a href="https://www.lagou.com/lp/html/common.html?utm_source=m_bd_ff_gghz_jixiejing" target="_top"><img src="lagou_20181217.jpg" alt="拉勾" width="250" height="250" border="0"></a>
+    </div>
+</div>
+<!-- Update: 20181201 -->
+                    <div class="sep20"></div>
+                    
+                    
+                    
+                
+            </div>
+            <div id="Main">
+                <div class="sep20"></div>
+                
+<div class="box" style="border-bottom: 0px none;">
+    
+    <div class="header"><div class="fr"><a href="https://www.v2ex.com/member/jerry017cn"><img src="136983_large.png" class="avatar" border="0" align="default"></a></div>
+    <a href="https://www.v2ex.com/">V2EX</a> <span class="chevron">&nbsp;›&nbsp;</span> <a href="https://www.v2ex.com/go/linux">Linux</a>
+    <div class="sep10"></div>
+    <h1>Cgroup － 从 CPU 的资源隔离说起（四）</h1>
+    <div id="topic_246923_votes" class="votes">
+<a href="javascript:" onclick="upVoteTopic(246923);" class="vote"><li class="fa fa-chevron-up"></li></a> &nbsp;<a href="javascript:" onclick="downVoteTopic(246923);" class="vote"><li class="fa fa-chevron-down"></li></a></div> &nbsp; <small class="gray"><a href="https://www.v2ex.com/member/jerry017cn">jerry017cn</a> · 2015-12-29 14:59:27 +08:00 · 2656 次点击</small>
+    </div>
+    
+    
+    <div class="outdated">这是一个创建于 1087 天前的主题，其中的信息可能已经有所发展或是发生改变。</div>
+    
+    
+    <div class="cell">
+        
+        <div class="topic_content"><div class="markdown_body"><h2>CPU 资源隔离在 sys 较高的情况下是什么表现？</h2>
+
+<h3>内核资源不冲突的情况</h3>
+
+<p>首先我们简单说一下什么叫 sys 较高。先看 mpstat 命令的输出：</p>
+<div class="highlight"><pre>[root@zorrozou-pc ~]# mpstat 1
+Linux 3.10.90-1-linux (zorrozou-pc)         12/24/15    _x86_64_    (24 CPU)
+
+16:08:52     CPU    %usr   %nice    %sys %iowait    %irq   %soft  %steal  %guest  %gnice   %idle
+16:08:53     all    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+16:08:54     all    0.00    0.00    0.04    0.00    0.04    0.00    0.00    0.00    0.00   99.92
+16:08:55     all    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+16:08:56     all    0.04    0.00    0.04    0.00    0.00    0.00    0.00    0.00    0.00   99.92
+16:08:57     all    0.04    0.00    0.04    0.00    0.00    0.00    0.00    0.00    0.00   99.92
+16:08:58     all    0.00    0.00    0.04    0.00    0.00    0.00    0.00    0.00    0.00   99.96
+
+Average:     all    0.01    0.00    0.03    0.00    0.01    0.00    0.00    0.00    0.00   99.95
+</pre></div>
+
+<p>这里面我们看到 cpu 的使用比率分了很多栏目，我们一般评估进程占用 CPU 的时候，最重要的是％ user 和％ sys 。％ sys 一般是指，进程陷入内核执行时所占用的时间，这些时间是内核在工作。常见的情况时，进程执行过程中之行了某个系统调用，而陷入内核态执行所产生的 cpu 占用。</p>
+
+<p>所以在这一部分，我们需要重新提供一个测试用例，让 sys 部分的 cpu 占用变高。基于筛质数进行改造即可，我们这次让每个筛质数的线程，在做运算之前都用非阻塞方式 open()打开一个文件，每次拿到一个数运算的时候，循环中都用系统调用 read()读一下文件。以此来增加 sys 占用时间的比率。先来改程序：</p>
+<div class="highlight"><pre>#include &lt;pthread.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;strings.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;sys/stat.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;fcntl.h&gt;
+
+#define NUM 48
+#define START 1010001
+#define END 1020000
+
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
+static int count = 0;
+
+void *prime(void *p)
+{
+    int n, i, flag;
+    int num, fd, ret;
+    char name[BUFSIZ];
+    char buf[BUFSIZ];
+
+    bzero(name, BUFSIZ);
+
+    num = (int *)p;
+    sprintf(name, "/tmp/tmpfilezorro%d", num);
+
+    fd = open(name, O_RDWR|O_CREAT|O_TRUNC|O_NONBLOCK , 0644);
+    if (fd &lt; 0) {
+        perror("open()");
+        exit(1);
+    }
+
+    while (1) {
+        if (pthread_mutex_lock(&amp;mutex) != 0) {
+            perror("pthread_mutex_lock()");
+            pthread_exit(NULL);
+        }
+        while (count == 0) {
+            if (pthread_cond_wait(&amp;cond, &amp;mutex) != 0) {
+                perror("pthread_cond_wait()");
+                pthread_exit(NULL);
+            }
+        }
+        if (count == -1) {
+            if (pthread_mutex_unlock(&amp;mutex) != 0) {
+                perror("pthread_mutex_unlock()");
+                pthread_exit(NULL);
+            }
+            break;
+        }
+        n = count;
+        count = 0;
+        if (pthread_cond_broadcast(&amp;cond) != 0) {
+            perror("pthread_cond_broadcast()");
+            pthread_exit(NULL);
+        }
+        if (pthread_mutex_unlock(&amp;mutex) != 0) {
+            perror("pthread_mutex_unlock()");
+            pthread_exit(NULL);
+        }
+        flag = 1;
+        for (i=2;i&lt;n/2;i++) {
+            ret = read(fd, buf, BUFSIZ);
+            if (ret &lt; 0) {
+                perror("read()");
+            }
+            if (n%i == 0) {
+                flag = 0;
+                break;
+            }
+        }
+        if (flag == 1) {
+            printf("%d is a prime form %d!\n", n, pthread_self());
+        }
+    }
+
+    close(fd);
+    pthread_exit(NULL);
+}
+
+int main(void)
+{
+    pthread_t tid[NUM];
+    int ret, i, num;
+
+    for (i=0;i&lt;NUM;i++) {
+        ret = pthread_create(&amp;tid[i], NULL, prime, (void *)i);
+        if (ret != 0) {
+            perror("pthread_create()");
+            exit(1);
+        } 
+    }
+
+    for (i=START;i&lt;END;i+=2) {
+        if (pthread_mutex_lock(&amp;mutex) != 0) {
+            perror("pthread_mutex_lock()");
+            pthread_exit(NULL);
+        }
+        while (count != 0) {
+            if (pthread_cond_wait(&amp;cond, &amp;mutex) != 0) {
+                perror("pthread_cond_wait()");
+                pthread_exit(NULL);
+            }
+        }
+        count = i;
+        if (pthread_cond_broadcast(&amp;cond) != 0) {
+            perror("pthread_cond_broadcast()");
+            pthread_exit(NULL);
+        }
+        if (pthread_mutex_unlock(&amp;mutex) != 0) {
+            perror("pthread_mutex_unlock()");
+            pthread_exit(NULL);
+        }
+    }
+    if (pthread_mutex_lock(&amp;mutex) != 0) {
+        perror("pthread_mutex_lock()");
+        pthread_exit(NULL);
+    }
+    while (count != 0) {
+        if (pthread_cond_wait(&amp;cond, &amp;mutex) != 0) {
+            perror("pthread_cond_wait()");
+            pthread_exit(NULL);
+        }
+    }
+    count = -1;
+    if (pthread_cond_broadcast(&amp;cond) != 0) {
+        perror("pthread_cond_broadcast()");
+        pthread_exit(NULL);
+    }
+    if (pthread_mutex_unlock(&amp;mutex) != 0) {
+        perror("pthread_mutex_unlock()");
+        pthread_exit(NULL);
+    }
+
+    for (i=0;i&lt;NUM;i++) {
+        ret = pthread_join(tid[i], NULL);
+        if (ret != 0) {
+            perror("pthread_join()");
+            exit(1);
+        } 
+    }
+
+    exit(0);
+}
+</pre></div>
+
+<p>我们将筛质数的范围缩小了两个数量级，并且每个线程都打开一个文件，每次计算的循环中都 read 一遍。此时这个进程执行的时候的 cpu 使用状态是这样的：</p>
+<div class="highlight"><pre>17:20:46     CPU    %usr   %nice    %sys %iowait    %irq   %soft  %steal  %guest  %gnice   %idle
+17:20:47     all   53.04    0.00   46.96    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:20:47       0   53.00    0.00   47.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:20:47       1   53.00    0.00   47.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:20:47       2   53.00    0.00   47.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:20:47       3   53.00    0.00   47.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:20:47       4   53.00    0.00   47.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:20:47       5   53.00    0.00   47.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:20:47       6   53.00    0.00   47.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:20:47       7   53.00    0.00   47.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:20:47       8   53.00    0.00   47.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:20:47       9   53.00    0.00   47.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:20:47      10   53.00    0.00   47.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:20:47      11   53.47    0.00   46.53    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:20:47      12   52.00    0.00   48.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:20:47      13   53.00    0.00   47.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:20:47      14   53.47    0.00   46.53    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:20:47      15   53.00    0.00   47.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:20:47      16   53.00    0.00   47.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:20:47      17   53.00    0.00   47.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:20:47      18   53.00    0.00   47.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:20:47      19   53.00    0.00   47.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:20:47      20   53.00    0.00   47.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:20:47      21   53.00    0.00   47.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:20:47      22   53.00    0.00   47.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+17:20:47      23   53.00    0.00   47.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+
+[zorro@zorrozou-pc ~/test]$ time ./prime_sys &amp;&gt; /dev/null
+
+real    0m12.227s
+user    2m34.869s
+sys 2m17.239s
+</pre></div>
+
+<p>测试用例已经基本符合我们的测试条件，可以达到近 50%的 sys 占用，下面开始进行对比测试。测试方法根上一轮一样，仍然用 jerry 账户运行一个相同的程序在另一个 cgroup 不断的循环，然后分别看在不同资源分配比率下的 zorro 用户筛质数程序运行的时间。以下是测试结果：</p>
+
+<table><thead>
+<tr>
+<th>shares zorro/shares jerry （核心数）</th>
+<th>cpuset realtime</th>
+<th>cpushare realtime</th>
+<th>cpuquota realtime</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>2000/22000(2)</td>
+<td>2m27.666s</td>
+<td>2m27.599s</td>
+<td>2m27.918s</td>
+</tr>
+<tr>
+<td>4000/20000(4)</td>
+<td>1m12.621s</td>
+<td>1m14.345s</td>
+<td>1m13.581s</td>
+</tr>
+<tr>
+<td>6000/18000(6)</td>
+<td>0m48.612s</td>
+<td>0m49.474s</td>
+<td>0m48.730s</td>
+</tr>
+<tr>
+<td>8000/16000(8)</td>
+<td>0m36.412s</td>
+<td>0m37.269s</td>
+<td>0m36.784s</td>
+</tr>
+<tr>
+<td>12000/12000(12)</td>
+<td>0m24.611s</td>
+<td>0m24.624s</td>
+<td>0m24.628s</td>
+</tr>
+<tr>
+<td>16000/8000(16)</td>
+<td>0m18.401s</td>
+<td>0m18.688s</td>
+<td>0m18.480s</td>
+</tr>
+<tr>
+<td>24000/0(24)</td>
+<td>0m12.188s</td>
+<td>0m12.487s</td>
+<td>0m12.147s</td>
+</tr>
+</tbody></table>
+
+<table><thead>
+<tr>
+<th>shares zorro/shares jerry （核心数）</th>
+<th>cpuset systime</th>
+<th>cpushare systime</th>
+<th>cpuquota systime</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>2000/22000(2)</td>
+<td>2m20.115s</td>
+<td>2m21.024s</td>
+<td>2m21.854s</td>
+</tr>
+<tr>
+<td>4000/20000(4)</td>
+<td>2m16.450s</td>
+<td>2m21.103s</td>
+<td>2m20.352s</td>
+</tr>
+<tr>
+<td>6000/18000(6)</td>
+<td>2m18.273s</td>
+<td>2m20.455s</td>
+<td>2m20.039s</td>
+</tr>
+<tr>
+<td>8000/16000(8)</td>
+<td>2m18.054s</td>
+<td>2m20.611s</td>
+<td>2m19.891s</td>
+</tr>
+<tr>
+<td>12000/12000(12)</td>
+<td>2m20.358s</td>
+<td>2m18.331s</td>
+<td>2m20.363s</td>
+</tr>
+<tr>
+<td>16000/8000(16)</td>
+<td>2m17.724s</td>
+<td>2m18.958s</td>
+<td>2m18.637s</td>
+</tr>
+<tr>
+<td>24000/0(24)</td>
+<td>2m16.723s</td>
+<td>2m17.707s</td>
+<td>2m16.176s</td>
+</tr>
+</tbody></table>
+
+<p>这次我们多了一个表格专门记录 systime 时间占用。根据数据结果我们会发现，在这次测试循环中，三种隔离方式都呈现出随着资源的增加进程是执行的总时间线性下降，并且隔离效果区别不大。由于调用 read 的次数一样， systime 的使用基本都稳定在一个固定的时间范围内。这说明，在 sys 占用较高的情况下，各种 cpu 资源隔离手段都表现出比较理想的效果。</p>
+
+<h3>内核资源冲突的情况</h3>
+
+<p>但是现实的生产环境往往并不是这么理想的，有没有可能在某种情况下，各种 CPU 资源隔离的手段并不会表现出这么理想的效果呢？有没有可能不同的隔离方式会导致进程的执行会有影响呢？其实这是很可能发生的。我们上一轮测试中，每个 cgroup 中的线程打开的文件都不是同一个文件，内核在处理这种场景的时候，并不需要使用内核中的一些互斥资源(比如自旋锁或者屏障)进行竞争条件的处理。如果环境变成大家 read 的是同一个文件，那么情况就可能有很大不同了。下面我们来测试一下每个 zorro 组中的所有线程都 open 同一个文件并且 read 时的执行效果，我们照例把测试用例代码贴出来：</p>
+<div class="highlight"><pre>#include &lt;pthread.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;strings.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;sys/stat.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;fcntl.h&gt;
+
+#define NUM 48
+#define START 1010001
+#define END 1020000
+
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
+static int count = 0;
+#define PATH "/etc/passwd"
+
+void *prime(void *p)
+{
+    int n, i, flag;
+    int num, fd, ret;
+    char name[BUFSIZ];
+    char buf[BUFSIZ];
+
+    fd = open(PATH, O_RDONLY|O_NONBLOCK);
+    if (fd &lt; 0) {
+        perror("open()");
+        exit(1);
+    }
+
+    while (1) {
+        if (pthread_mutex_lock(&amp;mutex) != 0) {
+            perror("pthread_mutex_lock()");
+            pthread_exit(NULL);
+        }
+        while (count == 0) {
+            if (pthread_cond_wait(&amp;cond, &amp;mutex) != 0) {
+                perror("pthread_cond_wait()");
+                pthread_exit(NULL);
+            }
+        }
+        if (count == -1) {
+            if (pthread_mutex_unlock(&amp;mutex) != 0) {
+                perror("pthread_mutex_unlock()");
+                pthread_exit(NULL);
+            }
+            break;
+        }
+        n = count;
+        count = 0;
+        if (pthread_cond_broadcast(&amp;cond) != 0) {
+            perror("pthread_cond_broadcast()");
+            pthread_exit(NULL);
+        }
+        if (pthread_mutex_unlock(&amp;mutex) != 0) {
+            perror("pthread_mutex_unlock()");
+            pthread_exit(NULL);
+        }
+        flag = 1;
+        for (i=2;i&lt;n/2;i++) {
+            ret = read(fd, buf, BUFSIZ);
+            if (ret &lt; 0) {
+                perror("read()");
+            }
+            if (n%i == 0) {
+                flag = 0;
+                break;
+            }
+        }
+        if (flag == 1) {
+            printf("%d is a prime form %d!\n", n, pthread_self());
+        }
+    }
+
+    close(fd);
+    pthread_exit(NULL);
+}
+
+int main(void)
+{
+    pthread_t tid[NUM];
+    int ret, i, num;
+
+    for (i=0;i&lt;NUM;i++) {
+        ret = pthread_create(&amp;tid[i], NULL, prime, (void *)i);
+        if (ret != 0) {
+            perror("pthread_create()");
+            exit(1);
+        } 
+    }
+
+    for (i=START;i&lt;END;i+=2) {
+        if (pthread_mutex_lock(&amp;mutex) != 0) {
+            perror("pthread_mutex_lock()");
+            pthread_exit(NULL);
+        }
+        while (count != 0) {
+            if (pthread_cond_wait(&amp;cond, &amp;mutex) != 0) {
+                perror("pthread_cond_wait()");
+                pthread_exit(NULL);
+            }
+        }
+        count = i;
+        if (pthread_cond_broadcast(&amp;cond) != 0) {
+            perror("pthread_cond_broadcast()");
+            pthread_exit(NULL);
+        }
+        if (pthread_mutex_unlock(&amp;mutex) != 0) {
+            perror("pthread_mutex_unlock()");
+            pthread_exit(NULL);
+        }
+    }
+    if (pthread_mutex_lock(&amp;mutex) != 0) {
+        perror("pthread_mutex_lock()");
+        pthread_exit(NULL);
+    }
+    while (count != 0) {
+        if (pthread_cond_wait(&amp;cond, &amp;mutex) != 0) {
+            perror("pthread_cond_wait()");
+            pthread_exit(NULL);
+        }
+    }
+    count = -1;
+    if (pthread_cond_broadcast(&amp;cond) != 0) {
+        perror("pthread_cond_broadcast()");
+        pthread_exit(NULL);
+    }
+    if (pthread_mutex_unlock(&amp;mutex) != 0) {
+        perror("pthread_mutex_unlock()");
+        pthread_exit(NULL);
+    }
+
+    for (i=0;i&lt;NUM;i++) {
+        ret = pthread_join(tid[i], NULL);
+        if (ret != 0) {
+            perror("pthread_join()");
+            exit(1);
+        } 
+    }
+
+    exit(0);
+}
+</pre></div>
+
+<p>此时 jerry 组中的所有线程仍然是每个线程一个文件，与上一轮测试一样。测试结果如下：</p>
+
+<table><thead>
+<tr>
+<th>shares zorro/shares jerry （核心数）</th>
+<th>cpuset realtime</th>
+<th>cpushare realtime</th>
+<th>cpuquota realtime</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>2000/22000(2)</td>
+<td>2m27.402s</td>
+<td>2m41.015s</td>
+<td>4m37.149s</td>
+</tr>
+<tr>
+<td>4000/20000(4)</td>
+<td>1m18.178s</td>
+<td>1m25.214s</td>
+<td>2m42.455s</td>
+</tr>
+<tr>
+<td>6000/18000(6)</td>
+<td>0m52.592s</td>
+<td>1m2.691s</td>
+<td>1m48.492s</td>
+</tr>
+<tr>
+<td>8000/16000(8)</td>
+<td>0m43.598s</td>
+<td>0m57.000s</td>
+<td>1m21.044s</td>
+</tr>
+<tr>
+<td>12000/12000(12)</td>
+<td>0m52.182s</td>
+<td>0m59.613s</td>
+<td>0m58.004s</td>
+</tr>
+<tr>
+<td>16000/8000(16)</td>
+<td>0m50.712s</td>
+<td>0m54.371s</td>
+<td>0m56.911s</td>
+</tr>
+<tr>
+<td>24000/0(24)</td>
+<td>0m50.599s</td>
+<td>0m50.550s</td>
+<td>0m50.496s</td>
+</tr>
+</tbody></table>
+
+<table><thead>
+<tr>
+<th>shares zorro/shares jerry （核心数）</th>
+<th>cpuset systime</th>
+<th>cpushare systime</th>
+<th>cpuquota systime</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>2000/22000(2)</td>
+<td>2m19.829s</td>
+<td>2m47.706s</td>
+<td>6m39.800s</td>
+</tr>
+<tr>
+<td>4000/20000(4)</td>
+<td>2m41.928s</td>
+<td>3m6.575s</td>
+<td>8m14.087s</td>
+</tr>
+<tr>
+<td>6000/18000(6)</td>
+<td>2m45.671s</td>
+<td>3m38.722s</td>
+<td>8m13.668s</td>
+</tr>
+<tr>
+<td>8000/16000(8)</td>
+<td>3m14.434s</td>
+<td>4m54.451s</td>
+<td>8m12.904s</td>
+</tr>
+<tr>
+<td>12000/12000(12)</td>
+<td>7m39.542s</td>
+<td>9m7.751s</td>
+<td>8m57.332s</td>
+</tr>
+<tr>
+<td>16000/8000(16)</td>
+<td>10m47.425s</td>
+<td>11m41.443s</td>
+<td>12m21.056s</td>
+</tr>
+<tr>
+<td>24000/0(24)</td>
+<td>17m17.661s</td>
+<td>17m7.311s</td>
+<td>17m14.788s</td>
+</tr>
+</tbody></table>
+
+<p>观察这轮测试的结果我们会发现，当线程同时 read 同一个文件时，时间的消耗并不在呈现线性下降的趋势了，而且，随着分配的资源越来越多， sys 占用时间也越来越高，这种现象如何解释呢？本质上来讲，使用 cgroup 进行资源隔离时，内核资源仍然是共享的。如果业务使用内核资源如果没有产生冲突，那么隔离效果应该会比较理想，但是业务一旦使用了会导致内核资源冲突的逻辑时，那么业务的执行效率就会下降，此时可能所有进程在内核中处理的时候都可能会在竞争的资源上忙等（如果使用了 spinlock ）。自然的，如果多个 cgroup 的进程之间也正好使用了可能会导致内核触发竞争条件的资源时，自然也会发生所谓的 cgroup 之间的相互影响。可能的现象就是，当某一个业务 A 的 cgroup 正在运行着，突然 B 业务的 cgroup 有请求要处理，会导致 A 业务的响应速度和处理能力下降。而这种相互干扰，正是资源隔离手段想要尽量避免的。我们认为，如果出现了上述效果，那么资源隔离手段就是打了折扣的。</p>
+
+<p>根据我们的实验结果可以推论，在内核资源有竞争条件的情况下， cpuset 的资源隔离方式表现出了相对其他方式的优势， cpushare 方式的性能折损尚可接受，而 cpuquota 表现出了最差的性能，或者说在 cpuquota 的隔离条件下， cgroup 之间进程相互影响的可能性最大。</p>
+
+<p>那么在内核资源存在竞争的时候， cgroup 的 cpu 资源隔离会有相互干扰。结论就是这样了么？这个推断靠谱么？我们再来做一轮实验，这次只对比 cpuset 和 cpuquota 。这次我们不用 jerry 来运行干扰程序测试隔离性，我们让 zorro 只在单纯的隔离状态下，再有内核资源竞争的条件下进行运算效率测试，就是说这个环境没有多个 cgroup 可能造成的相互影响。先来看数据：</p>
+
+<table><thead>
+<tr>
+<th>cpu 比率（核心数）</th>
+<th>cpuset realtime</th>
+<th>cpuquota realtime</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>8.3%(2)</td>
+<td>2m26.815s</td>
+<td>9m4.490s</td>
+</tr>
+<tr>
+<td>16.7%(4)</td>
+<td>1m17.894s</td>
+<td>4m49.167s</td>
+</tr>
+<tr>
+<td>25%(6)</td>
+<td>0m52.356s</td>
+<td>3m13.144s</td>
+</tr>
+<tr>
+<td>33.3%(8)</td>
+<td>0m42.946s</td>
+<td>2m23.010s</td>
+</tr>
+<tr>
+<td>50%(12)</td>
+<td>0m52.014s</td>
+<td>1m33.571s</td>
+</tr>
+<tr>
+<td>66.7%(16)</td>
+<td>0m50.903s</td>
+<td>1m10.553s</td>
+</tr>
+<tr>
+<td>100%(24)</td>
+<td>0m50.331s</td>
+<td>0m50.304s</td>
+</tr>
+</tbody></table>
+
+<table><thead>
+<tr>
+<th>cpu 比率（核心数）</th>
+<th>cpuset systime</th>
+<th>cpuquota systime</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>8.3%(2)</td>
+<td>2m18.713s</td>
+<td>15m27.738s</td>
+</tr>
+<tr>
+<td>16.7%(4)</td>
+<td>2m41.172s</td>
+<td>16m30.741s</td>
+</tr>
+<tr>
+<td>25%(6)</td>
+<td>2m44.618s</td>
+<td>16m30.964s</td>
+</tr>
+<tr>
+<td>33.3%(8)</td>
+<td>3m12.587s</td>
+<td>16m18.366s</td>
+</tr>
+<tr>
+<td>50%(12)</td>
+<td>7m36.929s</td>
+<td>15m55.407s</td>
+</tr>
+<tr>
+<td>66.7%(16)</td>
+<td>10m49.327s</td>
+<td>16m1.463s</td>
+</tr>
+<tr>
+<td>100%(24)</td>
+<td>17m9.482s</td>
+<td>17m9.533s</td>
+</tr>
+</tbody></table>
+
+<p>不知道看完这组数据之后，大家会不会困惑？ cpuset 的测试结果根上一轮基本一样，这可以理解。但是为什么 cpuquota 这轮测试反倒比刚才有 jerry 用户进程占用 cpu 进行干扰的时候的性能更差了？</p>
+
+<p>如果了解了内核在这种资源竞争条件的原理的话，这个现象并不难解释。可以这样想，如果某一个资源存在竞争的话，那么是不是同时竞争的人越多，那么对于每个人来说，单次得到资源的可能性更低？比如说，老师给学生发苹果，每次只发一个，但是同时有 10 个人一起抢，每个人每次抢到苹果的几率是 10%，如果 20 个人一起抢，那么每次每人强到苹果的几率就只有 5 ％了。在内核竞争条件下，也是一样的道理，资源只有一个，当抢的进程少的时候，每个进程抢到资源的概率大，于是浪费在忙等上的时间就少。本轮测试的 cpuset 就可以说明这个现象，可以观察到， cpuset systime 随着分配的核心数的增多而上升，就是同时跑的进程越多， sys 消耗在忙等资源上的时间就越大。而 cpuquota systime 消耗从头到尾都基本变化不大，意味着再以 quota 方式分配 cpu 的时候，所有核心都是用得上的，所以一直都有 24 个进程在抢资源，大家消耗在忙等上的时间是一样的。<br>
+为什么有 jerry 进程同时占用 cpu 的情况下， cpuquota 反倒效率要快些呢？这个其实也好理解。在 jerry 进程执行的时候，这个 cgroup 的相关线程打开的是不同的文件，所以从内核竞争上没有冲突。另外， jerry 消耗了部分 cpu ，导致内核会在 zorro 的进程和 jerry 的进程之间发生调度，这意味着，同一时刻核心数只有 24 个，可能有 18 个在给 jerry 的线程使用，另外 6 个在给 zorro 的进程使用，这导致 zorro 同时争抢资源的进程个数不能始终保持 24 个，所以内核资源冲突反倒减小了。<code>这导致，使用 cpuquota 的情况下，有其他 cgroup 执行的时候，还可能会使某些业务的执行效率提升，而不是下降。</code>这种相互影响实在太让人意外了！但这确实是事实！</p>
+
+<p>那么什么情况下会导致 cgroup 之间的相互影响使性能下降呢？也好理解，当多个 cgroup 的应用之间使用了相同的内核资源的时候。请大家思考一个问题：现实情况是同一种业务使用冲突资源的可能性更大还是不同业务使用冲突资源的可能性更大呢？从概率上说应该是同一种业务。从这个角度出发来看，如果我们有两台多核服务器，有两个跟我们测试逻辑类似的业务 A 、 B ，让你选择一种部署方案，你是选择让 A 、 B 两个业务分别独占一个服务器？还是让 A 、 B 业务使用资源隔离分别在两个服务器上占用 50%的资源？通过这轮分析我想答案很明确了：</p>
+
+<ol>
+<li>从容灾的角度说，让某一个业务使用多台服务器肯定会增加容灾能力。</li>
+<li>从资源利用率的角度说，如果让一个业务放在一个服务器上，那么他在某些资源冲突的情况下并不能发挥会最大效率。然而如果使用 group 分布在两个不同的服务器上，无论你用 cpuset ，还是 cpushare ，又或是 cpuquota ，它的 cpu 性能表现都应该强于在一个独立的服务器上部署。况且 cgroup 的 cpu 隔离是在 cfs 中实现的，这种隔离几乎是不会浪费额外的计算能力的，就是说，做隔离相比不做隔离，系统本身的性能损耗都可以忽略不计。</li>
+</ol>
+
+<p>那么，究竟还有什么会妨碍我们使用 cgoup 的 cpu 资源隔离呢？</p>
+</div></div>
+        
+        
+    </div>
+    
+    
+    
+</div>
+
+<div class="sep20"></div>
+
+
+<div class="box">
+    <div class="cell"><div class="fr" style="margin: -3px -5px 0px 0px;"><a href="https://www.v2ex.com/tag/perror" class="tag"><li class="fa fa-tag"></li> perror</a><a href="https://www.v2ex.com/tag/null" class="tag"><li class="fa fa-tag"></li> null</a><a href="https://www.v2ex.com/tag/17:20:47" class="tag"><li class="fa fa-tag"></li> 17:20:47</a><a href="https://www.v2ex.com/tag/mutex" class="tag"><li class="fa fa-tag"></li> mutex</a></div><span class="gray">5 回复 &nbsp;<strong class="snow">|</strong> &nbsp;直到 2015-12-30 00:40:51 +08:00</span>
+    </div>
+    
+
+    
+        
+        
+        <div id="r_2769085" class="cell">
+        
+        <table width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tbody><tr>
+                <td valign="top" width="48" align="center"><img src="23119de18be85b2f384e5f67459ccf9f" class="avatar" border="0" align="default"></td>
+                <td valign="top" width="10"></td>
+                <td valign="top" width="auto" align="left"><div class="fr"> &nbsp; &nbsp; <span class="no">1</span></div>
+                    <div class="sep3"></div>
+                    <strong><a href="https://www.v2ex.com/member/mzer0" class="dark">mzer0</a></strong>&nbsp; &nbsp;<span class="ago">2015-12-29 15:04:40 +08:00</span> 
+                    <div class="sep5"></div>
+                    <div class="reply_content">cgroup 是什么?</div>
+                </td>
+            </tr>
+        </tbody></table>
+        </div>
+    
+
+    
+        
+        
+        <div id="r_2769130" class="cell">
+        
+        <table width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tbody><tr>
+                <td valign="top" width="48" align="center"><img src="66458_normal.png" class="avatar" border="0" align="default"></td>
+                <td valign="top" width="10"></td>
+                <td valign="top" width="auto" align="left"><div class="fr"> &nbsp; &nbsp; <span class="no">2</span></div>
+                    <div class="sep3"></div>
+                    <strong><a href="https://www.v2ex.com/member/glogo" class="dark">glogo</a></strong>&nbsp; &nbsp;<span class="ago">2015-12-29 15:20:21 +08:00</span> 
+                    <div class="sep5"></div>
+                    <div class="reply_content">赞！</div>
+                </td>
+            </tr>
+        </tbody></table>
+        </div>
+    
+
+    
+        
+        
+        <div id="r_2769928" class="cell">
+        
+        <table width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tbody><tr>
+                <td valign="top" width="48" align="center"><img src="3460335d55dc8c8dbbf9dfe27cd0ede6" class="avatar" border="0" align="default"></td>
+                <td valign="top" width="10"></td>
+                <td valign="top" width="auto" align="left"><div class="fr"> &nbsp; &nbsp; <span class="no">3</span></div>
+                    <div class="sep3"></div>
+                    <strong><a href="https://www.v2ex.com/member/latyas" class="dark">latyas</a></strong>&nbsp; &nbsp;<span class="ago">2015-12-29 19:06:20 +08:00</span> 
+                    <div class="sep5"></div>
+                    <div class="reply_content">直接在 V2EX 上发技术文章  赞</div>
+                </td>
+            </tr>
+        </tbody></table>
+        </div>
+    
+
+    
+        
+        
+        <div id="r_2770685" class="cell">
+        
+        <table width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tbody><tr>
+                <td valign="top" width="48" align="center"><img src="140509_normal.png" class="avatar" border="0" align="default"></td>
+                <td valign="top" width="10"></td>
+                <td valign="top" width="auto" align="left"><div class="fr"> &nbsp; &nbsp; <span class="no">4</span></div>
+                    <div class="sep3"></div>
+                    <strong><a href="https://www.v2ex.com/member/KyleMeow" class="dark">KyleMeow</a></strong>&nbsp; &nbsp;<span class="ago">2015-12-30 00:01:02 +08:00</span> 
+                    <div class="sep5"></div>
+                    <div class="reply_content">酷壳上也看到过 CGroup 的原理介绍，继续学习 ing</div>
+                </td>
+            </tr>
+        </tbody></table>
+        </div>
+    
+
+    
+        
+        
+        <div id="r_2770750" class="cell">
+        
+        <table width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tbody><tr>
+                <td valign="top" width="48" align="center"><img src="84a25feb7eb504dba2508f4889dc9716" class="avatar" border="0" align="default"></td>
+                <td valign="top" width="10"></td>
+                <td valign="top" width="auto" align="left"><div class="fr"> &nbsp; &nbsp; <span class="no">5</span></div>
+                    <div class="sep3"></div>
+                    <strong><a href="https://www.v2ex.com/member/shenjiaqi" class="dark">shenjiaqi</a></strong>&nbsp; &nbsp;<span class="ago">2015-12-30 00:40:51 +08:00</span> 
+                    <div class="sep5"></div>
+                    <div class="reply_content">服务器件的 通行，同步吧</div>
+                </td>
+            </tr>
+        </tbody></table>
+        </div>
+    
+
+
+</div>
+<div class="sep20"></div>
+
+
+
+
+
+
+            </div>
+            
+            
+        </div>
+        <div class="c"></div>
+        <div class="sep20"></div>
+    </div>
+    <div id="Bottom">
+        <div class="content">
+            <div class="inner">
+                <div class="sep10"></div>
+                    <div class="fr">
+                        <a href="https://www.digitalocean.com/?refcode=1b51f1a7651d" target="_top"><div id="DigitalOcean"></div></a>
+                    </div>
+                    <strong><a href="https://www.v2ex.com/about" class="dark" target="_self">关于</a> &nbsp; <span class="snow">·</span> &nbsp; <a href="https://www.v2ex.com/faq" class="dark" target="_self">FAQ</a> &nbsp; <span class="snow">·</span> &nbsp; <a href="https://www.v2ex.com/p/7v9TEc53" class="dark" target="_self">API</a> &nbsp; <span class="snow">·</span> &nbsp; <a href="https://www.v2ex.com/mission" class="dark" target="_self">我们的愿景</a> &nbsp; <span class="snow">·</span> &nbsp; <a href="https://www.v2ex.com/advertise" class="dark" target="_self">广告投放</a> &nbsp; <span class="snow">·</span> &nbsp; <a href="https://www.v2ex.com/advertise/2017.html" class="dark" target="_self">感谢</a> &nbsp; <span class="snow">·</span> &nbsp; <a href="https://www.v2ex.com/tools" class="dark" target="_self">实用小工具</a> &nbsp; <span class="snow">·</span> &nbsp; 3790 人在线</strong> &nbsp; <span class="fade">最高记录 4019</span> &nbsp; <span class="snow">·</span> &nbsp; <a href="https://www.v2ex.com/select/language"><img src="lang_zhcn_32.png" alt="" width="20" border="0" align="absmiddle"></a>
+                    <div class="sep20"></div>
+                    创意工作者们的社区
+                    <div class="sep5"></div>
+                    World is powered by solitude
+                    <div class="sep20"></div>
+                    <span class="small fade">VERSION: 3.9.8.1 · 21ms · UTC 02:17 · PVG 10:17 · LAX 18:17 · JFK 21:17<br>♥ Do have faith in what you're doing.</span>
+                    <div class="sep20"></div>
+                    <table width="100%" cellspacing="0" cellpadding="0" border="0"><tbody><tr><td style="background-color: transparent;" valign="middle" width="140" align="left"><span class="f12 gray"><a href="http://www.miibeian.gov.cn/" target="_top" rel="nofollow">沪ICP备16043287号-1</a></span></td><td style="background-color: transparent;" valign="middle" width="auto" align="left"></td></tr></tbody></table>
+                <div class="sep10"></div>
+            </div>
+        </div>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+    
+
+    
+	
+    
+
+    
+    
+
+</body>
+</html>

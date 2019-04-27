@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ffmpeg对avs编解码的支持 - 开源软件 - IT610.com</title>
+<meta name="keywords" content="ffmpeg,ffmpeg对avs编解码的支持">
+<meta name="description" content="输出的avs码流是.cavs格式的。 
+编码：ffmpeg -s 640x480 -i test.yuv -b 300k -vcodec libxavs test.cavs 
+解码：ffmpeg -i test.cavs test.yuv 
+http://xavs.sourceforge.net/xavs_ffmpeg.html &amp;nbsp; 
+http://ffmpeg.zeranoe.com/">
+
+<!--[if lt IE 9]>
+<script src="/r/cms/html5.js" type="text/javascript"></script>
+<![endif]-->
+
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+
+
+
+
+
+
+
+
+<link rel="stylesheet" type="text/css" id="SL_Style" href="chrome://imtranslator/content/css/translator.css">
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body><div id="BAIDU_DUP_fp_wrapper" style="position: absolute; left: -1px; bottom: -1px; z-index: 0; width: 0px; height: 0px; overflow: hidden; visibility: hidden; display: none;"><iframe id="BAIDU_DUP_fp_iframe" src="index_1.html" style="width: 0px; height: 0px; visibility: hidden; display: none;"></iframe></div>
+<div class="container">
+<div class="theTop">
+	<div class="theTopLeft">
+    <div id="loginCsiDiv">
+
+
+
+&nbsp;您好，您还没有登录哦！ <a href="http://www.it610.com/register.jspx">免费注册</a>&nbsp;|&nbsp;<a href="http://www.it610.com/login.jspx?returnUrl=/">会员登录</a>&nbsp;|&nbsp;<a href="http://www.it610.com/member/forgot_password.jspx">忘记密码</a>
+</div>
+
+    </div>
+    <div class="theTopRight">
+    <a href="http://www.it610.com/tag.jspx" target="_top">Tags</a>&nbsp;|&nbsp;<a href="http://www.it610.com/guestbook.jspx" target="_top">留言板</a>&nbsp;|&nbsp;<a href="http://www.it610.com/rss.jspx" target="_top">RSS订阅</a>&nbsp;|&nbsp;<a onclick="SetHome(window.location)" href="javascript:void(0)">设为首页</a>&nbsp;|&nbsp;<a onclick="AddFavorite(window.location,document.title)" href="javascript:void(0)">加入收藏</a>&nbsp;
+    <a name="gb2big5" id="gb2big5" href="javascript:StranBody()" title="點擊以繁體中文方式浏覽">繁體中文</a>
+	
+    </div>
+</div>
+
+<div class="pageTitle">
+    <!-- LOGO_begin -->
+    <div class="webLogo" style="border: 0px solid red; width: 180px;">
+        <img alt="www.it610.com" src="weblogo2.png">
+    </div>
+    <!-- LOGO_end -->
+    <!-- AD_begin -->
+    <div style="border: 0px solid red; float: left; margin-top: 5px; margin-left: 10px;">
+        
+        <div id="BAIDU_SSP__wrapper_u2445735_0"><iframe id="iframeu2445735_0" src="index_2.html" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" style="border: 0px none; vertical-align: bottom; margin: 0px; width: 468px; height: 60px;" allowtransparency="true" width="468" height="60" align="center,center" frameborder="0"></iframe></div>
+    </div>
+    <!-- AD_end -->
+    <!-- 搜索_begin -->
+    <div class="searchCon" style="border: 0px solid red; width: 300px;">
+        <form action="http://www.it610.com/search.jspx" target="_blank" id="searchForm">
+        <div class="ui-widget">
+            <div class="searchBg">
+            	<input name="q" value="请输入关键词" onfocus="if(this.value=='请输入关键词')this.value=''" onkeypress="qkeypress()" onblur="if(this.value=='')this.value='请输入关键词'" maxlength="50" autocomplete="off" style="border: 0px none; width: 98%;" class="ui-autocomplete-input" type="text"><span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span>
+            </div>
+		</div>
+            <input class="searchMenu" value="" type="submit">
+        </form>
+    </div>
+    <!-- 搜索_end -->
+</div>
+<div class="clear"></div><div id="menu" class="page box relative">
+    <dl id="topmenu">  
+                <dt class="menu_first"><a href="http://www.it610.com/" target="_self"><span>首 页</span></a></dt>
+        <dt><a href="http://www.it610.com/language/index.htm" target="_self"><span>编程语言</span></a></dt>
+        <dt><a href="http://www.it610.com/web/index.htm" target="_self"><span>Web前端</span></a></dt>
+        <dt><a href="http://www.it610.com/architecture/index.htm" target="_self"><span>系统架构</span></a></dt>
+        <dt><a href="http://www.it610.com/db/index.htm" target="_self"><span>数据库</span></a></dt>
+        <dt><a href="http://www.it610.com/mobile/index.htm" target="_self"><span>移动开发</span></a></dt>
+        <dt><a href="http://www.it610.com/os/index.htm" target="_self"><span>操作系统</span></a></dt>
+        <dt><a href="http://www.it610.com/opensource/index.htm" target="_self" class="selected"><span>开源软件</span></a></dt>
+        <dt><a href="http://www.it610.com/Internet/index.htm" target="_self"><span>互联网</span></a></dt>
+        <dt><a href="http://www.it610.com/Industry/index.htm" target="_self"><span>行业应用</span></a></dt>
+        <dt><a href="http://www.it610.com/management/index.htm" target="_self"><span>研发管理</span></a></dt>
+        <dt><a href="http://www.it610.com/life/index.htm" target="_self"><span>IT生活</span></a></dt>
+    </dl>
+</div>
+<div class="clear"></div>	<!-- 左栏_begin -->
+	<div class="w670 mt10">
+        <div class="website">当前位置：<a href="http://www.it610.com/">首页</a> &gt; <a target="_top" href="http://www.it610.com/dev/index.htm">开发</a> &gt; <a target="_top" href="http://www.it610.com/opensource/index.htm">开源软件</a> &gt; 正文</div>
+        <div class="clear"></div>
+        
+        <div class="newsTex">
+            <h1>ffmpeg对avs编解码的支持</h1>
+
+            <div class="msgbar">发表于： 2015-11-12 &nbsp;  作者：互联网 &nbsp; 来源：转载 &nbsp;  浏览次数：<span id="views">1</span>
+            <span id="cancelSpan" style="display: none; cursor: pointer;">取消收藏</span>
+            <span id="comfirmSpan" style="display: none; cursor: pointer;">收藏</span>
+            </div>
+            <div class="news_tag">
+            <a href="http://www.it610.com/tag/2373.jspx" title="ffmpeg">ffmpeg</a> 
+            </div>
+             <!-- 社会化分享 start -->
+<div class="bdsharebuttonbox bdshare-button-style0-16" data-bd-bind="1500529674249"><a href="#" class="bds_more" data-cmd="more">分享到：</a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博">新浪微博</a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信">微信</a><a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博">腾讯微博</a><a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网">人人网</a><a href="#" class="bds_youdao" data-cmd="youdao" title="分享到有道云笔记">有道云笔记</a><a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间">QQ空间</a></div>
+             <!-- 社会化分享 end -->
+            
+	    <!-- ad开始 -->
+<div class="">
+
+<div id="BAIDU_SSP__wrapper_u2505148_0"><iframe id="iframeu2505148_0" src="index_3.html" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" style="border: 0px none; vertical-align: bottom; margin: 0px; width: 650px; height: 125px;" allowtransparency="true" width="650" height="125" align="center,center" frameborder="0"></iframe></div>
+</div>            <!-- ad结束 -->
+            <!-- 5图推荐开始 -->
+            	<div class="recommend1">
+                    <div class="recommend2">
+                      <a class="recommend3" href="http://www.it610.com/article/1672509.htm" target="_top">
+                      <img src="ba3e1907a58546cc8b3f11d5369f614c.png@118x99b" alt="音频视频-编解码工具ffmpeg">
+                      </a>
+                      <div class="recommend4"><a href="http://www.it610.com/article/1672509.htm" title="音频视频-编解码工具ffmpeg" target="_top">音频视频-编解码工具ffmpeg</a></div>
+                    </div>
+                    <div class="recommend2">
+                      <a class="recommend3" href="http://www.it610.com/article/1387210.htm" target="_top">
+                      <img src="06310a20ad164fcd8acaa34b1d6d27c6.jpg@118x99b" alt="ffmpeg：编解码过程，基本用法">
+                      </a>
+                      <div class="recommend4"><a href="http://www.it610.com/article/1387210.htm" title="ffmpeg：编解码过程，基本用法" target="_top">ffmpeg：编解码过程，基本用法</a></div>
+                    </div>
+                    <div class="recommend2">
+                      <a class="recommend3" href="http://www.it610.com/article/2308347.htm" target="_top">
+                      <img src="80cf399759024634a9215ba186f0de75.jpg@118x99b" alt="最简单的基于FFMPEG的封装格式转换器（无编解码）">
+                      </a>
+                      <div class="recommend4"><a href="http://www.it610.com/article/2308347.htm" title="最简单的基于FFMPEG的封装格式转换器（无编解码）" target="_top">最简单的基于FFMPEG的封装格式转换器（无编解码）</a></div>
+                    </div>
+                    <div class="recommend2">
+                      <a class="recommend3" href="http://www.it610.com/article/2270792.htm" target="_top">
+                      <img src="31b9d609645d4942b209748d8e369132.jpg@118x99b" alt="FFMPEG视音频编解码零基础学习方法">
+                      </a>
+                      <div class="recommend4"><a href="http://www.it610.com/article/2270792.htm" title="FFMPEG视音频编解码零基础学习方法" target="_top">FFMPEG视音频编解码零基础学习方法</a></div>
+                    </div>
+                    <div class="recommend2">
+                      <a class="recommend3" href="http://www.it610.com/article/2279897.htm" target="_top">
+                      <img src="31b9d609645d4942b209748d8e369132.jpg@118x99b" alt="[总结]FFMPEG视音频编解码零基础学习方法">
+                      </a>
+                      <div class="recommend4"><a href="http://www.it610.com/article/2279897.htm" title="[总结]FFMPEG视音频编解码零基础学习方法" target="_top">[总结]FFMPEG视音频编解码零基础学习方法</a></div>
+                    </div>
+                </div>            <!-- 5图推荐结束 -->
+            <div class="clear"></div>
+                        
+            <div class="summary"><span style="color: rgb(255, 0, 0); font-weight: bold;">摘要:</span> 输出的avs码流是.cavs格式的。 
+编码：ffmpeg -s 640x480 -i test.yuv -b 300k -vcodec libxavs test.cavs 
+解码：ffmpeg -i test.cavs test.yuv 
+http://xavs.sourceforge.net/xavs_ffmpeg.html &nbsp; 
+http://ffmpeg.zeranoe.com/</div>
+
+            <div class="newsCon">
+                  <p>输出的avs码流是.cavs格式的。</p> 
+  <p>编码：ffmpeg -s 640x480 -i test.yuv -b 300k -vcodec libxavs test.cavs</p> 
+  <p>解码：ffmpeg -i test.cavs test.yuv</p> 
+  <p>http://xavs.sourceforge.net/xavs_ffmpeg.html &nbsp;</p> 
+  <p>http://ffmpeg.zeranoe.com/builds/</p> 
+  <p>&nbsp;</p> 
+  <p><span>ffmpeg提供的encoding-example有不少问题，解码正确的h264比特流文件时，报错信息如下：</span><br><span>error while decoding MB 5 4, bytestream (-11).</span></p> 
+  <p><span><span>原因是avcodec_decode_video2传进来的是要完整的一帧，在此之前调用av_parser_parse2来取一帧。 之前低版本的avcodec_decode_video不需要传进来完整的一帧，升级之后还不如以前了。。。</span></span></p> 
+  <p>&nbsp;</p> 
+  <p><span><span>参考http://bbs.chinavideo.org/viewthread.php?tid=14008&amp;extra=page%3D1 的解码过程，以下代码可以正确解码264和avs码流了。</span></span></p> 
+  <p><span><span>使用的是zeranoe 提供的共享库，ffmpeg版本应该是 &nbsp;</span></span><a href="http://ffmpeg.zeranoe.com/builds/win32/shared/ffmpeg-1.2-win32-shared.7z">ffmpeg-1.2-win32-shared.7z</a>&nbsp;。</p> 
+  <p>avs编码使用-vcodec libxavs 选项，解码的AVCodecID 是&nbsp;AV_CODEC_ID_CAVS.</p> 
+  <p>解码的结果与<a href="http://ffmpeg.zeranoe.com/builds/win32/static/ffmpeg-1.2-win32-static.7z">ffmpeg-1.2-win32-static.7z</a>&nbsp; 静态版ffmpeg.exe解码的结果基本一样，中间会有几帧有区别。</p> 
+  <div class="cnblogs_Highlighter"> 
+   <div><div id="highlighter_366232" class="syntaxhighlighter nogutter  cpp"><div class="toolbar"><span><a href="#" class="toolbar_item command_help help">?</a></span></div><table cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="cpp preprocessor">#include &lt;math.h&gt;</code></div><div class="line number2 index1 alt1">&nbsp;</div><div class="line number3 index2 alt2">&nbsp;</div><div class="line number4 index3 alt1">&nbsp;</div><div class="line number5 index4 alt2"><code class="cpp preprocessor">#include &lt;libavutil/opt.h&gt;</code></div><div class="line number6 index5 alt1">&nbsp;</div><div class="line number7 index6 alt2"><code class="cpp preprocessor">#include &lt;libavcodec/avcodec.h&gt;</code></div><div class="line number8 index7 alt1">&nbsp;</div><div class="line number9 index8 alt2"><code class="cpp preprocessor">#include &lt;libavutil/channel_layout.h&gt;</code></div><div class="line number10 index9 alt1">&nbsp;</div><div class="line number11 index10 alt2"><code class="cpp preprocessor">#include &lt;libavutil/common.h&gt;</code></div><div class="line number12 index11 alt1">&nbsp;</div><div class="line number13 index12 alt2"><code class="cpp preprocessor">#include &lt;libavutil/imgutils.h&gt;</code></div><div class="line number14 index13 alt1">&nbsp;</div><div class="line number15 index14 alt2"><code class="cpp preprocessor">#include &lt;libavutil/mathematics.h&gt;</code></div><div class="line number16 index15 alt1">&nbsp;</div><div class="line number17 index16 alt2"><code class="cpp preprocessor">#include &lt;libavutil/samplefmt.h&gt;</code></div><div class="line number18 index17 alt1">&nbsp;</div><div class="line number19 index18 alt2">&nbsp;</div><div class="line number20 index19 alt1">&nbsp;</div><div class="line number21 index20 alt2"><code class="cpp preprocessor">#define INBUF_SIZE 4096</code></div><div class="line number22 index21 alt1">&nbsp;</div><div class="line number23 index22 alt2"><code class="cpp spaces">&nbsp;</code>&nbsp;</div><div class="line number24 index23 alt1">&nbsp;</div><div class="line number25 index24 alt2"><code class="cpp color1 bold">FILE</code> <code class="cpp plain">*fp =&nbsp; NULL;</code></div><div class="line number26 index25 alt1">&nbsp;</div><div class="line number27 index26 alt2">&nbsp;</div><div class="line number28 index27 alt1">&nbsp;</div><div class="line number29 index28 alt2"><code class="cpp plain">AVFrame * m_pFrame; </code></div><div class="line number30 index29 alt1">&nbsp;</div><div class="line number31 index30 alt2">&nbsp;</div><div class="line number32 index31 alt1">&nbsp;</div><div class="line number33 index32 alt2"><code class="cpp comments">//AVFormatContext *m_pFormatCtx;</code></div><div class="line number34 index33 alt1">&nbsp;</div><div class="line number35 index34 alt2">&nbsp;</div><div class="line number36 index35 alt1">&nbsp;</div><div class="line number37 index36 alt2"><code class="cpp plain">AVCodecParserContext * m_parser;</code></div><div class="line number38 index37 alt1">&nbsp;</div><div class="line number39 index38 alt2">&nbsp;</div><div class="line number40 index39 alt1">&nbsp;</div><div class="line number41 index40 alt2"><code class="cpp plain">AVCodec *m_pCodec;</code></div><div class="line number42 index41 alt1">&nbsp;</div><div class="line number43 index42 alt2"><code class="cpp plain">AVCodecContext *m_pCodecContext;</code></div><div class="line number44 index43 alt1">&nbsp;</div><div class="line number45 index44 alt2">&nbsp;</div><div class="line number46 index45 alt1">&nbsp;</div><div class="line number47 index46 alt2"><code class="cpp comments">//初始化</code></div><div class="line number48 index47 alt1">&nbsp;</div><div class="line number49 index48 alt2"><code class="cpp color1 bold">int</code> <code class="cpp plain">Decode_init(unsigned </code><code class="cpp color1 bold">int</code> <code class="cpp plain">width,unsigned </code><code class="cpp color1 bold">int</code> <code class="cpp plain">height)</code></div><div class="line number50 index49 alt1">&nbsp;</div><div class="line number51 index50 alt2"><code class="cpp plain">{</code></div><div class="line number52 index51 alt1">&nbsp;</div><div class="line number53 index52 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp color1 bold">int</code> <code class="cpp plain">iRet ;</code></div><div class="line number54 index53 alt1">&nbsp;</div><div class="line number55 index54 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp comments">/* register all the codecs */</code></div><div class="line number56 index55 alt1">&nbsp;</div><div class="line number57 index56 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">avcodec_register_all();</code></div><div class="line number58 index57 alt1">&nbsp;</div><div class="line number59 index58 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">m_pCodec=avcodec_find_decoder(AV_CODEC_ID_CAVS);&nbsp; </code></div><div class="line number60 index59 alt1">&nbsp;</div><div class="line number61 index60 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp keyword bold">if</code><code class="cpp plain">(m_pCodec==NULL)</code></div><div class="line number62 index61 alt1">&nbsp;</div><div class="line number63 index62 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">{</code></div><div class="line number64 index63 alt1">&nbsp;</div><div class="line number65 index64 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp functions bold">printf</code><code class="cpp plain">(</code><code class="cpp string">"Error avcodec_find_decoder"</code><code class="cpp plain">);</code></div><div class="line number66 index65 alt1">&nbsp;</div><div class="line number67 index66 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp keyword bold">return</code> <code class="cpp plain">0; </code></div><div class="line number68 index67 alt1">&nbsp;</div><div class="line number69 index68 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">}</code></div><div class="line number70 index69 alt1">&nbsp;</div><div class="line number71 index70 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">m_pCodecContext=avcodec_alloc_context3(m_pCodec);</code></div><div class="line number72 index71 alt1">&nbsp;</div><div class="line number73 index72 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp keyword bold">if</code><code class="cpp plain">(m_pCodecContext==NULL)</code></div><div class="line number74 index73 alt1">&nbsp;</div><div class="line number75 index74 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">{</code></div><div class="line number76 index75 alt1">&nbsp;</div><div class="line number77 index76 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp functions bold">printf</code><code class="cpp plain">(</code><code class="cpp string">"Error avcodec_alloc_context"</code><code class="cpp plain">);</code></div><div class="line number78 index77 alt1">&nbsp;</div><div class="line number79 index78 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp keyword bold">return</code> <code class="cpp plain">0; </code></div><div class="line number80 index79 alt1">&nbsp;</div><div class="line number81 index80 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">}</code></div><div class="line number82 index81 alt1">&nbsp;</div><div class="line number83 index82 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp comments">//m_pCodecContext-&gt;width = width;&nbsp;&nbsp; //不用初始化图像尺寸一样可以解</code></div><div class="line number84 index83 alt1">&nbsp;</div><div class="line number85 index84 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp comments">// m_pCodecContext-&gt;height = height;</code></div><div class="line number86 index85 alt1">&nbsp;</div><div class="line number87 index86 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp comments">//m_pCodecContext-&gt;codec_id&nbsp; = CODEC_ID_H264;</code></div><div class="line number88 index87 alt1">&nbsp;</div><div class="line number89 index88 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">m_pCodecContext-&gt;pix_fmt = PIX_FMT_YUV420P;</code></div><div class="line number90 index89 alt1">&nbsp;</div><div class="line number91 index90 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">iRet = avcodec_open2(m_pCodecContext,m_pCodec,NULL);</code></div><div class="line number92 index91 alt1">&nbsp;</div><div class="line number93 index92 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp keyword bold">if</code><code class="cpp plain">(iRet&lt;0)</code></div><div class="line number94 index93 alt1">&nbsp;</div><div class="line number95 index94 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">{</code></div><div class="line number96 index95 alt1">&nbsp;</div><div class="line number97 index96 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp functions bold">printf</code><code class="cpp plain">(</code><code class="cpp string">"Error avcodec_open"</code><code class="cpp plain">);</code></div><div class="line number98 index97 alt1">&nbsp;</div><div class="line number99 index98 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp keyword bold">return</code> <code class="cpp plain">0; </code></div><div class="line number100 index99 alt1">&nbsp;</div><div class="line number101 index100 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">}</code></div><div class="line number102 index101 alt1">&nbsp;</div><div class="line number103 index102 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">m_pFrame=avcodec_alloc_frame();</code></div><div class="line number104 index103 alt1">&nbsp;</div><div class="line number105 index104 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp keyword bold">if</code><code class="cpp plain">(m_pFrame==NULL)</code></div><div class="line number106 index105 alt1">&nbsp;</div><div class="line number107 index106 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">{</code></div><div class="line number108 index107 alt1">&nbsp;</div><div class="line number109 index108 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp functions bold">printf</code><code class="cpp plain">(</code><code class="cpp string">"Error avcodec_alloc_frame"</code><code class="cpp plain">);</code></div><div class="line number110 index109 alt1">&nbsp;</div><div class="line number111 index110 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp keyword bold">return</code> <code class="cpp plain">0; </code></div><div class="line number112 index111 alt1">&nbsp;</div><div class="line number113 index112 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">}</code></div><div class="line number114 index113 alt1">&nbsp;</div><div class="line number115 index114 alt2"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp comments">//下面的内容，示例中没有</code></div><div class="line number116 index115 alt1">&nbsp;</div><div class="line number117 index116 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp comments">//m_pFormatCtx=avformat_alloc_context();</code></div><div class="line number118 index117 alt1">&nbsp;</div><div class="line number119 index118 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp comments">//if (!m_pFormatCtx)//分配内存失败</code></div><div class="line number120 index119 alt1">&nbsp;</div><div class="line number121 index120 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp comments">//{</code></div><div class="line number122 index121 alt1">&nbsp;</div><div class="line number123 index122 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp comments">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; printf("avformat_alloc_context error\n");&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </code></div><div class="line number124 index123 alt1">&nbsp;</div><div class="line number125 index124 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp comments">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return 0;&nbsp;&nbsp;&nbsp;&nbsp; </code></div><div class="line number126 index125 alt1">&nbsp;</div><div class="line number127 index126 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp comments">//}</code></div><div class="line number128 index127 alt1">&nbsp;</div><div class="line number129 index128 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">m_parser = av_parser_init(AV_CODEC_ID_CAVS); </code></div><div class="line number130 index129 alt1">&nbsp;</div><div class="line number131 index130 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp keyword bold">if</code><code class="cpp plain">(!m_parser) </code></div><div class="line number132 index131 alt1">&nbsp;</div><div class="line number133 index132 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp keyword bold">return</code> <code class="cpp plain">0; </code></div><div class="line number134 index133 alt1">&nbsp;</div><div class="line number135 index134 alt2"><code class="cpp keyword bold">return</code> <code class="cpp plain">1;</code></div><div class="line number136 index135 alt1">&nbsp;</div><div class="line number137 index136 alt2"><code class="cpp plain">}</code></div><div class="line number138 index137 alt1">&nbsp;</div><div class="line number139 index138 alt2"><code class="cpp comments">//释放</code></div><div class="line number140 index139 alt1">&nbsp;</div><div class="line number141 index140 alt2"><code class="cpp color1 bold">int</code> <code class="cpp plain">Decode_uninit()</code></div><div class="line number142 index141 alt1">&nbsp;</div><div class="line number143 index142 alt2"><code class="cpp plain">{</code></div><div class="line number144 index143 alt1">&nbsp;</div><div class="line number145 index144 alt2"><code class="cpp plain">av_free(m_pFrame);</code></div><div class="line number146 index145 alt1">&nbsp;</div><div class="line number147 index146 alt2"><code class="cpp plain">avcodec_close(m_pCodecContext);</code></div><div class="line number148 index147 alt1">&nbsp;</div><div class="line number149 index148 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">av_free(m_pCodecContext);</code></div><div class="line number150 index149 alt1">&nbsp;</div><div class="line number151 index150 alt2"><code class="cpp keyword bold">return</code> <code class="cpp plain">1;</code></div><div class="line number152 index151 alt1">&nbsp;</div><div class="line number153 index152 alt2"><code class="cpp plain">}</code></div><div class="line number154 index153 alt1">&nbsp;</div><div class="line number155 index154 alt2"><code class="cpp spaces">&nbsp;</code>&nbsp;</div><div class="line number156 index155 alt1">&nbsp;</div><div class="line number157 index156 alt2"><code class="cpp keyword bold">static</code> <code class="cpp color1 bold">int</code> <code class="cpp plain">DecodeFrame(uint8_t *data , </code><code class="cpp color1 bold">int</code> <code class="cpp plain">size,unsigned </code><code class="cpp color1 bold">char</code> <code class="cpp plain">*yuvOutBuffer)</code></div><div class="line number158 index157 alt1">&nbsp;</div><div class="line number159 index158 alt2"><code class="cpp plain">{</code></div><div class="line number160 index159 alt1">&nbsp;</div><div class="line number161 index160 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp color1 bold">int</code> <code class="cpp plain">got_picture=0;</code></div><div class="line number162 index161 alt1">&nbsp;</div><div class="line number163 index162 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp color1 bold">int</code> <code class="cpp plain">iRet;</code></div><div class="line number164 index163 alt1">&nbsp;</div><div class="line number165 index164 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">AVPacket avp;</code></div><div class="line number166 index165 alt1">&nbsp;</div><div class="line number167 index166 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">av_init_packet(&amp;avp);</code></div><div class="line number168 index167 alt1">&nbsp;</div><div class="line number169 index168 alt2">&nbsp;</div><div class="line number170 index169 alt1">&nbsp;</div><div class="line number171 index170 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">avp.data=data;</code></div><div class="line number172 index171 alt1">&nbsp;</div><div class="line number173 index172 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">avp.size=size;</code></div><div class="line number174 index173 alt1">&nbsp;</div><div class="line number175 index174 alt2">&nbsp;</div><div class="line number176 index175 alt1">&nbsp;</div><div class="line number177 index176 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">iRet&nbsp; = avcodec_decode_video2(m_pCodecContext,m_pFrame,&amp;got_picture,&amp;avp);</code></div><div class="line number178 index177 alt1">&nbsp;</div><div class="line number179 index178 alt2">&nbsp;</div><div class="line number180 index179 alt1">&nbsp;</div><div class="line number181 index180 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp keyword bold">if</code><code class="cpp plain">(iRet&gt;=0)</code></div><div class="line number182 index181 alt1">&nbsp;</div><div class="line number183 index182 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">{</code></div><div class="line number184 index183 alt1">&nbsp;</div><div class="line number185 index184 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp keyword bold">if</code><code class="cpp plain">(got_picture)</code></div><div class="line number186 index185 alt1">&nbsp;</div><div class="line number187 index186 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">{</code></div><div class="line number188 index187 alt1">&nbsp;</div><div class="line number189 index188 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp color1 bold">int</code> <code class="cpp plain">i;</code></div><div class="line number190 index189 alt1">&nbsp;</div><div class="line number191 index190 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp keyword bold">for</code><code class="cpp plain">( i=0; i&lt;m_pCodecContext-&gt;height; i++)</code></div><div class="line number192 index191 alt1">&nbsp;</div><div class="line number193 index192 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp functions bold">fwrite</code><code class="cpp plain">(m_pFrame-&gt;data[0] + i * m_pFrame-&gt;linesize[0], 1, m_pCodecContext-&gt;width, fp);</code></div><div class="line number194 index193 alt1">&nbsp;</div><div class="line number195 index194 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp keyword bold">for</code><code class="cpp plain">( i=0; i&lt;m_pCodecContext-&gt;height/2; i++)</code></div><div class="line number196 index195 alt1">&nbsp;</div><div class="line number197 index196 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp functions bold">fwrite</code><code class="cpp plain">(m_pFrame-&gt;data[1] + i * m_pFrame-&gt;linesize[1], 1, m_pCodecContext-&gt;width/2, fp);</code></div><div class="line number198 index197 alt1">&nbsp;</div><div class="line number199 index198 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp keyword bold">for</code><code class="cpp plain">( i=0; i&lt;m_pCodecContext-&gt;height/2; i++)</code></div><div class="line number200 index199 alt1">&nbsp;</div><div class="line number201 index200 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp functions bold">fwrite</code><code class="cpp plain">(m_pFrame-&gt;data[2] + i * m_pFrame-&gt;linesize[2], 1, m_pCodecContext-&gt;width/2, fp);</code></div><div class="line number202 index201 alt1">&nbsp;</div><div class="line number203 index202 alt2">&nbsp;</div><div class="line number204 index203 alt1">&nbsp;</div><div class="line number205 index204 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">}</code></div><div class="line number206 index205 alt1">&nbsp;</div><div class="line number207 index206 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">}</code></div><div class="line number208 index207 alt1">&nbsp;</div><div class="line number209 index208 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code>&nbsp;</div><div class="line number210 index209 alt1">&nbsp;</div><div class="line number211 index210 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp keyword bold">return</code> <code class="cpp plain">got_picture;</code></div><div class="line number212 index211 alt1">&nbsp;</div><div class="line number213 index212 alt2"><code class="cpp plain">}</code></div><div class="line number214 index213 alt1">&nbsp;</div><div class="line number215 index214 alt2"><code class="cpp comments">//调用入口函数</code></div><div class="line number216 index215 alt1">&nbsp;</div><div class="line number217 index216 alt2"><code class="cpp keyword bold">void</code> <code class="cpp plain">DecodeVideo(uint8_t * pInBuffer, </code><code class="cpp color1 bold">int</code> <code class="cpp plain">size,unsigned </code><code class="cpp color1 bold">char</code> <code class="cpp plain">*yuvOutBuffer)</code></div><div class="line number218 index217 alt1">&nbsp;</div><div class="line number219 index218 alt2"><code class="cpp plain">{</code></div><div class="line number220 index219 alt1">&nbsp;</div><div class="line number221 index220 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp color1 bold">int</code> <code class="cpp plain">pos=0;</code></div><div class="line number222 index221 alt1">&nbsp;</div><div class="line number223 index222 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">int64_t pts=AV_NOPTS_VALUE;</code></div><div class="line number224 index223 alt1">&nbsp;</div><div class="line number225 index224 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">int64_t dts=AV_NOPTS_VALUE;</code></div><div class="line number226 index225 alt1">&nbsp;</div><div class="line number227 index226 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp keyword bold">do</code></div><div class="line number228 index227 alt1">&nbsp;</div><div class="line number229 index228 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">{</code></div><div class="line number230 index229 alt1">&nbsp;</div><div class="line number231 index230 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">uint8_t *pout;</code></div><div class="line number232 index231 alt1">&nbsp;</div><div class="line number233 index232 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp color1 bold">int</code> <code class="cpp plain">pout_len;</code></div><div class="line number234 index233 alt1">&nbsp;</div><div class="line number235 index234 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp color1 bold">int</code> <code class="cpp plain">len= av_parser_parse2(m_parser,m_pCodecContext,&amp;pout,&amp;pout_len, pInBuffer+pos,size-pos,pts,dts,AV_NOPTS_VALUE);</code></div><div class="line number236 index235 alt1">&nbsp;</div><div class="line number237 index236 alt2">&nbsp;</div><div class="line number238 index237 alt1">&nbsp;</div><div class="line number239 index238 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">pos +=len;</code></div><div class="line number240 index239 alt1">&nbsp;</div><div class="line number241 index240 alt2">&nbsp;</div><div class="line number242 index241 alt1">&nbsp;</div><div class="line number243 index242 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp keyword bold">if</code><code class="cpp plain">(pout_len &gt;0 )</code></div><div class="line number244 index243 alt1">&nbsp;</div><div class="line number245 index244 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">{</code></div><div class="line number246 index245 alt1">&nbsp;</div><div class="line number247 index246 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">DecodeFrame(pout,pout_len,yuvOutBuffer);</code></div><div class="line number248 index247 alt1">&nbsp;</div><div class="line number249 index248 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">}</code></div><div class="line number250 index249 alt1">&nbsp;</div><div class="line number251 index250 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">} </code><code class="cpp keyword bold">while</code> <code class="cpp plain">(pos&lt;size);</code></div><div class="line number252 index251 alt1">&nbsp;</div><div class="line number253 index252 alt2">&nbsp;</div><div class="line number254 index253 alt1">&nbsp;</div><div class="line number255 index254 alt2">&nbsp;</div><div class="line number256 index255 alt1">&nbsp;</div><div class="line number257 index256 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp keyword bold">if</code><code class="cpp plain">(size&lt;=0)</code></div><div class="line number258 index257 alt1">&nbsp;</div><div class="line number259 index258 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">{</code></div><div class="line number260 index259 alt1">&nbsp;</div><div class="line number261 index260 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp keyword bold">while</code><code class="cpp plain">(DecodeFrame(NULL,0,yuvOutBuffer));</code></div><div class="line number262 index261 alt1">&nbsp;</div><div class="line number263 index262 alt2">&nbsp;</div><div class="line number264 index263 alt1">&nbsp;</div><div class="line number265 index264 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">}</code></div><div class="line number266 index265 alt1">&nbsp;</div><div class="line number267 index266 alt2">&nbsp;</div><div class="line number268 index267 alt1">&nbsp;</div><div class="line number269 index268 alt2"><code class="cpp plain">}</code></div><div class="line number270 index269 alt1">&nbsp;</div><div class="line number271 index270 alt2">&nbsp;</div><div class="line number272 index271 alt1">&nbsp;</div><div class="line number273 index272 alt2">&nbsp;</div><div class="line number274 index273 alt1">&nbsp;</div><div class="line number275 index274 alt2"><code class="cpp color1 bold">int</code> <code class="cpp plain">main(</code><code class="cpp color1 bold">int</code> <code class="cpp plain">argc, </code><code class="cpp color1 bold">char</code> <code class="cpp plain">**argv)</code></div><div class="line number276 index275 alt1">&nbsp;</div><div class="line number277 index276 alt2"><code class="cpp plain">{</code></div><div class="line number278 index277 alt1">&nbsp;</div><div class="line number279 index278 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp keyword bold">const</code> <code class="cpp color1 bold">char</code> <code class="cpp plain">*output_type;</code></div><div class="line number280 index279 alt1">&nbsp;</div><div class="line number281 index280 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp color1 bold">FILE</code> <code class="cpp plain">*f;</code></div><div class="line number282 index281 alt1">&nbsp;</div><div class="line number283 index282 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">f = </code><code class="cpp functions bold">fopen</code><code class="cpp plain">(</code><code class="cpp string">"test.cavs"</code><code class="cpp plain">, </code><code class="cpp string">"rb"</code><code class="cpp plain">);</code></div><div class="line number284 index283 alt1">&nbsp;</div><div class="line number285 index284 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp keyword bold">if</code> <code class="cpp plain">(!f) {</code></div><div class="line number286 index285 alt1">&nbsp;</div><div class="line number287 index286 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp functions bold">fprintf</code><code class="cpp plain">(stderr, </code><code class="cpp string">"Could not open %s\n"</code><code class="cpp plain">, </code><code class="cpp string">"test.264"</code><code class="cpp plain">);</code></div><div class="line number288 index287 alt1">&nbsp;</div><div class="line number289 index288 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp functions bold">exit</code><code class="cpp plain">(1);</code></div><div class="line number290 index289 alt1">&nbsp;</div><div class="line number291 index290 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">}</code></div><div class="line number292 index291 alt1">&nbsp;</div><div class="line number293 index292 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">fp=</code><code class="cpp functions bold">fopen</code><code class="cpp plain">(</code><code class="cpp string">"out.yuv"</code><code class="cpp plain">,</code><code class="cpp string">"wb"</code><code class="cpp plain">);</code></div><div class="line number294 index293 alt1">&nbsp;</div><div class="line number295 index294 alt2">&nbsp;</div><div class="line number296 index295 alt1">&nbsp;</div><div class="line number297 index296 alt2">&nbsp;</div><div class="line number298 index297 alt1">&nbsp;</div><div class="line number299 index298 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">Decode_init(704,480);</code></div><div class="line number300 index299 alt1">&nbsp;</div><div class="line number301 index300 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">{</code></div><div class="line number302 index301 alt1">&nbsp;</div><div class="line number303 index302 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">uint8_t inbuf[INBUF_SIZE + FF_INPUT_BUFFER_PADDING_SIZE];</code></div><div class="line number304 index303 alt1">&nbsp;</div><div class="line number305 index304 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code>&nbsp;</div><div class="line number306 index305 alt1">&nbsp;</div><div class="line number307 index306 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp comments">/* set end of buffer to 0 (this ensures that no overreading happens for damaged mpeg streams) */</code></div><div class="line number308 index307 alt1">&nbsp;</div><div class="line number309 index308 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp functions bold">memset</code><code class="cpp plain">(inbuf + INBUF_SIZE, 0, FF_INPUT_BUFFER_PADDING_SIZE);</code></div><div class="line number310 index309 alt1">&nbsp;</div><div class="line number311 index310 alt2">&nbsp;</div><div class="line number312 index311 alt1">&nbsp;</div><div class="line number313 index312 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp keyword bold">for</code><code class="cpp plain">(;;) {</code></div><div class="line number314 index313 alt1">&nbsp;</div><div class="line number315 index314 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp color1 bold">int</code> <code class="cpp plain">size = </code><code class="cpp functions bold">fread</code><code class="cpp plain">(inbuf, 1, INBUF_SIZE, f);</code></div><div class="line number316 index315 alt1">&nbsp;</div><div class="line number317 index316 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp keyword bold">if</code> <code class="cpp plain">(size== 0)</code></div><div class="line number318 index317 alt1">&nbsp;</div><div class="line number319 index318 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp keyword bold">break</code><code class="cpp plain">;</code></div><div class="line number320 index319 alt1">&nbsp;</div><div class="line number321 index320 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">DecodeVideo(inbuf,size,NULL);</code></div><div class="line number322 index321 alt1">&nbsp;</div><div class="line number323 index322 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">}</code></div><div class="line number324 index323 alt1">&nbsp;</div><div class="line number325 index324 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">}</code></div><div class="line number326 index325 alt1">&nbsp;</div><div class="line number327 index326 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp functions bold">fclose</code><code class="cpp plain">(f);</code></div><div class="line number328 index327 alt1">&nbsp;</div><div class="line number329 index328 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp functions bold">fclose</code><code class="cpp plain">(fp);</code></div><div class="line number330 index329 alt1">&nbsp;</div><div class="line number331 index330 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">Decode_uninit();</code></div><div class="line number332 index331 alt1">&nbsp;</div><div class="line number333 index332 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp keyword bold">return</code> <code class="cpp plain">0;</code></div><div class="line number334 index333 alt1">&nbsp;</div><div class="line number335 index334 alt2"><code class="cpp plain">}</code></div></div></td></tr></tbody></table></div></div> 
+  </div> 
+  <p>　　</p> 
+  <p>&nbsp;</p>
+
+                <p><a href="http://www.it610.com/article/1916561.htm" title="ffmpeg对avs编解码的支持">ffmpeg对avs编解码的支持</a></p>
+            </div>
+            <div class="pagebar"></div>
+
+             <!-- 评分开始 -->
+             <div class="score">
+<!-- 评分页面 -->
+<div>
+    <!-- 系统默认的2号分组是星级评分 -->
+  <!-- 平均评分有二级缓存，评分后不会立即显示新的平均评分 -->
+  <!-- 其他 -->
+  <ul>
+      <li style="float: left; cursor: pointer;" onclick="Cms.score('',1916561,1);">
+         <p> <span id="score-item-1">0</span>票</p>
+         <p><img src="m1.gif" alt="开心"></p>
+         <p>开心</p>
+      </li>
+      <li style="float: left; cursor: pointer;" onclick="Cms.score('',1916561,2);">
+         <p> <span id="score-item-2">0</span>票</p>
+         <p><img src="m2.gif" alt="板砖"></p>
+         <p>板砖</p>
+      </li>
+      <li style="float: left; cursor: pointer;" onclick="Cms.score('',1916561,3);">
+         <p> <span id="score-item-3">0</span>票</p>
+         <p><img src="m3.gif" alt="感动"></p>
+         <p>感动</p>
+      </li>
+      <li style="float: left; cursor: pointer;" onclick="Cms.score('',1916561,4);">
+         <p> <span id="score-item-4">0</span>票</p>
+         <p><img src="m4.gif" alt="有用"></p>
+         <p>有用</p>
+      </li>
+      <li style="float: left; cursor: pointer;" onclick="Cms.score('',1916561,5);">
+         <p> <span id="score-item-5">0</span>票</p>
+         <p><img src="m5.gif" alt="疑问"></p>
+         <p>疑问</p>
+      </li>
+      <li style="float: left; cursor: pointer;" onclick="Cms.score('',1916561,6);">
+         <p> <span id="score-item-6">0</span>票</p>
+         <p><img src="m6.gif" alt="难过"></p>
+         <p>难过</p>
+      </li>
+      <li style="float: left; cursor: pointer;" onclick="Cms.score('',1916561,7);">
+         <p> <span id="score-item-7">0</span>票</p>
+         <p><img src="m7.gif" alt="无聊"></p>
+         <p>无聊</p>
+      </li>
+      <li style="float: left; cursor: pointer;" onclick="Cms.score('',1916561,8);">
+         <p> <span id="score-item-8">0</span>票</p>
+         <p><img src="m8.gif" alt="震惊"></p>
+         <p>震惊</p>
+      </li>
+   </ul>   
+   
+</div>
+
+             </div>
+             <!-- 评分结束 -->
+            <div class="other">
+            <div class="ding" onclick="Cms.up('',1916561,0);"><span id="ups">0</span>
+            <span id="ups"></span>
+            <p>顶</p>
+            </div>
+            <div class="cai" onclick="Cms.down('',1916561,0);"><span id="downs">0</span>
+            <span id="downs"></span>
+            <p>踩</p>
+            </div>
+            </div>
+        </div>
+        <div class="clear-10"></div>
+        <div class="hundred100">
+            <div class="rim06">
+                <!--网友评论_Begin-->
+                <!--网友评论_End-->
+            </div>
+        </div>
+        <div class="clear-10"></div>
+        <!-- ad开始 -->
+<div class="">
+    
+    <div id="BAIDU_SSP__wrapper_u2446019_0"><iframe id="iframeu2446019_0" src="index_4.html" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" style="border: 0px none; vertical-align: bottom; margin: 0px; width: 650px; height: 250px;" allowtransparency="true" width="650" height="250" align="center,center" frameborder="0"></iframe></div>
+</div>
+        <!-- ad结束 -->        
+    </div>
+    <!-- 左栏_end -->
+<div class="w300">
+   	<div class="clear-10"></div>
+   	<!-- 推荐文章_begin -->
+   	<div class="rim04">
+       	<div class="jrhtCon">
+           	<div class="search_001_head">推荐文章</div>
+            <div class="clear"></div>
+           	<div class="search_001">
+                                      <div class="search_001_c0">
+                     <div class="search_001_title">
+                     <span class="search_001_redbg">2</span>
+                     <a href="http://www.it610.com/article/1049387.htm" title="编解码标准H264 与 AVS 变换矩阵比较" target="_top">编解码标准H264 与 AVS 变换矩阵</a>
+                     </div>                    
+                   </div>
+                   <div class="search_001_c0">
+                     <div class="search_001_title">
+                     <span class="search_001_redbg">3</span>
+                     <a href="http://www.it610.com/article/1226308.htm" title="[转帖]AVS音视频编解码技术了解" target="_top">[转帖]AVS音视频编解码技术了解</a>
+                     </div>                    
+                   </div>
+                   <div class="search_001_c0">
+                     <div class="search_001_title">
+                     <span class="search_001_redbg">4</span>
+                     <a href="http://www.it610.com/article/2147117.htm" title="ffmpeg对amr格式编解码" target="_top">ffmpeg对amr格式编解码</a>
+                     </div>                    
+                   </div>
+                   <div class="search_001_c0">
+                     <div class="search_001_title">
+                     <span class="search_001_redbg">5</span>
+                     <a href="http://www.it610.com/article/201985.htm" title="ffmpeg支持的协议" target="_top">ffmpeg支持的协议</a>
+                     </div>                    
+                   </div>
+                   <div class="search_001_c0">
+                     <div class="search_001_title">
+                     <span class="search_001_redbg">6</span>
+                     <a href="http://www.it610.com/article/211750.htm" title="在linux上安装了编解码工具ffmpeg" target="_top">在linux上安装了编解码工具ffmpe</a>
+                     </div>                    
+                   </div>
+                   <div class="search_001_c0">
+                     <div class="search_001_title">
+                     <span class="search_001_redbg">7</span>
+                     <a href="http://www.it610.com/article/1210717.htm" title="FFmpeg音视频编解码实践总结" target="_top">FFmpeg音视频编解码实践总结</a>
+                     </div>                    
+                   </div>
+                   <div class="search_001_c0">
+                     <div class="search_001_title">
+                     <span class="search_001_redbg">8</span>
+                     <a href="http://www.it610.com/article/1119505.htm" title="基于ffmpeg的简单音视频编解码的例子" target="_top">基于ffmpeg的简单音视频编解码的</a>
+                     </div>                    
+                   </div>
+                   <div class="search_001_c0">
+                     <div class="search_001_title">
+                     <span class="search_001_redbg">9</span>
+                     <a href="http://www.it610.com/article/1931985.htm" title="FFmpeg音视频编解码实践总结" target="_top">FFmpeg音视频编解码实践总结</a>
+                     </div>                    
+                   </div>
+                   <div class="search_001_c0">
+                     <div class="search_001_title">
+                     <span class="search_001_redbg">10</span>
+                     <a href="http://www.it610.com/article/1328965.htm" title="FFmpeg音视频编解码实践总结" target="_top">FFmpeg音视频编解码实践总结</a>
+                     </div>                    
+                   </div>
+                   <div class="search_001_c0">
+                     <div class="search_001_title">
+                     <span class="search_001_redbg">11</span>
+                     <a href="http://www.it610.com/article/3031571.htm" title="FFmpeg音视频编解码实践总结" target="_top">FFmpeg音视频编解码实践总结</a>
+                     </div>                    
+                   </div>
+                   <div class="search_001_c0">
+                     <div class="search_001_title">
+                     <span class="search_001_redbg">12</span>
+                     <a href="http://www.it610.com/article/1031000.htm" title="【ffmpeg for wince】音视频编解码多平台移植（for window/wince）)ffmpeg" target="_top">【ffmpeg for wince】音视频编解</a>
+                     </div>                    
+                   </div>
+                   <div class="search_001_c0">
+                     <div class="search_001_title">
+                     <span class="search_001_redbg">13</span>
+                     <a href="http://www.it610.com/article/208153.htm" title="FFMPEG列出DirectShow支持的设备" target="_top">FFMPEG列出DirectShow支持的设备</a>
+                     </div>                    
+                   </div>
+                   <div class="search_001_c0">
+                     <div class="search_001_title">
+                     <span class="search_001_redbg">14</span>
+                     <a href="http://www.it610.com/article/2167593.htm" title="FFMPEG列出DirectShow支持的设备" target="_top">FFMPEG列出DirectShow支持的设备</a>
+                     </div>                    
+                   </div>
+                   <div class="search_001_c0">
+                     <div class="search_001_title">
+                     <span class="search_001_redbg">15</span>
+                     <a href="http://www.it610.com/article/1761104.htm" title="FFMPEG视音频编解码零基础学习方法" target="_top">FFMPEG视音频编解码零基础学习方</a>
+                     </div>                    
+                   </div>
+                   <div class="search_001_c0">
+                     <div class="search_001_title">
+                     <span class="search_001_redbg">16</span>
+                     <a href="http://www.it610.com/article/1267398.htm" title="FFMPEG视音频编解码零基础学习方法 【荐】" target="_top">FFMPEG视音频编解码零基础学习方</a>
+                     </div>                    
+                   </div>
+                   <div class="search_001_c0">
+                     <div class="search_001_title">
+                     <span class="search_001_redbg">17</span>
+                     <a href="http://www.it610.com/article/1273306.htm" title="[总结]FFMPEG视音频编解码零基础学习方法--转" target="_top">[总结]FFMPEG视音频编解码零基础</a>
+                     </div>                    
+                   </div>
+                   <div class="search_001_c0">
+                     <div class="search_001_title">
+                     <span class="search_001_redbg">18</span>
+                     <a href="http://www.it610.com/article/2167660.htm" title="最简单的基于FFMPEG的封装格式转换器（无编解码）" target="_top">最简单的基于FFMPEG的封装格式转</a>
+                     </div>                    
+                   </div>
+                   <div class="search_001_c0">
+                     <div class="search_001_title">
+                     <span class="search_001_redbg">19</span>
+                     <a href="http://www.it610.com/article/2733007.htm" title="利用FFmpeg编解码库解码h.264压缩数据的demo" target="_top">利用FFmpeg编解码库解码h.264压</a>
+                     </div>                    
+                   </div>
+                   <div class="search_001_c0">
+                     <div class="search_001_title">
+                     <span class="search_001_redbg">20</span>
+                     <a href="http://www.it610.com/article/105059.htm" title="向ffmpeg中添加librtmp库支持" target="_top">向ffmpeg中添加librtmp库支持</a>
+                     </div>                    
+                   </div>
+               </div>
+           </div>
+       </div>
+   	<!-- 推荐文章_end -->
+   	
+    <div class="clear-10"></div>
+    <!-- AD_begin -->
+    <div class="rim04" style="border: 0px solid red;">
+        
+        <div id="BAIDU_SSP__wrapper_u2446001_0"><iframe id="iframeu2446001_0" src="index_5.html" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" style="border: 0px none; vertical-align: bottom; margin: 0px; width: 300px; height: 250px;" allowtransparency="true" width="300" height="250" align="center,center" frameborder="0"></iframe></div>
+    </div>
+    <!-- AD_end -->
+    
+   	<div class="clear-10"></div>
+   	<!-- 推荐文章2_begin -->
+   	<div class="rim04">
+       	<div class="jrhtCon">
+           	<div class="search_002_head">编辑推荐</div>
+            <div class="clear"></div>
+           	<div class="search_002">
+                   <div class="search_002_c0">
+                     <div class="search_002_title">
+                     <span class="search_002_redbg">1</span>
+                     <a href="http://www.it610.com/article/1672509.htm" title="音频视频-编解码工具ffmpeg" target="_top">音频视频-编解码工具ffmpeg</a>
+                     </div>                    
+                     <div class="search_002_c2"> 1.打开http://www.ffmpeg.org/，点击Download 2.进入http://www.ffmpeg.org/download.html，如果是w</div>                    
+                   </div>
+                   <div class="search_002_c0">
+                     <div class="search_002_title">
+                     <span class="search_002_redbg">2</span>
+                     <a href="http://www.it610.com/article/1387210.htm" title="ffmpeg：编解码过程，基本用法" target="_top">ffmpeg：编解码过程，基本用法</a>
+                     </div>                    
+                     <div class="search_002_c2"> 1 术语： 　　什么是影片？其实就是一组（很多张）图片，时间间隔很小的连续展示出来，人们就觉得画</div>                    
+                   </div>
+                   <div class="search_002_c0">
+                     <div class="search_002_title">
+                     <span class="search_002_redbg">3</span>
+                     <a href="http://www.it610.com/article/2308347.htm" title="最简单的基于FFMPEG的封装格式转换器（无编解码）" target="_top">最简单的基于FFMPEG的封装格式转</a>
+                     </div>                    
+                     <div class="search_002_c2"> 本文介绍一个基于FFMPEG的封装格式转换器。所谓的封装格式转换，就是在AVI，FLV，MKV，MP4这些格式</div>                    
+                   </div>
+                   <div class="search_002_c0">
+                     <div class="search_002_title">
+                     <span class="search_002_redbg">4</span>
+                     <a href="http://www.it610.com/article/2270792.htm" title="FFMPEG视音频编解码零基础学习方法" target="_top">FFMPEG视音频编解码零基础学习方</a>
+                     </div>                    
+                     <div class="search_002_c2"> 0. 背景知识 本章主要介绍一下FFMPEG都用在了哪里（在这里仅列几个我所知的，其实远比这个多）。说</div>                    
+                   </div>
+                   <div class="search_002_c0">
+                     <div class="search_002_title">
+                     <span class="search_002_redbg">5</span>
+                     <a href="http://www.it610.com/article/2279897.htm" title="[总结]FFMPEG视音频编解码零基础学习方法" target="_top">[总结]FFMPEG视音频编解码零基础</a>
+                     </div>                    
+                     <div class="search_002_c2"> 在CSDN上的这一段日子，接触到了很多同行业的人，尤其是使用FFMPEG进行视音频编解码的人，有的已经</div>                    
+                   </div>
+                   <div class="search_002_c0">
+                     <div class="search_002_title">
+                     <span class="search_002_redbg">6</span>
+                     <a href="http://www.it610.com/article/2359981.htm" title="Android 音视频编解码系列(1)--ubuntu下ndk编译ffmpeg0.8.1" target="_top">Android 音视频编解码系列(1)--u</a>
+                     </div>                    
+                     <div class="search_002_c2"> 　　ffmpeg最新版本有些问题，比如jni/liblibavcodec/ac3enc_combined.c在最新的版本中已经没有了，</div>                    
+                   </div>
+                   <div class="search_002_c0">
+                     <div class="search_002_title">
+                     <span class="search_002_redbg">7</span>
+                     <a href="http://www.it610.com/article/2598929.htm" title="[总结]FFMPEG视音频编解码零基础学习方法" target="_top">[总结]FFMPEG视音频编解码零基础</a>
+                     </div>                    
+                     <div class="search_002_c2"> 目录(?)[+] 在CSDN上的这一段日子，接触到了很多同行业的人，尤其是使用FFMPEG进行视音频编解码的人</div>                    
+                   </div>
+                   <div class="search_002_c0">
+                     <div class="search_002_title">
+                     <span class="search_002_redbg">8</span>
+                     <a href="http://www.it610.com/article/1341466.htm" title="实战FFmpeg编译支持arm64" target="_top">实战FFmpeg编译支持arm64</a>
+                     </div>                    
+                     <div class="search_002_c2"> App store要求上架的app必须支持arm64.而手中的ffmpeg还不支持arm64, 百度下ffmpeg支持arm64方法,网</div>                    
+                   </div>
+                   <div class="search_002_c0">
+                     <div class="search_002_title">
+                     <span class="search_002_redbg">9</span>
+                     <a href="http://www.it610.com/article/1382007.htm" title="实战FFmpeg－－编译iOS平台使用的FFmpeg库（支持arm64的FFmpeg2.6.2）" target="_top">实战FFmpeg－－编译iOS平台使用</a>
+                     </div>                    
+                     <div class="search_002_c2"> 　　编译环境：Mac OS X 10.10.2 ，Xcode 6.3 iOS SDK 8.3 　　FFmpeg库的下载地址是 http://www.ff</div>                    
+                   </div>
+                   <div class="search_002_c0">
+                     <div class="search_002_title">
+                     <span class="search_002_redbg">10</span>
+                     <a href="http://www.it610.com/article/2308430.htm" title="FFmpeg 2.1 试用（新版支持HEVC，VP9）" target="_top">FFmpeg 2.1 试用（新版支持HEVC</a>
+                     </div>                    
+                     <div class="search_002_c2"> 前两天帮一位老师转码图像的时候，无意间发现新版FFmpeg竟然支持了下一代编码标准HEVC，以及Google</div>                    
+                   </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="clear-10"></div>
+    <!-- ad开始 -->
+<div class="">
+
+<div id="BAIDU_SSP__wrapper_u2505202_0"><iframe id="iframeu2505202_0" src="index_6.html" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" style="border: 0px none; vertical-align: bottom; margin: 0px; width: 300px; height: 250px;" allowtransparency="true" width="300" height="250" align="center,center" frameborder="0"></iframe></div>
+</div>    <!-- ad结束 -->    	
+    
+</div><div class="clear"></div>
+
+<div class="clear-10"></div>
+<div class="footBg">
+    <div class="footBglm">
+    <a target="_top" href="http://www.it610.com/">首页</a> - 
+    <a target="_top" href="http://www.it610.com/about.htm">关于我们</a> - 
+    <a onclick="SetHome(window.location)" href="javascript:void(0)">设为首页</a> - 
+    <a onclick="AddFavorite(window.location,document.title)" href="javascript:void(0)">加入收藏</a> - 
+    <a target="_top" href="http://www.it610.com/search2.htm">站内搜索</a> - 
+    <a target="_top" href="http://www.it610.com/sitemap.xml">Sitemap</a>
+    </div>
+    <div class="clear-10"></div>
+    版权所有 IT知识库 CopyRight © 2009-2015 IT知识库 IT610.com , All Rights Reserved.
+    <a href="http://www.miibeian.gov.cn/" rel="nofollow" target="_top">京ICP备09083238号</a><br>
+          <span id="cnzz_stat_icon_1257016300"><a href="http://www.cnzz.com/stat/website.php?web_id=1257016300" target="_top" title="站长统计"><img src="pic.gif" vspace="0" hspace="0" border="0"></a></span>
+</div></div>  
+
+<ul class="ui-autocomplete ui-menu ui-widget ui-widget-content ui-corner-all" id="ui-id-1" tabindex="0" style="z-index: 1; display: none;"></ul><div id="SL_balloon_obj" style="display: block;"><div id="SL_button" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: none; width: 24px; height: 24px; position: absolute; cursor: pointer; opacity: 1;"></div><div id="SL_shadow_translation_result2" style="display: none; margin-top: 30px; margin-left: 1px; direction: ltr; text-align: left; min-height: 40px;"><div></div></div><div id="SL_shadow_translator" style="display: none;"><div id="SL_providers"><div class="SL_BL_LABLE_ON" title="Google" id="SL_P0">G</div><div class="SL_BL_LABLE_ON" title="Microsoft" id="SL_P1">M</div><div class="SL_BL_LABLE_ON" title="Translator" id="SL_P2">T</div></div><div id="SL_planshet" style="background: rgb(244, 245, 245) url('undefined') repeat scroll 0% 0%;"><div id="SL_arrow_up"></div><div id="SL_TB"><div id="bubblelogo" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 24px; height: 24px; position: absolute;"></div><table id="SL_tables"><tr><td width="10%" align="right"><input id="SLloc" title="鎖定語言" type="checkbox"></td><td width="20%" align="left"><select id="SL_lng_from"><option value="auto">檢測語言</option><option value="sq">阿尔巴尼亚语</option><option value="ar">阿拉伯语</option><option value="az">阿塞拜疆语</option><option value="ga">爱尔兰语</option><option value="et">爱沙尼亚语</option><option value="eu">巴斯克语</option><option value="be">白俄罗斯语</option><option value="bg">保加利亚语</option><option value="is">冰岛语</option><option value="pl">波兰语</option><option value="bs">波斯尼亚语</option><option value="fa">波斯语</option><option value="af">布尔语(南非荷兰语)</option><option value="da">丹麦语</option><option value="de">德语</option><option value="ru">俄语</option><option value="fr">法语</option><option value="tl">菲律宾语</option><option value="fi">芬兰语</option><option value="km">高棉语</option><option value="ka">格鲁吉亚语</option><option value="gu">古吉拉特语</option><option value="kk">哈萨克语</option><option value="ht">海地克里奥尔语</option><option value="ko">韩语</option><option value="ha">豪萨语</option><option value="nl">荷兰语</option><option value="gl">加利西亚语</option><option value="ca">加泰罗尼亚语</option><option value="cs">捷克语</option><option value="kn">卡纳达语</option><option value="hr">克罗地亚语</option><option value="la">拉丁语</option><option value="lv">拉脱维亚语</option><option value="lo">老挝语</option><option value="lt">立陶宛语</option><option value="ro">罗马尼亚语</option><option value="mg">马尔加什语</option><option value="mt">马耳他语</option><option value="mr">马拉地语</option><option value="ml">马拉雅拉姆语</option><option value="ms">马来语</option><option value="mk">马其顿语</option><option value="mi">毛利语</option><option value="mn">蒙古语</option><option value="bn">孟加拉语</option><option value="my">缅甸语</option><option value="hmn">苗语</option><option value="zu">南非祖鲁语</option><option value="ne">尼泊尔语</option><option value="no">挪威语</option><option value="pa">旁遮普语</option><option value="pt">葡萄牙语</option><option value="ny">齐切瓦语</option><option value="ja">日语</option><option value="sv">瑞典语</option><option value="sr">塞尔维亚语</option><option value="st">塞索托语</option><option value="si">僧伽罗语</option><option value="eo">世界语</option><option value="sk">斯洛伐克语</option><option value="sl">斯洛文尼亚语</option><option value="sw">斯瓦希里语</option><option value="ceb">宿务语</option><option value="so">索马里语</option><option value="tg">塔吉克语</option><option value="te">泰卢固语</option><option value="ta">泰米尔语</option><option value="th">泰语</option><option value="tr">土耳其语</option><option value="cy">威尔士语</option><option value="ur">乌尔都语</option><option value="uk">乌克兰语</option><option value="uz">乌兹别克语</option><option value="iw">希伯来语</option><option value="el">希腊语</option><option value="es">西班牙语</option><option value="hu">匈牙利语</option><option value="hy">亚美尼亚语</option><option value="ig">伊博语</option><option value="it">意大利语</option><option value="yi">意第绪语</option><option value="hi">印地语</option><option value="su">印尼巽他语</option><option value="id">印尼语</option><option value="jw">印尼爪哇语</option><option value="en">英语</option><option value="yo">约鲁巴语</option><option value="vi">越南语</option><option value="zh-CN">中文简体</option><option value="zh-TW">中文繁体</option></select></td><td width="5%" align="center"><div id="SL_switch_b" title="切換語言" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 10px; height: 10px; cursor: pointer;" align="center"></div></td><td width="20%" align="left"><select id="SL_lng_to"><option value="sq">阿尔巴尼亚语</option><option value="ar">阿拉伯语</option><option value="az">阿塞拜疆语</option><option value="ga">爱尔兰语</option><option value="et">爱沙尼亚语</option><option value="eu">巴斯克语</option><option value="be">白俄罗斯语</option><option value="bg">保加利亚语</option><option value="is">冰岛语</option><option value="pl">波兰语</option><option value="bs">波斯尼亚语</option><option value="fa">波斯语</option><option value="af">布尔语(南非荷兰语)</option><option value="da">丹麦语</option><option value="de">德语</option><option value="ru">俄语</option><option value="fr">法语</option><option value="tl">菲律宾语</option><option value="fi">芬兰语</option><option value="km">高棉语</option><option value="ka">格鲁吉亚语</option><option value="gu">古吉拉特语</option><option value="kk">哈萨克语</option><option value="ht">海地克里奥尔语</option><option value="ko">韩语</option><option value="ha">豪萨语</option><option value="nl">荷兰语</option><option value="gl">加利西亚语</option><option value="ca">加泰罗尼亚语</option><option value="cs">捷克语</option><option value="kn">卡纳达语</option><option value="hr">克罗地亚语</option><option value="la">拉丁语</option><option value="lv">拉脱维亚语</option><option value="lo">老挝语</option><option value="lt">立陶宛语</option><option value="ro">罗马尼亚语</option><option value="mg">马尔加什语</option><option value="mt">马耳他语</option><option value="mr">马拉地语</option><option value="ml">马拉雅拉姆语</option><option value="ms">马来语</option><option value="mk">马其顿语</option><option value="mi">毛利语</option><option value="mn">蒙古语</option><option value="bn">孟加拉语</option><option value="my">缅甸语</option><option value="hmn">苗语</option><option value="zu">南非祖鲁语</option><option value="ne">尼泊尔语</option><option value="no">挪威语</option><option value="pa">旁遮普语</option><option value="pt">葡萄牙语</option><option value="ny">齐切瓦语</option><option value="ja">日语</option><option value="sv">瑞典语</option><option value="sr">塞尔维亚语</option><option value="st">塞索托语</option><option value="si">僧伽罗语</option><option value="eo">世界语</option><option value="sk">斯洛伐克语</option><option value="sl">斯洛文尼亚语</option><option value="sw">斯瓦希里语</option><option value="ceb">宿务语</option><option value="so">索马里语</option><option value="tg">塔吉克语</option><option value="te">泰卢固语</option><option value="ta">泰米尔语</option><option value="th">泰语</option><option value="tr">土耳其语</option><option value="cy">威尔士语</option><option value="ur">乌尔都语</option><option value="uk">乌克兰语</option><option value="uz">乌兹别克语</option><option value="iw">希伯来语</option><option value="el">希腊语</option><option value="es">西班牙语</option><option value="hu">匈牙利语</option><option value="hy">亚美尼亚语</option><option value="ig">伊博语</option><option value="it">意大利语</option><option value="yi">意第绪语</option><option value="hi">印地语</option><option value="su">印尼巽他语</option><option value="id">印尼语</option><option value="jw">印尼爪哇语</option><option value="en">英语</option><option value="yo">约鲁巴语</option><option value="vi">越南语</option><option value="zh-CN">中文简体</option><option value="zh-TW">中文繁体</option></select></td><td width="5%" align="center"> </td><td width="6%" align="center"><div id="SL_TTS_voice" title="聆聽" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="6%" align="center"><div id="SL_copy" title="複製譯文" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="6%" align="center"><div id="SL_bbl_font_patch" title="此功能在字典中禁用"></div><div id="SL_bbl_font" title="字體大小" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="6%" align="center"><div id="SL_TH" title="翻譯歷史" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="10%"></td><td width="6%" align="right"><div id="SL_pin" title="固定彈出窗口" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 16px; height: 16px; cursor: pointer;"></div></td></tr></table></div><div id="SL_alert_bbl" style="display: none;"><div id="SLHKclose"></div><div id="SL_alert_cont"></div></div></div><div id="SL_shadow_translation_result" style="background: rgb(255, 255, 255) url('undefined') repeat scroll 0% 0%; visibility: visible; min-height: 40px;"><div></div></div><div id="SL_loading" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; position: absolute; width: 35px; margin-left: 180px; margin-top: -40px; height: 35px;"></div><div id="SL_player2" style="display: none; height: 0px; width: 0px;"></div><div id="SL_alert100" style="display: none;">語言功能限200個字符</div><div id="SL_Balloon_options" style="background: rgb(255, 255, 255) none repeat scroll 0% 0%;"><div id="SL_arrow_down"></div><table width="100%"><tr><td width="18%" height="16" align="left"><div id="SL_bbl_donate" title="進行一點捐款" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="68%" align="center"><a href="#" id="OPlnk" title="顯示選項">選項</a> : <a href="#" id="HISTlnk" title="翻譯歷史">歷史</a> : <a href="http://about.imtranslator.net/tutorials/presentations/imtranslator-translator-for-firefox/popup-bubble-application/" target="_top" id="HELPlnk" title="幫助">幫助</a> : <a href="#" id="FBlnk" title="反饋">反饋</a></td><td width="15%" align="right"><a id="SL_Balloon_Close" href="#" title="關閉">關閉</a></td></tr></table></div></div></div><iframe id="bdSharePopup_selectshare1500529674259bg" class="bdselect_share_bg" style="display: none;" src="index_7.html" frameborder="0"></iframe><div id="bdSharePopup_selectshare1500529674259box" style="display: none;" share-type="selectshare" class="bdselect_share_box" data-bd-bind="1500529674258"><div class="selectshare-mod-triangle"><div class="triangle-border"></div><div class="triangle-inset"></div></div><div class="bdselect_share_head"><span>分享到</span><a href="http://www.baidu.com/s?wd=&amp;tn=SE_hldp08010_vurs2xrp" class="bdselect_share_dialog_search" target="_top"><i class="bdselect_share_dialog_search_i"></i><span class="bdselect_share_dialog_search_span">百度一下</span></a><a class="bdselect_share_dialog_close"></a></div><div class="bdselect_share_content"><ul class="bdselect_share_list bdshare-button-style0-16"><div class="bdselect_share_partners"></div><a href="#" class="bds_more" data-cmd="more"></a></ul></div></div><iframe id="openjsframe_9b517" src="index_8.html" style="display: none;"></iframe></body>
+</html>

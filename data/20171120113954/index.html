@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    <link rel="canonical" href="http://blog.csdn.net/misiter/article/details/7070109"> 
+    
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    <meta name="description" content="3:2/2:2 Pull down模式基于逐行扫描技术上进行的，针对以电影胶片为最初拍摄素材媒介的NTSC视频软件的一种视频信号再生技术。大部分的DVD电影和其他以视频信号媒体记载的电影的播放都是先经过胶片影像到视频信号的转换。原来的使用电影胶片拍摄的过程中拍摄速度是24帧/秒。在电影院播放时按每格放2次的原理实现48帧/秒的速率，这就是实现2:2Pull Down对应模式。另外，由于液晶电视常规">
+    <meta name="keywords" content="avi,算法">
+    <meta http-equiv="Cache-Control" content="no-siteapp"><link rel="alternate" media="handheld" href="http://blog.csdn.net/misiter/article/details/7070109#">
+    <meta name="shenma-site-verification" content="5a59773ab8077d4a62bf469ab966a63b_1497598848">
+    
+    
+    <title>deinterlace 隔行  progressive 逐行  3:2pulldown - CSDN博客</title>
+    <link href="favicon.ico" rel="SHORTCUT ICON">
+
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body><div id="BAIDU_DUP_fp_wrapper" style="position: absolute; left: -1px; bottom: -1px; z-index: 0; width: 0px; height: 0px; overflow: hidden; visibility: hidden; display: none;"><iframe id="BAIDU_DUP_fp_iframe" src="index_1.html" style="width: 0px; height: 0px; visibility: hidden; display: none;"></iframe></div>
+
+<div class="container clearfix">
+  <main>
+    <article>
+        <h1 class="csdn_top">deinterlace 隔行  progressive 逐行  3:2pulldown</h1>
+        <div class="article_bar clearfix">
+            <div class="artical_tag">
+                <span class="original">
+                转载                </span>
+                <span class="time">2011年12月14日 13:33:47</span>
+            </div>
+
+            <ul class="article_tags clearfix csdn-tracking-statistics" data-mod="popu_377">
+                <li class="tit">标签：</li>
+
+<!--          [startarticletags]-->
+                                                            <li><a href="http://so.csdn.net/so/search/s.do?q=avi&amp;t=blog" target="_top">avi</a> <span>/</span></li>
+                                            <li><a href="http://so.csdn.net/so/search/s.do?q=%E7%AE%97%E6%B3%95&amp;t=blog" target="_top">算法</a> <span>/</span></li>
+                                            <li><a href="http://so.csdn.net/so/search/s.do?q=equals&amp;t=blog" target="_top">equals</a> <span>/</span></li>
+                                            <li><a href="http://so.csdn.net/so/search/s.do?q=c&amp;t=blog" target="_top">c</a> <span>/</span></li>
+                                            <li><a href="http://so.csdn.net/so/search/s.do?q=%E4%BC%98%E5%8C%96&amp;t=blog" target="_top">优化</a> <span>/</span></li>
+                                            <li><a href="http://so.csdn.net/so/search/s.do?q=blend&amp;t=blog" target="_top">blend</a> <span>/</span></li>
+                                    <!--          [endarticletags]-->
+            </ul>
+            <ul class="right_bar">
+                <li><button class="btn-noborder"><i class="icon iconfont icon-read"></i><span class="txt">4564</span></button></li>
+<!--                <li><button class="btn-noborder but-comment-topicon"><i class="icon iconfont icon-pinglun"></i><span class="txt">--><!--</span></button></li>-->
+<!--                <li><button class="btn-noborder btn-like"><i  class="icon iconfont icon-xihuan-"></i><span class="txt">--><!--</span></button></li>-->
+                <li class="edit">
+                    <a class="btn-noborder" href="http://blog.csdn.net/misiter/article/details/7070109">
+                        <i class="icon iconfont icon-bianji"></i><span class="txt">编辑</span>
+                    </a>
+                </li>
+                <li class="del">
+                    <a class="btn-noborder" onclick="javascript:deleteArticle(fileName);return false;">
+                        <i class="icon iconfont icon-shanchu"></i><span class="txt">删除</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div id="article_content" class="article_content csdn-tracking-statistics" data-mod="popu_519" data-dsm="post">
+                        
+<p><span style="font-size: 18px;">3:2/2:2 Pull down模式基于逐行扫描技术上进行的，针对以电影胶片为最初拍摄素材媒介的NTSC视频软件的一种视频信号再生技术。大部分的DVD电影和其他以视频信号媒体记载的电影的播放都是先经过胶片影像到视频信号的转换。原来的使用电影胶片拍摄的过程中拍摄速度是24帧/秒。在电影院播放时按每格放2次的原理实现48帧/秒的速率，这就是实现2:2Pull Down对应模式。另外，由于液晶电视常规的屏幕刷新频率为60Hz，播放DVD的时候按照第一格分两场，第二格分三场，第三格分两场，第四格分三场的顺序转换成60场（30帧）/秒的长度，但由于采用的是隔行扫描技术，这60场都是不完整的262.5线的图像，而且每第2、3个帧都会出现图像重叠混淆的情况，使图像的细节模糊甚至丢失。并且最终的图像实际清晰度只有262.5线。在采用3:2
+ Pull Down逐行扫描技术时，变换后产生的每一个场都是完整的带有483扫描线的图像，而且每播放的是60场与图像帧一样的完整图像，没有任何细节被丢失或模糊化，全程的图像清晰度均为483线。&nbsp;</span></p>
+<p><span style="font-size: 18px;">模拟电视时代的3:2/2:2 Pulldown技术</span></p>
+<p>　　要想弄清楚24P的问题，我们还要从模拟电视时代说起。电影每秒钟由24帧图像组成，在放映的时候，经过技术处理，一般显示为48Hz或72Hz，因此我们能够看到动作连贯的画面。</p>
+<p>　　在模拟电视时代，电视里看到的电影则有所不同。在美国、日本以及我国的台湾省，电视是<a href="http://www.pconline.com.cn/digital/family/handbook/mcjs/0707/1049527.html" target="_top">NTSC制式</a>的，每秒钟扫描频率是60Hz，而在我国，电视节目是<a href="http://www.pconline.com.cn/digital/family/handbook/mcjs/0707/1049523.html" target="_top">PAL制式</a>的，每秒钟的扫描频率为50Hz。这两种标准，都是隔行扫描的。电影要在电视上播出，需经过一番比较复杂的技术处理。</p>
+<p>　　以NTSC节目为例，电影的24幅图像，要分配成NTSC电视节目的60幅图像，电影的第一幅图像，分配到电视节目的1-3幅图像中，电影的第二幅图像，分为为电视节目的4、5幅图像，依此类推，电影的图像，按3幅-2幅-3幅-2幅的顺序交替分配到电视节目的60幅图像当中。这就是我们常说的3:2 Pulldown技术。</p>
+<p align="center"><span style="font-size: 18px;"><img alt="" src="0_1324277990o3jn.gif"></span></p>
+<p align="center">&nbsp;</p>
+<p>　　对于PAL节目，处理比较简单，电影的每幅图像，在电视节目播出时，重复显示一次，24幅电影图像，在电视机上以每秒钟48幅图像显示出来，这种技术就成为2:2 Pulldown技术。由于PAL电视节目扫描频率为50Hz，因此PAL制电视播放的电影，播放速度要比真正电影胶片快4%，伴音的音高略高，但是普通观众难以察觉。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; DVD时代的逐行扫描技术</p>
+<p>　　上面提及的3:2/2:2 Pulldown技术，其实我们忽视了一个环节，电影转换成电视节目后，还有一个处理为隔行信号的问题，也就是说，模拟电视时代，我们在电视中看到的电影节目，都是经过处理过的隔行扫描信号。进入DVD时代，这种情况发生了改变，<a href="http://www.pconline.com.cn/digital/family/handbook/mcjs/0707/1049086.html" target="_top">逐行扫描技术</a>出现了。</p>
+<p align="center"><img alt="" src="0_1324278031zaqo.gif"></p>
+<p align="center">DVD时代出现逐行扫描</p>
+<p>　　DVD属于10年前的技术，从DVD本身信号的记录来看，属于数字技术，但是从DVD和电视机的连接看，最初都是AV复合、S端子或色差连接，仍属于模拟技术范畴。带有HDMI接口的DVD，也是近年来才出现的，而且不算很普及，只有少数高档DVD机才具有。</p>
+<p align="center"><img alt="" src="0_1324278055eewu.gif"><br>
+支持逐行扫描带HDMI接口的DVD机</p>
+<p>　　随着逐行扫描DVD的出现，也出现了逐行扫描电视机，这种电视机在接收逐行扫描的电视信号时，以NTSC信号为例，先要将60Hz的隔行电视信号，还原为电影原始的24幅完整图像，再按3:2 Pulldown的方法，分配成60幅逐行扫描图像显示出来。</p>
+<p>　　DVD方面，最初的DVD也是用上述的方法处理逐行扫描信号的。而实际上，DVD光盘上记录的电影信号，可以认为都是24P的。早期的DVD无法直接对24P信号直接处理，还要经过一系列的数模/模数转换，或者24P-60i-24P-60P的繁琐过程。后期的DVD，随着芯片技术的发展，逐行扫描DVD可以做到24P-60P的最简洁处理。</p>
+<p><strong>数字高清时代 24P电影时代早该到来了</strong></p>
+<p>　　高清电影本身可以认为都是1920×1080/24P的。进入高清时代后，和模拟时代最大的不同还由两个方面，一方面，电视机已经进入全高清时代，具有1920×1080的物理分辨率，也就是常说的<a href="http://www.pconline.com.cn/digital/family/handbook/mcjs/0707/1049511.html" target="_top">Full HD</a>或<a href="http://www.pconline.com.cn/digital/family/handbook/mcjs/0707/1049204.html" target="_top">1080P</a>电视，另一方面，HDMI接口已经普及，信号传输已经实现全数字化，进入了真正的数字时代。</p>
+<p>　　最初的HDMI只能输出或输入1080/50i/60i信号，从技术角度讲，只要电视机的电路足够好，其效果和1080P是一样的。再进一步的发展，HDMI已经能够输出和接收1080P信号了，其频率包括50和60Hz。</p>
+<p>　　但是我们知道，电影原始图像只有24P，无论输出为50P还是60P，都要经过3:2/2:2 Pulldown技术。如果高清播放器材比如蓝光播放机的电路不够好，即使输出1080P信号，可能不如电路水平高的1080i信号效果好。如果高清播放设备方面直接输出电影的24P信号，平板电视直接接收24P信号后由电视机的电路处理并显示出来，或许更好。</p>
+<p align="center">&nbsp;</p>
+<p align="center"><img alt="" src="0_1324278081wcvy.gif"><br>
+松下蓝光DVD播放机DMP-BD30，支持24P信号输出</p>
+<p>　　24P信号输出，首先出现在蓝光播放机和HD DVD播放机上，目前已经成为蓝光播放机的基本功能。采用8634以上级别芯片的高清播放机，也支持24P输出，随后24P电视也应运而生。</p>
+<p>&nbsp;</p>
+<p><strong>支持24P电影模式播放的液晶电视和等离子电视</strong></p>
+<p>　　对于高清播放设备，输出24P信号实际对技术的要求更简单，省略了很多环节。对于平板电视而言，和1080i信号比，也省略很多电路，24P电影模式播放将成为近期中高端平板电视的新看点。除了松下近期发布这几款平板电视新品外，已经确认具有24P电影模式播放功能的液晶电视还有索尼的W380A系列和V440A系列；LG的50Y系列；飞利浦的7403系列和5403系列。</p>
+<p align="center">　　当然，还有很多品牌和型号目前还不能确定是否具有24P电影模式播放功能，我们希望各厂商能够为我们提供相关信息，<a href="http://family.pconline.com.cn/" target="_top"><strong>PConline数字家电频道</strong></a>会以最快速度通报给广大网友。</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-size: 18px;"></span>&nbsp;</p>
+<p><span style="font-size: 18px;">首先要看interlace的信号是怎么得来的，一种是真正的interlace的信号，像一般的电视信号，在录制的时候就是interlace的，这种信号是不可能完全deinterlace的，也就是说不可能得到完整的progressive的信号，因为丢失的信息是不可能完全重建的。另一种是，film-based的TC得来的信号，用3：2pulldown/IVTC就可以完全重建progressive的信号。<br>
+接下来澄清一个问题：deinterlace 指的是什么？如果是指把interlace的信号还原成progressive的信号，那么在对待电影的片源来说就应包括IVTC/3:2pulldown，或者说3:2pulldown是一种deinterlace。一般来说，如何把interlace的信号转化成progressive的信号呢，有以下基本方法：<br>
+<span style="color: rgb(255, 0, 0);">line doubling: 每一行都重复一遍，损失一半的垂直分辨率<br>
+bob，interpolate：插值的方法。没有信号的行用相邻的两行插值得到。适用于一般的电视信号，比如，用电视卡在计算机上看电视。<br>
+weave：把两祯叠加后输出（一祯的奇数行和下一祯的偶数行叠成完整的一祯，并没有对每一祯进行处理，其实等与do-nothing，即什么也没做。适用于基于电影的DVD，前提用3：2pulldown/IVTC去掉加入的祯。<br>
+针对真正的interlaced的信号还有更高级的方法如：<br>
+Motion Adaptiveness：运动图像用bob，静止图像用weave。<br>
+Motion Compensation：在weave用得多，bob用得少的情况下，估计物体的移动，构造每一祯。这个比较复杂，也比较高级，一两句说不清楚。<br>
+</span>orbitlee提到的各种算法大多是基本算法的演变。<br>
+所以，对于film-based 的经TC得来的DVD mpeg2 来说，deinterlace不是问题，DVD有专门的标示用来做3：2pulldown，然后把对应祯叠加得到progressive 24fps的信号，按比例输出到60、72、85hz的显示器上。这其中还有winDVD借用的philips的技术：Trimension™ DNM (Digital Natural Motion) ，充分利用刷新频率，将24祯再变换成60祯（不是简单的重复）而是构造新的祯。<br>
+对于HDTV，即便是电影，我也不知道是TC的还是真正的interlaced的（一直找不到有关电视台播出的HDTV电影的资料，这是非常关键的一点，直接关系到deinterlace），如果是TC的那么按照DVD一样处理就行了，有区别的地方是HDTV是流媒体，是否能像DVD那样找出对应祯进行3：2pulldown（我记得以前看到过有关文章）。如果是truly interlaced，比如，各大电视台的黄金时间节目如CSI(1080i)等，即录制的时候就是1080i的，那么，deinterlace的算法就很重要了，在没有好的算法之前，一般来讲会用bob，画质可能会不如720p。在decoder设置上，truly
+ interlaced 电视信号是不宜用weave的。对于720p的信号，decoder是不应该去处理的，不存在选用bob或weave的问题。这其实还牵扯到另一个问题，1080i和720p哪个更清晰的问题。我个人认为，TC的1080i的信号经过IVTC和deinterlace肯定比720p的要好，不存在什么每祯540线的问题；而对于实时转播的电视信号来说，则1080i静态占优，720p动态占优。<br>
+综上所述，我不认为讨论基于电影(film-based)的用TC生成的NTSC信号的deinterlace有任何意义，任何一种decoder都应该能胜任，至少对DVD来讲。我们没有必要去告诉decoder用weave或bob，decoder应有算法自动识别的，除非对于HDTV的mpeg2不适用。不同的是其他性能，比如它们的容错性，即在信号有损失的情况下如何进行这个过程，或者在没有标示的情况下找对应祯的能力。从实验角度来说，如果是人工生成的标准信号，应该是没有区别的。对于truely interlaced的NTSC信号，我们也没啥可做的，用bob就好了。反过来说，如果你用weave出现拉丝，那说明你的片源是trully
+ interlace的，或者，可能是ivtc做得不好，没有去掉TC加入的祯，那么decoder就不支持代标示的HDTV的IVTC，也就是说HDTV的IVTC要靠decoder自己去判断哪些是人为加入的祯。<br>
+另外，仅作参考，根据avsforum的fans的经验和鉴别，Dscaler5和最新的nvidia的decoder对于DVD的mpeg2效果最好。对于后期处理，希望大家能好好利用ffdshow。还是那句话，显示设备是大家因该考虑和投资的主要考虑对象，对于没有好的显示设备来说，HDTV的意义并不很大，尤其是花很长时间下载，就更不划算了，好好优化DVD是正经，比如，如何把720x480的信号最优化地upscale到1280x720的显示设备上。等到大家都有好的显示设备时，hd-DVD也应该批量化了，到时候花钱买D版就是了。我不太清楚HDTV在现有的软硬件基础上有什么可优化的，请懂得人另开版面讨论，相信会有意思的多。还有就是有个会员提到的买椟还珠的问题，内容比形式更重要</span></p>
+<p><span style="font-size: 18px;"></span>&nbsp;</p>
+<p><span style="font-size: 18px;"></span>&nbsp;</p>
+<p><span style="font-size: 18px;">IVTC</span></p>
+<p><span style="font-size: 18px;"></span>&nbsp;</p>
+<p><span style="font-size: 18px;">帧=Frame / 场=Field / fps=Frame Per Second / Film=电影胶片<br>
+电影原本是 24fps 的，在胶卷过带（Telecine）的时候，NTSC 制会经过 3:2 pulldown 转为 30fps。 <br>
+也就是原本 1 2 3 4 四个 Frame，拆成 1o 1e 2o 2e 3o 3e 4o 4e，每个 Frame 拆成奇数扫瞄线组成的奇数图场（Odd Field）和偶数扫瞄线组成的偶数图场（Even Field）。重新组合如下（以 Odd Field First 的顺序）<br>
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> 1o 1e - 2o 2e - 2o 3e - 3o 4e - 4o 4e <br>
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> [ A ] - [ B ] - [ C ] - [ D ] - [ E ] <br>
+每两个 Field 再重新组合成一个 Frame，就变成 [A][C][D][E] 五张 Frame。这样由原本的 4 张变成 5 张，4*6 = 24 =&amp;gt; 5*6 = 30，就能从 24fps 转为 30fps。<br>
+在电视上看，电视因为是交错显示，所以看不到交错线。但是在计算机上看，计算机屏幕是循序显示，所以中间的 2o 3e -3o 4e 这两张 Frame 中的 Field 分别来自不同的 Frame，一起显示的话就会看到交错的现象。<br>
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> DVD 压缩的时候，母带是胶卷过带（Telecine）后的 30fps，但是我们知道，其实原本的影片是 24fps 的，这 30fps 其实是从 24fps 转出来的，中间有不必要重复的 Field。这些重复的 Field 会造成交错，使得每 5 个 Frame 中就有 2 个 Frame 交错（名言：每五张烂两张），这些交错的画面要压缩不但浪费空间，而且交错画面又难压缩，会使得压缩的效果很差。<br>
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> 所以先进的 DVD 压缩制程，在压缩时都会使用 IVTC（inverse telecine，反胶卷过带），将 30fps 转回 24fps，这样压缩的画面张数由 30fps 减少为 24fps，少了 20%，等于 Bitrate 增加 20%，而且画面无交错容易压缩，所以压出来的画质会好很多。<br>
+但是 IVTC 检出不一定能做到 100%，遇到无法检出、判断的部分，Encoder 还是会以原本的 30fps 来压缩。所以我们会看到有些 DVD，是 Film（24fps）和 NTSC（30fps）混合的 DVD，又叫做 Hybird（混合）的 DVD，这个意思就是说，这张 DVD 内的画面，是 24fps 无交错，和 30fps 有交错两种型态互相混合的。<br>
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> 通常 RC1 八大电影公司出的 DVD IVTC 率都很高，几乎都高达 99% 以上，但是其它的公司出的 DVD 就不一定有这么高的比例。IVTC 100% 的 DVD 代表这张 DVD 内完全以 24fps 压缩，那么在 30fps/60 field/s NTSC 制的电视机上要播放时，要怎么播放呢？这些 DVD 在压缩的时候，Encoder 会写入一个 Flag（旗标）的信息，叫做 Repeat First Field，简写为 RFF。根据这个 RFF，DVD 机播放的时候，就会知道哪些
+ Field 要重复输出，利用重复输出这些 Field，DVD 机就会再播放的时候，做上面提过的 3:2 pulldown 的动作，在播放的同时，将 24fps 转为 30fps 输出，这样就能在电视上正常收看了。<br>
+PAL 制则不一样，胶卷过带时是采用 2:2 pulldown，也就是仍然输出原本无交错的 Frame，但始将播放速度加快 4%，声音也一起加快 4%，提升为 25fps，所以理论上来说，PAL 很好处理，因为画面根本无交错，所以直接压缩即可。不过我在这里看到有朋友提到，PAL 的 DVD 还是有些是交错的，这点我就不明白是为什么了，可能是制作过程上有问题吧。（譬如说用 DV 去拍的影片，DV 大部分是交错式拍摄，张张都交错，是补不回来的）<br>
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> DVD2AVI 的 Force Film，所作的处理，和 TMPGEnc 的 IVTC 不一样。TMPGEnc 的 IVTC 是跑一遍分析画面的信息，计算每一张画面的「奇数扫瞄线和偶数扫瞄线的差异」和「动态」这两个信息，藉由这些数据，推测出原本的 24fps 的顺序，将画面反转回原本的 24fps。因为需要分析、计算这些数据，所以跑第一遍的时候花的时间要比较久。而 DVD2AVI 则完全不一样，DVD2AVI 是根据上面提到的 RFF 这个旗标的信息，将重复的 Field
+ 删除掉，直接原封不动的输出 DVD 内原本储存的 24fps 的 Frame。因为只是做这样的判断，所以速度很快，存 .d2v 档时一下子就存好了。所如果这部 DVD 在压缩时的 IVTC 率很高，Film 的比例高达 95% 以上，内部原本就是储存 24fps 的形式，这样才可勾选「Force Film」这个选项。如果该 DVD 的 IVTC 率很低，内部大部分是 30fps 的形式，选「Force Film」输出，你会得到乱七八糟的结果。所以在使用「Force Film」这个选项之前，必须先用 Preview
+ 预览一次，让 DVD2AVI 跑一小段试试看，这部 DVD 的 IVTC 率究竟有多高，如果 Film 的比例很低，那么就不可以使用 Force Film 输出。<br>
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> 另外如果是 PAL 制的 DVD，更不可以开 Force Film，否则 DVD2AVI 会每五张砍掉一张，原本 25fps 会变成 20fps，画面会错得离谱。<span style="color: rgb(255, 0, 0);">PAL 的画面就是原本电影无交错的画面，不需要做 IVTC，如果你的 PAL DVD 有怪异的交错，那么我猜测它的讯源一定是非""正规""的讯源（例如 DV），才会发生这种现象。遇到这种情况你应该作的是 Deinterlace，而不是 IVTC。<br>
+</span>DVD2AVI 的 Force Film 和 TMPGEnc 的 IVTC，两者的作法和使用的时机都不同，使用者要自己判断该用哪一种方法。如果有人拿 Film 率很低的片子用「Force Film」输出，得到惨不忍睹的结果，然后怪 DVD2AVI 的 "IVTC" 烂，那真是冤枉了 DVD2AVI 的作者。这些观念在作者的网页上都讲得很清楚。<br>
+节录当中的一段： <br>
+Forced FILM is based on RFF detection and frame decimation/duplication. <br>
+NTSC or PAL + Forced FILM ON -&amp;gt; garbage <br>
+FILM + Forced FILM ON -&amp;gt; synchronous 23.976 fps flawless FILM (equals to IVTC)<br>
+作者说，Force Film 是根据 RFF 旗标侦测和删除重复的 Frame。 <br>
+NTSC（30fps）或者是 PAL 的讯源，如果开了 Force Film，得到的东西会是 garbage，垃圾。 <br>
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> Film 的讯源开 Force Film，才会是同步的 23.976fps，无错误的 Film 影像（equals to IVTC，等于做 IVTC）<br>
+如果片源是翻录的DVD，MPEG2码流中没有 RFF 旗标以供还原为Film ，用DeInterlace也只是模糊物体的边缘部分，是否有完美的办法呢？ <br>
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> DVD中的信息将在电视上显示，因此其记录的方式是基于场的。不过正规制作的Film-&amp;gt;DVD会在原本23.976的MPEG2视频码流中加入一些flags(标志)，以标志特殊场的方式制定某些场按特定顺序重复，以使23.976fps的Film以60场/秒的方式显示出来。<br>
+而以DVD2AVI为代表的IVTC软件，就是利用这种加入在MPEG2码流中的flags快速的还原60场的MPEG2为23.976fps的原始Film信息。 <br>
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> 但是模拟翻录DVD，显然将会丢失这些以0/1方式记录在DVD光盘中MPEG2码流中的flags标志。所以在用DVD2AVI这类软件打开模拟翻录的D版DVD中的MPEG2码流时，不会识别为Film，并判断此片不需要IVTC！<br>
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> 但是实际上这样的D版DVD是否还需要IVTC呢？——进入正题了 <br>
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> 由刚才对于DVD制作过程的描述，我们可以发现，播放一张正版DVD（就拿刚才假设历时为1/6秒的Film-&amp;gt;DVD为例），其出现在Video-OUT模拟视频线(任以一种)的场应该是以类似这样的顺序排列的：A1 A2 B1 B2 B1 C2 C1 D2 D1 D2<br>
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> 那么即使是模拟翻录，录制下来的视频信号也是以：A1 A2 B1 B2 B1 C2 C1 D2 D1 D2 的顺序存在的，而其与源DVD的区别是：<br>
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> 1。以29.976fps记录 <br>
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> 2。没有MPEG2码流中flags以供还原为Film <br>
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> 3。起点有可能出错，例如变为 A2 B1 B2 B1 C2 C1 D2 D1 D2 <br>
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> 4。由于播放机与录机之间的时基误差(电源、晶振)可能会lost或rapeat的错误，例如：A1 A2 B1 B1 B1 C2 C1 D2 D1 D2<br>
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> 但是，不论有什么场的差距，模拟翻录DVD不会自己生出新的画面，所有画面仍然是源于最初的film中的A B C D。也正因为如此，IVTC将模拟翻录的DVD还原为23.976的Film仍然是可能的，其方法就是使用Tmpgenc。<br>
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> Tmpgenc不是利用MPEG2中的flags来做IVTC，而是交错比较各帧和场后，经过比较、判断场与场之间的差距（拉丝-Flick），判断决定还原那些特定的场。因此使用Tmpg，即使MPEG2中没有flags，或者&nbsp;<wbr>&nbsp;<wbr> flags错误，只要来源是Film，就可以很好的还原其为23.976的画面。<br>
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> 好处：29.976的画面中仍会有交错的场出现，例如 B1 C2 。如果是大运动画面，B1 C2这一帧就会出现拉丝、横纹。如果制作时使用DeInterlace(Blend)，则会模糊物体的边缘部分，显然会不如源Film的画面清晰亮丽。<br>
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> 可能的问题1：模拟翻录时的实际过程比较复杂，但基于场序的传输是基本。如果在模拟翻录时，曾经用一些画面优化设备(例如运动补偿，也就是模拟的DeInterlace)变动过画面，那么使用IVTC也难以还原出清晰亮丽的Film画面<br>
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> 可能的问题2：用Tmpgenc打开模拟翻录的DVD时，无论FieldOrder选择A或B，用DeInterlace(even-odd)来观察到“倒退的帧”，出现会变少(目前观察到的案例不多)。<br>
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> 关于“倒退的帧”。为什么会出现倒退的帧呢？如前所述，一张Film-&amp;gt;DVD的MPEG2应该以正阳的顺序记录场：A1 A2 B1 B2 B1 C2 C1 D2 D1 D2<br>
+如果假设FieldOrder=A时为：A1 A2 B1 B2 B1 C2 C1 D2 D1 D2 <br>
+DeInterlace(even-odd)时顺序出现：A1 A1 | A2 A2 | B1 B1 | B2 B2 | B1 B1 | C2 C2 | C1 C1 | D2 D2 | D1 D1 | D2 D2<br>
+那么FieldOrder=B时则为：A2 A1 B2 B1 C2 B1 D2 C1 D2 D1 <br>
+DeInterlace(even-odd)时顺序出现的是：A2 A2 | A1 A1 | B2 B2 | B1 B1 | C2 C2 | B1 B1 | D2 D2 | C1 C1 | D2 D2 | D1 D1 —— 因此有了“倒退的帧”<br>
+</span></p>
+                    </div>
+    </article>
+      <div class="readall_box csdn-tracking-statistics" data-mod="popu_376">
+          <div class="read_more_mask"></div>
+          <a class="btn btn-large btn-gray-fred read_more_btn" target="_self">阅读全文</a>
+      </div>
+      <div class="article_copyright">
+              </div>
+      <ul class="article_collect clearfix csdn-tracking-statistics" data-mod="popu_378">
+          <li class="tit">本文已收录于以下专栏：</li>
+<!--          [startarticlecolumns]-->
+                                <!--          [endarticlecolumns]-->
+      </ul>
+      <div class="comment_box clearfix">
+          <div id="comment_form">
+              <div id="commentsbmitarear">
+                              </div>
+          </div>
+      </div>
+      <div class="comment_li_outbox">
+          <div id="comment_list"></div>
+      </div>
+
+      <div class="more_comment">
+          <div id="comment_bar" class="trackgin-ad" data-mod="popu_385"></div>
+      </div>
+
+      <h3 class="recommend_tit">相关文章推荐</h3>
+      <div class="recommend_list clearfix">
+                                                                                                                  <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                          <dd>
+                              <h2><a href="http://blog.csdn.net/baymoon/article/details/1404067" target="_top" strategy="BlogCommendFromBaidu_0">在多媒体中，什么是deinterlace?</a></h2>
+                              <div class="summary">
+                                                                                                                                      ...                              </div>
+                              <ul>
+                                  <li class="avatar_img"><a href="http://blog.csdn.net/baymoon" target="_top" strategy="BlogCommendFromBaidu_0"><img src="3_baymoon.jpg" alt="baymoon" title="baymoon"></a></li>
+                                  <li class="user_name"><a href="http://blog.csdn.net/baymoon">baymoon</a></li>
+                                  <li class="time">2006年11月22日 11:18</li>
+                                  <li class="visited_num"><i class="icon iconfont icon-read"></i><span>6666</span></li>
+                              </ul>
+                          </dd>
+                      </dl>
+                                                                                                                                <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                          <dd>
+                              <h2><a href="http://blog.csdn.net/haima1998/article/details/47056387" target="_top" strategy="BlogCommendFromBaidu_1">视频后处理技术deinterlace</a></h2>
+                              <div class="summary">
+                                  转自：http://blog.sina.com.cn/s/blog_9b82725901016x0h.html
+
+
+一个动态影像是由一连串连续的静态影像所组成的，其中每一个静态影像称为帧（frame）...                              </div>
+                              <ul>
+                                  <li class="avatar_img"><a href="http://blog.csdn.net/haima1998" target="_top" strategy="BlogCommendFromBaidu_1"><img src="3_haima1998.jpg" alt="haima1998" title="haima1998"></a></li>
+                                  <li class="user_name"><a href="http://blog.csdn.net/haima1998">haima1998</a></li>
+                                  <li class="time">2015年07月25日 14:49</li>
+                                  <li class="visited_num"><i class="icon iconfont icon-read"></i><span>2068</span></li>
+                              </ul>
+                          </dd>
+                      </dl>
+                                                                                                              <div id="_ynwxt0g517"></div><a href="http://www.baidu.com/cb.php?c=IgF_pyfqnHmknjnknjT0IZ0qnfK9ujYzP1nYPH0k0Aw-5Hc3rHnYnHb0TAq15HfLPWRznjb0T1Y1nHTLnHDsrHR4ujRvuyRd0AwY5HDdnHDkPj63nHf0IgF_5y9YIZ0lQzq-uZR8mLPbUB48ugfEpZNGXy-jULNzTvRETvNzpyN1gvw-IA7GUatLnWqdIAdxTvqdThP-5yF_UvTkn0KzujYk0AFV5H00TZcqn0KdpyfqnHRLPjnvnfKEpyfqnHc4rj6kP0KWpyfqP1cvrHnz0AqLUWYs0ZK45HcsP6KWThnqPjDkrf" target="_top">
+	<dl class="clearfix csdn-tracking-statistics" data-mod="popu_393">
+		<dt><img class="maxwidth" src="0f0005dl5zspbjreewzsa0.jpg" alt="" title=""></dt>
+		<dd>
+			<div class="summary">
+				<h2>2万月薪的程序员想拿4万，有捷径可走吗？</h2>  <div class="summary">作为程序员，薪酬很高，但有一个问题想了很久，作为一个技术人员，我该如何持续性学习...</div> 
+			</div>
+		</dd>
+	</dl>
+</a>
+                                                                                <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                          <dd>
+                              <h2><a href="http://blog.csdn.net/sseustcer/article/details/52089810" target="_top" strategy="BlogCommendFromBaidu_2">去交错Deinterlace算法介绍</a></h2>
+                              <div class="summary">
+                                  描述
+
+一个动态影像是由一连串连续的静态影像所组成的，其中每一个静态影像称为帧（frame），而动态影像中每秒所包含静态影像的数量则称为帧（速）率（frameper second, fps）。
+...                              </div>
+                              <ul>
+                                  <li class="avatar_img"><a href="http://blog.csdn.net/sseustcer" target="_top" strategy="BlogCommendFromBaidu_2"><img src="3_sseustcer.jpg" alt="sseustcer" title="sseustcer"></a></li>
+                                  <li class="user_name"><a href="http://blog.csdn.net/sseustcer">sseustcer</a></li>
+                                  <li class="time">2016年08月01日 22:37</li>
+                                  <li class="visited_num"><i class="icon iconfont icon-read"></i><span>723</span></li>
+                              </ul>
+                          </dd>
+                      </dl>
+                                                                                                                                <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                          <dd>
+                              <h2><a href="http://blog.csdn.net/charleslei/article/details/48651953" target="_top" strategy="BlogCommendFromBaidu_3">去隔行利器FieldsKit Deinterlacer 解析</a></h2>
+                              <div class="summary">
+                                  在影视制作领域，为了构建相对完美的逐行扫描视频，或者为数字转胶片过程提供更高质量的画格，我们须将隔行扫描视频进行去隔行处理。尽管许多后期处理软件内置了去隔行处理机能，但是它们的算法都极为单一，往往达不...                              </div>
+                              <ul>
+                                  <li class="avatar_img"><a href="http://blog.csdn.net/charleslei" target="_top" strategy="BlogCommendFromBaidu_3"><img src="3_charleslei.jpg" alt="charleslei" title="charleslei"></a></li>
+                                  <li class="user_name"><a href="http://blog.csdn.net/charleslei">charleslei</a></li>
+                                  <li class="time">2015年09月22日 11:32</li>
+                                  <li class="visited_num"><i class="icon iconfont icon-read"></i><span>3111</span></li>
+                              </ul>
+                          </dd>
+                      </dl>
+                                                                                                                                <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                          <dd>
+                              <h2><a href="http://blog.csdn.net/cffishappy/article/details/7076680" target="_top" strategy="BlogCommendFromBaidu_4">逐行扫描（Progressive scanning），隔行扫描（interlace scanning），场</a></h2>
+                              <div class="summary">
+                                  “场”的详细分析
+
+对于初学DVD制作的人来说，“场”是一个很重要的概念。只有认识了它才能做好DVD，消除制作完后在电视上看时出现的闪、抖等问题。我将坛上大家的讨论整理一下发上来，希望对初学者有所...                              </div>
+                              <ul>
+                                  <li class="avatar_img"><a href="http://blog.csdn.net/cffishappy" target="_top" strategy="BlogCommendFromBaidu_4"><img src="3_cffishappy.jpg" alt="cffishappy" title="cffishappy"></a></li>
+                                  <li class="user_name"><a href="http://blog.csdn.net/cffishappy">cffishappy</a></li>
+                                  <li class="time">2011年12月16日 11:12</li>
+                                  <li class="visited_num"><i class="icon iconfont icon-read"></i><span>2439</span></li>
+                              </ul>
+                          </dd>
+                      </dl>
+                                                                                            <!-- 广告位：PC端-博客详情通栏7（feed流）-808*120 -->
+                      <div id="_q6y9re4vhgo"></div><a href="http://www.baidu.com/cb.php?c=IgF_pyfqnHmknjnzPH00IZ0qnfK9ujYzP1f4Pjn10Aw-5Hc4nj6vPjm0TAq15Hf4rjn1n1b0T1Y3mW6sryc4rAwBPvP-uAmk0AwY5HDdnHDkPj63nHf0IgF_5y9YIZ0lQzqMpgwBUvqoQhP8QvIGIAPCmgfEmyPYpguGIZbEPH-hPvPhnhm1nWTYuWnkPHTsnvfLuhR15LNYUNq1ULNzmvRqnHDkPyFBUAqM0ZFb5HD0mhYqn0KsTWYs0ZNGujYkPHTYn1mk0AqGujYkn10snjf10APGujYLnWm4n1c0ULI85H00TZbqnW0v0APzm1Y1PHmYrf" target="_top">
+	<dl class="clearfix csdn-tracking-statistics" data-mod="popu_393">
+		<dt><img class="maxwidth" src="0f000rth7gsds9fe7mgvp6.jpg" alt="" title=""></dt>
+		<dd>
+			<div class="summary">
+				<h2>入行 AI，选个脚踏实地的岗位</h2>  <div class="summary">算法工程师年薪百万耶，我也要当！以前没学会？没关系啊，我现在开始学，这就把工作辞了脱产学机器学习、深度学习、用 Python 调库、给 TensorFlow 调参去，学会了我也年薪百万了！</div> 
+			</div>
+		</dd>
+	</dl>
+</a>
+                                                                                                  <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                          <dd>
+                              <h2><a href="http://blog.csdn.net/yypony/article/details/16849705" target="_top" strategy="BlogCommendFromCsdn_5">deinterlace 隔行 progressive 逐行 3:2pulldown</a></h2>
+                              <div class="summary">
+                                  转自：http://blog.csdn.net/yuyin86/article/details/13628943
+
+3:2/2:2 Pull down模式基于逐行扫描技术上进行的，针对以电影胶片为...                              </div>
+                              <ul>
+                                  <li class="avatar_img"><a href="http://blog.csdn.net/yypony" target="_top" strategy="BlogCommendFromCsdn_5"><img src="3_yypony.jpg" alt="yypony" title="yypony"></a></li>
+                                  <li class="user_name"><a href="http://blog.csdn.net/yypony">yypony</a></li>
+                                  <li class="time">2013年11月20日 20:43</li>
+                                  <li class="visited_num"><i class="icon iconfont icon-read"></i><span>824</span></li>
+                              </ul>
+                          </dd>
+                      </dl>
+                                                                                                                                <dl class="clearfix csdn-tracking-statistics downloadElement" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                          <dt><a href="http://download.csdn.net/detail/sbx19850629/3805355" target="_top" strategy="BlogCommendFromCsdn_6"><img class="maxwidth" src="pdf.svg" alt="" title=""></a></dt>
+                          <dd>
+                              <div class="summary">
+                                  <h2><a href="http://download.csdn.net/detail/sbx19850629/3805355" target="_top" strategy="BlogCommendFromCsdn_6">去隔行deinterlace</a></h2>
+                                  <div class="summary">
+                                      <ul>
+                                          <li class="time">2011年11月17日 15:24</li>
+                                          <li class="visited_num fileSize">1.29MB</li>
+                                          <li class="download_btn"><a href="http://download.csdn.net/detail/sbx19850629/3805355" target="_top">下载</a></li>
+                                      </ul>
+                                  </div>
+                              </div>
+                          </dd>
+                      </dl>
+                                                                                                                                <dl class="clearfix csdn-tracking-statistics downloadElement" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                          <dt><a href="http://download.csdn.net/detail/ifenghua135792468/9588636" target="_top" strategy="BlogCommendFromCsdn_7"><img class="maxwidth" src="pdf.svg" alt="" title=""></a></dt>
+                          <dd>
+                              <div class="summary">
+                                  <h2><a href="http://download.csdn.net/detail/ifenghua135792468/9588636" target="_top" strategy="BlogCommendFromCsdn_7">隔行视频信号转逐行的算法模型和实现</a></h2>
+                                  <div class="summary">
+                                      <ul>
+                                          <li class="time">2016年07月28日 14:21</li>
+                                          <li class="visited_num fileSize">2.34MB</li>
+                                          <li class="download_btn"><a href="http://download.csdn.net/detail/ifenghua135792468/9588636" target="_top">下载</a></li>
+                                      </ul>
+                                  </div>
+                              </div>
+                          </dd>
+                      </dl>
+                                                                                                                                <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                          <dd>
+                              <h2><a href="http://blog.csdn.net/zhangjikuan/article/details/42525047" target="_top" strategy="BlogCommendFromCsdn_8">逐行Porgressive隔行Interlaced扫描的超详细讲解</a></h2>
+                              <div class="summary">
+                                  迄今为止电视广播采用隔行扫描已经近60年了，而计算机显示、图形处理和数字电影则采用了逐行扫描。逐行扫描是最简单的也是最好的扫描方式，不过受到频带资源和刷新频率的限制逐行扫描无法在模拟电视广播中得到应用...                              </div>
+                              <ul>
+                                  <li class="avatar_img"><a href="http://blog.csdn.net/zhangjikuan" target="_top" strategy="BlogCommendFromCsdn_8"><img src="3_zhangjikuan.jpg" alt="zhangjikuan" title="zhangjikuan"></a></li>
+                                  <li class="user_name"><a href="http://blog.csdn.net/zhangjikuan">zhangjikuan</a></li>
+                                  <li class="time">2015年01月08日 15:00</li>
+                                  <li class="visited_num"><i class="icon iconfont icon-read"></i><span>1939</span></li>
+                              </ul>
+                          </dd>
+                      </dl>
+                                                                                                                                <dl class="clearfix csdn-tracking-statistics downloadElement" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                          <dt><a href="http://download.csdn.net/detail/weiruankexing/5339867" target="_top" strategy="BlogCommendFromCsdn_9"><img class="maxwidth" src="rar.svg" alt="" title=""></a></dt>
+                          <dd>
+                              <div class="summary">
+                                  <h2><a href="http://download.csdn.net/detail/weiruankexing/5339867" target="_top" strategy="BlogCommendFromCsdn_9">CSS2+JS实现table隔行变色</a></h2>
+                                  <div class="summary">
+                                      <ul>
+                                          <li class="time">2013年05月07日 12:49</li>
+                                          <li class="visited_num fileSize">301KB</li>
+                                          <li class="download_btn"><a href="http://download.csdn.net/detail/weiruankexing/5339867" target="_top">下载</a></li>
+                                      </ul>
+                                  </div>
+                              </div>
+                          </dd>
+                      </dl>
+                                                                    </div>
+  </main>
+<aside>
+  <div class="right_box user_info">
+      <dl class="inf_bar clearfix">
+          <dt class="csdn-tracking-statistics" data-mod="popu_381">
+              <a href="http://blog.csdn.net/misiter" target="_top">
+                  <img src="3_misiter.jpg" class="avatar_pic">
+              </a>
+              <span class="medals" title="">
+                  </span>
+          </dt>
+          <dd>
+              <h3 class="csdn-tracking-statistics" data-mod="popu_380"><a href="http://blog.csdn.net/misiter" target="_top" id="uid">misiter</a></h3>
+              <span class="csdn-tracking-statistics" data-mod="popu_379"><a class="btn btn-redborder-small " id="span_add_follow" target="_self">＋关注</a></span>
+          </dd>
+      </dl>
+      <div class="inf_number_box clearfix">
+          <dl>
+              <dt>原创</dt>
+              <dd>5</dd>
+          </dl>
+          <dl>
+              <dt>粉丝</dt>
+              <dd id="fan">31</dd>
+          </dl>
+          <dl>
+              <dt>喜欢</dt>
+              <dd>7</dd>
+          </dl>
+          <dl>
+        <dt>码云</dt>
+        <dd>&nbsp;</dd>
+      </dl>
+
+      </div>
+  <div class="writings">
+        <div class="public_signal clearfix">
+          <h3>他的最新文章</h3>
+          <a href="http://blog.csdn.net/misiter" target="_top" class="more"><span>更多文章</span></a>
+        </div>
+          <ul class="inf_list clearfix csdn-tracking-statistics" data-mod="popu_382">
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/misiter/article/details/8481952" target="_top">什么是堆、栈?  fr net</a>
+              </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/misiter/article/details/8432950" target="_top">linux segment error analyze   fr net</a>
+              </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/misiter/article/details/8331735" target="_top">ipu vpu gpu fr net</a>
+              </li>
+                        </ul>
+      </div>
+  </div>
+  <div class="extension_other csdn-tracking-statistics" data-mod="popu_389">
+     <!--u3032528-->
+    <div class="flashrecommend">
+        <div id="_8kdlj8v5j4u"><iframe scrolling="no" src="index_2.html" width="300" height="250" frameborder="0"></iframe><span style="display: none;"></span></div>
+    </div>
+  </div>
+
+<!--    [StartShowSelfColumn]-->
+    <!--    [EndShowSelfColumn]-->
+    <div class="fixRight">
+        <div class="right_box padb0 csdn-tracking-statistics" data-mod="popu_391">
+            <h3 class="tit"><span><em>在线课程</em></span></h3>
+            <ul class="edu_li clearfix">
+<!--            [starteducourses]-->
+                                                            <li>
+                            <div>
+                                <a href="http://edu.csdn.net/huiyiCourse/series_detail/72?utm_source=blog7" target="_top">
+                                    <img src="201711171632559151.png" alt="白鹭引擎在WebAssembly中的实践" title="白鹭引擎在WebAssembly中的实践">
+                                </a>
+                            </div>
+                            <div>
+                                <p><a href="http://edu.csdn.net/huiyiCourse/series_detail/72?utm_source=blog7" target="_top">白鹭引擎在WebAssembly中的实践</a></p>
+                                <p>讲师：</p>
+                            </div>
+                        </li>
+                                            <li>
+                            <div>
+                                <a href="http://edu.csdn.net/huiyiCourse/detail/602?utm_source=blog7" target="_top">
+                                    <img src="201711171629135569.png" alt="Apache Weex：移动研发的进阶之路" title="Apache Weex：移动研发的进阶之路">
+                                </a>
+                            </div>
+                            <div>
+                                <p><a href="http://edu.csdn.net/huiyiCourse/detail/602?utm_source=blog7" target="_top">Apache Weex：移动研发的进阶之路</a></p>
+                                <p>讲师：董岩</p>
+                            </div>
+                        </li>
+                                    <!--            [endeducourses]-->
+            </ul>
+            </div>
+        <div class="extension_other csdn-tracking-statistics bottomRcom" data-mod="popu_389" style="position: absolute; z-index: -5; opacity: 0; pointer-events: none;">
+            <!--u3032528-->
+            <div class="flashrecommend">
+                <!-- 请置于所有广告位代码之前 -->
+                
+
+                <!-- 广告位：PC端-博客详情页右侧视窗1（feed流）-300*250 -->
+                <div id="_do701z9bji"></div><div><div id="qrjhgb" style="padding: 0px;"><div><div><iframe scrolling="no" src="index_3.html" width="300" height="250" frameborder="0"></iframe></div></div></div></div>
+            </div>
+        </div>
+
+    </div>
+    <div class="user-hotArticle">
+        <h3>热门文章</h3>
+        <ul class="hotArticle-list csdn-tracking-statistics" data-mod="popu_521">
+<!--            [StartHotArticles]-->
+                                                <li>
+                        <a href="http://blog.csdn.net/misiter/article/details/714309">干掉Nouveau安装Linux Nvidia显卡驱动</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>32280</span></div>
+                    </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/misiter/article/details/714309">linux 8小时时差 bios hwclock 解决   utc  localtime</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>15907</span></div>
+                    </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/misiter/article/details/714309">磁头 扇区 柱面  磁盘</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>15799</span></div>
+                    </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/misiter/article/details/714309">gcc- -O 优化选项</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>13662</span></div>
+                    </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/misiter/article/details/714309">如何打patch  p0 p1区别</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>12412</span></div>
+                    </li>
+                            <!--            [EndHotArticles]-->
+        </ul>
+    </div>
+<!--    [startcustom]-->
+    <!--    [endcustom]-->
+</aside></div>
+
+<div class="left_fixed">
+    <div class="left_show_button">
+        <span>
+          <i class="icon iconfont icon-youjiantou"></i>
+        </span>
+    </div>
+    <ul class="left_menu">
+        <li>
+            <button class="left-fixed-btn btn-like csdn-tracking-statistics" data-mod="popu_373" target="_self">
+                <a href="javascript:void(0);" class="iconbox border_red"><i class="icon iconfont icon-dianzan"></i></a>
+                <a class="txt" href="javascript:void(0);">0</a>
+            </button>
+        </li>
+        <li id="blog_artical_directory">
+            <button class="left-fixed-btn left_menu_btn csdn-tracking-statistics" data-mod="popu_372" target="_self">
+                <a href="javascript:void(0);" class="iconbox border_black"><i class="icon iconfont icon-mulu"></i></a>
+            </button>
+        </li>
+        <li class="menu_con">
+            <div class="list_father">
+                <div class="arr_box">
+                    <button class="btn-noborder arr-btn scroll-down  left_scroll_down"><i class="icon iconfont icon-xiajiantou"></i></button>
+                    <button class="btn-noborder arr-btn scroll-up left_scroll_top"><i class="icon iconfont icon-shangjiantou"></i></button>
+                </div>
+                <div class="arr"></div>
+                <div id="csdnBlogDir"></div>
+            </div>
+        </li>
+        <!--        <li>-->
+        <!--            <button class="left-fixed-btn btn-like tracking-ad" data-mod="popu_373" target="_self">-->
+        <!--                <span class="iconbox border_red"><i class="icon iconfont icon-xihuan-"></i></span>-->
+        <!--                <span class="txt">喜欢</span>-->
+        <!--                <span class="untxt">取消喜欢</span>-->
+        <!--            </button>-->
+        <!--        </li>-->
+        <li>
+            <button class="left-fixed-btn csdn-tracking-statistics" data-mod="popu_374" id="com-quick-collect" target="_self">
+                <a href="javascript:void(0);" class="iconbox border_purple"><i class="icon iconfont icon-shoucang"></i></a>
+            </button>
+        </li>
+        <li>
+            <button class="left-fixed-btn btn-pinglun csdn-tracking-statistics" data-mod="popu_544">
+                <a href="javascript:void(0);" class="iconbox border_purple"><i class="icon iconfont icon-pinglun"></i></a>
+            </button>
+        </li>
+        <li id="share_box">
+            <button class="left-fixed-btn  csdn-tracking-statistics" data-mod="popu_375" target="_self">
+                <a href="javascript:void(0);" class="iconbox border_orange"><i class="icon iconfont icon-fenxiang"></i></a>
+            </button>
+            <div class="bdsharebuttonbox csdn-tracking-statistics bdshare-button-style0-16" data-mod="popu_172" data-bd-bind="1511148815183">
+                <div class="outside">
+                    <span class="iconbox border_red2"><i class="icon iconfont icon-xinlang"></i></span>
+                    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"> </a>
+                </div>
+                <div class="outside">
+                    <span class="iconbox border_green"><i class="icon iconfont icon-weixin"></i></span>
+                    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"> </a>
+                </div>
+                <div class="outside">
+                    <span class="iconbox border_blue"><i class="icon iconfont icon-QQ"></i></span>
+                    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"> </a>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>
+<div class="right_fixed">
+    <div class="r_ico">
+        <i class="icon iconfont icon-jubao"></i>
+        <span class="txt" id="reportBtn">内容举报</span>
+    </div>
+    <div class="returnTop">
+        <i class="icon iconfont icon-fanhuidingbu"></i>
+        <span>返回顶部</span>
+    </div>
+</div>
+<div id="pop_win"></div>
+<div id="popup_mask"></div>
+<div class="pop_CA_cover"></div>
+<div class="pop pop_CA">
+    <div class="CA_header">
+        收藏助手
+        <span class="cancel_icon" id="fapancle"></span>
+    </div>
+    <iframe src="index_7.html" id="collectIframe" scrolling="no" width="100%" height="360" frameborder="0"></iframe>
+</div>
+<!--举报-->
+<div id="report_dialog" style="top: 250px; left: 343.5px;"><div id="panel_report">
+    <div class="panel_head">不良信息举报</div>
+    <form method="post" id="frmReport" class="panel_body" action="http://blog.csdn.net/misiter/article/details/7070109">
+        <table class="pop_table" cellspacing="4" cellpadding="0" border="0">
+            <tbody><tr><td colspan="2">您举报文章：<a href="http://blog.csdn.net/misiter/article/details/7070109" target="_top">deinterlace 隔行  progressive 逐行  3:2pulldown</a></td></tr>
+            <tr>
+                <th style="width: 60px;">举报原因：</th>
+                <td id="panel_reporttype">
+                    <label><input class="report_type" id="report_sex" name="report_type" value="1" type="radio">色情</label>
+                    <label><input class="report_type" id="report_Politics" name="report_type" value="2" type="radio">政治</label>
+                    <label><input class="report_type" id="report_copy" name="report_type" value="3" type="radio">抄袭</label>
+                    <label><input class="report_type" id="report_ad" name="report_type" value="4" type="radio">广告</label>
+                    <label><input class="report_type" id="report_want" name="report_type" value="5" type="radio">招聘</label>
+                    <label><input class="report_type" id="report_call" name="report_type" value="6" type="radio">骂人</label>
+                    <br>
+                    <label><input class="report_type" id="report_other" name="report_type" value="7" type="radio">其他</label>
+                    <input name="report_other_content" id="report_other_content" maxlength="30" style="display: none;" value="" type="text">
+                </td>
+            </tr>
+            <tr id="panel_originalurl" style="display: none;">
+                <th>原文地址：</th>
+                <td>
+                    <input id="originalurl" value="http://" name="originalurl" style="width: 90%;" type="text">
+                </td>
+            </tr>
+            <tr>
+                <th id="sp_reason">原因补充：</th>
+                <td>
+                    <textarea id="report_description" style="width: 300px;" rows="3" name="report_description"></textarea>
+                    <p id="sp_n" style="color: rgb(153, 153, 153); margin: 0px; padding: 0px;">(最多只允许输入30个字)</p>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input id="btnSubmitReport" name="submit" class="btn_1" src="btn_submit.jpg" type="image" align="middle">
+                    <span style="padding-left: 20px;"></span>
+                    <img id="btnCloseReportDialog" src="btn_cancel.jpg" align="middle">
+                    <div id="error" style="color: red;">
+                    </div>
+                </td>
+            </tr>
+            </tbody></table>
+    </form>
+</div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

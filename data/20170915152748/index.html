@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html class=" js flexbox canvas canvastext webgl no-touch geolocation postmessage no-websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients no-cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers applicationcache svg inlinesvg smil svgclippaths" style="" lang="en">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Introduction — Kurento Repository 6.6.1-dev documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="favicon.ico">
+  
+
+  
+  
+
+  
+  
+    
+
+  
+
+  
+  
+
+  
+    
+  
+        <link rel="index" title="Index" href="https://doc-kurento-repository.readthedocs.io/en/latest/genindex.html">
+        <link rel="search" title="Search" href="https://doc-kurento-repository.readthedocs.io/en/latest/search.html">
+    <link rel="top" title="Kurento Repository 6.6.1-dev documentation" href="https://doc-kurento-repository.readthedocs.io/en/latest/index.html">
+        <link rel="next" title="Repository Server" href="https://doc-kurento-repository.readthedocs.io/en/latest/repository_server.html">
+        <link rel="prev" title="Table of Contents" href="https://doc-kurento-repository.readthedocs.io/en/latest/index.html"> 
+
+  
+  
+
+
+<!-- RTD Extra Head -->
+
+<!-- 
+Always link to the latest version, as canonical.
+http://docs.readthedocs.org/en/latest/canonical.html
+-->
+<link rel="canonical" href="http://doc-kurento-repository.readthedocs.io/en/latest/introduction.html">
+
+
+
+
+
+<!-- Add page-specific data, which must exist in the page js, not global -->
+
+
+
+
+<!-- end RTD <extrahead> --><link rel="stylesheet" type="text/css" id="SL_Style" href="chrome://imtranslator/content/css/translator.css">
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side"><div class="wy-side-scroll"><div class="wy-side-nav-search">
+        <a href="https://doc-kurento-repository.readthedocs.io/en/latest/index.html" class="fa fa-home"><img style="width: 159px; border-radius: 0px;" src="kurento-rect-logo2.png"><span style="font-size: 0.8em;">v6.6.1-dev</span></a>
+        <div role="search">
+  <form id="rtd-search-form" class="wy-form" action="https://doc-kurento-repository.readthedocs.io/en/latest/search.html" method="get">
+    <input name="q" placeholder="Search docs" value="" type="text">
+    <input name="check_keywords" value="yes" type="hidden">
+    <input name="area" value="default" type="hidden">
+  </form>
+</div>
+      </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><span class="toctree-expand"></span>Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#example">Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#source-code">Source code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#content-of-this-documentation">Content of this documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="https://doc-kurento-repository.readthedocs.io/en/latest/repository_server.html"><span class="toctree-expand"></span>Repository Server</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="https://doc-kurento-repository.readthedocs.io/en/latest/repository_server.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="https://doc-kurento-repository.readthedocs.io/en/latest/repository_server.html#binaries">Binaries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="https://doc-kurento-repository.readthedocs.io/en/latest/repository_server.html#configuration">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="https://doc-kurento-repository.readthedocs.io/en/latest/repository_server.html#logging-configuration">Logging configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="https://doc-kurento-repository.readthedocs.io/en/latest/repository_server.html#execution">Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="https://doc-kurento-repository.readthedocs.io/en/latest/repository_server.html#run-at-user-level">Run at user-level</a></li>
+<li class="toctree-l2"><a class="reference internal" href="https://doc-kurento-repository.readthedocs.io/en/latest/repository_server.html#run-as-daemon">Run as daemon</a></li>
+<li class="toctree-l2"><a class="reference internal" href="https://doc-kurento-repository.readthedocs.io/en/latest/repository_server.html#version-upgrade">Version upgrade</a></li>
+<li class="toctree-l2"><a class="reference internal" href="https://doc-kurento-repository.readthedocs.io/en/latest/repository_server.html#installation-over-mongodb">Installation over MongoDB</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="https://doc-kurento-repository.readthedocs.io/en/latest/repository_rest_api.html"><span class="toctree-expand"></span>Repository REST API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="https://doc-kurento-repository.readthedocs.io/en/latest/repository_rest_api.html#create-repository-item">Create repository item</a></li>
+<li class="toctree-l2"><a class="reference internal" href="https://doc-kurento-repository.readthedocs.io/en/latest/repository_rest_api.html#remove-repository-item">Remove repository item</a></li>
+<li class="toctree-l2"><a class="reference internal" href="https://doc-kurento-repository.readthedocs.io/en/latest/repository_rest_api.html#get-repository-item-read-endpoint">Get repository item read endpoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="https://doc-kurento-repository.readthedocs.io/en/latest/repository_rest_api.html#find-repository-items-by-metadata">Find repository items by metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="https://doc-kurento-repository.readthedocs.io/en/latest/repository_rest_api.html#find-repository-items-by-metadata-regex">Find repository items by metadata regex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="https://doc-kurento-repository.readthedocs.io/en/latest/repository_rest_api.html#get-the-metadata-of-a-repository-item">Get the metadata of a repository item</a></li>
+<li class="toctree-l2"><a class="reference internal" href="https://doc-kurento-repository.readthedocs.io/en/latest/repository_rest_api.html#update-the-metadata-of-a-repository-item">Update the metadata of a repository item</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="https://doc-kurento-repository.readthedocs.io/en/latest/repository_client.html"><span class="toctree-expand"></span>Repository Client</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="https://doc-kurento-repository.readthedocs.io/en/latest/repository_client.html#repository-java-api">Repository Java API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="https://doc-kurento-repository.readthedocs.io/en/latest/repository_client.html#repository-internals">Repository internals</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="https://doc-kurento-repository.readthedocs.io/en/latest/repository_javadoc.html"><span class="toctree-expand"></span>Repository JavaDoc</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="https://doc-kurento-repository.readthedocs.io/en/latest/repository_javadoc.html#kurento-repository-server">Kurento Repository Server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="https://doc-kurento-repository.readthedocs.io/en/latest/repository_javadoc.html#kurento-repository-client">Kurento Repository Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="https://doc-kurento-repository.readthedocs.io/en/latest/repository_javadoc.html#kurento-repository-internal">Kurento Repository Internal</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="https://doc-kurento-repository.readthedocs.io/en/latest/glossary.html">Glossary</a></li>
+</ul>
+
+        
+      </div></div>
+      
+
+      
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="https://doc-kurento-repository.readthedocs.io/en/latest/index.html">Kurento Repository</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="https://doc-kurento-repository.readthedocs.io/en/latest/index.html">Docs</a> »</li>
+      
+    <li>Introduction</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="https://github.com/Kurento/doc-kurento-repository-readthedocs/blob/master/source/introduction.rst" class="fa fa-github"> Edit on GitHub</a>
+        
+      </li>
+  </ul>
+  <hr>
+</div>
+          <div role="main">
+            
+  <img alt="Kurento logo" class="align-center" src="kurento-rect-logo3.png">
+<div class="section" id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<p>Welcome to the <strong>Kurento Repository</strong> project. This piece of software is part of
+<a class="reference external" href="http://www.kurento.org/">Kurento</a>, and it allows to manage media
+repositories based on the storage capabilities provided by a file system or an
+instance of <a class="reference internal" href="https://doc-kurento-repository.readthedocs.io/en/latest/glossary.html#term-mongodb"><span class="xref std std-term">MongoDB</span></a>. The following picture illustrates the architecture
+of the Kurento Repository:</p>
+<div class="figure align-center" id="id1">
+<img alt="Kurento Repository Architecture" src="kurento-repository-architecture.png">
+<p class="caption"><span class="caption-text"><em>Kurento Repository Architecture</em></span></p>
+</div>
+<p>As it can be seen, the Kurento Repository has been designed following a
+client-server architecture. Therefore, it has two main components:</p>
+<ul class="simple">
+<li><strong>kurento-repository-server</strong> : Stand-alone application which implements a
+media repository, exposing its capabilities through an easy-to-use
+<a class="reference internal" href="https://doc-kurento-repository.readthedocs.io/en/latest/glossary.html#term-http"><span class="xref std std-term">HTTP</span></a> <a class="reference internal" href="https://doc-kurento-repository.readthedocs.io/en/latest/glossary.html#term-rest"><span class="xref std std-term">REST</span></a> API. It has been implement as a <a class="reference internal" href="https://doc-kurento-repository.readthedocs.io/en/latest/glossary.html#term-spring-boot"><span class="xref std std-term">Spring Boot</span></a>
+application.</li>
+<li><strong>kurento-repository-client</strong> : Java library that wraps the REST
+communication with the server, exposing a Java API which can be consumed in
+Java applications.</li>
+</ul>
+<p>In short, the <em>kurento-repository-server</em> allows media recording and playing.
+These capabilities can be consumed by any application by means of the REST API,
+of specifically by Java application using the <em>kurento-repository-client</em>. The
+media in the repository can be consumed by <em>kurento-media-server</em> using HTTP as
+transport.</p>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>There is a Kurento Java
+<a class="reference external" href="https://github.com/Kurento/kurento-tutorial-java/tree/master/kurento-hello-world-repository">tutorial application</a>
+that connects to a running instance of the <strong>kurento-repository-server</strong> to
+record and play media over HTTP using the capabilities of the
+<a class="reference external" href="http://www.kurento.org/">Kurento Media Server</a>.</p>
+</div>
+<div class="section" id="source-code">
+<h2>Source code<a class="headerlink" href="#source-code" title="Permalink to this headline">¶</a></h2>
+<p>Kurento Repository is open source (Apache 2.0) and it is hosted on
+<a class="reference external" href="https://github.com/Kurento/kurento-java/tree/master/kurento-repository">GitHub</a>.
+This Git repository contains a Maven project with the following modules:</p>
+<ul class="simple">
+<li><em>kurento-java</em>: Reactor project.</li>
+<li><em>kurento-repository-server</em>: Contains a Spring Boot application, very easy
+to setup and run. It exposes the HTTP REST API</li>
+<li><em>kurento-repository-client</em>:  Wrapper for the library, offering a simpler
+Java API.</li>
+<li><em>kurento-repository-internal</em>: core Java library of repository. Plain Java
+mostly, but with Spring dependencies.</li>
+</ul>
+</div>
+<div class="section" id="content-of-this-documentation">
+<h2>Content of this documentation<a class="headerlink" href="#content-of-this-documentation" title="Permalink to this headline">¶</a></h2>
+<p>In order to learn how to build, configure and run the server application, please
+refer to the <a class="reference internal" href="https://doc-kurento-repository.readthedocs.io/en/latest/repository_server.html"><span class="doc">Repository Server</span></a> section. The
+<a class="reference internal" href="https://doc-kurento-repository.readthedocs.io/en/latest/repository_rest_api.html"><span class="doc">REST API</span></a> that can be used to communicate with the
+server are described in the next section. The Java API is depicted on the
+section <a class="reference internal" href="https://doc-kurento-repository.readthedocs.io/en/latest/repository_client.html"><span class="doc">repository client</span></a>. The complete
+<a class="reference internal" href="https://doc-kurento-repository.readthedocs.io/en/latest/repository_javadoc.html"><span class="doc">JavaDoc</span></a> reference is also provided. Finally, a
+reference of the most important terms handled in this documentation is
+summarized in the <a class="reference internal" href="https://doc-kurento-repository.readthedocs.io/en/latest/glossary.html"><span class="doc">glossary</span></a> section.</p>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="https://doc-kurento-repository.readthedocs.io/en/latest/repository_server.html" class="btn btn-neutral float-right" title="Repository Server">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="https://doc-kurento-repository.readthedocs.io/en/latest/index.html" class="btn btn-neutral" title="Table of Contents"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr>
+
+  <div role="contentinfo">
+    <p>
+        © Copyright 2016, kurento.org.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org/">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Read the Docs</span>
+      v: latest
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions"><!-- Inserted RTD Footer -->
+<div class="injected">
+
+  
+
+      
+      
+      
+      <dl>
+        <dt>Versions</dt>
+        
+         <strong> 
+        <dd><a href="http://doc-kurento-repository.readthedocs.io/en/latest/introduction.html">latest</a></dd>
+         </strong> 
+        
+        
+        <dd><a href="http://doc-kurento-repository.readthedocs.io/en/stable/introduction.html">stable</a></dd>
+        
+        
+      </dl>
+      
+      
+
+      
+      
+      <dl>
+        <dt>Downloads</dt>
+        
+        <dd><a href="https://readthedocs.org/projects/doc-kurento-repository/downloads/pdf/latest/">PDF</a></dd>
+        
+        <dd><a href="https://readthedocs.org/projects/doc-kurento-repository/downloads/htmlzip/latest/">HTML</a></dd>
+        
+        <dd><a href="https://readthedocs.org/projects/doc-kurento-repository/downloads/epub/latest/">Epub</a></dd>
+        
+      </dl>
+      
+      
+
+      
+      <dl>
+        <!-- These are kept as relative links for internal installs that are http -->
+        <dt>On Read the Docs</dt>
+        <dd>
+          <a href="https://readthedocs.org/projects/doc-kurento-repository/">Project Home</a>
+        </dd>
+        <dd>
+          <a href="https://readthedocs.org/projects/doc-kurento-repository/builds/">Builds</a>
+        </dd>
+        <dd>
+          <a href="https://readthedocs.org/projects/doc-kurento-repository/downloads/">Downloads</a>
+        </dd>
+      </dl>
+      
+
+      
+
+      
+      <dl>
+        <dt>On GitHub</dt>
+        <dd>
+          <a href="https://github.com/Kurento/doc-kurento-repository-readthedocs/blob/master/source/introduction.rst">View</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/Kurento/doc-kurento-repository-readthedocs/edit/master/source/introduction.rst">Edit</a>
+        </dd>
+      </dl>
+      
+      
+
+      
+      <dl>
+        <dt>Search</dt>
+        <dd>
+          <div style="padding: 6px;">
+            <form id="flyout-search-form" class="wy-form" target="_blank" action="https://readthedocs.org/projects/doc-kurento-repository/search/" method="get">
+              <input name="q" placeholder="Search docs" value="" type="text">
+              </form>
+          </div>
+        </dd>
+      </dl>
+      
+
+
+
+      <hr>
+      
+      Free document hosting provided by <a href="https://readthedocs.org/">Read the Docs</a>. 
+      
+
+      
+
+</div>
+</div>
+  </div>
+
+
+
+  
+
+    
+      
+      
+      
+      
+      
+
+  
+
+  
+  
+
+  
+  
+  
+   
+
+
+<div id="SL_balloon_obj" style="display: none;"><div id="SL_button" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 24px; height: 24px; position: absolute; cursor: pointer;"></div><div id="SL_shadow_translation_result2" style="display: none;"></div><div id="SL_shadow_translator"><div id="SL_providers"><div class="SL_BL_LABLE_ON" title="Google" id="SL_P0">G</div><div class="SL_BL_LABLE_ON" title="Microsoft" id="SL_P1">M</div><div class="SL_BL_LABLE_ON" title="Translator" id="SL_P2">T</div></div><div id="SL_planshet" style="background: rgb(244, 245, 245) url('undefined') repeat scroll 0% 0%;"><div id="SL_arrow_up"></div><div id="SL_TB"><div id="bubblelogo" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 24px; height: 24px; position: absolute;"></div><table id="SL_tables"><tr><td width="10%" align="right"><input id="SLloc" title="鎖定語言" type="checkbox"></td><td width="20%" align="left"><select id="SL_lng_from"><option value="auto">檢測語言</option><option value="sq">阿尔巴尼亚语</option><option value="ar">阿拉伯语</option><option value="az">阿塞拜疆语</option><option value="ga">爱尔兰语</option><option value="et">爱沙尼亚语</option><option value="eu">巴斯克语</option><option value="be">白俄罗斯语</option><option value="bg">保加利亚语</option><option value="is">冰岛语</option><option value="pl">波兰语</option><option value="bs">波斯尼亚语</option><option value="fa">波斯语</option><option value="af">布尔语(南非荷兰语)</option><option value="da">丹麦语</option><option value="de">德语</option><option value="ru">俄语</option><option value="fr">法语</option><option value="tl">菲律宾语</option><option value="fi">芬兰语</option><option value="km">高棉语</option><option value="ka">格鲁吉亚语</option><option value="gu">古吉拉特语</option><option value="kk">哈萨克语</option><option value="ht">海地克里奥尔语</option><option value="ko">韩语</option><option value="ha">豪萨语</option><option value="nl">荷兰语</option><option value="gl">加利西亚语</option><option value="ca">加泰罗尼亚语</option><option value="cs">捷克语</option><option value="kn">卡纳达语</option><option value="hr">克罗地亚语</option><option value="la">拉丁语</option><option value="lv">拉脱维亚语</option><option value="lo">老挝语</option><option value="lt">立陶宛语</option><option value="ro">罗马尼亚语</option><option value="mg">马尔加什语</option><option value="mt">马耳他语</option><option value="mr">马拉地语</option><option value="ml">马拉雅拉姆语</option><option value="ms">马来语</option><option value="mk">马其顿语</option><option value="mi">毛利语</option><option value="mn">蒙古语</option><option value="bn">孟加拉语</option><option value="my">缅甸语</option><option value="hmn">苗语</option><option value="zu">南非祖鲁语</option><option value="ne">尼泊尔语</option><option value="no">挪威语</option><option value="pa">旁遮普语</option><option value="pt">葡萄牙语</option><option value="ny">齐切瓦语</option><option value="ja">日语</option><option value="sv">瑞典语</option><option value="sr">塞尔维亚语</option><option value="st">塞索托语</option><option value="si">僧伽罗语</option><option value="eo">世界语</option><option value="sk">斯洛伐克语</option><option value="sl">斯洛文尼亚语</option><option value="sw">斯瓦希里语</option><option value="ceb">宿务语</option><option value="so">索马里语</option><option value="tg">塔吉克语</option><option value="te">泰卢固语</option><option value="ta">泰米尔语</option><option value="th">泰语</option><option value="tr">土耳其语</option><option value="cy">威尔士语</option><option value="ur">乌尔都语</option><option value="uk">乌克兰语</option><option value="uz">乌兹别克语</option><option value="iw">希伯来语</option><option value="el">希腊语</option><option value="es">西班牙语</option><option value="hu">匈牙利语</option><option value="hy">亚美尼亚语</option><option value="ig">伊博语</option><option value="it">意大利语</option><option value="yi">意第绪语</option><option value="hi">印地语</option><option value="su">印尼巽他语</option><option value="id">印尼语</option><option value="jw">印尼爪哇语</option><option value="en">英语</option><option value="yo">约鲁巴语</option><option value="vi">越南语</option><option value="zh-CN">中文简体</option><option value="zh-TW">中文繁体</option></select></td><td width="5%" align="center"><div id="SL_switch_b" title="切換語言" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 10px; height: 10px; cursor: pointer;" align="center"></div></td><td width="20%" align="left"><select id="SL_lng_to"><option value="sq">阿尔巴尼亚语</option><option value="ar">阿拉伯语</option><option value="az">阿塞拜疆语</option><option value="ga">爱尔兰语</option><option value="et">爱沙尼亚语</option><option value="eu">巴斯克语</option><option value="be">白俄罗斯语</option><option value="bg">保加利亚语</option><option value="is">冰岛语</option><option value="pl">波兰语</option><option value="bs">波斯尼亚语</option><option value="fa">波斯语</option><option value="af">布尔语(南非荷兰语)</option><option value="da">丹麦语</option><option value="de">德语</option><option value="ru">俄语</option><option value="fr">法语</option><option value="tl">菲律宾语</option><option value="fi">芬兰语</option><option value="km">高棉语</option><option value="ka">格鲁吉亚语</option><option value="gu">古吉拉特语</option><option value="kk">哈萨克语</option><option value="ht">海地克里奥尔语</option><option value="ko">韩语</option><option value="ha">豪萨语</option><option value="nl">荷兰语</option><option value="gl">加利西亚语</option><option value="ca">加泰罗尼亚语</option><option value="cs">捷克语</option><option value="kn">卡纳达语</option><option value="hr">克罗地亚语</option><option value="la">拉丁语</option><option value="lv">拉脱维亚语</option><option value="lo">老挝语</option><option value="lt">立陶宛语</option><option value="ro">罗马尼亚语</option><option value="mg">马尔加什语</option><option value="mt">马耳他语</option><option value="mr">马拉地语</option><option value="ml">马拉雅拉姆语</option><option value="ms">马来语</option><option value="mk">马其顿语</option><option value="mi">毛利语</option><option value="mn">蒙古语</option><option value="bn">孟加拉语</option><option value="my">缅甸语</option><option value="hmn">苗语</option><option value="zu">南非祖鲁语</option><option value="ne">尼泊尔语</option><option value="no">挪威语</option><option value="pa">旁遮普语</option><option value="pt">葡萄牙语</option><option value="ny">齐切瓦语</option><option value="ja">日语</option><option value="sv">瑞典语</option><option value="sr">塞尔维亚语</option><option value="st">塞索托语</option><option value="si">僧伽罗语</option><option value="eo">世界语</option><option value="sk">斯洛伐克语</option><option value="sl">斯洛文尼亚语</option><option value="sw">斯瓦希里语</option><option value="ceb">宿务语</option><option value="so">索马里语</option><option value="tg">塔吉克语</option><option value="te">泰卢固语</option><option value="ta">泰米尔语</option><option value="th">泰语</option><option value="tr">土耳其语</option><option value="cy">威尔士语</option><option value="ur">乌尔都语</option><option value="uk">乌克兰语</option><option value="uz">乌兹别克语</option><option value="iw">希伯来语</option><option value="el">希腊语</option><option value="es">西班牙语</option><option value="hu">匈牙利语</option><option value="hy">亚美尼亚语</option><option value="ig">伊博语</option><option value="it">意大利语</option><option value="yi">意第绪语</option><option value="hi">印地语</option><option value="su">印尼巽他语</option><option value="id">印尼语</option><option value="jw">印尼爪哇语</option><option value="en">英语</option><option value="yo">约鲁巴语</option><option value="vi">越南语</option><option value="zh-CN">中文简体</option><option value="zh-TW">中文繁体</option></select></td><td width="5%" align="center"> </td><td width="6%" align="center"><div id="SL_TTS_voice" title="聆聽" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="6%" align="center"><div id="SL_copy" title="複製譯文" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="6%" align="center"><div id="SL_bbl_font_patch" title="此功能在字典中禁用"></div><div id="SL_bbl_font" title="字體大小" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="6%" align="center"><div id="SL_TH" title="翻譯歷史" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="10%"></td><td width="6%" align="right"><div id="SL_pin" title="固定彈出窗口" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 16px; height: 16px; cursor: pointer;"></div></td></tr></table></div><div id="SL_alert_bbl"><div id="SLHKclose"></div><div id="SL_alert_cont"></div></div></div><div id="SL_shadow_translation_result" style="background: rgb(255, 255, 255) url('undefined') repeat scroll 0% 0%;"></div><div id="SL_loading" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; position: absolute; width: 35px; margin-left: 180px; margin-top: -40px; height: 35px;"></div><div id="SL_player2"></div><div id="SL_alert100">語言功能限200個字符</div><div id="SL_Balloon_options" style="background: rgb(255, 255, 255) none repeat scroll 0% 0%;"><div id="SL_arrow_down"></div><table width="100%"><tr><td width="18%" height="16" align="left"><div id="SL_bbl_donate" title="進行一點捐款" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="68%" align="center"><a href="#" id="OPlnk" title="顯示選項">選項</a> : <a href="#" id="HISTlnk" title="翻譯歷史">歷史</a> : <a href="http://about.imtranslator.net/tutorials/presentations/imtranslator-translator-for-firefox/popup-bubble-application/" target="_top" id="HELPlnk" title="幫助">幫助</a> : <a href="#" id="FBlnk" title="反饋">反饋</a></td><td width="15%" align="right"><a id="SL_Balloon_Close" href="#" title="關閉">關閉</a></td></tr></table></div></div></div></body>
+</html>

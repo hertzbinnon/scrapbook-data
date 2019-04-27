@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    <link rel="canonical" href="http://blog.csdn.net/charleslei/article/details/62468089"> 
+    
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    <meta name="description" content="IVTC/Deinterlace的来龙去脉">
+    <meta name="keywords" content="IVTC">
+    <meta http-equiv="Cache-Control" content="no-siteapp"><link rel="alternate" media="handheld" href="http://blog.csdn.net/charleslei/article/details/62468089#">
+    <meta name="shenma-site-verification" content="5a59773ab8077d4a62bf469ab966a63b_1497598848">
+    
+    
+    <!-- adhoc sdk -->
+       
+       
+                 <!-- adhoc sdk end -->
+    <title>IVTC/Deinterlace的来龙去脉 - CSDN博客</title>
+    <link href="favicon.ico" rel="SHORTCUT ICON">
+
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body><div id="BAIDU_DUP_fp_wrapper" style="position: absolute; left: -1px; bottom: -1px; z-index: 0; width: 0px; height: 0px; overflow: hidden; visibility: hidden; display: none;"><iframe id="BAIDU_DUP_fp_iframe" src="index_1.html" style="width: 0px; height: 0px; visibility: hidden; display: none;"></iframe></div>
+
+<div class="container clearfix">
+  <main>
+    <article>
+        <h1 class="csdn_top">IVTC/Deinterlace的来龙去脉</h1>
+        <div class="article_bar clearfix">
+            <div class="artical_tag">
+                <span class="original">
+                转载                </span>
+                <span class="time">2017年03月16日 22:59:23</span>
+            </div>
+
+            <ul class="article_tags clearfix csdn-tracking-statistics" data-mod="popu_377">
+                <li class="tit">标签：</li>
+
+<!--          [startarticletags]-->
+                                                            <li><a href="http://so.csdn.net/so/search/s.do?q=IVTC&amp;t=blog" target="_top">IVTC</a> <span>/</span></li>
+                                    <!--          [endarticletags]-->
+            </ul>
+            <ul class="right_bar">
+                <li><button class="btn-noborder"><i class="icon iconfont icon-read"></i><span class="txt">252</span></button></li>
+<!--                <li><button class="btn-noborder but-comment-topicon"><i class="icon iconfont icon-pinglun"></i><span class="txt">--><!--</span></button></li>-->
+<!--                <li><button class="btn-noborder btn-like"><i  class="icon iconfont icon-xihuan-"></i><span class="txt">--><!--</span></button></li>-->
+                <li class="edit">
+                    <a class="btn-noborder" href="http://blog.csdn.net/charleslei/article/details/62468089">
+                        <i class="icon iconfont icon-bianji"></i><span class="txt">编辑</span>
+                    </a>
+                </li>
+                <li class="del">
+                    <a class="btn-noborder" onclick="javascript:deleteArticle(fileName);return false;">
+                        <i class="icon iconfont icon-shanchu"></i><span class="txt">删除</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div id="article_content" class="article_content csdn-tracking-statistics" data-mod="popu_519" data-dsm="post">
+                        
+<p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px;">IVTC/Deinterlace的来龙去脉<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px;">1 胶片电影：曝光率为24帧/秒的progressive video（连续完整帧图像序列），它由无数个感光晶体（35mm可达5000×5000）实现图像曝光，而人眼在35mm的区域内能分辨的最大极限分辨率为3000×3000，所以用胶片电影来制作各种视频文件分辨率是绰绰有余的。</p>
+<p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px;">2 电视：首先区分电视分辨率与pc上的分辨率，pc分辨率就是象素点数，而电视分辨率是指扫描线数，由于电视信号或电视机硬件等因素，电视扫描线数是可变的，只能知道的原理最大扫描线数。</p>
+<p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px;">2.1 NTSC和PAL</p>
+<p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px;">NTSC是一种分辨率为720×480，帧率为30f/s的电视制式，在美国、加拿大、墨西哥和日本等国应用. PAL分辨率为720×576，帧率25f/s，在欧洲、香港和中东等地区普遍应用，它是NTSC的升级版，解决了NTSC制式中由传输相差引起的颜色偏差问题。</p>
+<p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px;">3 TELECINE/IVTC</p>
+<p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px;">在电视或PC上播放DVD电影，需要把24f/s的电影转化为25f/s或30f/s，这个过程就叫TELECINE(2:2 pulldown或3:2 pulldown),反之就是IVTC。</p>
+<p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px;">对于24f/s film--&gt; 25f/s tv(或其他视频节目)，TELECINE不作任何处理，只是把播放速度提高1f/s.</p>
+<p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px;">对于24f/s film--&gt; 30f/s tv(或其他视频节目)，TELECINE（3:2 pulldown）处理过程如下：把A、B、C、D四帧连续图像分割成场At Ab / Bt Bb / Ct Cb / Dt Db，再做重新排列成At Ab At / Bb Bt / Cb Ct Cb / Dt Db，由此得到五帧图像，场提取为3/2/3/2,因此又可称之谓3:2 pulldown。</p>
+<p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px;">4.Deinterlace</p>
+<p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px;">电视节目都是隔行扫描（这样做既有历史原因，也有提高视频节目连续性的需求），DVD和一些摄像机采集视频也都是interlace视频（场交错成帧）。由于组成一帧的两个场存在时间差，这些视频文件（节目来源为胶片电影的除外？）在播放过程中会出现齿纹、假象等图像质量问题，这就需要在播放前对视频做去交错处理（Deinterlace）。</p>
+<p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px;">DVD是特别为隔行扫描显示器设计的，在NTSC和PAL制式的电视机上能正常显示。由于电视机上的磷粉受电子束扫描有一定的反应时间，因此，当电子束扫完top field，再扫bottom field时，top field并没有立即消失，由此得到50f/s或60f/s的视频效果。</p>
+<p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px;">&nbsp;&nbsp;&nbsp;&nbsp; 但是，PC和数字电视机是逐行扫描显示器，要在这些逐行扫描显示器上播放DVD，必须做隔行转逐行转换，这就涉及（一）中所提及的IVTC/Dinterlace。</p>
+<p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px;">&nbsp;&nbsp;&nbsp;&nbsp; DVD制片来源有两种：胶片电影和视频摄录。制片源是胶片电影的DVD中都有破膛（Telecine）标记，根据这一标记做IVTC即可得到24f/s的完整品质的视频。制片源是视频摄录（trully intelaced）的DVD不作Deinterlace处理播放时都会梳齿、拉丝等画质问题，原因就是一帧图像的两个场有时间差，存在相对运动。要消除这类图像的诸多画质问题就必须做Deinterlace处理，方法主要有：Blend，Bob，weave，自适应和运动补偿等。Blend，Bob，weave运算复杂度小，在播放器中较为常用。</p>
+<p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px;">1. Blend</p>
+<p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px;">&nbsp;&nbsp;&nbsp;&nbsp; 对一帧图像中的两场做叠加、求均值等运算，以消除梳齿。这种方法对于静止图像帧比较有效，运动图像blend后会有残影。下面是一个blend<a target="_top" href="http://lib.csdn.net/base/datastructure" class="replace_word" title="算法与数据结构知识库" style="color: rgb(223, 52, 52); text-decoration: none; font-weight: bold;">算法</a>的实现：</p>
+<p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px;">static void deinterlace_blend( uint8_t *pdst, uint8_t *psrc[],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int width, int height )<br>
+{<br>
+register int i, j;<br>
+register uint8_t *dstl, *srcl1, *srcl2, *srcl3;</p>
+<p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px;">dstl = pdst; /* target line */<br>
+srcl1 = psrc[0]; /* 1st source line */<br>
+srcl2 = srcl1 + width; /* 2nd source line */<br>
+srcl3 = srcl2 + width; /* 3rd source line */</p>
+<p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px;">/* Copy the first line */<br>
+memcpy(dstl , srcl1 , width);<br>
+dstl += width;</p>
+<p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px;">for (j = 1; j &lt; height-1; ++j) {</p>
+<p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px;">&nbsp;&nbsp;&nbsp; for (i = 0; i &lt; width; ++i) { //（srcl1 + 2*srcl2 + srcl3）/4<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dstl [i] = (srcl1 [i] + (srcl2 [i]&lt;&lt;1) + srcl3[i]) &gt;&gt; 2;</p>
+<p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px;">&nbsp;&nbsp;&nbsp; }</p>
+<p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px;">&nbsp;&nbsp;&nbsp; srcl1 = srcl2 ; srcl2 = srcl3 ; srcl3 += width;<br>
+&nbsp;&nbsp;&nbsp; dstl += width;<br>
+}</p>
+<p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px;">/* Copy the last line */<br>
+memcpy(dstl , srcl3 , width);<br>
+}</p>
+<p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px;">2. Bob</p>
+<p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px;">&nbsp;&nbsp;&nbsp;&nbsp; 用单个场的上下行求均值来填充成为帧，这样的帧图像牺牲了垂直分辨率，图像也偏柔。这种算法较为简单，运算量小，本人实验效果也不错。</p>
+<p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px;">3.Weave</p>
+<p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px;">&nbsp;&nbsp;&nbsp;&nbsp; 也就是do nothing，只是把两个连续的场拼成一帧，这对于运动图像（制作源为胶片电影的除外）就会产生了梳齿问题。</p>
+<p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px;">4. 自适应去交错</p>
+<p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px;">&nbsp;&nbsp;&nbsp;&nbsp; 针对不同的图像类型（运动或静止等情况），选择相应的去交错算法。例如，分析两个场的数据，分别用bob或weave做deinterlace，这样产生的图像质量不错。</p>
+<p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px;">&nbsp;&nbsp;&nbsp;&nbsp; 还有一些算法，如运动补偿去交错法运算量大，实际很少运用；Discard丢弃偶数场或奇数场，损失一半的数据，这种方法也很少采用。</p>
+                    </div>
+    </article>
+      <div class="readall_box csdn-tracking-statistics" data-mod="popu_376">
+          <div class="read_more_mask"></div>
+          <a class="btn btn-large btn-gray-fred read_more_btn" target="_self">阅读全文</a>
+      </div>
+      <div class="article_copyright">
+              </div>
+      <ul class="article_collect clearfix csdn-tracking-statistics" data-mod="popu_378">
+          <li class="tit">本文已收录于以下专栏：</li>
+<!--          [startarticlecolumns]-->
+                                <!--          [endarticlecolumns]-->
+      </ul>
+      <div class="comment_box clearfix">
+          <div id="comment_form">
+              <div id="commentsbmitarear">
+                              </div>
+          </div>
+      </div>
+      <div class="comment_li_outbox">
+          <div id="comment_list"></div>
+      </div>
+
+      <div class="more_comment">
+          <div id="comment_bar" class="trackgin-ad" data-mod="popu_385"></div>
+      </div>
+
+      <h3 class="recommend_tit">相关文章推荐</h3>
+      <div class="recommend_list clearfix">
+                                                                                                                  <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                          <dd>
+                              <h2><a href="http://blog.csdn.net/sseustcer/article/details/52089810" target="_top" strategy="BlogCommendFromBaidu_0">去交错Deinterlace算法介绍</a></h2>
+                              <div class="summary">
+                                  描述
+
+一个动态影像是由一连串连续的静态影像所组成的，其中每一个静态影像称为帧（frame），而动态影像中每秒所包含静态影像的数量则称为帧（速）率（frameper second, fps）。
+...                              </div>
+                              <ul>
+                                  <li class="avatar_img"><a href="http://blog.csdn.net/sseustcer" target="_top" strategy="BlogCommendFromBaidu_0"><img src="3_sseustcer.jpg" alt="sseustcer" title="sseustcer"></a></li>
+                                  <li class="user_name"><a href="http://blog.csdn.net/sseustcer">sseustcer</a></li>
+                                  <li class="time">2016年08月01日 22:37</li>
+                                  <li class="visited_num"><i class="icon iconfont icon-read"></i><span>723</span></li>
+                              </ul>
+                          </dd>
+                      </dl>
+                                                                                                                                <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                          <dd>
+                              <h2><a href="http://blog.csdn.net/charleslei/article/details/48651953" target="_top" strategy="BlogCommendFromBaidu_1">去隔行利器FieldsKit Deinterlacer 解析</a></h2>
+                              <div class="summary">
+                                  在影视制作领域，为了构建相对完美的逐行扫描视频，或者为数字转胶片过程提供更高质量的画格，我们须将隔行扫描视频进行去隔行处理。尽管许多后期处理软件内置了去隔行处理机能，但是它们的算法都极为单一，往往达不...                              </div>
+                              <ul>
+                                  <li class="avatar_img"><a href="http://blog.csdn.net/charleslei" target="_top" strategy="BlogCommendFromBaidu_1"><img src="3_charleslei.jpg" alt="charleslei" title="charleslei"></a></li>
+                                  <li class="user_name"><a href="http://blog.csdn.net/charleslei">charleslei</a></li>
+                                  <li class="time">2015年09月22日 11:32</li>
+                                  <li class="visited_num"><i class="icon iconfont icon-read"></i><span>3111</span></li>
+                              </ul>
+                          </dd>
+                      </dl>
+                                                                                                              <div id="_geyayee6ywj"></div><a href="http://www.baidu.com/cb.php?c=IgF_pyfqnHmknjnknjT0IZ0qnfK9ujYzP1nYPH0k0Aw-5Hc3rHnYnHb0TAq15HfLPWRznjb0T1Y4nHbzPjNhmHR3nARzujNW0AwY5HDdnHDkPjmYn1c0IgF_5y9YIZ0lQzq-uZR8mLPbUB48ugfEpZNGXy-jULNzTvRETvNzpyN1gvw-IA7GUatLnWqdIAdxTvqdThP-5yF_UvTkn0KzujYk0AFV5H00TZcqn0KdpyfqnHRLPjnvnfKEpyfqnHc4rj6kP0KWpyfqP1cvrHnz0AqLUWYs0ZK45HcsP6KWThnqPjD3P16" target="_top">
+	<dl class="clearfix csdn-tracking-statistics" data-mod="popu_393">
+		<dt><img class="maxwidth" src="0f0005dl5zspbjreewzsa0.jpg" alt="" title=""></dt>
+		<dd>
+			<div class="summary">
+				<h2>2万月薪的程序员想拿4万，有捷径可走吗？</h2>  <div class="summary">作为程序员，薪酬很高，但有一个问题想了很久，作为一个技术人员，我该如何持续性学习...</div> 
+			</div>
+		</dd>
+	</dl>
+</a>
+                                                                                <dl class="clearfix csdn-tracking-statistics downloadElement" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                          <dt><a href="http://download.csdn.net/detail/lzgzyh0705/2715547" target="_top" strategy="BlogCommendFromCsdn_2"><img class="maxwidth" src="rar.svg" alt="" title=""></a></dt>
+                          <dd>
+                              <div class="summary">
+                                  <h2><a href="http://download.csdn.net/detail/lzgzyh0705/2715547" target="_top" strategy="BlogCommendFromCsdn_2">deinterlace快速运动镜头清晰化</a></h2>
+                                  <div class="summary">
+                                      <ul>
+                                          <li class="time">2010年09月24日 18:47</li>
+                                          <li class="visited_num fileSize">211KB</li>
+                                          <li class="download_btn"><a href="http://download.csdn.net/detail/lzgzyh0705/2715547" target="_top">下载</a></li>
+                                      </ul>
+                                  </div>
+                              </div>
+                          </dd>
+                      </dl>
+                                                                                                                                <dl class="clearfix csdn-tracking-statistics downloadElement" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                          <dt><a href="http://download.csdn.net/detail/sbx19850629/3805355" target="_top" strategy="BlogCommendFromCsdn_3"><img class="maxwidth" src="pdf.svg" alt="" title=""></a></dt>
+                          <dd>
+                              <div class="summary">
+                                  <h2><a href="http://download.csdn.net/detail/sbx19850629/3805355" target="_top" strategy="BlogCommendFromCsdn_3">去隔行deinterlace</a></h2>
+                                  <div class="summary">
+                                      <ul>
+                                          <li class="time">2011年11月17日 15:24</li>
+                                          <li class="visited_num fileSize">1.29MB</li>
+                                          <li class="download_btn"><a href="http://download.csdn.net/detail/sbx19850629/3805355" target="_top">下载</a></li>
+                                      </ul>
+                                  </div>
+                              </div>
+                          </dd>
+                      </dl>
+                                                                                                                                <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                          <dd>
+                              <h2><a href="http://blog.csdn.net/misiter/article/details/7070109" target="_top" strategy="BlogCommendFromCsdn_4">deinterlace 隔行  progressive 逐行  3:2pulldown</a></h2>
+                              <div class="summary">
+                                  3:2/2:2 Pull down模式基于逐行扫描技术上进行的，针对以电影胶片为最初拍摄素材媒介的NTSC视频软件的一种视频信号再生技术。大部分的DVD电影和其他以视频信号媒体记载的电影的播放都是先经...                              </div>
+                              <ul>
+                                  <li class="avatar_img"><a href="http://blog.csdn.net/misiter" target="_top" strategy="BlogCommendFromCsdn_4"><img src="3_misiter.jpg" alt="misiter" title="misiter"></a></li>
+                                  <li class="user_name"><a href="http://blog.csdn.net/misiter">misiter</a></li>
+                                  <li class="time">2011年12月14日 13:33</li>
+                                  <li class="visited_num"><i class="icon iconfont icon-read"></i><span>4563</span></li>
+                              </ul>
+                          </dd>
+                      </dl>
+                                                                                            <!-- 广告位：PC端-博客详情通栏7（feed流）-808*120 -->
+                      <div id="_xuc6axsg9a"></div><a href="http://www.baidu.com/cb.php?c=IgF_pyfqnHmknjnzPHn0IZ0qnfK9ujYzP1f4Pjnd0Aw-5Hc4nj6vPjm0TAq15Hf4rjn1n1b0T1YYm19bnHDvPjTLmhnsuyNB0AwY5HDdnHDkPjmYn1c0IgF_5y9YIZ0lQzqMpgwBUvqoQhP8QvIGIAPCmgfEmvq_Iyd8Q1R4uW79P1I9rHnYnvczPHN-n19-uAfLrjqdIAdxTvqdThP-5HDknHNbmhkEusKzujYk0AFV5H00TZcqn0KdpyfqnHRLPjnvnfKEpyfqnHnsnj0YnsKWpyfqP1cvrHnz0AqLUWYs0ZK45HcsP6KWThnqPjR1rH0" target="_top">
+	<dl class="clearfix csdn-tracking-statistics" data-mod="popu_393">
+		<dt><img class="maxwidth" src="0f000ntu6uyvif9wpq-cgs.jpg" alt="" title=""></dt>
+		<dd>
+			<div class="summary">
+				<h2>TensorFlow on Android：物体识别</h2>  <div class="summary">如何在 Android 上面运行 TensorFlow，并利用基于 TensorFlow 的 Object Detection API 来实现一个可以识别静态图片中的物体的应用？</div> 
+			</div>
+		</dd>
+	</dl>
+</a>
+                                                                                                  <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                          <dd>
+                              <h2><a href="http://blog.csdn.net/yypony/article/details/16849705" target="_top" strategy="BlogCommendFromCsdn_5">deinterlace 隔行 progressive 逐行 3:2pulldown</a></h2>
+                              <div class="summary">
+                                  转自：http://blog.csdn.net/yuyin86/article/details/13628943
+
+3:2/2:2 Pull down模式基于逐行扫描技术上进行的，针对以电影胶片为...                              </div>
+                              <ul>
+                                  <li class="avatar_img"><a href="http://blog.csdn.net/yypony" target="_top" strategy="BlogCommendFromCsdn_5"><img src="3_yypony.jpg" alt="yypony" title="yypony"></a></li>
+                                  <li class="user_name"><a href="http://blog.csdn.net/yypony">yypony</a></li>
+                                  <li class="time">2013年11月20日 20:43</li>
+                                  <li class="visited_num"><i class="icon iconfont icon-read"></i><span>824</span></li>
+                              </ul>
+                          </dd>
+                      </dl>
+                                                                                                                                <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                          <dd>
+                              <h2><a href="http://blog.csdn.net/haima1998/article/details/47056387" target="_top" strategy="BlogCommendFromCsdn_6">视频后处理技术deinterlace</a></h2>
+                              <div class="summary">
+                                  转自：http://blog.sina.com.cn/s/blog_9b82725901016x0h.html
+
+
+一个动态影像是由一连串连续的静态影像所组成的，其中每一个静态影像称为帧（frame）...                              </div>
+                              <ul>
+                                  <li class="avatar_img"><a href="http://blog.csdn.net/haima1998" target="_top" strategy="BlogCommendFromCsdn_6"><img src="3_haima1998.jpg" alt="haima1998" title="haima1998"></a></li>
+                                  <li class="user_name"><a href="http://blog.csdn.net/haima1998">haima1998</a></li>
+                                  <li class="time">2015年07月25日 14:49</li>
+                                  <li class="visited_num"><i class="icon iconfont icon-read"></i><span>2068</span></li>
+                              </ul>
+                          </dd>
+                      </dl>
+                                                                                                                                <dl class="clearfix csdn-tracking-statistics downloadElement" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                          <dt><a href="http://download.csdn.net/detail/sni2010/7645985" target="_top" strategy="BlogCommendFromCsdn_7"><img class="maxwidth" src="pdf.svg" alt="" title=""></a></dt>
+                          <dd>
+                              <div class="summary">
+                                  <h2><a href="http://download.csdn.net/detail/sni2010/7645985" target="_top" strategy="BlogCommendFromCsdn_7">产品经理深入浅出第1课-产品经理的诞生的来龙去脉</a></h2>
+                                  <div class="summary">
+                                      <ul>
+                                          <li class="time">2014年07月17日 11:33</li>
+                                          <li class="visited_num fileSize">1.16MB</li>
+                                          <li class="download_btn"><a href="http://download.csdn.net/detail/sni2010/7645985" target="_top">下载</a></li>
+                                      </ul>
+                                  </div>
+                              </div>
+                          </dd>
+                      </dl>
+                                                                                                                                <dl class="clearfix csdn-tracking-statistics downloadElement" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                          <dt><a href="http://download.csdn.net/detail/tangdaowan198602/3179523" target="_top" strategy="BlogCommendFromCsdn_8"><img class="maxwidth" src="doc.svg" alt="" title=""></a></dt>
+                          <dd>
+                              <div class="summary">
+                                  <h2><a href="http://download.csdn.net/detail/tangdaowan198602/3179523" target="_top" strategy="BlogCommendFromCsdn_8">IEEE802_的来龙去脉</a></h2>
+                                  <div class="summary">
+                                      <ul>
+                                          <li class="time">2011年04月11日 09:28</li>
+                                          <li class="visited_num fileSize">51KB</li>
+                                          <li class="download_btn"><a href="http://download.csdn.net/detail/tangdaowan198602/3179523" target="_top">下载</a></li>
+                                      </ul>
+                                  </div>
+                              </div>
+                          </dd>
+                      </dl>
+                                                                                                                                <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                          <dd>
+                              <h2><a href="http://blog.csdn.net/z251941074/article/details/19829003" target="_top" strategy="BlogCommendFromCsdn_9">uboot20100移植----揭开UBOOT的来龙去脉</a></h2>
+                              <div class="summary">
+                                  1，编译器：4.3.2
+2 &nbsp;
+/*************************************ubootversion 1.0 debug*********************/
+t...                              </div>
+                              <ul>
+                                  <li class="avatar_img"><a href="http://blog.csdn.net/z251941074" target="_top" strategy="BlogCommendFromCsdn_9"><img src="3_z251941074.jpg" alt="z251941074" title="z251941074"></a></li>
+                                  <li class="user_name"><a href="http://blog.csdn.net/z251941074">z251941074</a></li>
+                                  <li class="time">2014年02月24日 16:27</li>
+                                  <li class="visited_num"><i class="icon iconfont icon-read"></i><span>1474</span></li>
+                              </ul>
+                          </dd>
+                      </dl>
+                                                                    </div>
+  </main>
+<aside>
+  <div class="right_box user_info">
+      <dl class="inf_bar clearfix">
+          <dt class="csdn-tracking-statistics" data-mod="popu_381">
+              <a href="http://blog.csdn.net/charleslei" target="_top">
+                  <img src="3_charleslei.jpg" class="avatar_pic">
+              </a>
+              <span class="medals" title="">
+                  </span>
+          </dt>
+          <dd>
+              <h3 class="csdn-tracking-statistics" data-mod="popu_380"><a href="http://blog.csdn.net/charleslei" target="_top" id="uid">charleslei</a></h3>
+              <span class="csdn-tracking-statistics" data-mod="popu_379"><a class="btn btn-redborder-small " id="span_add_follow" target="_self">＋关注</a></span>
+          </dd>
+      </dl>
+      <div class="inf_number_box clearfix">
+          <dl>
+              <dt>原创</dt>
+              <dd>155</dd>
+          </dl>
+          <dl>
+              <dt>粉丝</dt>
+              <dd id="fan">123</dd>
+          </dl>
+          <dl>
+              <dt>喜欢</dt>
+              <dd>1</dd>
+          </dl>
+          <dl>
+        <dt>码云</dt>
+        <dd>&nbsp;</dd>
+      </dl>
+
+      </div>
+  <div class="writings">
+        <div class="public_signal clearfix">
+          <h3>他的最新文章</h3>
+          <a href="http://blog.csdn.net/charleslei" target="_top" class="more"><span>更多文章</span></a>
+        </div>
+          <ul class="inf_list clearfix csdn-tracking-statistics" data-mod="popu_382">
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/charleslei/article/details/77823000" target="_top">ec3文件后缀</a>
+              </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/charleslei/article/details/76708160" target="_top">UPS的组成与基本原理</a>
+              </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/charleslei/article/details/74998901" target="_top">ITU-R BT.601 Y'CbCr</a>
+              </li>
+                        </ul>
+      </div>
+  </div>
+  <div class="extension_other csdn-tracking-statistics" data-mod="popu_389">
+     <!--u3032528-->
+    <div class="flashrecommend">
+        <div><iframe scrolling="no" src="index_2.html" width="300" height="250" frameborder="0"></iframe></div>
+    </div>
+  </div>
+
+<!--    [StartShowSelfColumn]-->
+    <!--    [EndShowSelfColumn]-->
+    <div class="fixRight">
+        <div class="right_box padb0 csdn-tracking-statistics" data-mod="popu_391">
+            <h3 class="tit"><span><em>在线课程</em></span></h3>
+            <ul class="edu_li clearfix">
+<!--            [starteducourses]-->
+                                                            <li>
+                            <div>
+                                <a href="http://edu.csdn.net/huiyiCourse/series_detail/72?utm_source=blog7" target="_top">
+                                    <img src="201711171632559151.png" alt="白鹭引擎在WebAssembly中的实践" title="白鹭引擎在WebAssembly中的实践">
+                                </a>
+                            </div>
+                            <div>
+                                <p><a href="http://edu.csdn.net/huiyiCourse/series_detail/72?utm_source=blog7" target="_top">白鹭引擎在WebAssembly中的实践</a></p>
+                                <p>讲师：</p>
+                            </div>
+                        </li>
+                                            <li>
+                            <div>
+                                <a href="http://edu.csdn.net/huiyiCourse/detail/602?utm_source=blog7" target="_top">
+                                    <img src="201711171629135569.png" alt="Apache Weex：移动研发的进阶之路" title="Apache Weex：移动研发的进阶之路">
+                                </a>
+                            </div>
+                            <div>
+                                <p><a href="http://edu.csdn.net/huiyiCourse/detail/602?utm_source=blog7" target="_top">Apache Weex：移动研发的进阶之路</a></p>
+                                <p>讲师：董岩</p>
+                            </div>
+                        </li>
+                                    <!--            [endeducourses]-->
+            </ul>
+            </div>
+        <div class="extension_other csdn-tracking-statistics bottomRcom" data-mod="popu_389" style="position: absolute; z-index: -5; opacity: 0; pointer-events: none;">
+            <!--u3032528-->
+            <div class="flashrecommend">
+                <!-- 请置于所有广告位代码之前 -->
+                
+
+                <!-- 广告位：PC端-博客详情页右侧视窗1（feed流）-300*250 -->
+                <div id="_q7m50jbitum"></div><div id="_5s7a9xn9z3a"><div style="padding: 0px;"><div style="text-align: left;"><iframe scrolling="no" src="index_3.html" width="300" height="250" frameborder="0"></iframe></div></div></div>
+            </div>
+        </div>
+
+    </div>
+    <div class="user-hotArticle">
+        <h3>热门文章</h3>
+        <ul class="hotArticle-list csdn-tracking-statistics" data-mod="popu_521">
+<!--            [StartHotArticles]-->
+                                                <li>
+                        <a href="http://blog.csdn.net/charleslei/article/details/1290888">高级加密标准AES的工作模式（ECB、CBC、CFB、OFB）</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>26081</span></div>
+                    </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/charleslei/article/details/1290888">盛世中的蝼蚁</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>20519</span></div>
+                    </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/charleslei/article/details/1290888">简单谈谈硬编码和软编码</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>19080</span></div>
+                    </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/charleslei/article/details/1290888">Android 实现m3u8视频缓存</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>18487</span></div>
+                    </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/charleslei/article/details/1290888">涉外资（外商）公司股权转让有关问题答疑</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>14652</span></div>
+                    </li>
+                            <!--            [EndHotArticles]-->
+        </ul>
+    </div>
+<!--    [startcustom]-->
+    <!--    [endcustom]-->
+</aside></div>
+
+<div class="left_fixed">
+    <div class="left_show_button">
+        <span>
+          <i class="icon iconfont icon-youjiantou"></i>
+        </span>
+    </div>
+    <ul class="left_menu">
+        <li>
+            <button class="left-fixed-btn btn-like csdn-tracking-statistics" data-mod="popu_373" target="_self">
+                <a href="javascript:void(0);" class="iconbox border_red"><i class="icon iconfont icon-dianzan"></i></a>
+                <a class="txt" href="javascript:void(0);">1</a>
+            </button>
+        </li>
+        <li id="blog_artical_directory">
+            <button class="left-fixed-btn left_menu_btn csdn-tracking-statistics" data-mod="popu_372" target="_self">
+                <a href="javascript:void(0);" class="iconbox border_black"><i class="icon iconfont icon-mulu"></i></a>
+            </button>
+        </li>
+        <li class="menu_con">
+            <div class="list_father">
+                <div class="arr_box">
+                    <button class="btn-noborder arr-btn scroll-down  left_scroll_down"><i class="icon iconfont icon-xiajiantou"></i></button>
+                    <button class="btn-noborder arr-btn scroll-up left_scroll_top"><i class="icon iconfont icon-shangjiantou"></i></button>
+                </div>
+                <div class="arr"></div>
+                <div id="csdnBlogDir"></div>
+            </div>
+        </li>
+        <!--        <li>-->
+        <!--            <button class="left-fixed-btn btn-like tracking-ad" data-mod="popu_373" target="_self">-->
+        <!--                <span class="iconbox border_red"><i class="icon iconfont icon-xihuan-"></i></span>-->
+        <!--                <span class="txt">喜欢</span>-->
+        <!--                <span class="untxt">取消喜欢</span>-->
+        <!--            </button>-->
+        <!--        </li>-->
+        <li>
+            <button class="left-fixed-btn csdn-tracking-statistics" data-mod="popu_374" id="com-quick-collect" target="_self">
+                <a href="javascript:void(0);" class="iconbox border_purple"><i class="icon iconfont icon-shoucang"></i></a>
+            </button>
+        </li>
+        <li>
+            <button class="left-fixed-btn btn-pinglun csdn-tracking-statistics" data-mod="popu_544">
+                <a href="javascript:void(0);" class="iconbox border_purple"><i class="icon iconfont icon-pinglun"></i></a>
+            </button>
+        </li>
+        <li id="share_box">
+            <button class="left-fixed-btn  csdn-tracking-statistics" data-mod="popu_375" target="_self">
+                <a href="javascript:void(0);" class="iconbox border_orange"><i class="icon iconfont icon-fenxiang"></i></a>
+            </button>
+            <div class="bdsharebuttonbox csdn-tracking-statistics bdshare-button-style0-16" data-mod="popu_172" data-bd-bind="1511146439148">
+                <div class="outside">
+                    <span class="iconbox border_red2"><i class="icon iconfont icon-xinlang"></i></span>
+                    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"> </a>
+                </div>
+                <div class="outside">
+                    <span class="iconbox border_green"><i class="icon iconfont icon-weixin"></i></span>
+                    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"> </a>
+                </div>
+                <div class="outside">
+                    <span class="iconbox border_blue"><i class="icon iconfont icon-QQ"></i></span>
+                    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"> </a>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>
+<div class="right_fixed">
+    <div class="r_ico">
+        <i class="icon iconfont icon-jubao"></i>
+        <span class="txt" id="reportBtn">内容举报</span>
+    </div>
+    <div class="returnTop">
+        <i class="icon iconfont icon-fanhuidingbu"></i>
+        <span>返回顶部</span>
+    </div>
+</div>
+<div id="pop_win"></div>
+<div id="popup_mask"></div>
+<div class="pop_CA_cover"></div>
+<div class="pop pop_CA">
+    <div class="CA_header">
+        收藏助手
+        <span class="cancel_icon" id="fapancle"></span>
+    </div>
+    <iframe src="index_4.html" id="collectIframe" scrolling="no" width="100%" height="360" frameborder="0"></iframe>
+</div>
+<!--举报-->
+<div id="report_dialog" style="top: 250px; left: 343.5px;"><div id="panel_report">
+    <div class="panel_head">不良信息举报</div>
+    <form method="post" id="frmReport" class="panel_body" action="http://blog.csdn.net/charleslei/article/details/62468089">
+        <table class="pop_table" cellspacing="4" cellpadding="0" border="0">
+            <tbody><tr><td colspan="2">您举报文章：<a href="http://blog.csdn.net/charleslei/article/details/62468089" target="_top">IVTC/Deinterlace的来龙去脉</a></td></tr>
+            <tr>
+                <th style="width: 60px;">举报原因：</th>
+                <td id="panel_reporttype">
+                    <label><input class="report_type" id="report_sex" name="report_type" value="1" type="radio">色情</label>
+                    <label><input class="report_type" id="report_Politics" name="report_type" value="2" type="radio">政治</label>
+                    <label><input class="report_type" id="report_copy" name="report_type" value="3" type="radio">抄袭</label>
+                    <label><input class="report_type" id="report_ad" name="report_type" value="4" type="radio">广告</label>
+                    <label><input class="report_type" id="report_want" name="report_type" value="5" type="radio">招聘</label>
+                    <label><input class="report_type" id="report_call" name="report_type" value="6" type="radio">骂人</label>
+                    <br>
+                    <label><input class="report_type" id="report_other" name="report_type" value="7" type="radio">其他</label>
+                    <input name="report_other_content" id="report_other_content" maxlength="30" style="display: none;" value="" type="text">
+                </td>
+            </tr>
+            <tr id="panel_originalurl" style="display: none;">
+                <th>原文地址：</th>
+                <td>
+                    <input id="originalurl" value="http://" name="originalurl" style="width: 90%;" type="text">
+                </td>
+            </tr>
+            <tr>
+                <th id="sp_reason">原因补充：</th>
+                <td>
+                    <textarea id="report_description" style="width: 300px;" rows="3" name="report_description"></textarea>
+                    <p id="sp_n" style="color: rgb(153, 153, 153); margin: 0px; padding: 0px;">(最多只允许输入30个字)</p>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input id="btnSubmitReport" name="submit" class="btn_1" src="btn_submit.jpg" type="image" align="middle">
+                    <span style="padding-left: 20px;"></span>
+                    <img id="btnCloseReportDialog" src="btn_cancel.jpg" align="middle">
+                    <div id="error" style="color: red;">
+                    </div>
+                </td>
+            </tr>
+            </tbody></table>
+    </form>
+</div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

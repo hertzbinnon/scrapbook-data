@@ -1,0 +1,1186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN">
+<head profile="http://gmpg.org/xfn/11">
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+	
+	<title>  （总结）Nginx/LVS/HAProxy负载均衡软件的优缺点详解</title>
+	<link rel="alternate" type="application/rss+xml" title="服务器运维架构|Linux运维|云计算大数据 » （总结）Nginx/LVS/HAProxy负载均衡软件的优缺点详解评论Feed" href="http://www.ha97.com/5646.html/feed">
+		
+		
+
+
+
+<link rel="https://api.w.org/" href="http://www.ha97.com/wp-json/">
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://www.ha97.com/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://www.ha97.com/wp-includes/wlwmanifest.xml"> 
+<link rel="prev" title="关于云计算基础架构IaaS层的几点看法" href="http://www.ha97.com/5642.html">
+<link rel="next" title="（原创）RHEL/CentOS/OracleLinux 7.x使用EPEL和REMI第三方yum源" href="http://www.ha97.com/5649.html">
+<meta name="generator" content="WordPress 4.5.14">
+<link rel="canonical" href="http://www.ha97.com/5646.html">
+<link rel="shortlink" href="http://www.ha97.com/?p=5646">
+<link rel="alternate" type="application/json+oembed" href="http://www.ha97.com/wp-json/oembed/1.0/embed?url=http%3A%2F%2Fwww.ha97.com%2F5646.html">
+<link rel="alternate" type="text/xml+oembed" href="http://www.ha97.com/wp-json/oembed/1.0/embed?url=http%3A%2F%2Fwww.ha97.com%2F5646.html&amp;format=xml">
+		
+			
+	<link rel="shortcut icon" type="image/ico" href="favicon.gif">
+	<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://www.ha97.com/feed">
+	<link rel="alternate" type="text/xml" title="RSS .92" href="http://www.ha97.com/feed/rss">
+	<link rel="alternate" type="application/atom+xml" title="Atom 0.3" href="http://www.ha97.com/feed/atom">
+	<link rel="pingback" href="http://www.ha97.com/xmlrpc.php">		
+	<link rel="shortcut icon" href="favicon.ico"> 
+   
+		<link rel="archives" title="2017年七月" href="http://www.ha97.com/date/2017/07">
+	<link rel="archives" title="2017年五月" href="http://www.ha97.com/date/2017/05">
+	<link rel="archives" title="2016年八月" href="http://www.ha97.com/date/2016/08">
+	<link rel="archives" title="2016年七月" href="http://www.ha97.com/date/2016/07">
+	<link rel="archives" title="2016年六月" href="http://www.ha97.com/date/2016/06">
+	<link rel="archives" title="2016年五月" href="http://www.ha97.com/date/2016/05">
+	<link rel="archives" title="2016年一月" href="http://www.ha97.com/date/2016/01">
+	<link rel="archives" title="2015年十一月" href="http://www.ha97.com/date/2015/11">
+	<link rel="archives" title="2015年十月" href="http://www.ha97.com/date/2015/10">
+	<link rel="archives" title="2015年八月" href="http://www.ha97.com/date/2015/08">
+	<link rel="archives" title="2015年七月" href="http://www.ha97.com/date/2015/07">
+	<link rel="archives" title="2015年六月" href="http://www.ha97.com/date/2015/06">
+	<link rel="archives" title="2015年二月" href="http://www.ha97.com/date/2015/02">
+	<link rel="archives" title="2014年九月" href="http://www.ha97.com/date/2014/09">
+	<link rel="archives" title="2014年八月" href="http://www.ha97.com/date/2014/08">
+	<link rel="archives" title="2014年七月" href="http://www.ha97.com/date/2014/07">
+	<link rel="archives" title="2014年六月" href="http://www.ha97.com/date/2014/06">
+	<link rel="archives" title="2014年五月" href="http://www.ha97.com/date/2014/05">
+	<link rel="archives" title="2014年四月" href="http://www.ha97.com/date/2014/04">
+	<link rel="archives" title="2013年十月" href="http://www.ha97.com/date/2013/10">
+	<link rel="archives" title="2013年九月" href="http://www.ha97.com/date/2013/09">
+	<link rel="archives" title="2013年七月" href="http://www.ha97.com/date/2013/07">
+	<link rel="archives" title="2013年六月" href="http://www.ha97.com/date/2013/06">
+	<link rel="archives" title="2013年三月" href="http://www.ha97.com/date/2013/03">
+	<link rel="archives" title="2013年二月" href="http://www.ha97.com/date/2013/02">
+	<link rel="archives" title="2013年一月" href="http://www.ha97.com/date/2013/01">
+	<link rel="archives" title="2012年十二月" href="http://www.ha97.com/date/2012/12">
+	<link rel="archives" title="2012年十一月" href="http://www.ha97.com/date/2012/11">
+	<link rel="archives" title="2012年十月" href="http://www.ha97.com/date/2012/10">
+	<link rel="archives" title="2012年九月" href="http://www.ha97.com/date/2012/09">
+	<link rel="archives" title="2012年八月" href="http://www.ha97.com/date/2012/08">
+	<link rel="archives" title="2012年七月" href="http://www.ha97.com/date/2012/07">
+	<link rel="archives" title="2012年六月" href="http://www.ha97.com/date/2012/06">
+	<link rel="archives" title="2012年五月" href="http://www.ha97.com/date/2012/05">
+	<link rel="archives" title="2012年四月" href="http://www.ha97.com/date/2012/04">
+	<link rel="archives" title="2012年三月" href="http://www.ha97.com/date/2012/03">
+	<link rel="archives" title="2012年二月" href="http://www.ha97.com/date/2012/02">
+	<link rel="archives" title="2012年一月" href="http://www.ha97.com/date/2012/01">
+	<link rel="archives" title="2011年十二月" href="http://www.ha97.com/date/2011/12">
+	<link rel="archives" title="2011年十一月" href="http://www.ha97.com/date/2011/11">
+	<link rel="archives" title="2011年十月" href="http://www.ha97.com/date/2011/10">
+	<link rel="archives" title="2011年八月" href="http://www.ha97.com/date/2011/08">
+	<link rel="archives" title="2011年七月" href="http://www.ha97.com/date/2011/07">
+	<link rel="archives" title="2011年六月" href="http://www.ha97.com/date/2011/06">
+	<link rel="archives" title="2011年五月" href="http://www.ha97.com/date/2011/05">
+	<link rel="archives" title="2011年四月" href="http://www.ha97.com/date/2011/04">
+	<link rel="archives" title="2011年三月" href="http://www.ha97.com/date/2011/03">
+	<link rel="archives" title="2011年二月" href="http://www.ha97.com/date/2011/02">
+	<link rel="archives" title="2011年一月" href="http://www.ha97.com/date/2011/01">
+	<link rel="archives" title="2010年十二月" href="http://www.ha97.com/date/2010/12">
+	<link rel="archives" title="2010年十一月" href="http://www.ha97.com/date/2010/11">
+	<link rel="archives" title="2010年十月" href="http://www.ha97.com/date/2010/10">
+	<link rel="archives" title="2010年九月" href="http://www.ha97.com/date/2010/09">
+	<link rel="archives" title="2010年八月" href="http://www.ha97.com/date/2010/08">
+	<link rel="archives" title="2010年七月" href="http://www.ha97.com/date/2010/07">
+	<link rel="archives" title="2010年六月" href="http://www.ha97.com/date/2010/06">
+	<link rel="archives" title="2010年五月" href="http://www.ha97.com/date/2010/05">
+	<link rel="archives" title="2010年四月" href="http://www.ha97.com/date/2010/04">
+
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+	<div id="tesloading">正在加载...</div> 
+	
+	<div id="header-aw">
+		<div id="headin-aw">
+			<div class="awblog aw-f"><a href="http://www.ha97.com/" title="服务器运维架构|Linux运维|云计算大数据">服务器运维架构|Linux运维|云计算大数据</a></div>
+			<div class="description aw-f"><a href="http://www.ha97.com/" title=""></a></div>
+			<ul id="tesnavlist" class="clearfix">
+			<li><a href="http://www.ha97.com/" title="www.ha97.com">首页</a></li>
+			<li><a href="http://www.ha97.com/category/linux" title="Linux">Linux</a></li>
+		      <li><a href="http://www.ha97.com/category/web-server/nginx" title="Nginx">Nginx</a></li>
+		      <li><a href="http://www.ha97.com/category/security" title="Security">Security</a></li>
+			<li><a href="http://www.ha97.com/category/shell" title="Shell">Shell</a></li>
+		      <li><a href="http://www.ha97.com/category/%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%9E%B6%E6%9E%84" title="服务器架构">服务器架构</a></li>
+		      <li><a href="http://www.ha97.com/category/%E4%BA%92%E8%81%94%E7%BD%91" title="互联网研究、网站运营、IT评论">互联网</a></li>
+			<li><a href="http://www.ha97.com/book/lfs-book-6.6" title="DIY定制你的Linux系统">LFS 6.6</a></li>
+		      <li><a href="http://www.ha97.com/book/vbird_linux" title="Linux经典基础教程">Linux基础</a></li>
+		      <li><a href="http://www.ha97.com/category/%E4%B8%AA%E4%BA%BA%E6%97%A5%E8%AE%B0" title="个人日记">个人日记</a></li>
+			<li class="fR"><a href="http://www.ha97.com/about" title="#">关于</a></li>
+		</ul>
+		</div>
+	</div>
+	<div id="wrapper" class="clearfix">
+		<div id="content">
+			<div id="content-aw">
+			<div class="nav clearfix">
+			<div class="prev-p">« <a href="http://www.ha97.com/5642.html" rel="prev">关于云计算基础架构IaaS层的几点看法</a></div>
+			<div class="next-p"><a href="http://www.ha97.com/5649.html" rel="next">（原创）RHEL/CentOS/OracleLinux 7.x使用EPEL和REMI第三方yum源</a> »</div>
+		</div>
+		<div id="aw-page">
+			<div class="aw-tit clearfix"> 
+<div class="aw-cad">
+	<div class="aw-Y">2014-7</div>
+	<div class="aw-D">21</div>
+</div>
+<div class="aw-meta">	
+	<div><h2 class="aw-title" id="post-5646"><a href="http://www.ha97.com/5646.html" rel="bookmark" title="Permalink to （总结）Nginx/LVS/HAProxy负载均衡软件的优缺点详解">（总结）Nginx/LVS/HAProxy负载均衡软件的优缺点详解</a></h2></div>
+		<div class="meta-small">发表于: <a href="http://www.ha97.com/category/linux" rel="category tag">Linux</a>, <a href="http://www.ha97.com/category/web" rel="category tag">Web</a>, <a href="http://www.ha97.com/category/web-server" rel="category tag">Web Server</a>, <a href="http://www.ha97.com/category/%e4%b8%aa%e4%ba%ba%e6%97%a5%e8%ae%b0" rel="category tag">个人日记</a>, <a href="http://www.ha97.com/category/%e5%8e%9f%e5%88%9b%e6%80%bb%e7%bb%93" rel="category tag">原创总结</a>  |  作者:  <a href="http://www.ha97.com/author/admin" title="由博客教主发布" rel="author">博客教主</a>	</div>
+		<div class="meta-small">标签: <a href="http://www.ha97.com/tag/haproxy" rel="tag">Haproxy</a>,<a href="http://www.ha97.com/tag/lvs" rel="tag">LVS</a>,<a href="http://www.ha97.com/tag/nginx" rel="tag">Nginx</a>,<a href="http://www.ha97.com/tag/%e6%80%bb%e7%bb%93" rel="tag">总结</a>,<a href="http://www.ha97.com/tag/%e8%af%a6%e8%a7%a3" rel="tag">详解</a>,<a href="http://www.ha97.com/tag/%e8%b4%9f%e8%bd%bd%e5%9d%87%e8%a1%a1" rel="tag">负载均衡</a></div>
+			
+		
+</div>
+</div>			<div class="post clearfix">
+				<p><strong>PS：<a href="http://www.ha97.com/tag/nginx">Nginx</a>/LVS/HAProxy是目前使用最广泛的三种负载均衡软件，本人都在多个项目中实施过，参考了一些资料，结合自己的一些使用经验，总结一下。</strong></p>
+<p><span style="color: rgb(255, 0, 0);">一般对负载均衡的使用是随着网站规模的提升根据不同的阶段来使用不同的技术。具体的应用需求还得具体分析，如果是中小型的Web应用，比如日PV小于1000万，用Nginx就完全可以了；如果机器不少，可以用DNS轮询，LVS所耗费的机器还是比较多的；大型网站或重要的服务，且服务器比较多时，可以考虑用LVS。</span></p>
+<p>一种是通过硬件来进行进行，常见的硬件有比较昂贵的F5和Array等商用的负载均衡器，它的优点就是有专业的维护团队来对这些服务进行维护、缺点就是花销太大，所以对于规模较小的网络服务来说暂时还没有需要使用；另外一种就是类似于Nginx/LVS/HAProxy的基于<a href="http://www.ha97.com/category/linux">Linux</a>的开源免费的负载均衡软件，这些都是通过软件级别来实现，所以费用非常低廉。</p>
+<p><span style="color: rgb(255, 0, 0);">目前关于网站架构一般比较合理流行的架构方案：Web前端采用Nginx/HAProxy+Keepalived作负载均衡器；后端采用<a href="http://www.ha97.com/tag/mysql">MySQL</a>数据库一主多从和读写分离，采用LVS+Keepalived的架构。</span>当然要根据项目具体需求制定方案。<br>
+下面说说各自的特点和适用场合。</p>
+<h2><strong>一、Nginx</strong></h2>
+<p><strong>Nginx的优点是：</strong></p>
+<p><span id="more-5646"></span></p>
+<p>1、工作在网络的7层之上，可以针对http应用做一些分流的策略，比如针对域名、目录结构，它的<strong>正则规则</strong>比HAProxy更为强大和灵活，这也是它目前广泛流行的主要原因之一，Nginx单凭这点可利用的场合就远多于LVS了。<br>
+2、<strong>Nginx对网络稳定性的依赖非常小</strong>，理论上能ping通就就能进行负载功能，这个也是它的优势之一；相反LVS对网络稳定性依赖比较大，这点本人深有体会；<br>
+3、Nginx安装和配置比较简单，测试起来比较方便，它基本能把错误用日志打印出来。LVS的配置、测试就要花比较长的时间了，LVS对网络依赖比较大。<br>
+3、可以承担高负载压力且稳定，在硬件不差的情况下一般能支撑几万次的并发量，负载度比LVS相对小些。<br>
+4、Nginx可以通过端口检测到服务器内部的故障，比如根据服务器处理网页返回的状态码、超时等等，并且会把返回错误的请求重新提交到另一个节点，不过其中缺点就是不支持url来检测。比如用户正在上传一个文件，而处理该上传的节点刚好在上传过程中出现故障，Nginx会把上传切到另一台服务器重新处理，而LVS就直接断掉了，如果是上传一个很大的文件或者很重要的文件的话，用户可能会因此而不满。<br>
+5、Nginx不仅仅是一款优秀的负载均衡器/反向代理软件，它同时也是功能强大的Web应用服务器。LNMP也是近几年非常流行的web架构，在高流量的环境中稳定性也很好。<br>
+6、Nginx现在作为Web反向加速缓存越来越成熟了，速度比传统的<a href="http://www.ha97.com/tag/squid">Squid</a>服务器更快，可以考虑用其作为反向代理加速器。<br>
+7、Nginx可作为中层反向代理使用，这一层面Nginx基本上无对手，唯一可以对比Nginx的就只有lighttpd了，不过lighttpd目前还没有做到Nginx完全的功能，配置也不那么清晰易读，社区资料也远远没Nginx活跃。<br>
+8、Nginx也可作为静态网页和图片服务器，这方面的性能也无对手。还有Nginx社区非常活跃，第三方模块也很多。</p>
+<p>淘宝的前端使用的Tengine就是基于nginx做的二次开发定制版。</p>
+<p>Nginx常规的HTTP请求和响应流程图：</p>
+<p><img src="nginx-300x191.jpg" alt="nginx" class="alignnone size-medium wp-image-5693" srcset="http://www.ha97.com/wp-content/uploads/2014/07/nginx-300x191.jpg 300w, http://www.ha97.com/wp-content/uploads/2014/07/nginx-150x96.jpg 150w, http://www.ha97.com/wp-content/uploads/2014/07/nginx.jpg 539w" sizes="(max-width: 539px) 100vw, 539px" width="539" height="345"></p>
+<p>&nbsp;</p>
+<p><strong>Nginx的缺点是：</strong><br>
+1、Nginx仅能支持http、<a href="http://www.ha97.com/tag/https">https</a>和Email协议，这样就在适用范围上面小些，这个是它的缺点。<br>
+2、<strong>对后端服务器的健康检查，只支持通过端口来检测，不支持通过url来检测。</strong>不支持Session的直接保持，但能通过ip_hash来解决。</p>
+<h2>二、LVS</h2>
+<p>LVS：使用<a href="http://www.ha97.com/tag/linux">Linux</a>内核集群实现一个高性能、高可用的负载均衡服务器，它具有很好的可伸缩性（Scalability)、可靠性（Reliability)和可管理性（Manageability)。</p>
+<p><strong>LVS的优点是：</strong><br>
+1、抗负载能力强、是工作在网络4层之上仅作分发之用，<strong>没有流量的产生</strong>，这个特点也决定了它在负载均衡软件里的性能最强的，对内存和cpu资源消耗比较低。<br>
+2、配置性比较低，这是一个缺点也是一个优点，因为没有可太多配置的东西，所以并不需要太多接触，大大减少了人为出错的几率。<br>
+3、工作稳定，因为其本身抗负载能力很强，自身有完整的双机热备方案，如LVS+Keepalived，不过我们在项目实施中用得最多的还是LVS/DR+Keepalived。<br>
+4、无流量，LVS只分发请求，而流量并不从它本身出去，这点保证了均衡器IO的性能不会收到大流量的影响。<br>
+5、应用范围比较广，因为LVS工作在4层，所以它几乎可以对所有应用做负载均衡，包括http、数据库、在线聊天室等等。</p>
+<p>LVS DR(Direct  Routing)模式的网络流程图：</p>
+<p><img src="lvs_dr-300x287.jpg" alt="lvs_dr" class="alignnone size-medium wp-image-5694" srcset="http://www.ha97.com/wp-content/uploads/2014/07/lvs_dr-300x287.jpg 300w, http://www.ha97.com/wp-content/uploads/2014/07/lvs_dr-150x143.jpg 150w, http://www.ha97.com/wp-content/uploads/2014/07/lvs_dr.jpg 640w" sizes="(max-width: 640px) 100vw, 640px" width="640" height="612"></p>
+<p><strong>LVS的缺点是：</strong><br>
+1、软件本身<strong>不支持正则表达式处理，不能做动静分离</strong>；而现在许多网站在这方面都有较强的需求，这个是Nginx/HAProxy+Keepalived的优势所在。<br>
+2、如果是网站应用比较庞大的话，LVS/DR+Keepalived实施起来就比较复杂了，特别后面有Windows <a href="http://www.ha97.com/tag/server">Server</a>的机器的话，如果实施及配置还有维护过程就比较复杂了，相对而言，Nginx/HAProxy+Keepalived就简单多了。</p>
+<h2>三、HAProxy</h2>
+<p><strong>HAProxy的特点是：</strong><br>
+1、HAProxy也是支持虚拟主机的。<br>
+2、HAProxy的优点能够补充Nginx的一些缺点，比如<strong>支持Session的保持，Cookie的引导；同时支持通过获取指定的url来检测后端服务器的状态。</strong><br>
+3、HAProxy跟LVS类似，本身就只是一款负载均衡软件；单纯从效率上来讲HAProxy会比Nginx有更出色的负载均衡速度，在并发处理上也是优于Nginx的。<br>
+4、HAProxy<strong>支持TCP协议的负载均衡转发</strong>，可以对MySQL读进行负载均衡，对后端的MySQL节点进行检测和负载均衡，大家可以用LVS+Keepalived对MySQL主从做负载均衡。<br>
+5、HAProxy负载均衡策略非常多，HAProxy的负载均衡算法现在具体有如下8种：<br>
+① roundrobin，表示简单的轮询，这个不多说，这个是负载均衡基本都具备的；<br>
+② static-rr，表示根据权重，建议关注；<br>
+③ leastconn，表示最少连接者先处理，建议关注；<br>
+④ source，表示根据请求源IP，这个跟Nginx的IP_hash机制类似，我们用其作为解决session问题的一种方法，建议关注；<br>
+⑤ ri，表示根据请求的URI；<br>
+⑥ rl_param，表示根据请求的URl参数’balance url_param’ requires an URL parameter name；<br>
+⑦ hdr(name)，表示根据HTTP请求头来锁定每一次HTTP请求；<br>
+⑧ rdp-cookie(name)，表示根据据cookie(name)来锁定并哈希每一次TCP请求。</p>
+<h2>四、总结</h2>
+<p><strong>Nginx和LVS对比的总结：</strong><br>
+1、Nginx工作在网络的7层，所以它可以针对http应用本身来做分流策略，比如针对域名、目录结构等，相比之下LVS并不具备这样的功能，所以Nginx单凭这点可利用的场合就远多于LVS了；但Nginx有用的这些功能使其可调整度要高于LVS，所以经常要去触碰触碰，触碰多了，人为出问题的几率也就会大。<br>
+2、Nginx对网络稳定性的依赖较小，理论上只要ping得通，网页访问正常，Nginx就能连得通，这是Nginx的一大优势！Nginx同时还能区分内外网，如果是同时拥有内外网的节点，就相当于单机拥有了备份线路；LVS就比较依赖于网络环境，目前来看服务器在同一网段内并且LVS使用direct方式分流，效果较能得到保证。另外注意，LVS需要向托管商至少申请多一个ip来做Visual IP，貌似是不能用本身的IP来做VIP的。要做好LVS管理员，确实得跟进学习很多有关网络通信方面的知识，就不再是一个HTTP那么简单了。<br>
+3、Nginx安装和配置比较简单，测试起来也很方便，因为它基本能把错误用日志打印出来。LVS的安装和配置、测试就要花比较长的时间了；LVS对网络依赖比较大，很多时候不能配置成功都是因为网络问题而不是配置问题，出了问题要解决也相应的会麻烦得多。<br>
+4、Nginx也同样能承受很高负载且稳定，但负载度和稳定度差LVS还有几个等级：Nginx处理所有流量所以受限于机器IO和配置；本身的bug也还是难以避免的。<br>
+5、Nginx可以检测到服务器内部的故障，比如根据服务器处理网页返回的状态码、超时等等，并且会把返回错误的请求重新提交到另一个节点。目前LVS中 ldirectd也能支持针对服务器内部的情况来监控，但LVS的原理使其不能重发请求。比如用户正在上传一个文件，而处理该上传的节点刚好在上传过程中出现故障，Nginx会把上传切到另一台服务器重新处理，而LVS就直接断掉了，如果是上传一个很大的文件或者很重要的文件的话，用户可能会因此而恼火。<br>
+6、Nginx对请求的异步处理可以帮助节点服务器减轻负载，假如使用apache直接对外服务，那么出现很多的窄带链接时apache服务器将会占用大 量内存而不能释放，使用多一个Nginx做apache代理的话，这些窄带链接会被Nginx挡住，apache上就不会堆积过多的请求，这样就减少了相当多的资源占用。这点使用squid也有相同的作用，即使squid本身配置为不缓存，对apache还是有很大帮助的。<br>
+7、Nginx能支持http、https和email（email的功能比较少用），LVS所支持的应用在这点上会比Nginx更多。在使用上，一般最前端所采取的策略应是LVS，也就是DNS的指向应为LVS均衡器，LVS的优点令它非常适合做这个任务。重要的ip地址，最好交由LVS托管，比如数据库的 ip、webservice服务器的ip等等，这些ip地址随着时间推移，使用面会越来越大，如果更换ip则故障会接踵而至。所以将这些重要ip交给 LVS托管是最为稳妥的，这样做的唯一缺点是需要的VIP数量会比较多。Nginx可作为LVS节点机器使用，一是可以利用Nginx的功能，二是可以利用Nginx的性能。当然这一层面也可以直接使用squid，squid的功能方面就比Nginx弱不少了，性能上也有所逊色于Nginx。Nginx也可作为中层代理使用，这一层面Nginx基本上无对手，唯一可以撼动Nginx的就只有lighttpd了，不过lighttpd目前还没有能做到 Nginx完全的功能，配置也不那么清晰易读。另外，中层代理的IP也是重要的，所以中层代理也拥有一个VIP和LVS是最完美的方案了。具体的应用还得具体分析，如果是比较小的网站（日PV小于1000万），用Nginx就完全可以了，如果机器也不少，可以用DNS轮询，LVS所耗费的机器还是比较多的；大型网站或者重要的服务，机器不发愁的时候，要多多考虑利用LVS。</p>
+<p><strong>现在对网络负载均衡的使用是随着网站规模的提升根据不同的阶段来使用不同的技术：</strong></p>
+<p>第一阶段：利用Nginx或HAProxy进行单点的负载均衡，这一阶段服务器规模刚脱离开单服务器、单数据库的模式，需要一定的负载均衡，但是仍然规模较小没有专业的维护团队来进行维护，也没有需要进行大规模的网站部署。这样利用Nginx或HAproxy就是第一选择，此时这些东西上手快， 配置容易，在七层之上利用HTTP协议就可以。这时是第一选择。</p>
+<p>第二阶段：随着网络服务进一步扩大，这时单点的Nginx已经不能满足，这时使用LVS或者商用Array就是首要选择，Nginx此时就作为LVS或者Array的节点来使用，具体LVS或Array的是选择是根据公司规模和预算来选择，<strong>Array的应用交付功能非常强大，本人在某项目中使用过，性价比也远高于F5，商用首选！</strong>但是一般来说这阶段相关人才跟不上业务的提升，所以购买商业负载均衡已经成为了必经之路。</p>
+<p>第三阶段：这时网络服务已经成为主流产品，此时随着公司知名度也进一步扩展，相关人才的能力以及数量也随之提升，这时无论从开发适合自身产品的定制，以及降低成本来讲开源的LVS，已经成为首选，这时LVS会成为主流。<br>
+最终形成比较理想的基本架构为：<strong>Array/LVS — Nginx/Haproxy — Squid/Varnish — AppServer</strong>。</p>							</div>
+
+			<p class="postendmeta">
+			<a href="http://www.ha97.com/5646.html" rel="bookmark" title="（总结）Nginx/LVS/HAProxy负载均衡软件的优缺点详解" class="permalink">永久链接</a> : http://www.ha97.com/5646.html			</p>
+		</div>
+	
+<!-- You can start editing here. -->
+
+
+	
+	
+	
+<!-- You can start editing here. -->
+<div class="commentbar clearfix">
+	<div class="fL">本文相关评论 -
+	才 18 条评论 
+	</div><div class="fR"><a href="http://www.ha97.com/5646.html/feed"><abbr title="Really Simple Syndication">RSS</abbr> for this comments</a> 
+| <a href="http://www.ha97.com/5646.html/trackback">Trackback <acronym title="Uniform Resource Identifier">URI</acronym></a>
+</div>
+</div>
+<div class="commhead">
+		<span class="comm-func"> ( <a href="#" onclick="return _$s();">展开所有评论</a> | <a href="#" onclick="return _$h();">收起所有评论</a> ) 	<a href="#addcomment" onclick="return _$ff()" title="Leave a comment">立刻发表评论 »</a></span>
+	</div>
+	
+	
+	
+	
+
+ 
+
+
+<div class="commentlist">
+			<div id="div-comment-218068" class="clearfix comment">
+				<a name="comment-218068" id="comment-218068"></a>
+				<div class="title clearfix">
+					<div class="collapseicon" style="float: left;" id="ment-218068">
+					</div>
+					<cite>sean<a href="#comment-218068"></a></cite> 
+									
+				</div>
+				<div class="body">
+					<div class="commmeta">
+						2014-07-22 15:42:32 						
+					</div>					
+					<div class="content clearfix">
+							<img alt="" src="90303e38ce1deaf50100615a1c2a994b" srcset="http://0.gravatar.com/avatar/90303e38ce1deaf50100615a1c2a994b?s=64&amp;d=identicon&amp;r=g 2x" class="avatar avatar-32 photo" width="32" height="32">						<div class="wp-useragent"> <img src="firefox.png" title="Firefox 30.0" style="border: 0px none; vertical-align: middle;" alt="Firefox 30.0" width="24" height="24"> Firefox 30.0  <img src="win-5.png" title="Windows 8.1 x64 Edition" style="border: 0px none; vertical-align: middle;" alt="Windows 8.1 x64 Edition" width="24" height="24"> Windows 8.1 x64 Edition</div><p>感谢总结，很棒！</p>
+					</div>
+					<div class="reply">
+						 
+						<a href="#" onclick="moveAddCommentBelow(&quot;div-comment-218068&quot;, 218068, true); return false;">回复他(她)</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<div id="div-comment-219159" class="clearfix comment">
+				<a name="comment-219159" id="comment-219159"></a>
+				<div class="title clearfix">
+					<div class="collapseicon" style="float: left;" id="ment-219159">
+					</div>
+					<cite><a href="http://www.rootop.org/" rel="external nofollow" class="url">rootop</a><a href="#comment-219159"></a></cite> 
+									
+				</div>
+				<div class="body">
+					<div class="commmeta">
+						2014-07-24 09:33:30 						
+					</div>					
+					<div class="content clearfix">
+							<img alt="" src="bf241a5ceb175c2d70eb4cdf50c38c63" srcset="http://2.gravatar.com/avatar/bf241a5ceb175c2d70eb4cdf50c38c63?s=64&amp;d=identicon&amp;r=g 2x" class="avatar avatar-32 photo" width="32" height="32">						<div class="wp-useragent"> <img src="ucbrowser.png" title="UC Browser 6.x" style="border: 0px none; vertical-align: middle;" alt="UC Browser 6.x" width="24" height="24"> UC Browser 6.x  <img src="win-4.png" title="Windows 7 x64 Edition" style="border: 0px none; vertical-align: middle;" alt="Windows 7 x64 Edition" width="24" height="24"> Windows 7 x64 Edition</div><p>感谢博主的总结，一直都很关注博主博客。受益匪浅。这里貌似有个小笔误。<br>
+“LVS需要向托管商至少申请多一个ip来做Visual IP” ，应该是virtual IP~~~</p>
+					</div>
+					<div class="reply">
+						 
+						<a href="#" onclick="moveAddCommentBelow(&quot;div-comment-219159&quot;, 219159, true); return false;">回复他(她)</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<div id="div-comment-219170" class="clearfix comment">
+				<a name="comment-219170" id="comment-219170"></a>
+				<div class="title clearfix">
+					<div class="collapseicon" style="float: left;" id="ment-219170">
+					</div>
+					<cite>Godbach<a href="#comment-219170"></a></cite> 
+									
+				</div>
+				<div class="body">
+					<div class="commmeta">
+						2014-07-24 09:56:26 						
+					</div>					
+					<div class="content clearfix">
+							<img alt="" src="a5ff03cb06e0a6f0a47a0e96ba0ec3f0" srcset="http://1.gravatar.com/avatar/a5ff03cb06e0a6f0a47a0e96ba0ec3f0?s=64&amp;d=identicon&amp;r=g 2x" class="avatar avatar-32 photo" width="32" height="32">						<div class="wp-useragent"> <img src="chrome.png" title="Google Chrome 35.0.1916.153" style="border: 0px none; vertical-align: middle;" alt="Google Chrome 35.0.1916.153" width="24" height="24"> Google Chrome 35.0.1916.153  <img src="win-4.png" title="Windows 7 x64 Edition" style="border: 0px none; vertical-align: middle;" alt="Windows 7 x64 Edition" width="24" height="24"> Windows 7 x64 Edition</div><p>好文章。</p>
+<p>不过对于 HAProxy，static-rr 是简单的轮询，选择 server 的逻辑最为简单。而 roundrobin 其实是高级一点的轮询，支持 HAProxy 运行期间动态修改 server weight。</p>
+<p>不管是 static-rr， roundrobin 还是 leastconn，都是天然支持 weight 的。只是运行期间，static-rr 的 server weight 不可更改或者更改了也无效。所有 weight 为 1 的情形本身就是 weight-based 负载均衡算法的特例。</p>
+<p>HAProxy 缺点没有介绍。结合个人对 Nignx 的部分了解，列举一些 HAProxy 不及 Nginx 的地方，仅供参考：<br>
+1. 不支持 POP/SMTP 协议<br>
+2. 不支持 SPDY 协议<br>
+3. 不支持 HTTP cache 功能。现在不少开源的 lb 项目，都或多或少具备 HTTP cache 功能。<br>
+4. 重载配置的功能需要重启进程，虽然也是 soft restart，但没有 Nginx 的 reaload 更为平滑和友好。<br>
+5. 多进程模式支持不够好。</p>
+					</div>
+					<div class="reply">
+						 
+						<a href="#" onclick="moveAddCommentBelow(&quot;div-comment-219170&quot;, 219170, true); return false;">回复他(她)</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<div id="div-comment-222999" class="clearfix comment">
+				<a name="comment-222999" id="comment-222999"></a>
+				<div class="title clearfix">
+					<div class="collapseicon" style="float: left;" id="ment-222999">
+					</div>
+					<cite>crazyxiao<a href="#comment-222999"></a></cite> 
+									
+				</div>
+				<div class="body">
+					<div class="commmeta">
+						2014-07-31 18:45:17 						
+					</div>					
+					<div class="content clearfix">
+							<img alt="" src="c73de094817d871710feaca57f463cd3" srcset="http://0.gravatar.com/avatar/c73de094817d871710feaca57f463cd3?s=64&amp;d=identicon&amp;r=g 2x" class="avatar avatar-32 photo" width="32" height="32">						<div class="wp-useragent"> <img src="chrome.png" title="Google Chrome 36.0.1985.125" style="border: 0px none; vertical-align: middle;" alt="Google Chrome 36.0.1985.125" width="24" height="24"> Google Chrome 36.0.1985.125  <img src="win-2.png" title="Windows XP" style="border: 0px none; vertical-align: middle;" alt="Windows XP" width="24" height="24"> Windows XP</div><p>以前项目用的haproxy+nginx，配置确实很好上手</p>
+					</div>
+					<div class="reply">
+						 
+						<a href="#" onclick="moveAddCommentBelow(&quot;div-comment-222999&quot;, 222999, true); return false;">回复他(她)</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<div id="div-comment-364797" class="clearfix comment">
+				<a name="comment-364797" id="comment-364797"></a>
+				<div class="title clearfix">
+					<div class="collapseicon" style="float: left;" id="ment-364797">
+					</div>
+					<cite>BigBomb<a href="#comment-364797"></a></cite> 
+									
+				</div>
+				<div class="body">
+					<div class="commmeta">
+						2014-11-12 00:03:51 						
+					</div>					
+					<div class="content clearfix">
+							<img alt="" src="1da2c2102ca9197d24c851872ae5f1cd" srcset="http://1.gravatar.com/avatar/1da2c2102ca9197d24c851872ae5f1cd?s=64&amp;d=identicon&amp;r=g 2x" class="avatar avatar-32 photo" width="32" height="32">						<div class="wp-useragent"> <img src="chrome.png" title="Google Chrome 35.0.1916.114" style="border: 0px none; vertical-align: middle;" alt="Google Chrome 35.0.1916.114" width="24" height="24"> Google Chrome 35.0.1916.114  <img src="win-4.png" title="Windows 7 x64 Edition" style="border: 0px none; vertical-align: middle;" alt="Windows 7 x64 Edition" width="24" height="24"> Windows 7 x64 Edition</div><p>我是路过顶教主的</p>
+					</div>
+					<div class="reply">
+						 
+						<a href="#" onclick="moveAddCommentBelow(&quot;div-comment-364797&quot;, 364797, true); return false;">回复他(她)</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<div id="div-comment-505538" class="clearfix comment">
+				<a name="comment-505538" id="comment-505538"></a>
+				<div class="title clearfix">
+					<div class="collapseicon" style="float: left;" id="ment-505538">
+					</div>
+					<cite>疯梦<a href="#comment-505538"></a></cite> 
+									
+				</div>
+				<div class="body">
+					<div class="commmeta">
+						2015-01-08 16:46:34 						
+					</div>					
+					<div class="content clearfix">
+							<img alt="" src="8af9259b74d00f6f565251833e95c013" srcset="http://2.gravatar.com/avatar/8af9259b74d00f6f565251833e95c013?s=64&amp;d=identicon&amp;r=g 2x" class="avatar avatar-32 photo" width="32" height="32">						<div class="wp-useragent"> <img src="chrome.png" title="Google Chrome 31.0.1650.63" style="border: 0px none; vertical-align: middle;" alt="Google Chrome 31.0.1650.63" width="24" height="24"> Google Chrome 31.0.1650.63  <img src="win-4.png" title="Windows 7 x64 Edition" style="border: 0px none; vertical-align: middle;" alt="Windows 7 x64 Edition" width="24" height="24"> Windows 7 x64 Edition</div><p>用户上传一个文件，而处理该上传的节点刚好在上传过程中出现故障，Nginx会把上传切到另一台服务器重新处理，而LVS就直接断掉了，如果是上传一个很大的文件或者很重要的文件的话，用户可能会因此而不满。我想要问一下，对于这种情况有没有什么好点的解决办法？</p>
+					</div>
+					<div class="reply">
+						 
+						<a href="#" onclick="moveAddCommentBelow(&quot;div-comment-505538&quot;, 505538, true); return false;">回复他(她)</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<div id="div-comment-505551" class="clearfix comment">
+				<a name="comment-505551" id="comment-505551"></a>
+				<div class="title clearfix">
+					<div class="collapseicon" style="float: left;" id="ment-505551">
+					</div>
+					<cite>疯梦<a href="#comment-505551"></a></cite> 
+									
+				</div>
+				<div class="body">
+					<div class="commmeta">
+						2015-01-08 16:55:07 						
+					</div>					
+					<div class="content clearfix">
+							<img alt="" src="b0adce17a9b92049fb848b208b0522fa" srcset="http://2.gravatar.com/avatar/b0adce17a9b92049fb848b208b0522fa?s=64&amp;d=identicon&amp;r=g 2x" class="avatar avatar-32 photo" width="32" height="32">						<div class="wp-useragent"> <img src="chrome.png" title="Google Chrome 31.0.1650.63" style="border: 0px none; vertical-align: middle;" alt="Google Chrome 31.0.1650.63" width="24" height="24"> Google Chrome 31.0.1650.63  <img src="win-4.png" title="Windows 7 x64 Edition" style="border: 0px none; vertical-align: middle;" alt="Windows 7 x64 Edition" width="24" height="24"> Windows 7 x64 Edition</div><p>用户上传文件，后台rs正好故障，nginx会切换到另一台服务器重新处理，lvs则直接断掉，我也在纠结这个问题，所以想请教下，有没有什么好点的办法？</p>
+					</div>
+					<div class="reply">
+						 
+						<a href="#" onclick="moveAddCommentBelow(&quot;div-comment-505551&quot;, 505551, true); return false;">回复他(她)</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<div id="div-comment-507496" class="clearfix comment">
+				<a name="comment-507496" id="comment-507496"></a>
+				<div class="title clearfix">
+					<div class="collapseicon" style="float: left;" id="ment-507496">
+					</div>
+					<cite>疯梦<a href="#comment-507496"></a></cite> 
+									
+				</div>
+				<div class="body">
+					<div class="commmeta">
+						2015-01-09 11:05:12 						
+					</div>					
+					<div class="content clearfix">
+							<img alt="" src="80e437aac99a4514fa14f2af75c4be79" srcset="http://2.gravatar.com/avatar/80e437aac99a4514fa14f2af75c4be79?s=64&amp;d=identicon&amp;r=g 2x" class="avatar avatar-32 photo" width="32" height="32">						<div class="wp-useragent"> <img src="chrome.png" title="Google Chrome 31.0.1650.63" style="border: 0px none; vertical-align: middle;" alt="Google Chrome 31.0.1650.63" width="24" height="24"> Google Chrome 31.0.1650.63  <img src="win-4.png" title="Windows 7 x64 Edition" style="border: 0px none; vertical-align: middle;" alt="Windows 7 x64 Edition" width="24" height="24"> Windows 7 x64 Edition</div><p>当用户正在上传文件，如果后面RS突然故障，nginx会把请求发放给另一台RS来重新处理，而LVS则直接断掉，对于这种情况，因为我做的不多，请教下博主，有没有什么好点的办法呢？</p>
+					</div>
+					<div class="reply">
+						 
+						<a href="#" onclick="moveAddCommentBelow(&quot;div-comment-507496&quot;, 507496, true); return false;">回复他(她)</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<div id="div-comment-542258" class="clearfix comment">
+				<a name="comment-542258" id="comment-542258"></a>
+				<div class="title clearfix">
+					<div class="collapseicon" style="float: left;" id="ment-542258">
+					</div>
+					<cite><a href="http://www.qiuxuewang.cn/?p=94" rel="external nofollow" class="url">求学网 » Nginx、LVS及HAProxy负载均衡软件的优缺点详解</a><a href="#comment-542258"></a></cite> 
+									
+				</div>
+				<div class="body">
+					<div class="commmeta">
+						2015-01-24 10:52:19 						
+					</div>					
+					<div class="content clearfix">
+													<div class="wp-useragent"> <img src="wordpress.png" title="WordPress 3.4.1" style="border: 0px none; vertical-align: middle;" alt="WordPress 3.4.1" width="24" height="24"> WordPress 3.4.1</div><p>[…] 原文链接：&nbsp;Nginx/LVS/HAProxy负载均衡软件的优缺点详解&nbsp;（责编/魏伟） […]</p>
+					</div>
+					<div class="reply">
+						 
+						<a href="#" onclick="moveAddCommentBelow(&quot;div-comment-542258&quot;, 542258, true); return false;">回复他(她)</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<div id="div-comment-606635" class="clearfix comment">
+				<a name="comment-606635" id="comment-606635"></a>
+				<div class="title clearfix">
+					<div class="collapseicon" style="float: left;" id="ment-606635">
+					</div>
+					<cite><a href="http://fengyingsheng.com/" rel="external nofollow" class="url">eaon</a><a href="#comment-606635"></a></cite> 
+									
+				</div>
+				<div class="body">
+					<div class="commmeta">
+						2015-03-13 13:32:00 						
+					</div>					
+					<div class="content clearfix">
+							<img alt="" src="c8516a464b88c35c188a560e86015943" srcset="http://0.gravatar.com/avatar/c8516a464b88c35c188a560e86015943?s=64&amp;d=identicon&amp;r=g 2x" class="avatar avatar-32 photo" width="32" height="32">						<div class="wp-useragent"> <img src="chrome.png" title="Google Chrome 35.0.1916.114" style="border: 0px none; vertical-align: middle;" alt="Google Chrome 35.0.1916.114" width="24" height="24"> Google Chrome 35.0.1916.114  <img src="win-4.png" title="Windows 7 x64 Edition" style="border: 0px none; vertical-align: middle;" alt="Windows 7 x64 Edition" width="24" height="24"> Windows 7 x64 Edition</div><p>学习了，不错。就是感觉比较重复。</p>
+<p>希望能有具体一些的数据来进行说明！</p>
+<p>谢谢！</p>
+					</div>
+					<div class="reply">
+						 
+						<a href="#" onclick="moveAddCommentBelow(&quot;div-comment-606635&quot;, 606635, true); return false;">回复他(她)</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<div id="div-comment-606636" class="clearfix comment">
+				<a name="comment-606636" id="comment-606636"></a>
+				<div class="title clearfix">
+					<div class="collapseicon" style="float: left;" id="ment-606636">
+					</div>
+					<cite><a href="http://fengyingsheng.com/" rel="external nofollow" class="url">eaon</a><a href="#comment-606636"></a></cite> 
+									
+				</div>
+				<div class="body">
+					<div class="commmeta">
+						2015-03-13 13:33:15 						
+					</div>					
+					<div class="content clearfix">
+							<img alt="" src="c8516a464b88c35c188a560e86015943" srcset="http://0.gravatar.com/avatar/c8516a464b88c35c188a560e86015943?s=64&amp;d=identicon&amp;r=g 2x" class="avatar avatar-32 photo" width="32" height="32">						<div class="wp-useragent"> <img src="chrome.png" title="Google Chrome 35.0.1916.114" style="border: 0px none; vertical-align: middle;" alt="Google Chrome 35.0.1916.114" width="24" height="24"> Google Chrome 35.0.1916.114  <img src="win-4.png" title="Windows 7 x64 Edition" style="border: 0px none; vertical-align: middle;" alt="Windows 7 x64 Edition" width="24" height="24"> Windows 7 x64 Edition</div><p>有些重复，希望可以列举写具体的测试数据来进行比较。谢谢！</p>
+					</div>
+					<div class="reply">
+						 
+						<a href="#" onclick="moveAddCommentBelow(&quot;div-comment-606636&quot;, 606636, true); return false;">回复他(她)</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<div id="div-comment-656672" class="clearfix comment">
+				<a name="comment-656672" id="comment-656672"></a>
+				<div class="title clearfix">
+					<div class="collapseicon" style="float: left;" id="ment-656672">
+					</div>
+					<cite><a href="http://seanlook.com/" rel="external nofollow" class="url">seanlook</a><a href="#comment-656672"></a></cite> 
+									
+				</div>
+				<div class="body">
+					<div class="commmeta">
+						2015-05-19 01:19:05 						
+					</div>					
+					<div class="content clearfix">
+							<img alt="" src="7df68b291f084ad55bc32df434c4f91c" srcset="http://1.gravatar.com/avatar/7df68b291f084ad55bc32df434c4f91c?s=64&amp;d=identicon&amp;r=g 2x" class="avatar avatar-32 photo" width="32" height="32">						<div class="wp-useragent"> <img src="safari.png" title="Safari 8.0.5" style="border: 0px none; vertical-align: middle;" alt="Safari 8.0.5" width="24" height="24"> Safari 8.0.5  <img src="mac-3.png" title="Mac OS X  10.10.3" style="border: 0px none; vertical-align: middle;" alt="Mac OS X  10.10.3" width="24" height="24"> Mac OS X  10.10.3</div><p>你好，nginx在前端做负载均衡，转发到后端，但我后端tomcat来处理静态文件和上传的图片不太合理把，需要在tomcat前面再加一个nginx或apache来过滤静态文件吗？ 因为像我的图片是上传到tomcat所在服务器的，最前端的nginx没办法访问。</p>
+					</div>
+					<div class="reply">
+						 
+						<a href="#" onclick="moveAddCommentBelow(&quot;div-comment-656672&quot;, 656672, true); return false;">回复他(她)</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<div id="div-comment-661421" class="clearfix comment">
+				<a name="comment-661421" id="comment-661421"></a>
+				<div class="title clearfix">
+					<div class="collapseicon" style="float: left;" id="ment-661421">
+					</div>
+					<cite><a href="http://www.paymoon.com/" rel="external nofollow" class="url">yol</a><a href="#comment-661421"></a></cite> 
+									
+				</div>
+				<div class="body">
+					<div class="commmeta">
+						2015-05-29 11:00:50 						
+					</div>					
+					<div class="content clearfix">
+							<img alt="" src="39e6acb355b0b6516b426ad135e8b45e" srcset="http://0.gravatar.com/avatar/39e6acb355b0b6516b426ad135e8b45e?s=64&amp;d=identicon&amp;r=g 2x" class="avatar avatar-32 photo" width="32" height="32">						<div class="wp-useragent"> <img src="ucbrowser.png" title="UC Browser 10.4.1.576" style="border: 0px none; vertical-align: middle;" alt="UC Browser 10.4.1.576" width="24" height="24"> UC Browser 10.4.1.576  <img src="android.png" title="Android 4.4.3" style="border: 0px none; vertical-align: middle;" alt="Android 4.4.3" width="24" height="24"> Android 4.4.3</div><p>不错，学习了</p>
+					</div>
+					<div class="reply">
+						 
+						<a href="#" onclick="moveAddCommentBelow(&quot;div-comment-661421&quot;, 661421, true); return false;">回复他(她)</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<div id="div-comment-687599" class="clearfix comment">
+				<a name="comment-687599" id="comment-687599"></a>
+				<div class="title clearfix">
+					<div class="collapseicon" style="float: left;" id="ment-687599">
+					</div>
+					<cite>wonderflow<a href="#comment-687599"></a></cite> 
+									
+				</div>
+				<div class="body">
+					<div class="commmeta">
+						2015-08-30 20:08:51 						
+					</div>					
+					<div class="content clearfix">
+							<img alt="" src="a9ed3aba567b518c4750e7581cc89d82" srcset="http://1.gravatar.com/avatar/a9ed3aba567b518c4750e7581cc89d82?s=64&amp;d=identicon&amp;r=g 2x" class="avatar avatar-32 photo" width="32" height="32">						<div class="wp-useragent"> <img src="chrome.png" title="Google Chrome 44.0.2403.157" style="border: 0px none; vertical-align: middle;" alt="Google Chrome 44.0.2403.157" width="24" height="24"> Google Chrome 44.0.2403.157  <img src="mac-3.png" title="Mac OS X  10.10.4" style="border: 0px none; vertical-align: middle;" alt="Mac OS X  10.10.4" width="24" height="24"> Mac OS X  10.10.4</div><p>好文章，受益匪浅，谢谢分享！</p>
+					</div>
+					<div class="reply">
+						 
+						<a href="#" onclick="moveAddCommentBelow(&quot;div-comment-687599&quot;, 687599, true); return false;">回复他(她)</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<div id="div-comment-688335" class="clearfix comment">
+				<a name="comment-688335" id="comment-688335"></a>
+				<div class="title clearfix">
+					<div class="collapseicon" style="float: left;" id="ment-688335">
+					</div>
+					<cite>sun<a href="#comment-688335"></a></cite> 
+									
+				</div>
+				<div class="body">
+					<div class="commmeta">
+						2015-09-02 16:46:14 						
+					</div>					
+					<div class="content clearfix">
+							<img alt="" src="19ea6373f657b514e84a74ab9a3be454" srcset="http://1.gravatar.com/avatar/19ea6373f657b514e84a74ab9a3be454?s=64&amp;d=identicon&amp;r=g 2x" class="avatar avatar-32 photo" width="32" height="32">						<div class="wp-useragent"> <img src="chrome.png" title="Google Chrome 44.0.2403.125" style="border: 0px none; vertical-align: middle;" alt="Google Chrome 44.0.2403.125" width="24" height="24"> Google Chrome 44.0.2403.125  <img src="win-6.png" title="Windows 10 x64 Edition" style="border: 0px none; vertical-align: middle;" alt="Windows 10 x64 Edition" width="24" height="24"> Windows 10 x64 Edition</div><p>楼主分析透着，学有所获！</p>
+					</div>
+					<div class="reply">
+						 
+						<a href="#" onclick="moveAddCommentBelow(&quot;div-comment-688335&quot;, 688335, true); return false;">回复他(她)</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<div id="div-comment-691465" class="clearfix comment">
+				<a name="comment-691465" id="comment-691465"></a>
+				<div class="title clearfix">
+					<div class="collapseicon" style="float: left;" id="ment-691465">
+					</div>
+					<cite><a href="http://zhangge.net/" rel="external nofollow" class="url">张戈博客</a><a href="#comment-691465"></a></cite> 
+									
+				</div>
+				<div class="body">
+					<div class="commmeta">
+						2016-04-26 22:53:34 						
+					</div>					
+					<div class="content clearfix">
+							<img alt="" src="5254bdf483b41175ce069def5319e87d" srcset="http://2.gravatar.com/avatar/5254bdf483b41175ce069def5319e87d?s=64&amp;d=identicon&amp;r=g 2x" class="avatar avatar-32 photo" width="32" height="32">						<div class="wp-useragent"> <img src="qqbrowser.png" title="QQbrowser 3.9.3943.400" style="border: 0px none; vertical-align: middle;" alt="QQbrowser 3.9.3943.400" width="24" height="24"> QQbrowser 3.9.3943.400  <img src="mac-3.png" title="Mac OS X  10.11.3" style="border: 0px none; vertical-align: middle;" alt="Mac OS X  10.11.3" width="24" height="24"> Mac OS X  10.11.3</div><p>经常参考这篇文章，很有用的对比和参考。<br>
+这里补充下：<br>
+1.9版本以上Nginx已经支持TCP负载均衡了，UDP负载均衡貌似也有第三方开发了内部模块，遗憾没能弄到测试下。<br>
+另外，taobao的tengine已经支持url的健康检查，且也有第三方开发的支持健康检查模块</p>
+					</div>
+					<div class="reply">
+						 
+						<a href="#" onclick="moveAddCommentBelow(&quot;div-comment-691465&quot;, 691465, true); return false;">回复他(她)</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<div id="div-comment-693065" class="clearfix comment">
+				<a name="comment-693065" id="comment-693065"></a>
+				<div class="title clearfix">
+					<div class="collapseicon" style="float: left;" id="ment-693065">
+					</div>
+					<cite><a href="http://www.wanysys.cc/" rel="external nofollow" class="url">素梅好翔博客</a><a href="#comment-693065"></a></cite> 
+									
+				</div>
+				<div class="body">
+					<div class="commmeta">
+						2016-05-30 14:02:46 						
+					</div>					
+					<div class="content clearfix">
+							<img alt="" src="13eb284cb84b028792cdc9d7cd7e28be" srcset="http://1.gravatar.com/avatar/13eb284cb84b028792cdc9d7cd7e28be?s=64&amp;d=identicon&amp;r=g 2x" class="avatar avatar-32 photo" width="32" height="32">						<div class="wp-useragent"> <img src="chrome.png" title="Google Chrome 31.0.1650.63" style="border: 0px none; vertical-align: middle;" alt="Google Chrome 31.0.1650.63" width="24" height="24"> Google Chrome 31.0.1650.63  <img src="win-6.png" title="Windows 10" style="border: 0px none; vertical-align: middle;" alt="Windows 10" width="24" height="24"> Windows 10</div><p>写的很好，学习了，以后还会常来</p>
+					</div>
+					<div class="reply">
+						 
+						<a href="#" onclick="moveAddCommentBelow(&quot;div-comment-693065&quot;, 693065, true); return false;">回复他(她)</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<div id="div-comment-695658" class="clearfix comment">
+				<a name="comment-695658" id="comment-695658"></a>
+				<div class="title clearfix">
+					<div class="collapseicon" style="float: left;" id="ment-695658">
+					</div>
+					<cite>kaliylinux<a href="#comment-695658"></a></cite> 
+									
+				</div>
+				<div class="body">
+					<div class="commmeta">
+						2016-07-30 13:42:59 						
+					</div>					
+					<div class="content clearfix">
+							<img alt="" src="94f6957c75915031ccf03de8a400f649" srcset="http://0.gravatar.com/avatar/94f6957c75915031ccf03de8a400f649?s=64&amp;d=identicon&amp;r=g 2x" class="avatar avatar-32 photo" width="32" height="32">						<div class="wp-useragent"> <img src="firefox.png" title="Firefox 47.0" style="border: 0px none; vertical-align: middle;" alt="Firefox 47.0" width="24" height="24"> Firefox 47.0  <img src="win-4.png" title="Windows 7 x64 Edition" style="border: 0px none; vertical-align: middle;" alt="Windows 7 x64 Edition" width="24" height="24"> Windows 7 x64 Edition</div><p>好博文，博客地址已收藏！</p>
+					</div>
+					<div class="reply">
+						 
+						<a href="#" onclick="moveAddCommentBelow(&quot;div-comment-695658&quot;, 695658, true); return false;">回复他(她)</a>
+											</div>
+				</div>
+					
+
+			</div>
+</div>
+
+<div id="addcomment" class="comment clearfix">
+<a id="addcommentanchor" name="addcommentanchor"></a>
+	
+	
+	
+
+	
+	
+<form action="http://www.ha97.com/wp-comments-post.php" method="post" id="commentform">
+<div class="add">
+	<div id="reroot" style="display: none;">
+		<a href="#" onclick="reRoot(); return false;">评论原文</a>
+	</div>
+	
+		<div class="clearfix formr">
+	<label>
+		昵称 *
+	</label>
+	<div>
+		<input name="author" id="author" class="textarea" value="" size="28" tabindex="1" type="text">
+	</div>
+	</div>
+		
+	<div class="clearfix formr">	
+	<label>
+		电子邮件 *
+	</label>
+	<div>
+		<input name="email" id="email" value="" size="28" tabindex="2" type="text">
+	</div>
+	</div>		
+		
+	<div class="clearfix formr">
+	<label>
+		网站/博客
+	</label>
+	<div>
+		<input name="url" id="url" value="" size="28" tabindex="3" type="text">	
+	</div>
+	</div>
+		<textarea name="comment" id="comment" cols="60" rows="10" tabindex="4"></textarea>
+	<div>
+		<input name="comment_post_ID" value="5646" type="hidden">
+		<input name="redirect_to" value="/5646.html" type="hidden">
+		<input name="submit" id="submit" class="p" tabindex="5" value="发表" type="submit">
+	</div>
+</div>
+
+<p style="display: none;"><input id="akismet_comment_nonce" name="akismet_comment_nonce" value="8440bbef34" type="hidden"></p><input id="comment_reply_ID" name="comment_reply_ID" value="0" type="hidden"><p style="display: none;"></p><input id="ak_js" name="ak_js" value="1531464246917" type="hidden"></form>
+</div>
+			<div class="nav clearfix">
+			<div class="prev-p">« <a href="http://www.ha97.com/5642.html" rel="prev">关于云计算基础架构IaaS层的几点看法</a></div>
+			<div class="next-p"><a href="http://www.ha97.com/5649.html" rel="next">（原创）RHEL/CentOS/OracleLinux 7.x使用EPEL和REMI第三方yum源</a> »</div>
+		</div>
+		</div> <!-- /content-aw -->
+	</div> <!-- /content -->
+
+<div id="sidebar">
+<ul>
+	<li id="search-3" class="widget widget_search"><h2 class="widgettitle">站内搜索</h2>
+<form method="get" action="http://www.ha97.com/index.php">
+<input value="" size="16" name="s" id="s" type="text">
+<input class="p" value="Search" type="submit">
+</form></li>
+<li id="pages-4" class="widget widget_pages"><h2 class="widgettitle">页面</h2>
+		<ul>
+			<li class="page_item page-item-847"><a href="http://www.ha97.com/nginx_download">Nginx_download</a></li>
+<li class="page_item page-item-2"><a href="http://www.ha97.com/about">关于博主</a></li>
+<li class="page_item page-item-2057"><a href="http://www.ha97.com/tags">标签云</a></li>
+<li class="page_item page-item-1123"><a href="http://www.ha97.com/subscriptions">订阅本站</a></li>
+		</ul>
+		</li>
+		<li id="recent-posts-3" class="widget widget_recent_entries">		<h2 class="widgettitle">近期文章</h2>
+		<ul>
+					<li>
+				<a href="http://www.ha97.com/5925.html">机器学习速查表全集（从理论概念到Python库）</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5922.html">AI人工智能专业词汇集</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5968.html">温铁军：中国为何每次逢大危机总能力挽狂澜？</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5903.html">推荐给初学者的机器学习算法（速查表）</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5857.html">（总结）Fedora 22跨版本升级到Fedora 24方法</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5803.html">（原创）机器学习开源框架Mahout配置与入门研究</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5734.html">大数据架构师技能图谱</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5702.html">主流大数据采集平台的架构图解</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5698.html">主流大数据厂商汇总分类</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5695.html">JDBC URL连接常用数据库格式</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5782.html">云计算十年：OpenStack如何成为开源IaaS的老大</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5943.html">GitHub最流行的机器学习开源项目28个：TensorFlow居首</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5747.html">2016年OpenStack &amp; Docker六大趋势预测</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5682.html">（总结）Hadoop 2.6报错解决：Could not find the main class: org.apache.hadoop.hdfs.server.namenode.NameNode.</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5875.html">odoo 8.0 VS odoo 9.0社区版&amp;企业版功能对比</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5885.html">（总结）CentOS 7.x里yum安装Odoo 8.0&amp;9.0（OpenERP）</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5896.html">（总结）CentOS 7 里使用自动化运维工具Ansible</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5824.html">（分享）GitHub上排名TOP100的Python项目</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5766.html">阿里蚂蚁金服的关系型数据库：OceanBase架构详解</a>
+						</li>
+					<li>
+				<a href="http://www.ha97.com/5869.html">SAP与OpenERP（Odoo）两大ERP系统比较</a>
+						</li>
+				</ul>
+		</li>
+		<li id="recent-comments-4" class="widget widget_recent_comments"><h2 class="widgettitle">近期评论</h2>
+<ul id="recentcomments"><li class="recentcomments"><span class="comment-author-link"><a href="http://mxslly.com/" rel="external nofollow" class="url">q77190858</a></span>发表在《<a href="http://www.ha97.com/4009.html/comment-page-1#comment-748754">（总结）密码破解之王：Ophcrack彩虹表(Rainbow Tables)原理详解（附：120G彩虹表下载）</a>》</li><li class="recentcomments"><span class="comment-author-link">archlong</span>发表在《<a href="http://www.ha97.com/2987.html/comment-page-1#comment-747505">（原创）Linux下查看系统版本号信息的方法</a>》</li><li class="recentcomments"><span class="comment-author-link">yinuo</span>发表在《<a href="http://www.ha97.com/2584.html/comment-page-1#comment-747487">一些不错的网站入侵渗透教程</a>》</li><li class="recentcomments"><span class="comment-author-link">jerm</span>发表在《<a href="http://www.ha97.com/3989.html/comment-page-1#comment-745945">Sun被Oracle收购两年后</a>》</li><li class="recentcomments"><span class="comment-author-link">哇塞</span>发表在《<a href="http://www.ha97.com/3989.html/comment-page-1#comment-744229">Sun被Oracle收购两年后</a>》</li><li class="recentcomments"><span class="comment-author-link">fromar</span>发表在《<a href="http://www.ha97.com/3989.html/comment-page-1#comment-744091">Sun被Oracle收购两年后</a>》</li><li class="recentcomments"><span class="comment-author-link"><a href="http://www.kaijun.win/2016/05/%e5%87%a0%e4%b8%aa%e6%80%a7%e8%83%bd%e6%b5%8b%e8%af%95%e5%b7%a5%e5%85%b7/" rel="external nofollow" class="url">几个性能测试工具 - Kellen_劉</a></span>发表在《<a href="http://www.ha97.com/4623.html/comment-page-1#comment-743563">（总结）Web性能压力测试工具之WebBench详解</a>》</li><li class="recentcomments"><span class="comment-author-link"><a href="http://www.tianfuw.com/" rel="external nofollow" class="url">长风大侠</a></span>发表在《<a href="http://www.ha97.com/4030.html/comment-page-1#comment-743252">Google Chrome Source Code 浏览器源码（下载）</a>》</li><li class="recentcomments"><span class="comment-author-link">爱神的箭</span>发表在《<a href="http://www.ha97.com/5095.html/comment-page-1#comment-742661">系统吞吐量（TPS）、用户并发量、性能测试概念和公式</a>》</li><li class="recentcomments"><span class="comment-author-link">guang</span>发表在《<a href="http://www.ha97.com/2590.html/comment-page-1#comment-742203">《Linux命令详解词典》PDF电子版</a>》</li></ul></li>
+<li id="tag_cloud-3" class="widget widget_tag_cloud"><h2 class="widgettitle">标签</h2>
+<div class="tagcloud"><a href="http://www.ha97.com/tag/2010" class="tag-link-391 tag-link-position-1" title="20个话题" style="font-size: 10.6667pt;">2010</a>
+<a href="http://www.ha97.com/tag/apache" class="tag-link-1929 tag-link-position-2" title="27个话题" style="font-size: 12.1111pt;">Apache</a>
+<a href="http://www.ha97.com/tag/centos" class="tag-link-20 tag-link-position-3" title="47个话题" style="font-size: 14.6667pt;">centos</a>
+<a href="http://www.ha97.com/tag/chrome" class="tag-link-664 tag-link-position-4" title="13个话题" style="font-size: 8.77778pt;">Chrome</a>
+<a href="http://www.ha97.com/tag/debian" class="tag-link-220 tag-link-position-5" title="11个话题" style="font-size: 8pt;">Debian</a>
+<a href="http://www.ha97.com/tag/google" class="tag-link-1939 tag-link-position-6" title="40个话题" style="font-size: 13.8889pt;">Google</a>
+<a href="http://www.ha97.com/tag/linux" class="tag-link-1923 tag-link-position-7" title="218个话题" style="font-size: 22pt;">Linux</a>
+<a href="http://www.ha97.com/tag/mysql" class="tag-link-24 tag-link-position-8" title="45个话题" style="font-size: 14.4444pt;">mysql</a>
+<a href="http://www.ha97.com/tag/nginx" class="tag-link-1934 tag-link-position-9" title="54个话题" style="font-size: 15.3333pt;">Nginx</a>
+<a href="http://www.ha97.com/tag/oracle" class="tag-link-25 tag-link-position-10" title="19个话题" style="font-size: 10.4444pt;">oracle</a>
+<a href="http://www.ha97.com/tag/php" class="tag-link-1930 tag-link-position-11" title="33个话题" style="font-size: 13pt;">PHP</a>
+<a href="http://www.ha97.com/tag/redhat" class="tag-link-107 tag-link-position-12" title="11个话题" style="font-size: 8pt;">RedHat</a>
+<a href="http://www.ha97.com/tag/rhel" class="tag-link-106 tag-link-position-13" title="25个话题" style="font-size: 11.6667pt;">RHEL</a>
+<a href="http://www.ha97.com/tag/server" class="tag-link-16 tag-link-position-14" title="11个话题" style="font-size: 8pt;">server</a>
+<a href="http://www.ha97.com/tag/shell" class="tag-link-1932 tag-link-position-15" title="24个话题" style="font-size: 11.5556pt;">Shell</a>
+<a href="http://www.ha97.com/tag/web" class="tag-link-1933 tag-link-position-16" title="26个话题" style="font-size: 11.8889pt;">Web</a>
+<a href="http://www.ha97.com/tag/windows" class="tag-link-1925 tag-link-position-17" title="12个话题" style="font-size: 8.33333pt;">Windows</a>
+<a href="http://www.ha97.com/tag/wordpress" class="tag-link-1946 tag-link-position-18" title="28个话题" style="font-size: 12.2222pt;">WordPress</a>
+<a href="http://www.ha97.com/tag/xenserver" class="tag-link-1612 tag-link-position-19" title="17个话题" style="font-size: 10pt;">XenServer</a>
+<a href="http://www.ha97.com/tag/yum" class="tag-link-158 tag-link-position-20" title="14个话题" style="font-size: 9.11111pt;">yum</a>
+<a href="http://www.ha97.com/tag/%e4%b8%8b%e8%bd%bd" class="tag-link-188 tag-link-position-21" title="24个话题" style="font-size: 11.5556pt;">下载</a>
+<a href="http://www.ha97.com/tag/%e4%b8%ad%e5%9b%bd" class="tag-link-247 tag-link-position-22" title="11个话题" style="font-size: 8pt;">中国</a>
+<a href="http://www.ha97.com/tag/%e4%ba%92%e8%81%94%e7%bd%91" class="tag-link-1935 tag-link-position-23" title="14个话题" style="font-size: 9.11111pt;">互联网</a>
+<a href="http://www.ha97.com/tag/%e4%bc%98%e5%8c%96" class="tag-link-221 tag-link-position-24" title="16个话题" style="font-size: 9.66667pt;">优化</a>
+<a href="http://www.ha97.com/tag/%e5%85%a8%e7%90%83" class="tag-link-125 tag-link-position-25" title="16个话题" style="font-size: 9.66667pt;">全球</a>
+<a href="http://www.ha97.com/tag/%e5%8e%9f%e5%88%9b" class="tag-link-257 tag-link-position-26" title="20个话题" style="font-size: 10.6667pt;">原创</a>
+<a href="http://www.ha97.com/tag/%e5%8f%82%e6%95%b0" class="tag-link-213 tag-link-position-27" title="13个话题" style="font-size: 8.77778pt;">参数</a>
+<a href="http://www.ha97.com/tag/%e5%91%bd%e4%bb%a4" class="tag-link-31 tag-link-position-28" title="34个话题" style="font-size: 13.1111pt;">命令</a>
+<a href="http://www.ha97.com/tag/%e5%ae%89%e8%a3%85" class="tag-link-267 tag-link-position-29" title="17个话题" style="font-size: 10pt;">安装</a>
+<a href="http://www.ha97.com/tag/%e5%b7%a5%e5%85%b7" class="tag-link-113 tag-link-position-30" title="18个话题" style="font-size: 10.2222pt;">工具</a>
+<a href="http://www.ha97.com/tag/%e5%b8%b8%e7%94%a8" class="tag-link-884 tag-link-position-31" title="19个话题" style="font-size: 10.4444pt;">常用</a>
+<a href="http://www.ha97.com/tag/%e5%bc%80%e6%ba%90" class="tag-link-117 tag-link-position-32" title="13个话题" style="font-size: 8.77778pt;">开源</a>
+<a href="http://www.ha97.com/tag/%e6%80%bb%e7%bb%93" class="tag-link-431 tag-link-position-33" title="98个话题" style="font-size: 18.2222pt;">总结</a>
+<a href="http://www.ha97.com/tag/%e6%95%b0%e6%8d%ae%e5%ba%93" class="tag-link-308 tag-link-position-34" title="11个话题" style="font-size: 8pt;">数据库</a>
+<a href="http://www.ha97.com/tag/%e6%96%b9%e6%b3%95" class="tag-link-535 tag-link-position-35" title="22个话题" style="font-size: 11.1111pt;">方法</a>
+<a href="http://www.ha97.com/tag/%e6%9c%8d%e5%8a%a1%e5%99%a8" class="tag-link-17 tag-link-position-36" title="19个话题" style="font-size: 10.4444pt;">服务器</a>
+<a href="http://www.ha97.com/tag/%e6%9e%b6%e6%9e%84" class="tag-link-19 tag-link-position-37" title="31个话题" style="font-size: 12.7778pt;">架构</a>
+<a href="http://www.ha97.com/tag/%e7%ae%80%e4%bb%8b" class="tag-link-545 tag-link-position-38" title="12个话题" style="font-size: 8.33333pt;">简介</a>
+<a href="http://www.ha97.com/tag/%e7%b3%bb%e7%bb%9f" class="tag-link-30 tag-link-position-39" title="15个话题" style="font-size: 9.33333pt;">系统</a>
+<a href="http://www.ha97.com/tag/%e7%bb%8f%e5%85%b8" class="tag-link-86 tag-link-position-40" title="17个话题" style="font-size: 10pt;">经典</a>
+<a href="http://www.ha97.com/tag/%e8%84%9a%e6%9c%ac" class="tag-link-744 tag-link-position-41" title="20个话题" style="font-size: 10.6667pt;">脚本</a>
+<a href="http://www.ha97.com/tag/%e8%85%be%e8%ae%af" class="tag-link-471 tag-link-position-42" title="14个话题" style="font-size: 9.11111pt;">腾讯</a>
+<a href="http://www.ha97.com/tag/%e8%a7%a3%e5%86%b3%e6%96%b9%e6%b3%95" class="tag-link-284 tag-link-position-43" title="15个话题" style="font-size: 9.33333pt;">解决方法</a>
+<a href="http://www.ha97.com/tag/%e8%af%a6%e8%a7%a3" class="tag-link-176 tag-link-position-44" title="64个话题" style="font-size: 16.1111pt;">详解</a>
+<a href="http://www.ha97.com/tag/%e9%85%8d%e7%bd%ae" class="tag-link-184 tag-link-position-45" title="23个话题" style="font-size: 11.3333pt;">配置</a></div>
+</li>
+<li id="views-3" class="widget widget_views"><h2 class="widgettitle">博文浏览排名</h2>
+<ul>
+<li><a href="http://www.ha97.com/5095.html" title="系统吞吐量（TPS）、用户并发量、性能测试概念和公式">系统吞吐量（TPS）、用户并发量、性能测试概念和公式</a> - 414,740 views</li><li><a href="http://www.ha97.com/5194.html" title="（总结）Nginx配置文件nginx.conf中文详解">（总结）Nginx配置文件nginx.conf中文详解</a> - 317,132 views</li><li><a href="http://www.ha97.com/2987.html" title="（原创）Linux下查看系统版本号信息的方法">（原创）Linux下查看系统版本号信息的方法</a> - 168,493 views</li><li><a href="http://www.ha97.com/4634.html" title="（总结）CentOS Linux下VNC Server远程桌面配置详解">（总结）CentOS Linux下VNC Server远程桌面配置详解</a> - 144,086 views</li><li><a href="http://www.ha97.com/932.html" title="《新三国》高清版全95集迅雷下载">《新三国》高清版全95集迅雷下载</a> - 107,300 views</li><li><a href="http://www.ha97.com/5646.html" title="（总结）Nginx/LVS/HAProxy负载均衡软件的优缺点详解">（总结）Nginx/LVS/HAProxy负载均衡软件的优缺点详解</a> - 105,625 views</li><li><a href="http://www.ha97.com/4467.html" title="（总结）CentOS Linux搭建SVN Server配置详解">（总结）CentOS Linux搭建SVN Server配置详解</a> - 104,202 views</li><li><a href="http://www.ha97.com/4001.html" title="（总结）Linux下su与su -命令的本质区别">（总结）Linux下su与su -命令的本质区别</a> - 89,973 views</li><li><a href="http://www.ha97.com/4617.html" title="（总结）Web性能压力测试工具之ApacheBench（ab）详解">（总结）Web性能压力测试工具之ApacheBench（ab）详解</a> - 88,478 views</li><li><a href="http://www.ha97.com/5172.html" title="（总结）Linux的chattr与lsattr命令详解">（总结）Linux的chattr与lsattr命令详解</a> - 84,480 views</li><li><a href="http://www.ha97.com/4550.html" title="Linux抓包工具tcpdump详解">Linux抓包工具tcpdump详解</a> - 75,428 views</li><li><a href="http://www.ha97.com/2673.html" title="（原创）Oracle 9i所有版本的最新下载地址（已验证！）">（原创）Oracle 9i所有版本的最新下载地址（已验证！）</a> - 74,446 views</li><li><a href="http://www.ha97.com/4788.html" title="（总结）Oracle启动监听报错：The listener supports no services解决">（总结）Oracle启动监听报错：The listener supports no services解决</a> - 66,664 views</li><li><a href="http://www.ha97.com/4546.html" title="Linux的IO性能监控工具iostat详解">Linux的IO性能监控工具iostat详解</a> - 57,345 views</li><li><a href="http://www.ha97.com/3710.html" title="RedHat Enterprise Linux (RHEL) 6正式版发布下载（很快）">RedHat Enterprise Linux (RHEL) 6正式版发布下载（很快）</a> - 57,097 views</li><li><a href="http://www.ha97.com/5428.html" title="（原创）Linux文件系统只读Read-only file system的快速解决方法">（原创）Linux文件系统只读Read-only file system的快速解决方法</a> - 56,690 views</li><li><a href="http://www.ha97.com/3363.html" title="最流行最好玩的十大经典单机游戏排行榜">最流行最好玩的十大经典单机游戏排行榜</a> - 55,767 views</li><li><a href="http://www.ha97.com/4623.html" title="（总结）Web性能压力测试工具之WebBench详解">（总结）Web性能压力测试工具之WebBench详解</a> - 53,812 views</li><li><a href="http://www.ha97.com/4009.html" title="（总结）密码破解之王：Ophcrack彩虹表(Rainbow Tables)原理详解（附：120G彩虹表下载）">（总结）密码破解之王：Ophcrack彩虹表(Rainbow Tables)原理详解（附：120G彩虹表下载）</a> - 51,604 views</li><li><a href="http://www.ha97.com/5359.html" title="（原创）Linux下MySQL 5.5/5.6的修改字符集编码为UTF8（彻底解决中文乱码问题）">（原创）Linux下MySQL 5.5/5.6的修改字符集编码为UTF8（彻底解决中文乱码问题）</a> - 50,725 views</li></ul>
+</li>
+<li id="categories-3" class="widget widget_categories"><h2 class="widgettitle">分类目录</h2>
+		<ul>
+	<li class="cat-item cat-item-6"><a href="http://www.ha97.com/category/database">DataBase</a> (70)
+</li>
+	<li class="cat-item cat-item-2000"><a href="http://www.ha97.com/category/erp">ERP</a> (4)
+</li>
+	<li class="cat-item cat-item-60"><a href="http://www.ha97.com/category/google">Google</a> (55)
+</li>
+	<li class="cat-item cat-item-10"><a href="http://www.ha97.com/category/it%e7%b2%be%e8%8b%b1">IT精英</a> (32)
+</li>
+	<li class="cat-item cat-item-3"><a href="http://www.ha97.com/category/linux">Linux</a> (422)
+</li>
+	<li class="cat-item cat-item-12"><a href="http://www.ha97.com/category/security">Security</a> (112)
+</li>
+	<li class="cat-item cat-item-298"><a href="http://www.ha97.com/category/seo">SEO</a> (22)
+</li>
+	<li class="cat-item cat-item-58"><a href="http://www.ha97.com/category/tools">Tools</a> (73)
+</li>
+	<li class="cat-item cat-item-72"><a href="http://www.ha97.com/category/unix">UNIX</a> (146)
+</li>
+	<li class="cat-item cat-item-29"><a href="http://www.ha97.com/category/vps">VPS</a> (14)
+</li>
+	<li class="cat-item cat-item-36"><a href="http://www.ha97.com/category/web">Web</a> (155)
+</li>
+	<li class="cat-item cat-item-64"><a href="http://www.ha97.com/category/web-server">Web Server</a> (77)
+</li>
+	<li class="cat-item cat-item-91"><a href="http://www.ha97.com/category/wordpress">WordPress</a> (39)
+</li>
+	<li class="cat-item cat-item-15"><a href="http://www.ha97.com/category/%e4%b8%aa%e4%ba%ba%e6%97%a5%e8%ae%b0">个人日记</a> (322)
+</li>
+	<li class="cat-item cat-item-40"><a href="http://www.ha97.com/category/%e4%ba%92%e8%81%94%e7%bd%91">互联网</a> (221)
+</li>
+	<li class="cat-item cat-item-2009"><a href="http://www.ha97.com/category/%e4%ba%ba%e5%b7%a5%e6%99%ba%e8%83%bd">人工智能</a> (2)
+</li>
+	<li class="cat-item cat-item-14"><a href="http://www.ha97.com/category/%e4%ba%ba%e6%96%87%e5%8e%86%e5%8f%b2">人文历史</a> (57)
+</li>
+	<li class="cat-item cat-item-39"><a href="http://www.ha97.com/category/%e4%ba%ba%e7%94%9f%e7%99%be%e6%80%81">人生百态</a> (93)
+</li>
+	<li class="cat-item cat-item-13"><a href="http://www.ha97.com/category/%e5%88%9b%e4%b8%9a%e6%8a%95%e8%b5%84">创业投资</a> (76)
+</li>
+	<li class="cat-item cat-item-154"><a href="http://www.ha97.com/category/%e5%8e%9f%e5%88%9b%e6%80%bb%e7%bb%93">原创总结</a> (137)
+</li>
+	<li class="cat-item cat-item-564"><a href="http://www.ha97.com/category/%e5%a4%96%e6%96%87%e7%bf%bb%e8%af%91">外文翻译</a> (77)
+</li>
+	<li class="cat-item cat-item-1918"><a href="http://www.ha97.com/category/%e5%a4%a7%e6%95%b0%e6%8d%ae%e5%ba%94%e7%94%a8">大数据应用</a> (16)
+<ul class="children">
+	<li class="cat-item cat-item-1565"><a href="http://www.ha97.com/category/%e5%a4%a7%e6%95%b0%e6%8d%ae%e5%ba%94%e7%94%a8/hadoop">Hadoop</a> (15)
+</li>
+</ul>
+</li>
+	<li class="cat-item cat-item-921"><a href="http://www.ha97.com/category/%e5%bc%80%e6%ba%90%e4%b8%96%e7%95%8c">开源世界</a> (46)
+</li>
+	<li class="cat-item cat-item-8"><a href="http://www.ha97.com/category/%e6%97%a7%e6%96%87%e5%ad%98%e6%a1%a3">旧文存档</a> (199)
+</li>
+	<li class="cat-item cat-item-4"><a href="http://www.ha97.com/category/%e6%9c%8d%e5%8a%a1%e5%99%a8%e6%9e%b6%e6%9e%84">服务器架构</a> (84)
+</li>
+	<li class="cat-item cat-item-1"><a href="http://www.ha97.com/category/%e6%9c%aa%e5%88%86%e7%b1%bb">未分类</a> (24)
+</li>
+	<li class="cat-item cat-item-2008"><a href="http://www.ha97.com/category/%e6%9c%ba%e5%99%a8%e5%ad%a6%e4%b9%a0">机器学习</a> (5)
+</li>
+	<li class="cat-item cat-item-1053"><a href="http://www.ha97.com/category/%e6%b8%b8%e6%88%8f%e7%a0%94%e7%a9%b6">游戏研究</a> (45)
+</li>
+	<li class="cat-item cat-item-9"><a href="http://www.ha97.com/category/%e7%a7%91%e6%8a%80%e8%b5%84%e8%ae%af">科技资讯</a> (52)
+</li>
+	<li class="cat-item cat-item-59"><a href="http://www.ha97.com/category/%e7%bc%96%e7%a8%8b%e5%bc%80%e5%8f%91">编程开发</a> (131)
+<ul class="children">
+	<li class="cat-item cat-item-652"><a href="http://www.ha97.com/category/%e7%bc%96%e7%a8%8b%e5%bc%80%e5%8f%91/python">Python</a> (15)
+</li>
+	<li class="cat-item cat-item-35"><a href="http://www.ha97.com/category/%e7%bc%96%e7%a8%8b%e5%bc%80%e5%8f%91/shell">Shell</a> (64)
+</li>
+</ul>
+</li>
+	<li class="cat-item cat-item-47"><a href="http://www.ha97.com/category/%e8%99%9a%e6%8b%9f%e5%8c%96%e4%b8%8e%e4%ba%91%e8%ae%a1%e7%ae%97">虚拟化与云计算</a> (46)
+</li>
+	<li class="cat-item cat-item-127"><a href="http://www.ha97.com/category/%e8%b5%84%e6%ba%90%e5%88%86%e4%ba%ab">资源分享</a> (128)
+</li>
+	<li class="cat-item cat-item-748"><a href="http://www.ha97.com/category/%e8%bf%90%e7%bb%b4%e7%bb%8f%e9%aa%8c">运维经验</a> (39)
+</li>
+	<li class="cat-item cat-item-7"><a href="http://www.ha97.com/category/%e9%9b%86%e7%be%a4%e4%b8%8e%e8%b4%9f%e8%bd%bd%e5%9d%87%e8%a1%a1">集群与负载均衡</a> (18)
+</li>
+	<li class="cat-item cat-item-57"><a href="http://www.ha97.com/category/%e9%a1%b9%e7%9b%ae%e7%ae%a1%e7%90%86">项目管理</a> (9)
+</li>
+		</ul>
+</li>
+<li id="meta-3" class="widget widget_meta"><h2 class="widgettitle">功能</h2>
+			<ul>
+			<li><a href="http://www.ha97.com/wp-login.php?action=register">注册</a></li>			<li><a href="http://www.ha97.com/wp-login.php">登录</a></li>
+			<li><a href="http://www.ha97.com/feed">文章<abbr title="Really Simple Syndication">RSS</abbr></a></li>
+			<li><a href="http://www.ha97.com/comments/feed">评论<abbr title="Really Simple Syndication">RSS</abbr></a></li>
+			<li><a href="https://cn.wordpress.org/" title="基于WordPress，一个优美、先进的个人信息发布平台。">WordPress.org</a></li>			</ul>
+			</li>
+<li id="archives-3" class="widget widget_archive"><h2 class="widgettitle">文章归档</h2>
+		<ul>
+			<li><a href="http://www.ha97.com/date/2017/07">2017年七月</a>&nbsp;(3)</li>
+	<li><a href="http://www.ha97.com/date/2017/05">2017年五月</a>&nbsp;(1)</li>
+	<li><a href="http://www.ha97.com/date/2016/08">2016年八月</a>&nbsp;(1)</li>
+	<li><a href="http://www.ha97.com/date/2016/07">2016年七月</a>&nbsp;(1)</li>
+	<li><a href="http://www.ha97.com/date/2016/06">2016年六月</a>&nbsp;(1)</li>
+	<li><a href="http://www.ha97.com/date/2016/05">2016年五月</a>&nbsp;(5)</li>
+	<li><a href="http://www.ha97.com/date/2016/01">2016年一月</a>&nbsp;(1)</li>
+	<li><a href="http://www.ha97.com/date/2015/11">2015年十一月</a>&nbsp;(1)</li>
+	<li><a href="http://www.ha97.com/date/2015/10">2015年十月</a>&nbsp;(1)</li>
+	<li><a href="http://www.ha97.com/date/2015/08">2015年八月</a>&nbsp;(1)</li>
+	<li><a href="http://www.ha97.com/date/2015/07">2015年七月</a>&nbsp;(3)</li>
+	<li><a href="http://www.ha97.com/date/2015/06">2015年六月</a>&nbsp;(1)</li>
+	<li><a href="http://www.ha97.com/date/2015/02">2015年二月</a>&nbsp;(2)</li>
+	<li><a href="http://www.ha97.com/date/2014/09">2014年九月</a>&nbsp;(3)</li>
+	<li><a href="http://www.ha97.com/date/2014/08">2014年八月</a>&nbsp;(4)</li>
+	<li><a href="http://www.ha97.com/date/2014/07">2014年七月</a>&nbsp;(6)</li>
+	<li><a href="http://www.ha97.com/date/2014/06">2014年六月</a>&nbsp;(2)</li>
+	<li><a href="http://www.ha97.com/date/2014/05">2014年五月</a>&nbsp;(5)</li>
+	<li><a href="http://www.ha97.com/date/2014/04">2014年四月</a>&nbsp;(1)</li>
+	<li><a href="http://www.ha97.com/date/2013/10">2013年十月</a>&nbsp;(2)</li>
+	<li><a href="http://www.ha97.com/date/2013/09">2013年九月</a>&nbsp;(5)</li>
+	<li><a href="http://www.ha97.com/date/2013/07">2013年七月</a>&nbsp;(1)</li>
+	<li><a href="http://www.ha97.com/date/2013/06">2013年六月</a>&nbsp;(1)</li>
+	<li><a href="http://www.ha97.com/date/2013/03">2013年三月</a>&nbsp;(2)</li>
+	<li><a href="http://www.ha97.com/date/2013/02">2013年二月</a>&nbsp;(1)</li>
+	<li><a href="http://www.ha97.com/date/2013/01">2013年一月</a>&nbsp;(12)</li>
+	<li><a href="http://www.ha97.com/date/2012/12">2012年十二月</a>&nbsp;(5)</li>
+	<li><a href="http://www.ha97.com/date/2012/11">2012年十一月</a>&nbsp;(10)</li>
+	<li><a href="http://www.ha97.com/date/2012/10">2012年十月</a>&nbsp;(2)</li>
+	<li><a href="http://www.ha97.com/date/2012/09">2012年九月</a>&nbsp;(5)</li>
+	<li><a href="http://www.ha97.com/date/2012/08">2012年八月</a>&nbsp;(12)</li>
+	<li><a href="http://www.ha97.com/date/2012/07">2012年七月</a>&nbsp;(21)</li>
+	<li><a href="http://www.ha97.com/date/2012/06">2012年六月</a>&nbsp;(23)</li>
+	<li><a href="http://www.ha97.com/date/2012/05">2012年五月</a>&nbsp;(21)</li>
+	<li><a href="http://www.ha97.com/date/2012/04">2012年四月</a>&nbsp;(7)</li>
+	<li><a href="http://www.ha97.com/date/2012/03">2012年三月</a>&nbsp;(2)</li>
+	<li><a href="http://www.ha97.com/date/2012/02">2012年二月</a>&nbsp;(1)</li>
+	<li><a href="http://www.ha97.com/date/2012/01">2012年一月</a>&nbsp;(2)</li>
+	<li><a href="http://www.ha97.com/date/2011/12">2011年十二月</a>&nbsp;(7)</li>
+	<li><a href="http://www.ha97.com/date/2011/11">2011年十一月</a>&nbsp;(6)</li>
+	<li><a href="http://www.ha97.com/date/2011/10">2011年十月</a>&nbsp;(5)</li>
+	<li><a href="http://www.ha97.com/date/2011/08">2011年八月</a>&nbsp;(2)</li>
+	<li><a href="http://www.ha97.com/date/2011/07">2011年七月</a>&nbsp;(28)</li>
+	<li><a href="http://www.ha97.com/date/2011/06">2011年六月</a>&nbsp;(24)</li>
+	<li><a href="http://www.ha97.com/date/2011/05">2011年五月</a>&nbsp;(37)</li>
+	<li><a href="http://www.ha97.com/date/2011/04">2011年四月</a>&nbsp;(28)</li>
+	<li><a href="http://www.ha97.com/date/2011/03">2011年三月</a>&nbsp;(18)</li>
+	<li><a href="http://www.ha97.com/date/2011/02">2011年二月</a>&nbsp;(1)</li>
+	<li><a href="http://www.ha97.com/date/2011/01">2011年一月</a>&nbsp;(14)</li>
+	<li><a href="http://www.ha97.com/date/2010/12">2010年十二月</a>&nbsp;(3)</li>
+	<li><a href="http://www.ha97.com/date/2010/11">2010年十一月</a>&nbsp;(17)</li>
+	<li><a href="http://www.ha97.com/date/2010/10">2010年十月</a>&nbsp;(24)</li>
+	<li><a href="http://www.ha97.com/date/2010/09">2010年九月</a>&nbsp;(100)</li>
+	<li><a href="http://www.ha97.com/date/2010/08">2010年八月</a>&nbsp;(119)</li>
+	<li><a href="http://www.ha97.com/date/2010/07">2010年七月</a>&nbsp;(184)</li>
+	<li><a href="http://www.ha97.com/date/2010/06">2010年六月</a>&nbsp;(157)</li>
+	<li><a href="http://www.ha97.com/date/2010/05">2010年五月</a>&nbsp;(154)</li>
+	<li><a href="http://www.ha97.com/date/2010/04">2010年四月</a>&nbsp;(42)</li>
+		</ul>
+		</li>
+<li id="calendar-3" class="widget widget_calendar"><h2 class="widgettitle">日历</h2>
+<div id="calendar_wrap" class="calendar_wrap"><table id="wp-calendar">
+	<caption>2018年七月</caption>
+	<thead>
+	<tr>
+		<th scope="col" title="星期一">一</th>
+		<th scope="col" title="星期二">二</th>
+		<th scope="col" title="星期三">三</th>
+		<th scope="col" title="星期四">四</th>
+		<th scope="col" title="星期五">五</th>
+		<th scope="col" title="星期六">六</th>
+		<th scope="col" title="星期日">日</th>
+	</tr>
+	</thead>
+
+	<tfoot>
+	<tr>
+		<td colspan="3" id="prev"><a href="http://www.ha97.com/date/2017/07">« 7月</a></td>
+		<td class="pad">&nbsp;</td>
+		<td colspan="3" id="next" class="pad">&nbsp;</td>
+	</tr>
+	</tfoot>
+
+	<tbody>
+	<tr>
+		<td colspan="6" class="pad">&nbsp;</td><td>1</td>
+	</tr>
+	<tr>
+		<td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td>
+	</tr>
+	<tr>
+		<td>9</td><td>10</td><td>11</td><td>12</td><td id="today">13</td><td>14</td><td>15</td>
+	</tr>
+	<tr>
+		<td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td><td>22</td>
+	</tr>
+	<tr>
+		<td>23</td><td>24</td><td>25</td><td>26</td><td>27</td><td>28</td><td>29</td>
+	</tr>
+	<tr>
+		<td>30</td><td>31</td>
+		<td class="pad" colspan="5">&nbsp;</td>
+	</tr>
+	</tbody>
+	</table></div></li>
+<li id="linkcat-376" class="widget widget_links"><h2 class="widgettitle">常用网站</h2>
+
+	<ul class="xoxo blogroll">
+<li><a href="http://www.centos.org/" target="_top">CentOS</a></li>
+<li><a href="http://www.chinaunix.net/" target="_top">ChinaUnix</a></li>
+<li><a href="http://www.freebuf.com/" target="_top">Freebuf</a></li>
+<li><a href="http://www.gentoo.org/" target="_top">Gentoo</a></li>
+<li><a href="https://github.com/" target="_top">Github</a></li>
+<li><a href="https://www.google.com/" target="_top">Google SSL</a></li>
+<li><a href="http://hadoop.apache.org/" target="_top">Hadoop</a></li>
+<li><a href="http://www.kernel.org/" target="_top">Linux Kernel</a></li>
+<li><a href="http://www.mysql.com/" target="_top">MySQL</a></li>
+<li><a href="http://sourceforge.net/" target="_top">SourceForge</a></li>
+<li><a href="https://stackoverflow.com/" target="_top">stackoverflow</a></li>
+<li><a href="https://github.com/tensorflow/tensorflow/" target="_top">Tensorflow</a></li>
+<li><a href="http://www.oschina.net/" target="_top">开源中国</a></li>
+<li><a href="http://www.nsfocus.net/">绿盟科技</a></li>
+<li><a href="http://www.douban.com/" target="_top">豆瓣</a></li>
+
+	</ul>
+</li>
+
+<li id="linkcat-215" class="widget widget_links"><h2 class="widgettitle">技术blog</h2>
+
+	<ul class="xoxo blogroll">
+<li><a href="http://www.dbanotes.net/" target="_top">DBA Notes</a></li>
+<li><a href="http://www.ha97.com/" target="_top">服务器运维与架构</a></li>
+
+	</ul>
+</li>
+
+<li id="linkcat-214" class="widget widget_links"><h2 class="widgettitle">技术手册</h2>
+
+	<ul class="xoxo blogroll">
+<li><a href="http://www.ha97.com/book/lfs-book-6.6/" target="_top">LFS 6.6中文手册</a></li>
+<li><a href="http://www.ha97.com/book/unixtoolbox_zh_CN.html" target="_top">Unix Toolbox中文版</a></li>
+<li><a href="http://www.ha97.com/book/OpenSource_Guide/" target="_top">开源世界旅行手册</a></li>
+<li><a href="http://www.ha97.com/book/vbird_linux/" target="_top">鸟哥的Linux私房菜（简体版）</a></li>
+
+	</ul>
+</li>
+
+</ul>
+</div>	</div><!--wrapper-->
+
+
+<div id="footer-aw" class="clearfix">
+	<div class="ft-s ss">
+		<h2>日志存档</h2>
+		<ul>
+			<li><a href="http://www.ha97.com/date/2017/07">2017年七月</a></li>
+	<li><a href="http://www.ha97.com/date/2017/05">2017年五月</a></li>
+	<li><a href="http://www.ha97.com/date/2016/08">2016年八月</a></li>
+	<li><a href="http://www.ha97.com/date/2016/07">2016年七月</a></li>
+	<li><a href="http://www.ha97.com/date/2016/06">2016年六月</a></li>
+	<li><a href="http://www.ha97.com/date/2016/05">2016年五月</a></li>
+	<li><a href="http://www.ha97.com/date/2016/01">2016年一月</a></li>
+	<li><a href="http://www.ha97.com/date/2015/11">2015年十一月</a></li>
+	<li><a href="http://www.ha97.com/date/2015/10">2015年十月</a></li>
+	<li><a href="http://www.ha97.com/date/2015/08">2015年八月</a></li>
+	<li><a href="http://www.ha97.com/date/2015/07">2015年七月</a></li>
+	<li><a href="http://www.ha97.com/date/2015/06">2015年六月</a></li>
+	<li><a href="http://www.ha97.com/date/2015/02">2015年二月</a></li>
+	<li><a href="http://www.ha97.com/date/2014/09">2014年九月</a></li>
+	<li><a href="http://www.ha97.com/date/2014/08">2014年八月</a></li>
+	<li><a href="http://www.ha97.com/date/2014/07">2014年七月</a></li>
+	<li><a href="http://www.ha97.com/date/2014/06">2014年六月</a></li>
+	<li><a href="http://www.ha97.com/date/2014/05">2014年五月</a></li>
+	<li><a href="http://www.ha97.com/date/2014/04">2014年四月</a></li>
+	<li><a href="http://www.ha97.com/date/2013/10">2013年十月</a></li>
+	<li><a href="http://www.ha97.com/date/2013/09">2013年九月</a></li>
+	<li><a href="http://www.ha97.com/date/2013/07">2013年七月</a></li>
+	<li><a href="http://www.ha97.com/date/2013/06">2013年六月</a></li>
+	<li><a href="http://www.ha97.com/date/2013/03">2013年三月</a></li>
+	<li><a href="http://www.ha97.com/date/2013/02">2013年二月</a></li>
+	<li><a href="http://www.ha97.com/date/2013/01">2013年一月</a></li>
+	<li><a href="http://www.ha97.com/date/2012/12">2012年十二月</a></li>
+	<li><a href="http://www.ha97.com/date/2012/11">2012年十一月</a></li>
+	<li><a href="http://www.ha97.com/date/2012/10">2012年十月</a></li>
+	<li><a href="http://www.ha97.com/date/2012/09">2012年九月</a></li>
+	<li><a href="http://www.ha97.com/date/2012/08">2012年八月</a></li>
+	<li><a href="http://www.ha97.com/date/2012/07">2012年七月</a></li>
+	<li><a href="http://www.ha97.com/date/2012/06">2012年六月</a></li>
+	<li><a href="http://www.ha97.com/date/2012/05">2012年五月</a></li>
+	<li><a href="http://www.ha97.com/date/2012/04">2012年四月</a></li>
+	<li><a href="http://www.ha97.com/date/2012/03">2012年三月</a></li>
+	<li><a href="http://www.ha97.com/date/2012/02">2012年二月</a></li>
+	<li><a href="http://www.ha97.com/date/2012/01">2012年一月</a></li>
+	<li><a href="http://www.ha97.com/date/2011/12">2011年十二月</a></li>
+	<li><a href="http://www.ha97.com/date/2011/11">2011年十一月</a></li>
+	<li><a href="http://www.ha97.com/date/2011/10">2011年十月</a></li>
+	<li><a href="http://www.ha97.com/date/2011/08">2011年八月</a></li>
+	<li><a href="http://www.ha97.com/date/2011/07">2011年七月</a></li>
+	<li><a href="http://www.ha97.com/date/2011/06">2011年六月</a></li>
+	<li><a href="http://www.ha97.com/date/2011/05">2011年五月</a></li>
+	<li><a href="http://www.ha97.com/date/2011/04">2011年四月</a></li>
+	<li><a href="http://www.ha97.com/date/2011/03">2011年三月</a></li>
+	<li><a href="http://www.ha97.com/date/2011/02">2011年二月</a></li>
+	<li><a href="http://www.ha97.com/date/2011/01">2011年一月</a></li>
+	<li><a href="http://www.ha97.com/date/2010/12">2010年十二月</a></li>
+	<li><a href="http://www.ha97.com/date/2010/11">2010年十一月</a></li>
+	<li><a href="http://www.ha97.com/date/2010/10">2010年十月</a></li>
+	<li><a href="http://www.ha97.com/date/2010/09">2010年九月</a></li>
+	<li><a href="http://www.ha97.com/date/2010/08">2010年八月</a></li>
+	<li><a href="http://www.ha97.com/date/2010/07">2010年七月</a></li>
+	<li><a href="http://www.ha97.com/date/2010/06">2010年六月</a></li>
+	<li><a href="http://www.ha97.com/date/2010/05">2010年五月</a></li>
+	<li><a href="http://www.ha97.com/date/2010/04">2010年四月</a></li>
+		</ul>
+	</div>
+		
+	<div class="ft-s">
+		<h2>博主站点</h2>
+		<ul>
+		<li><a href="http://www.ha97.com/" title="服务器运维与架构">服务器运维与架构</a></li>
+		</ul>
+	</div>
+		
+</div>
+
+<div class="copyright">
+	<a href="http://www.ha97.com/">Powered by ha97 4.5.14</a> - <a href="http://www.ha97.com/" title="服务器运维与架构|网站架构">服务器运维与架构</a> by <a href="http://www.ha97.com/about">博客教主</a> <a href="http://www.ha97.com/google-sitemap.xml">Google地图</a> <a href="http://www.ha97.com/sitemap.html">百度地图</a> 
+<a href="http://www.cnzz.com/stat/website.php?web_id=363854" target="_top" title="站长统计">站长统计</a>
+	- 1.90 seconds</div>
+	
+
+
+
+
+
+
+		
+
+
+</body>
+</html>

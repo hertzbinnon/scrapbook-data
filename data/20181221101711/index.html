@@ -1,0 +1,649 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="zh-CN">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+	<meta name="Content-Type" content="text/html;charset=utf-8">
+    <meta name="Referrer" content="unsafe-url">
+	<meta content="True" name="HandheldFriendly">
+    <meta name="theme-color" content="#333344">
+	
+    <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="detectify-verification" content="d0264f228155c7a1f72c3d91c17ce8fb">
+<meta name="p:domain_verify" content="b87e3b55b409494aab88c1610b05a5f0">
+<meta name="alexaVerifyID" content="OFc8dmwZo7ttU4UCnDh1rKDtLlY">
+<meta name="baidu-site-verification" content="D00WizvYyr">
+<meta name="msvalidate.01" content="D9B08FEA08E3DA402BF07ABAB61D77DE">
+<meta property="wb:webmaster" content="f2f4cb229bda06a4">
+<meta name="google-site-verification" content="LM_cJR94XJIqcYJeOCscGVMWdaRUvmyz6cVOqkFplaU">
+    
+    <title>Cgroup － 从 CPU 资源隔离说起（二） - V2EX</title>
+    <link rel="dns-prefetch" href="https://static.v2ex.com/">
+    <link rel="dns-prefetch" href="https://cdn.v2ex.com/">
+    <link rel="dns-prefetch" href="https://cdn.v2ex.co/">
+    <link rel="dns-prefetch" href="https://i.v2ex.co/">
+    <link rel="dns-prefetch" href="https://v2ex.assets.uxengine.net/">
+    
+	   
+    
+    
+    
+    
+    
+    
+    <link rel="icon" sizes="192x192" href="v2ex_192.png">
+    <link rel="shortcut icon" href="icon_rayps_64.png" type="image/png">
+    
+	
+	
+	
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <meta name="description" content="Linux - @jerry017cn - ###针对 CPU 核心进行资源隔离针对 CPU 核心进行隔离，其实就是把要运行的进程绑定到指定的核心上运行，通过让不同的进程占用不同的核心，以达到运算资源隔离的目的。其实对于 Linux 来说，">
+    
+    
+    <link rel="canonical" href="https://www.v2ex.com/t/246792">
+    
+    
+    
+    <meta property="og:locale" content="zh_CN">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Cgroup － 从 CPU 资源隔离说起（二） - V2EX">
+<meta property="og:description" content="Linux - @jerry017cn - ###针对 CPU 核心进行资源隔离针对 CPU 核心进行隔离，其实就是把要运行的进程绑定到指定的核心上运行，通过让不同的进程占用不同的核心，以达到运算资源隔离的目的。其实对于 Linux 来说，">
+<meta property="og:url" content="https://www.v2ex.com/t/246792">
+<meta property="og:site_name" content="V2EX">
+
+<meta property="article:tag" content="linux">
+<meta property="article:section" content="Linux">
+<meta property="article:published_time" content="2015-12-28T14:40:03Z">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:description" content="Linux - @jerry017cn - ###针对 CPU 核心进行资源隔离针对 CPU 核心进行隔离，其实就是把要运行的进程绑定到指定的核心上运行，通过让不同的进程占用不同的核心，以达到运算资源隔离的目的。其实对于 Linux 来说，">
+<meta name="twitter:title" content="Cgroup － 从 CPU 资源隔离说起（二） - V2EX">
+<meta name="twitter:image" content="https://cdn.v2ex.com/avatar/277d/4b34/136983_large.png?m=1441503103">
+<meta name="twitter:site" content="@V2EX">
+<meta name="twitter:creator" content="@V2EX">
+    <link rel="top" title="回到顶部" href="https://www.v2ex.com/t/246792#">
+    
+    
+    <link rel="amphtml" href="https://www.v2ex.com/amp/t/246792">
+	
+    
+
+
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+    <div id="Top">
+        <div class="content">
+            <div style="padding-top: 6px;">
+            <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tbody><tr>
+                    <td width="110" align="left"><a href="https://www.v2ex.com/" name="top" title="way to explore"><div id="Logo"></div></a></td>
+                    <td width="auto" align="left">
+                        <div id="Search"><form action="https://www.google.com/" onsubmit="return dispatch()" target="_blank"><div id="qbar"><input maxlength="40" name="q" id="q" value="" onfocus="$('#qbar').addClass('qbar_focus')" onblur="$('#qbar').removeClass('qbar_focus')" type="text"></div></form></div>
+                    </td>
+                    <td style="padding-top: 2px;" width="570" align="right"><a href="https://www.v2ex.com/" class="top">首页</a>&nbsp;&nbsp;&nbsp;<a href="https://www.v2ex.com/signup" class="top">注册</a>&nbsp;&nbsp;&nbsp;<a href="https://www.v2ex.com/signin" class="top">登录</a></td>
+                </tr>
+            </tbody></table>
+            </div>
+        </div>
+    </div>
+    <div id="Wrapper">
+        <div class="content">
+            
+            <div id="Leftbar"></div>
+            <div id="Rightbar">
+                <div class="sep20"></div>
+                
+                    
+                    <div class="box">
+                        <div class="cell">
+                            <strong>V2EX = way to explore</strong>
+                            <div class="sep5"></div>
+                            <span class="fade">V2EX 是一个关于分享和探索的地方</span>
+                        </div>
+                        <div class="inner">
+                            <div class="sep5"></div>
+                            <div align="center"><a href="https://www.v2ex.com/signup" class="super normal button">现在注册</a>
+                            <div class="sep5"></div>
+                            <div class="sep10"></div>
+                            已注册用户请 &nbsp;<a href="https://www.v2ex.com/signin">登录</a></div>
+                        </div>
+                    </div>
+                    
+                    
+
+
+    
+    <div class="sep20"></div>
+    <div class="box">
+        <div class="inner">
+            <div class="sidebar_units">
+  <a href="http://www.oray.com/jump/45599" target="_top"><img src="huashengke_20181219.gif" alt="花生壳" width="100%" border="0"></a>
+  <div class="sep10"></div>
+  <a href="http://csvc.qiniu.com/?hmsr=v2exbanner&amp;hmpl=csvc&amp;hmcu=csvc_v2exbanner&amp;hmkw=&amp;hmci=" target="_top"><img src="qiniu_20181213.png" alt="七牛云" width="100%" border="0"></a>
+  <div class="sep10"></div>
+  <a href="https://datapacket.com/?utm_source=v2ex&amp;utm_medium=cpc&amp;utm_campaign=linux&amp;utm_content=static1" target="_top"><img src="datapacket_20181010.png" alt="DataPacket" width="100%" border="0"></a>
+  <div class="sep10"></div>
+  <a href="https://www.cdn77.com/cn?utm_source=v2ex&amp;utm_medium=cpc&amp;utm_campaign=linux&amp;utm_content=static2" target="_top"><img src="cdn77_20180806.jpg" alt="CDN77" width="100%" border="0"></a>
+  <div class="sep10"></div>
+</div>
+<strong class="green">Distributions</strong>
+<div class="sep5"></div>
+<span class="chevron">›</span> <a href="http://www.ubuntu.com/" target="_top">Ubuntu</a>
+<div class="sep5"></div>
+<span class="chevron">›</span> <a href="http://fedoraproject.org/" target="_top">Fedora</a>
+<div class="sep5"></div>
+<span class="chevron">›</span> <a href="http://www.centos.org/" target="_top">CentOS</a>
+<div class="sep10"></div>
+<strong class="fade">中文资源站</strong>
+<div class="sep5"></div>
+<span class="chevron">›</span> <a href="http://mirrors.163.com/" target="_top">网易开源镜像站</a>
+            
+        </div>
+        <div class="sidebar_compliance"><a href="https://www.v2ex.com/advertise" target="_top">广告</a></div>
+    </div>
+    
+
+
+                    
+                    <div class="sep20"></div>
+                    <div class="box">
+    <div class="inner" align="center">
+        <a href="https://www.lagou.com/lp/html/common.html?utm_source=m_bd_ff_gghz_jixiejing" target="_top"><img src="lagou_20181217.jpg" alt="拉勾" width="250" height="250" border="0"></a>
+    </div>
+</div>
+<!-- Update: 20181201 -->
+                    <div class="sep20"></div>
+                    
+                    
+                    
+                
+            </div>
+            <div id="Main">
+                <div class="sep20"></div>
+                
+<div class="box" style="border-bottom: 0px none;">
+    
+    <div class="header"><div class="fr"><a href="https://www.v2ex.com/member/jerry017cn"><img src="136983_large.png" class="avatar" border="0" align="default"></a></div>
+    <a href="https://www.v2ex.com/">V2EX</a> <span class="chevron">&nbsp;›&nbsp;</span> <a href="https://www.v2ex.com/go/linux">Linux</a>
+    <div class="sep10"></div>
+    <h1>Cgroup － 从 CPU 资源隔离说起（二）</h1>
+    <div id="topic_246792_votes" class="votes">
+<a href="javascript:" onclick="upVoteTopic(246792);" class="vote"><li class="fa fa-chevron-up"></li> &nbsp;1</a> &nbsp;<a href="javascript:" onclick="downVoteTopic(246792);" class="vote"><li class="fa fa-chevron-down"></li></a></div> &nbsp; <small class="gray"><a href="https://www.v2ex.com/member/jerry017cn">jerry017cn</a> · 2015-12-28 22:40:03 +08:00 · 4834 次点击</small>
+    </div>
+    
+    
+    <div class="outdated">这是一个创建于 1087 天前的主题，其中的信息可能已经有所发展或是发生改变。</div>
+    
+    
+    <div class="cell">
+        
+        <div class="topic_content"><div class="markdown_body"><h3>针对 CPU 核心进行资源隔离</h3>
+
+<p>针对 CPU 核心进行隔离，其实就是把要运行的进程绑定到指定的核心上运行，通过让不同的进程占用不同的核心，以达到运算资源隔离的目的。其实对于 Linux 来说，这种手段并不新鲜，也并不是在引入 cgroup 之后实现的，早在内核使用 O1 调度算法的时候，就已经支持通过 taskset 命令来绑定进程的 cpu 核心了。</p>
+
+<p>好的，废话少说，我们来看看这在 cgroup 中是怎么配置的。</p>
+
+<p>其实通过刚才的 /etc/cgconfig.conf 配置文件的内容，我们已经配置好了针对不同的组占用核心的设置，来回顾一下：</p>
+<div class="highlight"><pre>group zorro {
+    cpuset {
+        cpuset.cpus = "1,2";
+    }
+}
+</pre></div>
+
+<p>这段配置内容就是说，将 zorro 组中的进程都放在编号为 1 ， 2 的 cpu 核心上运行。这里要说明的是， cpu 核心的编号一般是从 0 号开始的。 24 个核心的服务器编号范围是从 0-23.我们可以通过查看 /proc/cpuinfo 的内容来确定相关物理 cpu 的个数和核心的个数。我们截取一段来看一下：</p>
+<div class="highlight"><pre>[root@zorrozou-pc ~/test]# cat /proc/cpuinfo
+processor   : 23
+vendor_id   : GenuineIntel
+cpu family  : 6
+model       : 63
+model name  : Intel(R) Xeon(R) CPU E5-2620 v3 @ 2.40GHz
+stepping    : 2
+microcode   : 0x2b
+cpu MHz     : 2599.968
+cache size  : 15360 KB
+physical id : 1
+siblings    : 12
+core id     : 5
+cpu cores   : 6
+apicid      : 27
+initial apicid  : 27
+fpu     : yes
+fpu_exception   : yes
+cpuid level : 15
+wp      : yes
+flags       : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm ida arat epb xsaveopt pln pts dtherm tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid
+bogomips    : 4796.38
+clflush size    : 64
+cache_alignment : 64
+address sizes   : 46 bits physical, 48 bits virtual
+power management:
+</pre></div>
+
+<p>其中*processor    : 23*就是核心编号，说明我们当前显示的是这个服务器上的第 24 个核心，*physical id    : 1*表示的是这个核心所在的物理 cpu 是哪个。这个编号也是从 0 开始，表示这个核心在第二个物理 cpu 上。那就意味着，我这个服务器是一个双物理 cpu 的服务器，那就可能意味着我们的系统时 NUMA 架构。另外还有一个要注意的是*core id       : 5*这个子段，这里面隐含着一个可能的含义：你的服务器是否开启了超线程。众所周知，开启了超线程的服务器，在系统看来，一个核心会编程两个核心来看待。那么我们再确定一下是否开了超线程，可以 grep 一下：</p>
+<div class="highlight"><pre>[root@zorrozou-pc ~/test]# cat /proc/cpuinfo |grep -e "core id" -e "physical id"
+physical id : 0
+core id     : 0
+physical id : 0
+core id     : 1
+physical id : 0
+core id     : 2
+physical id : 0
+core id     : 3
+physical id : 0
+core id     : 4
+physical id : 0
+core id     : 5
+physical id : 1
+core id     : 0
+physical id : 1
+core id     : 1
+physical id : 1
+core id     : 2
+physical id : 1
+core id     : 3
+physical id : 1
+core id     : 4
+physical id : 1
+core id     : 5
+physical id : 0
+core id     : 0
+physical id : 0
+core id     : 1
+physical id : 0
+core id     : 2
+physical id : 0
+core id     : 3
+physical id : 0
+core id     : 4
+physical id : 0
+core id     : 5
+physical id : 1
+core id     : 0
+physical id : 1
+core id     : 1
+physical id : 1
+core id     : 2
+physical id : 1
+core id     : 3
+physical id : 1
+core id     : 4
+physical id : 1
+core id     : 5
+</pre></div>
+
+<p>这个内容显示出我的服务器是开启了超线程的，因为有同一个*physical id   : 1*的*core id     : 5*可能出现两次，那么就说明这个物理 cpu 上的 5 号核心在系统看来出现了 2 个，那么肯定意味着开了超线程。</p>
+
+<blockquote>
+<p>我在此要强调超线程这个事情，因为在一个开启了超线程的服务器上运行我们当前的测试用例是很可能得不到预想的结果的。因为从原理上看，超线程技术虽然使 cpu 核心变多了，但是在本测试中并不能反映出相应的性能提高。我们后续会通过 cpuset 的资源隔离先来说明一下这个问题，然后在后续的测试中，我们将采用一些手段规避这个问题。</p>
+</blockquote>
+
+<p>我们先通过一个 cpuset 的配置来反映一下超线程对本测试的影响，顺便学习一下 cgroup 的 cpuset 配置方法。</p>
+
+<ol>
+<li>不绑定核心测试：</li>
+</ol>
+
+<p>将 /etc/cgconfig.conf 文件中 zorro 组相关配置修改为以下状态，之后重启 cgconfig 服务：</p>
+<div class="highlight"><pre>group zorro {
+    cpuset {
+        cpuset.cpus = "0-23";
+        cpuset.mems = "0-1";
+    }
+}
+
+[root@zorrozou-pc ~]# service cgconfig restart
+</pre></div>
+
+<p>切换用户身份到 zorro ，并察看 zorro 组的配置：</p>
+<div class="highlight"><pre>[root@zorrozou-pc ~]# su - zorro
+[zorro@zorrozou-pc ~]$ cat /cgroup/cpuset/zorro/cpuset.cpus 
+0-23
+</pre></div>
+
+<p>zorro 用户对应的进程已经绑定在 0-23 核心上执行，我们看一下执行结果：</p>
+<div class="highlight"><pre>[zorro@zorrozou-pc ~/test]$ time ./prime_thread_zorro &amp;&gt; /dev/null
+
+real    0m8.956s
+user    3m31.990s
+sys 0m0.246s
+[zorro@zorrozou-pc ~/test]$ time ./prime_thread_zorro &amp;&gt; /dev/null
+
+real    0m8.944s
+user    3m31.956s
+sys 0m0.247s
+</pre></div>
+
+<p>执行速度跟刚才一样，这相当于没绑定的情况。下面，我们对 zorro 组的进程绑定一半的 cpu 核心进行测试，先测试绑定 0-11 号核心，将*cpuset.cpus = "0-23"*改为*cpuset.cpus = "0-11"*。</p>
+
+<blockquote>
+<p>请注意每次修改完 /etc/cgconfig.conf 文件内容都应该重启 cgconfig 服务，并重新登陆 zorro 账户。过程不再复述。</p>
+</blockquote>
+
+<p>将核心绑定到 0-11 之后的测试结果如下：</p>
+<div class="highlight"><pre>[zorro@zorrozou-pc ~/test]$ time ./prime_thread_zorro &amp;&gt; /dev/null
+
+real    0m9.457s
+user    1m52.773s
+sys 0m0.155s
+[zorro@zorrozou-pc ~/test]$ time ./prime_thread_zorro &amp;&gt; /dev/null
+
+real    0m9.460s
+user    1m52.589s
+sys 0m0.153s
+
+14:52:02     CPU    %usr   %nice    %sys %iowait    %irq   %soft  %steal  %guest  %gnice   %idle
+14:52:03     all   49.92    0.00    0.08    0.00    0.08    0.00    0.00    0.00    0.00   49.92
+14:52:03       0  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+14:52:03       1  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+14:52:03       2  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+14:52:03       3  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+14:52:03       4  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+14:52:03       5  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+14:52:03       6   99.01    0.00    0.99    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+14:52:03       7  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+14:52:03       8  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+14:52:03       9  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+14:52:03      10  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+14:52:03      11  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+14:52:03      12    0.00    0.00    0.00    0.00    2.00    0.00    0.00    0.00    0.00   98.00
+14:52:03      13    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+14:52:03      14    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+14:52:03      15    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+14:52:03      16    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+14:52:03      17    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+14:52:03      18    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+14:52:03      19    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+14:52:03      20    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+14:52:03      21    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+14:52:03      22    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+14:52:03      23    0.00    0.00    0.99    0.00    0.00    0.00    0.00    0.00    0.00   99.01
+</pre></div>
+
+<p>此时会发现一个现象，执行的总体时间变化不大，大概慢了 0.5 秒，但是 user 时间下降了将近一半。</p>
+
+<p>我们再降核心绑定成 0-5,12-17 测试一下，就是*cpuset.cpus = "0-5,12-17"*，测试结果如下：</p>
+<div class="highlight"><pre>[zorro@zorrozou-pc ~/test]$ time ./prime_thread_zorro &amp;&gt; /dev/null
+
+real    0m17.821s
+user    3m32.425s
+sys 0m0.223s
+[zorro@zorrozou-pc ~/test]$ time ./prime_thread_zorro &amp;&gt; /dev/null  
+real    0m17.839s
+user    3m32.375s
+sys 0m0.223s
+
+15:03:03     CPU    %usr   %nice    %sys %iowait    %irq   %soft  %steal  %guest  %gnice   %idle
+15:03:04     all   49.94    0.00    0.04    0.00    0.04    0.00    0.00    0.00    0.00   49.98
+15:03:04       0  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+15:03:04       1  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+15:03:04       2  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+15:03:04       3  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+15:03:04       4  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+15:03:04       5  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+15:03:04       6    0.00    0.00    0.99    0.00    0.00    0.00    0.00    0.00    0.00   99.01
+15:03:04       7    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+15:03:04       8    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+15:03:04       9    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+15:03:04      10    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+15:03:04      11    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+15:03:04      12  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+15:03:04      13  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+15:03:04      14  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+15:03:04      15   99.01    0.00    0.99    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+15:03:04      16   99.01    0.00    0.99    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+15:03:04      17  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+15:03:04      18    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+15:03:04      19    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+15:03:04      20    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+15:03:04      21    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+15:03:04      22    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+15:03:04      23    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+</pre></div>
+
+<p>这次测试的结果就比较符合我们的常识，看上去 cpu 核心少了一半，于是执行时间增加了几乎一倍。那么是什么原因导致我们绑定到 0-11 核心的时候看上去性能没有下降呢？</p>
+
+<p>在此我们不去过多讨论超线程的技术细节，简单来说： 0-5 核心是属于物理 cpu0 的 6 个实际核心， 6-11 是属于物理 cpu1 的 6 个实际核心，当我们使用这 12 个核心的时候，运算覆盖了两个物理 cpu 的所有真实核心。而 12-17 核心是对应 0-5 核心超线程出来的 6 个核心， 18-23 则是对应 6-11 核心超线程出来的 6 个。我们的测试应用并不能充分利用超线程之后的运算资源，所以，从我们的测试用例角度看来，只要选择了合适核心， 12 核跟 24 核的效果几本差别不大。了解了超线程的这个问题，我们后续的测试过程就要注意对比的环境。从本轮测试看来，我们应该用绑定 0-5 ， 12-17 的测试结果来参考绑定一半 cpu 核心的效果，而不是绑定到“ 0-11 ”上的结果。从测试结果看，减少一半核心之后，确实让运算时间增加了一倍。</p>
+
+<blockquote>
+<p>出个两个思考题吧：</p>
+
+<ol>
+<li><p>我们发现第二轮绑定 0-11 核心测试的 user 时间和绑定 0-23 的测试时间减少一倍，而 real 时间几乎没变，这是为什么？</p></li>
+<li><p>我们发现第三轮绑定 0-5 ， 12-17 核心测试的 user 时间和绑定 0-23 的测试时间几乎一样，而 real 时间增加了一倍，这是为什么？</p></li>
+</ol>
+</blockquote>
+
+<p>至此，如何使用 cgroup 的 cpuset 对 cpu 核心进行资源分配的方法大家应该学会了，这里需要强调一点：</p>
+
+<p>配置中*cpuset.mems = "0-1"*这段配置非常重要，它相当于打开 cpuset 功能的开关，本身的意义是用来配置 cpu 使用的内存节点的，不配置这个字段的结果将是 cpuset.cpus 设置无效。字段具体含义，请大家自行补脑。</p>
+
+<h3>针对 CPU 时间进行资源隔离</h3>
+
+<p>再回顾一下系统对 cpu 资源的使用方式－－分时使用。分时使用要有一个基本本的时间调度单元，这个单元的意思是说，在这样一段时间范围内，我们将多少比例分配给某个进程组。我们刚才举的例子是说 1 秒钟，但是实际情况是 1 秒钟这个时间周期对计算机来说有点长。 Linux 内核将这个时间周期定义放在 cgroup 相关目录下的一个文件里，这个文件在我们服务器上是：</p>
+<div class="highlight"><pre>[root@zorrozou-pc ~]# cat /cgroup/cpu/zorro/cpu.cfs_period_us 
+100000
+</pre></div>
+
+<p>这个数字的单位是微秒，就是说，我们的 cpu 时间周期是 100ms 。还有一点需要注意的是，这个时间是针对单核来说的。</p>
+
+<p>那么针对 cgroup 的限制放在哪里呢？</p>
+<div class="highlight"><pre>[root@zorrozou-pc ~]# cat /cgroup/cpu/zorro/cpu.cfs_quota_us  
+-1
+</pre></div>
+
+<p>就是这个 cpu.cfs_quota_us 文件。这里的 cfs 就是完全公平调度器，我们的资源隔离就是靠 cfs 来实现的。-1 表示目前无限制。</p>
+
+<p>限制方法很简单，就是设置 cpu.cfs_quota_us 这个文件的值，调度器会根据这个值的大小决定进程组在一个时间周期内（即 100ms ）使用 cpu 时间的比率。比如这个值我们设置成 50000 ，那么就是时间周期的 50%，于是这个进程组只能在一个 cpu 上占用 50%的 cpu 时间。理解了这个概念，我们就可以思考一下，如果想让我们的进程在 24 核的服务器上不绑定核心的情况下占用所有核心的 50%的 cpu 时间，该如何设置？计算公式为：</p>
+
+<blockquote>
+<p>（ 50% * 100000 * cpu 核心数）</p>
+</blockquote>
+
+<p>在此设置为 1200000 ，我们来试一下。修改 cgconfig.conf 内容，然后重启 cgconfig ：</p>
+<div class="highlight"><pre>group zorro {
+    cpu {
+            cpu.cfs_quota_us = "1200000";
+    }
+}
+
+[root@zorrozou-pc ~]# service cgconfig restart
+</pre></div>
+
+<p>测试结果如下：</p>
+<div class="highlight"><pre>[zorro@zorrozou-pc ~/test]$ time ./prime_thread_zorro &amp;&gt; /dev/null
+
+real    0m17.322s
+user    3m27.116s
+sys 0m0.266s
+[zorro@zorrozou-pc ~/test]$ time ./prime_thread_zorro &amp;&gt; /dev/null
+
+real    0m17.347s
+user    3m27.208s
+sys 0m0.260s
+
+16:15:12     CPU    %usr   %nice    %sys %iowait    %irq   %soft  %steal  %guest  %gnice   %idle
+16:15:13     all   49.92    0.00    0.08    0.00    0.04    0.00    0.00    0.00    0.00   49.96
+16:15:13       0   51.49    0.00    0.00    0.00    0.99    0.00    0.00    0.00    0.00   47.52
+16:15:13       1   51.49    0.00    0.99    0.00    0.00    0.00    0.00    0.00    0.00   47.52
+16:15:13       2   54.46    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   45.54
+16:15:13       3   51.52    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   48.48
+16:15:13       4   48.51    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   51.49
+16:15:13       5   48.04    0.00    0.98    0.00    0.00    0.00    0.00    0.00    0.00   50.98
+16:15:13       6   49.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   51.00
+16:15:13       7   49.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   51.00
+16:15:13       8   49.49    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   50.51
+16:15:13       9   49.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   51.00
+16:15:13      10   48.00    0.00    1.00    0.00    0.00    0.00    0.00    0.00    0.00   51.00
+16:15:13      11   49.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   51.00
+16:15:13      12   49.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   51.00
+16:15:13      13   49.49    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   50.51
+16:15:13      14   49.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   51.00
+16:15:13      15   50.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   50.00
+16:15:13      16   50.51    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   49.49
+16:15:13      17   49.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   51.00
+16:15:13      18   50.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   50.00
+16:15:13      19   50.50    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   49.50
+16:15:13      20   50.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   50.00
+16:15:13      21   50.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   50.00
+16:15:13      22   50.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   50.00
+16:15:13      23   50.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   50.00
+</pre></div>
+
+<p>我们可以看到，基本跟绑定一半的 cpu 核心数的效果一样，从这个简单的对比来看，使用 cpu 核心数绑定的方法和使用 cpu 分配时间的方法，在隔离上效果几乎是相同的。但是考虑到超线程的影响，我们使用 cpu 时间比率的方式很可能根 cpuset 的方式有些差别，为了看到这个差别，我们将针对 cpuset 和 cpuquota 进行一个对比测试，测试结果如下表：</p>
+
+<table><thead>
+<tr>
+<th>cpu 比率（核心数）</th>
+<th>cpuset realtime</th>
+<th>cpuquota realtime</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>8.3%(2)</td>
+<td>1m46.557s</td>
+<td>1m36.786s</td>
+</tr>
+<tr>
+<td>16.7%(4)</td>
+<td>0m53.271s</td>
+<td>0m51.067s</td>
+</tr>
+<tr>
+<td>25%(6)</td>
+<td>0m35.528s</td>
+<td>0m34.539s</td>
+</tr>
+<tr>
+<td>33.3%(8)</td>
+<td>0m26.643s</td>
+<td>0m25.923s</td>
+</tr>
+<tr>
+<td>50%(12)</td>
+<td>0m17.839s</td>
+<td>0m17.347s</td>
+</tr>
+<tr>
+<td>66.7%(16)</td>
+<td>0m13.384s</td>
+<td>0m13.015s</td>
+</tr>
+<tr>
+<td>100%(24)</td>
+<td>0m8.972s</td>
+<td>0m8.932s</td>
+</tr>
+</tbody></table>
+
+<blockquote>
+<p>思考题时间又到了：请解释这个表格测试得到的数字的差异。</p>
+</blockquote>
+
+<p>我们现在已经学会了如何使用 cpuset 和 cpuquota 两种方式对 cpu 资源进行分配，但是这两种分配的缺点也是显而易见的－－就是分配完之后，进程都最多只能占用相关比例的 cpu 资源。即使服务器上还有空闲资源，这两种方式都无法将资源“<strong>借来使用</strong>”。</p>
+
+<p>那么有没有一种方法，既可以保证在系统忙的情况下让 cgroup 进程组只占用相关比例的资源，而在系统闲的情况下，又可以借用别人的资源，以达到资源利用率最大话的程度呢？当然有！那就是－－</p>
+</div></div>
+        
+        
+    </div>
+    
+    
+    
+</div>
+
+<div class="sep20"></div>
+
+
+<div class="box">
+    <div class="cell"><div class="fr" style="margin: -3px -5px 0px 0px;"><a href="https://www.v2ex.com/tag/CPU" class="tag"><li class="fa fa-tag"></li> CPU</a><a href="https://www.v2ex.com/tag/physical" class="tag"><li class="fa fa-tag"></li> physical</a><a href="https://www.v2ex.com/tag/16:15:13" class="tag"><li class="fa fa-tag"></li> 16:15:13</a><a href="https://www.v2ex.com/tag/14:52:03" class="tag"><li class="fa fa-tag"></li> 14:52:03</a></div><span class="gray">1 回复 &nbsp;<strong class="snow">|</strong> &nbsp;直到 2015-12-28 23:12:01 +08:00</span>
+    </div>
+    
+
+    
+        
+        
+        <div id="r_2767044" class="cell">
+        
+        <table width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tbody><tr>
+                <td valign="top" width="48" align="center"><img src="43023_normal.png" class="avatar" border="0" align="default"></td>
+                <td valign="top" width="10"></td>
+                <td valign="top" width="auto" align="left"><div class="fr"> &nbsp; &nbsp; <span class="no">1</span></div>
+                    <div class="sep3"></div>
+                    <strong><a href="https://www.v2ex.com/member/Earthman" class="dark">Earthman</a></strong>&nbsp; &nbsp;<span class="ago">2015-12-28 23:12:01 +08:00</span> 
+                    <div class="sep5"></div>
+                    <div class="reply_content">楼主更新下 markdown 吧， markdown 控制符需要加空格才能正确识别，就是那个 *XXOO* 啦。</div>
+                </td>
+            </tr>
+        </tbody></table>
+        </div>
+    
+
+
+</div>
+<div class="sep20"></div>
+
+
+
+
+
+
+            </div>
+            
+            
+        </div>
+        <div class="c"></div>
+        <div class="sep20"></div>
+    </div>
+    <div id="Bottom">
+        <div class="content">
+            <div class="inner">
+                <div class="sep10"></div>
+                    <div class="fr">
+                        <a href="https://www.digitalocean.com/?refcode=1b51f1a7651d" target="_top"><div id="DigitalOcean"></div></a>
+                    </div>
+                    <strong><a href="https://www.v2ex.com/about" class="dark" target="_self">关于</a> &nbsp; <span class="snow">·</span> &nbsp; <a href="https://www.v2ex.com/faq" class="dark" target="_self">FAQ</a> &nbsp; <span class="snow">·</span> &nbsp; <a href="https://www.v2ex.com/p/7v9TEc53" class="dark" target="_self">API</a> &nbsp; <span class="snow">·</span> &nbsp; <a href="https://www.v2ex.com/mission" class="dark" target="_self">我们的愿景</a> &nbsp; <span class="snow">·</span> &nbsp; <a href="https://www.v2ex.com/advertise" class="dark" target="_self">广告投放</a> &nbsp; <span class="snow">·</span> &nbsp; <a href="https://www.v2ex.com/advertise/2017.html" class="dark" target="_self">感谢</a> &nbsp; <span class="snow">·</span> &nbsp; <a href="https://www.v2ex.com/tools" class="dark" target="_self">实用小工具</a> &nbsp; <span class="snow">·</span> &nbsp; 3646 人在线</strong> &nbsp; <span class="fade">最高记录 4019</span> &nbsp; <span class="snow">·</span> &nbsp; <a href="https://www.v2ex.com/select/language"><img src="lang_zhcn_32.png" alt="" width="20" border="0" align="absmiddle"></a>
+                    <div class="sep20"></div>
+                    创意工作者们的社区
+                    <div class="sep5"></div>
+                    World is powered by solitude
+                    <div class="sep20"></div>
+                    <span class="small fade">VERSION: 3.9.8.1 · 17ms · UTC 09:29 · PVG 17:29 · LAX 01:29 · JFK 04:29<br>♥ Do have faith in what you're doing.</span>
+                    <div class="sep20"></div>
+                    <table width="100%" cellspacing="0" cellpadding="0" border="0"><tbody><tr><td style="background-color: transparent;" valign="middle" width="140" align="left"><span class="f12 gray"><a href="http://www.miibeian.gov.cn/" target="_top" rel="nofollow">沪ICP备16043287号-1</a></span></td><td style="background-color: transparent;" valign="middle" width="auto" align="left"></td></tr></tbody></table>
+                <div class="sep10"></div>
+            </div>
+        </div>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+    
+
+    
+	
+    
+
+    
+    
+
+</body>
+</html>

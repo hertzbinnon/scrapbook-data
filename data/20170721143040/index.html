@@ -1,0 +1,827 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+
+<meta http-equiv="Cache-Control" content="no-siteapp"><link rel="alternate" media="handheld" href="http://tchuairen.blog.51cto.com/#">
+
+
+<title>如何手动编译bind，如何使用view实现智能DNS解析，以及如何对DNS服务器进行压力测试。 - 突破舒适区 - 51CTO技术博客</title>
+<meta name="description" content="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;今天带大家来看看如何手动编译源码bind，自己手动编译安装的很多文件都要自己去建立，配置文件也要从零写起，而且没有服务启动脚本，需要自己编写启动脚本。实..">
+<meta name="keywords" content="编译安装bind,DNS解析,智能DNS,view,bind">
+<meta http-equiv="Cache-Control" content="private">
+
+
+
+
+
+
+
+<link rel="alternate" href="http://tchuairen.blog.51cto.com/rss.php?uid=3848118" type="application/rss+xml" title="RSS 2.0">
+<link rel="edituri" type="application/rsd+xml" title="rsd" href="http://tchuairen.blog.51cto.com/xmlrpc.php?rsd=1">
+
+
+
+
+
+<link rel="stylesheet" type="text/css" id="SL_Style" href="chrome://imtranslator/content/css/translator.css">
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+
+<div id="home_top">
+<div class="top_nav" style="width: 990px;">
+<div class="left" style="margin-top: 10px; width: 600px;"><a href="http://blog.51cto.com/" target="_top"><img src="head_blog_sibebar_logo.gif" style="margin-top: -4px;" align="absmiddle"></a><!--<a target="_blank" href="http://www.51cto.com">51CTO首页</a>--><img src="top_bg_xian.gif" style="margin-top: -4px;" width="16" height="25" align="absmiddle"><a href="http://blog.51cto.com/" target="_top">首页</a><img src="top_bg_xian.gif" style="margin-top: -4px;" width="16" height="25" align="absmiddle"><a href="http://home.51cto.com/?reback=http%253A%252F%252Ftchuairen.blog.51cto.com%252F3848118%252F1413944">我的博客</a><img src="top_bg_xian.gif" style="margin-top: -4px;" width="16" height="25" align="absmiddle">
+
+
+   <a href="http://blog.51cto.com/artcommend">推荐博文</a>
+    <img src="top_bg_xian.gif" style="margin-top: -4px;" width="16" height="25" align="absmiddle"><a href="http://blog.51cto.com/original/">最新原创</a>
+    <img src="top_bg_xian.gif" style="margin-top: -4px;" width="16" height="25" align="absmiddle"><a href="http://blog.51cto.com/expert">专家博客</a>
+    <img src="top_bg_xian.gif" style="margin-top: -4px;" width="16" height="25" align="absmiddle"><a href="http://blog.51cto.com/blogcommend">推荐博客</a>
+    <img src="top_bg_xian.gif" style="margin-top: -4px;" width="16" height="25" align="absmiddle"><a target="_top" href="http://so.51cto.com/">搜索</a>
+    <!--<a href="javascript:void(0);" style="color:#FF0000; text-decoration:underline; display:none" id="showMessagerDim">每日博报</a>-->
+</div>
+
+<div class="right" style="width: 380px;">
+<div class="more"><img src="top_shequ.gif" width="27" height="16" align="absmiddle"><a href="javascript:viod(0);">网站导航<img style="padding-left: 4px;" src="nav_ico1.gif" align="absmiddle"></a>            </div>            <span id="login_status"><div class="login" style="padding-top: 8px; text-align: right;"><a href="http://home.51cto.com/index?reback=http://tchuairen.blog.51cto.com/3848118/1413944" target="_self">登录</a><a href="http://home.51cto.com/user/register?reback=http://tchuairen.blog.51cto.com/3848118/1413944" target="_self">注册</a><a href="http://home.51cto.com/members/in-fo?down" target="_top"><span class="jsVipDrop" style="position: relative;"><img src="vip_grey2.png" style="float: right; margin-top: 5px;"><div id="vip_mes_top" style="display: none; position: absolute; right: -75px; top: 17px; width: 137px; z-index: 99;"><div style="background: rgb(250, 247, 230) none repeat scroll 0px 0px; border: 1px solid rgb(236, 183, 165); color: rgb(102, 102, 102); font-size: 12px; padding: 3px 5px; position: relative;"><span style="background: rgba(0, 0, 0, 0) url('hidearro.png') no-repeat scroll center center; display: inline-block; height: 7px; position: absolute; right: 57px; top: -6px; width: 12px;"></span><div style="color: rgb(255, 102, 0); text-align: center;">一个会员，全站特权</div></div></div></span></a></div></span>                </div>    </div></div>
+
+
+
+<div class="subMenu3" id="s3">
+<ul>
+
+<li><a href="http://edu.51cto.com/" target="_top">学院</a></li>
+<li><a href="http://blog.51cto.com/" target="_top">博客</a></li>
+<li><a href="http://bbs.51cto.com/" target="_top">论坛</a></li>
+<li><a href="http://down.51cto.com/" target="_top">下载</a></li>
+    <li><a href="http://home.51cto.com/" target="_top">家园</a></li>
+<li><a href="http://wot.51cto.com/?blog" target="_top">WOT峰会</a></li>
+    <li><a href="http://www.51cto.com/" target="_top">51CTO主站</a></li>
+</ul>
+</div>
+<!--简导航end-->
+
+
+
+<div class="headerBox">
+<div class="header">
+<div class="header_l">
+<div class="logo_blogname">
+
+
+<div class="blogLogo">
+<a href="http://blog.51cto.com/blogcommend" target="_top"><img src="bloglogo01.png" width="161px;" height="70px;"></a>
+</div>
+
+
+<div class="blogName">
+<a href="http://tchuairen.blog.51cto.com/"><h1>突破舒适区</h1></a>
+</div>
+</div><!--logo_blogname end-->
+<div class="blogLink">
+
+<a href="http://tchuairen.blog.51cto.com/">http://tchuairen.blog.51cto.com</a> <input id="txtUser" size="32" value="http://tchuairen.blog.51cto.com" type="hidden">   <a href="javascript:void(0);" onclick="copy();">【复制】</a> <a href="http://tchuairen.blog.51cto.com/rss.php?uid=3848118" target="_top"></a><a href="http://tchuairen.blog.51cto.com/rss.php?uid=3848118" target="_top">【订阅】</a>
+
+</div>
+
+
+
+</div><!--header_l end-->
+<div class="header_r">
+<div class="blogInfo"><span><a href="http://tchuairen.blog.51cto.com/3848118/o" title="察看qw87112所有原创文章">原创</a>:96</span><span><a href="http://tchuairen.blog.51cto.com/3848118/t" title="察看qw87112所有翻译文章">翻译</a>:0</span><span><a href="http://tchuairen.blog.51cto.com/3848118/c" title="察看qw87112所有转载文章">转载</a>:2</span></div>
+
+</div>
+</div>
+<!--header end-->
+</div><!--headerBox end-->
+<div class="mainNav">
+<span class="mainNavT"></span>
+<ul>
+<li><a href="http://tchuairen.blog.51cto.com/">主页</a></li>|<li><a href="http://tchuairen.blog.51cto.com/3848118/d-1">Web服务器</a></li>|<li><a href="http://tchuairen.blog.51cto.com/3848118/d-2">MySQL</a></li>|<li><a href="http://tchuairen.blog.51cto.com/3848118/d-3">高可用集群</a></li>|<li><a href="http://tchuairen.blog.51cto.com/3848118/d-4">常用命令及技巧</a></li>|<li><a href="http://tchuairen.blog.51cto.com/3848118/d-5">运维自动化</a></li>
+</ul>
+<span class="mainNavB"></span>
+</div>
+<!--mainNav end-->
+
+
+
+
+<!--[if IE 6]>
+  <script type="text/javascript" src="http://images.watchstor.com/newhomes/png.js"></script>
+  <script>
+    DD_belatedPNG.fix('img,input,ul,li, .get-box, div, .add, .sub, .ui-slider-handle, .footer-chopper');
+  </script>
+<![endif]-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div id="add_sys_type_div" style="width: 600px; border: 1px solid rgb(88, 176, 221); background-color: rgb(255, 255, 255); position: absolute; left: 30%; top: 300px; display: none; z-index: 255;"></div>
+<div id="add_sys_type_dvs" style="width: 550px; border: 1px solid rgb(88, 176, 221); background-color: rgb(255, 255, 255); position: absolute; left: 30%; top: 300px; display: none; z-index: 255;"></div>
+
+
+
+
+<div class="blogMain">
+<div class="blogLeft">
+
+
+<div class="box moduleUser">
+<div class="title">
+<h2><a href="http://tchuairen.blog.51cto.com/"><strong>qw87112</strong> 的BLOG  </a></h2>
+</div>
+<div class="modCon">
+
+<div class="userImage" style="margin: 10px auto 5px; text-align: center; width: 130px; border: 1px solid rgb(212, 212, 212);">
+	<table width="100%" cellspacing="0" cellpadding="0">
+		<tbody><tr>
+			<td class="position_r" valign="middle" height="130" align="center"><a href="http://tchuairen.blog.51cto.com/"><img src="avatar.php" id="userface"></a></td>
+		</tr>
+	</tbody></table>
+</div>
+<div class="photo_links">
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="newcrumbox">
+        <div class="a_lsits">
+            <a href="http://home.51cto.com/index.php?s=/Notify/write/uid/3848118" class="newicon_3 newicon_d">发私信</a>
+            <a href="http://tchuairen.blog.51cto.com/" onclick="add_flink(3848118);return false" class="newicon_5 newicon_l">加友情链接</a>
+        </div>
+    </div>
+
+<div style="width: 239px; height: 64px; display: none;">
+
+
+<div style="float: left;"><p style="padding: 15px 0px 0px 28px; line-height: 20px;">2012年度IT博客大赛<br><a target="_top" href="http://blog.51cto.com/contest2012/#top10000" style="color: rgb(255, 0, 0); text-decoration: underline;">十大杰出IT博客诞生</a></p></div>
+<div style="float: right;"><a target="_top" href="http://blog.51cto.com/contest2012/"><img src="blog_match_endlook.jpg" style="margin: 23px 20px 0px 0px;" width="57" height="27"></a></div>
+<!-- <div style="float:left;"><p style="padding:15px 0 0 28px; line-height:20px;">星光评委正在评选<br><a target="_blank" href="http://blog.51cto.com/contest2012/index.php?mod=userlist_sec" style="color:#F00; text-decoration:underline;">2012年度IT博客大赛50强</a></p></div>
+<div style="float:right;"><img class="blog_match_yq" width="57" height="27" src="http://img1.51cto.com/images/blog_match_invite.jpg" style="margin:23px 20px 0 0;"></div> -->
+
+
+
+<div class="clear"></div>
+</div>
+
+
+</div><!--modCon end-->
+<span class="modBot"></span>
+</div>
+
+
+<div class="infoList box">
+<div class="title">
+<h2>博客统计信息</h2>
+</div>
+<div class="modCon">
+<p>
+<span class="infoListHead"><a href="http://blog.51cto.com/blogcommend" target="_top" class="operlink"><b>51CTO推荐博客</b></a> <br></span>
+用户名：qw87112<br>
+文章数：98<br>
+评论数：56<br>
+访问量：107439<br>
+<a href="http://home.51cto.com/index.php?s=/Account/credit" target="_top">无忧币</a>：2160<br>
+<a href="http://51ctoblog.blog.51cto.com/26414/5591" target="_top">博客积分</a>：1966<br>
+<a href="http://51ctoblog.blog.51cto.com/26414/5591" target="_top">博客等级</a>：6<br>
+注册日期：2011-11-02<br>
+</p>
+</div>
+<span class="modBot"></span>
+</div>
+
+
+<div class="infoList box">
+	<div class="title">
+		<h2 class="fl">热门专题</h2>
+		<a target="_top" class="fr" href="http://blog.51cto.com/zt">更多&gt;&gt;</a>
+	</div>
+	<div class="modCon" style="height: 348px;">
+
+
+		<div class="vlist">
+		  <a href="http://blog.51cto.com/zt/705" target="_top"><img src="wkiol1kxbvqdxivdaaa4f7mg1so675.jpg" width="63" height="63"></a>
+		<dl>
+		<dt>
+		  <a href="http://blog.51cto.com/zt/705" target="_top" title="Oracle零基础成长之路">Oracle零基础成长之路</a></dt>
+		<dd>阅读量：1297</dd>
+		</dl>
+		</div>
+
+		<div class="vlist">
+		  <a href="http://blog.51cto.com/zt/706" target="_top"><img src="wkiol1k_spejgppuaaa3gnotfpu742.png" width="63" height="63"></a>
+		<dl>
+		<dt>
+		  <a href="http://blog.51cto.com/zt/706" target="_top" title="原来你也在这里（征文）">原来你也在这里（征文）</a></dt>
+		<dd>阅读量：3317</dd>
+		</dl>
+		</div>
+
+		<div class="vlist">
+		  <a href="http://blog.51cto.com/zt/14" target="_top"><img src="1304672337_index.jpg" width="63" height="63"></a>
+		<dl>
+		<dt>
+		  <a href="http://blog.51cto.com/zt/14" target="_top" title="从菜鸟到老鸟-教你玩转Mac操作系统">从菜鸟到老鸟-教你玩转Mac操作系统</a></dt>
+		<dd>阅读量：437998</dd>
+		</dl>
+		</div>
+
+		<div class="vlist">
+		  <a href="http://blog.51cto.com/zt/20" target="_top"><img src="1306310178_index.jpg" width="63" height="63"></a>
+		<dl>
+		<dt>
+		  <a href="http://blog.51cto.com/zt/20" target="_top" title="QT学习之路：从入门到精通">QT学习之路：从入门到精通</a></dt>
+		<dd>阅读量：1124908</dd>
+		</dl>
+		</div>
+
+
+	</div>
+	<span class="modBot"></span>
+</div>
+
+
+<div class="hotArt box">
+<div class="title">
+<h2>热门文章</h2>
+</div>
+<div class="modCon">
+<ul>
+<li><a href="http://tchuairen.blog.51cto.com/3848118/1840596">Logstash 讲解与实战应用</a></li>
+<li><a href="http://tchuairen.blog.51cto.com/3848118/1861167">ELK+Filebeat+Kafka+ZooK..</a></li>
+<li><a href="http://tchuairen.blog.51cto.com/3848118/1855090">Kafka 入门 and kafka+lo..</a></li>
+<li><a href="http://tchuairen.blog.51cto.com/3848118/1782945">带你使用Nginx实现HTTPS..</a></li>
+<li><a href="http://tchuairen.blog.51cto.com/3848118/1540695">tomcat完结篇，JVM状态监..</a></li>
+<li><a href="http://tchuairen.blog.51cto.com/3848118/1686875">Linux 邮件服务器 之跟我..</a></li>
+<li><a href="http://tchuairen.blog.51cto.com/3848118/1771597">Nginx+PHP7 安装及配置</a></li>
+<li><a href="http://tchuairen.blog.51cto.com/3848118/1720965">Python 多进程开发与多线..</a></li>
+
+</ul>
+</div>
+<span class="modBot"></span>
+</div>
+<div class="search box">
+<div class="title"><h2>搜索BLOG文章</h2></div>
+<div class="modCon">
+<form method="post" action="http://tchuairen.blog.51cto.com/search.php?" tabindex="99">
+<input name="step" value="2" type="hidden">
+<input name="authorid" value="3848118" type="hidden">
+<input name="sch_area" value="S" type="hidden">
+<input value="" name="keyword" class="searchInput" type="text">
+<input value="搜 索" class="searchBtn" type="submit">
+</form>
+</div><!--modCon end-->
+<span class="modBot"></span>
+</div>
+
+
+<div class="box recentGuests">
+<div class="title">
+<h2>最近访客</h2>
+</div>
+<div class="modCon">
+<ul>
+
+<li><a href="http://2039835.blog.51cto.com/" class="position_r"><img src="avatar_001.php"></a>
+
+
+<p><a href="http://2039835.blog.51cto.com/">richa..</a></p>
+
+</li><li><a href="http://11386218.blog.51cto.com/" class="position_r"><img src="avatar_002.php"></a>
+
+
+<p><a href="http://11386218.blog.51cto.com/">KANTPM</a></p>
+
+</li><li><a href="http://12251474.blog.51cto.com/" class="position_r"><img src="avatar_003.php"></a>
+
+
+<p><a href="http://12251474.blog.51cto.com/">晓枫88</a></p>
+
+</li><li><a href="http://itzhoujun.blog.51cto.com/" class="position_r"><img src="avatar_004.php"></a>
+
+
+<p><a href="http://itzhoujun.blog.51cto.com/">shixi..</a></p>
+
+</li><li><a href="http://xmomo.blog.51cto.com/" class="position_r"><img src="avatar_005.php"></a>
+
+
+<p><a href="http://xmomo.blog.51cto.com/">Linux..</a></p>
+
+</li><li><a href="http://7150278.blog.51cto.com/" class="position_r"><img src="avatar_006.php"></a>
+
+
+<p><a href="http://7150278.blog.51cto.com/">llqzh..</a></p>
+
+</li><li><a href="http://1459687.blog.51cto.com/" class="position_r"><img src="avatar_007.php"></a>
+
+
+<p><a href="http://1459687.blog.51cto.com/">waeke</a></p>
+
+</li><li><a href="http://12670858.blog.51cto.com/" class="position_r"><img src="avatar_008.php"></a>
+
+
+<p><a href="http://12670858.blog.51cto.com/">wb58b..</a></p>
+
+</li><li><a href="http://7901310.blog.51cto.com/" class="position_r"><img src="avatar_009.php"></a>
+
+
+<p><a href="http://7901310.blog.51cto.com/">china..</a></p>
+
+</li><li><a href="http://024mj.blog.51cto.com/" class="position_r"><img src="avatar_010.php"></a>
+
+
+<p><a href="http://024mj.blog.51cto.com/">mj为</a></p>
+
+</li><li><a href="http://sofar.blog.51cto.com/" class="position_r"><img src="avatar_011.php"></a>
+
+
+<p><a href="http://sofar.blog.51cto.com/">workming</a></p>
+
+</li><li><a href="http://8969873.blog.51cto.com/" class="position_r"><img src="avatar_012.php"></a>
+
+
+<p><a href="http://8969873.blog.51cto.com/">zhang..</a></p>
+
+</li></ul>
+<span class="clear"></span>
+</div>
+<span class="modBot"></span>
+</div>
+
+
+<div class="newComments box">
+<div class="title">
+<h2>最新评论
+
+</h2>
+
+
+
+</div>
+<div class="modCon">
+<ul>
+
+<li><a href="http://hypocritical.blog.51cto.com/" class="operlink" target="_top"><b>dong540855184</b></a>：<a href="http://tchuairen.blog.51cto.com/3848118/1855090" target="_top">回复 lanyanfeng456: 应该是兼容..</a></li>
+
+<li><a href="http://989446.blog.51cto.com/" class="operlink" target="_top"><b>lanyanfeng456</b></a>：<a href="http://tchuairen.blog.51cto.com/3848118/1855090" target="_top">回复 dong540855184: [ERROR][log..</a></li>
+
+<li><a href="http://wangpengtai.blog.51cto.com/" class="operlink" target="_top"><b>wangpengtai</b></a>：<a href="http://tchuairen.blog.51cto.com/3848118/1861167" target="_top">什么都不说，献上我的膝盖</a></li>
+
+<li><a href="http://allen686.blog.51cto.com/" class="operlink" target="_top"><b>Allen在路上</b></a>：<a href="http://tchuairen.blog.51cto.com/3848118/1861167" target="_top">很好，很强大！！！！</a></li>
+
+<li><a href="http://12853896.blog.51cto.com/" class="operlink" target="_top"><b>马尔克ov</b></a>：<a href="http://tchuairen.blog.51cto.com/3848118/1861167" target="_top">请问楼主,用logstash做filter为什么..</a></li>
+
+
+</ul>
+</div>
+<span class="modBot"></span>
+</div>
+
+
+<div class="hotBlogArt box">
+<div class="title">
+  <h2 class="fl">51CTO推荐博文</h2>
+  <a href="http://blog.51cto.com/artcommend" class="fr">更多&gt;&gt;</a></div>
+<div class="modCon">
+<ul>
+<li><a href="http://juispan.blog.51cto.com/943137/1945059" title="[CentOS 7系列]grep/sed/awk实战" target="_top">[CentOS 7系列]grep/sed/awk实战</a></li>
+<li><a href="http://z00w00.blog.51cto.com/515114/1942690" title="关于抵御Petya勒索病毒的最新办法" target="_top">关于抵御Petya勒索病毒的最新办法</a></li>
+<li><a href="http://wangchunhai.blog.51cto.com/225186/1942197" title="使用USB直接方式解决ESXi识别加密狗的问题" target="_top">使用USB直接方式解决ESXi识别加密..</a></li>
+<li><a href="http://12572290.blog.51cto.com/12562290/1941850" title="直击传统运维痛点，京东金融智能运维实践" target="_top">直击传统运维痛点，京东金融智能..</a></li>
+<li><a href="http://zhoufoxcn.blog.51cto.com/792419/1940799" title="开发人员学Linux之终结篇：大型系统开发经验谈" target="_top">开发人员学Linux之终结篇：大型系..</a></li>
+<li><a href="http://icenycmh.blog.51cto.com/4077647/1940443" title="cacti实现微信告警功能" target="_top">cacti实现微信告警功能</a></li>
+<li><a href="http://strikene.blog.51cto.com/5877668/1940303" title="构建DSC 资源的”另类写法”" target="_top">构建DSC 资源的”另类写法”</a></li>
+<li><a href="http://9399369.blog.51cto.com/9389369/1940260" title="keepalived 实现web应用的高可用" target="_top">keepalived 实现web应用的高可用</a></li>
+<li><a href="http://wgkgood.blog.51cto.com/1192594/1937458" title="基于CentOS7.3构建企业级Vsftpd文件服务器" target="_top">基于CentOS7.3构建企业级Vsftpd文..</a></li>
+<li><a href="http://dgd2010.blog.51cto.com/1539422/1937081" title="在Ubuntu 16.04上用sytemd启动OpenVPN Client的正确方式" target="_top">在Ubuntu 16.04上用sytemd启动Ope..</a></li>
+<li><a href="http://qingmiao.blog.51cto.com/7286083/1936830" title="关于用死循环+sleep代替crontab的方案" target="_top">关于用死循环+sleep代替crontab的..</a></li>
+
+</ul>
+</div><!--modCon end-->
+<span class="modBot"></span>
+</div>
+
+
+<div class="friendLink box">
+<div class="title">
+  <h2>友情链接</h2>
+</div>
+<div class="modCon">
+<ul>
+
+<li><a href="http://mayulin.blog.51cto.com/" title="梦~从这里起航" target="_top">梦~从这里起航</a></li>
+
+<li><a href="http://caoyameng.blog.51cto.com/" title="让技术做的更清晰" target="_top">让技术做的更清晰</a></li>
+
+<li><a href="http://chenguang.blog.51cto.com/" title="李晨光原创技术博客" target="_top">李晨光原创技术博客</a></li>
+
+<li><a href="http://scholar.blog.51cto.com/" title="北城书生" target="_top">北城书生</a></li>
+
+<li><a href="http://lizhenliang.blog.51cto.com/" title="“企鹅”那点事儿" target="_top">“企鹅”那点事儿</a></li>
+
+<li><a href="http://www.cnblogs.com/lyhabc/p/3886402.html" title="" target="_top">mysql</a></li>
+
+<li><a href="http://lyp0909.blog.51cto.com/" title="諸葛草廬" target="_top">諸葛草廬</a></li>
+
+<li><a href="http://yuhongchun.blog.51cto.com/" title="抚琴煮酒" target="_top">抚琴煮酒</a></li>
+
+<li><a href="http://nolinux.blog.51cto.com/" title="" target="_top">MoglieFS优化</a></li>
+
+<li><a href="http://lovelace.blog.51cto.com/" title="" target="_top">追马</a></li>
+
+<li><a href="http://manfred12.blog.51cto.com/" title="aha45" target="_top">aha45</a></li>
+
+<li><a href="http://freeloda.blog.51cto.com/" title="Share your knowledge …" target="_top">Share your knowle..</a></li>
+
+<li><a href="http://bbotte.blog.51cto.com/" title="一颗石头  BBOTTE的博客" target="_top">金戈铁马行飞燕</a></li>
+
+<li><a href="http://foreveryan.blog.51cto.com/" title="For The Dream" target="_top">For The Dream</a></li>
+
+<li><a href="http://ixdba.blog.51cto.com/" title="技术成就梦想" target="_top">技术成就梦想</a></li>
+
+<li><a href="http://linuxguest.blog.51cto.com/" title="fenghao.cn's Softzone!我的soft空间" target="_top">fenghao.cn's ..</a></li>
+
+<li><a href="http://rfyiamcool.blog.51cto.com/" title="峰云，就她了。" target="_top">峰云，就她了。</a></li>
+
+<li><a href="http://mageedu.blog.51cto.com/" title="马哥教育Linux运维培训" target="_top">马哥教育Linux运维..</a> <img src="tubiao1.gif" alt="本日内更新"></li>
+
+<li><a href="http://xjsunjie.blog.51cto.com/" title="滴水穿石孙杰" target="_top">滴水穿石孙杰</a></li>
+
+<li><a href="http://baidutech.blog.51cto.com/" title="百度技术博客" target="_top">百度技术博客</a></li>
+
+<li><a href="http://laoguang.blog.51cto.com/" title="Free Linux, Share Linux" target="_top">Free Linux, Share..</a></li>
+
+<li><a href="http://51ctoblog.blog.51cto.com/" title="51CTO博客开发" target="_top">51CTO博客开发</a> <img src="tubiao1.gif" alt="本日内更新"></li>
+
+</ul>
+</div><!--modCon end-->
+<span class="modBot"></span>
+</div>
+
+
+
+</div>
+<!--left end-->
+
+
+
+
+
+<div class="blogRight" rel="3848118######编译安装bind DNS解析 智能DNS view bind" id="article_edu_void">
+<input value="12" id="edu_jia" type="hidden">
+
+	<!--<p style="clear:both;"  class="edu_insert"></p>-->
+	<!--modCon end-->
+	<div class="artShow box" style="margin-top: 5px;">
+   	  <div class="share" id="share">
+
+    <div class="shareItem">
+		<div class="m_sharelinks"><a target="_top" href="http://tchuairen.blog.51cto.com/" style="color: red;"></a><a target="_top" href="http://tchuairen.blog.51cto.com/" style="color: blue;"></a><a target="_top" href="http://tchuairen.blog.51cto.com/" style="color: blue;"></a></div>
+		<p class="shareMored"><a href="http://tchuairen.blog.51cto.com/all/3848118">博主的更多文章&gt;&gt;</a></p>
+	</div>
+      </div>
+       <div class="modCon">
+   	  <div class="showBox" style="margin: 0px 0px 10px;">
+      <div class="line_hd_r"></div>
+      <div class="art_tj">
+
+      <a href="http://blog.51cto.com/artcommend" target="_top"><img src="tj.png"></a>
+
+      </div>
+
+
+    		<div class="showHead">
+    		  <div class="showTitleBOx" style="text-align: center;">
+              <div class="showTitle">
+
+             <img src="arttype01.jpg">
+
+
+    		    如何手动编译bind，如何使用view实现智能DNS解析，以及如何对DNS服务器进行压力测试。
+                </div>
+  		    </div>
+   		    <span class="artTime">2014-05-20 00:58:16</span></div><!--showHead end-->
+    <div class="showTags">标签：<a href="http://blog.51cto.com/tag-%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85bind.html" target="_top" class="operlink">编译安装bind</a> <a href="http://blog.51cto.com/tag-DNS%E8%A7%A3%E6%9E%90.html" target="_top" class="operlink">DNS解析</a> <a href="http://blog.51cto.com/tag-%E6%99%BA%E8%83%BDDNS.html" target="_top" class="operlink">智能DNS</a> <a href="http://blog.51cto.com/tag-view.html" target="_top" class="operlink">view</a> <a href="http://blog.51cto.com/tag-bind.html" target="_top" class="operlink">bind</a>
+
+	</div>
+
+
+            <!--正文 begin-->
+
+
+		  <div class="showContent">
+    		  <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;今天带大家来看看如何手动编译源码bind，自己手动编译安装的很多文件都要自己去建立，配置文件也要从零写起，而且没有服务启动脚本，需要自己编写启动脚本。</p><p>实验规划：</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1、在192.168.1.200这台主机上编译安装bind，完成后为named服务编写启动脚本，加入到service。</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2、配置view实现智能DNS解析：当请求解析www.tuchao.com，来源为192.168.1.0/24时候，解析到192.168.1.100。其他的来源都解析到外网地址，1.1.1.1</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3、使用queryperf 对服务器进行压力测试，看看每秒最多能回应多少请求。</p><p>&nbsp;</p><p>我们先按顺序一个一个来，首先准备编译bind，在编译之前请确保系统已经安装了开发组件。</p><p># tar -zxvf bind-9.10.0-P1</p><p># cd bind-9.10.0-P1</p><p># ls</p><p>这些就是源程序：</p><p><img title="WE80]]JCVTSK]TNW%(1SZ78.jpg" alt="wKioL1N6OfODZPZqAAHJxDFid2Y914.jpg" src="wkiol1n6ofodzpzqaahjxdfid2y914.jpg" onabort="" onblur="" onchange="" onclick="" ondblclick="" onerror="" onfocus="" onkeydown="" onkeypress="" onkeyup="" onmousedown="" onmousemove="" onmouseup="" onreset="" onresize="" onselect="" onsubmit="" onunload="" width="650"></p><p># ./configure --help&nbsp;&nbsp;&nbsp;&nbsp;查看配置的帮助信息</p><p># ./configure --sysconfdir=/etc/named --prefix=/usr/local/bind --enable-epoll --disable-ipv6 --disable-chroot --enable-threads&nbsp;&nbsp;&nbsp;&nbsp;</p><p>这就已经在检测编译环境，按配置需求生成makefile了。</p><p><img title="V36OJ[CX2XM]OOYZI7R[%@P.jpg" alt="wKiom1N6POuTxmmQAAH1sJweKs8014.jpg" src="wkiom1n6poutxmmqaah1sjweks8014.jpg" onabort="" onblur="" onchange="" onclick="" ondblclick="" onerror="" onfocus="" onkeydown="" onkeypress="" onkeyup="" onmousedown="" onmousemove="" onmouseup="" onreset="" onresize="" onselect="" onsubmit="" onunload="" width="650"></p><p>检测完成以后：</p><p><img title="OYRYECZWNQVB41YCZ80T_AB.jpg" alt="wKioL1N6PWzzbWqfAALfKwBpLtY899.jpg" src="wkiol1n6pwzzbwqfaalfkwbplty899.jpg" onabort="" onblur="" onchange="" onclick="" ondblclick="" onerror="" onfocus="" onkeydown="" onkeypress="" onkeyup="" onmousedown="" onmousemove="" onmouseup="" onreset="" onresize="" onselect="" onsubmit="" onunload="" width="650"></p><p># make &amp;&amp; make install</p><p>等待编译安装完成。</p><p><img title="$XRHNO1NP([PB6E27QW77ST.jpg" alt="wKiom1N6PhXTn2eRAAJ4VrM2waU477.jpg" src="wkiom1n6phxtn2eraaj4vrm2wau477.jpg" onabort="" onblur="" onchange="" onclick="" ondblclick="" onerror="" onfocus="" onkeydown="" onkeypress="" onkeyup="" onmousedown="" onmousemove="" onmouseup="" onreset="" onresize="" onselect="" onsubmit="" onunload="" width="650"></p><p>为了启动方便，我们先为named编写服务脚本。</p><p># vim /etc/rc.d/init.d/named</p><p>下面是小菜写的脚本，可能不是很完善，不过可以给大家做做参考。</p><p><img title="未标题-2.jpg" alt="wKioL1N6Qnfy8NCQAAVXEFD0B98552.jpg" src="wkiol1n6qnfy8ncqaavxefd0b98552.jpg" onabort="" onblur="" onchange="" onclick="" ondblclick="" onerror="" onfocus="" onkeydown="" onkeypress="" onkeyup="" onmousedown="" onmousemove="" onmouseup="" onreset="" onresize="" onselect="" onsubmit="" onunload="" width="650"></p><p>好，脚本完成了，接下来修改PATH环境变量。</p><p># vim /etc/profile.d/bind.sh</p><p>export PATH=/usr/local/bind/bin:/usr/local/bind/sbin:$PATH</p><p>包含man文件。</p><p># vim /etc/man.config</p><p>MANPATH /usr/local/bind/share/man</p><p>&nbsp;</p><p>接下来，创建/etc/named/named.conf主配置文件。</p><p># vim /etc/named/named.conf</p><p>参考或者写入以下内容：</p><p><img title="未标题-2.jpg" alt="wKiom1N6RkyhWMgwAAKZv6vcQ7c007.jpg" src="wkiom1n6rkyhwmgwaakzv6vcq7c007.jpg" onabort="" onblur="" onchange="" onclick="" ondblclick="" onerror="" onfocus="" onkeydown="" onkeypress="" onkeyup="" onmousedown="" onmousemove="" onmouseup="" onreset="" onresize="" onselect="" onsubmit="" onunload=""></p><p>然后去创建区域解析文件。</p><p>根文件：</p><p># mkdir /var/named</p><p># dig -t NS . &gt;/var/named/named.ca</p><p><img title="IN[`WK%0NV$X{3$LECOHQSX.jpg " alt="wKioL1N6RzzDWzz0AAMPbcPUwRQ713.jpg" src="wkiol1n6rzzdwzz0aampbcpuwrq713.jpg" onabort="" onblur="" onchange="" onclick="" ondblclick="" onerror="" onfocus="" onkeydown="" onkeypress="" onkeyup="" onmousedown="" onmousemove="" onmouseup="" onreset="" onresize="" onselect="" onsubmit="" onunload="" width="650"></p><p>localhost.zone 本机正向区域解析文件：</p><p><img title="TRHEZZ(LXC7(87_7_K)INOV.jpg" alt="wKiom1N6R9fjGc2IAACHqXLoTz4145.jpg" src="wkiom1n6r9fjgc2iaachqxlotz4145.jpg" onabort="" onblur="" onchange="" onclick="" ondblclick="" onerror="" onfocus="" onkeydown="" onkeypress="" onkeyup="" onmousedown="" onmousemove="" onmouseup="" onreset="" onresize="" onselect="" onsubmit="" onunload="" width="650"></p><p>named.local&nbsp; 本机反向区域解析文件：</p><p><img title="IQHQLQCI4}0AIZ9B$8FF{JD.jpg" alt="wKioL1N6SAHDs3LmAACCgNwejnQ636.jpg" src="wkiol1n6sahds3lmaaccgnwejnq636.jpg" onabort="" onblur="" onchange="" onclick="" ondblclick="" onerror="" onfocus="" onkeydown="" onkeypress="" onkeyup="" onmousedown="" onmousemove="" onmouseup="" onreset="" onresize="" onselect="" onsubmit="" onunload=""></p><p>internal.tuchao.com.zone&nbsp;&nbsp;&nbsp;"tuchao.com" 区域解析文件：</p><p><img title="E$Y_[6~[GD}R17{@YR]_SKF.jpg" alt="wKiom1N6SK7SrOxsAADWQ4f2RbU071.jpg" src="wkiom1n6sk7sroxsaadwq4f2rbu071.jpg" onabort="" onblur="" onchange="" onclick="" ondblclick="" onerror="" onfocus="" onkeydown="" onkeypress="" onkeyup="" onmousedown="" onmousemove="" onmouseup="" onreset="" onresize="" onselect="" onsubmit="" onunload="" width="650"></p><p>external.tuchao.com.zone&nbsp;&nbsp; “tuchao.com”区域解析文件：</p><p><img title="K]H[Y5{CH6WY45TJHG3OZPT.jpg" alt="wKiom1N6SRqwzyudAADRXzXMVAc183.jpg" src="wkiom1n6srqwzyudaadrxzxmvac183.jpg" onabort="" onblur="" onchange="" onclick="" ondblclick="" onerror="" onfocus="" onkeydown="" onkeypress="" onkeyup="" onmousedown="" onmousemove="" onmouseup="" onreset="" onresize="" onselect="" onsubmit="" onunload="" width="650"></p><p>&nbsp;全部都配置完成了，接下来用我们刚刚写的脚本，启动下named服务。</p><p># /etc/init.d/named start</p><p>看下，是不是已经启动。</p><p><img title="@9SI_[`BFBK6WPGN8$L4_ZV.jpg " alt="wKioL1N6SeXhxrcvAAEtZ5iT0Ko263.jpg" src="wkiol1n6sexhxrcvaaetz5it0ko263.jpg" onabort="" onblur="" onchange="" onclick="" ondblclick="" onerror="" onfocus="" onkeydown="" onkeypress="" onkeyup="" onmousedown="" onmousemove="" onmouseup="" onreset="" onresize="" onselect="" onsubmit="" onunload="" width="650"></p><p>看下能不能实现智能解析：</p><p>我们先用本机解析下www.tuchao.com</p><p>解析成功了哈，解析的结果是192.168.1.100。</p><p><img title="QOKZ0@80Z7D{7QUK5CQP@MW.jpg" alt="wKiom1N6St7T5Eq3AAHRmvfLYP0537.jpg" src="wkiom1n6st7t5eq3aahrmvflyp0537.jpg" onabort="" onblur="" onchange="" onclick="" ondblclick="" onerror="" onfocus="" onkeydown="" onkeypress="" onkeyup="" onmousedown="" onmousemove="" onmouseup="" onreset="" onresize="" onselect="" onsubmit="" onunload="" width="650"></p><p>&nbsp;这次我们把来源换成172.16.0.2 这台主机请求，看看解析地址会不会变成外网的。</p><p># dig -t A www.tuchao.com</p><p>结果是不是变成了1.1.1.1&nbsp;,这就是智能DNS可以根据来源，判断以哪个区域文件进行解析。</p><p><img title="YS7EGJ)LW1JG555OWW_]AYX.jpg" alt="wKiom1N6Ta2zOQtuAAHGMQ9Xcuc386.jpg" src="wkiom1n6ta2zoqtuaahgmq9xcuc386.jpg" onabort="" onblur="" onchange="" onclick="" ondblclick="" onerror="" onfocus="" onkeydown="" onkeypress="" onkeyup="" onmousedown="" onmousemove="" onmouseup="" onreset="" onresize="" onselect="" onsubmit="" onunload="" width="650"></p><p>想必看到这里，大家都有点累了吧，其实小菜也写累了，但是坚持一下一鼓作气搞完。</p><p>如何对服务器进行压力测试，我们要用的就是queryperf 这个工具，我们先去编译它。</p><p># cd /root/bind-9.10.0-P1/contrib/queryperf</p><p># ./configure</p><p># make</p><p>编译好后，直接拷贝到/bin目录下就可以使用了。</p><p>先创建一个查询文件，如# vim /tmp/cha.txt</p><p>写入类似内容，复制至数万行，才能达到测试效果。</p><p><img title="~~L65O%4J@]U())1E07``FY.jpg " alt="wKiom1N6UTLTNiUmAABruAu6zOE787.jpg" src="wkiom1n6utltniumaabruau6zoe787.jpg" onabort="" onblur="" onchange="" onclick="" ondblclick="" onerror="" onfocus="" onkeydown="" onkeypress="" onkeyup="" onmousedown="" onmousemove="" onmouseup="" onreset="" onresize="" onselect="" onsubmit="" onunload=""></p><p>&nbsp;</p><p>基本用法：</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;queryperf -d&nbsp; 指定查询列表文件</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-s 指定Server</p><p>现在来测试下试试：</p><p>&nbsp;# queryperf -d /tmp/cha.txt&nbsp; -s 192.168.10.200</p><p><img title="[C671BN4G~43[LKS}@AP6F7.jpg" alt="wKioL1N6U8DQI1yoAAI4MgCKuw0993.jpg" src="wkiol1n6u8dqi1yoaai4mgckuw0993.jpg" onabort="" onblur="" onchange="" onclick="" ondblclick="" onerror="" onfocus="" onkeydown="" onkeypress="" onkeyup="" onmousedown="" onmousemove="" onmouseup="" onreset="" onresize="" onselect="" onsubmit="" onunload="" width="650"></p><p>&nbsp;</p><p>总共查询了665062次，完成665062次。</p><p>平均每秒可以响应22974次。</p><p>性能还不错哦！</p><p>好了，任务完成了，该睡觉了。</p><p>以上内容纯小菜手打，实验亲测截图，有问题欢迎与我交流QQ：1183710107</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p>
+		  </div>
+
+			<!--正文 end-->
+
+
+
+<div class="m_sharebtn clear">
+	<table width="100%" cellspacing="0" cellpadding="0" border="0">
+	  <tbody><tr>
+		<td width="11%" valign="middle" height="43" align="center"><img src="ssk.png" alt="分享至"></td>
+		<td width="77%" valign="top" align="left">
+<!--
+<div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_mshare" data-cmd="mshare" title="分享到一键分享"></a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a><a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_bdhome" data-cmd="bdhome" title="分享到百度新首页"></a><a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a><a href="#" class="bds_youdao" data-cmd="youdao" title="分享到有道云笔记"></a><a href="#" class="bds_bdysc" data-cmd="bdysc" title="分享到百度云收藏"></a><a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a><a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a></div>
+<script>
+var bds_config = {'wbUid':1706976420};
+window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false, 'bdPic':'http://blog.51cto.com/attachment/201305/173413310.jpg',"bdStyle":"1","bdSize":"32"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+ -->
+
+<div class="bdsharebuttonbox bdshare-button-style1-32" data-bd-bind="1500608985785"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_mshare" data-cmd="mshare" title="分享到一键分享"></a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a><a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_bdhome" data-cmd="bdhome" title="分享到百度新首页"></a><a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a><a href="#" class="bds_youdao" data-cmd="youdao" title="分享到有道云笔记"></a><a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a><a href="#" class="bds_bdysc" data-cmd="bdysc" title="分享到百度云收藏"></a><a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a></div>
+
+
+	<!-- Baidu Button END --></td>
+		<td width="12%" valign="middle" align="right"><a class="bdms_point" data-behavior="favorite" data-method="add" href="javascript:favorBox('open');" title="一键收藏，随时查看，分享好友！"><img src="favorite_add_small.gif" alt="一键收藏，随时查看，分享好友！" border="0"></a></td>
+	  </tr>
+	</tbody></table>
+
+</div>
+    		<div class="showBottom">
+            <!--<div class="reviews"><span class="fl" style="cursor:pointer;"><a onclick="openFavoulist();" id="favourer">zwr2264、crazys_蘑菇</a>
+
+            </span><div id="favourdiv" class="support01">2人</div>
+              <span class="fl">了这篇文章</span></div>-->
+              <table width="720" cellspacing="0" cellpadding="0" border="0">
+  <tbody><tr>
+    <td align="right"><img src="icon01.png" width="15" height="16"> <span style="cursor: pointer;"><a onclick="openFavoulist();" id="favourer">zwr2264、crazys_蘑菇</a></span></td>
+    <td width="70" align="left"><div style="line-height: 28px;" id="favourdiv" class="support01">2人</div></td>
+    <td width="60" align="left">了这篇文章</td>
+  </tr>
+</tbody></table>
+
+
+
+
+            <div class="showType">类别：未分类┆阅读(<span id="readNum">292</span>)┆评论(<span id="cmtNum">0</span>)
+
+┆
+<a href="http://tchuairen.blog.51cto.com/">返回博主首页</a>┆<a href="http://blog.51cto.com/">返回博客首页</a></div>
+            <div class="prevNext">
+
+			上一篇 <a href="http://tchuairen.blog.51cto.com/3848118/1413034" class="operlink" title="bind配置进阶，转发器的配置以及如何实现子域授权。">bind配置进阶，转发器的配置以及如何实现子域..</a>
+
+
+			下一篇 <a href="http://tchuairen.blog.51cto.com/3848118/1415425" class="operlink" title=" PKI架构的简介，如何使用OPENSSL完成加密与解密，如何自建CA完成证书的签署。"> PKI架构的简介，如何使用OPENSSL完成加密与解..</a>
+
+
+            </div>
+
+            </div>
+
+	  </div><!--showBottom end-->
+      </div><!--modCon-->
+    <span class="modBot"></span>
+    </div><!--artShow end-->
+    <span class="blank"></span>
+
+
+
+    <div class="relatedArt box">
+    <div class="title" name="zhuanti" id="zhuanti"><h2>相关文章</h2></div>
+    <div class="modCon">
+<ul>
+
+<li><a href="http://very1024.blog.51cto.com/3588520/802597" title="智能DNS配置" target="_top">智能DNS配置</a></li>
+
+
+<li><a href="http://2358205.blog.51cto.com/2348205/819990" title="如何改善调优Web服务器性能" target="_top">如何改善调优Web服务器性能</a></li>
+
+
+<li><a href="http://froyo.blog.51cto.com/1740314/783452" title="如何在多台服务器上安装WLB" target="_top">如何在多台服务器上安装WLB</a></li>
+
+
+<li><a href="http://biuyiniu.blog.51cto.com/6303431/1093127" title="教你如何搭建git 服务器" target="_top">教你如何搭建git 服务器</a></li>
+
+
+<li><a href="http://liqirui.blog.51cto.com/4662702/1352373" title="智能DNS --BIND DLZ+MYSQL" target="_top">智能DNS --BIND DLZ+MYSQL</a></li>
+
+
+<li><a href="http://mitac.blog.51cto.com/1081911/1403093" title="解决服务器访问比较" target="_top">解决服务器访问比较</a></li>
+
+
+<li><a href="http://7615912.blog.51cto.com/7605912/1286960" title="Apache服务器的性能测试工具ab 、http_load 日志分析工具webalizer" target="_top">Apache服务器的性能测试工具ab 、http_load ..</a></li>
+
+
+<li><a href="http://architect.blog.51cto.com/5009110/1363281" title="linux AB测试" target="_top">linux AB测试</a></li>
+
+
+
+</ul>
+
+
+
+<span class="blank6"></span>
+</div><!--modCon end-->
+<span class="modBot"></span>
+</div><!--相关文章 end-->
+
+
+
+
+	<div class="relatedArt box">
+		<a href="javascript:;"><img src="untitled"></a>
+	</div>
+
+
+<div class="artComm box">
+    <div class="title"><a name="replay"></a><h2>文章评论</h2></div>
+    <div class="modCon" id="artcomment">
+		<div>  &nbsp;</div><div>  &nbsp;</div>
+    </div><!--modCon-->
+        <span class="modBot"></span>
+</div><!--commBox end-->
+<a href="http://tchuairen.blog.51cto.com/" id="com_top_top"></a>
+<!--<div class="artComm box" style="750px;height:90px;">
+<script type="text/javascript">
+    var cpro_id = "u2386995";
+</script>
+<script src="http://cpro.baidustatic.com/cpro/ui/c.js" type="text/javascript"></script>
+</div>--><form action="http://tchuairen.blog.51cto.com/comment.php?" method="post" name="form1" id="form1" onsubmit="return commentSubmit(this,&quot;&quot;);">
+<span class="blank1"></span>
+<div class="box writeComm" style="min-height: 30px;">
+<a name="comment"></a>
+<input name="action" value="comment" type="hidden">
+<input id="commenttid" name="tid" value="1413944" type="hidden">
+<input name="com_count_ajax" id="com_count_ajax" value="1" type="hidden">
+
+ <div class="title">
+	<h2 class="fl">发表评论&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h2>
+	<span class="fl" id="messageTj">
+<div id="beacon_b1c52cd9a5" style="position: absolute; left: 0px; top: 0px; visibility: hidden;"><img src="lg.php" alt="" style="width: 0px; height: 0px;" width="0" height="0"></div>
+
+</span>
+	
+</div>
+<div style="display: none;" rel="" id="ggBox">
+<div id="beacon_b1c52cd9a5" style="position: absolute; left: 0px; top: 0px; visibility: hidden;"><img src="lg.php" alt="" style="width: 0px; height: 0px;" width="0" height="0"></div>
+
+</div>
+
+ <div class="modCon">
+
+ <div class="commForm">
+<dl>
+<dt>昵&nbsp;&nbsp;称：</dt>
+<dd>
+
+<input id="commentusername" name="username" value="" class="commInput fl" type="text"><span><a href="http://home.51cto.com/index.php?reback=http%253A%252F%252Ftchuairen.blog.51cto.com%252F3848118%252F1413944" style="text-decoration: underline;">登录</a>&nbsp;&nbsp;<a href="http://home.51cto.com/user/register?reback=http%253A%252F%252Ftchuairen.blog.51cto.com%252F3848118%252F1413944" target="_top" style="text-decoration: underline;">快速注册</a></span>
+
+
+
+</dd>
+</dl>
+
+
+
+<dl id="commentyanzheng">
+
+
+<dt>验证码：</dt>
+<dd><input class="code" value="" id="commentauthnum" name="authnum" onclick="displaysecunum();" type="text">
+
+  <img class="fl" id="secunum" onclick="refimg()" style="display: none;" width="78" height="29"><p class="fl"><span style="display: none;" id="spanfont">点击图片可刷新验证码</span><span style="display: inline;" id="clickfont">请点击后输入验证码</span><span class="pl5"><a href="http://51ctoblog.blog.51cto.com/26414/5591" target="_top" style="text-decoration: underline;">博客过2级，无需填写验证码</a></span></p></dd>
+</dl>
+<dl>
+<dt>内&nbsp;&nbsp;容：</dt>
+<dd>
+<textarea class="writeCommCon f12" id="commentcontent" name="content"></textarea>
+</dd>
+</dl>
+</div>
+<div class="writeCommBot">
+  <input name="parentid" value="" id="parentid" type="hidden">
+  <input class="commBtn fl" name="submit" id="commentsubmit" value="" onclick="commentSubmitend2()" type="button">
+
+ <p class="fl" style="display: none;"><input class="fl" name="favour" id="favour" checked="checked" value="1" type="checkbox"><span class="fl">同时赞一个</span></p>
+
+</div>
+<span class="blank"></span>
+
+</div><!--modCon-->
+<span class="modBot"></span>
+</div>
+</form>
+<iframe id="iframe1" name="iframe1" src="index_1.html" width="0" height="0"></iframe>
+<!--发表评论 end-->
+</div>
+</div>
+<!-- <div style="width:100px; height:300px; position:fixed; top:25%;left:50%;margin-left:-613px;z-index:100; _position:absolute; _margin-top: 0; _top:expression(documentElement.scrollTop+(documentElement.clientHeight-this.offsetHeight)/2+50);" id="f_close_box">
+<img border="0" usemap="#Map1" src="https://s1.51cto.com/wyfs02/M00/93/21/wKiom1kISujgrYSbAADPIiyteUc221.jpg">
+<map id="Map1" name="Map1">
+<area onclick="document.getElementById('f_close_box').style.display='none';" href="javascript:void(0);" coords="86,14,10"  shape="circle">
+</map>
+
+</div> -->
+<iframe src="index_2.html" style="position: fixed; left: 0px; top: 240px; width: 100px; height: 300px;" scrolling="no" frameborder="0"></iframe>
+
+<div id="SL_balloon_obj" style="display: block;"><div id="SL_button" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: none; width: 24px; height: 24px; position: absolute; cursor: pointer; opacity: 1; left: 711px; top: 5622px;"></div><div id="SL_shadow_translation_result2" style="display: none; margin-top: 30px; margin-left: 1px; direction: ltr; text-align: left; min-height: 40px;"><div></div></div><div id="SL_shadow_translator" style="display: none;"><div id="SL_providers"><div class="SL_BL_LABLE_ON" title="Google" id="SL_P0">G</div><div class="SL_BL_LABLE_ON" title="Microsoft" id="SL_P1">M</div><div class="SL_BL_LABLE_ON" title="Translator" id="SL_P2">T</div></div><div id="SL_planshet" style="background: rgb(244, 245, 245) url('undefined') repeat scroll 0% 0%;"><div id="SL_arrow_up"></div><div id="SL_TB"><div id="bubblelogo" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 24px; height: 24px; position: absolute;"></div><table id="SL_tables"><tr><td width="10%" align="right"><input id="SLloc" title="鎖定語言" type="checkbox"></td><td width="20%" align="left"><select id="SL_lng_from"><option value="auto">檢測語言</option><option value="sq">阿尔巴尼亚语</option><option value="ar">阿拉伯语</option><option value="az">阿塞拜疆语</option><option value="ga">爱尔兰语</option><option value="et">爱沙尼亚语</option><option value="eu">巴斯克语</option><option value="be">白俄罗斯语</option><option value="bg">保加利亚语</option><option value="is">冰岛语</option><option value="pl">波兰语</option><option value="bs">波斯尼亚语</option><option value="fa">波斯语</option><option value="af">布尔语(南非荷兰语)</option><option value="da">丹麦语</option><option value="de">德语</option><option value="ru">俄语</option><option value="fr">法语</option><option value="tl">菲律宾语</option><option value="fi">芬兰语</option><option value="km">高棉语</option><option value="ka">格鲁吉亚语</option><option value="gu">古吉拉特语</option><option value="kk">哈萨克语</option><option value="ht">海地克里奥尔语</option><option value="ko">韩语</option><option value="ha">豪萨语</option><option value="nl">荷兰语</option><option value="gl">加利西亚语</option><option value="ca">加泰罗尼亚语</option><option value="cs">捷克语</option><option value="kn">卡纳达语</option><option value="hr">克罗地亚语</option><option value="la">拉丁语</option><option value="lv">拉脱维亚语</option><option value="lo">老挝语</option><option value="lt">立陶宛语</option><option value="ro">罗马尼亚语</option><option value="mg">马尔加什语</option><option value="mt">马耳他语</option><option value="mr">马拉地语</option><option value="ml">马拉雅拉姆语</option><option value="ms">马来语</option><option value="mk">马其顿语</option><option value="mi">毛利语</option><option value="mn">蒙古语</option><option value="bn">孟加拉语</option><option value="my">缅甸语</option><option value="hmn">苗语</option><option value="zu">南非祖鲁语</option><option value="ne">尼泊尔语</option><option value="no">挪威语</option><option value="pa">旁遮普语</option><option value="pt">葡萄牙语</option><option value="ny">齐切瓦语</option><option value="ja">日语</option><option value="sv">瑞典语</option><option value="sr">塞尔维亚语</option><option value="st">塞索托语</option><option value="si">僧伽罗语</option><option value="eo">世界语</option><option value="sk">斯洛伐克语</option><option value="sl">斯洛文尼亚语</option><option value="sw">斯瓦希里语</option><option value="ceb">宿务语</option><option value="so">索马里语</option><option value="tg">塔吉克语</option><option value="te">泰卢固语</option><option value="ta">泰米尔语</option><option value="th">泰语</option><option value="tr">土耳其语</option><option value="cy">威尔士语</option><option value="ur">乌尔都语</option><option value="uk">乌克兰语</option><option value="uz">乌兹别克语</option><option value="iw">希伯来语</option><option value="el">希腊语</option><option value="es">西班牙语</option><option value="hu">匈牙利语</option><option value="hy">亚美尼亚语</option><option value="ig">伊博语</option><option value="it">意大利语</option><option value="yi">意第绪语</option><option value="hi">印地语</option><option value="su">印尼巽他语</option><option value="id">印尼语</option><option value="jw">印尼爪哇语</option><option value="en">英语</option><option value="yo">约鲁巴语</option><option value="vi">越南语</option><option value="zh-CN">中文简体</option><option value="zh-TW">中文繁体</option></select></td><td width="5%" align="center"><div id="SL_switch_b" title="切換語言" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 10px; height: 10px; cursor: pointer;" align="center"></div></td><td width="20%" align="left"><select id="SL_lng_to"><option value="sq">阿尔巴尼亚语</option><option value="ar">阿拉伯语</option><option value="az">阿塞拜疆语</option><option value="ga">爱尔兰语</option><option value="et">爱沙尼亚语</option><option value="eu">巴斯克语</option><option value="be">白俄罗斯语</option><option value="bg">保加利亚语</option><option value="is">冰岛语</option><option value="pl">波兰语</option><option value="bs">波斯尼亚语</option><option value="fa">波斯语</option><option value="af">布尔语(南非荷兰语)</option><option value="da">丹麦语</option><option value="de">德语</option><option value="ru">俄语</option><option value="fr">法语</option><option value="tl">菲律宾语</option><option value="fi">芬兰语</option><option value="km">高棉语</option><option value="ka">格鲁吉亚语</option><option value="gu">古吉拉特语</option><option value="kk">哈萨克语</option><option value="ht">海地克里奥尔语</option><option value="ko">韩语</option><option value="ha">豪萨语</option><option value="nl">荷兰语</option><option value="gl">加利西亚语</option><option value="ca">加泰罗尼亚语</option><option value="cs">捷克语</option><option value="kn">卡纳达语</option><option value="hr">克罗地亚语</option><option value="la">拉丁语</option><option value="lv">拉脱维亚语</option><option value="lo">老挝语</option><option value="lt">立陶宛语</option><option value="ro">罗马尼亚语</option><option value="mg">马尔加什语</option><option value="mt">马耳他语</option><option value="mr">马拉地语</option><option value="ml">马拉雅拉姆语</option><option value="ms">马来语</option><option value="mk">马其顿语</option><option value="mi">毛利语</option><option value="mn">蒙古语</option><option value="bn">孟加拉语</option><option value="my">缅甸语</option><option value="hmn">苗语</option><option value="zu">南非祖鲁语</option><option value="ne">尼泊尔语</option><option value="no">挪威语</option><option value="pa">旁遮普语</option><option value="pt">葡萄牙语</option><option value="ny">齐切瓦语</option><option value="ja">日语</option><option value="sv">瑞典语</option><option value="sr">塞尔维亚语</option><option value="st">塞索托语</option><option value="si">僧伽罗语</option><option value="eo">世界语</option><option value="sk">斯洛伐克语</option><option value="sl">斯洛文尼亚语</option><option value="sw">斯瓦希里语</option><option value="ceb">宿务语</option><option value="so">索马里语</option><option value="tg">塔吉克语</option><option value="te">泰卢固语</option><option value="ta">泰米尔语</option><option value="th">泰语</option><option value="tr">土耳其语</option><option value="cy">威尔士语</option><option value="ur">乌尔都语</option><option value="uk">乌克兰语</option><option value="uz">乌兹别克语</option><option value="iw">希伯来语</option><option value="el">希腊语</option><option value="es">西班牙语</option><option value="hu">匈牙利语</option><option value="hy">亚美尼亚语</option><option value="ig">伊博语</option><option value="it">意大利语</option><option value="yi">意第绪语</option><option value="hi">印地语</option><option value="su">印尼巽他语</option><option value="id">印尼语</option><option value="jw">印尼爪哇语</option><option value="en">英语</option><option value="yo">约鲁巴语</option><option value="vi">越南语</option><option value="zh-CN">中文简体</option><option value="zh-TW">中文繁体</option></select></td><td width="5%" align="center"> </td><td width="6%" align="center"><div id="SL_TTS_voice" title="聆聽" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="6%" align="center"><div id="SL_copy" title="複製譯文" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="6%" align="center"><div id="SL_bbl_font_patch" title="此功能在字典中禁用"></div><div id="SL_bbl_font" title="字體大小" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="6%" align="center"><div id="SL_TH" title="翻譯歷史" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="10%"></td><td width="6%" align="right"><div id="SL_pin" title="固定彈出窗口" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; width: 16px; height: 16px; cursor: pointer;"></div></td></tr></table></div><div id="SL_alert_bbl" style="display: none;"><div id="SLHKclose"></div><div id="SL_alert_cont"></div></div></div><div id="SL_shadow_translation_result" style="background: rgb(255, 255, 255) url('undefined') repeat scroll 0% 0%; visibility: visible; min-height: 40px;"><div></div></div><div id="SL_loading" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%; display: block; position: absolute; width: 35px; margin-left: 180px; margin-top: -40px; height: 35px;"></div><div id="SL_player2" style="display: none; height: 0px; width: 0px;"></div><div id="SL_alert100" style="display: none;">語言功能限200個字符</div><div id="SL_Balloon_options" style="background: rgb(255, 255, 255) none repeat scroll 0% 0%;"><div id="SL_arrow_down"></div><table width="100%"><tr><td width="18%" height="16" align="left"><div id="SL_bbl_donate" title="進行一點捐款" style="background: rgba(0, 0, 0, 0) url('undefined') repeat scroll 0% 0%;"></div></td><td width="68%" align="center"><a href="#" id="OPlnk" title="顯示選項">選項</a> : <a href="#" id="HISTlnk" title="翻譯歷史">歷史</a> : <a href="http://about.imtranslator.net/tutorials/presentations/imtranslator-translator-for-firefox/popup-bubble-application/" target="_top" id="HELPlnk" title="幫助">幫助</a> : <a href="#" id="FBlnk" title="反饋">反饋</a></td><td width="15%" align="right"><a id="SL_Balloon_Close" href="#" title="關閉">關閉</a></td></tr></table></div></div></div>
+
+
+
+<!-- <script src="http://blog.51cto.com/js/blog_top_list.php" type="text/javascript" language="javascript"></script> -->
+
+<!--<div id="message" class="blogpop" style="background-color:#FFFFFF;z-index:100;width:389px;height:196px;position:absolute; display:none; bottom:0; top:'document.documentElement.scrollTop + document.documentElement.clientHeight-196+'px;right:0; overflow:hidden;"><iframe style="width:800px;height:536px;top:0px;left:0px;position:absolute;visibility:inherit;z-index:-1;" frameborder=0 ></iframe>-->
+<!--<div style="height:36px;background:url(http://blog.51cto.com/image/blog_top/popbgx.jpg) repeat-x; position:relative;width:387px;border-right-color:#2668B7;border-right-width:2px;border-right-style:solid 2px #2668B7;"><span style="right:10px;padding:12px 0 0;position:absolute;top:0"><span style="margin-right:80px;color:#828282;width:190px;padding:10px 0 0 10px;font-size:14px">每日博报 精彩不止一点</span><img title="关闭" id="message_close" src="http://blog.51cto.com/image/blog_top/close.jpg" alt="关闭" /></span><div style="width:387px;height:36px;left:0;overflow:hidden; text-indent:-999em;background:url(http://blog.51cto.com/image/blog_top/hdtit.jpg) no-repeat;border-right:solid 2px #2668B7;"><a style="display: block; height: 36px;width:138px;" target="_blank" href="http://blog.51cto.com"></a>-->
+<!--</div>-->
+<!--<div style="clear:both;"></div>-->
+<!--</div>-->
+	<!--<div id="message_content" style="border-top:none;font-family:Microsoft YaHei;font-size:12px;width:389px;height:160pxpx;text-align:left;overflow:hidden;">-->
+	<!--<script type='text/javascript'>&lt;!&ndash;//<![CDATA[-->
+	   <!--var m3_u = (location.protocol=='https:'?'https://gg.51cto.com/www/delivery/ajs.php':'http://gg3.51cto.com/www/delivery/ajs.php');-->
+	   <!--var m3_r = Math.floor(Math.random()*99999999999);-->
+	   <!--if (!document.MAX_used) document.MAX_used = ',';-->
+	   <!--document.write ("<scr"+"ipt type='text/javascript' src='"+m3_u);-->
+	   <!--document.write ("?zoneid=454");-->
+	   <!--document.write ('&amp;cb=' + m3_r);-->
+	   <!--if (document.MAX_used != ',') document.write ("&amp;exclude=" + document.MAX_used);-->
+	   <!--document.write (document.charset ? '&amp;charset='+document.charset : (document.characterSet ? '&amp;charset='+document.characterSet : ''));-->
+	   <!--document.write ("&amp;loc=" + escape(window.location));-->
+	   <!--if (document.referrer) document.write ("&amp;referer=" + escape(document.referrer));-->
+	   <!--if (document.context) document.write ("&context=" + escape(document.context));-->
+	   <!--if (document.mmm_fo) document.write ("&amp;mmm_fo=1");-->
+	   <!--document.write ("'><\/scr"+"ipt>");-->
+	<!--//]]>&ndash;&gt;</script>-->
+	<!--</div>-->
+<!--</div>-->
+
+
+<div class="backToTop tops" title="返回顶部" style="display: block;">返回顶部</div>
+
+
+
+
+
+
+
+
+<div class="clear"></div>
+<!-- <script>
+jQuery(function(){
+	var html= "<div id=\"sogou_se_tgbar\" style=\"text-align:center;margin:0px auto 2px auto;clear:both;background:url(http://home.51cto.com/public/images/notice/sogou_se_tgbar_bg_final1.gif) repeat-x;width:950px;color:#000;font-size:13px;height:36px;z-index:21474836471\"><div style=\"float:left;cursor:pointer;width:910px;text-align:center;border-left:solid #efbf00 1px;height:32px; line-height:32px;txt-align:center;\"><span style=\"\">	<a href=\"http://51ctoblog.blog.51cto.com/26414/1093282\">【新年祝福征集】51CTO社区年底嘉年华活动正在征集博主祝福语，祝福以红包的形式随机的赠送给访问51CTO的网友 点此送祝福>></a></span></div><div onclick=\"document.getElementById('sogou_se_tgbar').style.display = 'none';\" style=\"float:right;width:20px;cursor:pointer;height:28px;padding:4px 8px 0px 8px;border-right:solid #efbf00 1px\"><img style=\"border:none;margin:4px 0px 0px 0px;\" src=\"http://home.51cto.com/public/images/notice/sogou_se_tgbar_close_final1.gif\"></div></div>"
+	jQuery('body').prepend(html);
+})
+</script> -->
+
+
+<div class="fixexit_small">
+    <div class="infixexit" style="font-family: &quot;微软雅黑&quot;;">
+        <div class="exit_list exit_list_zxun"><a href="http://wpa.qq.com/msgrd?v=3&amp;uin=1173854158&amp;site=qq&amp;menu=yes" class="ina" target="_top"></a></div>
+        <div class="exit_list exit_list_fkui "><span class="ina"><a href="http://51ctoblog.blog.51cto.com/26414/1933645"><b>意见<br>反馈</b></a></span></div>
+        <div class="exit_list  exit_list_gaozhao"><a href="http://51ctoblog.blog.51cto.com/" target="_black" class="ina"></a></div>
+
+    </div>
+</div>
+<div id="footer">
+  <div id="innerFooter">
+	<center>
+		<small>
+			Copyright By 51CTO.COM 版权所有<br><br>
+			<a href="http://blog.51cto.com/" target="_top"><img src="copyright.jpg"></a>
+	  </small>
+	</center>
+  </div>
+</div>
+
+<div style="display: none;">
+
+<div style="display: none;">
+
+    
+
+    
+
+
+</div>
+<iframe scrolling="no" src="index_3.html" width="0" height="0" frameborder="0"></iframe>
+</div>
+
+
+
+
+
+</body>
+</html>

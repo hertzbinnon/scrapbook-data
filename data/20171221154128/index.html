@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    <link rel="canonical" href="http://blog.csdn.net/dawningblue/article/details/60142536"> 
+    
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    
+    
+    
+    
+    
+
+    
+    
+    
+
+    
+    
+    <meta name="description" content="可能存在的问题
+yum安装、源码安装、二进制安装用哪个，官网文档是源码安装，所以咱们就用源码安装
+在源码安装的时候会有什么问题 
+一个是默认路径的问题，在编译的时候时候如果不指定路径的话，很多二进制文件会安装到默认的目录下/usr/bin下面，系统原来的文件可能还会有，但是各种链接会指向新的二进制文件，这样有可能会造成系统内某些依赖原来版本python的服务依会出现问题，一个已知的是yum会出现问题">
+    <meta name="keywords" content="python,centos">
+    <meta http-equiv="Cache-Control" content="no-siteapp"><link rel="alternate" media="handheld" href="http://blog.csdn.net/dawningblue/article/details/60142536#">
+    <meta name="shenma-site-verification" content="5a59773ab8077d4a62bf469ab966a63b_1497598848">
+    <title>在centos6.5环境下搭建多版本python(python2.6、python2.7、python3.5)共存环境 - CSDN博客</title>
+    <link href="favicon.ico" rel="SHORTCUT ICON">
+
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body><div id="BAIDU_DUP_fp_wrapper" style="position: absolute; left: -1px; bottom: -1px; z-index: 0; width: 0px; height: 0px; overflow: hidden; visibility: hidden; display: none;"><iframe id="BAIDU_DUP_fp_iframe" src="index_1.html" style="width: 0px; height: 0px; visibility: hidden; display: none;"></iframe></div>
+
+<div class="container clearfix">
+  <main>
+    <article>
+        <h1 class="csdn_top">在centos6.5环境下搭建多版本python(python2.6、python2.7、python3.5)共存环境</h1>
+        <div class="article_bar clearfix">
+            <div class="artical_tag">
+                <span class="original">
+                原创                </span>
+                <span class="time">2017年03月03日 16:46:30</span>
+            </div>
+
+            <ul class="article_tags clearfix csdn-tracking-statistics tracking-click" data-mod="popu_377">
+                <li class="tit">标签：</li>
+
+<!--          [startarticletags]-->
+                                                            <li><a href="http://so.csdn.net/so/search/s.do?q=python&amp;t=blog" target="_top">python</a> <span>/</span></li>
+                                            <li><a href="http://so.csdn.net/so/search/s.do?q=centos&amp;t=blog" target="_top">centos</a> <span>/</span></li>
+                                    <!--          [endarticletags]-->
+            </ul>
+            <ul class="right_bar">
+                <li><button class="btn-noborder"><i class="icon iconfont icon-read"></i><span class="txt">1764</span></button></li>
+                <li class="edit">
+                    <a class="btn-noborder" href="http://blog.csdn.net/dawningblue/article/details/60142536">
+                        <i class="icon iconfont icon-bianji"></i><span class="txt">编辑</span>
+                    </a>
+                </li>
+                <li class="del">
+                    <a class="btn-noborder" onclick="javascript:deleteArticle(fileName);return false;">
+                        <i class="icon iconfont icon-shanchu"></i><span class="txt">删除</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div id="article_content" class="article_content csdn-tracking-statistics tracking-click" data-mod="popu_519" data-dsm="post">
+                            <div class="markdown_views">
+                        <h1 id="可能存在的问题">可能存在的问题</h1>
+
+<ol>
+<li>yum安装、源码安装、二进制安装用哪个，官网文档是源码安装，所以咱们就用源码安装</li>
+<li>在源码安装的时候会有什么问题 <br>
+<ul><li>一个是默认路径的问题，在编译的时候时候如果不指定路径的话，很多二进制文件会安装到默认的目录下/usr/bin下面，系统原来的文件可能还会有，但是各种链接会指向新的二进制文件，这样有可能会造成系统内某些依赖原来版本python的服务依会出现问题，一个已知的是yum会出现问题。那么解决的方法就是在configure的时候制定一个不一样的路径，可以是/usr/local（这样pyhon的各个文件会散落在/usr/local的各个目录里面），可以是/usr/local/python3（这样python所有的文件都会集中到/usr/local/python3里面），当然也可以是任何你喜欢的地方比如（/home/user/Software/python3），放在哪里我觉得都可以，参考文档是放到/usr/local里面这样的好处是，默认的path路径里面就包含/usr/local，那么当你安装好之后，直接就可以调用命令而不用再修改PATH。其实我偏向于用/usr/local/python3。</li>
+<li>make altinstall的问题，如果用make install，在安装完新版本的python之后，新旧两个版本的python可执行文件（python2 python3）都会被链接到python这个可执行文件上，这会出现一些问题。如果用make altinstall，在安装完之后，不会建立软链接。</li></ul></li>
+<li>Unicode <br>
+python经历了一个漫长和复杂的历史过程才支持了unicode，所以如果你没有别的什么特殊需求的话，在安装2.7的时候请务必添加UTF-32支持，虽然会增加内存的使用但是增加了兼容性。python3.3以上不存在这个问题。在configure的时候加上这句–enable-unicode=ucs4</li>
+<li>动态库（shared library） <br>
+现代所有的linux发行版都把python编程成共享库，有些第三方的工具像mod_wsgi或者Blender都是依赖于这个共享库的，所以在安装新版本的python的时候最好能把这个编译成共享库。在configure的时候加上LDFLAGS=”-Wl,-rpath /usr/local/lib”</li>
+</ol>
+
+
+
+<h1 id="前置安装">前置安装</h1>
+
+
+
+<pre class="prettyprint"><code class=" hljs lasso">yum <span class="hljs-attribute">-y</span> update
+yum groupinstall <span class="hljs-string">'Development Tools'</span>
+yum install <span class="hljs-attribute">-y</span> zlib<span class="hljs-attribute">-devel</span> bzip2<span class="hljs-attribute">-devel</span> openssl<span class="hljs-attribute">-devel</span> ncurses<span class="hljs-attribute">-devel</span> sqlite<span class="hljs-attribute">-devel</span> readline<span class="hljs-attribute">-devel</span> tk<span class="hljs-attribute">-devel</span> gdbm<span class="hljs-attribute">-devel</span> db4<span class="hljs-attribute">-devel</span> libpcap<span class="hljs-attribute">-devel</span> xz<span class="hljs-attribute">-devel</span> expat<span class="hljs-attribute">-devel</span></code></pre>
+
+
+
+<h1 id="常规安装">常规安装</h1>
+
+<p><strong>Pyhon2.7</strong></p>
+
+
+
+<pre class="prettyprint"><code class=" hljs avrasm">wget http://python<span class="hljs-preprocessor">.org</span>/ftp/python/<span class="hljs-number">2.7</span><span class="hljs-number">.13</span>/Python-<span class="hljs-number">2.7</span><span class="hljs-number">.13</span><span class="hljs-preprocessor">.tar</span><span class="hljs-preprocessor">.xz</span>
+tar xf Python-<span class="hljs-number">2.7</span><span class="hljs-number">.13</span><span class="hljs-preprocessor">.tar</span><span class="hljs-preprocessor">.xz</span>
+cd Python-<span class="hljs-number">2.7</span><span class="hljs-number">.13</span>
+./configure --prefix=/usr/local/python27 --enable-unicode=ucs4 --enable-shared LDFLAGS=<span class="hljs-string">"-Wl,-rpath /usr/local/lib"</span>
+make &amp;&amp; make altinstal</code></pre>
+
+<p><strong>Python3.6</strong></p>
+
+
+
+<pre class="prettyprint"><code class=" hljs avrasm">wget http://mirrors<span class="hljs-preprocessor">.sohu</span><span class="hljs-preprocessor">.com</span>/python/<span class="hljs-number">3.6</span><span class="hljs-number">.0</span>/Python-<span class="hljs-number">3.6</span><span class="hljs-number">.0</span><span class="hljs-preprocessor">.tar</span><span class="hljs-preprocessor">.xz</span>(国内sohu源)
+wget http://python<span class="hljs-preprocessor">.org</span>/ftp/python/<span class="hljs-number">3.6</span><span class="hljs-number">.0</span>/Python-<span class="hljs-number">3.6</span><span class="hljs-number">.0</span><span class="hljs-preprocessor">.tar</span><span class="hljs-preprocessor">.xz</span>
+tar xf Python-<span class="hljs-number">3.6</span><span class="hljs-number">.0</span><span class="hljs-preprocessor">.tar</span><span class="hljs-preprocessor">.xz</span>
+cd Python-<span class="hljs-number">3.6</span><span class="hljs-number">.0</span>
+./configure --prefix=/usr/local/python3 --enable-shared LDFLAGS=<span class="hljs-string">"-Wl,-rpath /usr/local/lib"</span>
+make &amp;&amp; make altinstall</code></pre>
+
+<p><strong>删除动态库中的符号以节省内存空间</strong></p>
+
+<pre class="prettyprint"><code class=" hljs lua">strip /usr/<span class="hljs-keyword">local</span>/lib/libpython2<span class="hljs-number">.7</span>.so<span class="hljs-number">.1</span><span class="hljs-number">.0</span>
+strip /usr/<span class="hljs-keyword">local</span>/lib/libpython3<span class="hljs-number">.6</span>m.so<span class="hljs-number">.1</span><span class="hljs-number">.0</span></code></pre>
+
+<p><strong>安装pip,包管理</strong></p>
+
+
+
+<pre class="prettyprint"><code class=" hljs vala"><span class="hljs-preprocessor"># First get the script:</span>
+wget https:<span class="hljs-comment">//bootstrap.pypa.io/get-pip.py</span>
+
+<span class="hljs-preprocessor"># Then execute it using Python 2.7 and/or Python 3.6:</span>
+python2<span class="hljs-number">.7</span> <span class="hljs-keyword">get</span>-pip.py
+python3<span class="hljs-number">.6</span> <span class="hljs-keyword">get</span>-pip.py
+
+<span class="hljs-preprocessor"># With pip installed you can now do things like this:</span>
+pip2<span class="hljs-number">.7</span> install [packagename]
+pip2<span class="hljs-number">.7</span> install --upgrade [packagename]
+pip2<span class="hljs-number">.7</span> uninstall [packagename]</code></pre>
+
+
+
+<h1 id="环境共存问题">环境共存问题</h1>
+
+<p>利用virtualenv来解决多版本python共存的问题。virtualenv是python的一个包，在2.7下面需要用pip安装，在3.3以上已经内置在python里面了，不用在单独安装。我理解它的使用是这样的： <br>
+* 如果你想建立2.7版本下的隔离环境，你就需要用2.7版本下的vritualenv包的命令，如果你想建立3.6版本下的隔离环境就需要用3.6下的virtualenv包的命令。不同版本的virtualenv命令是不一样的。 <br>
+* 排除版本不同的命令，virtual使用的大概框架是类似的 <br>
+    + 首先创建一个虚拟环境，这个虚拟环境其实就是一个目录，这个目录里面是这个虚拟环境的配置文件，配置文件包括启动与结束这个虚拟环境的脚本以及库文件。你看这些目录其实就是那些那么版本文件的软链接嘛，比如2.7的虚拟环境，bin目录下基本上是2.7所有的那些二进制文件都链接过来。 <br>
+    + 利用目录里面的启动脚本来启动虚拟环境，启动后在提示符前面会有一个这个虚拟环境的标识符。只要有这个标识符就说明在这个虚拟环境中了，你就可以自由的用python，pip这些命令再也不用担心出错了。 <br>
+    + 利用目录里的结束脚本来结束虚拟环境。 <br>
+其实看完这个目录树你就知道其实这是利用bash环境脚本等工具做出的一个子进程环境，其实自己做也行了。但是人家已经写好了就不要重新发明轮子，自己写还容易出错呢。</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs sql"># Install virtualenv for Python 2.7 and <span class="hljs-operator"><span class="hljs-keyword">create</span> a sandbox called my27project:
+pip2<span class="hljs-number">.7</span> install virtualenv
+virtualenv my27project
+
+# Use the built-<span class="hljs-keyword">in</span> functionality <span class="hljs-keyword">in</span> Python <span class="hljs-number">3.6</span> <span class="hljs-keyword">to</span> <span class="hljs-keyword">create</span> a sandbox called my36project:
+python3<span class="hljs-number">.6</span> -m venv my36project
+
+# <span class="hljs-keyword">Check</span> the system Python interpreter version:
+python --version
+# This will <span class="hljs-keyword">show</span> Python <span class="hljs-number">2.6</span><span class="hljs-number">.6</span>
+
+# Activate the my27project sandbox <span class="hljs-keyword">and</span> <span class="hljs-keyword">check</span> the version <span class="hljs-keyword">of</span> the <span class="hljs-keyword">default</span> Python interpreter <span class="hljs-keyword">in</span> it:
+source my27project/bin/activate
+python --version
+# This will <span class="hljs-keyword">show</span> Python <span class="hljs-number">2.7</span><span class="hljs-number">.13</span>
+deactivate
+
+# Activate the my36project sandbox <span class="hljs-keyword">and</span> <span class="hljs-keyword">check</span> the version <span class="hljs-keyword">of</span> the <span class="hljs-keyword">default</span> Python interpreter <span class="hljs-keyword">in</span> it:
+source my36project/bin/activate
+python --version
+# This will <span class="hljs-keyword">show</span> Python <span class="hljs-number">3.6</span><span class="hljs-number">.0</span>
+deactivate</span></code></pre>
+
+
+
+<h1 id="参考文档">参考文档</h1>
+
+<ol>
+<li><a href="https://danieleriksson.net/2017/02/08/how-to-install-latest-python-on-centos/">How to install the latest version of Python on CentOS</a></li>
+<li><a href="http://stackoverflow.com/questions/16018463/difference-in-details-between-make-install-and-make-altinstall">make install和make altinstall 的区别的问题</a></li>
+</ol>                            </div>
+                
+                    </div>
+    </article>
+      <div class="readall_box csdn-tracking-statistics tracking-click" data-mod="popu_376">
+          <div class="read_more_mask"></div>
+          <a class="btn btn-large btn-gray-fred read_more_btn" target="_self">阅读全文</a>
+      </div>
+      <div class="article_copyright">
+              </div>
+      <ul class="article_collect clearfix csdn-tracking-statistics tracking-click" data-mod="popu_378">
+          <li class="tit">本文已收录于以下专栏：</li>
+<!--          [startarticlecolumns]-->
+                                <!--          [endarticlecolumns]-->
+      </ul>
+      <div class="comment_box clearfix">
+          <div id="comment_form">
+              <div id="commentsbmitarear">
+                              </div>
+          </div>
+      </div>
+      <div class="comment_li_outbox">
+          <div id="comment_list"></div>
+      </div>
+
+      <div class="more_comment">
+          <div id="comment_bar" class="trackgin-ad" data-mod="popu_385"></div>
+      </div>
+
+      <h3 class="recommend_tit" id="related">相关文章推荐</h3>
+      <div class="recommend_list clearfix" id="rasss">
+                                                                                      <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/King_BingGe/article/details/45127003" target="_top" strategy="BlogCommendFromBaidu_0">centos下安装多版本Python</a></h2>
+                          <div class="summary">
+                              经常遇到这样的情况：
+
+系统自带的Python是2.6，自己需要Python 2.7中的某些特性；
+系统自带的Python是2.x，自己需要Python 3.x；...                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/King_BingGe" target="_top" strategy="BlogCommendFromBaidu_0"><img src="3_king_bingge.jpg" alt="King_BingGe" title="King_BingGe"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/King_BingGe">King_BingGe</a></li>
+                              <li class="time">2015年04月19日 10:31</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>2365</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                                                                    <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/gazzia1/article/details/54860728" target="_top" strategy="BlogCommendFromBaidu_1">centos7下安装多版本python3.6</a></h2>
+                          <div class="summary">
+                              说明：
+
+centos7下默认安装python2.7.5版本，因为系统环境有依赖默认安装的python2.7.5版本，所以我们不能替换安装系统默认安装Python2.7.5。
+
+所以需要共存安...                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/gazzia1" target="_top" strategy="BlogCommendFromBaidu_1"><img src="3_gazzia1.jpg" alt="gazzia1" title="gazzia1"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/gazzia1">gazzia1</a></li>
+                              <li class="time">2017年02月04日 09:09</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>1479</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                                                      <div id="_r9z03au6iok"></div><a href="http://www.baidu.com/cb.php?c=IgF_pyfqnHmknjT3P160IZ0qnfK9ujYzP1nsrjDz0Aw-5Hc3rHnYnHb0TAq15HfLPWRznjb0T1YsuyRduHP-uWK9mhNBnjRv0AwY5HDdnHn3Pjcsrj00IgF_5y9YIZ0lQzqBTLn8mLPbUB48ugfEUiqYULKGmzq-uZNxug99UHqdIAdxTvqdThP-5yF_UvTkn0KzujYk0AFV5H00TZcqn0KdpyfqnHRLPjnvnfKEpyfqnHc4rj6kP0KWpyfqP1cvrHnz0AqLUWYs0ZK45HcsP6KWThnqnH63nHf" target="_top">
+	<dl class="clearfix csdn-tracking-statistics" data-mod="popu_393">
+		<dt><img class="maxwidth" src="0f0007zrkpgqsjwdqbwkd6.jpg" alt="" title=""></dt>
+		<dd>
+			<div class="summary">
+				<h2>程序员想转管理有捷径吗？一位老前辈给我指了这条路！靠谱吗？</h2>  <div class="summary">做程序员5年了收获蛮多，但是最近【中兴跳楼事件】发生后，我在想如果我到了40岁，会被辞退吗...</div> 
+			</div>
+		</dd>
+	</dl>
+</a>
+                                                                <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/kaichao/article/details/40370285" target="_top" strategy="BlogCommendFromBaidu_2">centos6下多版本python的安装</a></h2>
+                          <div class="summary">
+                              centos缺省安装python-2.6.6
+1. 安装python-2.7.5。                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/kaichao" target="_top" strategy="BlogCommendFromBaidu_2"><img src="3_kaichao.jpg" alt="kaichao" title="kaichao"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/kaichao">kaichao</a></li>
+                              <li class="time">2014年10月22日 07:44</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>1848</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                                                                    <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/dream_an/article/details/51248736" target="_top" strategy="BlogCommendFromBaidu_3">Windows下Python多版本共存</a></h2>
+                          <div class="summary">
+                              Windows下Python多版本共存 
+Python数据科学安装Numby,pandas,scipy,matpotlib等（IPython安装pandas）0.0 因为公司项目，需要Python两个...                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/dream_an" target="_top" strategy="BlogCommendFromBaidu_3"><img src="3_dream_an.jpg" alt="dream_an" title="dream_an"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/dream_an">dream_an</a></li>
+                              <li class="time">2016年04月26日 10:54</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>18645</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                                                                    <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/SuperGiser_Lee/article/details/72771198" target="_top" strategy="BlogCommendFromBaidu_4">VisualStudio2015配置共存的多个版本Python环境</a></h2>
+                          <div class="summary">
+                              我在上一篇文章：《同一机器下多个版本Python的共存》链接为：http://blog.csdn.net/supergiser_lee/article/details/72765125 &nbsp; &nbsp;中，介绍...                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/SuperGiser_Lee" target="_top" strategy="BlogCommendFromBaidu_4"><img src="3_supergiser_lee.jpg" alt="SuperGiser_Lee" title="SuperGiser_Lee"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/SuperGiser_Lee">SuperGiser_Lee</a></li>
+                              <li class="time">2017年05月26日 16:24</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>1238</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                                        <!-- 广告位：PC端-博客详情通栏7（feed流）-808*120 -->
+                  <div id="_7j09p5trwz"></div><div><iframe scrolling="no" src="index_3.html" width="760" height="90" frameborder="0"></iframe></div>
+                                                                              <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/vbaspdelphi/article/details/52502538" target="_top" strategy="BlogCommendFromBaidu_5">CentOS 6 virtualenv python2.7</a></h2>
+                          <div class="summary">
+                              在CentOS6里面，python默认的版本是2.6，最多也就到2.6.6如果采用yum update的方式，但是有些程序我们必须使用高版本的python，怎么办呢？用virtualenv，pytho...                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/vbaspdelphi" target="_top" strategy="BlogCommendFromBaidu_5"><img src="3_vbaspdelphi.jpg" alt="vbaspdelphi" title="vbaspdelphi"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/vbaspdelphi">vbaspdelphi</a></li>
+                              <li class="time">2016年09月11日 10:09</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>1194</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                                                                    <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/S_gy_Zetrov/article/details/70343154" target="_top" strategy="BlogCommendFromBaidu_6">python_python2.7+python3.6安装与并存</a></h2>
+                          <div class="summary">
+                              python双版本共存的安装教程
+  python2.7与python3.6并存; python2与python3的pip; 
+最近囤了好几本python的书，总归是到了填坑的时候python一直有在...                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/S_gy_Zetrov" target="_top" strategy="BlogCommendFromBaidu_6"><img src="3_s_gy_zetrov.jpg" alt="S_gy_Zetrov" title="S_gy_Zetrov"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/S_gy_Zetrov">S_gy_Zetrov</a></li>
+                              <li class="time">2017年04月22日 01:38</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>7167</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                                                                    <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/oXiaoChong12345/article/details/53411493" target="_top" strategy="BlogCommendFromBaidu_7">python 环境搭建（三） python2.6和python2.7共存</a></h2>
+                          <div class="summary">
+                              给了台服务器 上面已经有python2.6 了
+要新发布的项目是基于python2.7的，
+首先 下载python2.7源码
+wget&nbsp;http://www.python.org/ftp/pyt...                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/oXiaoChong12345" target="_top" strategy="BlogCommendFromBaidu_7"><img src="3_oxiaochong12345.jpg" alt="oXiaoChong12345" title="oXiaoChong12345"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/oXiaoChong12345">oXiaoChong12345</a></li>
+                              <li class="time">2016年11月30日 18:25</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>1514</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                                                                    <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/chyin1024/article/details/53939389" target="_top" strategy="BlogCommendFromBaidu_8">centos 安装多版本php</a></h2>
+                          <div class="summary">
+                              http://blog.csdn.net/21aspnet/article/details/47658127                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/chyin1024" target="_top" strategy="BlogCommendFromBaidu_8"><img src="3_chyin1024.jpg" alt="chyin1024" title="chyin1024"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/chyin1024">chyin1024</a></li>
+                              <li class="time">2016年12月30日 09:37</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>2950</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                                                                    <dl class="clearfix csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+                      <dd>
+                          <h2><a href="http://blog.csdn.net/lu_yongchao/article/details/71336210" target="_top" strategy="BlogCommendFromBaidu_9">Centos7下安装多python版本并存开发环境</a></h2>
+                          <div class="summary">
+                              系统环境：CentOS 7.2 x86_64，该系统自带了python2.7版本。但是项目中用的是python3.5版本，为了保证Centos系统的正常运行，需要安装python3.5与python2...                          </div>
+                          <ul>
+                              <li class="avatar_img"><a href="http://blog.csdn.net/lu_yongchao" target="_top" strategy="BlogCommendFromBaidu_9"><img src="3_lu_yongchao.jpg" alt="lu_yongchao" title="lu_yongchao"></a></li>
+                              <li class="user_name"><a href="http://blog.csdn.net/lu_yongchao">lu_yongchao</a></li>
+                              <li class="time">2017年05月07日 16:59</li>
+                              <li class="visited_num"><i class="icon iconfont icon-read"></i><span>2241</span></li>
+                          </ul>
+                      </dd>
+                  </dl>
+                                                    </div>
+  </main>
+<aside>
+  <div class="right_box user_info">
+      <dl class="inf_bar clearfix">
+          <dt class="csdn-tracking-statistics tracking-click" data-mod="popu_381">
+              <a href="http://blog.csdn.net/dawningblue" target="_top">
+                  <img src="3_dawningblue.jpg" class="avatar_pic">
+              </a>
+              <span class="medals" title="">
+                  </span>
+          </dt>
+          <dd>
+              <h3 class="csdn-tracking-statistics tracking-click" data-mod="popu_380"><a href="http://blog.csdn.net/dawningblue" target="_top" id="uid">dawningblue</a></h3>
+              <span class="csdn-tracking-statistics tracking-click" data-mod="popu_379"><a class="btn btn-redborder-small " id="span_add_follow" target="_self">＋关注</a></span>
+          </dd>
+      </dl>
+      <div class="inf_number_box clearfix">
+          <dl>
+              <dt>原创</dt>
+              <dd>14</dd>
+          </dl>
+          <dl>
+              <dt>粉丝</dt>
+              <dd id="fan">1</dd>
+          </dl>
+          <dl>
+              <dt>喜欢</dt>
+              <dd>0</dd>
+          </dl>
+          <dl>
+        <dt>码云</dt>
+        <dd>&nbsp;</dd>
+      </dl>
+
+      </div>
+  <div class="writings">
+        <div class="public_signal clearfix">
+          <h3>他的最新文章</h3>
+          <a href="http://blog.csdn.net/dawningblue" target="_top" class="more"><span>更多文章</span></a>
+        </div>
+          <ul class="inf_list clearfix csdn-tracking-statistics tracking-click" data-mod="popu_382">
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/dawningblue/article/details/78605029" target="_top">反向传播算法的理解(Nielsen版)</a>
+              </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/dawningblue/article/details/78228732" target="_top">数学与国家实力</a>
+              </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/dawningblue/article/details/78143815" target="_top">Coursra-MachineLearning 第二次作业总结</a>
+              </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/dawningblue/article/details/77885884" target="_top">Coursra-MachineLearning 第一次作业总结</a>
+              </li>
+                            <li class="clearfix">
+                  <a href="http://blog.csdn.net/dawningblue/article/details/77770178" target="_top">数学之美 概念关系图</a>
+              </li>
+                        </ul>
+      </div>
+  </div>
+    <div class="user-hotArticle">
+        <h3><a href="#related">相关推荐</a></h3>
+        <ul class="hotArticle-list csdn-tracking-statistics tracking-click" data-mod="popu_563">
+<!--           [StartRelatedArticles]-->
+                                                <li>
+                        <a href="http://blog.csdn.net/King_BingGe/article/details/45127003" target="_top" strategy="BlogRightReleated_0">centos下安装多版本Python</a>
+                                            </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/gazzia1/article/details/54860728" target="_top" strategy="BlogRightReleated_1">centos7下安装多版本python3.6</a>
+                                            </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/kaichao/article/details/40370285" target="_top" strategy="BlogRightReleated_2">centos6下多版本python的安装</a>
+                                            </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/dream_an/article/details/51248736" target="_top" strategy="BlogRightReleated_3">Windows下Python多版本共存</a>
+                                            </li>
+                            <!--            [EndRelatedArticles]-->
+        </ul>
+    </div>
+  <div class="extension_other csdn-tracking-statistics tracking-click" data-mod="popu_389">
+     <!--u3032528-->
+    <div class="flashrecommend">
+        <div><iframe scrolling="no" src="index_5.html" width="300" height="250" frameborder="0"></iframe></div>
+    </div>
+  </div>
+
+<!--    [StartShowSelfColumn]-->
+    <!--    [EndShowSelfColumn]-->
+    <div class="fixRight">
+        <!-- 广告位：PC端-博客详情右侧视窗2（feed流）-300*300 -->
+        <div id="_1vwl35wq8ie"></div><div id="_f24mrpqs51p"><div><div id="wmzqk" style="display: none;"></div><iframe scrolling="no" src="index_7.html" width="300" height="250" frameborder="0"></iframe></div></div>
+        <div class="extension_other csdn-tracking-statistics tracking-click bottomRcom" data-mod="popu_389" style="position: absolute; z-index: -5; opacity: 0; pointer-events: none;">
+            <!--u3032528-->
+            <div class="flashrecommend">
+                <!-- 请置于所有广告位代码之前 -->
+                
+
+                <!-- 广告位：PC端-博客详情页右侧视窗1（feed流）-300*250 -->
+                <div id="_nppgzuppq8"></div><div id="_pj4w5nkkotc"><iframe scrolling="no" src="index_8.html" width="300" height="250" frameborder="0"></iframe></div>
+            </div>
+        </div>
+
+    </div>
+    <div class="user-hotArticle">
+        <h3>他的热门文章</h3>
+        <ul class="hotArticle-list csdn-tracking-statistics tracking-click" data-mod="popu_521">
+<!--            [StartHotArticles]-->
+                                                <li>
+                        <a href="http://blog.csdn.net/dawningblue/article/details/60142536">在centos6.5环境下搭建多版本python(python2.6、python2.7、python3.5)共存环境</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>1750</span></div>
+                    </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/dawningblue/article/details/75119639">什么叫做「数据驱动方法」</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>1261</span></div>
+                    </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/dawningblue/article/details/51707546">关于hadoop端口的问题</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>557</span></div>
+                    </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/dawningblue/article/details/72629362">Python中iteration(迭代)、iterator(迭代器)、generator(生成器)等相关概念的理解</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>431</span></div>
+                    </li>
+                                    <li>
+                        <a href="http://blog.csdn.net/dawningblue/article/details/54694677">一觉起来总是很累但是智能手环的数据显示得还不错是什么原因</a>
+                        <div class="read list-left"><i class="icon iconfont icon-read"></i><span>366</span></div>
+                    </li>
+                            <!--            [EndHotArticles]-->
+        </ul>
+    </div>
+<!--    [startcustom]-->
+    <!--    [endcustom]-->
+</aside></div>
+
+<div class="left_fixed">
+    <div class="left_show_button">
+        <span>
+          <i class="icon iconfont icon-youjiantou"></i>
+        </span>
+    </div>
+    <ul class="left_menu">
+        <li>
+            <button class="left-fixed-btn btn-like csdn-tracking-statistics tracking-click" data-mod="popu_373" target="_self">
+                <a href="javascript:void(0);" class="iconbox border_red"><i class="icon iconfont icon-dianzan"></i></a>
+                <a class="txt" href="javascript:void(0);">0</a>
+            </button>
+        </li>
+        <li id="blog_artical_directory">
+            <button class="left-fixed-btn left_menu_btn csdn-tracking-statistics tracking-click" data-mod="popu_372" target="_self">
+                <a href="javascript:void(0);" class="iconbox border_black"><i class="icon iconfont icon-mulu"></i></a>
+            </button>
+        </li>
+        <li class="menu_con">
+            <div class="list_father">
+                <div class="arr_box">
+                    <button class="btn-noborder arr-btn scroll-down  left_scroll_down"><i class="icon iconfont icon-xiajiantou"></i></button>
+                    <button class="btn-noborder arr-btn scroll-up left_scroll_top"><i class="icon iconfont icon-shangjiantou"></i></button>
+                </div>
+                <div class="arr"></div>
+                <div id="csdnBlogDir"></div>
+            </div>
+        </li>
+        <!--        <li>-->
+        <!--            <button class="left-fixed-btn btn-like tracking-ad" data-mod="popu_373" target="_self">-->
+        <!--                <span class="iconbox border_red"><i class="icon iconfont icon-xihuan-"></i></span>-->
+        <!--                <span class="txt">喜欢</span>-->
+        <!--                <span class="untxt">取消喜欢</span>-->
+        <!--            </button>-->
+        <!--        </li>-->
+        <li>
+            <button class="left-fixed-btn csdn-tracking-statistics tracking-click" data-mod="popu_374" id="com-quick-collect" target="_self">
+                <a href="javascript:void(0);" class="iconbox border_purple"><i class="icon iconfont icon-shoucang"></i></a>
+            </button>
+        </li>
+        <li>
+            <button class="left-fixed-btn btn-pinglun csdn-tracking-statistics tracking-click" data-mod="popu_544">
+                <a href="javascript:void(0);" class="iconbox border_purple"><i class="icon iconfont icon-pinglun"></i></a>
+            </button>
+        </li>
+        <li id="share_box">
+            <button class="left-fixed-btn  csdn-tracking-statistics tracking-click" data-mod="popu_375" target="_self">
+                <a href="javascript:void(0);" class="iconbox border_orange"><i class="icon iconfont icon-fenxiang"></i></a>
+            </button>
+            <div class="bdsharebuttonbox csdn-tracking-statistics tracking-click bdshare-button-style0-16" data-mod="popu_172" data-bd-bind="1513842083416">
+                <div class="outside">
+                    <span class="iconbox border_red2"><i class="icon iconfont icon-xinlang"></i></span>
+                    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"> </a>
+                </div>
+                <div class="outside">
+                    <span class="iconbox border_green"><i class="icon iconfont icon-weixin"></i></span>
+                    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"> </a>
+                </div>
+                <div class="outside">
+                    <span class="iconbox border_blue"><i class="icon iconfont icon-QQ"></i></span>
+                    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"> </a>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>
+<div class="right_fixed">
+    <div class="r_ico">
+        <i class="icon iconfont icon-jubao"></i>
+        <span class="txt" id="reportBtn">内容举报</span>
+    </div>
+    <div class="returnTop">
+        <i class="icon iconfont icon-fanhuidingbu"></i>
+        <span>返回顶部</span>
+    </div>
+</div>
+<div id="pop_win"></div>
+<div id="popup_mask"></div>
+<div class="pop_CA_cover"></div>
+<div class="pop pop_CA">
+    <div class="CA_header">
+        收藏助手
+        <span class="cancel_icon" id="fapancle"></span>
+    </div>
+    <iframe src="index_9.html" id="collectIframe" scrolling="no" width="100%" height="360" frameborder="0"></iframe>
+</div>
+<!--举报-->
+<div id="report_dialog" style="top: 250px; left: 343.5px;"><div id="panel_report">
+    <div class="panel_head">不良信息举报</div>
+    <form method="post" id="frmReport" class="panel_body" action="http://blog.csdn.net/dawningblue/article/details/60142536">
+        <table class="pop_table" cellspacing="4" cellpadding="0" border="0">
+            <tbody><tr><td colspan="2">您举报文章：<a href="http://blog.csdn.net/dawningblue/article/details/60142536" target="_top">在centos6.5环境下搭建多版本python(python2.6、python2.7、python3.5)共存环境</a></td></tr>
+            <tr>
+                <th style="width: 60px;">举报原因：</th>
+                <td id="panel_reporttype">
+                    <label><input class="report_type" id="report_sex" name="report_type" value="1" type="radio">色情</label>
+                    <label><input class="report_type" id="report_Politics" name="report_type" value="2" type="radio">政治</label>
+                    <label><input class="report_type" id="report_copy" name="report_type" value="3" type="radio">抄袭</label>
+                    <label><input class="report_type" id="report_ad" name="report_type" value="4" type="radio">广告</label>
+                    <label><input class="report_type" id="report_want" name="report_type" value="5" type="radio">招聘</label>
+                    <label><input class="report_type" id="report_call" name="report_type" value="6" type="radio">骂人</label>
+                    <br>
+                    <label><input class="report_type" id="report_other" name="report_type" value="7" type="radio">其他</label>
+                    <input name="report_other_content" id="report_other_content" maxlength="30" style="display: none;" value="" type="text">
+                </td>
+            </tr>
+            <tr id="panel_originalurl" style="display: none;">
+                <th>原文地址：</th>
+                <td>
+                    <input id="originalurl" value="http://" name="originalurl" style="width: 90%;" type="text">
+                </td>
+            </tr>
+            <tr>
+                <th id="sp_reason">原因补充：</th>
+                <td>
+                    <textarea id="report_description" style="width: 300px;" rows="3" name="report_description"></textarea>
+                    <p id="sp_n" style="color: rgb(153, 153, 153); margin: 0px; padding: 0px;">(最多只允许输入30个字)</p>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input id="btnSubmitReport" name="submit" class="btn_1" src="btn_submit.jpg" type="image" align="middle">
+                    <span style="padding-left: 20px;"></span>
+                    <img id="btnCloseReportDialog" src="btn_cancel.jpg" align="middle">
+                    <div id="error" style="color: red;">
+                    </div>
+                </td>
+            </tr>
+            </tbody></table>
+    </form>
+</div>
+    
+</div>
+<!--  fixme 后期清理掉  -->
+<div id="a52b5334d" style="width: 1px; height: 1px; display: none;">
+    
+    
+</div>
+
+
+<!-- <script type="text/javascript" src="http://passport.csdn.net/content/loginbox/login.js"></script> -->
+
+
+
+
+<div class="" id="loginWrap"></div>
+<div class="" id="dlMask"></div>
+
+</body>
+</html>

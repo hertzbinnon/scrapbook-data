@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#" lang="en-US">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+	<meta charset="UTF-8">
+	<title>WebRTC media servers in the Cloud: lessons learned (Luis López Fernández) - webrtcHacks</title>
+	<link rel="profile" href="http://gmpg.org/xfn/11">
+	<link rel="pingback" href="https://webrtchacks.com/xmlrpc.php">
+	<!--[if lt IE 9]>
+	<script src="https://webrtchacks.com/wp-content/themes/parament/js/html5.js" type="text/javascript"></script>
+	<![endif]-->
+	
+<!-- This site is optimized with the Yoast SEO plugin v4.0.2 - https://yoast.com/wordpress/plugins/seo/ -->
+<meta name="description" content="Luis Lopez provides a deep review on WebRTC media servers in the cloud - NFV, MRB, VMs vs. Docker, RTC issues on virtual interfaces, debugging, and more">
+<meta name="robots" content="noodp">
+<link rel="canonical" href="https://webrtchacks.com/webrtc-media-servers-in-the-cloud/">
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WebRTC media servers in the Cloud: lessons learned (Luis López Fernández) - webrtcHacks">
+<meta property="og:description" content="Luis Lopez provides a deep review on WebRTC media servers in the cloud - NFV, MRB, VMs vs. Docker, RTC issues on virtual interfaces, debugging, and more">
+<meta property="og:url" content="https://webrtchacks.com/webrtc-media-servers-in-the-cloud/">
+<meta property="og:site_name" content="webrtcHacks">
+<meta property="article:tag" content="cloud">
+<meta property="article:tag" content="containers">
+<meta property="article:tag" content="docker">
+<meta property="article:tag" content="kurento">
+<meta property="article:tag" content="KVM">
+<meta property="article:tag" content="media server">
+<meta property="article:tag" content="mrb">
+<meta property="article:tag" content="NFV">
+<meta property="article:tag" content="nubomedia">
+<meta property="article:tag" content="OpenStack">
+<meta property="article:tag" content="virtualization">
+<meta property="article:section" content="Guide">
+<meta property="article:published_time" content="2016-09-09T06:32:26-04:00">
+<meta property="article:modified_time" content="2016-09-10T08:35:12-04:00">
+<meta property="og:updated_time" content="2016-09-10T08:35:12-04:00">
+<meta property="og:image" content="https://c8.staticflickr.com/3/2621/3720817095_74e8ef0c77_b.jpg">
+<meta property="og:image" content="https://webrtchacks.com/wp-content/uploads/2016/09/fig1.png">
+<meta property="og:image" content="https://webrtchacks.com/wp-content/uploads/2016/09/fig2.png">
+<meta property="og:image" content="https://webrtchacks.com/wp-content/uploads/2016/09/fig3.png">
+<meta property="og:image" content="https://webrtchacks.com/wp-content/uploads/2016/09/fig4.png">
+<meta property="og:image" content="https://webrtchacks.com/wp-content/uploads/2016/09/fig5-top-left-1024x768.png">
+<meta property="og:image" content="https://webrtchacks.com/wp-content/uploads/2016/09/fig5-top-right-1024x768.png">
+<meta property="og:image" content="https://webrtchacks.com/wp-content/uploads/2016/09/fig5-bottom-right-1024x768.png">
+<meta property="og:image" content="https://webrtchacks.com/wp-content/uploads/2016/09/fig5-bottom-left-1024x768.png">
+<meta property="og:image" content="https://webrtchacks.com/wp-content/uploads/2016/09/fig6.png">
+<meta property="og:image" content="https://webrtchacks.com/wp-content/uploads/2016/09/fig7-left-1024x690.png">
+<meta property="og:image" content="https://webrtchacks.com/wp-content/uploads/2016/09/fig7-right-1024x701.png">
+<meta property="og:image" content="https://webrtchacks.com/wp-content/uploads/2016/09/fig8.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:description" content="Luis Lopez provides a deep review on WebRTC media servers in the cloud - NFV, MRB, VMs vs. Docker, RTC issues on virtual interfaces, debugging, and more">
+<meta name="twitter:title" content="WebRTC media servers in the Cloud: lessons learned (Luis López Fernández) - webrtcHacks">
+<meta name="twitter:site" content="@webrtchacks">
+<meta name="twitter:image" content="https://c8.staticflickr.com/3/2621/3720817095_74e8ef0c77_b.jpg">
+<meta name="twitter:creator" content="@chadwallacehart">
+<!-- / Yoast SEO plugin. -->
+
+<link rel="dns-prefetch" href="https://ws.sharethis.com/">
+<link rel="dns-prefetch" href="https://s.w.org/">
+<link rel="alternate" type="application/rss+xml" title="webrtcHacks » Feed" href="https://webrtchacks.com/feed/">
+<link rel="alternate" type="application/rss+xml" title="webrtcHacks » Comments Feed" href="https://webrtchacks.com/comments/feed/">
+<link rel="alternate" type="application/rss+xml" title="webrtcHacks » WebRTC media servers in the Cloud: lessons learned (Luis López Fernández) Comments Feed" href="https://webrtchacks.com/webrtc-media-servers-in-the-cloud/feed/">
+		
+		
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- This site uses the Google Analytics by MonsterInsights plugin v5.5.4 - Universal enabled - https://www.monsterinsights.com/ -->
+
+<!-- / Google Analytics by MonsterInsights -->
+
+
+
+
+
+<link rel="https://api.w.org/" href="https://webrtchacks.com/wp-json/">
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://webrtchacks.com/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://webrtchacks.com/wp-includes/wlwmanifest.xml"> 
+<link rel="shortlink" href="https://webrtchacks.com/?p=2642">
+<link rel="alternate" type="application/json+oembed" href="https://webrtchacks.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fwebrtchacks.com%2Fwebrtc-media-servers-in-the-cloud%2F">
+<link rel="alternate" type="text/xml+oembed" href="https://webrtchacks.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fwebrtchacks.com%2Fwebrtc-media-servers-in-the-cloud%2F&amp;format=xml">
+		<!-- AJAXY SEARCH V 3.0.7-->
+				
+		
+
+		
+						<!-- WordPress Popular Posts v3.3.4 -->
+				
+				<!-- End WordPress Popular Posts v3.3.4 -->
+					
+	
+	<link rel="shortcut icon" href="favicon.ico">
+	
+	<!-- Google Analytics -->
+		
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--Commented out by Chad -->
+<!--script type="text/javascript" src="https://webrtchacks.com/wp-includes/js/jquery.sticky.js"></script-->
+
+
+
+
+<!--script>
+    /******Changed by Chad ****************/
+	$(window).load(function(){
+      		$("#fixedscroll").sticky({ topSpacing: 0, bottomSpacing: 1250  });
+    });
+		
+</script-->
+
+
+<link rel="stylesheet" type="text/css" id="SL_Style" href="chrome://imtranslator/content/css/translator.css">
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body class="post-template-default single single-post postid-2642 single-format-standard custom-background has-image">
+
+<div id="page-wrap" class="contain">
+<div class="header-wrapper">
+	<header id="branding" role="banner">
+		
+					<a id="header-image" href="https://webrtchacks.com/"><img src="webrtchackslogo1.gif" alt=""></a>
+      <div class="whsocialmedia">
+		<a href="https://twitter.com/share?url=http://webrtchacks.com/webrtc-media-servers-in-the-cloud/" target="_top" style="display: inline; font-size: 0px; padding: 0px 5px;"><img src="twitter.png"></a>
+		<a href="http://www.facebook.com/sharer.php?u=http://webrtchacks.com/webrtc-media-servers-in-the-cloud/" target="_top" style="display: inline; font-size: 0px; padding: 0px 5px;"><img src="facebook-favicon.png"></a>
+		<a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=http://webrtchacks.com/webrtc-media-servers-in-the-cloud/" target="_top" style="display: inline; font-size: 0px; padding: 0px 5px;"><img src="linkedin-favicon.png"></a>
+		<a href="https://plus.google.com/share?url=http://webrtchacks.com/webrtc-media-servers-in-the-cloud/" target="_top" style="display: inline; font-size: 0px; padding: 0px 5px;"><img src="google+-favicon.png"></a>
+</div>
+			</header><!-- #branding -->
+</div><!-- end of header-wrapper -->
+
+	<nav id="menu" role="navigation"><ul id="primary-menu" class="menu"><li id="menu-item-59" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-59"><a href="http://webrtchacks.com/">Home</a></li>
+<li id="menu-item-302" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-302"><a href="https://webrtchacks.com/vendor-directory/">Tool Directory</a></li>
+<li id="menu-item-55" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-55"><a href="https://webrtchacks.com/about/">About</a>
+<ul class="sub-menu">
+	<li id="menu-item-64" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-64"><a href="https://webrtchacks.com/about/chad/">Chad Hart</a></li>
+	<li id="menu-item-62" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-62"><a href="https://webrtchacks.com/about/victor/">Victor Pascual Ávila</a></li>
+	<li id="menu-item-1833" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1833"><a href="https://webrtchacks.com/about/tsahi/">Tsahi Levent-Levi</a></li>
+	<li id="menu-item-2355" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2355"><a href="https://webrtchacks.com/about/fippo/">Philipp Hancke</a></li>
+</ul>
+</li>
+<li id="menu-item-792" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-792"><a href="https://webrtchacks.com/subscribe/">Subscribe</a></li>
+<li id="menu-item-265" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-265"><a href="https://webrtchacks.com/contact/">Contact</a></li>
+</ul><!-- <div id="53f1912965db2" class="sf_container" style="width: 235px;float: left;margin-left: 118px;">
+			<form role="search" method="get" class="searchform" action="https://webrtchacks.com/">
+				<div>
+					<label class="screen-reader-text" for="s">Search for:</label>
+					<div class="sf_search">
+						<span class="sf_block">
+							<input style="width:215px;" class="sf_input" autocomplete="off" type="text" value="search webrtcHacks.com" name="s">
+							<button class="sf_button searchsubmit" type="submit"><span class="sf_hidden">Search</span></button>
+						</span>
+					</div>
+				</div>
+			</form>
+		</div> -->
+  </nav>
+<div style="padding: 0px;" align="center">
+<!-- [adkingpro type=webrtcworldcomconferencewest-top_ad] -->
+	</div><div id="container-holder">
+<div id="container" class="contain">
+	<div id="main" role="main">
+													
+<article id="post-2642" class="contain post-2642 post type-post status-publish format-standard hentry category-guide tag-cloud tag-containers tag-docker tag-kurento tag-kvm tag-media-server tag-mrb tag-nfv tag-nubomedia tag-openstack tag-virtualization has-byline">
+
+	<div class="title">
+					<h2 class="entry-title"><font color="000">webrtcH4cKS:</font><font color="000"> ~ </font>WebRTC media servers in the Cloud: lessons learned (Luis López Fernández)</h2>				<div class="entry-byline">
+			<span>Posted by <a href="https://webrtchacks.com/author/chad/" title="View all posts by Chad Hart">Chad Hart</a> on <a href="https://webrtchacks.com/webrtc-media-servers-in-the-cloud/">September 9, 2016</a></span>
+					</div>
+
+		<div class="entry-meta">
+						<div class="entry-posted">
+			<strong>Posted in:</strong> <a href="https://webrtchacks.com/category/guide/" rel="category tag">Guide</a>.			</div>
+						
+						<div class="entry-tagged">
+			<strong>Tagged:</strong> <a href="https://webrtchacks.com/tag/cloud/" rel="tag">cloud</a>, <a href="https://webrtchacks.com/tag/containers/" rel="tag">containers</a>, <a href="https://webrtchacks.com/tag/docker/" rel="tag">docker</a>, <a href="https://webrtchacks.com/tag/kurento/" rel="tag">kurento</a>, <a href="https://webrtchacks.com/tag/kvm/" rel="tag">KVM</a>, <a href="https://webrtchacks.com/tag/media-server/" rel="tag">media server</a>, <a href="https://webrtchacks.com/tag/mrb/" rel="tag">mrb</a>, <a href="https://webrtchacks.com/tag/nfv/" rel="tag">NFV</a>, <a href="https://webrtchacks.com/tag/nubomedia/" rel="tag">nubomedia</a>, <a href="https://webrtchacks.com/tag/openstack/" rel="tag">OpenStack</a>, <a href="https://webrtchacks.com/tag/virtualization/" rel="tag">virtualization</a>.			</div>
+						
+						<div class="entry-comments">
+				<span class="comments"><a href="https://webrtchacks.com/webrtc-media-servers-in-the-cloud/#comments">3 comments</a></span></div>
+					</div><!-- entry-meta -->
+
+	</div><!-- end title -->
+
+	<div class="entry-content">
+		<p>Media servers, server-side media handling&nbsp;devices, continue to be a popular&nbsp;topic of discussion in WebRTC. One reason for this because they are the most complex elements in a VoIP architecture and that lends itself to differing approaches and misunderstandings. Putting WebRTC media servers in the cloud and reliably scaling them is &nbsp;even harder. Fortunately there are several community experts with deep expertise in this domain to help. One of those experts who has always been happy to share his learnings is past webrtcHacks guest author <a href="https://webrtchacks.com/kurento/">Luis López Fernández</a>.</p>
+<p>Luis&nbsp;is&nbsp;a professor at Rey Juan Carlos University, founder of the open source&nbsp;<a href="http://www.kurento.org/">kurento.org</a>&nbsp;and&nbsp;<a href="http://www.nubomedia.eu/">nubomedia.org</a>&nbsp;projects, and now has started a commercial company around some of these technologies.</p>
+<p>Warning: there is a ton of content in this post. It is not a quick read, but you will come away educated on this topic with great&nbsp;practical advice from years of research. Read on&nbsp;for topics including:</p>
+<ul>
+<li>How media servers are different than common cloud elements</li>
+<li>What NFV is and why you don’t really need to worry about it</li>
+<li>Virtual Machines vs. containers (i.e. Docker)</li>
+<li>Dealing with virtualization when you need real-time</li>
+<li>Scalability metrics for&nbsp;RTC applications</li>
+<li>Debugging in the cloud</li>
+</ul>
+<p>Have at it!</p>
+<p>{“editor”, “<a title="Chad Hart" href="http://webrtchacks.com/about/chad/">chad hart</a>“}</p>
+<p>&nbsp;</p>
+<p><a title="Clouds" href="https://www.flickr.com/photos/alan-light/3720817095/in/photolist-6ENahT-chG34U-r6AJDw-9RqBfq-6EkWKb-qa9JW5-cYnRhu-bDD429-btVjYP-dBWax5-dBQEHi-8z4o7E-dBW36A-a3Vm6z-nFtTSu-o8gRJU-pd9VU2-6ESjXj-7zddaw-8utkqo-dBR9yP-5vLnQy-dB76qJ-2VX6p1-6h3qSr-5DKkDE-8NfhjW-dBWB4A-dBQGWP-6HhYt9-2o6Djr-qa7FKg-fjev95-2VSDVn-jpYvQF-nQSDMY-5vLnQm-5vLnQs-f8pzP9-6EkVA1-abAGNh-cu3U8y-oWfQQ6-3yqWZ-3Z9HeN-zeAmL-6Ekjid-6Hw9G4-5UqSbr-buo6yi" data-flickr-embed="true"><img src="3720817095_74e8ef0c77_b.jpg" alt="Clouds" width="1024" height="768"></a></p>
+<p>&nbsp;</p>
+<h2>From WebRTC media servers to WebRTC clouds: our history</h2>
+<p>Five years ago we launched <a href="http://www.kurento.org/"><em>Kurento Media Server</em></a>: a stand-alone WebRTC modular media server (see the webrtcHacks&nbsp;post on this <a href="https://webrtchacks.com/kurento/">here</a>). Thanks to a growing&nbsp;open source community, Kurento rapidly gained traction. As developers were installing and using Kurento, we noticed an increasing interest for pushing it to the cloud. The demand for features such as autoscaling, configurability, runtime monitoring and dockerization skyrocketed, so we decided to evolve our technology towards the cloud. This materialized into&nbsp;<a href="http://www.nubomedia.eu/">NUBOMEDIA</a> and <a href="https://www.elasticrtc.com/">elasticRTC</a>. NUBOMEDIA is an open source PaaS (Platform as a Service) based on <a href="https://www.openstack.org/">OpenStack</a> and <a href="https://www.openshift.com/">OpenShift</a> that is specifically designed for hosting WebRTC applications. NUBOMEDIA is the result of a collaborative research project funded by the European Commission. In turn, elasticRTC is a commercial software&nbsp;stack exposing an elastic scalable version of Kurento through the <a href="https://aws.amazon.com/marketplace/pp/B01HD8W9CS/">AWS (Amazon Web Services) Marketplace</a>.</p>
+<p>NUBOMEDIA and elasticRTC share the objective: evolving Kurento into a WebRTC cloud. However, they follow quite different philosophies and technological approaches. The good point about this is that, having been involved in both, we have quite a broad view on the needs, problems and solutions associated to the cloudification of WebRTC infrastructures. In this post we try to explain our experience and lessons learnt during the process introducing a number of problems and the solutions and workarounds we’ve found for them.</p>
+<h2>Architecting WebRTC infrastructure in the cloud</h2>
+<p>The architecture of a WebRTC service is not much different than that of&nbsp;traditional web application. It can be understood as a three tiered system following the scheme depicted in Fig. 1.</p>
+<div id="attachment_2644" style="width: 5793px;" class="wp-caption alignnone"><a href="https://webrtchacks.com/wp-content/uploads/2016/09/fig1.png"><img class="wp-image-2644 size-full" src="fig1.png" alt="fig1" srcset="https://webrtchacks.com/wp-content/uploads/2016/09/fig1.png 5783w, https://webrtchacks.com/wp-content/uploads/2016/09/fig1-300x248.png 300w, https://webrtchacks.com/wp-content/uploads/2016/09/fig1-768x635.png 768w, https://webrtchacks.com/wp-content/uploads/2016/09/fig1-1024x847.png 1024w, https://webrtchacks.com/wp-content/uploads/2016/09/fig1-600x496.png 600w" sizes="(max-width: 5783px) 100vw, 5783px" width="5783" height="4783"></a><p class="wp-caption-text">Fig. 1. The architecture of a WebRTC system can be represented through a three-tiered model equivalent to the one of Web applications.</p></div>
+<p>WebRTC service“cloudification” consists of&nbsp;two layers:</p>
+<ol>
+<li>the Signaling layer (i.e. Application server) and the</li>
+<li>Media Services layer.</li>
+</ol>
+<p>Creating a cloud Application Server is not too complex and it can be carried out using standard cloud orchestration techniques as long as the application logic remains stateless.</p>
+<p>Cloudification of Media Services is harder as Media Servers are inherently stateful. This means that a client session cannot be moved easily among different media servers while the session is ongoing. Typical load-balancing and replication techniques that&nbsp;web applications rely on cannot simply be reused.</p>
+<h3>Media Resource Broker</h3>
+<p>Instead,&nbsp;network-based media servers use a special type of load balancer that keeps track of (at least part of) the session state. In the IETF, this is&nbsp;called a <strong>Media Resource Broker (MRB)</strong>. The concept of MRB was formally introduced in <a href="https://tools.ietf.org/html/rfc6917">RFC 6917</a> and, as illustrated on Fig. 2, has two main flavors: in-line and query; each having advantages and drawbacks.</p>
+<p>In addition to load-balancing, the MRB can&nbsp;also take care of other functions, such as:</p>
+<ul>
+<li>autoscaling – scaling-in and -out the media resources for adapting to the offered load</li>
+<li>resource provisioning – reserving, launching and managing the underlying computing infrastructures where the media servers execute</li>
+<li>deployment –&nbsp;performing the appropriate actions for deploying and managing the lifecycle of media server processes</li>
+<li>quality-of-service control –&nbsp;&nbsp;enforcing SLAs or other types of differentiated quality mechanisms</li>
+</ul>
+<p>Developing a MRB from scratch is a huge effort. One needs to design and implement&nbsp;many&nbsp;complex software pieces that coordinate interactions between the underlying cloud infrastructures, call signaling, &nbsp;and media servers. &nbsp;If you have millions of dollars in your pocket this might be your choice. However, if you don’t want to re-invent the wheel, there are existing technologies that you can leverage instead.</p>
+<div id="attachment_2646" style="width: 5635px;" class="wp-caption alignnone"><a href="https://webrtchacks.com/wp-content/uploads/2016/09/fig2.png"><img class="wp-image-2646 size-full" src="fig2.png" alt="Fig. 2. Common configurations for deploying Media Server (MS) instances in the cloud through a Media Resource Brokers (MRB) based architecture. In modern cloud deployments, in addition to load-balancing, the MRB must provide further additional services such as autoscaling, resource provisioning, resource deployment, SLA (Service Level Agreement) enforcement, etc." srcset="https://webrtchacks.com/wp-content/uploads/2016/09/fig2.png 5625w, https://webrtchacks.com/wp-content/uploads/2016/09/fig2-300x108.png 300w, https://webrtchacks.com/wp-content/uploads/2016/09/fig2-768x275.png 768w, https://webrtchacks.com/wp-content/uploads/2016/09/fig2-1024x367.png 1024w, https://webrtchacks.com/wp-content/uploads/2016/09/fig2-600x215.png 600w" sizes="(max-width: 5625px) 100vw, 5625px" width="5625" height="2016"></a><p class="wp-caption-text">Fig. 2. Common configurations for deploying Media Server (MS) instances in the cloud through a Media Resource Brokers (MRB) based architecture.</p></div>
+<h3>Network Function Virtualization</h3>
+<p>One of these is ETSI’s <a href="http://www.etsi.org/technologies-clusters/technologies/nfv">Network Function Virtualization</a> (NFV). NFV comprise a set of standards created with the aim of putting order in the clouds. NFV is mainly supported by telecommunication operators and has a strong bias towards satisfying telco-related needs. This is good enough for our objectives since&nbsp;the architecture of a typical WebRTC system is not too different to the architecture of any modern telecommunication infrastructure.</p>
+<h3>Acronym soup</h3>
+<p>In the NFV specification, the media server instances that are managed by the MRB (as shown on Fig. 2) comprise a so called Network Service. A Network Service is a set of orchestrated VNF (Virtual Network Functions). In our case, the Network Service has&nbsp;just one VNF. Each media server instance is a VNF instance. For launching a VNF you need to describe it through a VNF Descriptor (VNFD) that specifies how your VNF is to be deployed, managed, orchestrated and scaled. The component of the VNF architecture that process the VNFD is the NFVO (Network Function Virtual Orchestrator). It does it with the support of a VNFM (Virtual Network Function Manager) that performs all the appropriate operations enabling the deployment, provisioning, execution, scaling and SLA (Service Level Agreement) management of a VNF.</p>
+<p>The nice part of NFV is that, once you have described how your NFV behaves, the NFVO and VNFM will take care of executing the appropriate actions for enforcing the described behavior. For this, these components fully abstract the underlying cloud infrastructure. Once setup, you don’t need to worry about the specific details on how the underlying IaaS (Infrastructure as a Service) is managing or exposing the computing and networking resources.</p>
+<h3>Now forget the acronyms</h3>
+<p>As you can appreciate after this brief explanation, the NVF standard is not trivial. &nbsp;You’ll need first to digest the alphabet soup of all of its acronyms before you can start to understand it. Fortunately,&nbsp;the good news is that &nbsp;you don’t really need to mind all these gory details since&nbsp;there are open source software NFV implementations that have done&nbsp;the hard work already.</p>
+<div id="attachment_2647" style="width: 608px;" class="wp-caption alignnone"><a href="https://webrtchacks.com/wp-content/uploads/2016/09/fig3.png"><img class="wp-image-2647 size-full" src="fig3.png" alt="Fig. 3. NFV (Network Function Virtualization) comprise a set of standards specifying how to deploy, manage and orchestrate virtual network services. Following the NVF specification, a cloud WebRTC media plane can be seen as a network service comprising one virtual network function. Thanks to this, a WebRTC MRB can be implemented as a combination of a NFVO (Network Function Virtual Orchestrator) and a VNFM (Virtual Network Function Manager)." srcset="https://webrtchacks.com/wp-content/uploads/2016/09/fig3.png 598w, https://webrtchacks.com/wp-content/uploads/2016/09/fig3-300x227.png 300w" sizes="(max-width: 598px) 100vw, 598px" width="598" height="452"></a><p class="wp-caption-text">Fig. 3. NFV (Network Function Virtualization) comprise a set of standards specifying how to deploy, manage and orchestrate virtual network services. Following the NVF specification, a cloud WebRTC media plane can be seen as a network service comprising one virtual network function.</p></div>
+<p>NUBOMEDIA&nbsp;is&nbsp;a WebRTC PaaS fully based on NFV. For this, we have used <a href="http://openbaton.github.io/">OpenBaton</a>: a full implementation of the NFVO/VNFM specification that provides all the MRB features required for managing Kurento Media Server instances in an scalable way. As a result, NUBOMEDIA developers do not need to worry about any of the low level details of the media plane. When they need a media server instance, OpenBaton just makes sure it is ready. (See the&nbsp;<a href="http://www.nubomedia.eu/page/deliverables#d3_2">NUBOMEDIA official documentation</a>&nbsp;for more details).</p>
+<h2>Virtualization vs containers: the problem of real-time performance</h2>
+<p>Containers are one of the major innovations in cloud computing with <a href="http://www.docker.com/">Docker</a>&nbsp;in particular. Containers bring many&nbsp;advantages thanks to the vast amount of service images and orchestration tools that have emerged during the last couple of years. In addition, the ability of Docker to work closer to metal brings performance advantages that may be relevant for services that, like WebRTC, are very sensitive to real-time. However, containers are still an experimental feature and many cloud vendors do not fully support their complete feature-sets.</p>
+<p>Many developers wonder whether it is worth using&nbsp;containers for their WebRTC services. &nbsp;Unfortunately, performance&nbsp;data comparing virtual machines and docker&nbsp;is not widely available and obtaining it is quite a complex process.</p>
+<div id="attachment_2648" style="width: 2278px;" class="wp-caption alignnone"><a href="https://webrtchacks.com/wp-content/uploads/2016/09/fig4.png"><img class="wp-image-2648 size-full" src="fig4.png" alt="fig4 As it can be observed, containers are a lightweight solution that can directly execute on bare-metal and that provides relevant improvements in terms of resource utilization and performance." srcset="https://webrtchacks.com/wp-content/uploads/2016/09/fig4.png 2268w, https://webrtchacks.com/wp-content/uploads/2016/09/fig4-300x180.png 300w, https://webrtchacks.com/wp-content/uploads/2016/09/fig4-768x462.png 768w, https://webrtchacks.com/wp-content/uploads/2016/09/fig4-1024x616.png 1024w, https://webrtchacks.com/wp-content/uploads/2016/09/fig4-600x361.png 600w" sizes="(max-width: 2268px) 100vw, 2268px" width="2268" height="1364"></a><p class="wp-caption-text">Fig. 4. Cloud architecture based on traditional virtualization (left) versus cloud architecture based on containers (right).</p></div>
+<p>To shed some light, we performed several experiments comparing different performance and QoS (Quality of Service) metrics of WebRTC infrastructures&nbsp;for the&nbsp;NUBOMEDIA project. These experiments are based on an OpenStack IaaS. We looked at two scenarios.</p>
+<h4>Media routing</h4>
+<p>In the first&nbsp;scenario we looked at typical conditions&nbsp;for&nbsp;multiparty video applications that use a SFU (Selective Forwarding Unit). We deployed a SFU capability into a NUBOMEDIA cloud and added WebRTC legs sequentially creating a one-to-many WebRTC communication topology (i.e. one single master stream is routed to many receivers). We added one WebRTC leg per second during 50 seconds. For comparison, we&nbsp;deployed into a KVM-based virtual computing node holding one vCPU core and on a Docker container holding one CPU core.</p>
+<h4>Media transcoding</h4>
+<p>In this test&nbsp;we looked at typical conditions requiring transcoding such as&nbsp;media mixing scenarios and codec interoperability. Here we deployed an application performing VP8 decoding followed by a VP8 re-encoding. &nbsp;We added one WebRTC session to the application until we arrive at&nbsp;15 transcodings in 15 seconds. For comparison here&nbsp;we use a&nbsp;KVM-based virtual computing node holding 4 vCPU cores and a Docker container holding 4 CPU cores.</p>
+<h3>Test Results</h3>
+<p>Both tests were&nbsp;performed on an OpenStack (Kilo). The Physical machines are based on an Intel Xeon E5345 @2.3GHz x 2 configuration. &nbsp;We looked at the following&nbsp;every second for&nbsp;53 seconds:</p>
+<ul>
+<li>CPU utilization of the WebRTC infrastructure (i.e. the Kurento process)</li>
+<li>Average cloud latency (i.e. time elapsed since a given media frame gets into the WebRTC cloud until that frame gets out of it).</li>
+</ul>
+<p>The results of these experiments are illustrated in Fig. 5, in which we depict KVM (blue) and Docker (orange) CPU and cloud latency for the two scenarios.</p>
+<p>As it can be observed, <strong>Docker outperforms KVM in all cases.</strong></p>
+<p><a href="https://webrtchacks.com/wp-content/uploads/2016/09/fig5-top-left.png"><img class="alignnone size-large wp-image-2649" src="fig5-top-left-1024x768.png" alt="fig5-top-left" srcset="https://webrtchacks.com/wp-content/uploads/2016/09/fig5-top-left-1024x768.png 1024w, https://webrtchacks.com/wp-content/uploads/2016/09/fig5-top-left-300x225.png 300w, https://webrtchacks.com/wp-content/uploads/2016/09/fig5-top-left-768x576.png 768w, https://webrtchacks.com/wp-content/uploads/2016/09/fig5-top-left-600x450.png 600w, https://webrtchacks.com/wp-content/uploads/2016/09/fig5-top-left.png 1418w" sizes="(max-width: 627px) 100vw, 627px" width="627" height="470"></a><a href="https://webrtchacks.com/wp-content/uploads/2016/09/fig5-top-right.png"><img class="alignnone size-large wp-image-2650" src="fig5-top-right-1024x768.png" alt="fig5-top-right" srcset="https://webrtchacks.com/wp-content/uploads/2016/09/fig5-top-right-1024x768.png 1024w, https://webrtchacks.com/wp-content/uploads/2016/09/fig5-top-right-300x225.png 300w, https://webrtchacks.com/wp-content/uploads/2016/09/fig5-top-right-768x576.png 768w, https://webrtchacks.com/wp-content/uploads/2016/09/fig5-top-right-600x450.png 600w, https://webrtchacks.com/wp-content/uploads/2016/09/fig5-top-right.png 1418w" sizes="(max-width: 627px) 100vw, 627px" width="627" height="470"></a></p>
+<p><a href="https://webrtchacks.com/wp-content/uploads/2016/09/fig5-bottom-right.png"><img class="wp-image-2652 size-large" src="fig5-bottom-right-1024x768.png" alt="Fig. 5. Comparison between Docker and KMV performance for a scenario implementing a media routing capability (top) and for a scenario implementing a media transcoding capability (bottom). For media routing, we use a Kurento SFU for creating a one-to-many communication topology through which a master WebRTC VP8 stream is routed to many receivers without modifying the media encoding. As it can be observed (top-left) the Docker CPU consumption of the Kurento process is consistently under the KMV CPU utilization, being the Docker average performance improvement of around 20%. Docker also outperforms KMV in terms of cloud latency (top-right) meaning that the time a media packet takes to get through the SFU is around 15% less with Docker. For media transcoding, we use a Kurento process performing first a VP8 decoding and then a VP8 encoding on every WebRTC back-to-back session. We add 15 WebRTC sessions with a separation of 1 second among each other. As it can be observed (bottom-left), both the Docker and the KMV CPU average CPU utilization skyrockets (100% is the maximum possible utilization) and both machines get overloaded. However, the Docker CPU utilization seems to be lower and more stable when high levels of overload are present. It is remarkable that, when the overload persists, KVM CPU utilization of the Kurento process decreases, which indicates that the operating system is requiring more CPU resources just for maintaining the process running. From the latency perspective (bottom-right), clearly the KVM machine gets overloaded long before the Docker one, that seems to be able to generate bigger transcoding throughput and to maintain bounded the internal media server queues for higher loads. As a result, we can conclude that Docker outperforms KVM in all scenarios." srcset="https://webrtchacks.com/wp-content/uploads/2016/09/fig5-bottom-right-1024x768.png 1024w, https://webrtchacks.com/wp-content/uploads/2016/09/fig5-bottom-right-300x225.png 300w, https://webrtchacks.com/wp-content/uploads/2016/09/fig5-bottom-right-768x576.png 768w, https://webrtchacks.com/wp-content/uploads/2016/09/fig5-bottom-right-600x450.png 600w, https://webrtchacks.com/wp-content/uploads/2016/09/fig5-bottom-right.png 1418w" sizes="(max-width: 627px) 100vw, 627px" width="627" height="470"></a></p>
+<p><a href="https://webrtchacks.com/wp-content/uploads/2016/09/fig5-bottom-left.png"><img class="alignnone size-large wp-image-2651" src="fig5-bottom-left-1024x768.png" alt="fig5-bottom-left" srcset="https://webrtchacks.com/wp-content/uploads/2016/09/fig5-bottom-left-1024x768.png 1024w, https://webrtchacks.com/wp-content/uploads/2016/09/fig5-bottom-left-300x225.png 300w, https://webrtchacks.com/wp-content/uploads/2016/09/fig5-bottom-left-768x576.png 768w, https://webrtchacks.com/wp-content/uploads/2016/09/fig5-bottom-left-600x450.png 600w, https://webrtchacks.com/wp-content/uploads/2016/09/fig5-bottom-left.png 1418w" sizes="(max-width: 627px) 100vw, 627px" width="627" height="470"></a>.</p>
+<h5>Fig. 5. Comparison between Docker and KMV performance for a scenario implementing a media routing capability (top) and for a scenario implementing a media transcoding capability (bottom). For media routing, we use a Kurento SFU for creating a one-to-many communication topology through which a master WebRTC VP8 stream is routed to many receivers without modifying the media encoding. As it can be observed (top-left) the Docker CPU consumption of the Kurento process is consistently under the KVM CPU utilization,&nbsp;with an&nbsp;average performance improvement on Docker of&nbsp;around 20%. Docker also outperforms KMV in terms of cloud latency (top-right) meaning that the time a media packet takes to get through the SFU is around 15% less with Docker. For media transcoding, we use a Kurento process performing first a VP8 decoding and then a VP8 encoding on every WebRTC back-to-back session. We add 15 WebRTC sessions with a separation of 1 second among each other. As it can be observed (bottom-left), both the Docker and the KMV CPU average CPU utilization skyrockets (100% is the maximum possible utilization) and both machines get overloaded. However, the Docker CPU utilization seems to be lower and more stable when high levels of overload are present. It is remarkable that, when the overload persists, KVM CPU utilization of the Kurento process decreases, which indicates that the operating system is requiring more CPU resources just for keeping&nbsp;the process running. From the latency perspective (bottom-right), clearly the KVM machine gets overloaded long before the Docker one. Docker&nbsp;seems to be able to generate bigger transcoding throughput and to maintain bounded the internal media server queues for higher loads. As a result, we can conclude that Docker outperforms KVM in all scenarios.</h5>
+<p>A&nbsp;very relevant difference you will find between Docker and KVM is &nbsp;machine startup time. <strong>While in Docker launching a new container takes less than 2 seconds, the startup time of a KVM virtual machine is typically over 1 minute</strong>. This makes a significant difference at the time of absorbing load peaks through autoscaling mechanisms.</p>
+<h3>Docker wins, but…</h3>
+<p>Hence, from a technical perspective, Docker seems to be a better solution than traditional virtualization hypervisors such as KVM for the deployment of WebRTC services. However, from a practical perspective there are still limitations. For example, in AWS (and at the time of this writing) Docker can only be used on top of XEN, which means that most of the performance improvements above described disappear (which&nbsp;is why we decided not to use Docker for elasticRTC).</p>
+<p>Using Docker on top of bare-metal in OpenStack is possible&nbsp;which we&nbsp;did in the NUBOMEDIA project. However, again, we needed to solve a number of issues. The most relevant one is that <a href="https://github.com/openstack/nova-docker">nova-docker</a>, which is the Docker hypervisor driver for OpenStack Nova Compute, is immature and is missing some important features. In particular, the inability of nova-docker to made available in runtime new Docker images to all computing nodes. Solving this issue required that we&nbsp;manually login on all such computing nodes and run 
+			<span id="crayon-592797c195f03517121500" class="crayon-syntax crayon-syntax-inline  crayon-theme-vs2012 crayon-theme-vs2012-inline crayon-font-monaco" style="line-height: 15px !important; font-size: 12px !important;"><span class="crayon-pre crayon-code" style="line-height: 15px !important; font-size: 12px !important; -moz-tab-size: 4;"><span class="crayon-e">docker </span><span class="crayon-e">pull </span><span class="crayon-v">image</span><span class="crayon-o">-</span><span class="crayon-v">name</span></span></span>&nbsp;&nbsp;in order to have the image available. Due to this, we needed to patch nova-docker with a python application that pulls all Docker images from a public repository on all compute nodes that run Docker as hypervisor. This patch can be found in the <a href="https://github.com/usv-public/nubomedia-nova-docker">NUBOMEDIA GitHub repository</a>.</p>
+<h2>Virtualized networks</h2>
+<p>Network virtualization is a very complex topic. I’m not an expert on it so I will not be able to provide a complete&nbsp;explanation on all the how’s and why’s. However, I can provide you some intuitions illustrating why virtualized networks are THE problem when trying to obtain optimal QoE in your WebRTC cloud deployments.</p>
+<p>At its core, virtual computing is about letting software pretend to be hardware. Virtual networks are the same except software plays the role of networking hardware like&nbsp;network cards, switches, routers, etc. When a packet travels on a virtual network it gets through virtual interfaces, virtual switches and virtual routers that emulate the behavior of their hardware counterparts. Although many of such virtual components may operate with hardware support, virtual networks are still far from the performance offered by their physical counterparts.</p>
+<h3>Testing your throughput</h3>
+<p>Let’s concentrate on a specific network performance metric that is very relevant for WebRTC: throughput. The throughput can be defined as the maximum bandwidth for communicating. A common tool for measuring throughput is the comand line tool&nbsp;<em>iperf.</em></p>
+<p>To start, I’m going to use <em>iperf</em> for measuring the throughput between two laptops that I connect through a physical 100Base-T Ethernet network. As UDP throughput is very sensitive to packet size, I’m going to assume a WebRTC scenario in which I perform only audio transmission. Roughly speaking, a WebRTC audio packet is around 100Bytes. Hence, I’ll use that packet size. I perform the experiment by executing in one of my laptops (with IP 192.168.56.123)</p><!-- Crayon Syntax Highlighter v_2.7.2_beta -->
+
+		<div id="crayon-592797c195f16571635621" class="crayon-syntax crayon-theme-vs2012 crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" no-popup minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" show" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="Toggle Line Numbers"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="Copy"><div class="crayon-button-icon"></div></div></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea class="crayon-plain print-no" data-settings="dblclick" readonly="" style="-moz-tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;" wrap="soft">iperf -s –u -p 45678</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table" style="">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-592797c195f16571635621-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size: 4;"><div class="crayon-line" id="crayon-592797c195f16571635621-1"><span class="crayon-v">iperf</span><span class="crayon-h"> </span><span class="crayon-o">-</span><span class="crayon-i">s</span><span class="crayon-h"> </span>–<span class="crayon-v">u</span><span class="crayon-h"> </span><span class="crayon-o">-</span><span class="crayon-i">p</span><span class="crayon-h"> </span><span class="crayon-cn">45678</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0003 seconds] -->
+<p>Then, on the other:</p><!-- Crayon Syntax Highlighter v_2.7.2_beta -->
+
+		<div id="crayon-592797c195f1c400036786" class="crayon-syntax crayon-theme-vs2012 crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" no-popup minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" show" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="Toggle Line Numbers"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="Copy"><div class="crayon-button-icon"></div></div></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea class="crayon-plain print-no" data-settings="dblclick" readonly="" style="-moz-tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;" wrap="soft">iperf -c 192.168.56.123 -u -p 45678 -t 10 -l 100 -b 1000M
+------------------------------------------------------------
+Client connecting to 192.168.56.123, UDP port 45678
+Sending 100 byte datagrams
+UDP buffer size: 9.00 KByte (default)
+------------------------------------------------------------
+[&nbsp; 4] local 192.168.56.132 port 63661 connected with 192.168.56.123 port 45678
+[ ID] Interval&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Transfer&nbsp;&nbsp;&nbsp;&nbsp; Bandwidth
+[&nbsp; 4]&nbsp; 0.0-10.0 sec&nbsp; 57.5 MBytes&nbsp; 48.2 Mbits/sec
+[&nbsp; 4] Sent 603084 datagrams
+[&nbsp; 4] Server Report:
+[&nbsp; 4]&nbsp; 0.0-10.0 sec&nbsp; 57.5 MBytes&nbsp; 48.2 Mbits/sec&nbsp;&nbsp; 0.405 ms&nbsp; 554/603083 (0.092%)
+[&nbsp; 4]&nbsp; 0.0-10.0 sec&nbsp; 1 datagrams received out-of-order</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table" style="">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-592797c195f1c400036786-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-592797c195f1c400036786-2">2</div><div class="crayon-num" data-line="crayon-592797c195f1c400036786-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-592797c195f1c400036786-4">4</div><div class="crayon-num" data-line="crayon-592797c195f1c400036786-5">5</div><div class="crayon-num crayon-striped-num" data-line="crayon-592797c195f1c400036786-6">6</div><div class="crayon-num" data-line="crayon-592797c195f1c400036786-7">7</div><div class="crayon-num crayon-striped-num" data-line="crayon-592797c195f1c400036786-8">8</div><div class="crayon-num" data-line="crayon-592797c195f1c400036786-9">9</div><div class="crayon-num crayon-striped-num" data-line="crayon-592797c195f1c400036786-10">10</div><div class="crayon-num" data-line="crayon-592797c195f1c400036786-11">11</div><div class="crayon-num crayon-striped-num" data-line="crayon-592797c195f1c400036786-12">12</div><div class="crayon-num" data-line="crayon-592797c195f1c400036786-13">13</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size: 4;"><div class="crayon-line" id="crayon-592797c195f1c400036786-1"><span class="crayon-v">iperf</span><span class="crayon-h"> </span><span class="crayon-o">-</span><span class="crayon-i">c</span><span class="crayon-h"> </span><span class="crayon-cn">192.168.56.123</span><span class="crayon-h"> </span><span class="crayon-o">-</span><span class="crayon-v">u</span><span class="crayon-h"> </span><span class="crayon-o">-</span><span class="crayon-i">p</span><span class="crayon-h"> </span><span class="crayon-cn">45678</span><span class="crayon-h"> </span><span class="crayon-o">-</span><span class="crayon-i">t</span><span class="crayon-h"> </span><span class="crayon-cn">10</span><span class="crayon-h"> </span><span class="crayon-o">-</span><span class="crayon-i">l</span><span class="crayon-h"> </span><span class="crayon-cn">100</span><span class="crayon-h"> </span><span class="crayon-o">-</span><span class="crayon-i">b</span><span class="crayon-h"> </span><span class="crayon-cn">1000M</span></div><div class="crayon-line crayon-striped-line" id="crayon-592797c195f1c400036786-2"><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span></div><div class="crayon-line" id="crayon-592797c195f1c400036786-3"><span class="crayon-e">Client </span><span class="crayon-e">connecting </span><span class="crayon-st">to</span><span class="crayon-h"> </span><span class="crayon-cn">192.168.56.123</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-e">UDP </span><span class="crayon-i">port</span><span class="crayon-h"> </span><span class="crayon-cn">45678</span></div><div class="crayon-line crayon-striped-line" id="crayon-592797c195f1c400036786-4"><span class="crayon-i">Sending</span><span class="crayon-h"> </span><span class="crayon-cn">100</span><span class="crayon-h"> </span><span class="crayon-t">byte</span><span class="crayon-h"> </span><span class="crayon-e">datagrams</span></div><div class="crayon-line" id="crayon-592797c195f1c400036786-5"><span class="crayon-e">UDP </span><span class="crayon-e">buffer </span><span class="crayon-v">size</span><span class="crayon-o">:</span><span class="crayon-h"> </span><span class="crayon-cn">9.00</span><span class="crayon-h"> </span><span class="crayon-e">KByte</span><span class="crayon-h"> </span><span class="crayon-sy">(</span><span class="crayon-st">default</span><span class="crayon-sy">)</span></div><div class="crayon-line crayon-striped-line" id="crayon-592797c195f1c400036786-6"><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span></div><div class="crayon-line" id="crayon-592797c195f1c400036786-7"><span class="crayon-sy">[</span>&nbsp;<span class="crayon-h"> </span><span class="crayon-cn">4</span><span class="crayon-sy">]</span><span class="crayon-h"> </span><span class="crayon-i">local</span><span class="crayon-h"> </span><span class="crayon-cn">192.168.56.132</span><span class="crayon-h"> </span><span class="crayon-i">port</span><span class="crayon-h"> </span><span class="crayon-cn">63661</span><span class="crayon-h"> </span><span class="crayon-e">connected </span><span class="crayon-i">with</span><span class="crayon-h"> </span><span class="crayon-cn">192.168.56.123</span><span class="crayon-h"> </span><span class="crayon-i">port</span><span class="crayon-h"> </span><span class="crayon-cn">45678</span></div><div class="crayon-line crayon-striped-line" id="crayon-592797c195f1c400036786-8"><span class="crayon-sy">[</span><span class="crayon-h"> </span><span class="crayon-v">ID</span><span class="crayon-sy">]</span><span class="crayon-h"> </span><span class="crayon-i">Interval</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="crayon-h"> </span><span class="crayon-i">Transfer</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="crayon-h"> </span><span class="crayon-i">Bandwidth</span></div><div class="crayon-line" id="crayon-592797c195f1c400036786-9"><span class="crayon-sy">[</span>&nbsp;<span class="crayon-h"> </span><span class="crayon-cn">4</span><span class="crayon-sy">]</span>&nbsp;<span class="crayon-h"> </span><span class="crayon-cn">0.0</span><span class="crayon-o">-</span><span class="crayon-cn">10.0</span><span class="crayon-h"> </span><span class="crayon-i">sec</span>&nbsp;<span class="crayon-h"> </span><span class="crayon-cn">57.5</span><span class="crayon-h"> </span><span class="crayon-i">MBytes</span>&nbsp;<span class="crayon-h"> </span><span class="crayon-cn">48.2</span><span class="crayon-h"> </span><span class="crayon-v">Mbits</span><span class="crayon-o">/</span><span class="crayon-i">sec</span></div><div class="crayon-line crayon-striped-line" id="crayon-592797c195f1c400036786-10"><span class="crayon-sy">[</span>&nbsp;<span class="crayon-h"> </span><span class="crayon-cn">4</span><span class="crayon-sy">]</span><span class="crayon-h"> </span><span class="crayon-i">Sent</span><span class="crayon-h"> </span><span class="crayon-cn">603084</span><span class="crayon-h"> </span><span class="crayon-i">datagrams</span></div><div class="crayon-line" id="crayon-592797c195f1c400036786-11"><span class="crayon-sy">[</span>&nbsp;<span class="crayon-h"> </span><span class="crayon-cn">4</span><span class="crayon-sy">]</span><span class="crayon-h"> </span><span class="crayon-e">Server </span><span class="crayon-v">Report</span><span class="crayon-o">:</span></div><div class="crayon-line crayon-striped-line" id="crayon-592797c195f1c400036786-12"><span class="crayon-sy">[</span>&nbsp;<span class="crayon-h"> </span><span class="crayon-cn">4</span><span class="crayon-sy">]</span>&nbsp;<span class="crayon-h"> </span><span class="crayon-cn">0.0</span><span class="crayon-o">-</span><span class="crayon-cn">10.0</span><span class="crayon-h"> </span><span class="crayon-i">sec</span>&nbsp;<span class="crayon-h"> </span><span class="crayon-cn">57.5</span><span class="crayon-h"> </span><span class="crayon-i">MBytes</span>&nbsp;<span class="crayon-h"> </span><span class="crayon-cn">48.2</span><span class="crayon-h"> </span><span class="crayon-v">Mbits</span><span class="crayon-o">/</span><span class="crayon-i">sec</span>&nbsp;&nbsp;<span class="crayon-h"> </span><span class="crayon-cn">0.405</span><span class="crayon-h"> </span><span class="crayon-i">ms</span>&nbsp;<span class="crayon-h"> </span><span class="crayon-cn">554</span><span class="crayon-o">/</span><span class="crayon-cn">603083</span><span class="crayon-h"> </span><span class="crayon-sy">(</span><span class="crayon-cn">0.092</span><span class="crayon-o">%</span><span class="crayon-sy">)</span></div><div class="crayon-line" id="crayon-592797c195f1c400036786-13"><span class="crayon-sy">[</span>&nbsp;<span class="crayon-h"> </span><span class="crayon-cn">4</span><span class="crayon-sy">]</span>&nbsp;<span class="crayon-h"> </span><span class="crayon-cn">0.0</span><span class="crayon-o">-</span><span class="crayon-cn">10.0</span><span class="crayon-h"> </span><span class="crayon-i">sec</span>&nbsp;<span class="crayon-h"> </span><span class="crayon-cn">1</span><span class="crayon-h"> </span><span class="crayon-e">datagrams </span><span class="crayon-e">received </span><span class="crayon-v">out</span><span class="crayon-o">-</span><span class="crayon-v">of</span><span class="crayon-o">-</span><span class="crayon-v">order</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0040 seconds] -->
+<p>Not too bad. This means that my two physical machines can communicate WebRTC audio at around 48.2Mbps. Considering that a typical WebRTC audio session consumes around 40Kbps, my physical network could support up to 48.2/0.04=1,205 concurrent WebRTC audio sessions, which is a reasonable number of concurrent for a media server.</p>
+<p>Now, let’s repeat the experiment replacing one of the physical laptops with a VirtualBox node, so that I establish a physical-to-virtual link. The result is the following:</p><!-- Crayon Syntax Highlighter v_2.7.2_beta -->
+
+		<div id="crayon-592797c195f22527929630" class="crayon-syntax crayon-theme-vs2012 crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" no-popup minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" show" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="Toggle Line Numbers"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="Copy"><div class="crayon-button-icon"></div></div></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea class="crayon-plain print-no" data-settings="dblclick" readonly="" style="-moz-tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;" wrap="soft">iperf -c 192.168.56.123 -u -p 45678 -t 10 -l 100 -b 100M
+------------------------------------------------------------
+Client connecting to 192.168.56.123, UDP port 45678
+Sending 100 byte datagrams
+UDP buffer size:&nbsp; 208 KByte (default)
+------------------------------------------------------------
+[&nbsp; 3] local 10.0.2.15 port 42909 connected with 192.168.56.123 port 45678
+[ ID] Interval&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Transfer&nbsp;&nbsp;&nbsp;&nbsp; Bandwidth
+[&nbsp; 3]&nbsp; 0.0-10.0 sec&nbsp; 24.9 MBytes&nbsp; 20.9 Mbits/sec
+[&nbsp; 3] Sent 261409 datagrams
+[&nbsp; 3] Server Report:
+[&nbsp; 3]&nbsp; 0.0-10.0 sec&nbsp; 24.9 MBytes&nbsp; 20.9 Mbits/sec&nbsp;&nbsp; 0.055 ms&nbsp;&nbsp;&nbsp; 6/261408 (0.0023%)
+[&nbsp; 3]&nbsp; 0.0-10.0 sec&nbsp; 1 datagrams received out-of-order</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table" style="">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-592797c195f22527929630-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-592797c195f22527929630-2">2</div><div class="crayon-num" data-line="crayon-592797c195f22527929630-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-592797c195f22527929630-4">4</div><div class="crayon-num" data-line="crayon-592797c195f22527929630-5">5</div><div class="crayon-num crayon-striped-num" data-line="crayon-592797c195f22527929630-6">6</div><div class="crayon-num" data-line="crayon-592797c195f22527929630-7">7</div><div class="crayon-num crayon-striped-num" data-line="crayon-592797c195f22527929630-8">8</div><div class="crayon-num" data-line="crayon-592797c195f22527929630-9">9</div><div class="crayon-num crayon-striped-num" data-line="crayon-592797c195f22527929630-10">10</div><div class="crayon-num" data-line="crayon-592797c195f22527929630-11">11</div><div class="crayon-num crayon-striped-num" data-line="crayon-592797c195f22527929630-12">12</div><div class="crayon-num" data-line="crayon-592797c195f22527929630-13">13</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size: 4;"><div class="crayon-line" id="crayon-592797c195f22527929630-1"><span class="crayon-v">iperf</span><span class="crayon-h"> </span><span class="crayon-o">-</span><span class="crayon-i">c</span><span class="crayon-h"> </span><span class="crayon-cn">192.168.56.123</span><span class="crayon-h"> </span><span class="crayon-o">-</span><span class="crayon-v">u</span><span class="crayon-h"> </span><span class="crayon-o">-</span><span class="crayon-i">p</span><span class="crayon-h"> </span><span class="crayon-cn">45678</span><span class="crayon-h"> </span><span class="crayon-o">-</span><span class="crayon-i">t</span><span class="crayon-h"> </span><span class="crayon-cn">10</span><span class="crayon-h"> </span><span class="crayon-o">-</span><span class="crayon-i">l</span><span class="crayon-h"> </span><span class="crayon-cn">100</span><span class="crayon-h"> </span><span class="crayon-o">-</span><span class="crayon-i">b</span><span class="crayon-h"> </span><span class="crayon-cn">100M</span></div><div class="crayon-line crayon-striped-line" id="crayon-592797c195f22527929630-2"><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span></div><div class="crayon-line" id="crayon-592797c195f22527929630-3"><span class="crayon-e">Client </span><span class="crayon-e">connecting </span><span class="crayon-st">to</span><span class="crayon-h"> </span><span class="crayon-cn">192.168.56.123</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-e">UDP </span><span class="crayon-i">port</span><span class="crayon-h"> </span><span class="crayon-cn">45678</span></div><div class="crayon-line crayon-striped-line" id="crayon-592797c195f22527929630-4"><span class="crayon-i">Sending</span><span class="crayon-h"> </span><span class="crayon-cn">100</span><span class="crayon-h"> </span><span class="crayon-t">byte</span><span class="crayon-h"> </span><span class="crayon-e">datagrams</span></div><div class="crayon-line" id="crayon-592797c195f22527929630-5"><span class="crayon-e">UDP </span><span class="crayon-e">buffer </span><span class="crayon-v">size</span><span class="crayon-o">:</span>&nbsp;<span class="crayon-h"> </span><span class="crayon-cn">208</span><span class="crayon-h"> </span><span class="crayon-e">KByte</span><span class="crayon-h"> </span><span class="crayon-sy">(</span><span class="crayon-st">default</span><span class="crayon-sy">)</span></div><div class="crayon-line crayon-striped-line" id="crayon-592797c195f22527929630-6"><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span><span class="crayon-o">--</span></div><div class="crayon-line" id="crayon-592797c195f22527929630-7"><span class="crayon-sy">[</span>&nbsp;<span class="crayon-h"> </span><span class="crayon-cn">3</span><span class="crayon-sy">]</span><span class="crayon-h"> </span><span class="crayon-i">local</span><span class="crayon-h"> </span><span class="crayon-cn">10.0.2.15</span><span class="crayon-h"> </span><span class="crayon-i">port</span><span class="crayon-h"> </span><span class="crayon-cn">42909</span><span class="crayon-h"> </span><span class="crayon-e">connected </span><span class="crayon-i">with</span><span class="crayon-h"> </span><span class="crayon-cn">192.168.56.123</span><span class="crayon-h"> </span><span class="crayon-i">port</span><span class="crayon-h"> </span><span class="crayon-cn">45678</span></div><div class="crayon-line crayon-striped-line" id="crayon-592797c195f22527929630-8"><span class="crayon-sy">[</span><span class="crayon-h"> </span><span class="crayon-v">ID</span><span class="crayon-sy">]</span><span class="crayon-h"> </span><span class="crayon-i">Interval</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="crayon-h"> </span><span class="crayon-i">Transfer</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="crayon-h"> </span><span class="crayon-i">Bandwidth</span></div><div class="crayon-line" id="crayon-592797c195f22527929630-9"><span class="crayon-sy">[</span>&nbsp;<span class="crayon-h"> </span><span class="crayon-cn">3</span><span class="crayon-sy">]</span>&nbsp;<span class="crayon-h"> </span><span class="crayon-cn">0.0</span><span class="crayon-o">-</span><span class="crayon-cn">10.0</span><span class="crayon-h"> </span><span class="crayon-i">sec</span>&nbsp;<span class="crayon-h"> </span><span class="crayon-cn">24.9</span><span class="crayon-h"> </span><span class="crayon-i">MBytes</span>&nbsp;<span class="crayon-h"> </span><span class="crayon-cn">20.9</span><span class="crayon-h"> </span><span class="crayon-v">Mbits</span><span class="crayon-o">/</span><span class="crayon-i">sec</span></div><div class="crayon-line crayon-striped-line" id="crayon-592797c195f22527929630-10"><span class="crayon-sy">[</span>&nbsp;<span class="crayon-h"> </span><span class="crayon-cn">3</span><span class="crayon-sy">]</span><span class="crayon-h"> </span><span class="crayon-i">Sent</span><span class="crayon-h"> </span><span class="crayon-cn">261409</span><span class="crayon-h"> </span><span class="crayon-i">datagrams</span></div><div class="crayon-line" id="crayon-592797c195f22527929630-11"><span class="crayon-sy">[</span>&nbsp;<span class="crayon-h"> </span><span class="crayon-cn">3</span><span class="crayon-sy">]</span><span class="crayon-h"> </span><span class="crayon-e">Server </span><span class="crayon-v">Report</span><span class="crayon-o">:</span></div><div class="crayon-line crayon-striped-line" id="crayon-592797c195f22527929630-12"><span class="crayon-sy">[</span>&nbsp;<span class="crayon-h"> </span><span class="crayon-cn">3</span><span class="crayon-sy">]</span>&nbsp;<span class="crayon-h"> </span><span class="crayon-cn">0.0</span><span class="crayon-o">-</span><span class="crayon-cn">10.0</span><span class="crayon-h"> </span><span class="crayon-i">sec</span>&nbsp;<span class="crayon-h"> </span><span class="crayon-cn">24.9</span><span class="crayon-h"> </span><span class="crayon-i">MBytes</span>&nbsp;<span class="crayon-h"> </span><span class="crayon-cn">20.9</span><span class="crayon-h"> </span><span class="crayon-v">Mbits</span><span class="crayon-o">/</span><span class="crayon-i">sec</span>&nbsp;&nbsp;<span class="crayon-h"> </span><span class="crayon-cn">0.055</span><span class="crayon-h"> </span><span class="crayon-i">ms</span>&nbsp;&nbsp;&nbsp;<span class="crayon-h"> </span><span class="crayon-cn">6</span><span class="crayon-o">/</span><span class="crayon-cn">261408</span><span class="crayon-h"> </span><span class="crayon-sy">(</span><span class="crayon-cn">0.0023</span><span class="crayon-o">%</span><span class="crayon-sy">)</span></div><div class="crayon-line" id="crayon-592797c195f22527929630-13"><span class="crayon-sy">[</span>&nbsp;<span class="crayon-h"> </span><span class="crayon-cn">3</span><span class="crayon-sy">]</span>&nbsp;<span class="crayon-h"> </span><span class="crayon-cn">0.0</span><span class="crayon-o">-</span><span class="crayon-cn">10.0</span><span class="crayon-h"> </span><span class="crayon-i">sec</span>&nbsp;<span class="crayon-h"> </span><span class="crayon-cn">1</span><span class="crayon-h"> </span><span class="crayon-e">datagrams </span><span class="crayon-e">received </span><span class="crayon-v">out</span><span class="crayon-o">-</span><span class="crayon-v">of</span><span class="crayon-o">-</span><span class="crayon-v">order</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0038 seconds] -->
+<p>As you can see, due to the introduction of a virtual network interface, the throughput has dropped more than 50%. Hence, the number of concurrent WebRTC audio sessions that my virtual machine could stand is around 20.9/0.04 = 522.</p>
+<h3>Why virtual networks hurt RTC</h3>
+<p>In our experience, this performance reduction takes place consistently across all common network virtualization technologies, which means <strong>the vertical scalability of your WebRTC infrastructure will be just a fraction of the one you might be obtaining by deploying onto bare-metal</strong>. The conclusion you might extract from this is that your WebRTC cloud deployments must be ready for horizontal scalability. Deploying into very powerful computing nodes may make no sense as in many cases you will find that the vertical scalability bottleneck is in the network bandwidth and not in the CPU consumption.</p>
+<p>Another very relevant problem we have detected when working with virtual networks is packet loss. In a physical network UDP packet loss typically take place at the network interface. For example, whenever the operating system writes faster than the speed of the interface for sending to the network or at routers when queues saturate due to network congestion. In both cases, the problem is that packets arrive at a higher speed than they can be processed. Packet loss in virtual networks have the same cause. However,&nbsp;they tend to be more noticeable than in physical infrastructures due to the reduced throughput of virtual links.</p>
+<h3>Traffic peaks with 2 users</h3>
+<p>This problem becomes very noticeable when you have sharp traffic peaks. &nbsp;One use case that reproduces this easily is high-quality screen sharing. This is illustrated in Fig. 6, where we show how sharp traffic peaks associated to high-quality screen-sharing scenarios tend to generate noticeable packet losses in virtual networks.</p>
+<div id="attachment_2653" style="width: 895px;" class="wp-caption alignnone"><a href="https://webrtchacks.com/wp-content/uploads/2016/09/fig6.png"><img class="wp-image-2653 size-full" src="fig6.png" alt="fig6" srcset="https://webrtchacks.com/wp-content/uploads/2016/09/fig6.png 885w, https://webrtchacks.com/wp-content/uploads/2016/09/fig6-300x214.png 300w, https://webrtchacks.com/wp-content/uploads/2016/09/fig6-768x548.png 768w, https://webrtchacks.com/wp-content/uploads/2016/09/fig6-600x428.png 600w" sizes="(max-width: 885px) 100vw, 885px" width="885" height="632"></a><p class="wp-caption-text">Figure 6. WebRTC internals of a Chrome browsers used in an experiment performed in an AWS c3.large machine showing running a Kurento SFU room application. A WebRTC session (presenter) joins the room and starts high-quality screen sharing of a browser. Another WebRTC session (viewer) joins the room and receives the high-quality screen sharing stream. Whenever the presenter switches between browser tabs, a very sharp traffic peak is generated. At the viewer WebRTC internals we can see the sharp traffic peak (bitsReceivedPerSecond) that produces packet loss (googNacksSent), which in turn make the viewer to ask for a resynchronization (googPlisSent). In our experiments, the same sharp traffic peak is absorbed without problems when deploying in a physical network.</p></div>
+<h3>Quick fixes</h3>
+<p>There are mechanisms for minimizing the effects of packet loss on virtual networks. We have found that increasing the kernel network buffers on the virtual computing nodes may reduce packet drops. For example, in Linux:</p><!-- Crayon Syntax Highlighter v_2.7.2_beta -->
+
+		<div id="crayon-592797c195f2b077100905" class="crayon-syntax crayon-theme-vs2012 crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" no-popup minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" show" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="Toggle Line Numbers"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="Copy"><div class="crayon-button-icon"></div></div></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea class="crayon-plain print-no" data-settings="dblclick" readonly="" style="-moz-tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;" wrap="soft">echo "net.core.rmem_max = 33554432" &gt;&gt; /etc/sysctl.conf
+echo "net.core.wmem_max = 33554432" &gt;&gt; /etc/sysctl.conf
+echo "net.core.rmem_default = 1048576" &gt;&gt; /etc/sysctl.conf
+echo "net.core.wmem_default = 1048576" &gt;&gt; /etc/sysctl.conf
+echo "net.ipv4.udp_wmem_min = 1048576" &gt;&gt; /etc/sysctl.conf
+echo "net.ipv4.udp_rmem_min = 1048576" &gt;&gt; /etc/sysctl.conf</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table" style="">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-592797c195f2b077100905-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-592797c195f2b077100905-2">2</div><div class="crayon-num" data-line="crayon-592797c195f2b077100905-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-592797c195f2b077100905-4">4</div><div class="crayon-num" data-line="crayon-592797c195f2b077100905-5">5</div><div class="crayon-num crayon-striped-num" data-line="crayon-592797c195f2b077100905-6">6</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size: 4;"><div class="crayon-line" id="crayon-592797c195f2b077100905-1"><span class="crayon-i">echo</span><span class="crayon-h"> </span><span class="crayon-s">"net.core.rmem_max = 33554432"</span><span class="crayon-h"> </span><span class="crayon-o">&gt;&gt;</span><span class="crayon-h"> </span><span class="crayon-o">/</span><span class="crayon-v">etc</span><span class="crayon-o">/</span><span class="crayon-v">sysctl</span><span class="crayon-sy">.</span><span class="crayon-e">conf</span></div><div class="crayon-line crayon-striped-line" id="crayon-592797c195f2b077100905-2"><span class="crayon-i">echo</span><span class="crayon-h"> </span><span class="crayon-s">"net.core.wmem_max = 33554432"</span><span class="crayon-h"> </span><span class="crayon-o">&gt;&gt;</span><span class="crayon-h"> </span><span class="crayon-o">/</span><span class="crayon-v">etc</span><span class="crayon-o">/</span><span class="crayon-v">sysctl</span><span class="crayon-sy">.</span><span class="crayon-e">conf</span></div><div class="crayon-line" id="crayon-592797c195f2b077100905-3"><span class="crayon-i">echo</span><span class="crayon-h"> </span><span class="crayon-s">"net.core.rmem_default = 1048576"</span><span class="crayon-h"> </span><span class="crayon-o">&gt;&gt;</span><span class="crayon-h"> </span><span class="crayon-o">/</span><span class="crayon-v">etc</span><span class="crayon-o">/</span><span class="crayon-v">sysctl</span><span class="crayon-sy">.</span><span class="crayon-e">conf</span></div><div class="crayon-line crayon-striped-line" id="crayon-592797c195f2b077100905-4"><span class="crayon-i">echo</span><span class="crayon-h"> </span><span class="crayon-s">"net.core.wmem_default = 1048576"</span><span class="crayon-h"> </span><span class="crayon-o">&gt;&gt;</span><span class="crayon-h"> </span><span class="crayon-o">/</span><span class="crayon-v">etc</span><span class="crayon-o">/</span><span class="crayon-v">sysctl</span><span class="crayon-sy">.</span><span class="crayon-e">conf</span></div><div class="crayon-line" id="crayon-592797c195f2b077100905-5"><span class="crayon-i">echo</span><span class="crayon-h"> </span><span class="crayon-s">"net.ipv4.udp_wmem_min = 1048576"</span><span class="crayon-h"> </span><span class="crayon-o">&gt;&gt;</span><span class="crayon-h"> </span><span class="crayon-o">/</span><span class="crayon-v">etc</span><span class="crayon-o">/</span><span class="crayon-v">sysctl</span><span class="crayon-sy">.</span><span class="crayon-e">conf</span></div><div class="crayon-line crayon-striped-line" id="crayon-592797c195f2b077100905-6"><span class="crayon-i">echo</span><span class="crayon-h"> </span><span class="crayon-s">"net.ipv4.udp_rmem_min = 1048576"</span><span class="crayon-h"> </span><span class="crayon-o">&gt;&gt;</span><span class="crayon-h"> </span><span class="crayon-o">/</span><span class="crayon-v">etc</span><span class="crayon-o">/</span><span class="crayon-v">sysctl</span><span class="crayon-sy">.</span><span class="crayon-v">conf</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0012 seconds] -->
+<p>Avoiding packet loss at virtual switches and routers is much more complex. Current state-of-the-art clouds do not offer access to modify switch queue configurations. The use of <a href="https://en.wikipedia.org/wiki/Software-defined_networking">Software Defined Networking</a>&nbsp;(SDN)&nbsp;may be helpful for prioritizing WebRTC traffic over other types of traffic, and this is one of the research areas where we are investigating in the context of the NUBOMEDIA project.</p>
+<h2>Autoscaling</h2>
+<p>Autoscaling is a built-in feature of most modern cloud orchestration technologies. AWS has&nbsp;<a href="https://aws.amazon.com/cloudformation/">CloudFormation</a>.&nbsp;OpenStack has&nbsp;<a href="https://wiki.openstack.org/wiki/Heat">Heat</a>. Autoscaling&nbsp;enables optimizing the resources consumed by a system so that they automatically adapt to the end users’ offered load. At a minimum it must&nbsp;instantiate new&nbsp;virtual computing resources (i.e. scaling out) and&nbsp;removes them (i.e. scaling in) basing on scaling rules. &nbsp;Most of the time, the rules are of the type “Whenever the average CPU utilization of my system is over 60%, then instantiate 3 new virtual computing nodes” or “If the average CPU utilization is under 30%, then remove 1 virtual computing node”.</p>
+<h3>Current tools weren’t made for RTC</h3>
+<p>Rules based on average CPU utilization are very common for the autoscaling of web services and systems. These rules work nicely there, but not for WebRTC infrastructure&nbsp;because&nbsp;WebRTC services are more heterogeneous. &nbsp;Often one hits other limits before starving the CPU. For example, in our experiments with Kurento, services that only provide media routing capabilities (e.g. multiparty videoconferencing based on SFUs) have the scaling bottleneck in the network. However, whenever the WebRTC service provides some kind of media processing (e.g. media mixing mixer or media transcoding) then typically CPU is the critical parameter. In other words, the autoscaling rules of WebRTC cloud systems are application-dependent and even session-dependent. To be effective different set of rules need to be combined in complex ways depending on application-specific runtime information. This significantly increases the complexity of the rule-set making requirements.</p>
+<p>Also, when CPU is the bottleneck (e.g. services involving media processing) the granularity of sessions is much coarse grained than in typical Web applications and services. This is illustrated in Fig. 7 – the CPU increase of a new incoming session may be significant and noticeable on the overall system (e.g. a video HD transcoding may easily require 100% of a vCPU). As a result, when a threshold-based rule fires a scaling-out event, it might be too late for keeping the QoE of users under reasonable bounds&nbsp;since&nbsp;a session might be already placed at an overloaded computing node.</p>
+<p><img class="alignnone size-large wp-image-2654" src="fig7-left-1024x690.png" alt="fig7-left" srcset="https://webrtchacks.com/wp-content/uploads/2016/09/fig7-left-1024x690.png 1024w, https://webrtchacks.com/wp-content/uploads/2016/09/fig7-left-300x202.png 300w, https://webrtchacks.com/wp-content/uploads/2016/09/fig7-left-768x517.png 768w, https://webrtchacks.com/wp-content/uploads/2016/09/fig7-left-600x404.png 600w" sizes="(max-width: 627px) 100vw, 627px" width="627" height="422"></p>
+<p><a href="https://webrtchacks.com/wp-content/uploads/2016/09/fig7-right.png"><img class="wp-image-2655 size-large" src="fig7-right-1024x701.png" alt="fig7-right" srcset="https://webrtchacks.com/wp-content/uploads/2016/09/fig7-right-1024x701.png 1024w, https://webrtchacks.com/wp-content/uploads/2016/09/fig7-right-300x205.png 300w, https://webrtchacks.com/wp-content/uploads/2016/09/fig7-right-768x526.png 768w, https://webrtchacks.com/wp-content/uploads/2016/09/fig7-right-600x411.png 600w" sizes="(max-width: 627px) 100vw, 627px" width="627" height="429"></a></p>
+<h5>Fig. 7. On the top, we can see the typical autoscaling behavior of Web applications and services. As the number of concurrent users (i.e. sessions) increase (straight red line), the perceived QoE decreases (curved green line). When the CPU consumption hits the scale-out threshold, the system can still accept some additional sessions while the new virtual computing resource is instantiated without significantly affecting the QoE of users. On the bottom we can see the equivalent curves for WebRTC services involving media processing. As media processing is very CPU intensive, every new session brings a significant CPU increase (stair-like red curve). Hence, in many occasions, when the Scale-out threshold is hit, it is too late as some of the computing nodes will be already overloaded and their corresponding end-users will be perceiving a very degraded QoE.</h5>
+<p>An additional problem that makes WebRTC autoscaling complex is dealing with scaling-in events. In stateless Web applications and services, scaling-in means just removing some of the virtual computing resources. As session state is shared among all the virtual computing nodes, we may remove some of them at random times without affecting the ongoing sessions. However, WebRTC media sessions are stateful, hence, removing a media server node holding active ongoing sessions is not possible without breaking such sessions. This means that the scaling-in events must be managed carefully so that we guarantee that the removal of media server nodes only take place when such nodes are empty (i.e. they do not hold any media session).</p>
+<h3>Alternative scaling metrics</h3>
+<p>Solving the above mentioned problems while maintaining compatibility with current&nbsp;autoscaling technologies is challenging. Both in NUBOMEDIA and in elasticRTC we have decided to create an abstraction for doing this. This abstraction is based on something that we call “scaling points”. These scaling points are a property of a session, which means that developers need to provide in their code the logic suitable for assigning to every session the scaling points it consumes.</p>
+<p>The&nbsp;WebRTC infrastructure then publishes such points as a system metric (e.g. through CloudWatch) that can be used for the definition of autoscaling rules. For example, whenever the average scaling points on my machines is over 300, then instantiate 3 new computing nodes; or if the scaling points of a machine are zero, then remove such machine.</p>
+<p>Instead of relying on CPU utilization, we rely on scaling points for defining our autoscaling logic. This simplifies significantly such logic as the scaling points are an abstraction that can take into consideration any system bottleneck we may imagine. The drawback is these&nbsp;scaling points are difficult to get right.&nbsp;Developers need some experience and experimentation for setting up them as their value may depend of disparate aspects such as the flavor of virtual machines being used or the media services a session is consuming. Due to this, Kurento Media Server provides conservative built-in scaling points defaults, which are not optimal but enable newbies to create their auto-scalable applications without worrying about his topic until they gain the appropriate expertise.</p>
+<h2>Monitoring, diagnosing and debugging</h2>
+<p>We have described different problems you may find when deploying WebRTC services in the cloud. All of them are a piece of cake compared to&nbsp;debugging. Typical bug reports coming from users are of the type “from time to time the video is choppy”. Basing on this description, you’ll need to figure out how to proceed. Sometimes the root cause of the problem is fully out of your control like a&nbsp;low quality access link.&nbsp;Often&nbsp;it can also be problems in your infrastructure –&nbsp;e.g. lack of performance of virtual networks&nbsp;–&nbsp;or in your software stack –&nbsp;e.g. incorrect management of RTCP feedback in your code.</p>
+<p>Resolving these kinds of problems requires analyzing a huge amount of data. The logs of the different software components are useful for this purpose but they are typically not enough. Due to the real-time nature of WebRTC you also need traffic metrics suitable for evaluating how the network is behaving (e.g. latency, packet loss) and how the media infrastructure is reacting (e.g. NACKs, PLIs, etc.) When developing a simple peer-to-peer service, tools such as <a href="chrome://webrtc-internals">chrome://webrtc-internals</a> are often enough. Cloud infrastructure that supports&nbsp;thousands of concurrent sessions requires something more complex.</p>
+<p>In this context, you need to the tackle the problem as a big data problem. This means that you need to put in place two capabilities:</p>
+<ol>
+<li>the ability to gather and store metrics from all around your system so that, at any time, you can take a snapshot of it and understand what’s happening</li>
+<li>&nbsp;tools &nbsp;to visualize, navigate and analyze all the collected information</li>
+</ol>
+<h3>Tools</h3>
+<p>In NUBOMEDIA, we use a number of tools that collect and consolidate the data. For example, we use <a href="https://www.icinga.org/">icinga</a> for collecting different types of metrics from our infrastructure including physical and logical indicators such as CPU consumption, energy consumption, hard drive utilization, etc. We also use <a href="https://www.elastic.co/products/logstash">Logstash</a> for collecting the logs of our WebRTC applications and of the Kurento Media Server instances that they utilize.</p>
+<p>However, as stated above, this is not enough and finer grained information about the network traffic of each WebRTC session is required. For this, we extended Kurento Media Server to publish QoS metrics of all the WebRTC sessions it manages. These extensions are fully based on the <a href="https://www.w3.org/TR/webrtc-stats/">W3C WebRTC Stats specification</a>. This means that for any WebRTC session maintained between a browser and the media server, you can collect two sets of stats: the ones as seen by the browser and the ones as seen by the media server. These two are complementary and give quite a complete picture of what’s happening to the media traffic.</p>
+<p>All such stats are collected in real-time and fed to <a href="https://graphiteapp.org/">Graphite</a>, where they can be stored and visualized in quite a simple way.</p>
+<div id="attachment_2656" style="width: 2710px;" class="wp-caption alignnone"><a href="https://webrtchacks.com/wp-content/uploads/2016/09/fig8.png"><img class="wp-image-2656 size-full" src="fig8.png" alt="fig8" srcset="https://webrtchacks.com/wp-content/uploads/2016/09/fig8.png 2700w, https://webrtchacks.com/wp-content/uploads/2016/09/fig8-300x202.png 300w, https://webrtchacks.com/wp-content/uploads/2016/09/fig8-768x517.png 768w, https://webrtchacks.com/wp-content/uploads/2016/09/fig8-1024x689.png 1024w, https://webrtchacks.com/wp-content/uploads/2016/09/fig8-600x404.png 600w" sizes="(max-width: 2700px) 100vw, 2700px" width="2700" height="1816"></a><p class="wp-caption-text">Fig. 8 Snapshot of the NUBOMEDIA infrastructure monitoring tool based on icinga.</p></div>
+<h3>Data crunching</h3>
+<p>As a result, we collect a huge amount of data in NUBOMEDIA. Making sense of all such data is a complex black art for which we have not been able to find really helpful tools. Hence, when a developer wants to diagnose a problem, she needs to make intensive use of his intuition for diving into gigabytes of data with the hope of finding a clue enabling to gain some insight into the problem. Depending on the expertise of the developer, this may sometimes spawn during days or even weeks of crunching numbers, graphs and logs where the data of all the sessions, the defaulting and the correct ones, mix in convoluted ways.</p>
+<h3>Replication</h3>
+<p>Many developers prefer to isolate the problem and to face it in real-time. For this, the typical strategy consists on setting up a separated instance of the WebRTC cloud, not accessible for users, where developers can inject the appropriate instrumentation for emulating the specific conditions that make the problem to emerge so that in can be analyzed in isolation. This is also a black art that requires deep understanding on the different components of the architecture. It also requires system engineering skills for forcing the appropriate behaviors on both networking and computing infrastructures. In our experience, and as long as the conditions arising the problem are known, this approach tend to be less frustrating and more efficient for the diagnosis of complex problems.</p>
+<h2>Conclusion</h2>
+<p>During the last few years WebRTC has been concentrated on the client-side of problem. In that area, a great job has been performed and many&nbsp;WebRTC client-side implementations are in production by billions of users. Now, the time of WebRTC infrastructures has come. During the next few years I expect&nbsp;we will&nbsp;witness an explosion of technologies for&nbsp;deploying WebRTC in the cloud. Pay attention to all information related to standardization of WebRTC architectures. Keep an eye in all topics related to the applications SDNs for WebRTC. And developers, don’t forget that&nbsp;your main problems will always be related with the monitoring and debugging of applications. If you keep this in mind you will make wiser decisions when creating your very own WebRTC infrastructures or when selecting the appropriate third parties for&nbsp;your WebRTC applications.</p>
+<p>{“author”: <a href="https://plus.google.com/101516110708472483917/">“</a><a href="https://plus.google.com/101516110708472483917/">Luis López Fernández</a>“}</p>
+<p>&nbsp;</p>
+<p>Want to keep up on our latest posts? Please click&nbsp;<a href="http://webrtchacks.com/subscribe/" target="_top">here</a>&nbsp;to subscribe to our mailing list if you have not already. We only email post updates. You can also follow us on twitter at&nbsp;<a href="http://twitter.com/webrtcHacks" target="_top">@webrtcHacks</a>&nbsp;for blog updates.</p><p></p>
+
+<div class="zem_rp_wrap zem_rp_th_vertical" id="zem_rp_first"><div class="zem_rp_content"><h3 class="related_post_title">Related Posts</h3><ul class="related_post zem_rp"><li data-position="0" data-poid="in-1888" data-post-type="none"><a href="https://webrtchacks.com/kurento/" class="zem_rp_thumbnail"><img src="kurento-0-150x150.jpg" alt="Kurento.org: WebRTC, Computer Vision, Augmented Reality, Awesome (Luis López Fernández)" width="150" height="150"></a><a href="https://webrtchacks.com/kurento/" class="zem_rp_title">Kurento.org: WebRTC, Computer Vision, Augmented Reality, Awesome (Luis López Fernández)</a></li><li data-position="1" data-poid="in-1038" data-post-type="none"><a href="https://webrtchacks.com/rfc5766-turn-server/" class="zem_rp_thumbnail"><img src="oleg2-150x150.jpg" alt="The Open Source rfc5766-turn-server Project – Interview with Oleg Moskalenko" width="150" height="150"></a><a href="https://webrtchacks.com/rfc5766-turn-server/" class="zem_rp_title">The Open Source rfc5766-turn-server Project – Interview with Oleg Moskalenko</a></li><li data-position="2" data-poid="in-1605" data-post-type="none"><a href="https://webrtchacks.com/webrtc-gw/" class="zem_rp_thumbnail"><img src="lorenzo-150x150.jpg" alt="What is a WebRTC Gateway anyway? (Lorenzo Miniero)" width="150" height="150"></a><a href="https://webrtchacks.com/webrtc-gw/" class="zem_rp_title">What is a WebRTC Gateway anyway? (Lorenzo Miniero)</a></li><li data-position="3" data-poid="in-1462" data-post-type="none"><a href="https://webrtchacks.com/webrtc-beyond-one-one/" class="zem_rp_thumbnail"><img src="gustavo-150x150.jpg" alt="WebRTC beyond one-to-one communication (Gustavo Garcia Bernardo)" width="150" height="150"></a><a href="https://webrtchacks.com/webrtc-beyond-one-one/" class="zem_rp_title">WebRTC beyond one-to-one communication (Gustavo Garcia Bernardo)</a></li><li data-position="4" data-poid="in-608" data-post-type="none"><a href="https://webrtchacks.com/baby-motion-detector/" class="zem_rp_thumbnail"><img src="baby-monitor-real-test-150x150.png" alt="How to Build a Motion Detecting Baby Monitor with WebRTC" width="150" height="150"></a><a href="https://webrtchacks.com/baby-motion-detector/" class="zem_rp_title">How to Build a Motion Detecting Baby Monitor with WebRTC</a></li><li data-position="5" data-poid="in-2327" data-post-type="none"><a href="https://webrtchacks.com/atlassian-sfu-qa/" class="zem_rp_thumbnail"><img src="12712204375_067b0c592c_k-150x150.jpg" alt="Can an Open Source SFU Survive Acquisition?  Q&amp;A with Jitsi &amp; Atlassian HipChat" width="150" height="150"></a><a href="https://webrtchacks.com/atlassian-sfu-qa/" class="zem_rp_title">Can an Open Source SFU Survive Acquisition?  Q&amp;A with Jitsi &amp; Atlassian HipChat</a></li></ul></div></div>
+<!-- Simple Share Buttons Adder (6.3.4) simplesharebuttons.com --><div class="ssba ssba-wrap"><div style="text-align: left;"><a data-site="" class="ssba_twitter_share" href="http://twitter.com/share?url=https://webrtchacks.com/webrtc-media-servers-in-the-cloud/&amp;text=WebRTC+media+servers+in+the+Cloud%3A+lessons+learned+%28Luis+L%C3%B3pez+Fern%C3%A1ndez%29+" target="_top"><img src="twitter.png" title="Twitter" class="ssba ssba-img" alt="Tweet about this on Twitter"></a><a data-site="" class="ssba_facebook_share" href="http://www.facebook.com/sharer.php?u=https://webrtchacks.com/webrtc-media-servers-in-the-cloud/" target="_top"><img src="facebook-favicon.png" title="Facebook" class="ssba ssba-img" alt="Share on Facebook"></a><a data-site="linkedin" class="ssba_linkedin_share ssba_share_link" href="http://www.linkedin.com/shareArticle?mini=true&amp;url=https://webrtchacks.com/webrtc-media-servers-in-the-cloud/" target="_top"><img src="linkedin.png" title="LinkedIn" class="ssba ssba-img" alt="Share on LinkedIn"></a><a data-site="" class="ssba_google_share" href="https://plus.google.com/share?url=https://webrtchacks.com/webrtc-media-servers-in-the-cloud/" target="_top"><img src="google+-favicon.png" title="Google+" class="ssba ssba-img" alt="Share on Google+"></a><a data-site="email" class="ssba_email_share" href="mailto:?subject=WebRTC%20media%20servers%20in%20the%20Cloud:%20lessons%20learned%20(Luis%20L%C3%B3pez%20Fern%C3%A1ndez)&amp;body=%20https://webrtchacks.com/webrtc-media-servers-in-the-cloud/"><img src="email.png" title="Email" class="ssba ssba-img" alt="Email this to someone"></a></div></div>	</div>
+
+		<nav id="post-nav" class="contain">
+		<h1 class="assistive-text">Posts navigation</h1>
+		<div class="nav-older">← <a href="https://webrtchacks.com/lets-encrypt/" rel="prev">Let’s Encrypt – how get to free SSL for WebRTC</a></div>		<div class="nav-newer"><a href="https://webrtchacks.com/limit-webrtc-bandwidth-sdp/" rel="next">How to limit WebRTC bandwidth by modifying the SDP</a> →</div>	</nav>
+	
+</article>				
+<div id="comments">
+
+			<h2 id="comments-title">3 comments on “<span>WebRTC media servers in the Cloud: lessons learned (Luis López Fernández)</span>”</h2>
+
+		<ol class="commentlist">
+				<li class="comment even thread-even depth-1" id="li-comment-17683">
+		<article id="comment-17683" class="contain">
+			<footer class="comment-meta contain vcard">
+
+				<img alt="" src="f044c8d071e7e42475b36e12609394bb" srcset="https://secure.gravatar.com/avatar/f044c8d071e7e42475b36e12609394bb?s=80&amp;d=retro&amp;r=r 2x" class="avatar avatar-40 photo" width="40" height="40">
+				<div class="comment-author">
+				<span class="fn"><a href="http://voximplant.com/" rel="external nofollow" class="url">Alexey</a></span> on <a href="https://webrtchacks.com/webrtc-media-servers-in-the-cloud/#comment-17683"><time pubdate="" datetime="2016-09-09T07:59:42+00:00">September 9, 2016 at 7:59 am</time></a> said:
+									</div><!-- .comment-author -->
+
+				
+			</footer><!-- .vcard -->
+
+			<div class="comment-content"><p>Good article, we use dedicated servers at voximplant to avoid number of issues, but if you want to scale something fast having additional capacity in form of VMs make sense.</p>
+</div>
+
+			<div class="reply contain">
+				<a rel="nofollow" class="comment-reply-link" href="https://webrtchacks.com/webrtc-media-servers-in-the-cloud/?replytocom=17683#respond" onclick="return addComment.moveForm( &quot;comment-17683&quot;, &quot;17683&quot;, &quot;respond&quot;, &quot;2642&quot; )" aria-label="Reply to Alexey">Reply</a>			</div><!-- .reply -->
+		</article><!-- #comment-## -->
+
+	</li><!-- #comment-## -->
+	<li class="comment odd alt thread-odd thread-alt depth-1" id="li-comment-17688">
+		<article id="comment-17688" class="contain">
+			<footer class="comment-meta contain vcard">
+
+				<img alt="" src="221dfc03575babb56e2d4bdd1e47f1a3" srcset="https://secure.gravatar.com/avatar/221dfc03575babb56e2d4bdd1e47f1a3?s=80&amp;d=retro&amp;r=r 2x" class="avatar avatar-40 photo" width="40" height="40">
+				<div class="comment-author">
+				<span class="fn">Victor Pascual</span> on <a href="https://webrtchacks.com/webrtc-media-servers-in-the-cloud/#comment-17688"><time pubdate="" datetime="2016-09-21T01:25:15+00:00">September 21, 2016 at 1:25 am</time></a> said:
+									</div><!-- .comment-author -->
+
+				
+			</footer><!-- .vcard -->
+
+			<div class="comment-content"><p>And Kurento has just been acquired by Twilio <a href="https://techcrunch.com/2016/09/20/twilio-acquires-kurento-and-launches-voice-insights-for-monitoring-webrtc-performance/" rel="nofollow">https://techcrunch.com/2016/09/20/twilio-acquires-kurento-and-launches-voice-insights-for-monitoring-webrtc-performance/</a></p>
+</div>
+
+			<div class="reply contain">
+				<a rel="nofollow" class="comment-reply-link" href="https://webrtchacks.com/webrtc-media-servers-in-the-cloud/?replytocom=17688#respond" onclick="return addComment.moveForm( &quot;comment-17688&quot;, &quot;17688&quot;, &quot;respond&quot;, &quot;2642&quot; )" aria-label="Reply to Victor Pascual">Reply</a>			</div><!-- .reply -->
+		</article><!-- #comment-## -->
+
+	</li><!-- #comment-## -->
+	<li class="post pingback">
+		<p><span class="pingback-title">Pingback:</span> <a href="http://realtimeweekly.co/2016-09-26/" rel="external nofollow" class="url">RealTimeWeekly | RealTimeWeekly #148</a></p>
+	</li><!-- #comment-## -->
+		</ol>
+
+			
+				<div id="respond" class="comment-respond">
+		<h3 id="reply-title" class="comment-reply-title">Leave a Reply <small><a rel="nofollow" id="cancel-comment-reply-link" href="https://webrtchacks.com/webrtc-media-servers-in-the-cloud/#respond" style="display: none;">Cancel reply</a></small></h3>			<form action="https://webrtchacks.com/wp-comments-post.php?wpe-comment-post=webrtchacks" method="post" id="commentform" class="comment-form anti-spam-form-processed">
+				<p class="comment-notes"><span id="email-notes">Your email address will not be published.</span> Required fields are marked <span class="required">*</span></p><p class="comment-form-comment"><label for="comment">Comment</label> <textarea id="comment" name="comment" cols="45" rows="8" maxlength="65525" aria-required="true" required="required"></textarea></p><p class="comment-form-author"><label for="author">Name <span class="required">*</span></label> <input id="author" name="author" value="" size="30" maxlength="245" aria-required="true" required="required" type="text"></p>
+<p class="comment-form-email"><label for="email">Email <span class="required">*</span></label> <input id="email" name="email" value="" size="30" maxlength="100" aria-describedby="email-notes" aria-required="true" required="required" type="text"></p>
+<p class="comment-form-url"><label for="url">Website</label> <input id="url" name="url" value="" size="30" maxlength="200" type="text"></p>
+<p class="form-submit"><input name="submit" id="submit" class="submit" value="Post Comment" type="submit"> <input name="comment_post_ID" value="2642" id="comment_post_ID" type="hidden">
+<input name="comment_parent" id="comment_parent" value="0" type="hidden">
+</p><p style="display: none;"><input id="akismet_comment_nonce" name="akismet_comment_nonce" value="3ef9c9e4a2" type="hidden"></p>		<p class="antispam-group antispam-group-q" style="clear: both; display: none;">
+			<label>Current ye@r <span class="required">*</span></label>
+			<input name="antspm-a" class="antispam-control antispam-control-a" value="2017" type="hidden">
+			<input name="antspm-q" class="antispam-control antispam-control-q" value="2017" autocomplete="off" type="text">
+		</p>
+		<p class="antispam-group antispam-group-e" style="display: none;">
+			<label>Leave this field empty</label>
+			<input name="antspm-e-email-url-website" class="antispam-control antispam-control-e" value="" autocomplete="off" type="text">
+		</p>
+<p class="wysija-after-comment"><label for="wysija-box-after-comment"><input id="wysija-box-after-comment" value="1" name="wysija[comment_subscribe]" type="checkbox">Yes, add me to your mailing list.</label></p><p style="display: none;"></p>			<input id="ak_js" name="ak_js" value="1495766979818" type="hidden"><input name="antspm-d" class="antispam-control antispam-control-d" value="2017" type="hidden"></form>
+			</div><!-- #respond -->
+		
+</div><!-- #comments -->						</div><!-- end main -->
+
+	<ul id="sidebar" role="complementary">
+
+	<li id="ajaxy_sf_widget-2" class="widget widget_ajaxy_sf_widget"><h2 class="widget-title"></h2><h2 class="widget-title">Search</h2>
+		<!-- Ajaxy Search Form v3.0.7 -->
+		<div id="592797c1bc473" class="sf_container">
+			<form role="search" method="get" class="searchform" action="https://webrtchacks.com/">
+				<div>
+					<label class="screen-reader-text" for="s">Search for:</label>
+					<div class="sf_search" style="border: 1px solid rgb(238, 238, 238);">
+						<span class="sf_block">
+							<input style="width: 224px;" class="sf_input" autocomplete="off" value="search webrtcHacks.com" name="s" type="text">
+							<button class="sf_button searchsubmit" type="submit"><span class="sf_hidden">Search</span></button>
+						</span>
+					</div>
+				</div>
+			</form>
+		</div>
+		</li><li id="tag_cloud-2" class="widget widget_tag_cloud"><h2 class="widget-title">Tags</h2><div class="tagcloud"><a href="https://webrtchacks.com/tag/alex-gouiallard/" class="tag-link-250 tag-link-position-1" title="4 topics" style="font-size: 10.9615pt;">Alex Gouiallard</a>
+<a href="https://webrtchacks.com/tag/apple/" class="tag-link-307 tag-link-position-2" title="4 topics" style="font-size: 10.9615pt;">apple</a>
+<a href="https://webrtchacks.com/tag/blackbox-exploration/" class="tag-link-313 tag-link-position-3" title="11 topics" style="font-size: 16.0769pt;">Blackbox Exploration</a>
+<a href="https://webrtchacks.com/tag/brief/" class="tag-link-154 tag-link-position-4" title="32 topics" style="font-size: 22pt;">Brief</a>
+<a href="https://webrtchacks.com/tag/camera/" class="tag-link-189 tag-link-position-5" title="3 topics" style="font-size: 9.61539pt;">camera</a>
+<a href="https://webrtchacks.com/tag/chrome/" class="tag-link-242 tag-link-position-6" title="5 topics" style="font-size: 12.0385pt;">Chrome</a>
+<a href="https://webrtchacks.com/tag/code/" class="tag-link-183 tag-link-position-7" title="9 topics" style="font-size: 15pt;">code</a>
+<a href="https://webrtchacks.com/tag/dan-burnett/" class="tag-link-286 tag-link-position-8" title="3 topics" style="font-size: 9.61539pt;">Dan Burnett</a>
+<a href="https://webrtchacks.com/tag/datachannel/" class="tag-link-216 tag-link-position-9" title="5 topics" style="font-size: 12.0385pt;">DataChannel</a>
+<a href="https://webrtchacks.com/tag/edge/" class="tag-link-345 tag-link-position-10" title="4 topics" style="font-size: 10.9615pt;">Edge</a>
+<a href="https://webrtchacks.com/tag/extension/" class="tag-link-243 tag-link-position-11" title="2 topics" style="font-size: 8pt;">extension</a>
+<a href="https://webrtchacks.com/tag/gateway/" class="tag-link-235 tag-link-position-12" title="4 topics" style="font-size: 10.9615pt;">gateway</a>
+<a href="https://webrtchacks.com/tag/getusermedia/" class="tag-link-188 tag-link-position-13" title="8 topics" style="font-size: 14.3269pt;">getUserMedia</a>
+<a href="https://webrtchacks.com/tag/ice/" class="tag-link-167 tag-link-position-14" title="7 topics" style="font-size: 13.6538pt;">ICE</a>
+<a href="https://webrtchacks.com/tag/ims/" class="tag-link-161 tag-link-position-15" title="4 topics" style="font-size: 10.9615pt;">ims</a>
+<a href="https://webrtchacks.com/tag/janus/" class="tag-link-237 tag-link-position-16" title="3 topics" style="font-size: 9.61539pt;">janus</a>
+<a href="https://webrtchacks.com/tag/kurento/" class="tag-link-258 tag-link-position-17" title="2 topics" style="font-size: 8pt;">kurento</a>
+<a href="https://webrtchacks.com/tag/mcu/" class="tag-link-222 tag-link-position-18" title="4 topics" style="font-size: 10.9615pt;">MCU</a>
+<a href="https://webrtchacks.com/tag/media-server/" class="tag-link-260 tag-link-position-19" title="2 topics" style="font-size: 8pt;">media server</a>
+<a href="https://webrtchacks.com/tag/microsoft/" class="tag-link-290 tag-link-position-20" title="3 topics" style="font-size: 9.61539pt;">Microsoft</a>
+<a href="https://webrtchacks.com/tag/mozilla/" class="tag-link-201 tag-link-position-21" title="3 topics" style="font-size: 9.61539pt;">mozilla</a>
+<a href="https://webrtchacks.com/tag/muaz-khan/" class="tag-link-232 tag-link-position-22" title="2 topics" style="font-size: 8pt;">muaz khan</a>
+<a href="https://webrtchacks.com/tag/nat/" class="tag-link-168 tag-link-position-23" title="5 topics" style="font-size: 12.0385pt;">NAT</a>
+<a href="https://webrtchacks.com/tag/nubomedia/" class="tag-link-261 tag-link-position-24" title="2 topics" style="font-size: 8pt;">nubomedia</a>
+<a href="https://webrtchacks.com/tag/ortc/" class="tag-link-176 tag-link-position-25" title="8 topics" style="font-size: 14.3269pt;">ORTC</a>
+<a href="https://webrtchacks.com/tag/philipp-hancke/" class="tag-link-341 tag-link-position-26" title="3 topics" style="font-size: 9.61539pt;">Philipp Hancke</a>
+<a href="https://webrtchacks.com/tag/promo/" class="tag-link-153 tag-link-position-27" title="10 topics" style="font-size: 15.5385pt;">Promo</a>
+<a href="https://webrtchacks.com/tag/qa/" class="tag-link-101 tag-link-position-28" title="14 topics" style="font-size: 17.4231pt;">Q&amp;A</a>
+<a href="https://webrtchacks.com/tag/safari/" class="tag-link-253 tag-link-position-29" title="3 topics" style="font-size: 9.61539pt;">Safari</a>
+<a href="https://webrtchacks.com/tag/screencapture/" class="tag-link-233 tag-link-position-30" title="2 topics" style="font-size: 8pt;">screenCapture</a>
+<a href="https://webrtchacks.com/tag/sdes/" class="tag-link-173 tag-link-position-31" title="3 topics" style="font-size: 9.61539pt;">SDES</a>
+<a href="https://webrtchacks.com/tag/sdp/" class="tag-link-177 tag-link-position-32" title="7 topics" style="font-size: 13.6538pt;">SDP</a>
+<a href="https://webrtchacks.com/tag/security/" class="tag-link-174 tag-link-position-33" title="3 topics" style="font-size: 9.61539pt;">security</a>
+<a href="https://webrtchacks.com/tag/sfu/" class="tag-link-329 tag-link-position-34" title="5 topics" style="font-size: 12.0385pt;">sfu</a>
+<a href="https://webrtchacks.com/tag/signaling/" class="tag-link-179 tag-link-position-35" title="3 topics" style="font-size: 9.61539pt;">signaling</a>
+<a href="https://webrtchacks.com/tag/simulcast/" class="tag-link-277 tag-link-position-36" title="3 topics" style="font-size: 9.61539pt;">simulcast</a>
+<a href="https://webrtchacks.com/tag/slack/" class="tag-link-362 tag-link-position-37" title="3 topics" style="font-size: 9.61539pt;">slack</a>
+<a href="https://webrtchacks.com/tag/standards/" class="tag-link-249 tag-link-position-38" title="5 topics" style="font-size: 12.0385pt;">standards</a>
+<a href="https://webrtchacks.com/tag/trace/" class="tag-link-230 tag-link-position-39" title="3 topics" style="font-size: 9.61539pt;">trace</a>
+<a href="https://webrtchacks.com/tag/turn/" class="tag-link-170 tag-link-position-40" title="10 topics" style="font-size: 15.5385pt;">TURN</a>
+<a href="https://webrtchacks.com/tag/video/" class="tag-link-198 tag-link-position-41" title="3 topics" style="font-size: 9.61539pt;">video</a>
+<a href="https://webrtchacks.com/tag/vp8/" class="tag-link-199 tag-link-position-42" title="6 topics" style="font-size: 12.9808pt;">vp8</a>
+<a href="https://webrtchacks.com/tag/walkthrough/" class="tag-link-155 tag-link-position-43" title="26 topics" style="font-size: 20.7885pt;">Walkthrough</a>
+<a href="https://webrtchacks.com/tag/webrtc/" class="tag-link-238 tag-link-position-44" title="3 topics" style="font-size: 9.61539pt;">webrtc</a>
+<a href="https://webrtchacks.com/tag/webrtc-experiment/" class="tag-link-234 tag-link-position-45" title="2 topics" style="font-size: 8pt;">webrtc-experiment</a></div>
+</li><li id="categories-2" class="widget widget_categories"><h2 class="widget-title">Categories</h2>		<ul>
+	<li class="cat-item cat-item-149"><a href="https://webrtchacks.com/category/guide/">Guide</a> (40)
+</li>
+	<li class="cat-item cat-item-116"><a href="https://webrtchacks.com/category/miscellaneous/">Miscellaneous</a> (1)
+</li>
+	<li class="cat-item cat-item-150"><a href="https://webrtchacks.com/category/other/">Other</a> (13)
+</li>
+	<li class="cat-item cat-item-156"><a href="https://webrtchacks.com/category/standard/">Standards</a> (16)
+</li>
+	<li class="cat-item cat-item-152"><a href="https://webrtchacks.com/category/technology/">Technology</a> (30)
+</li>
+		</ul>
+</li><li id="recent-comments-2" class="widget widget_recent_comments"><h2 class="widget-title">Recent Comments</h2><ul id="recentcomments"><li class="recentcomments"><span class="comment-author-link"><a href="https://www.smashingmagazine.com/2017/05/why-no-framework/" rel="external nofollow" class="url">“Why We Didn’t Use A Framework” (Case Study) – Smashing Magazine</a></span> on <a href="https://webrtchacks.com/limit-webrtc-bandwidth-sdp/#comment-17763">How to limit WebRTC bandwidth by modifying the SDP</a></li><li class="recentcomments"><span class="comment-author-link"><a href="http://blog.enthinnai.com/" rel="external nofollow" class="url">Aswath Rao</a></span> on <a href="https://webrtchacks.com/symmetric-nat/#comment-17762">Am I behind a Symmetric NAT?</a></li><li class="recentcomments"><span class="comment-author-link"><a href="http://webrtcbydralex.com/" rel="external nofollow" class="url">DrAlex</a></span> on <a href="https://webrtchacks.com/building-webrtc-from-source/#comment-17760">Making WebRTC source building not suck (Alex Gouaillard)</a></li><li class="recentcomments"><span class="comment-author-link"><a href="http://webrtcbydralex.com/" rel="external nofollow" class="url">DrAlex</a></span> on <a href="https://webrtchacks.com/building-webrtc-from-source/#comment-17759">Making WebRTC source building not suck (Alex Gouaillard)</a></li><li class="recentcomments"><span class="comment-author-link"><a href="https://blog.netapsys.fr/devoxx-2017-retour-sur-une-aventure-ultrasonique/" rel="external nofollow" class="url">Devoxx 2017 : Retour sur «&nbsp;Une aventure ultrasonique&nbsp;» | Le blog Sodifrance Netapsys</a></span> on <a href="https://webrtchacks.com/the-minimum-viable-sdp/#comment-17758">The Minimum Viable SDP</a></li></ul></li><li id="text-2" class="widget widget_text"><h2 class="widget-title">Twittering</h2>			<div class="textwidget"><iframe id="twitter-widget-0" scrolling="no" allowtransparency="true" allowfullscreen="true" class="twitter-timeline twitter-timeline-rendered" style="position: static; visibility: visible; display: inline-block; width: 520px; height: 400px; padding: 0px; border: medium none; max-width: 100%; min-width: 180px; margin-top: 0px; margin-bottom: 0px; min-height: 200px;" data-widget-id="354956526869426177" title="Twitter Timeline" src="index_1.html" frameborder="0"></iframe>
+
+</div>
+		</li><li id="wysija-2" class="widget widget_wysija"><h2 class="widget-title">New post notifications</h2><div class="widget_wysija_cont"><div id="msg-form-wysija-2" class="wysija-msg ajax"></div><form id="form-wysija-2" method="post" action="https://webrtchacks.com/webrtc-media-servers-in-the-cloud/#wysija" class="widget_wysija">
+<p class="wysija-paragraph">
+    
+    
+    	<input name="wysija[user][firstname]" class="wysija-input " title="First name" placeholder="First name" value="First name" type="text">
+    
+    
+    
+    <span class="abs-req">
+        <input name="wysija[user][abs][firstname]" class="wysija-input validated[abs][firstname]" value="" type="text">
+    </span>
+    
+</p>
+<p class="wysija-paragraph">
+    
+    
+    	<input name="wysija[user][lastname]" class="wysija-input " title="Last name" placeholder="Last name" value="Last name" type="text">
+    
+    
+    
+    <span class="abs-req">
+        <input name="wysija[user][abs][lastname]" class="wysija-input validated[abs][lastname]" value="" type="text">
+    </span>
+    
+</p>
+<p class="wysija-paragraph">
+    
+    
+    	<input name="wysija[user][email]" class="wysija-input validate[required,custom[email]]" title="Email" placeholder="Email" value="Email" type="text">
+    
+    
+    
+    <span class="abs-req">
+        <input name="wysija[user][abs][email]" class="wysija-input validated[abs][email]" value="" type="text">
+    </span>
+    
+</p>
+<input class="wysija-submit wysija-submit-field" value="Subscribe!" type="submit">
+
+    <input name="form_id" value="1" type="hidden">
+    <input name="action" value="save" type="hidden">
+    <input name="controller" value="subscribers" type="hidden">
+    <input value="1" name="wysija-page" type="hidden">
+
+    
+        <input name="wysija[user_list][list_ids]" value="3" type="hidden">
+    
+ </form></div></li><li id="text-5" class="widget widget_text"><h2 class="widget-title">RSS Feed</h2>			<div class="textwidget"><a href="http://feeds.feedburner.com/webrtcHacks" rel="alternate" type="application/rss+xml"><img src="rss.png" alt="" style="vertical-align: middle; border: 0px none;"></a></div>
+		</li>
+</ul><!-- end sidebar -->
+</div><!-- end container -->
+</div><!-- end of container holder -->
+
+</div><!-- end page-wrap -->
+<div class="ads" align="center">
+
+
+<!-- 970x90 -->
+<ins class="adsbygoogle" style="display: inline-block; height: 90px; width: 0px;" data-ad-client="ca-pub-4867498141097795" data-ad-slot="9734864863" data-adsbygoogle-status="done"><ins id="aswift_0_expand" style="display: inline-table; border: medium none; height: 90px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 7px; background-color: transparent;"><ins id="aswift_0_anchor" style="display: block; border: medium none; height: 90px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 7px; background-color: transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" id="aswift_0" name="aswift_0" style="left: 0px; position: absolute; top: 0px; width: 7px; height: 90px;" src="index_4.html" width="7" height="90" frameborder="0"></iframe></ins></ins></ins>
+
+<!-- [adkingpro type=webrtcschool-top_bottom_ad] -->
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a href="https://plus.google.com/115584248522943422895" rel="publisher" style="visibility: hidden;">Google+</a>
+
+<div id="fb-root" class=" fb_reset"><div style="position: absolute; top: -10000px; height: 0px; width: 0px;"><div></div></div><div style="position: absolute; top: -10000px; height: 0px; width: 0px;"><div><iframe name="fb_xdm_frame_https" allowtransparency="true" allowfullscreen="true" scrolling="no" id="fb_xdm_frame_https" aria-hidden="true" title="Facebook Cross Domain Communication Frame" tabindex="-1" style="border: medium none;" src="index_5.html" frameborder="0"></iframe></div></div></div><div id="SL_balloon_obj" style="display: none;"><div id="SL_button" style="background: transparent url('undefined') repeat scroll 0% 0%; display: block; width: 24px; height: 24px; position: absolute; cursor: pointer;"></div><div id="SL_shadow_translation_result2" style="display: none;"></div><div id="SL_shadow_translator"><div id="SL_providers"><div class="SL_BL_LABLE_ON" title="Google" id="SL_P0">G</div><div class="SL_BL_LABLE_ON" title="Microsoft" id="SL_P1">M</div><div class="SL_BL_LABLE_ON" title="Translator" id="SL_P2">T</div></div><div id="SL_planshet" style="background: rgb(244, 245, 245) url('undefined') repeat scroll 0% 0%;"><div id="SL_arrow_up"></div><div id="SL_TB"><div id="bubblelogo" style="background: transparent url('undefined') repeat scroll 0% 0%; display: block; width: 24px; height: 24px; position: absolute;"></div><table id="SL_tables"><tr><td width="10%" align="right"><input id="SLloc" title="鎖定語言" type="checkbox"></td><td width="20%" align="left"><select id="SL_lng_from"><option value="auto">檢測語言</option><option value="sq">阿尔巴尼亚语</option><option value="ar">阿拉伯语</option><option value="az">阿塞拜疆语</option><option value="ga">爱尔兰语</option><option value="et">爱沙尼亚语</option><option value="eu">巴斯克语</option><option value="be">白俄罗斯语</option><option value="bg">保加利亚语</option><option value="is">冰岛语</option><option value="pl">波兰语</option><option value="bs">波斯尼亚语</option><option value="fa">波斯语</option><option value="af">布尔语(南非荷兰语)</option><option value="da">丹麦语</option><option value="de">德语</option><option value="ru">俄语</option><option value="fr">法语</option><option value="tl">菲律宾语</option><option value="fi">芬兰语</option><option value="km">高棉语</option><option value="ka">格鲁吉亚语</option><option value="gu">古吉拉特语</option><option value="kk">哈萨克语</option><option value="ht">海地克里奥尔语</option><option value="ko">韩语</option><option value="ha">豪萨语</option><option value="nl">荷兰语</option><option value="gl">加利西亚语</option><option value="ca">加泰罗尼亚语</option><option value="cs">捷克语</option><option value="kn">卡纳达语</option><option value="hr">克罗地亚语</option><option value="la">拉丁语</option><option value="lv">拉脱维亚语</option><option value="lo">老挝语</option><option value="lt">立陶宛语</option><option value="ro">罗马尼亚语</option><option value="mg">马尔加什语</option><option value="mt">马耳他语</option><option value="mr">马拉地语</option><option value="ml">马拉雅拉姆语</option><option value="ms">马来语</option><option value="mk">马其顿语</option><option value="mi">毛利语</option><option value="mn">蒙古语</option><option value="bn">孟加拉语</option><option value="my">缅甸语</option><option value="hmn">苗语</option><option value="zu">南非祖鲁语</option><option value="ne">尼泊尔语</option><option value="no">挪威语</option><option value="pa">旁遮普语</option><option value="pt">葡萄牙语</option><option value="ny">齐切瓦语</option><option value="ja">日语</option><option value="sv">瑞典语</option><option value="sr">塞尔维亚语</option><option value="st">塞索托语</option><option value="si">僧伽罗语</option><option value="eo">世界语</option><option value="sk">斯洛伐克语</option><option value="sl">斯洛文尼亚语</option><option value="sw">斯瓦希里语</option><option value="ceb">宿务语</option><option value="so">索马里语</option><option value="tg">塔吉克语</option><option value="te">泰卢固语</option><option value="ta">泰米尔语</option><option value="th">泰语</option><option value="tr">土耳其语</option><option value="cy">威尔士语</option><option value="ur">乌尔都语</option><option value="uk">乌克兰语</option><option value="uz">乌兹别克语</option><option value="iw">希伯来语</option><option value="el">希腊语</option><option value="es">西班牙语</option><option value="hu">匈牙利语</option><option value="hy">亚美尼亚语</option><option value="ig">伊博语</option><option value="it">意大利语</option><option value="yi">意第绪语</option><option value="hi">印地语</option><option value="su">印尼巽他语</option><option value="id">印尼语</option><option value="jw">印尼爪哇语</option><option value="en">英语</option><option value="yo">约鲁巴语</option><option value="vi">越南语</option><option value="zh-CN">中文简体</option><option value="zh-TW">中文繁体</option></select></td><td width="5%" align="center"><div id="SL_switch_b" title="切換語言" style="background: transparent url('undefined') repeat scroll 0% 0%; display: block; width: 10px; height: 10px; cursor: pointer;" align="center"></div></td><td width="20%" align="left"><select id="SL_lng_to"><option value="sq">阿尔巴尼亚语</option><option value="ar">阿拉伯语</option><option value="az">阿塞拜疆语</option><option value="ga">爱尔兰语</option><option value="et">爱沙尼亚语</option><option value="eu">巴斯克语</option><option value="be">白俄罗斯语</option><option value="bg">保加利亚语</option><option value="is">冰岛语</option><option value="pl">波兰语</option><option value="bs">波斯尼亚语</option><option value="fa">波斯语</option><option value="af">布尔语(南非荷兰语)</option><option value="da">丹麦语</option><option value="de">德语</option><option value="ru">俄语</option><option value="fr">法语</option><option value="tl">菲律宾语</option><option value="fi">芬兰语</option><option value="km">高棉语</option><option value="ka">格鲁吉亚语</option><option value="gu">古吉拉特语</option><option value="kk">哈萨克语</option><option value="ht">海地克里奥尔语</option><option value="ko">韩语</option><option value="ha">豪萨语</option><option value="nl">荷兰语</option><option value="gl">加利西亚语</option><option value="ca">加泰罗尼亚语</option><option value="cs">捷克语</option><option value="kn">卡纳达语</option><option value="hr">克罗地亚语</option><option value="la">拉丁语</option><option value="lv">拉脱维亚语</option><option value="lo">老挝语</option><option value="lt">立陶宛语</option><option value="ro">罗马尼亚语</option><option value="mg">马尔加什语</option><option value="mt">马耳他语</option><option value="mr">马拉地语</option><option value="ml">马拉雅拉姆语</option><option value="ms">马来语</option><option value="mk">马其顿语</option><option value="mi">毛利语</option><option value="mn">蒙古语</option><option value="bn">孟加拉语</option><option value="my">缅甸语</option><option value="hmn">苗语</option><option value="zu">南非祖鲁语</option><option value="ne">尼泊尔语</option><option value="no">挪威语</option><option value="pa">旁遮普语</option><option value="pt">葡萄牙语</option><option value="ny">齐切瓦语</option><option value="ja">日语</option><option value="sv">瑞典语</option><option value="sr">塞尔维亚语</option><option value="st">塞索托语</option><option value="si">僧伽罗语</option><option value="eo">世界语</option><option value="sk">斯洛伐克语</option><option value="sl">斯洛文尼亚语</option><option value="sw">斯瓦希里语</option><option value="ceb">宿务语</option><option value="so">索马里语</option><option value="tg">塔吉克语</option><option value="te">泰卢固语</option><option value="ta">泰米尔语</option><option value="th">泰语</option><option value="tr">土耳其语</option><option value="cy">威尔士语</option><option value="ur">乌尔都语</option><option value="uk">乌克兰语</option><option value="uz">乌兹别克语</option><option value="iw">希伯来语</option><option value="el">希腊语</option><option value="es">西班牙语</option><option value="hu">匈牙利语</option><option value="hy">亚美尼亚语</option><option value="ig">伊博语</option><option value="it">意大利语</option><option value="yi">意第绪语</option><option value="hi">印地语</option><option value="su">印尼巽他语</option><option value="id">印尼语</option><option value="jw">印尼爪哇语</option><option value="en">英语</option><option value="yo">约鲁巴语</option><option value="vi">越南语</option><option value="zh-CN">中文简体</option><option value="zh-TW">中文繁体</option></select></td><td width="5%" align="center"> </td><td width="6%" align="center"><div id="SL_TTS_voice" title="聆聽" style="background: transparent url('undefined') repeat scroll 0% 0%;"></div></td><td width="6%" align="center"><div id="SL_copy" title="複製譯文" style="background: transparent url('undefined') repeat scroll 0% 0%;"></div></td><td width="6%" align="center"><div id="SL_bbl_font_patch" title="此功能在字典中禁用"></div><div id="SL_bbl_font" title="字體大小" style="background: transparent url('undefined') repeat scroll 0% 0%;"></div></td><td width="6%" align="center"><div id="SL_TH" title="翻譯歷史" style="background: transparent url('undefined') repeat scroll 0% 0%;"></div></td><td width="10%"></td><td width="6%" align="right"><div id="SL_pin" title="固定彈出窗口" style="background: transparent url('undefined') repeat scroll 0% 0%; display: block; width: 16px; height: 16px; cursor: pointer;"></div></td></tr></table></div><div id="SL_alert_bbl"><div id="SLHKclose"></div><div id="SL_alert_cont"></div></div></div><div id="SL_shadow_translation_result" style="background: rgb(255, 255, 255) url('undefined') repeat scroll 0% 0%;"></div><div id="SL_loading" style="background: transparent url('undefined') repeat scroll 0% 0%; display: block; position: absolute; width: 35px; margin-left: 180px; margin-top: -40px; height: 35px;"></div><div id="SL_player2"></div><div id="SL_alert100" style="background: transparent url('undefined') repeat scroll 0% 0%;">語言功能限100個字符</div><div id="SL_Balloon_options" style="background: rgb(255, 255, 255) none repeat scroll 0% 0%;"><div id="SL_arrow_down"></div><table width="100%"><tr><td width="18%" align="left" height="16"><div id="SL_bbl_donate" title="進行一點捐款" style="background: transparent url('undefined') repeat scroll 0% 0%;"></div></td><td width="68%" align="center"><a href="#" id="OPlnk" title="顯示選項">選項</a> : <a href="#" id="HISTlnk" title="翻譯歷史">歷史</a> : <a href="http://about.imtranslator.net/tutorials/presentations/imtranslator-translator-for-firefox/popup-bubble-application/" target="_top" id="HELPlnk" title="幫助">幫助</a> : <a href="#" id="FBlnk" title="反饋">反饋</a></td><td width="15%" align="right"><a id="SL_Balloon_Close" href="#" title="關閉">關閉</a></td></tr></table></div></div></div><iframe id="rufous-sandbox" scrolling="no" allowtransparency="true" allowfullscreen="true" style="position: absolute; visibility: hidden; display: none; width: 0px; height: 0px; padding: 0px; border: medium none;" title="Twitter analytics iframe" src="index_6.html" frameborder="0"></iframe></body>
+</html>
