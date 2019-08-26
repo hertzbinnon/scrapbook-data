@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en-gb">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+
+<title>Cross-compiling Windows 64-bit VLC instructions - The VideoLAN Forums</title>
+
+
+	<link rel="canonical" href="http://forum.videolan.org/viewtopic.php?t=146175">
+
+<!--
+	phpBB style name: prosilver
+	Based on style:   prosilver (this is the default phpBB3 style)
+	Original author:  Tom Beddard ( http://www.subBlue.com/ )
+	Modified by:
+-->
+
+
+
+
+
+
+                <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+
+
+
+<!--[if lte IE 9]>
+	<link href="./styles/videolan-3.1/theme/tweaks.css?assets_version=92" rel="stylesheet" type="text/css" media="screen, projection" />
+<![endif]-->
+
+
+
+
+
+
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body id="phpbb" class="notouch section-viewtopic ltr hasjs">
+
+
+<div id="wrap">
+	<a id="top" class="anchor" accesskey="t"></a>
+	<div id="page-header">
+		<div class="headerbar">
+			<div class="inner">
+
+			<div id="site-description">
+				<a id="logo" class="logo" href="https://forum.videolan.org/" title="VideoLAN"><span class="imageset site_logo"></span></a>
+				<h1>The VideoLAN Forums</h1>
+				<p>Discussion and support for VLC media player and friends</p>
+				<p class="skiplink"><a href="#start_here">Skip to content</a></p>
+			</div>
+
+						<div id="search-box" class="search-box search-header">
+				<form action="https://forum.videolan.org/search.php" method="get" id="search">
+				<fieldset>
+					<input name="keywords" id="keywords" maxlength="128" title="Search for keywords" class="inputbox search tiny" size="20" value="" placeholder="Search…" type="search">
+					<button class="button icon-button search-icon" type="submit" title="Search">Search</button>
+					<a href="https://forum.videolan.org/search.php" class="button icon-button search-adv-icon" title="Advanced search">Advanced search</a>
+					
+				</fieldset>
+				</form>
+			</div>
+			
+			</div>
+		</div>
+
+		<div class="navbar" role="navigation">
+	<div class="inner">
+
+	<ul id="nav-main" class="linklist bulletin" role="menubar">
+
+		<li id="quick-links" class="small-icon responsive-menu dropdown-container" data-skip-responsive="true">
+			<a href="#" class="responsive-menu-link dropdown-trigger dropdown-toggle">Quick links</a>
+			<div class="dropdown hidden">
+				<div class="pointer"><div class="pointer-inner"></div></div>
+				<ul class="dropdown-contents" role="menu">
+					
+											<li class="separator"></li>
+																								<li class="small-icon icon-search-unanswered"><a href="https://forum.videolan.org/search.php?search_id=unanswered" role="menuitem">Unanswered topics</a></li>
+						<li class="small-icon icon-search-active"><a href="https://forum.videolan.org/search.php?search_id=active_topics" role="menuitem">Active topics</a></li>
+						<li class="separator"></li>
+						<li class="small-icon icon-search"><a href="https://forum.videolan.org/search.php" role="menuitem">Search</a></li>
+					
+										<li class="separator"></li>
+
+									</ul>
+			</div>
+		</li>
+
+						                
+			<li class="small-icon icon-logout rightside" data-skip-responsive="true"><a href="https://forum.videolan.org/ucp.php?mode=login" title="Login" accesskey="x" role="menuitem">Login</a></li>
+					<li class="small-icon icon-register rightside" data-skip-responsive="true"><a href="https://forum.videolan.org/ucp.php?mode=register" role="menuitem">Register</a></li>
+						</ul>
+
+	<ul id="nav-breadcrumbs" class="linklist navlinks" role="menubar">
+						<li class="small-icon icon-home breadcrumbs" style="max-width: 1293px;">
+			<span class="crumb"><a href="https://forum.videolan.org/" itemtype="http://data-vocabulary.org/Breadcrumb" itemscope="" data-navbar-reference="home" title="VideoLAN">VideoLAN</a></span>						<span class="crumb"><a href="https://forum.videolan.org/index.php" accesskey="h" itemtype="http://data-vocabulary.org/Breadcrumb" itemscope="" data-navbar-reference="index" title="Forum Home">Forum Home</a></span>
+											<span class="crumb"><a href="https://forum.videolan.org/viewforum.php?f=21" itemtype="http://data-vocabulary.org/Breadcrumb" itemscope="" data-forum-id="21" title="VLC media player">VLC media player</a></span>
+															<span class="crumb"><a href="https://forum.videolan.org/viewforum.php?f=14" itemtype="http://data-vocabulary.org/Breadcrumb" itemscope="" data-forum-id="14" title="VLC media player for Windows Troubleshooting">VLC media player for Windows Troubleshooting</a></span>
+												</li>
+		
+					<li class="rightside responsive-search" style="display: none;"><a href="https://forum.videolan.org/search.php" title="View the advanced search options" role="menuitem">Search</a></li>
+			</ul>
+
+	</div>
+</div>
+	</div>
+
+	
+	<a id="start_here" class="anchor"></a>
+	<div id="page-body">
+		
+		
+<h2 class="topic-title"><a href="https://forum.videolan.org/viewtopic.php?f=14&amp;t=146175">Cross-compiling Windows 64-bit VLC instructions</a></h2>
+<!-- NOTE: remove the style="display: none" when you want to have the forum description on the topic body -->
+<div style="display: none !important;">Microsoft Windows <strong>specific</strong> usage questions<br></div>
+
+	<div class="rules">
+		<div class="inner">
+
+					<strong>Forum rules</strong><br>
+			Please post only <a href="http://forum.videolan.org/viewtopic.php?f=14&amp;t=11125" class="postlink">Windows <strong>specific</strong> questions</a> in this forum category. If you don't know where to post, please read the different forums' rules. Thanks.
+		
+		</div>
+	</div>
+
+<div class="action-bar top">
+
+	<div class="buttons">
+		
+			<a href="https://forum.videolan.org/posting.php?mode=reply&amp;f=14&amp;t=146175" class="button icon-button reply-icon" title="Post a reply">
+			Post Reply		</a>
+	
+			</div>
+
+		<div class="dropdown-container dropdown-button-control topic-tools">
+		<span title="Topic tools" class="button icon-button tools-icon dropdown-trigger dropdown-select dropdown-toggle"></span>
+		<div class="dropdown hidden">
+			<div class="pointer"><div class="pointer-inner"></div></div>
+			<ul class="dropdown-contents">
+																								<li class="small-icon icon-print"><a href="https://forum.videolan.org/viewtopic.php?f=14&amp;t=146175&amp;view=print" title="Print view" accesskey="p">Print view</a></li>							</ul>
+		</div>
+	</div>
+
+			<div class="search-box">
+			<form method="get" id="topic-search" action="https://forum.videolan.org/search.php">
+			<fieldset>
+				<input class="inputbox search tiny" name="keywords" id="search_keywords" size="20" placeholder="Search this topic…" type="search">
+				<button class="button icon-button search-icon" type="submit" title="Search">Search</button>
+				<a href="https://forum.videolan.org/search.php" class="button icon-button search-adv-icon" title="Advanced search">Advanced search</a>
+				<input name="t" value="146175" type="hidden">
+<input name="sf" value="msgonly" type="hidden">
+
+			</fieldset>
+			</form>
+		</div>
+	
+			<div class="pagination">
+			5 posts
+							• Page <strong>1</strong> of <strong>1</strong>
+					</div>
+	
+</div>
+
+
+			<div id="p479474" class="post has-profile bg2">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile479474">
+			<dt class="has-profile-rank no-avatar">
+				<div class="avatar-container">
+																			</div>
+				<a href="https://forum.videolan.org/memberlist.php?mode=viewprofile&amp;u=191585" class="username">sabayondessert</a>			</dt>
+
+			<dd class="profile-rank">New Cone<br><img src="1.png" alt="New Cone" title="New Cone"></dd>
+		<dd class="profile-posts"><strong>Posts:</strong> <a href="https://forum.videolan.org/search.php?author_id=191585&amp;sr=posts">2</a></dd>		<dd class="profile-joined"><strong>Joined:</strong> 23 Aug 2018 07:09</dd>		
+		
+											<dd class="profile-custom-field profile-vlc_version"><strong>VLC version:</strong> 3.0.4; 4.0.0-dev</dd>
+												<dd class="profile-custom-field profile-os"><strong>Operating System:</strong> Windows/Linux/macOS</dd>
+							
+						
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content479474">
+
+			<h3 class="first"><a href="#p479474">Cross-compiling Windows 64-bit VLC instructions</a></h3>
+
+									<ul class="post-buttons">
+																																									<li>
+							<a href="https://forum.videolan.org/posting.php?mode=quote&amp;f=14&amp;p=479474" title="Reply with quote" class="button icon-button quote-icon"><span>Quote</span></a>
+						</li>
+														<li class="responsive-menu hidden dropdown-container"><a href="javascript:void(0);" class="responsive-menu-link dropdown-toggle">&nbsp;</a><div class="dropdown hidden"><div class="pointer"><div class="pointer-inner"></div></div><ul class="dropdown-contents"></ul></div></li></ul>
+					
+			<p class="author"><a href="https://forum.videolan.org/viewtopic.php?p=479474#p479474"><span class="imageset icon_post_target" title="Post">Post</span></a><span class="responsive-hide">by <strong><a href="https://forum.videolan.org/memberlist.php?mode=viewprofile&amp;u=191585" class="username">sabayondessert</a></strong> » </span>30 Aug 2018 10:58 </p>
+
+			
+			
+			<div class="content">Below is a list of instructions that describe how I compiled the development version of VLC.  It’s based on the compiling cheat sheet listed here:<br>
+<br>
+<a href="https://forum.videolan.org/viewtopic.php?f=32&amp;t=143536&amp;hilit=compile+cheat&amp;sid=07fbd72421e8a9fa0a8f73995349bc89#p475525" class="postlink">https://forum.videolan.org/viewtopic.ph ... 89#p475525</a><br>
+<br>
+I originally followed these instructions and soon realized there were other things I needed to do in order to get this to build successfully.  Some of those things are listed in the first section.  The second section lists the original steps from the cheat sheet (for the most part) with some minor changes I needed to make to get this to build correctly.  If you want to give this a shot, I suggest starting from the first section for some background info.  Then follow the steps in the second section.  The goal here is to list steps that will yield a successful build as well as reduce the time it takes for someone starting from scratch to learn how to compile this. <br>
+ <br>
+<span style="text-decoration: underline;">Issues and changes from the cheat sheet (in no particular order)</span><br>
+<br>
+    1. Follow the steps EXACTLY as they are listed in the next section.  It should go smoothly if you do this.  I had an issue with Step 16 at first-if you get an error that says ‘./boostrap needs to be run in a subdirectory’, work your way back to the git ‘vlc’ directory reached at Step 11 and try it again.<br>
+<br>
+    2. In step 3 and step 6, if you're logged in as a standard user, you need to use <span style="text-decoration: underline;">sudo</span> in front of the command (change from cheat sheet). If not you will get errors saying failed to get default registry endpoint from daemon (permission denied), etc.  This is just because you need to use sudo in front of the docker pull command and not an issue with your internet.<br>
+<br>
+    3. Steps 7 and 8 were added because I needed to update the packages and install python inside the docker image.  If you don’t, make will complain in step 21 that python is needed compile Qt and that it’s missing.  Installing python here will allow you to follow the steps cleanly until the end.<br>
+<br>
+    4. I added Step 1 and changed Step 2 from the cheat sheet.  Installing docker is not a trivial thing-you can’t just run ‘sudo apt-get install docker-ce’ right out of the box.  You need to install the repositories and other stuff.  The link in Step 1 will explain how to do this.  Note:  You only need to follow the instructions <span style="text-decoration: underline;">listed in Step 1 contained in the link</span>.  The other steps describe how to install docker an optional way and how to use docker.  You can confirm the installation at the end of the Step 1 instructions.<br>
+<br>
+    5. There are instructions on installing Docker for other versions of Ubuntu in the link, which translates to other versions of Linux Mint.  If you’re running a different distro/etc., performing these steps prior to installing docker seems like a common thing folks need to do in order to run it regardless of the system.  A quick search of the internet about installing it on your flavor of Linux should be fruitful.<br>
+<br>
+    6. In Step 3 and Step 6, I used the 64-bit image:  vlc-debian-win64.  This is a change from the cheat sheet.  These steps here will probably work the same with vlc-debian-win32, however I haven’t tried it (yet).<br>
+<br>
+    7. It took my system approximately 2.5 hours to compile (complete Step 15).  Tack on another hour for the rest of the stuff and it should take about 3.5 hours to have a compiled version that can be installed on 64-bit Windows.  My machine specs are listed below so if you have a different setup, your time will probably be different, and hopefully faster.<br>
+<br>
+    8. These steps were valid 8-29-18.  I can’t guarantee they will work any time after that.  I could return to this in 3 months and end up in the weeds.  I wanted to learn how to compile this version of VLC so I could confirm a separate issue I found in a previous version (3.0.3).<br>
+<br>
+<span style="text-decoration: underline;">Steps to compile development version of VLC</span><br>
+       <br>
+1   Install docker: For docker-ce you have to add the prerequisites and the repository.  If your using Linux Mint 19/Ubuntu 18.04 follow the instructions to install it here:<br>
+      <a href="https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-18-04" class="postlink">https://www.digitalocean.com/community/ ... untu-18-04</a><br>
+2   Verify docker has been successfully installed-completed in Step 1 above and in the link. (The original command "sudo apt-get install docker-ce" from the cheat sheet is executed in Step 1 now. )<br>
+3   sudo docker pull registry.videolan.org:5000/vlc-debian-win64<br>
+4   cd ~<br>
+5   mkdir win64<br>
+6   sudo docker run -v ~/win64:/win64 -i -t registry.videolan.org:5000/vlc-debian-win64 /bin/bash (...you will now be running the build environment from a docker container as root)<br>
+7   apt-get update (updates the docker repositories)<br>
+8   apt-get install python (installs python on the docker image.  Needed to compile Qt stuff later)<br>
+9   cd win64<br>
+10   git clone <a href="https://git.videolan.org/git/vlc" class="postlink">https://git.videolan.org/git/vlc</a><br>
+11   cd vlc<br>
+12   mkdir -p contrib/win32<br>
+13   cd contrib/win32<br>
+14   ../bootstrap --host=x86_64-w64-mingw32 –disable-protobuf<br>
+15   make - (... this will take some time so turn off screensaver and go out for lunch)<br>
+16   cd -<br>
+17   ./bootstrap (note the dot-slash as opposed to the dot-dot-slash in Step 13)<br>
+18   mkdir win32<br>
+19   cd win32<br>
+20   ../extras/package/win32/configure.sh --host=x86_64-w64-mingw32 –build=x86_64-pc-linux-gnu<br>
+21   make<br>
+22   make package-win32[/list]<br>
+<br>
+Original cheat sheet link here (again):<br>
+<a href="https://forum.videolan.org/viewtopic.php?f=32&amp;t=143536&amp;hilit=compile+cheat&amp;sid=07fbd72421e8a9fa0a8f73995349bc89#p475525" class="postlink">https://forum.videolan.org/viewtopic.ph ... 89#p475525</a><br>
+<br>
+<span style="text-decoration: underline;">Development machine summary:</span><br>
+<br>
+<em>VirtualBox guest system</em><br>
+Distribution:  	Linux Mint 19 Mate 64-bit (fresh install out of the box)<br>
+Memory:			4 GB<br>
+Processor count:	2<br>
+Virtual HDD 1:	50 GB<br>
+Virtual HDD 2:	75 GB<br>
+User:			Normal user privileges (not Administrator or root)<br>
+<br>
+<em>Host system</em><br>
+Windows 10 Pro<br>
+12 GB memory<br>
+4th Gen Intel i7</div>
+
+			
+									
+									
+						</div>
+
+		</div>
+
+		<div class="back2top"><a href="#wrap" class="top" title="Top">Top</a></div>
+
+		</div>
+	</div>
+
+	<hr class="divider">
+				<div id="p479504" class="post has-profile bg1">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile479504">
+			<dt class="has-profile-rank no-avatar">
+				<div class="avatar-container">
+																			</div>
+				<a href="https://forum.videolan.org/memberlist.php?mode=viewprofile&amp;u=181128" style="color: rgb(255, 102, 0);" class="username-coloured">garf</a>			</dt>
+
+			<dd class="profile-rank">Developer<br><img src="videolan.png" alt="Developer" title="Developer"></dd>
+		<dd class="profile-posts"><strong>Posts:</strong> <a href="https://forum.videolan.org/search.php?author_id=181128&amp;sr=posts">132</a></dd>		<dd class="profile-joined"><strong>Joined:</strong> 19 Jul 2017 09:38</dd>		
+		
+						
+						
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content479504">
+
+			<h3><a href="#p479504">Re: Cross-compiling Windows 64-bit VLC instructions</a></h3>
+
+									<ul class="post-buttons">
+																																									<li>
+							<a href="https://forum.videolan.org/posting.php?mode=quote&amp;f=14&amp;p=479504" title="Reply with quote" class="button icon-button quote-icon"><span>Quote</span></a>
+						</li>
+														<li class="responsive-menu hidden dropdown-container"><a href="javascript:void(0);" class="responsive-menu-link dropdown-toggle">&nbsp;</a><div class="dropdown hidden"><div class="pointer"><div class="pointer-inner"></div></div><ul class="dropdown-contents"></ul></div></li></ul>
+					
+			<p class="author"><a href="https://forum.videolan.org/viewtopic.php?p=479504#p479504"><span class="imageset icon_post_target" title="Post">Post</span></a><span class="responsive-hide">by <strong><a href="https://forum.videolan.org/memberlist.php?mode=viewprofile&amp;u=181128" style="color: rgb(255, 102, 0);" class="username-coloured">garf</a></strong> » </span>31 Aug 2018 09:57 </p>
+
+			
+			
+			<div class="content">Hello,<br>
+<br>
+nice tutorial !<br>
+One quick tip: steps 12-22 can now be replaced with the included build script:
+<div class="codebox"><p>Code: <a href="#" onclick="selectCode(this); return false;">Select all</a></p><code>./extras/package/win32/build.sh -a x86_64 -i r
+</code></div></div>
+
+			
+									
+									
+						</div>
+
+		</div>
+
+		<div class="back2top"><a href="#wrap" class="top" title="Top">Top</a></div>
+
+		</div>
+	</div>
+
+	<hr class="divider">
+				<div id="p479606" class="post has-profile bg2">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile479606">
+			<dt class="has-profile-rank no-avatar">
+				<div class="avatar-container">
+																			</div>
+				<a href="https://forum.videolan.org/memberlist.php?mode=viewprofile&amp;u=191585" class="username">sabayondessert</a>			</dt>
+
+			<dd class="profile-rank">New Cone<br><img src="1.png" alt="New Cone" title="New Cone"></dd>
+		<dd class="profile-posts"><strong>Posts:</strong> <a href="https://forum.videolan.org/search.php?author_id=191585&amp;sr=posts">2</a></dd>		<dd class="profile-joined"><strong>Joined:</strong> 23 Aug 2018 07:09</dd>		
+		
+											<dd class="profile-custom-field profile-vlc_version"><strong>VLC version:</strong> 3.0.4; 4.0.0-dev</dd>
+												<dd class="profile-custom-field profile-os"><strong>Operating System:</strong> Windows/Linux/macOS</dd>
+							
+						
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content479606">
+
+			<h3><a href="#p479606">Re: Cross-compiling Windows 64-bit VLC instructions</a></h3>
+
+									<ul class="post-buttons">
+																																									<li>
+							<a href="https://forum.videolan.org/posting.php?mode=quote&amp;f=14&amp;p=479606" title="Reply with quote" class="button icon-button quote-icon"><span>Quote</span></a>
+						</li>
+														<li class="responsive-menu hidden dropdown-container"><a href="javascript:void(0);" class="responsive-menu-link dropdown-toggle">&nbsp;</a><div class="dropdown hidden"><div class="pointer"><div class="pointer-inner"></div></div><ul class="dropdown-contents"></ul></div></li></ul>
+					
+			<p class="author"><a href="https://forum.videolan.org/viewtopic.php?p=479606#p479606"><span class="imageset icon_post_target" title="Post">Post</span></a><span class="responsive-hide">by <strong><a href="https://forum.videolan.org/memberlist.php?mode=viewprofile&amp;u=191585" class="username">sabayondessert</a></strong> » </span>03 Sep 2018 01:33 </p>
+
+			
+			
+			<div class="content">Thanks, and thanks for posting this!!  I've updated the instructions and listed them below:<br>
+<br>
+1 Install docker: For docker-ce you have to add the prerequisites and the repository. If your using Linux Mint 19/Ubuntu 18.04 follow the instructions to install it here: <a href="https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-18-04" class="postlink">Install Docker on Linux Mint 19/Ubuntu 18.04</a><br>
+2 Verify docker has been successfully installed-completed in Step 1 above and in the link. (The original command "sudo apt-get install docker-ce" from the cheat sheet is executed in Step 1 now. )<br>
+3 sudo docker pull registry.videolan.org:5000/vlc-debian-win64<br>
+4 cd ~<br>
+5 mkdir win64<br>
+6 sudo docker run -v ~/win64:/win64 -i -t registry.videolan.org:5000/vlc-debian-win64 /bin/bash (...you will now be running the build environment from a docker container as root)<br>
+7 apt-get update (updates the docker repositories)<br>
+8 apt-get install python (installs python on the docker image. Needed to compile Qt stuff later)<br>
+9 cd win64<br>
+10 git clone <a href="https://git.videolan.org/git/vlc" class="postlink">https://git.videolan.org/git/vlc</a><br>
+11 cd vlc<br>
+12 ./extras/package/win32/build.sh -a x86_64 -i r</div>
+
+			
+									
+									
+						</div>
+
+		</div>
+
+		<div class="back2top"><a href="#wrap" class="top" title="Top">Top</a></div>
+
+		</div>
+	</div>
+
+	<hr class="divider">
+				<div id="p490185" class="post has-profile bg1">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile490185">
+			<dt class="has-profile-rank no-avatar">
+				<div class="avatar-container">
+																			</div>
+				<a href="https://forum.videolan.org/memberlist.php?mode=viewprofile&amp;u=196828" class="username">mangup</a>			</dt>
+
+			<dd class="profile-rank">Blank Cone<br><img src="2.png" alt="Blank Cone" title="Blank Cone"></dd>
+		<dd class="profile-posts"><strong>Posts:</strong> <a href="https://forum.videolan.org/search.php?author_id=196828&amp;sr=posts">62</a></dd>		<dd class="profile-joined"><strong>Joined:</strong> 12 Apr 2019 20:23</dd>		
+		
+						
+						
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content490185">
+
+			<h3><a href="#p490185">Re: Cross-compiling Windows 64-bit VLC instructions</a></h3>
+
+									<ul class="post-buttons">
+																																									<li>
+							<a href="https://forum.videolan.org/posting.php?mode=quote&amp;f=14&amp;p=490185" title="Reply with quote" class="button icon-button quote-icon"><span>Quote</span></a>
+						</li>
+														<li class="responsive-menu hidden dropdown-container"><a href="javascript:void(0);" class="responsive-menu-link dropdown-toggle">&nbsp;</a><div class="dropdown hidden"><div class="pointer"><div class="pointer-inner"></div></div><ul class="dropdown-contents"></ul></div></li></ul>
+					
+			<p class="author"><a href="https://forum.videolan.org/viewtopic.php?p=490185#p490185"><span class="imageset icon_post_target" title="Post">Post</span></a><span class="responsive-hide">by <strong><a href="https://forum.videolan.org/memberlist.php?mode=viewprofile&amp;u=196828" class="username">mangup</a></strong> » </span>17 Apr 2019 15:06 </p>
+
+			
+			
+			<div class="content">Qt is compiled from scratch on step 12?</div>
+
+			
+									
+									
+						</div>
+
+		</div>
+
+		<div class="back2top"><a href="#wrap" class="top" title="Top">Top</a></div>
+
+		</div>
+	</div>
+
+	<hr class="divider">
+				<div id="p490282" class="post has-profile bg2">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile490282">
+			<dt class="has-profile-rank no-avatar">
+				<div class="avatar-container">
+																			</div>
+				<a href="https://forum.videolan.org/memberlist.php?mode=viewprofile&amp;u=6753" style="color: rgb(170, 0, 0);" class="username-coloured">Jean-Baptiste Kempf</a>			</dt>
+
+			<dd class="profile-rank">Site Administrator<br><img src="videolan.png" alt="Site Administrator" title="Site Administrator"></dd>
+		<dd class="profile-posts"><strong>Posts:</strong> <a href="https://forum.videolan.org/search.php?author_id=6753&amp;sr=posts">37291</a></dd>		<dd class="profile-joined"><strong>Joined:</strong> 22 Jul 2005 15:29</dd>		
+		
+											<dd class="profile-custom-field profile-vlc_version"><strong>VLC version:</strong> 4.0.0-git</dd>
+												<dd class="profile-custom-field profile-os"><strong>Operating System:</strong> Linux, Windows, Mac</dd>
+																						<dd class="profile-custom-field profile-phpbb_location"><strong>Location:</strong> Cone, France</dd>
+							
+							<dd class="profile-contact">
+				<strong>Contact:</strong>
+				<div class="dropdown-container dropdown-left">
+					<a href="#" class="dropdown-trigger dropdown-toggle"><span class="imageset icon_contact" title="Contact Jean-Baptiste Kempf">Contact Jean-Baptiste Kempf</span></a>
+					<div class="dropdown hidden">
+						<div class="pointer"><div class="pointer-inner"></div></div>
+						<div class="dropdown-contents contact-icons">
+																																								<div>
+																	<a href="https://www.icq.com/people/66401295/" title="ICQ">
+										<span class="contact-icon phpbb_icq-icon">ICQ</span>
+									</a>
+																																																<a href="http://www.jbkempf.com/" title="Website" class="last-cell">
+										<span class="contact-icon phpbb_website-icon">Website</span>
+									</a>
+																	</div>
+																					</div>
+					</div>
+				</div>
+			</dd>
+				
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content490282">
+
+			<h3><a href="#p490282">Re: Cross-compiling Windows 64-bit VLC instructions</a></h3>
+
+									<ul class="post-buttons">
+																																									<li>
+							<a href="https://forum.videolan.org/posting.php?mode=quote&amp;f=14&amp;p=490282" title="Reply with quote" class="button icon-button quote-icon"><span>Quote</span></a>
+						</li>
+														<li class="responsive-menu hidden dropdown-container"><a href="javascript:void(0);" class="responsive-menu-link dropdown-toggle">&nbsp;</a><div class="dropdown hidden"><div class="pointer"><div class="pointer-inner"></div></div><ul class="dropdown-contents"></ul></div></li></ul>
+					
+			<p class="author"><a href="https://forum.videolan.org/viewtopic.php?p=490282#p490282"><span class="imageset icon_post_target" title="Post">Post</span></a><span class="responsive-hide">by <strong><a href="https://forum.videolan.org/memberlist.php?mode=viewprofile&amp;u=6753" style="color: rgb(170, 0, 0);" class="username-coloured">Jean-Baptiste Kempf</a></strong> » </span>19 Apr 2019 07:24 </p>
+
+			
+			
+			<div class="content"><blockquote class="uncited"><div>
+Qt is compiled from scratch on step 12?
+</div></blockquote>
+
+Yes.</div>
+
+			
+									
+									<div id="sig490282" class="signature"><a href="http://www.jbkempf.com/" class="postlink">Jean-Baptiste Kempf</a> <br>
+<a href="http://www.jbkempf.com/" class="postlink">http://www.jbkempf.com/</a> - <a href="http://www.jbkempf.com/blog/category/Videolan" class="postlink">http://www.jbkempf.com/blog/category/Videolan</a><br>
+VLC media player developer, VideoLAN President and Sites administrator<br>
+If you want an answer to your question, just be specific and precise. Don't use Private Messages.</div>
+						</div>
+
+		</div>
+
+		<div class="back2top"><a href="#wrap" class="top" title="Top">Top</a></div>
+
+		</div>
+	</div>
+
+	<hr class="divider">
+	
+
+	<form id="viewtopic" method="post" action="https://forum.videolan.org/viewtopic.php?f=14&amp;t=146175">
+	<fieldset class="display-options" style="margin-top: 0px;">
+				<label>Display posts from previous: <select name="st" id="st"><option value="0" selected="selected">All posts</option><option value="1">1 day</option><option value="7">7 days</option><option value="14">2 weeks</option><option value="30">1 month</option><option value="90">3 months</option><option value="180">6 months</option><option value="365">1 year</option></select></label>
+		<label>Sort by <select name="sk" id="sk"><option value="a">Author</option><option value="t" selected="selected">Post time</option><option value="s">Subject</option></select></label> <label><select name="sd" id="sd"><option value="a" selected="selected">Ascending</option><option value="d">Descending</option></select></label>
+		<input name="sort" value="Go" class="button2" type="submit">
+			</fieldset>
+	</form>
+	<hr>
+
+<div class="action-bar bottom">
+	<div class="buttons">
+		
+			<a href="https://forum.videolan.org/posting.php?mode=reply&amp;f=14&amp;t=146175" class="button icon-button reply-icon" title="Post a reply">
+			Post Reply		</a>
+	
+			</div>
+
+		<div class="dropdown-container dropdown-button-control topic-tools">
+		<span title="Topic tools" class="button icon-button tools-icon dropdown-trigger dropdown-select dropdown-toggle"></span>
+		<div class="dropdown hidden">
+			<div class="pointer"><div class="pointer-inner"></div></div>
+			<ul class="dropdown-contents">
+																								<li class="small-icon icon-print"><a href="https://forum.videolan.org/viewtopic.php?f=14&amp;t=146175&amp;view=print" title="Print view" accesskey="p">Print view</a></li>							</ul>
+		</div>
+	</div>
+
+	
+			<div class="pagination">
+			5 posts
+							• Page <strong>1</strong> of <strong>1</strong>
+					</div>
+		<div class="clear"></div>
+</div>
+
+
+	<p class="jumpbox-return"><a href="https://forum.videolan.org/viewforum.php?f=14" class="left-box arrow-left" accesskey="r">Return to “VLC media player for Windows Troubleshooting”</a></p>
+
+
+	<div class="dropdown-container dropdown-container-right dropdown-up dropdown-left dropdown-button-control" id="jumpbox">
+		<span title="Jump to" class="dropdown-trigger button dropdown-select dropdown-toggle">
+			Jump to		</span>
+		<div class="dropdown hidden">
+			<div class="pointer"><div class="pointer-inner"></div></div>
+			<ul class="dropdown-contents">
+																			<li><a href="https://forum.videolan.org/viewforum.php?f=20">VideoLAN project</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forum.videolan.org/viewforum.php?f=18">Contribute and help the VideoLAN project</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forum.videolan.org/viewforum.php?f=10">Forum, Website and Artwork discussion</a></li>
+																<li><a href="https://forum.videolan.org/viewforum.php?f=21">VLC media player</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forum.videolan.org/viewforum.php?f=14">VLC media player for Windows Troubleshooting</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forum.videolan.org/viewforum.php?f=13">VLC media player for Linux and friends Troubleshooting</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forum.videolan.org/viewforum.php?f=12">VLC media player for Mac OS X Troubleshooting</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forum.videolan.org/viewforum.php?f=36">VLC for iOS, Apple Watch and Apple TV</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forum.videolan.org/viewforum.php?f=35">VLC for Android and Chrome OS</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forum.videolan.org/viewforum.php?f=37">​VLC for Windows Store​</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forum.videolan.org/viewforum.php?f=2">General VLC media player Troubleshooting</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forum.videolan.org/viewforum.php?f=17">VLC media player Translations</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forum.videolan.org/viewforum.php?f=7">VLC media player Feature Requests</a></li>
+																<li><a href="https://forum.videolan.org/viewforum.php?f=28">Customize VLC media player</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forum.videolan.org/viewforum.php?f=15">Skins</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forum.videolan.org/viewforum.php?f=26">Released Skins</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forum.videolan.org/viewforum.php?f=29">Scripting VLC in lua</a></li>
+																<li><a href="https://forum.videolan.org/viewforum.php?f=31">Development around VLC media player</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forum.videolan.org/viewforum.php?f=16">Web and scripting</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forum.videolan.org/viewforum.php?f=32">Development around libVLC</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forum.videolan.org/viewforum.php?f=34">VLC 1.1.0 testing</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forum.videolan.org/viewforum.php?f=33">VLC 1.0.0 testing</a></li>
+																<li><a href="https://forum.videolan.org/viewforum.php?f=22">Serving streams</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forum.videolan.org/viewforum.php?f=4">VLC stream-output (sout)</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forum.videolan.org/viewforum.php?f=11">VLM</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forum.videolan.org/viewforum.php?f=30">VideoLAN Manager (VLMa)</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forum.videolan.org/viewforum.php?f=3">VideoLAN Server and miniSAPserver</a></li>
+																<li><a href="https://forum.videolan.org/viewforum.php?f=23">Other</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forum.videolan.org/viewforum.php?f=5">Coffee Corner</a></li>
+																<li><a href="https://forum.videolan.org/viewforum.php?f=24">Archive</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forum.videolan.org/viewforum.php?f=1">VideoLAN</a></li>
+										</ul>
+		</div>
+	</div>
+
+
+	<div class="stat-block online-list">
+		<h3>Who is online</h3>
+		<p>Users browsing this forum: No registered users and 12 guests</p>
+	</div>
+
+			</div>
+
+
+<div id="page-footer">
+	<div class="navbar">
+	<div class="inner">
+
+	<ul id="nav-footer" class="linklist bulletin" role="menubar">
+		<li class="small-icon icon-home breadcrumbs">
+			<span class="crumb"><a href="https://forum.videolan.org/" data-navbar-reference="home" title="VideoLAN">VideoLAN</a></span>						<span class="crumb"><a href="https://forum.videolan.org/index.php" data-navbar-reference="index" title="Forum Home">Forum Home</a></span>
+					</li>
+		
+				<li class="responsive-menu hidden rightside dropdown-container"><a href="javascript:void(0);" class="responsive-menu-link dropdown-toggle">&nbsp;</a><div class="dropdown hidden"><div class="pointer"><div class="pointer-inner"></div></div><ul class="dropdown-contents"></ul></div></li><li class="rightside">All times are <span title="Europe/Paris">UTC+02:00</span></li>
+							<li class="small-icon icon-delete-cookies rightside"><a href="https://forum.videolan.org/ucp.php?mode=delete_cookies" data-ajax="true" data-refresh="true" role="menuitem">Delete cookies</a></li>
+												</ul>
+
+	</div>
+</div>
+
+	<div class="copyright">
+				Powered by <a href="https://www.phpbb.com/">phpBB</a>® Forum Software © phpBB Limited
+						<br>GZIP: On			</div>
+
+	<div id="darkenwrapper" data-ajax-error-title="AJAX error" data-ajax-error-text="Something went wrong when processing your request." data-ajax-error-text-abort="User aborted request." data-ajax-error-text-timeout="Your request timed out; please try again." data-ajax-error-text-parsererror="Something went wrong with the request and the server returned an invalid reply.">
+		<div id="darken">&nbsp;</div>
+	</div>
+	<div id="loading_indicator"></div>
+
+	<div id="phpbb_alert" class="phpbb_alert" data-l-err="Error" data-l-timeout-processing-req="Request timed out.">
+		<a href="#" class="alert_close"></a>
+		<h3 class="alert_title">&nbsp;</h3><p class="alert_text"></p>
+	</div>
+	<div id="phpbb_confirm" class="phpbb_alert">
+		<a href="#" class="alert_close"></a>
+		<div class="alert_text"></div>
+	</div>
+</div>
+
+</div>
+
+<div>
+	<a id="bottom" class="anchor" accesskey="z"></a>
+	</div>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
