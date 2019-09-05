@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+        
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0,viewport-fit=cover">
+<link rel="shortcut icon" type="image/x-icon" href="nti4mwu5.ico">
+<link rel="mask-icon" href="https://res.wx.qq.com/a/wx_fed/assets/res/MjliNWVm.svg" color="#4C4C4C">
+<link rel="apple-touch-icon-precomposed" href="https://res.wx.qq.com/a/wx_fed/assets/res/OTE0YTAw.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+
+
+        
+
+  
+  <meta name="description" content="网络波动带来的卡顿直接影响用户的体验，WebRTC中设计了一套基于延迟和丢包反馈的拥塞机制（GCC）和带宽调节策略来保证延迟、质量和网路速度之间平衡。本文来自学霸君资深架构师袁荣喜和萍乡学院辛锋的投稿，由LiveVideoStack全文发布">
+  <meta name="author" content="袁荣喜，辛锋">
+
+  
+  <meta property="og:title" content="WebRTC的拥塞控制和带宽策略">
+  <meta property="og:url" content="http://mp.weixin.qq.com/s?__biz=MzU1NTEzOTM5Mw==&amp;mid=2247485966&amp;idx=1&amp;sn=113920ae7c4f908f4576fbcc1484781a&amp;chksm=fbd9a220ccae2b36aa8796f02f37da4e19748a42635a5f8ad72554dd05ab97fe094e28227905#rd">
+  <meta property="og:image" content="http://mmbiz.qpic.cn/mmbiz_jpg/CZeKj44ymYYMpL39TmZfvN0yibwgsrbe1V5ia7A7RSSpvFQjPRxian3l0sm73niaib8xhQCuN9tp1QnCMd3AfEib68dw/0?wx_fmt=jpeg">
+  <meta property="og:description" content="网络波动带来的卡顿直接影响用户的体验，WebRTC中设计了一套基于延迟和丢包反馈的拥塞机制（GCC）和带宽调节策略来保证延迟、质量和网路速度之间平衡。本文来自学霸君资深架构师袁荣喜和萍乡学院辛锋的投稿，由LiveVideoStack全文发布">
+  <meta property="og:site_name" content="WeChat Official Accounts Platform">
+  <meta property="og:type" content="article">
+  <meta property="og:article:author" content="袁荣喜，辛锋">
+
+  
+  <meta property="twitter:card" content="summary">
+  <meta property="twitter:image" content="http://mmbiz.qpic.cn/mmbiz_jpg/CZeKj44ymYYMpL39TmZfvN0yibwgsrbe1V5ia7A7RSSpvFQjPRxian3l0sm73niaib8xhQCuN9tp1QnCMd3AfEib68dw/0?wx_fmt=jpeg">
+  <meta property="twitter:title" content="WebRTC的拥塞控制和带宽策略">
+  <meta property="twitter:creator" content="袁荣喜，辛锋">
+  <meta property="twitter:site" content="WeChat Official Accounts Platform">
+  <meta property="twitter:description" content="网络波动带来的卡顿直接影响用户的体验，WebRTC中设计了一套基于延迟和丢包反馈的拥塞机制（GCC）和带宽调节策略来保证延迟、质量和网路速度之间平衡。本文来自学霸君资深架构师袁荣喜和萍乡学院辛锋的投稿，由LiveVideoStack全文发布">
+
+
+        
+        <title>WebRTC的拥塞控制和带宽策略</title>
+        
+
+
+
+
+<!--[if lt IE 9]>
+<link rel="stylesheet" type="text/css" href="//res.wx.qq.com/mmbizwap/en_US/htmledition/style/page/appmsg_new/pc47cb35.css">
+<![endif]-->
+
+    
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body id="activity-detail" class="zh_CN mm_appmsg appmsg_skin_default appmsg_style_default not_in_mm">
+        
+
+
+
+
+        <link rel="dns-prefetch" href="https://res.wx.qq.com/">
+<link rel="dns-prefetch" href="https://mmbiz.qpic.cn/">
+<link rel="dns-prefetch" href="https://wxa.wxs.qq.com/">
+<link rel="shortcut icon" type="image/x-icon" href="nti4mwu5.ico">
+<link rel="mask-icon" href="https://res.wx.qq.com/a/wx_fed/assets/res/MjliNWVm.svg" color="#4C4C4C">
+<link rel="apple-touch-icon-precomposed" href="https://res.wx.qq.com/a/wx_fed/assets/res/OTE0YTAw.png">
+
+
+
+
+        
+
+
+<div id="js_article" class="rich_media">
+    
+    <div id="js_top_ad_area" class="top_banner"></div>
+    
+    <div class="rich_media_inner">
+
+        
+        
+		<div id="page-content" class="rich_media_area_primary">
+
+		  <div class="rich_media_area_primary_inner">
+
+            
+                          
+                        
+
+            <div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">
+                    
+                    
+                    
+            WebRTC的拥塞控制和带宽策略
+                      </h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">From: </span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        袁荣喜，辛锋
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt">
+                      <a href="javascript:void(0);" id="js_name">
+                        LiveVideoStack                      </a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display: none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">LiveVideoStack</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="s" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">WeChat ID</label>
+                              <span class="profile_meta_value">livevideostack</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">About Feature</label>
+                              <span class="profile_meta_value">LiveVideoStack直播技术社区官方账号，分享音视频直播相关技术干货，产品研究与行业趋势。</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2018-05-24</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);"><img data-ratio="0.5555555555555556" data-src="https://mmbiz.qpic.cn/mmbiz_jpg/CZeKj44ymYYMpL39TmZfvN0yibwgsrbe1V5ia7A7RSSpvFQjPRxian3l0sm73niaib8xhQCuN9tp1QnCMd3AfEib68dw/640?wx_fmt=jpeg" data-type="jpeg" class="" data-w="900" _width="677px" src="640" style="width: 677px !important; height: auto !important; visibility: visible !important;" crossorigin="anonymous" data-fail="0"></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);"><br></span></p><blockquote><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);">网络的波动带来的卡顿直接影响着用户的体验，在WebRTC中设计了一套基于延迟和丢包反馈的拥塞机制（GCC）和带宽调节策略来保证延迟、质量和网路速度之间平衡，本文中重点是介绍基于trendline滤波的评估模型。本文来自学霸君资深架构师袁荣喜和萍乡学院辛锋的投稿，并由LiveVideoStack全文发布。</span></p></blockquote><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);">文 / 袁荣喜，</span><span style="color: rgb(165, 165, 165); font-size: 14px; line-height: 1.5em;">辛锋</span></p><p><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">在视频通信的技术领域WebRTC已成为主流的技术标准，WebRTC包涵了诸多优秀的技术，譬如：音频数字信号处理技术（AEC, NS, AGC）、编解码技术、实时传输技术、P2P技术等，这些技术目的都是为了实现更好实时音视频方案。但是在高分辨率视频通信过程中，通信时延、图像质量下降和丢包卡顿是经常发生的事，甚至在WiFi环境下，一次视频重发的网络风暴可以引起WiFi网络间歇性中断，通信延迟和图像质量之间存在的排斥关系是实时视频过程中的主要矛盾。</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">分析WebRTC是如何解决这个矛盾之前，先来看看我们在在线教育互动的生产环境统计到的视频延迟和人感官的关系，大致如下：</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"></span></p><table style="line-height: inherit;"><tbody><tr class=""><td style="word-break: break-all;" width="260" valign="top"><p style="margin-left: 16px; margin-right: 16px; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">0 ~ 400毫秒</span></p></td><td style="word-break: break-all;" width="262" valign="top"><p style="margin-left: 16px; margin-right: 16px; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">人感觉不到视频在通信过程中的延迟</span></p></td></tr><tr><td style="word-break: break-all;" width="253" valign="top"><p style="margin-left: 16px; margin-right: 16px; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">400 ~ 800毫秒</span></p></td><td style="word-break: break-all;" width="262" valign="top"><p style="margin-left: 16px; margin-right: 16px; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">人能感觉到轻微延迟，但不影响通信互动</span></p></td></tr><tr><td style="word-break: break-all;" width="269" valign="top"><p style="margin-left: 16px; margin-right: 16px; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">800毫秒以上</span></p></td><td style="word-break: break-all;" width="262" valign="top"><p style="margin-left: 16px; margin-right: 16px; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">人能感觉到延迟而且影响通信互动</span></p></td></tr></tbody></table><p><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">也就是说，通信过程中最好将视频延迟控制在800毫秒以内。除了延迟，视频图像质量也是个对人感官产生差异的关键因素，我们以640x480分辨率每秒24帧的H264编码情况下视频码率和人感官之间的关系<span style="color: rgb(89, 89, 89); font-size: 14px;">（这组数据是我们通过小范围线上用户投票打分的数据）</span>：</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><br></p><table><tbody><tr class=""><td style="word-break: break-all;" width="266" valign="top"><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">800kbps以上</span></p></td><td style="word-break: break-all;" width="248" valign="top"><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">人对视频清晰度满意,感觉不到视频图像中的信息丢失</span></p></td></tr><tr><td style="word-break: break-all;" width="267" valign="top"><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">480 ~ 800kbps<span class="" style="color: rgb(89, 89, 89); font-size: 16px; white-space: pre;">	</span></span></p></td><td style="word-break: break-all;" width="248" valign="top"><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">人对视频清晰度基本满意，有时能感觉到视频图像中的信息丢失</span></p></td></tr><tr><td style="word-break: break-all;" width="267" valign="top"><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">480kbps以下</span></p></td><td style="word-break: break-all;" width="248" valign="top"><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">人对视频清晰度不满意，大部分时候无法辨认图像中的细节信息</span></p></td></tr></tbody></table><p><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">从上面的描述可以知道视频质量保持在一个可让人接受的质量范围是需要比较大的带宽码率支持的，如果加上控制延迟，则更需要网络有很好速度和稳定性。但是很不幸，我们现阶段的移动网络和家用WiFi并不是我们想象中的那么好，很难做到在实时视频通信中一个让人非常满意的程度。为了解决以上几个问题，WebRTC设计了一套基于延迟和丢包反馈的拥塞机制（GCC）和带宽调节策略来保证延迟、质量和网路速度之间平衡，这是一个持续循环过程，如下图：</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em; text-align: center;"><img data-ratio="0.9598470363288719" data-src="https://mmbiz.qpic.cn/mmbiz_png/CZeKj44ymYYMpL39TmZfvN0yibwgsrbe19sHNuLLKLItQBDhwk8TtBr0QIeU2ic5t2YDalAlEhaman8aQKSX8GPg/640?wx_fmt=png" data-type="png" style="width: 75% !important; height: auto !important; visibility: visible !important;" class="" data-w="523" _width="75%" src="640_001.dat" crossorigin="anonymous" data-fail="0"></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em; text-align: center;"><span style="font-size: 14px; color: rgb(165, 165, 165);">图1：拥塞控制循环示意图</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em; text-align: center;"><br></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">1）<span class="" style="font-size: 16px; white-space: pre;">	</span>estimator通过RTCP的feedback反馈过来的包到达延迟增量和丢包率信息计算出网络拥塞状态并评估出适合当前网络传输的码率，根据这个码率改变视频编码器码率，然后改变pacer的码率</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">2）<span class="" style="color: rgb(89, 89, 89); font-size: 16px; white-space: pre;">	</span>pacer会根据这个码率改变pacer的网络发送速度和padding比例，并用新的网络发送速度来定时触发发包事件。</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">3）<span class="" style="color: rgb(89, 89, 89); font-size: 16px; white-space: pre;">	</span>sender收到pacer的发送事件，进行RTP报文发送。</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">4）<span class="" style="color: rgb(89, 89, 89); font-size: 16px; white-space: pre;">	</span>receiver接收到RTP报文，进行arrival time统计和丢包统计</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">5）<span class="" style="color: rgb(89, 89, 89); font-size: 16px; white-space: pre;">	</span>feedback定时对receiver统计的信息进行RTCP编码，并反馈到发送端的estimator进行新一轮的码率评估。</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">以上是整个WebRTC拥塞控制和带宽调节过程，下面这个示意图是这个过程涉及到WebRTC内部模块关系。</span><br></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><img data-ratio="0.5203703703703704" data-src="https://mmbiz.qpic.cn/mmbiz_png/CZeKj44ymYYMpL39TmZfvN0yibwgsrbe1uqxeHL4yJ0ygLNkzw0BiaXyuKHx6b2SkvZ2DLuXiaj5XibF62f0LdNAow/640?wx_fmt=png" data-type="png" class="" data-w="1080" _width="677px" src="640_002.dat" style="width: 677px !important; height: auto !important; visibility: visible !important;" crossorigin="anonymous" data-fail="0"></span></p><p style="text-align: center; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);">图2：WebRTC的拥塞控制模块关系图</span></p><p style="text-align: center; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">需要说明的是红框中基于接收端的kalman filter带宽评估模型已经在新版本的WebRTC中不采用了，只做了向前版本兼容，新版本的WebRTC都是采用发送端的trendline滤波器来做延迟带宽评估，本文中重点是介绍基于trendline滤波的评估模型，下面依次来分析WebRTC的这五个过程。</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 18px; color: rgb(247, 150, 70);">1 estimator</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 18px; color: rgb(247, 150, 70);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">estimator的功能就是通过接收端反馈过来的包到达时刻信息、丢包信息和REMB信息进行当前网络状态的码率评估，WebRTC拥塞控制有两部分：基于延迟的拥塞控制和基于丢包的拥塞控制，它是一个尽力而为的拥塞控制算法，牺牲了拥塞控制的公平性换取尽量大的吞吐量。从设计结构来描述向它输入延迟和丢包信息，它就会输出一个适应当前网络状态的码率值。示意图如下：</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><img data-ratio="0.30970556161395857" data-src="https://mmbiz.qpic.cn/mmbiz_png/CZeKj44ymYYMpL39TmZfvN0yibwgsrbe1od2WnxytzoiaMALXicJetFApX0En6z7EFlqMHUxH6OUBibAgKMkqrw89g/640?wx_fmt=png" data-type="png" class="" data-w="917" _width="677px" src="640_003.dat" style="width: 677px !important; height: auto !important; visibility: visible !important;" crossorigin="anonymous" data-fail="0"></span></p><p style="text-align: center; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="color: rgb(165, 165, 165); font-size: 14px; line-height: 1.5em;">图3：WebRTC的CC estimator输入与输出</span><br></p><p style="text-align: center; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><br></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">从上图可以看出，estimator基于延迟的拥塞控制是通过trendline滤波再进行过载判断，最后根据过载情况进行aimd码率调控评估出一个bwe bitrate码率，这个码率会合丢包评估出来的码率和remb来决定最后的码率。</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="color: rgb(247, 150, 70); font-size: 16px;">1.1 基于延迟的拥塞控制</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(247, 150, 70);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">基于延迟的拥塞控制是通过每组包的到达时间的延迟差（delta delay）的增长趋势来判断网络是否过载，如果过载进行码率下调，如果处于平衡范围维持当前码率，如果是网络承载不饱满进行码率上调。这里有几个关键技术:包组延迟评估、滤波器趋势判断、过载检测和码率调节。</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(247, 150, 70);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="color: rgb(247, 150, 70); font-size: 15px;">1.1.1 包组与延迟</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="color: rgb(247, 150, 70); font-size: 15px;"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">WebRTC在评估延迟差的时候不是对每个包进行估算，而是采用了包组间进行延迟评估，这符合视频传输（视频帧是需要切分成多个UDP包）的特点，也减少了频繁计算带来的误差。那么什么是包组呢？就是距包组中第一个包的发送时刻t0小于5毫秒发送的所有的包成为一组，第一个超过5毫秒的包作为下一个包组第一个包。为了更好的说明包组和延迟间的关系，先来看示意图：</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><img data-ratio="0.6324626865671642" data-src="https://mmbiz.qpic.cn/mmbiz_png/CZeKj44ymYYMpL39TmZfvN0yibwgsrbe1wVoUDQicUd8o39ibvOMhJPnjibBicZp1f4DuxGnDpcuSVZ3ZJIJVjLlYDQ/640?wx_fmt=png" data-type="png" class="" data-w="536" _width="536px" src="640_004.dat" style="width: 536px !important; height: auto !important; visibility: visible !important;" crossorigin="anonymous" data-fail="0"></span></p><p style="text-align: center; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);">图4：包组与延迟示意图</span></p><p style="text-align: center; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">上图中有两个包组G1和G2, 其中第100号包与103号包的时间差小于5毫秒，那么100 ~ 103被划作一个包组。104与100之间时间超过5毫秒，那么104就是G2的第一个包，它与105、106、107划作一个包组。知道了包组的概念，那么我们怎么通过包组的延迟信息得到滤波器要的评估参数呢？滤波器需要的三个参数：发送时刻差值（delta_timestamp）、到达时刻差值(delta_arrival)和包组数据大小差值(delta_size)。从上图可以得出：</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em; text-align: center;"><img data-ratio="0.39195979899497485" data-src="https://mmbiz.qpic.cn/mmbiz_png/CZeKj44ymYYMpL39TmZfvN0yibwgsrbe1ecwJt0d5X1VfomXvYdic3j9vcdSgQhBao3EZhic6NIyyGIaVjDJ323YA/640?wx_fmt=png" data-type="png" class="img_loading" data-w="199" _width="199px" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" style="width: 199px !important; height: 78px !important;" crossorigin="anonymous"></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em; text-align: center;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 15px; color: rgb(247, 150, 70);">1.1.2 滤波器</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">我们通过包组信息计算到了delta_timestamp、delta_arrival和delta_size,那么下一步就是进行数据滤波来评估延迟增长趋势。在WebRTC实现了两种滤波器来进行延迟增长趋势的评估，分别是：kalman filter和trendline filter, 从图2中我们知道kalman filter是运行在接收端的，我在这里以不做介绍，有兴趣的可以参考https://www.jianshu.com/p/bb34995c549a。<span class="" style="font-size: 16px; white-space: pre;">	</span></span></p><p><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">这里介绍trendline filter，我们知道如果平稳网速下传输数据的延迟时间就是数据大小除以速度，如果这数据块很大，超过恒定网速下延迟上限，这意味着要它要占用其他后续数据块的传输时间，那么如此往复，网络就产生了延迟和拥塞。Trendline filter通过到达时间差、发送时间差和数据大小来得到一个趋势增长值，如果这个值越大说明网络延迟越来越严重，如果这个值越小，说明延迟逐步下降。以下是计算这个值的过程。</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">先计算单个包组传输增长的延迟，可以记作：</span><br></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="text-align: center; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><img data-ratio="0.09765625" data-src="https://mmbiz.qpic.cn/mmbiz_png/CZeKj44ymYYMpL39TmZfvN0yibwgsrbe1RSEZ5ruWYswIKhbMVl3lhROf9xXkH77qbNYQufYqiaibpxibg4lHbpE8A/640?wx_fmt=png" data-type="png" class="" data-w="256" _width="256px" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" style="width: 256px !important; height: 25px !important;" crossorigin="anonymous"></p><p style="text-align: center; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="color: rgb(165, 165, 165); font-size: 16px;"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="color: rgb(89, 89, 89); font-size: 16px;">然后做每个包组的叠加延迟,可以记作：</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="color: rgb(89, 89, 89); font-size: 16px;"><br></span></p><p style="text-align: center; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><img data-ratio="0.1319796954314721" data-src="https://mmbiz.qpic.cn/mmbiz_png/CZeKj44ymYYMpL39TmZfvN0yibwgsrbe1m6WwEGVKmMeG5hKclf9YTNZiclN9duaicVuCeFxg3wnn9OCgZjTzWl2A/640?wx_fmt=png" data-type="png" class="img_loading" data-w="394" _width="394px" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" style="width: 394px !important; height: 52px !important;" crossorigin="anonymous"></p><p style="text-align: center; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><br></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">在通过累积延迟计算一个均衡平滑延迟值，alpha=0.9可以记作：</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="text-align: center; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><img data-ratio="0.06188118811881188" data-src="https://mmbiz.qpic.cn/mmbiz_png/CZeKj44ymYYMpL39TmZfvN0yibwgsrbe1oACwBqfx3zOmRF9eU35ycw1oXaOnCkricP5UNjoGpNIIODJrb28paMw/640?wx_fmt=png" data-type="png" class="" data-w="404" _width="404px" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" style="width: 404px !important; height: 25px !important;" crossorigin="anonymous"></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">然后统一对累计延迟和均衡平滑延迟再求平均，分别记作：</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="text-align: center; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><img data-ratio="0.2543352601156069" data-src="https://mmbiz.qpic.cn/mmbiz_png/CZeKj44ymYYMpL39TmZfvN0yibwgsrbe19iaRxabNmJV6USic8sLAtTZJMSK0wjvujYNhzZyNSBGibJQc8MTZE1vdQ/640?wx_fmt=png" data-type="png" class="img_loading" data-w="346" _width="346px" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" style="width: 346px !important; height: 88px !important;" crossorigin="anonymous"></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">我们将第i个包组的传输持续时间记作:</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="text-align: center; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><img data-ratio="0.1282051282051282" data-src="https://mmbiz.qpic.cn/mmbiz_png/CZeKj44ymYYMpL39TmZfvN0yibwgsrbe1y8jrvONxrZCYsSYBlN9Cp27dpXp9R4EGavA0821e87JJKqj9f5ibLvg/640?wx_fmt=png" data-type="png" class="" data-w="195" _width="195px" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" style="width: 195px !important; height: 25px !important;" crossorigin="anonymous"></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">趋势斜率分子值为：</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="text-align: center; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><img data-ratio="0.17696629213483145" data-src="https://mmbiz.qpic.cn/mmbiz_png/CZeKj44ymYYMpL39TmZfvN0yibwgsrbe1ar5m5fFAia50wuDpVeqYABK6LXJAtnw18gOHveWpmsqCemI7rV9mbHA/640?wx_fmt=png" data-type="png" class="img_loading" data-w="356" _width="356px" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" style="width: 356px !important; height: 63px !important;" crossorigin="anonymous"></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">趋势斜率分母值为：</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="text-align: center; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><img data-ratio="0.1384180790960452" data-src="https://mmbiz.qpic.cn/mmbiz_png/CZeKj44ymYYMpL39TmZfvN0yibwgsrbe1WLSZBOcKI83rkwdSqU5I7YYG0DwsvSJWX9YgRtOiaCuvsebBKCgjljQ/640?wx_fmt=png" data-type="png" class="img_loading" data-w="354" _width="354px" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" style="width: 354px !important; height: 49px !important;" crossorigin="anonymous"></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">最终的趋势值为：</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><br></p><p style="text-align: center; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><img data-ratio="0.2026431718061674" data-src="https://mmbiz.qpic.cn/mmbiz_png/CZeKj44ymYYMpL39TmZfvN0yibwgsrbe1bMh47HNAaEfEibhBzFKefdC7c4ibFzLEtHOb95lxgPNLWYeF61elDFQQ/640?wx_fmt=png" data-type="png" class="img_loading" data-w="227" _width="227px" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" style="width: 227px !important; height: 46px !important;" crossorigin="anonymous"></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><br></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 15px; color: rgb(247, 150, 70);">1.1.3过载检测</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 15px; color: rgb(247, 150, 70);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">在计算得到trendline值后WebRTC通过动态阈值gamma_1进行判断拥塞程度，trendline乘以周期包组个数就是m_i,以下是判断拥塞程度的伪代码：</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="text-align: center; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><img data-ratio="0.9326241134751773" data-src="https://mmbiz.qpic.cn/mmbiz_png/CZeKj44ymYYMpL39TmZfvN0yibwgsrbe149YiabTFrN6ibhbt3icVBVNIibvgYjJDPJ6pjD0ZTsriao7hfr2al6TshmA/640?wx_fmt=png" data-type="png" class="img_loading" data-w="282" _width="282px" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" style="width: 282px !important; height: 263px !important;" crossorigin="anonymous"></span></p><p style="text-align: center; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="color: rgb(89, 89, 89); font-size: 16px;">通过以上伪代码就可以判断出当前网络负载状态是否发生了过载，如果发生过载，WebRTC是通过一个有限状态机来进行网络状态迁徙，关于状态机细节可以参看下图：</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="color: rgb(89, 89, 89); font-size: 16px;"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="color: rgb(89, 89, 89); font-size: 16px;"><img data-ratio="0.37753510140405616" data-src="https://mmbiz.qpic.cn/mmbiz_png/CZeKj44ymYYMpL39TmZfvN0yibwgsrbe1ADO4nWvUn7J9XSXCgDq1QX3lombmXhleubibvDoLLuibKRnzn8IcquLA/640?wx_fmt=png" data-type="png" class="img_loading" data-w="641" _width="641px" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" style="width: 641px !important; height: 242px !important;" crossorigin="anonymous"></span></p><p style="text-align: center; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);">图5:过载检测状态机</span></p><p style="text-align: center; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">从上图可以看出，网络状态机的状态迁徙是由于网络过载状态发生了变化，所以状态迁徙作为了aimd带宽调节的触发事件，aimd根据当前所处的网络状态进行带宽调节，其过程是处于Hold状态表示维持当前码率，处于Decr状态表示需要进行码率递减，处于Incr状态需要进行码率递增。那他们是怎么递增和递减的呢？WebRTC引入了aimd算法解决这个问题。</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 15px; color: rgb(247, 150, 70);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 15px; color: rgb(247, 150, 70);">1.1.4 AIMD码率调节</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 15px; color: rgb(247, 150, 70);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">aimd的全称是Additive Increase Multiplicative Decrease，意思是：和式增加，积式减少。aimd controller是TCP底层的码率调节概念，但是WebRTC并没有完全照搬TCP的机制，而是设计了套自己的算法，用公式表示为：</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="text-align: center; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><img data-ratio="0.2707774798927614" data-src="https://mmbiz.qpic.cn/mmbiz_png/CZeKj44ymYYMpL39TmZfvN0yibwgsrbe1nz9Un9Sek3p5C1RMbzNVFygKAlkSmjibgzoSIkO1fVYHNEicA69xw4Ww/640?wx_fmt=png" data-type="png" class="img_loading" data-w="373" _width="373px" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" style="width: 373px !important; height: 101px !important;" crossorigin="anonymous"></span></p><p style="text-align: center; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">如果处于Incr状态，增加码率的方式分为两种：一种是通信会话刚刚开始，相当于TCP慢启动，它会进行一个倍数增加，当前使用的码率乘以系数，系数是1.08；如果是持续在通信状态，其增加的码率值是当前码率在一个RTT时间周期所能传输的数据速率。</span></p><p><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">如果处于Decrease状态，递减原则是:过去500ms时间窗内的最大acked bitrate乘上系数0.85,acked bitrate通过feedback反馈过来的报文序号查找本地发送列表就可以得到。</span></p><p><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">aimd根据上面的规则最终计算到的码率就是基于延迟拥塞评估到的bwe bitrate码率。</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span><span style="font-size: 16px; color: rgb(247, 150, 70);">1.2基于丢包的拥塞控制</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(247, 150, 70);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">除了延迟因素外，WebRTC还会根据网络的丢包率进行拥塞控制码率调节，描述如下：</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><img data-ratio="0.25477707006369427" data-src="https://mmbiz.qpic.cn/mmbiz_png/CZeKj44ymYYMpL39TmZfvN0yibwgsrbe1VicKgz7luEEp5gXJIuiblrodW79xplyxNbmyZpbgTTlnFaXvqibskE07g/640?wx_fmt=png" data-type="png" class="img_loading" data-w="471" _width="471px" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" style="width: 471px !important; height: 120px !important;" crossorigin="anonymous"></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="line-height: inherit;"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; line-height: inherit; color: rgb(89, 89, 89);">解释下上面的公式：<br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">当丢包率&gt;2%时，这个时候会将码率（base bitrate）增长5%,这个码率(base bitrate)并不是当前及时码率，而是单位时间窗周期内出现的最小码率,WebRTC将这个时间窗周期设置在1000毫秒内。因为loss fraction是从接收端反馈过来的，中间会有时间差，这样做的目的是防止网络间歇性统计造成的网络码率增长过快而网络反复波动。</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="white-space: pre; font-size: 16px; color: rgb(89, 89, 89);">	</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><span class="" style="color: rgb(89, 89, 89); font-size: 16px; white-space: pre;">	</span>当 2% &lt; 丢包率 &lt; 10%,维持当前的码率值</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="white-space: pre; font-size: 16px; color: rgb(89, 89, 89);">	</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><span class="" style="color: rgb(89, 89, 89); font-size: 16px; white-space: pre;">	</span>当 丢包率 &gt;= 10%, 按丢包率进行当前码率递减，等到新的码率值</span></p><p><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><strong><span style="font-size: 16px; color: rgb(89, 89, 89);">丢包率决策出来的码率（base bitrate）只是一个参考值，WebRTC实际采用的带宽是base bitrate、remb bitrate和bwe bitrate中的最小值，这个最小值作为estimator最终评估出来的码率</span></strong></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 18px; color: rgb(247, 150, 70);">2 pacer</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 18px; color: rgb(247, 150, 70);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">在estimator根据网络状态决策出新的通信码率（target bitrate），它会将这个码率设置到pacer当中，要求pacer按照新的码率来计算发包频率。因为在视频通信中，单帧视频可能有上百KB,如果是当视频帧被编码器编码出来后，就立即进行RTP打包发送，瞬时会发送大量的数据到网络上，可能会引起网络衰减和通信恶化。WebRTC引入pacer，pacer会根据estimator评估出来的码率，按照最小单位时间（5ms）做时间分片进行递进发送数据，避免瞬时对网络的冲击。<strong>pacer的目的就是让视频数据按照评估码率均匀的分布在各个时间片里发送，</strong> 所以在弱网的WiFi环境，pacer是个非常重要的关键步骤。以下WebRTC中pacer的模型关系：</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><img data-ratio="0.3442796610169492" data-src="https://mmbiz.qpic.cn/mmbiz_png/CZeKj44ymYYMpL39TmZfvN0yibwgsrbe1fQPYXTngCzTB45OPZTXCn5bY13jh5nibc091Awia9dFdicBehn6cibZHsA/640?wx_fmt=png" data-type="png" class="img_loading" data-w="944" _width="677px" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" style="width: 643px !important; height: 221.372px !important;" crossorigin="anonymous"></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em; text-align: center;"><span style="font-size: 14px; color: rgb(165, 165, 165);">图6：pacer模型图</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em; text-align: center;"><span style="font-size: 14px; color: rgb(165, 165, 165);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">WebRTC中pacer的流程比较清晰，分为三步：</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">1）<span class="" style="font-size: 16px; white-space: pre;">	</span>如果一帧图像被编码和RTP切分打包后，先会将RTP报文存在待发送的队列中，并将报文元数据(packet id, size, timestamp, 重传标示)送到pacer queue进行排队等待发送，插入队列的元数据会进行优先级排序。</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">2）<span class="" style="color: rgb(89, 89, 89); font-size: 16px; white-space: pre;">	</span>pacer timer会触发一个定时任务事件来计算budget，budget会算出当前时间片网络可以发送多少数据，然后从pacer queue当中取出报文元数据进行网络发送。</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">3）<span class="" style="color: rgb(89, 89, 89); font-size: 16px; white-space: pre;">	</span>如果pacer queue没有更多待发送的报文，但budget却还可以发送更多的数据，这个时候pacer会进行padding报文补充。</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><br></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">从上面的步骤描述中可以看出pacer有几个关键技术：pace queue、padding、budget。</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><br></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(247, 150, 70);">2.1 pace queue与优先级</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(247, 150, 70);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">pace queue是一个基于优先级排序的多维链表，它并不是一个先进先出的fifo,而是一个按优先级排序的list。</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">报文优先级规则</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">1）<span class="" style="color: rgb(89, 89, 89); font-size: 16px; white-space: pre;">	</span>优先级高的报文排在fifo的前面，低的排在后面。</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">2）<span class="" style="color: rgb(89, 89, 89); font-size: 16px; white-space: pre;">	</span>优先级是最先判断报文的QoS等级，等级越小的优先级越高</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">3）<span class="" style="color: rgb(89, 89, 89); font-size: 16px; white-space: pre;">	</span>其次是判断重发标示，重发的报文比普通报文的优先级更高</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">4）<span class="" style="color: rgb(89, 89, 89); font-size: 16px; white-space: pre;">	</span>再次是判断视频帧timestamp，越早的视频帧优先级更高。</span></p><p><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">pacer每次触发发送事件时是先从queue的最前面取出优先级最高的报文进行发送，这样做的目的是让视频在传输的过程中延迟尽量小，重传的报文尽快能到达防止等待卡顿。pace queue还可以设置最大延迟，如果超过最大延迟，会计算queue中数据发送所需要的码率，并且会把这个码率替代target bitrate作为budget参考码率来加速发送。</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span><span style="font-size: 16px; color: rgb(247, 150, 70);">2.2 budget</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">budget是个评估单位时间内可以发送多少数据量的一个机制，因为pacer是会根据pace timer定时来触发发送检查。Budget会根据评估出来的参考码率计算这次定时事件能发送多少字节，可以表示为：</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em; text-align: center;"><img data-ratio="0.09554140127388536" data-src="https://mmbiz.qpic.cn/mmbiz_png/CZeKj44ymYYMpL39TmZfvN0yibwgsrbe10YGz2ibZqRaXNKGwx2xh9b1DrkXNfkQOUtEn7XwDe1Se5YNSTD0iaPfA/640?wx_fmt=png" data-type="png" class="" data-w="314" _width="314px" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" style="width: 314px !important; height: 30px !important;" crossorigin="anonymous"></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em; text-align: center;"><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">delta time是上次检查时间点和这次检查时间点的时间差。</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">target bitrate是pacer的参考码率，是由estimator根据网络状态评估出来的。</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">remain_bytes每次触发发包时会减去发送报文的长度size,如果remain_bytes &gt; 0，继续从pace queue中取下一个报文进行发送，直到remain_bytes &lt;=0 或者 pace queue没有更多的报文。</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(247, 150, 70);"><br>2.3 pacer延迟</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(247, 150, 70);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">那么肯定有人会有疑问pacer queue和budget进定量计算来发送网络报文，相当于cache等待发送，难道不会引起延迟吗？可以肯定的说会引起延迟，但延迟不严重。pacer产生的延迟可以表示为：</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="text-align: center; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><img data-ratio="0.2560386473429952" data-src="https://mmbiz.qpic.cn/mmbiz_png/CZeKj44ymYYMpL39TmZfvN0yibwgsrbe1MYb4QwKSpj649SOF6y4HGGV4bFpzRsnibibBwXQxMCYiaeycQ6kDwKVTg/640?wx_fmt=png" data-type="png" class="img_loading" data-w="207" _width="207px" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" style="width: 207px !important; height: 53px !important;" crossorigin="anonymous"></span></p><p style="text-align: center; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">假如评估出来的码率是10mbps, 一个视频关键帧的大小是300KB,那么这个关键帧造成的pacer delay是240毫秒。从实际应用观察到的关键帧引起的pace delay在200 ~ 400毫秒之间，这个值相对于视频传输来说是比较大的，但是不严重。WebRTC为了减少这个延迟，会评估出尽量大的bitrate。那么怎么评估出尽量大的码率呢？从前面的estimator描述中我们知道要发送出尽量多的数据才能评估尽量大的码率，但是视频编码器不会发送多余的数据，所以WebRTC引入了padding机制来保障发送尽量大的数据来探测网络带宽上限。</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(247, 150, 70);">2.4 padding</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(247, 150, 70);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">pace padding除了保障能pace delay尽量小外，它可以让有限的带宽获得尽可能好的视频质量。padding的工作原理很简单，就是在单位时间片内把budget还剩余的空闲用padding数据填满。我个人认为<strong>padding只是适合点对点通信，一旦涉及到多点分发，会因为padding占用很多服务转发带宽，这并不是一件好事情。</strong></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 18px; color: rgb(247, 150, 70);">3 sender</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 18px; color: rgb(247, 150, 70);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">WebRTC的发送模块和拥塞控制控制相关的主要是增加了附加的RTP扩展来携带便宜接收端统计丢包率和延迟间隔的信息、配合pacer的发包策略、带宽分配和FEC策略的信息。</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(247, 150, 70);">3.1 RTP扩展</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">WebRTC为了配合接收端进行延迟包序列和丢包统计做了下列扩展：</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(89, 89, 89);"><span class="" style="font-size: 14px; white-space: pre;">	</span>transport sequence传输通道的只增sequence，每次发送报文时自增长，配合接收端统计丢包、通过反馈这个sequence可以计算得到发包的时刻。</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(89, 89, 89);"><span class="" style="color: rgb(89, 89, 89); font-size: 16px; white-space: pre;">	</span>TransmissionOffset 发送报文的相对时刻，这个相对时刻值t是发送报文的绝对时刻T1和视频帧时间戳T0差值。早期的WebRTC是在接收端进行estimate bitrate，所以过载判断是在接收端完成的，这个值就是为了kalman filter计算发包造成的延迟用的，新版本还携带这个值以便低版本的WebRTC能兼容。</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="color: rgb(89, 89, 89); font-size: 14px;"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(247, 150, 70);">3.2 &nbsp;packet cache</span><br></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(247, 150, 70);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">packet cache是一个key/value结构的包缓冲池，视频帧在进行RTP分片打包后不会立即发送出去，而是要等待pacer的发送信号进行发送。所以打包后会按[id,packet]键值对插入到packet cache中。一般packet cache会保存600个分片报文，最大9600个，插入新的会将最旧的报文删除，packet cache这样做的目的除了配合pacer发送外，也为了后面响应nack的丢包重传。</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(247, 150, 70);">3.3 NACK与丢包重传</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(247, 150, 70);"><br></span></p><p style="text-align: center; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(247, 150, 70);"><img data-ratio="0.7111111111111111" data-src="https://mmbiz.qpic.cn/mmbiz_png/CZeKj44ymYYMpL39TmZfvN0yibwgsrbe1Ric2IjkTNro52SMHIrI4Bwx0MiajlYgEcWd1TaGINrMEkH6NQGEdLnicQ/640?wx_fmt=png" data-type="png" class="img_loading" data-w="405" _width="405px" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" style="width: 405px !important; height: 288px !important;" crossorigin="anonymous"></span></p><p style="text-align: center; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(247, 150, 70);"><br></span></p><p style="text-align: center; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);">图7:RTP NACK过程的示意图</span></p><p style="text-align: center; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">WebRTC在评估到收发端之间RTT延迟比较小的时候会采用NACK来进行丢包补偿，NACK是一个请求重发过程，其流程如上图所示。这个过程有一个问题是在网络抖动和丢包很厉害的情况下有可能造成同一时刻收到很多NACK的重传请求，发送端瞬间把这些重传请求放入pacer中进行重发，这样pacer的延迟会增大，而且pace的参考码率会随着pace queue的延迟控制变的很大而出现间歇性网络风暴。WebRTC在处理NACK重传时设计了一个重传码率控制器,其设计原理是通过统计单位时间窗口周期中发送的字节数据来限流，如果这个时间窗内发送的数据的码率大于estimator评估的码率，不进行当前NACK请求的重传，等待下一个NACK。</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(247, 150, 70);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(247, 150, 70);">3.4 FEC与码率分配</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">WebRTC应对丢包时除了NACK方式，在收发端之间RTT很大时候会开启FEC来进行丢包补偿，我们在这里不介绍FEC具体算法，只介绍FEC的码率分配策略。从整个通信机制我们很容易得出这样一个共识：</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em; text-align: center;"><img data-ratio="0.045454545454545456" data-src="https://mmbiz.qpic.cn/mmbiz_png/CZeKj44ymYYMpL39TmZfvN0yibwgsrbe10nosU5NTaHhGIkiauFOEZicj3jPHsDyDca7qqxPV74n4TmlZhKcK94bA/640?wx_fmt=png" data-type="png" class="" data-w="484" _width="484px" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" style="width: 484px !important; height: 22px !important;" crossorigin="anonymous"></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">FEC bitrate到底应该设置多大呢？它先根据feedback中反馈过来的丢包率(loss fraction)来确定使用哪一种FEC，在根据每中FEC和丢包率来确定FEC使用的码率，但需要满足一下条件:</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em; text-align: center;"><img data-ratio="0.13612565445026178" data-src="https://mmbiz.qpic.cn/mmbiz_png/CZeKj44ymYYMpL39TmZfvN0yibwgsrbe1GPURc4F5pd4Nc3pI2CFlHo6vqOib9g5pW56UzAgDZIMNV9zfywF91cw/640?wx_fmt=png" data-type="png" class="" data-w="191" _width="191px" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" style="width: 191px !important; height: 26px !important;" crossorigin="anonymous"></p><p><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">feedback的码率被设定为target bitrate的5%,WebRTC是通过控制feekback的频率来进行调控分配的。padding bitrate是通过pacer queue和budget来控制的。Target bitrate减去这些码率之和就是给视频编码器的码率。每次estimator评估出来码率后，会先进行这些计算得到最后的video bitrate,并将这个值作为编码器的编码码率，以此来达到防止拥塞的目的。</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 18px; color: rgb(247, 150, 70);">4 receiver</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 18px; color: rgb(247, 150, 70);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">receiver模块的工作相对来说比较简单，它就做三件事情:记录每个报文的到达时刻(arrival timestamp)、丢包率(lost fraction)和receiver bitrate。早期的WebRTC提供了图2红框当中kalman filter评估码率的评估器，因为kalman filter怕抖动特性且需要借助remb心跳进行反馈，remb的反馈周期是1秒，在收发端网络间歇性断开或者大抖动下，容易失效，所以WebRTC采用了在发送端进行估算，整个逻辑也更加简便。</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><br></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(247, 150, 70);">4.1 报文到达时间</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(247, 150, 70);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(247, 150, 70);"><img data-ratio="0.5901639344262295" data-src="https://mmbiz.qpic.cn/mmbiz_png/CZeKj44ymYYMpL39TmZfvN0yibwgsrbe1EeWRkJrZmjEAACoHeC8Lvof02wOmFBRZptLjAf2mVLAOtXvYZhUy7w/640?wx_fmt=png" data-type="png" class="img_loading" data-w="488" _width="488px" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" style="width: 488px !important; height: 288px !important;" crossorigin="anonymous"></span></p><p style="text-align: center; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);">图8：到达报文统计图</span></p><p style="text-align: center; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">上图是一个统计RTP报文到达时刻的序列图，图中的seq是RTP扩展中的transport sequence,接收端用一个k/v（[seq,arrival timestamp]）键值对数据结构来保存最近500毫秒未反馈的到达时刻信息,通过时间窗口周期来进行淘汰老的到达时刻记录。</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(247, 150, 70);">4.2 丢包率计算</span></p><p><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">丢包率计算过程是这样的，我们把上次统计丢包率时刻的最大sequence记着prev_seq, 把当前收到的最大sequence记着cur_seq,当前统计丢失的报文记着count，WebRTC在RTCP中描述丢包率采用的是uint8，为了保证精确度将256记着100%的丢包率，那么很容易得：</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em; text-align: center;"><img data-ratio="0.12719298245614036" data-src="https://mmbiz.qpic.cn/mmbiz_png/CZeKj44ymYYMpL39TmZfvN0yibwgsrbe1iboxUpWx3PYictT4jYAAL43qTrwGJqgpjr1f6OCFecWTqCpJzQAmRk5w/640?wx_fmt=png" data-type="png" class="" data-w="228" _width="228px" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" style="width: 228px !important; height: 29px !important;" crossorigin="anonymous"></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">这里需要提的是WebRTC在统计报文是否丢失是通过sequence的连续性和网络的jitter时间来确定的，只有落在jitter抖动范围之外的丢包才是算是作丢包。</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(247, 150, 70);">4.3 接收码率统计</span></p><p><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">接收端码率统计采用的是最近单位时间窗（1000毫秒）周期内收到的的字节数来计算，WebRTC设计了一个1毫秒为最小单位的窗口数组来进行统计,每个最小单位是数字，这个数字是在这个时刻收到的网络数据大小，大致的示意图如下：</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><br></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><img data-ratio="0.2109479305740988" data-src="https://mmbiz.qpic.cn/mmbiz_png/CZeKj44ymYYMpL39TmZfvN0yibwgsrbe1pQgZZha7tjtOwou91MjDxMqKCEUBH18xqgib775tEKiarVnoCpWnic4ZQ/640?wx_fmt=png" data-type="png" class="img_loading" data-w="749" _width="677px" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" style="width: 643px !important; height: 135.64px !important;" crossorigin="anonymous"></p><p style="text-align: center; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);">图9：接收码率统计示意图</span></p><p style="text-align: center; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 14px; color: rgb(165, 165, 165);"><br></span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">计算码率只需要将红框中所有的数字加起来，当时间发生改变后，就红框就向右移动并且填写新时刻接收到的数据大小，等下一个统计时刻既可。</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 18px; color: rgb(247, 150, 70);">5 feedback</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 18px; color: rgb(247, 150, 70);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">前面介绍的estimator依赖于feedback反馈的报文到达时刻和丢包率来进评估码率的，也就是说feedback需要将这些信息及时反馈给接收端，主要是记录的报文到达时刻、通道丢包率和remb带宽。因为报文到达时刻和丢包率统计都是多个数据项，WebRTC利用了report block来进行编码存放。为了有效的利用RTCP的report block空间，WebRTC采用了相对时间转换和位压缩算法来对到达时间序列做编码压缩。</span></p><p><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">除了report编码，feedback的周期也很重要，如果是单纯的remb反馈，一般是1秒一次反馈。但如果是需要反馈报文的到达时间，它会根据占用5%的target bitrate来计算发送feedback的时间间隔，计算流程如下：</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em; text-align: center;"><img data-ratio="0.17532467532467533" data-src="https://mmbiz.qpic.cn/mmbiz_png/CZeKj44ymYYMpL39TmZfvN0yibwgsrbe1f2CMqiauhmwwILovk0GrrOVo9kR9fMkjQZyq3KtwXj93Np0MmewtSlg/640?wx_fmt=png" data-type="png" class="img_loading" data-w="462" _width="462px" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" style="width: 462px !important; height: 81px !important;" crossorigin="anonymous"></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">feedback interval需要满足一个条件：50ms &lt; interval &lt; 250ms,这个条件中的 50ms&lt; internal是为了防止interval太小造成发送feedback太过频繁而消耗网络性能，而interval &lt; 250ms是为了防止feedback频次太低造成estimator反应迟钝。</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 18px; color: rgb(247, 150, 70);">6 总结</span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 18px; color: rgb(247, 150, 70);"><br></span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">以上就是WebRTC拥塞控制和码率调节策略的5个过程，里面涉及到很多传输相关的技术，我在这里也是简单介绍了下其工作原理，很多细节的并没有描述出来，也很难描述出来，有兴趣的同学可以翻看WebRTC的源代码。如果觉得webRTC代码费劲，我照虎画猫将WebRTC的拥塞控制用C重新实现了个简易版本,但是去掉了padding，可到https://github.com/yuanrongxi/razor下载。 </span></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(247, 150, 70);">6.1 效果</span></p><p><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">WebRTC的GCC在网络适应上表现还是比较良好的，既然兼顾延迟，也能兼顾丢包，网络发生拥塞时在2 ~ 3秒内能评估出相对的码率来适应当前的网络状态，但是会造成短时间的卡顿。对于网络发生间歇性丢包，在2秒左右能将传输码率适配到当前网络状态。它在网络相对稳定且延迟较大的网络进行高分辨率传输时，视频很稳定，适合长距离延迟稳定的网络环境。在弱网环境下，WebRTC容易将码率降到很低而造成图像失真。</span></p><p><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(247, 150, 70);">6.2 网络大抖动</span></p><p><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">对于乱序和抖动WebRTC的拥塞控制显得有点无力，如果抖动超过rtt*2/3时，基于kalman filter的带宽评估机制不起作用（不知道是不是我用错了）；基于trendline滤波的评估机制波动很大，敏感度不够，不能完全反应当前的网络过载状态，尤其是在终端Wi-Fi拥挤的情况下，比较容易造成间歇性风暴。</span></p><p><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(247, 150, 70);">6.3 延迟问题</span></p><p><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">WebRTC的pacer在传输大分辨率视频时，关键帧会引起大约200毫秒的延时，尤其是在移动4G网络下这个问题更加明显，海康威视工程师郑鹏提出了用H.264的intre_refresh模式来应对，在测试过程中确实比较适合WebRTC用来减少关键帧造成的延迟，但是intre_refresh是普通模式编码CPU的3倍左右，而且很多移动设备的编码器不一定支持。</span></p><p><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">总之，WebRTC的拥塞控制存在反应慢、怕抖动的特性，但是这块也是WebRTC改进最为频繁的模块，几乎每个版本都有新的改进。要彻底解决这样的问题，需要从视频编码器和网络传输进行融合来解决，以后我用单独的篇幅来介绍下这样的解决方案。</span></p><p><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="color: rgb(247, 150, 70); font-size: 18px;">关于作者</span></p><p><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">袁荣喜，学霸君资深架构师，16年的C程序员，善于构建高性能服务系统和系统性能调优，擅长P2P通信网络、TCP/IP通信协议栈和鉴权加密技术,2015年加入学霸君，负责构建学霸君的智能路由实时音视频传输系统和网络，解决音视频通信的实时性的问题。</span></p><p><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">辛锋，工程硕士，目前在萍乡学院电子工程专业从事教育工作，18年教育教学经验，对机电控制、芯片编程、控制理论和人工智能有深入的研究。</span></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><br></p><p style="text-align: left; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><br></p><p style="text-align: center; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 18px; color: rgb(247, 150, 70);">LiveVideoStackCon 2018讲师招募</span></p><p style="text-align: center; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 18px; color: rgb(247, 150, 70);"><br></span></p><p style="text-align: center; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 18px; color: rgb(247, 150, 70);"><img data-ratio="0.5208333333333334" data-src="https://mmbiz.qpic.cn/mmbiz_jpg/CZeKj44ymYaxSbQ74ySuiaqcxb8e6TMoHmXYVA86qCWqF1jZibw6sejulbWFW8fxNrjibcSluTSyHibhxVMHNEHxfQ/640?wx_fmt=jpeg" data-type="jpeg" class="img_loading" data-w="960" _width="677px" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" style="width: 643px !important; height: 334.896px !important;" crossorigin="anonymous"></span></p><p style="text-align: center; margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><br></p><p style="margin-left: 1em; margin-right: 1em; line-height: 1.5em;"><span style="font-size: 16px; color: rgb(89, 89, 89);">LiveVideoStackCon 2018是音视频技术领域的综合技术大会，今年是在10月19-20日在北京举行。大会共设立16个专题，预计邀请超过80位技术专家。如果你在某一领域独当一面，欢迎申请成为LiveVideoStackCon 2018的讲师，让你的经验帮到更多人，你可以通过speaker@livevideostack.com 提交演讲信息。了解大会更多详情，请点击『<strong>阅读原文</strong>』访问LiveVideoStackCon 2018官网，即刻享受6折优惠。</span></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display: none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display: none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="s" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">袁荣喜，辛锋</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display: none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id="js_preview_reward_author_link" href="##"><span id="js_preview_reward_link_text">Reward</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display: none;">
+                    <p class="tips_global">Long-press QR code to transfer me a reward</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display: none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="pic_reward_qrcode.2x47cb34.png"></span>
+                    <p class="tips_global">As required by Apple's new policy, the Reward feature has been disabled on WeChat for iOS. You can still reward an Official Account by transferring money via QR code.</p>
+                </div>
+                            </div>
+                                    
+                        
+
+
+                        
+            <ul id="js_hotspot_area" class="article_extend_area"></ul>
+
+
+            
+
+            
+
+
+<div class="rich_media_tool" id="js_toobar3">
+
+  <div class="weui-flex">
+    <div class="weui-flex__item">
+
+                        <a class="media_tool_meta meta_primary" id="js_view_source" href="##">Read more</a>
+                  <div id="js_read_area3" class="media_tool_meta tips_global_primary meta_primary" style="display: none;">
+        <span id="readTxt">Read</span>
+        <span id="readNum3"></span>
+      </div>
+          </div>
+
+            <span style="display: none;" class="media_tool_meta meta_extra meta_praise" id="like_old">
+          <i class="icon_praise_gray"></i><span class="praise_num" id="likeNum_old"></span>
+      </span>
+
+          
+    <span style="visibility: hidden;" class="media_tool_meta meta_extra meta_like" id="like3">
+    <button class="like_btn" id="js_like_btn"> 
+      <span id="js_like_wording"> Wow</span><span class="like_num" id="likeNum3"></span>
+    </button>
+  </span>
+
+          
+        </div>
+</div>
+
+<div style="display: none;">
+    <div class="weui-mask"></div>
+    <div class="weui-dialog weui-dialog_haokan">
+      <div class="weui-dialog__hd"><strong class="weui-dialog__title" id="educate_title">Added to Top Stories</strong></div>
+      <div class="weui-dialog__bd">
+      </div>
+      <div class="weui-dialog__ft" id="educate_btn" style="display: none;">
+        <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default" id="js_cancel">Cancel</a>
+        <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary" id="js_confirm">Post</a>
+      </div>
+      <div class="weui-dialog__ft" id="educate_btn2" style="display: none;">
+        <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary" id="js_acknowledge">OK</a>
+      </div>
+    </div>
+</div>
+<div style="display: none;" id="js_like_educate" class="like_skin_primary like_comment_primary_pop">
+  <div id="js_like_educate_wrapper" class="like_comment_primary_wrp like_comment_primary_pos_top">
+    <div class="like_comment_primary_inner">
+      <div class="like_comment_primary_hd">
+        <h4 class="like_comment_primary_title">
+          Friends can see what you have Wow'ed in "Discover" &gt; "Top Stories".        </h4>
+        <button id="js_b_like_confirm" class="like_comment_primary_btn">OK</button>
+      </div>
+      <div class="like_comment_primary_bd">
+        <img class="pic_haokan" src="pic_haokan47cb34.png">
+      </div>
+    </div>
+  </div>
+  <div class="like_comment_primary_mask" id="js_mask_3"></div>
+</div>
+
+  
+  <div class="like_comment_wrp" id="js_a_like_comment" style="display: none;">
+    <div class="like_comment_inner">
+      <div class="like_comment_hd" style="display: none;" id="js_like_title"></div>
+      <div class="like_comment_bd">
+        <div class="tips_global_primary like_comment_tips">
+          <i class="weui-icon-success"></i><i class="icon-success-primary"></i>Added to Top Stories<a href="javascript:;" class="like_comment_share_link" id="js_a_like_comment_share">Comment</a>
+        </div>
+      </div>
+      <div class="like_comment_ft">
+        <span id="js_a_like_comment_msg" class="like_comment_msg" style="visibility: hidden;">Max 200 characters (already entered <span id="js_a_like_current_cnt"></span> characters)</span>
+        <button class="like_comment_btn" disabled="disabled" id="js_a_like_confirm">Post</button>
+      </div>
+    </div>
+  </div>
+
+<div id="js_like_toast" style="display: none;">
+  <div class="weui-mask_transparent"></div>
+  <div class="weui-toast">
+    <i class="weui-icon-success-no-circle weui-icon_toast"></i>
+    <p class="weui-toast__content" id="js_toast_msg">Posted</p>
+  </div>
+</div>
+
+
+<div style="display: none;" id="js_b_comment_panel" class="like_comment_primary_pop">
+  <div class="like_comment_primary_wrp" id="js_b_wrp">
+    <div class="like_comment_primary_inner">
+      <div class="like_comment_primary_hd">
+        <h4 class="like_comment_primary_title">
+          Friends will see this in <br>Top Stories        </h4>
+        <button id="js_b_like_confirm" class="like_comment_primary_btn">OK</button>
+      </div>
+      <div id="js_b_comment_text_first" class="like_comment_primary_bd">
+        <span class="tips_global_primary">
+          Write what you think...        </span>
+      </div>
+    </div>
+  </div>
+  <div class="like_comment_primary_mask" id="js_mask_1"></div>
+</div>
+
+<div style="display: none;" id="js_b_comment_final">
+  <div class="like_comment_primary_wrp editing" id="js_comment_wrp">
+    <div class="like_comment_primary_inner">
+      <div class="like_comment_primary_hd">
+        <button class="like_comment_primary_cancel" id="js_b_comment_cancel">Cancel</button>
+        <h4 class="like_comment_primary_title"> Comment in Top Stories </h4>
+        <button class="like_comment_primary_btn" id="js_b_comment_confirm">OK</button>
+      </div>
+      <div class="like_comment_primary_bd">
+        <textarea class="like_comment_textarea weui-textarea" placeholder="Write what you think..." id="js_b_comment_text_second"></textarea>
+      </div>
+      <span class="like_comment_msg" id="js_b_like_comment_msg" style="visibility: hidden;">Max 200 characters (already entered <span id="js_b_like_current_cnt"></span> characters)</span>
+    </div>
+  </div>
+  <div class="like_comment_primary_mask" id="js_mask_2"></div>
+</div>
+
+<div id="js_loading" style="display: none;">
+    <div class="weui-mask_transparent"></div>
+    <div class="weui-toast">
+        <i class="weui-loading weui-icon_toast"></i>
+        <p class="weui-toast__content">Sending</p>
+    </div>
+</div>
+
+
+
+                      </div>
+        </div>
+
+        <div class="rich_media_area_primary sougou" id="sg_tj" style="display: none;"></div>
+
+
+        
+        <div class="rich_media_area_extra">
+          <div class="rich_media_area_extra_inner">
+              
+              <div id="js_share_appmsg">
+              </div>
+
+              
+  
+      <div class="mpda_bottom_container" id="js_bottom_ad_area" style="display: none;"></div>
+                
+              <div id="js_iframetest" style="display: none;"></div>
+                            
+              <div class="rich_media_extra rich_media_extra_discuss" id="js_cmt_container" style="display: none;">
+                
+
+                
+                <div class="discuss_mod" id="js_friend_cmt_area" style="display: none;">
+                  
+                  
+                  
+                </div>
+
+                                <div class="discuss_mod" id="js_cmt_area" style="display: none;">
+                </div>
+                              </div>
+          </div>
+        </div>
+
+        
+        <div id="js_pc_qr_code" class="qr_code_pc_outer" style="display: block;">
+            <div class="qr_code_pc_inner">
+                <div class="qr_code_pc">
+                    <img id="js_pc_qr_code_img" class="qr_code_pc_img" src="qrcode">
+                    <p>Scan with WeChat to<br>follow the Official Account</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div id="js_pc_weapp_code" class="weui-desktop-popover weui-desktop-popover_pos-up-center weui-desktop-popover_img-text" style="display: none;">
+    <div class="weui-desktop-popover__content">
+        <div class="weui-desktop-popover__desc">
+            <img id="js_pc_weapp_code_img">
+            Scan with WeChat to <br>use this Mini Program<span id="js_pc_weapp_code_des"></span>        </div>
+    </div>
+</div>
+<div id="js_minipro_dialog" style="display: none;">
+    <div class="weui-mask"></div>
+    <div class="weui-dialog weui-dialog_link">
+        <div class="weui-dialog__hd">
+            <strong class="weui-dialog__title" id="js_minipro_dialog_head"></strong>
+        </div>
+        <div class="weui-dialog__bd" id="js_minipro_dialog_body"></div>
+        
+        <div class="weui-dialog__ft">
+            <a id="js_minipro_dialog_cancel" href="javascript:void(0);" class="weui-dialog__btn weui-dialog__btn_default">Cancel</a>
+            <a id="js_minipro_dialog_ok" href="javascript:void(0);" class="weui-dialog__btn weui-dialog__btn_primary">允许</a>
+        </div>
+    </div>
+</div>
+<div id="js_link_dialog" style="display: none;">
+    <div class="weui-mask"></div>
+    <div class="weui-dialog weui-dialog_link">
+        <div class="weui-dialog__hd">
+            <strong class="weui-dialog__title" id="js_link_dialog_head"></strong>
+        </div>
+        <div class="weui-dialog__bd" id="js_link_dialog_body"></div>
+        
+        <div class="weui-dialog__ft">
+            <a id="js_link_dialog_cancel" href="javascript:void(0);" class="weui-dialog__btn weui-dialog__btn_default">Cancel</a>
+            <a id="js_link_dialog_ok" href="javascript:void(0);" class="weui-dialog__btn weui-dialog__btn_primary">允许</a>
+        </div>
+    </div>
+</div>
+
+<div class="comment_primary_emotion_panel_wrp" id="js_emotion_panel_pc" style="display: none;">
+  <div class="comment_primary_emotion_panel">
+    <ul class="comment_primary_emotion_list" id="js_emotion_list_pc">
+    </ul>
+  </div>
+</div>
+
+
+<div class="weui-dialog__wrp" id="js_alert_panel" style="display: none;">
+  <div class="weui-mask"></div>
+  <div class="weui-dialog">
+    <div class="weui-dialog__bd" id="js_alert_content"></div>
+    <div class="weui-dialog__ft">
+      <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default" id="js_alert_confirm">Got It</a>
+    </div>
+  </div>
+</div>
+
+<div id="js_weapp_without_auth_dialog" style="display: none;">
+    <div class="weui-mask"></div>
+    <div class="weui-dialog weui-dialog_link">
+        <div class="weui-dialog__bd" id="js_weapp_without_auth_dialog_name"></div>
+        <div class="weui-dialog__ft">
+            <a id="js_weapp_without_auth_dialog_ok" href="javascript:void(0);" class="weui-dialog__btn weui-dialog__btn_primary">OK</a>
+        </div>
+    </div>
+</div>
+
+
+        
+        
+        
+
+
+        
+
+
+
+
+
+
+
+
+        
+
+    
+
+
+</body>
+</html>
