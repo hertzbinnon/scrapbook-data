@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="profile" href="http://gmpg.org/xfn/11">
+	<title>Cross Compile Qt - MinGW Windows Applications on a Linux Host - Uncannier Software</title>
+
+
+<!-- This site is optimized with the Yoast SEO plugin v11.4 - https://yoast.com/wordpress/plugins/seo/ -->
+<link rel="canonical" href="https://uncannier.com/cross-compile-qt-mingw-windows-applications-on-a-linux-host/">
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Cross Compile Qt - MinGW Windows Applications on a Linux Host - Uncannier Software">
+<meta property="og:description" content="In my view, the cross-platform power of Qt is not fully realized if you need a different build host for every target platform. It’s only natural to want to have one build machine that can deliver multiple targets. And if we’re talking about a CI server for a team to use in a cross-platform application … Continue reading &quot;Cross Compile Qt – MinGW Windows Applications on a Linux Host&quot;">
+<meta property="og:url" content="https://uncannier.com/cross-compile-qt-mingw-windows-applications-on-a-linux-host/">
+<meta property="og:site_name" content="Uncannier Software">
+<meta property="article:tag" content="crosscompile">
+<meta property="article:tag" content="crossplatform">
+<meta property="article:tag" content="devops">
+<meta property="article:tag" content="mingw">
+<meta property="article:tag" content="qt">
+<meta property="article:section" content="DevOps">
+<meta property="article:published_time" content="2018-06-25T13:22:53+00:00">
+<meta property="article:modified_time" content="2018-12-15T12:13:43+00:00">
+<meta property="og:updated_time" content="2018-12-15T12:13:43+00:00">
+<meta property="og:image" content="https://uncannier.com/wp-content/uploads/2018/06/image2018-6-22_15-54-17.png">
+<meta property="og:image:secure_url" content="https://uncannier.com/wp-content/uploads/2018/06/image2018-6-22_15-54-17.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:description" content="In my view, the cross-platform power of Qt is not fully realized if you need a different build host for every target platform. It’s only natural to want to have one build machine that can deliver multiple targets. And if we’re talking about a CI server for a team to use in a cross-platform application … Continue reading &quot;Cross Compile Qt – MinGW Windows Applications on a Linux Host&quot;">
+<meta name="twitter:title" content="Cross Compile Qt - MinGW Windows Applications on a Linux Host - Uncannier Software">
+<meta name="twitter:site" content="@uncanniersw">
+<meta name="twitter:image" content="https://uncannier.com/wp-content/uploads/2018/06/image2018-6-22_15-54-17.png">
+<meta name="twitter:creator" content="@uncanniersw">
+
+<!-- / Yoast SEO plugin. -->
+
+<link rel="dns-prefetch" href="https://fonts.googleapis.com/">
+<link rel="dns-prefetch" href="https://s.w.org/">
+<link rel="alternate" type="application/rss+xml" title="Uncannier Software » Feed" href="https://uncannier.com/feed/">
+<link rel="alternate" type="application/rss+xml" title="Uncannier Software » Comments Feed" href="https://uncannier.com/comments/feed/">
+<link rel="alternate" type="application/rss+xml" title="Uncannier Software » Cross Compile Qt – MinGW Windows Applications on a Linux Host Comments Feed" href="https://uncannier.com/cross-compile-qt-mingw-windows-applications-on-a-linux-host/feed/">
+<!-- This site uses the Google Analytics by MonsterInsights plugin v7.6.0 - Using Analytics tracking - https://www.monsterinsights.com/ -->
+
+<!-- / Google Analytics by MonsterInsights -->
+		
+		
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="https://api.w.org/" href="https://uncannier.com/wp-json/">
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://uncannier.com/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://uncannier.com/wp-includes/wlwmanifest.xml"> 
+<meta name="generator" content="WordPress 5.2.2">
+<link rel="shortlink" href="https://uncannier.com/?p=38">
+<link rel="alternate" type="application/json+oembed" href="https://uncannier.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Funcannier.com%2Fcross-compile-qt-mingw-windows-applications-on-a-linux-host%2F">
+<link rel="alternate" type="text/xml+oembed" href="https://uncannier.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Funcannier.com%2Fcross-compile-qt-mingw-windows-applications-on-a-linux-host%2F&amp;format=xml">
+<link rel="pingback" href="https://uncannier.com/xmlrpc.php">	  
+
+    		
+		<link rel="icon" href="cropped-uncannier-icon-1-32x32.png" sizes="32x32">
+<link rel="icon" href="cropped-uncannier-icon-1-192x192.png" sizes="192x192">
+<link rel="apple-touch-icon-precomposed" href="https://uncannier.com/wp-content/uploads/2018/05/cropped-uncannier-icon-1-180x180.png">
+<meta name="msapplication-TileImage" content="https://uncannier.com/wp-content/uploads/2018/05/cropped-uncannier-icon-1-270x270.png">
+
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body class="post-template-default single single-post postid-38 single-format-standard">		 
+	
+	 <div class="main-head">
+	
+			<div class="top-bar row">
+		<div class="container">
+		<div style="float: left;" class="main-nav col-md-9">
+			<ul class="nav navbar-nav">
+						</ul>
+		</div>
+		<div style="float: right;" class="menu-widget-area col-md-3">
+					</div>
+		</div>
+	</div><!-- .top-bar -->
+	
+	<div class="head container">
+
+	   		
+		 <div class="brand-center">
+	    	   
+		    		    <h1 class="title"><a class="navbar-brand" href="https://uncannier.com/">Uncannier Software</a></h1>
+		     			<p class="site-description">It's not enough to just be uncanny</p> 
+			  
+		</div>
+  		
+  		   <nav id="site-navigation" class="main-nav primary navbar navbar-inverse">
+  		  	  
+		  <div class="container-fluid">
+		    <div class="navbar-header ">
+		      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>                        
+		      </button>	
+
+			</div>	
+			
+		    <div class="collapse navbar-collapse" id="myNavbar">
+		      <ul class="nav navbar-nav">
+		      	
+		        					
+		      </ul>
+		    
+		    </div>
+		  </div>
+
+		</nav> 
+		</div><!-- .brand -->
+		</div><!-- .head container -->
+	<!-- #masthead -->
+	<!-- .main-head -->
+
+		
+	 <div id="content" class="site-content container">
+		
+
+		
+<div class="col-lg-9 col-md-9" id="primary">
+
+    <main id="main" class="site-main" role="main">
+
+	
+<article id="post-38" class="post-38 post type-post status-publish format-standard hentry category-devops tag-crosscompile tag-crossplatform tag-devops tag-mingw tag-qt">
+
+	<div class="post-content">
+		<header class="entry-header">
+			<h1 class="entry-title">Cross Compile Qt – MinGW Windows Applications on a Linux Host</h1>
+				<div class="post-info">
+											<span class="author vcard"><a class="url fn n" href="https://uncannier.com/author/greg-breen/">Uncannier Software</a></span>
+														
+											<span class="posted-on">June 25, 2018</span>
+									</div><!-- .post-info -->
+			
+		</header><!-- .entry-header -->
+
+		
+		<div class="entry-content">
+			<p>In my view, the cross-platform power of Qt is not fully realized if you need a different build host for every target platform. It’s only natural to want to have one build machine that can deliver multiple targets. And if we’re talking about a CI server for a team to use in a cross-platform application development, then it’s a very worthwhile investment.</p>
+<p>Accordingly, the aim of this article is to document how to create a cross-compilation environment that allows you to build Windows applications on a Linux host. Specifically, Qt-based applications.</p>
+<h1>Wilful Ignorance</h1>
+<p>When it comes to this topic, the internet is populated with naysayers. They will tell you that it’s too hard to setup, that it will take you days (if ever) to setup, that a Windows virtual box is easier, so on and so forth. I can only think such people have never done it, because it really isn’t that hard.</p>
+<h1>How To</h1>
+<p>The notes here have been prepared using Qt 5.11.1 (Open Source) and Ubuntu 18.04 LTS 64-bit, as a working example.</p>
+<h2>MinGW</h2>
+<p>The cornerstone of this exercise is MinGW. This is the cross-platform compiler you will need to use instead of the vanilla GCC in your distribution.</p>
+
+
+<div class="wp-geshi-highlight-wrap5"><div class="wp-geshi-highlight-wrap4"><div class="wp-geshi-highlight-wrap3"><div class="wp-geshi-highlight-wrap2"><div class="wp-geshi-highlight-wrap"><div class="wp-geshi-highlight"><div class="bash"><pre class="de1"><span class="kw2">sudo</span> apt <span class="kw2">install</span> mingw-w64</pre></div></div></div></div></div></div></div>
+
+
+<h2>Qt Source</h2>
+<p>You need to download the Qt source code from <a href="https://download.qt.io/official_releases/qt/">https://download.qt.io/official_releases/qt/</a>.</p>
+<p>You have two major approaches:</p>
+<ol>
+<li>Download the base source package ( <a href="https://download.qt.io/official_releases/qt/5.11/5.11.1/single/">https://download.qt.io/official_releases/qt/5.11/5.11.1/single/</a> ) and desired individual modules ( <a href="https://download.qt.io/official_releases/qt/5.11/5.11.1/submodules/">https://download.qt.io/official_releases/qt/5.11/5.11.1/submodules/</a> ).</li>
+<li>Include the source when you install Qt.</li>
+</ol>
+<p>In my case, I took the second option, and installed Qt as follows:</p>
+
+
+<div class="wp-geshi-highlight-wrap5"><div class="wp-geshi-highlight-wrap4"><div class="wp-geshi-highlight-wrap3"><div class="wp-geshi-highlight-wrap2"><div class="wp-geshi-highlight-wrap"><div class="wp-geshi-highlight"><div class="bash"><pre class="de1"><span class="kw2">chmod</span> +x qt-opensource-linux-x64-5.11.1.run .<span class="sy0">/</span>qt-opensource-linux-x64-5.11.1.run</pre></div></div></div></div></div></div></div>
+
+
+<div><img class="alignnone wp-image-43 size-full" src="image2018-6-22_15-54-17.png" alt="" srcset="https://uncannier.com/wp-content/uploads/2018/06/image2018-6-22_15-54-17.png 497w, https://uncannier.com/wp-content/uploads/2018/06/image2018-6-22_15-54-17-273x300.png 273w" sizes="(max-width: 497px) 100vw, 497px" pagespeed_url_hash="3442677327" width="497" height="547"></div>
+<h2>Prerequisities</h2>
+<p>Depending on what optional Qt modules you want to include, your prerequisites will likely be different. For example, if you want to build Qt WebEngine, you need <strong>flex</strong>, <strong>bison</strong> and more. In my case, the only sub-modules I wanted to add to <strong>qtbase</strong> were <strong>qtserialport</strong>, <strong>qtsvg</strong> and <strong>qttools</strong>. Hence the only prerequisites were:</p>
+
+
+<div class="wp-geshi-highlight-wrap5"><div class="wp-geshi-highlight-wrap4"><div class="wp-geshi-highlight-wrap3"><div class="wp-geshi-highlight-wrap2"><div class="wp-geshi-highlight-wrap"><div class="wp-geshi-highlight"><div class="bash"><pre class="de1"><span class="kw2">sudo</span> apt <span class="kw2">install</span> build-essential libgl1-mesa-dev python</pre></div></div></div></div></div></div></div>
+
+
+<h2>Configuring Qt</h2>
+<p>The Qt build then needs to be configured for cross-compilation using MinGW. The following command configures for creation of a 64-bit Qt development kit. You can instead use <strong>i686-w64-mingw32-</strong> for 32-bit.</p>
+<p>The <strong>-prefix</strong> clauses specifies the destination directory for the resultant Qt development kit.</p>
+<p>As I installed the entire Qt source, and only wanted to build a handful of optional sub-modules, I needed many <strong>-skip</strong> clauses. YMMV; if you download only the source of sub-modules you want to build, you won’t need any <strong>-skip</strong> clauses. If the size of the build is not reduced one way or another, the build time will be very much greater, as will be the number of prerequisite packages.</p>
+
+
+<div class="wp-geshi-highlight-wrap5"><div class="wp-geshi-highlight-wrap4"><div class="wp-geshi-highlight-wrap3"><div class="wp-geshi-highlight-wrap2"><div class="wp-geshi-highlight-wrap"><div class="wp-geshi-highlight"><div class="bash"><pre class="de1">.<span class="sy0">/</span>configure 
+<span class="re5">-xplatform</span> win32-g++ 
+<span class="re5">-device-option</span> <span class="re2">CROSS_COMPILE</span>=<span class="sy0">/</span>usr<span class="sy0">/</span>bin<span class="sy0">/</span>x86_64-w64-mingw32- 
+<span class="re5">-prefix</span> <span class="sy0">/</span>home<span class="sy0">/</span>foobar<span class="sy0">/</span>Qt5.11.1<span class="sy0">/</span>5.11.1<span class="sy0">/</span>mingw_64 
+<span class="re5">-opensource</span> 
+<span class="re5">-no-compile-examples</span> 
+<span class="re5">-opengl</span> desktop
+<span class="re5">-skip</span> qtactiveqt <span class="re5">-skip</span> qtcharts <span class="re5">-skip</span> qtdoc <span class="re5">-skip</span> qtlocation 
+<span class="re5">-skip</span> qtremoteobjects <span class="re5">-skip</span> qtserialbus <span class="re5">-skip</span> qtwebchannel 
+<span class="re5">-skip</span> qtwebview <span class="re5">-skip</span> qtandroidextras <span class="re5">-skip</span> qtconnectivity 
+<span class="re5">-skip</span> qtgamepad <span class="re5">-skip</span> qtmacextras <span class="re5">-skip</span> qtpurchasing <span class="re5">-skip</span> qtscript 
+<span class="re5">-skip</span> qttranslations <span class="re5">-skip</span> qtwebengine <span class="re5">-skip</span> qtwinextras 
+<span class="re5">-skip</span> qtdatavis3d <span class="re5">-skip</span> qtgraphicaleffects <span class="re5">-skip</span> qtmultimedia 
+<span class="re5">-skip</span> qtquickcontrols <span class="re5">-skip</span> qtscxml <span class="re5">-skip</span> qtspeech 
+<span class="re5">-skip</span> qtvirtualkeyboard <span class="re5">-skip</span> qtwebglplugin <span class="re5">-skip</span> qtx11extras 
+<span class="re5">-skip</span> qt3d <span class="re5">-skip</span> qtcanvas3d <span class="re5">-skip</span> qtdeclarative 
+<span class="re5">-skip</span> qtimageformats <span class="re5">-skip</span> qtnetworkauth <span class="re5">-skip</span> qtquickcontrols2 
+<span class="re5">-skip</span> qtsensors <span class="re5">-skip</span> qtwayland <span class="re5">-skip</span> qtwebsockets <span class="re5">-skip</span> qtxmlpattern</pre></div></div></div></div></div></div></div>
+
+
+<h2>Make</h2>
+<p>OK, now you have to settle in for a long build. In my case, it was just over an hour.</p>
+
+
+<div class="wp-geshi-highlight-wrap5"><div class="wp-geshi-highlight-wrap4"><div class="wp-geshi-highlight-wrap3"><div class="wp-geshi-highlight-wrap2"><div class="wp-geshi-highlight-wrap"><div class="wp-geshi-highlight"><div class="bash"><pre class="de1"><span class="kw2">make</span></pre></div></div></div></div></div></div></div>
+
+
+<h2>Installation</h2>
+<p>You know it.</p>
+
+
+<div class="wp-geshi-highlight-wrap5"><div class="wp-geshi-highlight-wrap4"><div class="wp-geshi-highlight-wrap3"><div class="wp-geshi-highlight-wrap2"><div class="wp-geshi-highlight-wrap"><div class="wp-geshi-highlight"><div class="bash"><pre class="de1"><span class="kw2">make</span> <span class="kw2">install</span></pre></div></div></div></div></div></div></div>
+
+
+<h1>Qt Creator</h1>
+<p>If you’ve made it here, you now have a 64-bit MinGW development kit for Qt, installed side-by-side with your native vanilla GCC development kit. Now we need to configure Qt Creator to use it. If you’re a Qt developer, this part is probably trivial.</p>
+<h2>Add The Compiler</h2>
+<p><a href="https://uncannier.com/wp-content/uploads/2018/06/image2018-6-24_6-26-17.png"><img class="alignnone wp-image-44 size-large" src="image2018-6-24_6-26-17-1024x660.png" alt="" srcset="https://uncannier.com/wp-content/uploads/2018/06/image2018-6-24_6-26-17-1024x660.png 1024w, https://uncannier.com/wp-content/uploads/2018/06/image2018-6-24_6-26-17-300x193.png 300w, https://uncannier.com/wp-content/uploads/2018/06/image2018-6-24_6-26-17-768x495.png 768w, https://uncannier.com/wp-content/uploads/2018/06/image2018-6-24_6-26-17.png 1138w" sizes="(max-width: 708px) 100vw, 708px" pagespeed_url_hash="2790331368" width="708" height="456"></a></p>
+<h2>Add The Qt Version</h2>
+<p>Note that the warning is because there’s no <strong>qmlscene</strong> installed – this is not needed for merely making Windows-targeted builds for QA and production.</p>
+<p><a href="https://uncannier.com/wp-content/uploads/2018/06/image2018-6-24_6-28-25.png"><img class="alignnone wp-image-45 size-large" src="image2018-6-24_6-28-25-1024x660.png" alt="" srcset="https://uncannier.com/wp-content/uploads/2018/06/image2018-6-24_6-28-25-1024x660.png 1024w, https://uncannier.com/wp-content/uploads/2018/06/image2018-6-24_6-28-25-300x193.png 300w, https://uncannier.com/wp-content/uploads/2018/06/image2018-6-24_6-28-25-768x495.png 768w, https://uncannier.com/wp-content/uploads/2018/06/image2018-6-24_6-28-25.png 1139w" sizes="(max-width: 708px) 100vw, 708px" pagespeed_url_hash="1499139645" width="708" height="456"></a></p>
+<h2>Add The Development Kit</h2>
+<p>Add a new Kit that references the new Compiler and new Qt Version. Note that the warning is because there’s no Debugger configured for this kit; we didn’t install the MinGW GDB as you would not use it to debug a Windows build on a Linux host. Instead you would debug using the native GCC and GDB.</p>
+<p><a href="https://uncannier.com/wp-content/uploads/2018/06/image2018-6-24_6-29-54.png"><img class="alignnone wp-image-46 size-large" src="image2018-6-24_6-29-54-1024x660.png" alt="" srcset="https://uncannier.com/wp-content/uploads/2018/06/image2018-6-24_6-29-54-1024x660.png 1024w, https://uncannier.com/wp-content/uploads/2018/06/image2018-6-24_6-29-54-300x193.png 300w, https://uncannier.com/wp-content/uploads/2018/06/image2018-6-24_6-29-54-768x495.png 768w, https://uncannier.com/wp-content/uploads/2018/06/image2018-6-24_6-29-54.png 1138w" sizes="(max-width: 708px) 100vw, 708px" pagespeed_url_hash="29117590" width="708" height="456"></a></p>
+<h1>Conclusion</h1>
+<p>So in reality, it’s not hard. The actual building of Qt is long, but the level of challenge is low.</p>
+<p>The only real challenge lies in the relative dearth of clear information available on the web. Maybe I’m just bad at Googling, but it surprises me that this isn’t front and centre at qt.org.</p>
+<h1>References</h1>
+<p>The steps presented here were pieced together with the help of the following links, and a few hours of trial and error:</p>
+<ul>
+<li><a href="https://marc.wäckerlin.ch/computer/cross-compile-on-ubuntu-linux-for-windows-using-mingw">https://marc.wäckerlin.ch/computer/cross-compile-on-ubuntu-linux-for-windows-using-mingw</a></li>
+<li><a href="http://www.qtcentre.org/threads/67967-Can-a-Qt-program-compiled-on-Linux-run-on-windows">http://www.qtcentre.org/threads/67967-Can-a-Qt-program-compiled-on-Linux-run-on-windows</a></li>
+<li><a href="https://stackoverflow.com/questions/49134517/cross-compile-qt5-mingw-with-mysql-driver-issue">https://stackoverflow.com/questions/49134517/cross-compile-qt5-mingw-with-mysql-driver-issue</a></li>
+<li><a href="https://www.ics.com/blog/how-compile-qt-source-code-linux">https://www.ics.com/blog/how-compile-qt-source-code-linux</a></li>
+<li><a href="https://stackoverflow.com/questions/16646521/compiling-qt-5-getting-warning-the-build-will-most-likely-fail">https://stackoverflow.com/questions/16646521/compiling-qt-5-getting-warning-the-build-will-most-likely-fail</a></li>
+<li><a href="http://doc.qt.io/qt-5/configure-options.html">http://doc.qt.io/qt-5/configure-options.html</a></li>
+</ul>
+<span class="tags-links">Tagged <a href="https://uncannier.com/tag/crosscompile/" rel="tag">crosscompile</a>, <a href="https://uncannier.com/tag/crossplatform/" rel="tag">crossplatform</a>, <a href="https://uncannier.com/tag/devops/" rel="tag">devops</a>, <a href="https://uncannier.com/tag/mingw/" rel="tag">mingw</a>, <a href="https://uncannier.com/tag/qt/" rel="tag">qt</a></span>		</div><!-- .entry-content -->
+	</div>
+
+</article><!-- #post-## -->
+
+	<nav class="navigation post-navigation" role="navigation">
+		<h2 class="screen-reader-text">Post navigation</h2>
+		<div class="nav-links"><div class="nav-next"><a href="https://uncannier.com/thunderboard-ble-embedded-software-iot-a-mind-dump/" rel="next">Thunderboard, BLE, Embedded Software, IoT – A Mind Dump</a></div></div>
+	</nav>
+<div id="comments" class="comments-area">
+
+			<h2 class="comments-title">
+			5 thoughts on “<span>Cross Compile Qt – MinGW Windows Applications on a Linux Host</span>”		</h2><!-- .comments-title -->
+
+		
+		<ul class="comment-list">
+					<li id="comment-19" class="comment even thread-even depth-1 parent">
+			<article id="div-comment-19" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="597dbae23b815457b72d069df8ef8c3a" srcset="https://secure.gravatar.com/avatar/597dbae23b815457b72d069df8ef8c3a?s=128&amp;d=mm&amp;r=g 2x" class="avatar avatar-64 photo" pagespeed_url_hash="3495820234" width="64" height="64">						<b class="fn">Roger</b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="https://uncannier.com/cross-compile-qt-mingw-windows-applications-on-a-linux-host/#comment-19">
+							<time datetime="2018-11-05T00:14:05+08:00">
+								November 5, 2018 at 12:14 am							</time>
+						</a>
+											</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Hey,<br>
+thanks for your post. Worked fine with Qt 5.11.2.<br>
+Only thing to mention is that you will have to add a few .dll-files after the cross compile before you can run the resulting .exe in windows. In my test case I took the calculator example that comes with QtCreator an had to add libgcc_s_seh-1.dll, libstdc++-6.dll, qt5core.dll, qt5gui.dll, qt5widgets.dll and qwindows.dll (in subfolder “platforms”). They all come with the MinGW installation and you just need to copy them to your release.<br>
+Afterwards I could run the calculator in windows <img draggable="false" class="emoji" alt="🙂" src="1f642.svg"></p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="#comment-19" data-commentid="19" data-postid="38" data-belowelement="div-comment-19" data-respondelement="respond" aria-label="Reply to Roger">Reply</a></div>			</article><!-- .comment-body -->
+		<ol class="children">
+		<li id="comment-24" class="comment byuser comment-author-greg-breen bypostauthor odd alt depth-2">
+			<article id="div-comment-24" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="8d6874f48b31e760edae7f7aca0a0670" srcset="https://secure.gravatar.com/avatar/8d6874f48b31e760edae7f7aca0a0670?s=128&amp;d=mm&amp;r=g 2x" class="avatar avatar-64 photo" pagespeed_url_hash="4293358239" width="64" height="64">						<b class="fn">Uncannier Software</b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="https://uncannier.com/cross-compile-qt-mingw-windows-applications-on-a-linux-host/#comment-24">
+							<time datetime="2018-11-06T14:01:15+08:00">
+								November 6, 2018 at 2:01 pm							</time>
+						</a>
+											</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Thanks Roger.</p>
+<p>I didn’t cover that because it’s not related to the cross-compilation per se, but yes the DLLs need to be packaged with the EXE.</p>
+<p>Ideally we could use the windeployqt utility (as we would on Windows), but it doesn’t seem to work. It reports:</p>
+<p>Unable to find dependent libraries of foobar.exe :Not implemented.</p>
+<p>I think that is a limitation of windeployqt itself, which seemingly does not support parsing of the PE format when built on a Linux system (QT_OS_WIN is not defined):</p>
+<p><a href="https://code.woboq.org/qt5/qttools/src/shared/winutils/utils.cpp.html#_Z16readPeExecutableRK7QStringPS_P11QStringListPjPbb" rel="nofollow">https://code.woboq.org/qt5/qttools/src/shared/winutils/utils.cpp.html#_Z16readPeExecutableRK7QStringPS_P11QStringListPjPbb</a></p>
+<p>So I think we are forced to make our own custom script to package DLLs.  At least that is what I did.  A minor disappointment.</p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="#comment-24" data-commentid="24" data-postid="38" data-belowelement="div-comment-24" data-respondelement="respond" aria-label="Reply to Uncannier Software">Reply</a></div>			</article><!-- .comment-body -->
+		</li><!-- #comment-## -->
+</ol><!-- .children -->
+</li><!-- #comment-## -->
+		<li id="comment-25" class="comment even thread-odd thread-alt depth-1">
+			<article id="div-comment-25" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="a456e592e2b7bb510721ed03f261fe45" srcset="https://secure.gravatar.com/avatar/a456e592e2b7bb510721ed03f261fe45?s=128&amp;d=mm&amp;r=g 2x" class="avatar avatar-64 photo" pagespeed_url_hash="1659449594" width="64" height="64">						<b class="fn">entropie</b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="https://uncannier.com/cross-compile-qt-mingw-windows-applications-on-a-linux-host/#comment-25">
+							<time datetime="2018-11-10T05:18:58+08:00">
+								November 10, 2018 at 5:18 am							</time>
+						</a>
+											</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Worked like a charm ! Thank you and my google skills seem to be bad too <img draggable="false" class="emoji" alt="🙂" src="1f642.svg"></p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="#comment-25" data-commentid="25" data-postid="38" data-belowelement="div-comment-25" data-respondelement="respond" aria-label="Reply to entropie">Reply</a></div>			</article><!-- .comment-body -->
+		</li><!-- #comment-## -->
+		<li id="comment-29" class="comment odd alt thread-even depth-1">
+			<article id="div-comment-29" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="d59bc20140fe9a994254c4b0639f7148" srcset="https://secure.gravatar.com/avatar/d59bc20140fe9a994254c4b0639f7148?s=128&amp;d=mm&amp;r=g 2x" class="avatar avatar-64 photo" pagespeed_url_hash="2778862997" width="64" height="64">						<b class="fn">John</b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="https://uncannier.com/cross-compile-qt-mingw-windows-applications-on-a-linux-host/#comment-29">
+							<time datetime="2018-11-26T13:06:20+08:00">
+								November 26, 2018 at 1:06 pm							</time>
+						</a>
+											</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>I tried to add -static option into this build but got errors asking for win10 sdk and msvc2017 header files. Is it possible to make this a static build?</p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="#comment-29" data-commentid="29" data-postid="38" data-belowelement="div-comment-29" data-respondelement="respond" aria-label="Reply to John">Reply</a></div>			</article><!-- .comment-body -->
+		</li><!-- #comment-## -->
+		<li id="comment-100" class="comment even thread-odd thread-alt depth-1">
+			<article id="div-comment-100" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="c917ed0bd37a4f36456e3013f1bf8f95" srcset="https://secure.gravatar.com/avatar/c917ed0bd37a4f36456e3013f1bf8f95?s=128&amp;d=mm&amp;r=g 2x" class="avatar avatar-64 photo" pagespeed_url_hash="3395878119" width="64" height="64">						<b class="fn"><a href="http://whatever.com/" rel="external nofollow" class="url">This is my Name</a></b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="https://uncannier.com/cross-compile-qt-mingw-windows-applications-on-a-linux-host/#comment-100">
+							<time datetime="2019-03-26T23:51:37+08:00">
+								March 26, 2019 at 11:51 pm							</time>
+						</a>
+											</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>I didn’t try it yet but if it works, this is the easiest solution on the internet as of 26/3/2019. I found this solution after 4 hours of googling (phew!). More than 2 solutions stated that i need to install some “mxe”. But i dont want to install any thing except qt and the dependencies like mingw. cheers! <img draggable="false" class="emoji" alt="🙂" src="1f642.svg"></p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="#comment-100" data-commentid="100" data-postid="38" data-belowelement="div-comment-100" data-respondelement="respond" aria-label="Reply to This is my Name">Reply</a></div>			</article><!-- .comment-body -->
+		</li><!-- #comment-## -->
+		</ul><!-- .comment-list -->
+
+			<div id="respond" class="comment-respond">
+		<h3 id="reply-title" class="comment-reply-title">Leave a Reply <small><a rel="nofollow" id="cancel-comment-reply-link" href="https://uncannier.com/cross-compile-qt-mingw-windows-applications-on-a-linux-host/#respond" style="display: none;">Cancel reply</a></small></h3>			<form action="https://uncannier.com/wp-comments-post.php" method="post" id="commentform" class="comment-form" novalidate="">
+				<p class="comment-notes"><span id="email-notes">Your email address will not be published.</span> Required fields are marked <span class="required">*</span></p><p class="comment-form-comment"><label for="comment">Comment</label> <textarea id="comment" name="comment" cols="45" rows="8" maxlength="65525" required="required"></textarea></p><p class="comment-form-author"><label for="author">Name <span class="required">*</span></label> <input id="author" name="author" value="" size="30" maxlength="245" required="required" type="text"></p>
+<p class="comment-form-email"><label for="email">Email <span class="required">*</span></label> <input id="email" name="email" value="" size="30" maxlength="100" aria-describedby="email-notes" required="required" type="email"></p>
+<p class="comment-form-url"><label for="url">Website</label> <input id="url" name="url" value="" size="30" maxlength="200" type="url"></p>
+<p class="form-submit"><input name="submit" id="submit" class="submit" value="Post Comment" type="submit"> <input name="comment_post_ID" value="38" id="comment_post_ID" type="hidden">
+<input name="comment_parent" id="comment_parent" value="0" type="hidden">
+</p>			</form>
+			</div><!-- #respond -->
+	
+</div><!-- #comments -->
+
+	</main><!-- #main -->
+	
+</div><!-- #primary -->
+	
+<div class="col-md-3 col-sm-12">
+	<aside id="secondary" class="widget-area" role="complementary">
+		<section id="search-2" class="widget widget_search"><form role="search" method="get" class="search-form" action="https://uncannier.com/">
+				<label>
+					<span class="screen-reader-text">Search for:</span>
+					<input class="search-field" placeholder="Search …" value="" name="s" type="search">
+				</label>
+				<input class="search-submit" value="Search" type="submit">
+			</form></section>		<section id="recent-posts-2" class="widget widget_recent_entries">		<h2 class="widget-title">Recent Posts</h2>		<ul>
+											<li>
+					<a href="https://uncannier.com/cr2032-lithium-battery-charge-level-measurement/">CR2032 Lithium Battery Charge Level Measurement</a>
+									</li>
+											<li>
+					<a href="https://uncannier.com/automated-software-versioning-continuous-integration-thunderboard/">Automated Software Versioning – Continuous Integration &amp; Thunderboard</a>
+									</li>
+											<li>
+					<a href="https://uncannier.com/three-laws-of-software-versioning/">Three Laws of Software Versioning</a>
+									</li>
+											<li>
+					<a href="https://uncannier.com/enabling-https-ssl-using-lets-encrypt-certbot/">Enabling HTTPS &amp; SSL Using Let’s Encrypt &amp; Certbot</a>
+									</li>
+											<li>
+					<a href="https://uncannier.com/tomcat-in-aws-part-4-install-mariadb-mysql/">Tomcat in AWS – Part 4 – Install MariaDB / MySQL</a>
+									</li>
+					</ul>
+		</section><section id="recent-comments-2" class="widget widget_recent_comments"><h2 class="widget-title">Recent Comments</h2><ul id="recentcomments"><li class="recentcomments"><span class="comment-author-link"><a href="http://whatever.com/" rel="external nofollow" class="url">This is my Name</a></span> on <a href="https://uncannier.com/cross-compile-qt-mingw-windows-applications-on-a-linux-host/#comment-100">Cross Compile Qt – MinGW Windows Applications on a Linux Host</a></li><li class="recentcomments"><span class="comment-author-link">Wally4u</span> on <a href="https://uncannier.com/continuous-integration-of-embedded-software-in-the-cloud-docker-simplicity-studio-circleci/#comment-97">Continuous Integration of Embedded Software in the Cloud – Docker, Simplicity Studio &amp; CircleCI</a></li><li class="recentcomments"><span class="comment-author-link">Uncannier Software</span> on <a href="https://uncannier.com/continuous-integration-of-embedded-software-in-the-cloud-docker-simplicity-studio-circleci/#comment-96">Continuous Integration of Embedded Software in the Cloud – Docker, Simplicity Studio &amp; CircleCI</a></li><li class="recentcomments"><span class="comment-author-link">Wally4u</span> on <a href="https://uncannier.com/continuous-integration-of-embedded-software-in-the-cloud-docker-simplicity-studio-circleci/#comment-95">Continuous Integration of Embedded Software in the Cloud – Docker, Simplicity Studio &amp; CircleCI</a></li><li class="recentcomments"><span class="comment-author-link">Uncannier Software</span> on <a href="https://uncannier.com/thunderboard-sense-2-over-the-air-ota-upgrades/#comment-87">Thunderboard Sense 2 – Over The Air (OTA) Upgrades</a></li></ul></section><section id="archives-2" class="widget widget_archive"><h2 class="widget-title">Archives</h2>		<ul>
+				<li><a href="https://uncannier.com/2019/06/">June 2019</a></li>
+	<li><a href="https://uncannier.com/2019/04/">April 2019</a></li>
+	<li><a href="https://uncannier.com/2018/12/">December 2018</a></li>
+	<li><a href="https://uncannier.com/2018/11/">November 2018</a></li>
+	<li><a href="https://uncannier.com/2018/06/">June 2018</a></li>
+		</ul>
+			</section><section id="categories-2" class="widget widget_categories"><h2 class="widget-title">Categories</h2>		<ul>
+				<li class="cat-item cat-item-2"><a href="https://uncannier.com/category/devops/">DevOps</a>
+</li>
+	<li class="cat-item cat-item-8"><a href="https://uncannier.com/category/embedded/">Embedded</a>
+</li>
+	<li class="cat-item cat-item-22"><a href="https://uncannier.com/category/process/">Process</a>
+</li>
+	<li class="cat-item cat-item-9"><a href="https://uncannier.com/category/thunderboard/">Thunderboard</a>
+</li>
+	<li class="cat-item cat-item-21"><a href="https://uncannier.com/category/web/">Web</a>
+</li>
+		</ul>
+			</section>	</aside><!-- #secondary -->
+</div>
+</div><!-- #content -->
+
+<footer id="colophon" class="site-footer ">
+	<div class="site-info container">
+
+		
+		<div class="clearfix"></div>
+        
+        
+        <div class="copyright-text container">
+
+        	Copyright © Uncannier Software. All rights reserved.
+        	 
+
+    	</div><!-- .copyright-text -->
+
+	</div><!-- .site-info -->
+
+</footer><!-- #colophon -->
+<!-- #page -->
+
+<a href="#page" class="scrolltop" id="btn-scrolltop"><i class="fa fa-angle-up"></i></a>
+
+
+
+
+
+</body>
+</html>
