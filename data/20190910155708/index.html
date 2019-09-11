@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="origin">
+    <meta property="og:description" content="在P2P通信标准协议(二)中,介绍了TURN的基本交互流程,在上篇结束部分也有说到,TURN作为STUN
+协议的一个拓展,保持了STUN的工具性质,而不作为完整的NAT传输解决方案,只提供穿透NAT">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <title>P2P通信标准协议(三)之ICE - 有价值炮灰 - 博客园</title>
+    
+    
+    
+    
+    
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/pannengzhi/rss">
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/pannengzhi/rsd.xml">
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/pannengzhi/wlwmanifest.xml">
+    
+    
+    
+    
+    
+    
+<link rel="preload" href="https://adservice.google.com/adsid/integrator.js?domain=www.cnblogs.com">
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+    <a name="top"></a>
+    
+    
+<!--done-->
+<div id="home">
+<div id="header">
+	<div id="blogTitle">
+        <a id="lnkBlogLogo" href="https://www.cnblogs.com/pannengzhi/"><img id="blogLogo" src="logo.gif" alt="返回主页"></a>		
+		
+<!--done-->
+<h1><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/pannengzhi/">有价值炮灰</a>
+</h1>
+<h2>
+<i>我的主页: <a href="https://evilpan.com/">evilpan.com</a></i>
+</h2><h2>Practice,Practice, and Practice</h2>
+
+
+
+
+
+		
+	</div><!--end: blogTitle 博客的标题和副标题 -->
+	<div id="navigator">
+		
+<ul id="navList">
+<li><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+<li>
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/pannengzhi/">
+首页</a>
+</li>
+<li>
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+<li>
+</li>
+<li>
+
+<!--<partial name="./Shared/_XmlLink.cshtml" model="Model" /></li>--></li>
+<li>
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+
+		<div class="blogStats">
+			
+			<span id="stats_post_count">随笔 - 
+39&nbsp; </span>
+<span id="stats_article_count">文章 - 
+1&nbsp; </span>
+<span id="stats-comment_count">评论 - 
+53</span>
+
+			
+		</div><!--end: blogStats -->
+	</div><!--end: navigator 博客导航栏 -->
+</div><!--end: header 头部 -->
+
+<div id="main">
+	<div id="mainContent">
+	<div class="forFlow">
+		<div id="post_detail">
+    <!--done-->
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/pannengzhi/p/5061674.html">P2P通信标准协议(三)之ICE</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body cnblogs-markdown">
+    <p>在<a href="http://jekyll.pppan.net/2015/12/15/p2p-standard-protocol-turn/">P2P通信标准协议(二)</a>中,介绍了TURN的基本交互流程,在上篇结束部分也有说到,TURN作为STUN<br>
+协议的一个拓展,保持了STUN的工具性质,而不作为完整的NAT传输解决方案,只提供穿透NAT的功能,<br>
+并且由具体的应用程序来使用.虽然TURN也可以独立工作,但其本身就是被设计为<a href="http://www.rfc-editor.org/info/rfc5245">ICE/RFC5245</a><br>
+的一部分,本章就来介绍一下ICE协议的具体内容.</p>
+<hr>
+<h2 id="sdp">SDP</h2>
+<p>ICE信息的描述格式通常采用标准的<a href="http://www.rfc-editor.org/info/rfc4566">SDP</a>,其全称为Session Description Protocol,即会话描述协议.<br>
+SDP只是一种信息格式的描述标准,不属于传输协议,但是可以被其他传输协议用来交换必要的信息,如SIP和RTSP等.</p>
+<h3 id="sdp信息">SDP信息</h3>
+<p>一个SDP会话描述包含如下部分:</p>
+<ul>
+<li>会话名称和会话目的</li>
+<li>会话的激活时间</li>
+<li>构成会话的媒体(media)</li>
+<li>为了接收该媒体所需要的信息(如地址,端口,格式等)</li>
+</ul>
+<p>因为在中途参与会话也许会受限制,所以可能会需要一些额外的信息:</p>
+<ul>
+<li>会话使用的的带宽信息</li>
+<li>会话拥有者的联系信息</li>
+</ul>
+<p>一般来说,SDP必须包含充分的信息使得应用程序能够加入会话,并且可以提供任何非参与者使用时需要知道的资源<br>
+状况,后者在当SDP同时用于多个会话声明协议时尤其有用.</p>
+<h3 id="sdp格式">SDP格式</h3>
+<p>SDP是基于文本的协议,使用ISO 10646字符集和UTF-8编码.SDP字段名称和属性名称只使用UTF-8的一个子集US-ASCII,<br>
+因此不能存在中文.虽然理论上文本字段和属性字段支持全集,但最好还是不要在其中使用中文.</p>
+<p>SDP会话描述包含了多行如下类型的文本:</p>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">type</span>&gt;</span>=<span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span></code></pre>
+<p>其中type是大小写敏感的,其中一些行是必须要有的,有些是可选的,所有元素都必须以固定顺序给出.固定的顺序极大改善了<br>
+错误检测,同时使得处理端设计更加简单.如下所示,其中可选的元素标记为* :</p>
+<pre><code class="hljs lua">会话描述:
+     v=  (protocol version)
+     o=  (originator <span class="hljs-keyword">and</span> session identifier)
+     s=  (session name)
+     i=* (session information)
+     u=* (URI of description)
+     e=* (email address)
+     p=* (phone number)
+     c=* (connection information <span class="hljs-comment">-- not required if included in</span>
+          all media)
+     b=* (zero <span class="hljs-keyword">or</span> more bandwidth information <span class="hljs-built_in">lines</span>)
+     One <span class="hljs-keyword">or</span> more <span class="hljs-built_in">time</span> descriptions (<span class="hljs-string">"t="</span> <span class="hljs-keyword">and</span> <span class="hljs-string">"r="</span> <span class="hljs-built_in">lines</span>; see below)
+     z=* (<span class="hljs-built_in">time</span> zone adjustments)
+     k=* (encryption key)
+     a=* (zero <span class="hljs-keyword">or</span> more session attribute <span class="hljs-built_in">lines</span>)
+     Zero <span class="hljs-keyword">or</span> more media descriptions
+
+时间信息描述:
+     t=  (<span class="hljs-built_in">time</span> the session is active)
+     r=* (zero <span class="hljs-keyword">or</span> more <span class="hljs-keyword">repeat</span> times)
+
+多媒体信息描述(如果有的话):
+     m=  (media name <span class="hljs-keyword">and</span> transport address)
+     i=* (media title)
+     c=* (connection information <span class="hljs-comment">-- optional if included at</span>
+          session level)
+     b=* (zero <span class="hljs-keyword">or</span> more bandwidth information <span class="hljs-built_in">lines</span>)
+     k=* (encryption key)
+     a=* (zero <span class="hljs-keyword">or</span> more media attribute <span class="hljs-built_in">lines</span>)</code></pre>
+<p>所有元素的type都为小写,并且不提供拓展.但是我们可以用a(attribute)字段来提供额外的信息.一个SDP描述的例子如下:</p>
+<pre><code class="hljs groovy">  v=<span class="hljs-number">0</span>
+  o=jdoe <span class="hljs-number">2890844526</span> <span class="hljs-number">2890842807</span> IN IP4 <span class="hljs-number">10.47</span><span class="hljs-number">.16</span><span class="hljs-number">.5</span>
+  s=SDP Seminar
+  i=A Seminar on the session description protocol
+  u=<span class="hljs-string">http:</span><span class="hljs-comment">//www.example.com/seminars/sdp.pdf</span>
+  e=j.doe<span class="hljs-meta">@example</span>.com (Jane Doe)
+  c=IN IP4 <span class="hljs-number">224.2</span><span class="hljs-number">.17</span><span class="hljs-number">.12</span>/<span class="hljs-number">127</span>
+  t=<span class="hljs-number">2873397496</span> <span class="hljs-number">2873404696</span>
+  a=recvonly
+  m=audio <span class="hljs-number">49170</span> RTP/AVP <span class="hljs-number">0</span>
+  m=video <span class="hljs-number">51372</span> RTP/AVP <span class="hljs-number">99</span>
+  a=<span class="hljs-string">rtpmap:</span><span class="hljs-number">99</span> h263<span class="hljs-number">-1998</span>/<span class="hljs-number">90000</span></code></pre>
+<p>具体字段的type/value描述和格式可以去参考<a href="http://www.rfc-editor.org/info/rfc4566">RFC4566</a>.</p>
+<h2 id="offeranswer模型">Offer/Answer模型</h2>
+<p>上文说到,SDP用来描述多播主干网络的会话信息,但是并没有具体的交互操作细节是如何实现的,因此<a href="http://www.rfc-editor.org/info/rfc3264">RFC3264</a><br>
+定义了一种基于SDP的offer/answer模型.在该模型中,会话参与者的其中一方生成一个SDP报文构成offer,<br>
+其中包含了一组offerer希望使用的多媒体流和编解码方法,以及offerer用来接收改数据的IP地址和端口信息.<br>
+offer传输到会话的另一端(称为answerer),由answerer生成一个answer,即用来响应对应offer的SDP报文.<br>
+answer中包含不同offer对应的多媒体流,并指明该流是否可以接受.</p>
+<p>RFC3264只介绍了交换数据过程,而没有定义传递offer/answer报文的方法,后者在<a href="http://www.rfc-editor.org/info/rfc3261">RFC3261/SIP</a><br>
+即会话初始化协议中描述.值得一提的是,offer/answer模型也经常被SIP作为一种基本方法使用.<br>
+offer/answer模型在SDP报文的基础上进行了一些定义,工作过程不在此描述,需要了解细节的朋友可以参考RFC3261.</p>
+<h2 id="ice">ICE</h2>
+<p>ICE的全称为<strong>Interactive Connectivity Establishment</strong>,即交互式连接建立.初学者可能会将其与网络编程的ICE<br>
+弄混,其实那是不一样的东西,在网络编程中,如C++的ICE库,都是指Internate Communications Engine,<br>
+是一种用于分布式程序设计的网络通信中间件.我们这里说的只是交互式连接建立.</p>
+<p>ICE是一个用于在<a href="http://www.rfc-editor.org/info/rfc3264">offer/answer</a>模式下的NAT传输协议,主要用于UDP下多媒体会话的建立,其使用了STUN协议以及TURN<br>
+协议,同时也能被其他实现了offer/answer模型的的其他程序所使用,比如<a href="http://www.rfc-editor.org/info/rfc3261">SIP</a>(Session Initiation Protocol).</p>
+<p>使用offer/answer模型(RFC3264)的协议通常很难在NAT之间穿透,因为其目的一般是建立多媒体数据流,而且在报文中还<br>
+携带了数据的源IP和端口信息,这在通过NAT时是有问题的.RFC3264还尝试在客户端之间建立直接的通路,因此中间就缺少<br>
+了应用层的封装.这样设计是为了减少媒体数据延迟,减少丢包率以及减少程序部署的负担.然而这一切都很难通过NAT而完成.<br>
+有很多解决方案可以使得这些协议运行于NAT环境之中,包括<code>应用层网关(ALGs)</code>,<code>Classic STUN</code>以及<code>Realm Specific IP</code>+<code>SDP</code><br>
+协同工作等方法.不幸的是,这些技术都是在某些网络拓扑下工作很好,而在另一些环境下表现又很差,因此我们需要一个单一的,<br>
+可自由定制的解决方案,以便能在所有环境中都能较好工作.</p>
+<h3 id="ice工作流程">ICE工作流程</h3>
+<p>一个典型的ICE工作环境如下,有两个端点L和R,都运行在各自的NAT之后(他们自己也许并不知道),NAT的类型和性质也是未知的.<br>
+L和R通过交换<a href="http://www.rfc-editor.org/info/rfc4566">SDP</a>信息在彼此之间建立多媒体会话,通常交换通过一个SIP服务器完成:</p>
+<pre><code class="hljs haskell">                 +<span class="hljs-comment">-----------+</span>
+                 |    <span class="hljs-type">SIP</span>    |
++<span class="hljs-comment">-------+        |    Srvr   |         +-------+</span>
+| <span class="hljs-type">STUN</span>  |        |           |         | <span class="hljs-type">STUN</span>  |
+| <span class="hljs-type">Srvr</span>  |        +<span class="hljs-comment">-----------+         | Srvr  |</span>
+|       |        /           \         |       |
++<span class="hljs-comment">-------+       /             \        +-------+</span>
+               /&lt;- <span class="hljs-type">Signaling</span> -&gt;\
+              /                 \
+         +<span class="hljs-comment">--------+          +--------+</span>
+         |  <span class="hljs-type">NAT</span>   |          |  <span class="hljs-type">NAT</span>   |
+         +<span class="hljs-comment">--------+          +--------+</span>
+           /                       \
+          /                         \
+         /                           \
+     +<span class="hljs-comment">-------+                    +-------+</span>
+     | <span class="hljs-type">Agent</span> |                    | <span class="hljs-type">Agent</span> |
+     |   <span class="hljs-type">L</span>   |                    |   <span class="hljs-type">R</span>   |
+     |       |                    |       |
+     +<span class="hljs-comment">-------+                    +-------+</span></code></pre>
+<p>ICE的基本思路是,每个终端都有一系列<code>传输地址</code>(包括传输协议,IP地址和端口)的候选,可以用来和其他端点进行通信.<br>
+其中可能包括:</p>
+<ul>
+<li>直接和网络接口联系的传输地址(host address)</li>
+<li>经过NAT转换的传输地址,即反射地址(server reflective address)</li>
+<li>TURN服务器分配的中继地址(relay address)</li>
+</ul>
+<p>虽然潜在要求任意一个L的候选地址都能用来和R的候选地址进行通信.但是实际中发现有许多组合是无法工作的.举例来说,<br>
+如果L和R都在NAT之后而且不处于同一内网,他们的直接地址就无法进行通信.ICE的目的就是为了发现哪一对候选地址的<br>
+组合可以工作,并且通过系统的方法对所有组合进行测试(用一种精心挑选的顺序).</p>
+<p>为了执行ICE,客户端必须要识别出其所有的地址候选,ICE中定义了三种候选类型,有些是从物理地址或者逻辑网络接口继承<br>
+而来,其他则是从STUN或者TURN服务器发现的.很自然,一个可用的地址为和本地网络接口直接联系的地址,通常是内网地址,<br>
+称为<code>HOST CANDIDATE</code>,如果客户端有多个网络接口,比如既连接了WiFi又插着网线,那么就可能有多个内网地址候选.</p>
+<p>其次,客户端通过STUN或者TURN来获得更多的候选传输地址,即<code>SERVER REFLEXIVE CANDIDATES</code>和<code>RELAYED CANDIDATES</code>,<br>
+如果TURN服务器是标准化的,那么两种地址都可以通过TURN服务器获得.当L获得所有的自己的候选地址之后,会将其<br>
+按优先级排序,然后通过signaling通道发送到R.候选地址被存储在SDP offer报文的属性部分.当R接收到offer之后,<br>
+就会进行同样的获选地址收集过程,并返回给L.</p>
+<p>这一步骤之后,两个对等端都拥有了若干自己和对方的候选地址,并将其配对,组成<code>CANDIDATE PAIRS</code>.为了查看哪对组合<br>
+可以工作,每个终端都进行一系列的检查.每个检查都是一次STUN request/response传输,将request从候选地址对的本地<br>
+地址发送到远端地址. 连接性检查的基本原则很简单:</p>
+<ol>
+<li>以一定的优先级将候选地址对进行排序.</li>
+<li>以该优先级顺序发送checks请求</li>
+<li>从其他终端接收到checks的确认信息</li>
+</ol>
+<p>两端连接性测试,结果是一个4次握手过程:</p>
+<pre><code class="hljs haskell"> <span class="hljs-type">L</span>                        <span class="hljs-type">R</span>
+ -                        -
+ <span class="hljs-type">STUN</span> request -&gt;             \  <span class="hljs-type">L's</span>
+           &lt;- <span class="hljs-type">STUN</span> response  /  check
+
+            &lt;- <span class="hljs-type">STUN</span> request  \  <span class="hljs-type">R's</span>
+ <span class="hljs-type">STUN</span> response -&gt;            /  check</code></pre>
+<p>值的一提的是,STUN request的发送和接收地址都是接下来进多媒体传输(如RTP和RTCP)的地址和端口,所以,<br>
+客户端实际上是将STUN协议与RTP/RTCP协议在数据包中进行复用(而不是在端口上复用).</p>
+<p>由于STUN Binding request用来进行连接性测试,因此STUN Binding response中会包含终端的实际地址,<br>
+如果这个地址和之前学习的所有地址都不匹配,发送方就会生成一个新的candidate,称为<code>PEER REFLEXIVE CANDIDATE</code>,<br>
+和其他candidate一样,也要通过ICE的检查测试.</p>
+<h3 id="连接性检查connectivity-checks">连接性检查(Connectivity Checks)</h3>
+<p>所有的ICE实现都要求与STUN(RFC5389)兼容,并且废弃Classic STUN(RFC3489).ICE的完整实现既生成checks(作为STUN client),<br>
+也接收checks(作为STUN server),而lite实现则只负责接收checks.这里只介绍完整实现情况下的检查过程.</p>
+<p><strong>1. 为中继候选地址生成许可(Permissions).</strong></p>
+<p><strong>2. 从本地候选往远端候选发送Binding Request.</strong></p>
+<p>在Binding请求中通常需要包含一些特殊的属性,以在ICE进行连接性检查的时候提供必要信息.</p>
+<ul>
+<li>PRIORITY 和 USE-CANDIDATE
+<ul>
+<li>终端必须在其request中包含PRIORITY属性,指明其优先级,优先级由公式计算而得.<br>
+如果有需要也可以给出特别指定的候选(即USE-CANDIDATE属性).</li>
+</ul></li>
+<li>ICE-CONTROLLED和ICE-CONTROLLING
+<ul>
+<li>在每次会话中,每个终端都有一个身份,有两种身份,即受控方(controlled role)和主控方(controlling role).<br>
+主控方负责选择最终用来通讯的候选地址对,受控方被告知哪个候选地址对用来进行哪次媒体流传输,<br>
+并且不生成更新过的offer来提示此次告知.发起ICE处理进程(即生成offer)的一方必须是主控方,而另一方则是受控方.<br>
+如果终端是受控方,那么在request中就必须加上ICE-CONTROLLED属性,同样,如果终端是主控方,就需要ICE-CONTROLLING属性.</li>
+</ul></li>
+<li>生成Credential
+<ul>
+<li>作为连接性检查的Binding Request必须使用STUN的短期身份验证.验证的用户名被格式化为一系列username段<br>
+的联结,包含了发送请求的所有对等端的用户名,以冒号隔开;密码就是对等端的密码.</li>
+</ul></li>
+</ul>
+<p><strong>3. 处理Response.</strong></p>
+<p>当收到Binding Response时,终端会将其与Binding Request相联系,通常通过事务ID.随后将会将此事务ID与<br>
+候选地址对进行绑定.</p>
+<ul>
+<li>失败响应
+<ul>
+<li>如果STUN传输返回487(Role Conflict)错误响应,终端首先会检查其是否包含了ICE-CONTROLLED或ICE-CONTROLLING<br>
+属性.如果有ICE-CONTROLLED,终端必须切换为controlling role;如果请求包含ICE-CONTROLLING属性,<br>
+则必须切换为controlled role.切换好之后,终端必须使产生487错误的候选地址对进入检查队列中,<br>
+并将此地址对的状态设置为<code>Waiting</code>.</li>
+</ul></li>
+<li>成功响应,一次连接检查在满足下列所有情况时候就被认为成功:
+<ul>
+<li>STUN传输产生一个Success Response</li>
+<li>response的源IP和端口等于Binding Request的目的IP和端口</li>
+<li>response的目的IP和端口等于Binding Request的源IP和端口</li>
+</ul></li>
+</ul>
+<p>终端收到成功响应之后,先检查其mapped address是否与本地记录的地址对有匹配,如果没有则生成一个新的候选地址.<br>
+即对等端的反射地址.如果有匹配,则终端会构造一个可用候选地址对(valid pair).通常很可能地址对不存在于任何<br>
+检查列表中,检索检查列表中没有被服务器反射的本地地址,这些地址把它们的本地候选转换成服务器反射地址的基地址,<br>
+并把冗余的地址去除掉.</p>
+<h2 id="后记">后记</h2>
+<p>本文介绍了一种完整的NAT环境通信解决方案ICE,并且对其中涉及到的概念SDP和offer/answer模型也作了简要介绍.<br>
+ICE是使用STUN/TURN工具性质的最主要协议之一,其中TURN一开始也被设计为ICE协议的一部分.值的一提的是,<br>
+本文只是对这几种协议作了概述性的说明,而具体工作过程和详细的属性描述都未包含,因此如果需要根据协议来<br>
+实现具体的应用程序,还需要对RFC的文档进行仔细阅读.这里给出一些参考:</p>
+<ul>
+<li><a href="http://www.rfc-editor.org/info/rfc5389">stun</a></li>
+<li><a href="http://www.rfc-editor.org/info/rfc5766">turn</a></li>
+<li><a href="http://www.rfc-editor.org/info/rfc5245">ice</a></li>
+<li><a href="http://www.rfc-editor.org/info/rfc4566">sdp</a></li>
+<li><a href="http://www.rfc-editor.org/info/rfc3261">sip</a></li>
+</ul>
+<p>而具体的代码以及实现可以参考:</p>
+<ul>
+<li><a href="https://github.com/pannzh/TurnServer">TurnServer</a></li>
+<li><a href="http://www.pjsip.org/">pjsip</a></li>
+</ul>
+
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+<div id="EntryTag">
+    标签: 
+            <a href="https://www.cnblogs.com/pannengzhi/tag/P2P/">P2P</a></div>
+
+    <div id="blog_post_info">
+<div id="green_channel">
+        <a href="javascript:void(0);" id="green_channel_digg" onclick="DiggIt(5061674,cb_blogId,1);green_channel_success(this,'谢谢推荐！');">好文要顶</a>
+        <a id="green_channel_follow" onclick="follow('f52cfd6d-bd44-e411-b908-9dcfd8948a71');" href="javascript:void(0);">关注我</a>
+    <a id="green_channel_favorite" onclick="AddToWz(cb_entryId);return false;" href="javascript:void(0);">收藏该文</a>
+    <a id="green_channel_weibo" href="javascript:void(0);" title="分享至新浪微博" onclick="ShareToTsina()"><img src="icon_weibo_24.png" alt=""></a>
+    <a id="green_channel_wechat" href="javascript:void(0);" title="分享至微信" onclick="shareOnWechat()"><img src="wechat.png" alt=""></a>
+</div>
+<div id="author_profile">
+    <div id="author_profile_info" class="author_profile_info">
+        <div id="author_profile_detail" class="author_profile_info">
+            <a href="https://home.cnblogs.com/u/pannengzhi/">有价值炮灰</a><br>
+            <a href="https://home.cnblogs.com/u/pannengzhi/followees/">关注 - 1</a><br>
+            <a href="https://home.cnblogs.com/u/pannengzhi/followers/">粉丝 - 67</a>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div id="author_profile_honor"></div>
+    <div id="author_profile_follow">
+                <a href="javascript:void(0);" onclick="follow('f52cfd6d-bd44-e411-b908-9dcfd8948a71');return false;">+加关注</a>
+    </div>
+</div>
+<div id="div_digg">
+    <div class="diggit" onclick="votePost(5061674,'Digg')">
+        <span class="diggnum" id="digg_count">2</span>
+    </div>
+    <div class="buryit" onclick="votePost(5061674,'Bury')">
+        <span class="burynum" id="bury_count">0</span>
+    </div>
+    <div class="clear"></div>
+    <div class="diggword" id="digg_tips">
+    </div>
+</div>
+
+</div>
+    <div class="clear"></div>
+    <div id="post_next_prev">
+
+    <a href="https://www.cnblogs.com/pannengzhi/p/5048965.html" class="p_n_p_prefix">« </a> 上一篇：    <a href="https://www.cnblogs.com/pannengzhi/p/5048965.html" title="发布于 2015-12-15 19:27">P2P通信标准协议(二)之TURN</a>
+    <br>
+    <a href="https://www.cnblogs.com/pannengzhi/p/5103914.html" class="p_n_p_prefix">» </a> 下一篇：    <a href="https://www.cnblogs.com/pannengzhi/p/5103914.html" title="发布于 2016-01-05 22:13">P2P通信标准协议(四)之SIP</a>
+
+</div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2015-12-20 20:13</span>&nbsp;<a href="https://www.cnblogs.com/pannengzhi/">有价值炮灰</a> 阅读(<span id="post_view_count">11861</span>) 评论(<span id="post_comment_count">0</span>) <a href="https://i.cnblogs.com/EditPosts.aspx?postid=5061674" rel="nofollow"> 编辑</a> <a href="javascript:void(0)" onclick="AddToWz(5061674); return false;">收藏</a>
+</div>
+        </div>
+	    
+	    
+    </div><!--end: topics 文章、评论容器-->
+</div>
+
+
+<a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"><div class="login_tips">
+    注册用户登录后才能发表评论，请 
+    <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return login('commentform');">登录</a>
+     或 
+    <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return register();">注册</a>，
+    <a href="https://www.cnblogs.com/">访问</a> 网站首页。
+</div></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"><a href="http://www.ucancode.com/index.htm" target="_top" onclick="ga('send', 'event', 'Link', 'click', 'T2-工控')">【推荐】超50万C++/C#源码: 大型实时仿真组态图形源码</a><br><a href="http://click.aliyun.com/m/1000074461/" target="_top" onclick="ga('send', 'event', 'Link', 'click', 'T2-阿里云')">【活动】阿里云910会员节多款云产品满减活动火热进行中</a><br><a href="https://www.ctyun.cn/activity/#/enterprise2?hmsr=%E5%8D%9A%E5%AE%A2%E5%9B%AD-0901-0%E5%85%83%E4%B8%8A%E4%BA%91&amp;hmpl=&amp;hmcu=&amp;hmkw=&amp;hmci=" target="_top" onclick="ga('send', 'event', 'Link', 'click', 'T2-天翼云')">【推荐】新手上天翼云，数十款云产品、新一代主机0元体验</a><br><a href="http://clickc.admaster.com.cn/c/a131574,b3595115,c1705,i0,m101,8a1,8b3,h" target="_top" onclick="ga('send', 'event', 'Link', 'click', 'T2-华为云微认证')">【推荐】零基础轻松玩转华为云产品，获壕礼加返百元大礼</a><br><a href="http://clickc.admaster.com.cn/c/a131575,b3595121,c1705,i0,m101,8a1,8b3,h" target="_top" onclick="ga('send', 'event', 'Link', 'click', 'T2-华为文字')">【推荐】华为云文字识别资源包重磅上市，1元万次限时抢购</a><br></div>
+    <div id="opt_under_post"></div>
+    
+    
+    
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height: 250px; width: 300px;" data-google-query-id="CID18NrjxeQCFZNliwodC8sPHw"><div id="google_ads_iframe_/1090369/C1_0__container__" style="border: 0pt none;"><iframe id="google_ads_iframe_/1090369/C1_0" title="3rd party ad content" name="google_ads_iframe_/1090369/C1_0" scrolling="no" marginwidth="0" marginheight="0" style="border: 0px none; vertical-align: bottom;" srcdoc="" data-google-container-id="1" data-load-complete="true" src="index_1.html" width="300" height="250" frameborder="0"></iframe></div></div>
+    </div>
+    <div id="under_post_news"><div class="recomm-block"><b>相关博文：</b><br>·  <a title="关于ICE" href="https://www.cnblogs.com/x_wukong/p/5760039.html" target="_top" onclick="clickRecomItmem(5760039)">关于ICE</a><br>·  <a title="P2P通信标准协议(二)之TURN" href="https://www.cnblogs.com/pannengzhi/p/5048965.html" target="_top" onclick="clickRecomItmem(5048965)">P2P通信标准协议(二)之TURN</a><br>·  <a title="WebRTC学习之ICE深入理解" href="https://www.cnblogs.com/renhui/p/6387118.html" target="_top" onclick="clickRecomItmem(6387118)">WebRTC学习之ICE深入理解</a><br>·  <a title="webrtc进阶-信令篇-之三：信令、stun、turn、ice" href="https://www.cnblogs.com/hehe520/p/6147458.html" target="_top" onclick="clickRecomItmem(6147458)">webrtc进阶-信令篇-之三：信令、stun、turn、ice</a><br>·  <a title="WebRTC源码分析（五）：安卓P2P连接过程和DataChannel使用" href="https://www.cnblogs.com/elesos/p/9512264.html" target="_top" onclick="clickRecomItmem(9512264)">WebRTC源码分析（五）：安卓P2P连接过程和DataChannel使用</a><br></div></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height: 60px; width: 468px;" data-google-query-id="COa379rjxeQCFZNliwodC8sPHw">
+            
+        <div id="google_ads_iframe_/1090369/C2_0__container__" style="border: 0pt none;"><iframe id="google_ads_iframe_/1090369/C2_0" title="3rd party ad content" name="google_ads_iframe_/1090369/C2_0" scrolling="no" marginwidth="0" marginheight="0" style="border: 0px none; vertical-align: bottom;" srcdoc="" data-google-container-id="2" data-load-complete="true" src="index_2.html" width="468" height="60" frameborder="0"></iframe></div></div>
+    </div>
+    <div id="under_post_kb">
+<div class="itnews c_ad_block">
+    <b>最新 IT 新闻</b>:
+    <br>
+ ·              <a href="https://news.cnblogs.com/n/636827/" target="_top">荣耀首度公开5G实验室 宣布Vera30支持双模5G全网通</a>
+            <br>
+ ·              <a href="https://news.cnblogs.com/n/636826/" target="_top">北大数学“黄金一代”：四位获“科学界奥斯卡”，三位任教MIT</a>
+            <br>
+ ·              <a href="https://news.cnblogs.com/n/636825/" target="_top">临床试验显示高剂量维生素 D 无助于强化骨质</a>
+            <br>
+ ·              <a href="https://news.cnblogs.com/n/636824/" target="_top">NASA发布超高分辨率的月球3D模型</a>
+            <br>
+ ·              <a href="https://news.cnblogs.com/n/636823/" target="_top">年内上市悬了？报道称软银要求WeWork搁置IPO计划</a>
+            <br>
+    » <a href="https://news.cnblogs.com/" title="IT 新闻" target="_top">更多新闻...</a>
+</div></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    
+</div>
+	</div><!--end: forFlow -->
+	</div><!--end: mainContent 主体内容容器-->
+
+	<div id="sideBar">
+		<div id="sideBarMain">
+			
+
+
+			<div id="blog-calendar" style="display: none;"></div>
+			
+			<div id="leftcontentcontainer">
+				<div id="blog-sidecolumn">
+
+<!-- 搜索 -->
+<div id="sidebar_search" class="sidebar-block">
+    <div id="sidebar_search" class="mySearch">
+        <h3 class="catListTitle">搜索</h3>
+        <div id="sidebar_search_box">
+            
+            <div id="widget_my_google" class="div_my_zzk">
+                <input name="google_q" id="google_q" onkeydown="return google_go_enter(event);" class="input_my_zzk" value="" type="text">&nbsp;<input onclick="google_go()" value="谷歌搜索" class="btn_my_zzk" type="button">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 常用链接 -->
+
+
+<!-- 最新随笔 -->
+
+
+
+<!-- 我的标签 -->
+<div id="sidebar_toptags" class="sidebar-block">
+    <div class="catListTag">
+<h3 class="catListTitle">我的标签</h3>
+<ul>
+
+        <li>
+            <a href="https://www.cnblogs.com/pannengzhi/tag/Linux/">Linux</a>(11)
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/pannengzhi/tag/%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8/">信息安全</a>(11)
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/pannengzhi/tag/P2P/">P2P</a>(5)
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/pannengzhi/tag/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">网络编程</a>(4)
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/pannengzhi/tag/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/">逆向工程</a>(3)
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/pannengzhi/tag/MISC/">MISC</a>(2)
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/pannengzhi/tag/Nginx/">Nginx</a>(1)
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/pannengzhi/tag/Linux%20Vim/">Linux Vim</a>(1)
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/pannengzhi/tag/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/">软件工程</a>(1)
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/pannengzhi/tag/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>(1)
+        </li>
+            <li>
+                <a href="https://www.cnblogs.com/pannengzhi/tag/">更多</a>
+            </li>
+
+</ul>
+</div>
+
+
+</div>
+
+<!-- 积分与排名 -->
+
+
+<!-- 随笔分类、随笔档案、文章分类、新闻分类、相册、链接 -->
+<div id="sidebar_categories">
+    
+
+</div>
+
+<!-- 最新评论 -->
+<div id="sidebar_recentcomments" class="sidebar-block">
+    <div class="catListComment">
+<h3 class="catListTitle">最新评论</h3>
+
+	<div class="RecentCommentBlock">
+        <ul>
+                    <li class="recent_comment_title"><a href="https://www.cnblogs.com/pannengzhi/p/2017-06-04-nginx-log-analysis.html#4290383">1. Re:Nginx日志分析</a></li>
+                    <li class="recent_comment_body">请问这些正则能单独提取出来吗，我用的不是py语言</li>
+                    <li class="recent_comment_author">--别来无恙_duang</li>
+                    <li class="recent_comment_title"><a href="https://www.cnblogs.com/pannengzhi/p/5041546.html#4082995">2. Re:P2P通信标准协议(一)之STUN</a></li>
+                    <li class="recent_comment_body">0b01表示indication请问一下，现实当中这个的用法是什么，能不能举个例子我个人的理解是 request以后另一方response 而等待response is期间需要知道request的状态...</li>
+                    <li class="recent_comment_author">--小眼睛老鼠</li>
+                    <li class="recent_comment_title"><a href="http://www.cnblogs.com/pannengzhi/p/5678495.html#4006205">3. Re:Unicode,GBK和UTF8</a></li>
+                    <li class="recent_comment_body">mark一下</li>
+                    <li class="recent_comment_author">--smallwangtoumusk</li>
+                    <li class="recent_comment_title"><a href="http://www.cnblogs.com/pannengzhi/p/2017-06-04-nginx-log-analysis.html#3982245">4. Re:Nginx日志分析</a></li>
+                    <li class="recent_comment_body">请问，怎么和geoip结合起来</li>
+                    <li class="recent_comment_author">--IT屌丝南</li>
+                    <li class="recent_comment_title"><a href="http://www.cnblogs.com/pannengzhi/p/4800526.html#3955204">5. Re:P2P通信原理与实现(C++)</a></li>
+                    <li class="recent_comment_body">请教博主，Bittorrent 客户端需要NAT Traversal技术的支持么？  如果要，支持 NAT Traversal 的Bittorrent 客户端有哪些？谢谢。</li>
+                    <li class="recent_comment_author">--lijuncn</li>
+        </ul>
+    </div>
+</div>
+
+
+</div>
+
+
+
+<!-- 阅读排行榜 -->
+<div id="sidebar_topviewedposts" class="sidebar-block">
+    <div class="catListView">
+<h3 class="catListTitle">阅读排行榜</h3>
+	<div id="TopViewPostsBlock">
+        <ul style="word-break: break-all;">
+                    <li>
+                        <a href="https://www.cnblogs.com/pannengzhi/p/4800526.html">
+                            1. P2P通信原理与实现(C++)(21848)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/pannengzhi/p/5041546.html">
+                            2. P2P通信标准协议(一)之STUN(15262)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/pannengzhi/p/5203467.html">
+                            3. Linux Hook 笔记(13644)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/pannengzhi/p/5061674.html">
+                            4. P2P通信标准协议(三)之ICE(11861)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/pannengzhi/p/2017-09-23-web-file-disclosure.html">
+                            5. WEB中的敏感文件泄漏(10180)
+                        </a>
+                    </li>
+        </ul>
+    </div>
+</div>
+
+
+</div>
+
+<!-- 评论排行榜 -->
+<div id="sidebar_topcommentedposts" class="sidebar-block">
+    <div class="catListFeedback">
+<h3 class="catListTitle">评论排行榜</h3>
+	<div id="TopFeedbackPostsBlock">
+        <ul style="word-break: break-all;">
+                    <li>
+                        <a href="https://www.cnblogs.com/pannengzhi/p/4800526.html">
+                            1. P2P通信原理与实现(C++)(6)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/pannengzhi/p/5721128.html">
+                            2. 和杀毒软件愉快玩耍的日子(6)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/pannengzhi/p/4838971.html">
+                            3. ARP欺骗与中间人攻击(5)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/pannengzhi/p/5678495.html">
+                            4. Unicode,GBK和UTF8(4)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/pannengzhi/p/6262076.html">
+                            5. 关于DNS,你应该知道这些(4)
+                        </a>
+                    </li>
+        </ul>
+    </div>
+</div>
+
+
+</div>
+
+<!-- 推荐排行榜 -->
+<div id="sidebar_topdiggedposts" class="sidebar-block">
+    
+<div id="topdigg_posts_wrap">
+    <div class="catListView">
+        <h3 class="catListTitle">推荐排行榜</h3>
+        <div id="TopDiggPostsBlock">
+            <ul style="word-break: break-all;">
+                        <li>
+                            <a href="https://www.cnblogs.com/pannengzhi/p/windows-self-check.html">
+                                1. 快速自检电脑是否被黑客入侵过(Windows版)(14)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/pannengzhi/p/5721128.html">
+                                2. 和杀毒软件愉快玩耍的日子(10)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/pannengzhi/p/4927707.html">
+                                3. 记一次被中间人攻击的经历(8)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/pannengzhi/p/4849280.html">
+                                4. 再谈中间人攻击(5)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/pannengzhi/p/5048965.html">
+                                5. P2P通信标准协议(二)之TURN(4)
+                            </a>
+                        </li>
+            </ul>
+        </div>
+    </div>
+</div>
+</div></div>
+                    
+			</div>
+			
+		</div><!--end: sideBarMain -->
+	</div><!--end: sideBar 侧边栏容器 -->
+	<div class="clear"></div>
+	</div><!--end: main -->
+	<div class="clear"></div>
+	<div id="footer">
+		<!--done-->
+Copyright © 2019 有价值炮灰
+<br><span id="poweredby">Powered by .NET Core 3.0.0-preview9-19423-09 on Linux</span>
+
+
+
+	</div><!--end: footer -->
+</div><!--end: home 自定义的最大容器 -->
+
+
+    <div id="page_end_html">
+        <a style="display: none;" href="https://evilpan.com/">blog</a>
+    </div>
+
+
+</body>
+</html>

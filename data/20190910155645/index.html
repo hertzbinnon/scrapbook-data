@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="origin">
+    <meta property="og:description" content="前一段时间在P2P通信原理与实现中介绍了P2P打洞的基本原理和方法，我们可以根据其原理为自己的网络程序设计一套通信规则，
+当然如果这套程序只有自己在使用是没什么问题的。可是在现实生活中，我们的程序往">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <title>P2P通信标准协议(一)之STUN - 有价值炮灰 - 博客园</title>
+    
+    
+    
+    
+    
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/pannengzhi/rss">
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/pannengzhi/rsd.xml">
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/pannengzhi/wlwmanifest.xml">
+    
+    
+    
+    
+    
+    
+<link rel="preload" href="https://adservice.google.com/adsid/integrator.js?domain=www.cnblogs.com">
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+    <a name="top"></a>
+    
+    
+<!--done-->
+<div id="home">
+<div id="header">
+	<div id="blogTitle">
+        <a id="lnkBlogLogo" href="https://www.cnblogs.com/pannengzhi/"><img id="blogLogo" src="logo.gif" alt="返回主页"></a>		
+		
+<!--done-->
+<h1><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/pannengzhi/">有价值炮灰</a>
+</h1>
+<h2>
+<i>我的主页: <a href="https://evilpan.com/">evilpan.com</a></i>
+</h2><h2>Practice,Practice, and Practice</h2>
+
+
+
+
+
+		
+	</div><!--end: blogTitle 博客的标题和副标题 -->
+	<div id="navigator">
+		
+<ul id="navList">
+<li><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+<li>
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/pannengzhi/">
+首页</a>
+</li>
+<li>
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+<li>
+</li>
+<li>
+
+<!--<partial name="./Shared/_XmlLink.cshtml" model="Model" /></li>--></li>
+<li>
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+
+		<div class="blogStats">
+			
+			<span id="stats_post_count">随笔 - 
+39&nbsp; </span>
+<span id="stats_article_count">文章 - 
+1&nbsp; </span>
+<span id="stats-comment_count">评论 - 
+53</span>
+
+			
+		</div><!--end: blogStats -->
+	</div><!--end: navigator 博客导航栏 -->
+</div><!--end: header 头部 -->
+
+<div id="main">
+	<div id="mainContent">
+	<div class="forFlow">
+		<div id="post_detail">
+    <!--done-->
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/pannengzhi/p/5041546.html">P2P通信标准协议(一)之STUN</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body cnblogs-markdown">
+    <p>前一段时间在<a href="http://www.cnblogs.com/pannengzhi/p/4800526.html">P2P通信原理与实现</a>中介绍了P2P打洞的基本原理和方法，我们可以根据其原理为自己的网络程序设计一套通信规则，<br>
+当然如果这套程序只有自己在使用是没什么问题的。可是在现实生活中，我们的程序往往还需要和第三方的协议（如SDP，SIP）进行对接，因此使用标准化<br>
+的通用规则来进行P2P链接建立是很有必要的。本文就来介绍一下当前主要应用于P2P通信的几个标准协议，主要有<a href="http://www.rfc-editor.org/info/rfc3489">STUN/RFC3489</a>，<a href="http://www.rfc-editor.org/info/rfc5389">STUN/RFC5389</a>，<br>
+<a href="http://www.rfc-editor.org/info/rfc5766">TURN/RFC5766</a>以及<a href="http://www.rfc-editor.org/info/rfc5245">ICE/RFC5245</a>。</p>
+<h2 id="stun简介">STUN简介</h2>
+<p>在前言里我们看到，RFC3489和RFC5389的名称都是STUN，但其全称是不同的。在RFC3489里，<br>
+STUN的全称是<strong>Simple Traversal of User Datagram Protocol (UDP) Through Network Address Translators (NATs)</strong>，<br>
+即穿越NAT的简单UDP传输，是一个轻量级的协议，允许应用程序发现自己和公网之间的中间件类型，<br>
+同时也能允许应用程序发现自己被NAT分配的公网IP。这个协议在2003年3月被提出，其介绍页面里<br>
+说到已经被<a href="http://www.rfc-editor.org/info/rfc5389">STUN/RFC5389</a>所替代，后者才是我们要详细介绍的。</p>
+<p>RFC5389中，STUN的全称为<strong>Session Traversal Utilities for NAT</strong>，即NAT环境下的会话传输工具，<br>
+是一种处理NAT传输的协议，但主要作为一个工具来服务于其他协议。和STUN/RFC3489<br>
+类似，可以被终端用来发现其公网IP和端口，同时可以检测端点间的连接性，也可以作为一种保活（keep-alive）协议来维持NAT的绑定。<br>
+和RFC3489最大的不同点在于，STUN本身不再是一个完整的NAT传输解决方案，而是在NAT传输环境中作为一个辅助的解决方法，<br>
+同时也增加了TCP的支持。RFC5389废弃了RFC3489，因此后者通常称为<strong>classic STUN</strong>，但依旧是后向兼容的。<br>
+而完整的NAT传输解决方案则使用STUN的工具性质，<a href="http://www.rfc-editor.org/info/rfc5245">ICE</a>就是一个基于<a href="http://www.rfc-editor.org/info/rfc3264">offer/answer</a>方法的完整NAT传输方案，如<a href="http://www.rfc-editor.org/info/rfc3261">SIP</a>。</p>
+<p>STUN是一个C/S架构的协议，支持两种传输类型。一种是请求/响应（request/respond）类型，由客户端给服务器发送请求，<br>
+并等待服务器返回响应；另一种是指示类型（indication transaction），由服务器或者客户端发送指示，另一方不产生响应。<br>
+两种类型的传输都包含一个96位的随机数作为事务ID（transaction ID），对于请求/响应类型，事务ID允许客户端将响应和产生响应的请求连接起来；<br>
+对于指示类型，事务ID通常作为debugging aid使用。</p>
+<p>所有的STUN报文信息都含有一个固定头部，包含了方法，类和事务ID。方法表示是具体哪一种传输类型（两种传输类型又分了很多具体类型），<br>
+STUN中只定义了一个方法，即binding（绑定），其他的方法可以由使用者自行拓展；Binding方法可以用于请求/响应类型和指示类型，<br>
+用于前者时可以用来确定一个NAT给客户端分配的具体绑定，用于后者时可以保持绑定的激活状态。类表示报文类型是请求/成功响应/错误响应/指示。<br>
+在固定头部之后是零个或者多个属性（attribute），长度也是不固定的。</p>
+<h2 id="stun报文结构">STUN报文结构</h2>
+<p>STUN报文和大多数网络类型的格式一样，是以大端编码(big-endian)的，即最高有效位在左边。所有的STUN报文都以20字节的头部开始，后面跟着若干个属性。下面来详细说说。</p>
+<h3 id="stun报文头部">STUN报文头部</h3>
+<p>STUN头部包含了STUN消息类型，magic cookie，事务ID和消息长度，如下：</p>
+<pre><code class="hljs ruby">   <span class="hljs-number">0</span>                   <span class="hljs-number">1</span>                   <span class="hljs-number">2</span>                   <span class="hljs-number">3</span>
+   <span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span>
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  <span class="hljs-params">|0 0|</span>     STUN Message Type     <span class="hljs-params">|         Message Length        |</span>
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  <span class="hljs-params">|                         Magic Cookie                          |</span>
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  <span class="hljs-params">|                                                               |</span>
+  <span class="hljs-params">|                     Transaction ID (96 bits)                  |</span>
+  <span class="hljs-params">|                                                               |</span>
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</code></pre>
+<p>最高的2位必须置零，这可以在当STUN和其他协议复用的时候，用来区分STUN包和其他数据包。<br>
+<code>STUN Message Type</code>字段定义了消息的类型（请求/成功响应/失败响应/指示）和消息的主方法。<br>
+虽然我们有4个消息类别，但在STUN中只有两种类型的事务，即请求/响应类型和指示类型。<br>
+响应类型分为成功和出错两种，用来帮助快速处理STUN信息。Message Type字段又可以进一步分解为如下结构：</p>
+<pre><code class="hljs ruby"> <span class="hljs-number">0</span>                 <span class="hljs-number">1</span>
+ <span class="hljs-number">2</span>  <span class="hljs-number">3</span>  <span class="hljs-number">4</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span>
++--+--+-+-+-+-+-+-+-+-+-+-+-+-+
+<span class="hljs-params">|M |</span>M <span class="hljs-params">|M|</span>M<span class="hljs-params">|M|</span>C<span class="hljs-params">|M|</span>M<span class="hljs-params">|M|</span>C<span class="hljs-params">|M|</span>M<span class="hljs-params">|M|</span>M<span class="hljs-params">|
+|</span><span class="hljs-number">11</span><span class="hljs-params">|10|</span><span class="hljs-number">9</span><span class="hljs-params">|8|</span><span class="hljs-number">7</span><span class="hljs-params">|1|</span><span class="hljs-number">6</span><span class="hljs-params">|5|</span><span class="hljs-number">4</span><span class="hljs-params">|0|</span><span class="hljs-number">3</span><span class="hljs-params">|2|</span><span class="hljs-number">1</span><span class="hljs-params">|0|</span>
++--+--+-+-+-+-+-+-+-+-+-+-+-+-+</code></pre>
+<p>其中显示的位为从最高有效位M11到最低有效位M0，M11到M0表示方法的12位编码。C1和C0两位表示类的编码。比如对于binding方法来说，<br>
+0b00表示request，0b01表示indication，0b10表示success response，0b11表示error response，每一个method都有可能对应不同的传输类别。<br>
+拓展定义新方法的时候注意要指定该方法允许哪些类型的消息。</p>
+<p><code>Magic Cookie</code>字段包含固定值<strong>0x2112A442</strong>，这是为了前向兼容RFC3489，因为在classic STUN中，这一区域是事务ID的一部分。<br>
+另外选择固定数值也是为了服务器判断客户端是否能识别特定的属性。还有一个作用就是在协议多路复用时候也可以将其作为判断标志之一。</p>
+<p><code>Transaction ID</code>字段是个96位的标识符，用来区分不同的STUN传输事务。对于request/response传输，事务ID由客户端选择，<br>
+服务器收到后以同样的事务ID返回response；对于indication则由发送方自行选择。事务ID的主要功能是把request和response联系起来，<br>
+同时也在防止攻击方面有一定作用。服务端也把事务ID当作一个Key来识别不同的STUN客户端，因此必须格式化且随机在0~2^(96-1)之间。<br>
+重发同样的request请求时可以重用相同的事务ID，但是客户端进行新的传输时，<strong>必须</strong>选择一个新的事务ID。</p>
+<p><code>Message Length</code>字段存储了信息的长度，以字节为单位，不包括20字节的STUN头部。由于所有的STUN属性都是都是4字节对齐（填充）的，<br>
+因此这个字段最后两位应该恒等于零，这也是辨别STUN包的一个方法之一。</p>
+<h3 id="stun属性">STUN属性</h3>
+<p>在STUN报文头部之后，通常跟着0个或者多个属性，每个属性必须是TLV编码的（Type-Length-Value）。其中Type字段和Length字段都是16位，<br>
+Value字段为为32位表示，如下：</p>
+<pre><code class="hljs ruby">   <span class="hljs-number">0</span>                   <span class="hljs-number">1</span>                   <span class="hljs-number">2</span>                   <span class="hljs-number">3</span>
+   <span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span>
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  <span class="hljs-params">|         Type                  |</span>            Length             <span class="hljs-params">|
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |</span>                         Value (variable)                ....
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</code></pre>
+<p><code>Length</code>字段必须包含Value部分需要补齐的长度，以字节为单位。由于STUN属性以32bit边界对齐，因此属性内容不足4字节的都会以padding bit进行补齐。<br>
+padding bit会被忽略，但可以是任何值。</p>
+<p><code>Type</code>字段为属性的类型。任何属性类型都有可能在一个STUN报文中出现超过一次。除非特殊指定，否则其出现的顺序是有意义的：<br>
+即只有第一次出现的属性会被接收端解析，而其余的将被忽略。为了以后版本的拓展和改进，属性区域被分为两个部分。<br>
+Type值在0x0000-0x7FFF之间的属性被指定为<strong>强制理解</strong>，意思是STUN终端必须要理解此属性，否则将返回错误信息；而0x8000-0xFFFF<br>
+之间的属性为选择性理解，即如果STUN终端不识别此属性则将其忽略。目前STUN的属性类型由IANA维护。</p>
+<p>这里简要介绍几个常见属性的Value结构：</p>
+<ul>
+<li>MAPPED-ADDRESS</li>
+</ul>
+<p>MAPPED-ADDRESS同时也是classic STUN的一个属性，之所以还存在也是为了前向兼容。其包含了NAT客户端的反射地址，<br>
+Family为IP类型，即IPV4(0x01)或IPV6(0x02)，Port为端口，Address为32位或128位的IP地址。注意高8位必须全部置零，<br>
+而且接收端必须要将其忽略掉。</p>
+<pre><code class="hljs ruby"> <span class="hljs-number">0</span>                   <span class="hljs-number">1</span>                   <span class="hljs-number">2</span>                   <span class="hljs-number">3</span>
+ <span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span>
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+<span class="hljs-params">|0 0 0 0 0 0 0 0|</span>    Family     <span class="hljs-params">|           Port                |</span>
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+<span class="hljs-params">|                                                               |</span>
+<span class="hljs-params">|                 Address (32 bits <span class="hljs-keyword">or</span> 128 bits)                 |</span>
+<span class="hljs-params">|                                                               |</span>
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</code></pre>
+<ul>
+<li>XOR-MAPPED-ADDRESS</li>
+</ul>
+<p>XOR-MAPPED-ADDRESS和MAPPED-ADDRESS基本相同，不同点是反射地址部分经过了一次异或（XOR）处理。对于X-Port字段，<br>
+是将NAT的映射端口以小端形式与magic cookie的高16位进行异或，再将结果转换成大端形式而得到的，X-Address也是类似。<br>
+之所以要经过这么一次转换，是因为在实践中发现很多NAT会修改payload中自身公网IP的32位数据，从而导致NAT打洞失败。</p>
+<pre><code class="hljs smalltalk">  <span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span>
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ |x x x x x x x x|    <span class="hljs-type">Family</span>     |         <span class="hljs-type">X</span>-<span class="hljs-type">Port</span>                |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ |                <span class="hljs-type">X</span>-<span class="hljs-type">Address</span> (<span class="hljs-type">Variable</span>)
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</code></pre>
+<ul>
+<li>ERROR-CODE</li>
+</ul>
+<p>ERROR-CODE属性用于error response报文中。其包含了300-699表示的错误代码，以及一个UTF-8格式的文字出错信息（Reason Phrase）。</p>
+<pre><code class="hljs ruby">   <span class="hljs-number">0</span>                   <span class="hljs-number">1</span>                   <span class="hljs-number">2</span>                   <span class="hljs-number">3</span>
+   <span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span>
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  <span class="hljs-params">|           Reserved, should be 0         |</span>Class<span class="hljs-params">|     Number    |</span>
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  <span class="hljs-params">|      Reason Phrase (variable)                                ..
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span></code></pre>
+<p>另外，错误代码在语义上还与<a href="http://www.rfc-editor.org/info/rfc3261">SIP</a>和HTTP协议保持一致。比如：</p>
+<pre><code class="hljs less"><span class="hljs-selector-tag">300</span>：尝试代替(Try Alternate)，客户端应该使用该请求联系一个代替的服务器。这个错误响应仅在请求包括一个</code></pre>
+<p>USERNAME属性和一个有效的MESSAGE-INTEGRITY属性时发送；否则它不会被发送，而是发送错误代码为400的错误响应；<br>
+400：错误请求(Bad Request)，请求变形了，客户端在修改先前的尝试前不应该重试该请求。<br>
+401：未授权(Unauthorized)，请求未包括正确的资格来继续。客户端应该采用一个合适的资格来重试该请求。<br>
+420：未知属性(Unknown Attribute)，服务器收到一个STUN包包含一个强制理解的属性但是它不会理解。<br>
+服务器必须将不认识的属性放在错误响应的UNKNOWN-ATTRIBUTE属性中。<br>
+438：过期Nonce(Stale Nonce)，客户端使用的Nonce不再有效，应该使用响应中提供的Nonce来重试。<br>
+500：服务器错误(Server Error)，服务器遇到临时错误，客户端应该再次尝试。</p>
+<p>此外还有很多属性，如USERNAME，NONCE，REALM，SOFTWARE等，具体可以翻阅<a href="http://www.rfc-editor.org/info/rfc3489">RFC3489</a>。</p>
+<h2 id="stun-通信过程">STUN 通信过程</h2>
+<h3 id="产生一个request或indication">1. 产生一个Request或Indication</h3>
+<p>当产生一个Request或者Indication报文时，终端必须根据上文提到的规则来生成头部，class字段必须是Request或者Indication，<br>
+而method字段为Binding或者其他用户拓展的方法。属性部分选择该方法所需要的对应属性，比如在一些<br>
+情景下我们会需要authenticaton属性或FINGERPRINT属性，注意在发送Request报文时候，需要加上SOFTWARE属性（内含软件版本描述）。</p>
+<h3 id="发送requst或indication">2. 发送Requst或Indication</h3>
+<p>目前，STUN报文可以通过UDP，TCP以及TLS-over-TCP的方法发送，其他方法在以后也会添加进来。STUN的使用者必须指定其使用的传输协议，<br>
+以及终端确定接收端IP地址和端口的方式，比如通过基于DNS的方法来确定服务器的IP和端口。</p>
+<p>2.1 通过UDP发送</p>
+<p>当使用UDP协议运行STUN时，STUN的报文可能会由于网络问题而丢失。可靠的STUN请求/响应传输是通过客户端重发request请求来实现的，<br>
+因此，在UDP运行时，Indication报文是不可靠的。STUN客户端通过RTO（Retransmission TimeOut）<br>
+来决定是否重传Requst，并且在每次重传后将RTO翻倍。具体重传时间的选取可以参考相关文章，如RFC2988。<br>
+重传直到接收到Response才停止，或者重传次数到达指定次数Rc，Rc应该是可配置的，且默认值为7。</p>
+<p>2.2 通过TCP或者TCP-over-TLS发送</p>
+<p>对于这种情景，客户端打开对服务器的连接。在某些情况下，此TCP链接只传输STUN报文，而在其他拓展中，<br>
+在一个TCP链接里可能STUN报文和其他协议的报文会进行多路复用（Multiplexed）。数据传输的可靠性由TCP协议本身来保证。<br>
+值得一提的是，在一次TCP连接中，STUN客户端可能发起多个传输，有可能在前一个Request的Response还没收到时就再次发送了一个新的Request，<br>
+因此客户端应该保持TCP链接打开，认所有STUN事务都已完成。</p>
+<h3 id="接收stun消息">3. 接收STUN消息</h3>
+<p>当STUN终端接收到一个STUN报文时，首先检查报文的规则是否合法，即前两位是否为0，magic cookie是否为0x2112A442，报文长度是否正确以及对应的方法是否支持。<br>
+如果消息类别为Success/Error Response，终端会检测其事务ID是否与当前正在处理的事务ID相同。如果使用了FINGERPRINT拓展的话还会检查FINGERPRINT属性是否正确。<br>
+完成身份认证检查之后，STUN终端会接着检查其余未知属性。</p>
+<p><strong>3.1 处理Request</strong></p>
+<p>如果请求包含一个或者多个强制理解的未知属性，接收端会返回error response，错误代码420（ERROR-CODE属性），<br>
+而且包含一个UNKNOWN-ATTRIBUTES属性来告知发送方哪些强制理解的属性是未知的。服务端接着检查方法和其他指定要求，如果所有检查都成功，<br>
+则会产生一个Success Response给客户端。</p>
+<ul>
+<li><p>3.1.1 生成Success Response或Error Response</p>
+<ul>
+<li>如果服务器通过某种<code>验证方法（authentication mechanism）</code>通过了请求方的验证，那么在响应报文里最好也加上对应的验证属性。</li>
+<li>服务器端也应该加上指定方法所需要的属性信息，另外协议建议服务器返回时也加上SOFTWARE属性。</li>
+<li>对于Binding方法，除非特别指明，一般不要求进行额外的检查。当生成Success Response时，服务器在响应里加上XOR-MAPPED-ADDRESS属性。<br>
+对于UDP，这是其源IP和端口信息，对于TCP或TLS-over-TCP，这就是服务器端所看见的此次TCP连接的源IP和端口。</li>
+</ul></li>
+<li><p>3.1.2 发送Success Response或Error Response</p>
+<ul>
+<li>发送响应时候如果是用UDP协议，则发往其源IP和端口，如果是TCP则直接用相同的TCP链接回发即可。</li>
+</ul></li>
+</ul>
+<p><strong>3.2 处理Indication</strong></p>
+<p>如果Indication报文包含未知的强制理解属性，则此报文会被接收端忽略并丢弃。如果对Indication报文的检查都没有错误，则服务端会进行相应的处理，<br>
+但是不会返回Response。对于Binding方法，一般不需要额外的检查或处理。收到信息的服务端仅需要刷新对应NAT的端口绑定。</p>
+<p>由于Indication报文在用UDP协议传输时不会进行重传，因此发送方也不需要处理重传的情况。</p>
+<p><strong>3.3 处理Success Response</strong></p>
+<p>如果Success Response包含了未知的强制理解属性，则响应会被忽略并且认为此次传输失败。客户端对报文进行检查通过之后，就可以开始处理此次报文。</p>
+<p>以Binding方法为例，客户端会检查报文中是否包含XOR-MAPPED-ADDRESS属性，然后是地址类型，如果是不支持的地址类型，则这个属性会被忽略掉。</p>
+<p><strong>3.4 处理Error Response</strong></p>
+<p>如果Error Response包含了未知的强制理解属性，或者没有包含ERROR-CODE属性，则响应会被忽略并且认为此次传输失败。<br>
+随后客户端会对验证方法进行处理，这有可能会产生新的传输。</p>
+<ul>
+<li><p>到目前为止，对错误响应的处理主要基于ERROR-CODE属性的值，并遵循如下规则：</p>
+<ul>
+<li>如果error code在300到399之间，客户端被建议认为此次传输失败，除非用了ALTERNATE-SERVER拓展；</li>
+<li>如果error code在400到499之间，客户端认为此次传输失败；</li>
+<li>如果error code在500到599之间，客户端可能会需要重传请求，并且必须限制重传的次数。</li>
+</ul></li>
+</ul>
+<p>任何其他的error code值都会导致客户端认为此次传输失败。</p>
+<h2 id="后记">后记</h2>
+<p>上面只是介绍了<a href="http://www.rfc-editor.org/info/rfc5389">STUN/RFC5389</a>协议的基础部分，协议本身还包含了许多mechanism，如身份验证（Authentication），DNS Discovery，FINGERPRINT Mechanisms，<br>
+ALTERNATE-SERVER Mechanism等，身份验证又分为长期验证和短期验证，从而保证了传输的灵活性并减少服务器的负担。具体可以详细阅读白皮书。<br>
+我本来打算一篇文章把P2P通信的所有协议都介绍完不过现在看来似乎篇幅过长了，所以关于TURN和ICE就放在下一篇介绍好了。<br>
+另外由于SourceForge的StunServer的源代码已经长期不更新，因此我从svn的仓库中整理了一下放到了<a href="https://github.com/pannzh/TurnServer">GitHub</a>上面，<br>
+需要的可以自行去取来参考一下STUN交互的实现，当然了虽然实现的是TurnServer，但除了Relay部分基本上都是和STUN类似的。<br>
+另外在<a href="http://www.cnblogs.com/pannengzhi/p/4800526.html">P2P原理与实现</a>所做的一个P2P聊天应用时, 顺便也做了个基于RFC3489的STUN客户端, 基于Python3,<br>
+用于检测用户的NAT类型, 可以参见<a href="https://github.com/pannzh/P2P-Over-MiddleBoxes-Demo/tree/master/stun">p2p-over-middleboxes</a>.</p>
+
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+<div id="EntryTag">
+    标签: 
+            <a href="https://www.cnblogs.com/pannengzhi/tag/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">网络编程</a>,             <a href="https://www.cnblogs.com/pannengzhi/tag/P2P/">P2P</a>,             <a href="https://www.cnblogs.com/pannengzhi/tag/STUN/">STUN</a></div>
+
+    <div id="blog_post_info">
+<div id="green_channel">
+        <a href="javascript:void(0);" id="green_channel_digg" onclick="DiggIt(5041546,cb_blogId,1);green_channel_success(this,'谢谢推荐！');">好文要顶</a>
+        <a id="green_channel_follow" onclick="follow('f52cfd6d-bd44-e411-b908-9dcfd8948a71');" href="javascript:void(0);">关注我</a>
+    <a id="green_channel_favorite" onclick="AddToWz(cb_entryId);return false;" href="javascript:void(0);">收藏该文</a>
+    <a id="green_channel_weibo" href="javascript:void(0);" title="分享至新浪微博" onclick="ShareToTsina()"><img src="icon_weibo_24.png" alt=""></a>
+    <a id="green_channel_wechat" href="javascript:void(0);" title="分享至微信" onclick="shareOnWechat()"><img src="wechat.png" alt=""></a>
+</div>
+<div id="author_profile">
+    <div id="author_profile_info" class="author_profile_info">
+        <div id="author_profile_detail" class="author_profile_info">
+            <a href="https://home.cnblogs.com/u/pannengzhi/">有价值炮灰</a><br>
+            <a href="https://home.cnblogs.com/u/pannengzhi/followees/">关注 - 1</a><br>
+            <a href="https://home.cnblogs.com/u/pannengzhi/followers/">粉丝 - 67</a>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div id="author_profile_honor"></div>
+    <div id="author_profile_follow">
+                <a href="javascript:void(0);" onclick="follow('f52cfd6d-bd44-e411-b908-9dcfd8948a71');return false;">+加关注</a>
+    </div>
+</div>
+<div id="div_digg">
+    <div class="diggit" onclick="votePost(5041546,'Digg')">
+        <span class="diggnum" id="digg_count">3</span>
+    </div>
+    <div class="buryit" onclick="votePost(5041546,'Bury')">
+        <span class="burynum" id="bury_count">0</span>
+    </div>
+    <div class="clear"></div>
+    <div class="diggword" id="digg_tips">
+    </div>
+</div>
+
+</div>
+    <div class="clear"></div>
+    <div id="post_next_prev">
+
+    <a href="https://www.cnblogs.com/pannengzhi/p/5021867.html" class="p_n_p_prefix">« </a> 上一篇：    <a href="https://www.cnblogs.com/pannengzhi/p/5021867.html" title="发布于 2015-12-05 18:30">ArchLinux安装与配置小结</a>
+    <br>
+    <a href="https://www.cnblogs.com/pannengzhi/p/5048965.html" class="p_n_p_prefix">» </a> 下一篇：    <a href="https://www.cnblogs.com/pannengzhi/p/5048965.html" title="发布于 2015-12-15 19:27">P2P通信标准协议(二)之TURN</a>
+
+</div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2015-12-12 17:31</span>&nbsp;<a href="https://www.cnblogs.com/pannengzhi/">有价值炮灰</a> 阅读(<span id="post_view_count">15135</span>) 评论(<span id="post_comment_count">3</span>) <a href="https://i.cnblogs.com/EditPosts.aspx?postid=5041546" rel="nofollow"> 编辑</a> <a href="javascript:void(0)" onclick="AddToWz(5041546); return false;">收藏</a>
+</div>
+        </div>
+	    
+	    
+    </div><!--end: topics 文章、评论容器-->
+</div>
+
+
+<a name="!comments"></a>
+<div id="blog-comments-placeholder">
+
+<div id="comment_pager_top">
+    
+</div>
+
+<br>
+<div class="feedback_area_title">评论列表</div>
+<div class="feedbackNoItems"><div class="feedbackNoItems"></div></div>	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;
+
+<span class="comment_actions">
+    
+    
+    
+    
+</span>
+
+
+				</div>
+				
+<a href="#3717880" class="layer">#1楼</a>
+<a name="3717880" id="comment_anchor_3717880"></a>
+
+ 
+<span class="comment_date">2017-06-19 20:05</span>
+
+ 
+
+            <a id="a_comment_author_3717880" href="https://www.cnblogs.com/clhed/" target="_top">小眼睛老鼠</a>
+
+			</div>
+			<div class="feedbackCon">
+				
+<div id="comment_body_3717880" class="blog_comment_body">
+    谢谢楼主的文章 我已经通过使用你的文章实现了stun协议<br><br>之后我遇到了一个问题<br><br>当udp传输大报文（大于65k）的时候会涉及到分片问题<br><br>基本上来说 我对协议的理解 分片应该是在ip层实现的<br>使用 Flags  和 Fragment Offset<br><br>这里的问题是 我用c# 的udpclient 怎么都无法发送超过 65k的数据 同时也无法设置  Flags 和  Fragment Offset <br><br>请问 这方面是不是我有什么误解？<br><br>ps：如果不能在协议上进行分片 那么我就只能自己在data里面设置自己的协议 来实现分片 但是这种基础功能 我实在觉得不应该我自己来实现<br><br><br><br>已经知道为什么了 udp 报文长度上线为 65535 一个udp包 无论怎么在ip层分 一个udp 都无法超过 65535的长度
+</div>
+        <div class="comment_vote">
+            <a href="javascript:void(0);" class="comment_digg" onclick="return voteComment('3717880', 'Digg', this);">
+                支持(0)
+            </a>
+            <a href="javascript:void(0);" class="comment_burry" onclick="return voteComment('3717880', 'Bury', this);">
+                反对(0)
+            </a>
+        </div>
+        <span id="comment_3717880_avatar" style="display: none;">
+            https://pic.cnblogs.com/face/u31333.jpg
+        </span>
+
+			</div>
+		</div>
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;
+
+<span class="comment_actions">
+    
+    
+    
+    
+</span>
+
+
+				</div>
+				
+<a href="#3718206" class="layer">#2楼</a>
+<a name="3718206" id="comment_anchor_3718206"></a>
+[<span class="louzhu">楼主</span>]
+ 
+<span class="comment_date">2017-06-20 09:59</span>
+
+ 
+
+            <a id="a_comment_author_3718206" href="https://www.cnblogs.com/pannengzhi/" target="_top">有价值炮灰</a>
+
+			</div>
+			<div class="feedbackCon">
+				
+<div id="comment_body_3718206" class="blog_comment_body">
+    <a href="#3717880" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,3717880);">@</a>
+小眼睛老鼠<br>这就是另一个问题了。按照我的理解，不管TCP还是UDP，只要包大于MTU，在IP层都是会分片的;不过TCP为了防止在IP层被分片，自己会主动分片，并且有自己的重组和重传机制，可以保证TCP的完整性。而UDP由于不保证顺序，也不保证到达，因此最好尽量避免在IP层分片，按照一般的说法，在不知道当前网络MTU的情况下，将UDP的最大包长度设为512字节是较为合适的（最小MTU为576，减去最大IP头60，减去UDP头8，再向上4字节对齐）。<br><br>对于你的情况，65k是一个IPv4包大小的理论上最大值，该值包括了IP头和IP的payload（即UDP数据），因此你的UDP报文长度最大应该是65535-20-8=65507。但是，实际上IPv4包的大小仍然取决与你当前网络的MTU大小，所以最好的做法还是将你的UDP数据分成512字节的包依次发送了。
+</div>
+        <div class="comment_vote">
+            <a href="javascript:void(0);" class="comment_digg" onclick="return voteComment('3718206', 'Digg', this);">
+                支持(0)
+            </a>
+            <a href="javascript:void(0);" class="comment_burry" onclick="return voteComment('3718206', 'Bury', this);">
+                反对(0)
+            </a>
+        </div>
+        
+
+			</div>
+		</div>
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;
+
+<span class="comment_actions">
+    
+    
+    
+    
+</span>
+
+
+				</div>
+				
+<a href="#4082995" class="layer">#3楼</a>
+<a name="4082995" id="comment_anchor_4082995"></a>
+
+        <span id="comment-maxId" style="display: none;">4082995</span>
+        <span id="comment-maxDate" style="display: none;">10/7/2018 11:31:51 AM</span>
+ 
+<span class="comment_date">2018-10-07 11:31</span>
+
+ 
+
+            <a id="a_comment_author_4082995" href="https://www.cnblogs.com/clhed/" target="_top">小眼睛老鼠</a>
+
+			</div>
+			<div class="feedbackCon">
+				
+<div id="comment_body_4082995" class="blog_comment_body">
+    0b01表示indication<br><br>请问一下，现实当中这个的用法是什么，能不能举个例子<br><br>我个人的理解是 request以后另一方response 而等待response is期间需要知道request的状态 这个时候要发送的消息就是 indication <br>也就是说 一个request会对应多个回复
+</div>
+        <div class="comment_vote">
+            <a href="javascript:void(0);" class="comment_digg" onclick="return voteComment('4082995', 'Digg', this);">
+                支持(0)
+            </a>
+            <a href="javascript:void(0);" class="comment_burry" onclick="return voteComment('4082995', 'Bury', this);">
+                反对(0)
+            </a>
+        </div>
+        <span id="comment_4082995_avatar" style="display: none;">
+            https://pic.cnblogs.com/face/u31333.jpg
+        </span>
+
+			</div>
+		</div>
+
+<div id="comment_pager_bottom">
+    
+</div>
+
+
+</div>
+
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"><div class="login_tips">
+    注册用户登录后才能发表评论，请 
+    <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return login('commentform');">登录</a>
+     或 
+    <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return register();">注册</a>，
+    <a href="https://www.cnblogs.com/">访问</a> 网站首页。
+</div></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"><a href="http://www.ucancode.com/index.htm" target="_top" onclick="ga('send', 'event', 'Link', 'click', 'T2-工控')">【推荐】超50万C++/C#源码: 大型实时仿真组态图形源码</a><br><a href="http://click.aliyun.com/m/1000074461/" target="_top" onclick="ga('send', 'event', 'Link', 'click', 'T2-阿里云')">【活动】阿里云910会员节多款云产品满减活动火热进行中</a><br><a href="https://www.ctyun.cn/activity/#/enterprise2?hmsr=%E5%8D%9A%E5%AE%A2%E5%9B%AD-0901-0%E5%85%83%E4%B8%8A%E4%BA%91&amp;hmpl=&amp;hmcu=&amp;hmkw=&amp;hmci=" target="_top" onclick="ga('send', 'event', 'Link', 'click', 'T2-天翼云')">【推荐】新手上天翼云，数十款云产品、新一代主机0元体验</a><br><a href="http://clickc.admaster.com.cn/c/a131574,b3595115,c1705,i0,m101,8a1,8b3,h" target="_top" onclick="ga('send', 'event', 'Link', 'click', 'T2-华为云微认证')">【推荐】零基础轻松玩转华为云产品，获壕礼加返百元大礼</a><br><a href="http://clickc.admaster.com.cn/c/a131575,b3595121,c1705,i0,m101,8a1,8b3,h" target="_top" onclick="ga('send', 'event', 'Link', 'click', 'T2-华为文字')">【推荐】华为云文字识别资源包重磅上市，1元万次限时抢购</a><br></div>
+    <div id="opt_under_post"></div>
+    
+    
+    
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height: 250px; width: 300px;" data-google-query-id="COvi4dfjxeQCFcbAlgodZjUIqQ"><div id="google_ads_iframe_/1090369/C1_0__container__" style="border: 0pt none;"><iframe id="google_ads_iframe_/1090369/C1_0" title="3rd party ad content" name="google_ads_iframe_/1090369/C1_0" scrolling="no" marginwidth="0" marginheight="0" style="border: 0px none; vertical-align: bottom;" srcdoc="" data-google-container-id="1" data-load-complete="true" src="index_1.html" width="300" height="250" frameborder="0"></iframe></div></div>
+    </div>
+    <div id="under_post_news"><div class="recomm-block"><b>相关博文：</b><br>·  <a title="P2P通信标准协议(二)之TURN" href="https://www.cnblogs.com/pannengzhi/p/5048965.html" target="_top" onclick="clickRecomItmem(5048965)">P2P通信标准协议(二)之TURN</a><br>·  <a title="P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解" href="https://www.cnblogs.com/zhiji6/p/10495165.html" target="_top" onclick="clickRecomItmem(10495165)">P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解</a><br>·  <a title="P2P通信标准协议(三)之ICE" href="https://www.cnblogs.com/pannengzhi/p/5061674.html" target="_top" onclick="clickRecomItmem(5061674)">P2P通信标准协议(三)之ICE</a><br>·  <a title="P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解" href="https://www.cnblogs.com/mlgjb/p/8243690.html" target="_top" onclick="clickRecomItmem(8243690)">P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解</a><br>·  <a title="P2P通信原理与实现(C++)" href="https://www.cnblogs.com/nafio/p/9137098.html" target="_top" onclick="clickRecomItmem(9137098)">P2P通信原理与实现(C++)</a><br></div></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height: 60px; width: 468px;" data-google-query-id="CJGl4NfjxeQCFcbAlgodZjUIqQ">
+            
+        <div id="google_ads_iframe_/1090369/C2_0__container__" style="border: 0pt none;"><iframe id="google_ads_iframe_/1090369/C2_0" title="3rd party ad content" name="google_ads_iframe_/1090369/C2_0" scrolling="no" marginwidth="0" marginheight="0" style="border: 0px none; vertical-align: bottom;" srcdoc="" data-google-container-id="2" data-load-complete="true" src="index_2.html" width="468" height="60" frameborder="0"></iframe></div></div>
+    </div>
+    <div id="under_post_kb">
+<div class="itnews c_ad_block">
+    <b>最新 IT 新闻</b>:
+    <br>
+ ·              <a href="https://news.cnblogs.com/n/636827/" target="_top">荣耀首度公开5G实验室 宣布Vera30支持双模5G全网通</a>
+            <br>
+ ·              <a href="https://news.cnblogs.com/n/636826/" target="_top">北大数学“黄金一代”：四位获“科学界奥斯卡”，三位任教MIT</a>
+            <br>
+ ·              <a href="https://news.cnblogs.com/n/636825/" target="_top">临床试验显示高剂量维生素 D 无助于强化骨质</a>
+            <br>
+ ·              <a href="https://news.cnblogs.com/n/636824/" target="_top">NASA发布超高分辨率的月球3D模型</a>
+            <br>
+ ·              <a href="https://news.cnblogs.com/n/636823/" target="_top">年内上市悬了？报道称软银要求WeWork搁置IPO计划</a>
+            <br>
+    » <a href="https://news.cnblogs.com/" title="IT 新闻" target="_top">更多新闻...</a>
+</div></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    
+</div>
+	</div><!--end: forFlow -->
+	</div><!--end: mainContent 主体内容容器-->
+
+	<div id="sideBar">
+		<div id="sideBarMain">
+			
+
+
+			<div id="blog-calendar" style="display: none;"></div>
+			
+			<div id="leftcontentcontainer">
+				<div id="blog-sidecolumn">
+
+<!-- 搜索 -->
+<div id="sidebar_search" class="sidebar-block">
+    <div id="sidebar_search" class="mySearch">
+        <h3 class="catListTitle">搜索</h3>
+        <div id="sidebar_search_box">
+            
+            <div id="widget_my_google" class="div_my_zzk">
+                <input name="google_q" id="google_q" onkeydown="return google_go_enter(event);" class="input_my_zzk" value="" type="text">&nbsp;<input onclick="google_go()" value="谷歌搜索" class="btn_my_zzk" type="button">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 常用链接 -->
+
+
+<!-- 最新随笔 -->
+
+
+
+<!-- 我的标签 -->
+<div id="sidebar_toptags" class="sidebar-block">
+    <div class="catListTag">
+<h3 class="catListTitle">我的标签</h3>
+<ul>
+
+        <li>
+            <a href="https://www.cnblogs.com/pannengzhi/tag/Linux/">Linux</a>(11)
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/pannengzhi/tag/%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8/">信息安全</a>(11)
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/pannengzhi/tag/P2P/">P2P</a>(5)
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/pannengzhi/tag/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">网络编程</a>(4)
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/pannengzhi/tag/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/">逆向工程</a>(3)
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/pannengzhi/tag/MISC/">MISC</a>(2)
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/pannengzhi/tag/Nginx/">Nginx</a>(1)
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/pannengzhi/tag/Linux%20Vim/">Linux Vim</a>(1)
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/pannengzhi/tag/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/">软件工程</a>(1)
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/pannengzhi/tag/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>(1)
+        </li>
+            <li>
+                <a href="https://www.cnblogs.com/pannengzhi/tag/">更多</a>
+            </li>
+
+</ul>
+</div>
+
+
+</div>
+
+<!-- 积分与排名 -->
+
+
+<!-- 随笔分类、随笔档案、文章分类、新闻分类、相册、链接 -->
+<div id="sidebar_categories">
+    
+
+</div>
+
+<!-- 最新评论 -->
+<div id="sidebar_recentcomments" class="sidebar-block">
+    <div class="catListComment">
+<h3 class="catListTitle">最新评论</h3>
+
+	<div class="RecentCommentBlock">
+        <ul>
+                    <li class="recent_comment_title"><a href="https://www.cnblogs.com/pannengzhi/p/2017-06-04-nginx-log-analysis.html#4290383">1. Re:Nginx日志分析</a></li>
+                    <li class="recent_comment_body">请问这些正则能单独提取出来吗，我用的不是py语言</li>
+                    <li class="recent_comment_author">--别来无恙_duang</li>
+                    <li class="recent_comment_title"><a href="https://www.cnblogs.com/pannengzhi/p/5041546.html#4082995">2. Re:P2P通信标准协议(一)之STUN</a></li>
+                    <li class="recent_comment_body">0b01表示indication请问一下，现实当中这个的用法是什么，能不能举个例子我个人的理解是 request以后另一方response 而等待response is期间需要知道request的状态...</li>
+                    <li class="recent_comment_author">--小眼睛老鼠</li>
+                    <li class="recent_comment_title"><a href="http://www.cnblogs.com/pannengzhi/p/5678495.html#4006205">3. Re:Unicode,GBK和UTF8</a></li>
+                    <li class="recent_comment_body">mark一下</li>
+                    <li class="recent_comment_author">--smallwangtoumusk</li>
+                    <li class="recent_comment_title"><a href="http://www.cnblogs.com/pannengzhi/p/2017-06-04-nginx-log-analysis.html#3982245">4. Re:Nginx日志分析</a></li>
+                    <li class="recent_comment_body">请问，怎么和geoip结合起来</li>
+                    <li class="recent_comment_author">--IT屌丝南</li>
+                    <li class="recent_comment_title"><a href="http://www.cnblogs.com/pannengzhi/p/4800526.html#3955204">5. Re:P2P通信原理与实现(C++)</a></li>
+                    <li class="recent_comment_body">请教博主，Bittorrent 客户端需要NAT Traversal技术的支持么？  如果要，支持 NAT Traversal 的Bittorrent 客户端有哪些？谢谢。</li>
+                    <li class="recent_comment_author">--lijuncn</li>
+        </ul>
+    </div>
+</div>
+
+
+</div>
+
+
+
+<!-- 阅读排行榜 -->
+<div id="sidebar_topviewedposts" class="sidebar-block">
+    <div class="catListView">
+<h3 class="catListTitle">阅读排行榜</h3>
+	<div id="TopViewPostsBlock">
+        <ul style="word-break: break-all;">
+                    <li>
+                        <a href="https://www.cnblogs.com/pannengzhi/p/4800526.html">
+                            1. P2P通信原理与实现(C++)(21848)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/pannengzhi/p/5041546.html">
+                            2. P2P通信标准协议(一)之STUN(15262)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/pannengzhi/p/5203467.html">
+                            3. Linux Hook 笔记(13644)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/pannengzhi/p/5061674.html">
+                            4. P2P通信标准协议(三)之ICE(11861)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/pannengzhi/p/2017-09-23-web-file-disclosure.html">
+                            5. WEB中的敏感文件泄漏(10180)
+                        </a>
+                    </li>
+        </ul>
+    </div>
+</div>
+
+
+</div>
+
+<!-- 评论排行榜 -->
+<div id="sidebar_topcommentedposts" class="sidebar-block">
+    <div class="catListFeedback">
+<h3 class="catListTitle">评论排行榜</h3>
+	<div id="TopFeedbackPostsBlock">
+        <ul style="word-break: break-all;">
+                    <li>
+                        <a href="https://www.cnblogs.com/pannengzhi/p/4800526.html">
+                            1. P2P通信原理与实现(C++)(6)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/pannengzhi/p/5721128.html">
+                            2. 和杀毒软件愉快玩耍的日子(6)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/pannengzhi/p/4838971.html">
+                            3. ARP欺骗与中间人攻击(5)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/pannengzhi/p/5678495.html">
+                            4. Unicode,GBK和UTF8(4)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/pannengzhi/p/6262076.html">
+                            5. 关于DNS,你应该知道这些(4)
+                        </a>
+                    </li>
+        </ul>
+    </div>
+</div>
+
+
+</div>
+
+<!-- 推荐排行榜 -->
+<div id="sidebar_topdiggedposts" class="sidebar-block">
+    
+<div id="topdigg_posts_wrap">
+    <div class="catListView">
+        <h3 class="catListTitle">推荐排行榜</h3>
+        <div id="TopDiggPostsBlock">
+            <ul style="word-break: break-all;">
+                        <li>
+                            <a href="https://www.cnblogs.com/pannengzhi/p/windows-self-check.html">
+                                1. 快速自检电脑是否被黑客入侵过(Windows版)(14)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/pannengzhi/p/5721128.html">
+                                2. 和杀毒软件愉快玩耍的日子(10)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/pannengzhi/p/4927707.html">
+                                3. 记一次被中间人攻击的经历(8)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/pannengzhi/p/4849280.html">
+                                4. 再谈中间人攻击(5)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/pannengzhi/p/5048965.html">
+                                5. P2P通信标准协议(二)之TURN(4)
+                            </a>
+                        </li>
+            </ul>
+        </div>
+    </div>
+</div>
+</div></div>
+                    
+			</div>
+			
+		</div><!--end: sideBarMain -->
+	</div><!--end: sideBar 侧边栏容器 -->
+	<div class="clear"></div>
+	</div><!--end: main -->
+	<div class="clear"></div>
+	<div id="footer">
+		<!--done-->
+Copyright © 2019 有价值炮灰
+<br><span id="poweredby">Powered by .NET Core 3.0.0-preview9-19423-09 on Linux</span>
+
+
+
+	</div><!--end: footer -->
+</div><!--end: home 自定义的最大容器 -->
+
+
+    <div id="page_end_html">
+        <a style="display: none;" href="https://evilpan.com/">blog</a>
+    </div>
+
+
+</body>
+</html>

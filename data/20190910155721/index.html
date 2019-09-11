@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="never">
+    <meta property="og:description" content="1、内容概述 在现实Internet网络环境中，大多数计算机主机都位于防火墙或NAT之后，只有少部分主机能够直接接入Internet。很多时候，我们希望网络中的两台主机能够直接进行通信，即所谓的P2P">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <title>P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解 - 哦摩西罗伊 - 博客园</title>
+    
+    
+    
+    
+    
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/mlgjb/rss">
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/mlgjb/rsd.xml">
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/mlgjb/wlwmanifest.xml">
+    
+    
+    
+    
+    
+    
+<link rel="preload" href="https://adservice.google.com/adsid/integrator.js?domain=www.cnblogs.com">
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+    <a name="top"></a>
+    <div id="page_begin_html">
+        
+
+    </div><div class="tctip" style="top: 20%;"><a class="tctip-btn-box" href="javascript:;"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACIAAABdCAYAAADAM7TWAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDpCODE5MjMyNEYyOEJFNDExOTlCNkY0REE0Mjk1RUE2MSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo4RTc1NEE3RjhDRjMxMUU0OUI2N0Q0MzE3RjhDNTk3RSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo4RTc1NEE3RThDRjMxMUU0OUI2N0Q0MzE3RjhDNTk3RSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M2IChXaW5kb3dzKSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkE3MzAxMjMwRkE4QkU0MTE5OUI2RjREQTQyOTVFQTYxIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkI4MTkyMzI0RjI4QkU0MTE5OUI2RjREQTQyOTVFQTYxIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+SB4evwAABRlJREFUeNrsW91vFFUUP/OxOy0xNbbbbsuGEpUPfaFG0UJCBR4AoyIUok+gb/po7AP/gC+mGk18kxdM9EHfhBLQhM+FB8RibEM0sOWBFgK727SbYtiP2ZnxnLs729mv+VhmdjYyN7mZZrZz72/OPb9zfuckw43HF6F2TA4tP4OXz3GO44zhFMHjITYA8QVeJqRkMtQ9vwDhZBKEx4+BU9X2AEEAYbzExZWV0Wenb4CUSkE7h9Ei8XA6PdoXvwKcLEO7B1+2xlfio0ejvT6BoMElEglyzEzk3HkhvLgIfg2yyCQ6pq8gdCD7u+fnwe9BQAbDyVRHABEpTnQCEM+DlW0gnTACIAGQAEgAJADyvwXiuEwI7doJ0NUFRRTYmotiyjEQYfNm4Pv7QX3wEBQ/gTQUvmvWAL9xI6iJhPX/9vUB19sLysyM+0AIhLT/XUfPZBG0ZhBk7pSS2Syo6XT92/f0ACdJDX/TalShJRBhZAT4ocHVxXFh9uDLL63ez+Ug993xume7PvkYOPQn+drvdUfh2Edos9DWrfUAN2wAofw3vbF86bK3zko0JYZU6LttlLFGvnoV1OVM5Wg8Zw3FCiNNCQizAoKwMvfTEVmr3mLdOhBfexW0TMZ7H2k2wjvfZPSkIU9Pe28RLhJBhrwI/OAgCMPDlc2ZI9+8Ccrf/4By+7b3QMLvvA0CHgFz3JUV0PJ5FksKl+OuOqslEPXu3dLb/zXDNtaDVNud9UmdMFBoT09AI/EDOPXsq96/b0l7I9VdASJs2gTSB++v5h+kcDO9GnprHwjr17PEWGGeBWjbQChg0eZs0VSKUblpksRwz5dlA8mDIlLejsi2fTS5E9/bWrCIIkjL5pgVnKh820CcLNpKxG2JNeSIjXyDZluyLzFHOnqEscF4VHRfl5PF+JUqYSx99GFVinDFIrSBgrmHKCwdPlR1v5FSJ7ZRwuSwMrSqeRwfjfzrb6DMzTF6ksI3Nff2bYxthTNn68qHOmsnEglt7U8/m0uBgweAj0arH0Sr6JRuVsMQWBZzUD5UYkoyCYVfTrbmIwSC1buGTYwgKlqlVkLUHBdvIh8cOaudQsnM0bsnPnOxG4AOGNq9y9Ezyq1bULz+hwshHhcitlC05GOx0tmXZaOpFdBnyHfoWXLW/NTppsWYLSBVKi0WK8UFzD/EINOmDgU5Q7lqdqwtlxPkwFaRtJZp7tY15RYEBSlK95bim5iTy7kPRL13D/I//OhvyUmNvNCOHS1tRNWgmU85AqK3IZSFBRYh7fqSXqC5XvsSCOPbUWzhX3i+1GmsYQaTjjaAuKLi+bVDjKZ678TzcoLr7mq8SJk9FPj0dgVvwwotH40ydwfyZT1qzMxker2PxsTT+MFSREVfIkGU/fobSxngCIixjUUMErdsYRvqmqMioGdn2W8EkKYOyCyy2tIjev+dOSYeg649Slaag8KpqYZvTMJJfGWk4qwESL5wEVS8tmwRY86ghFdE6Ve88WfDRY25hSYBog4TPzDwZEfDkh7pTqSntrRkunkzQDnSrOg/zcoS2xaxyrR2hDeYOGzQlgiABEACIAGQAEg7gGiaKHYEEFmhrnIHAEkV+iMdAWQqOzzcEUCO5aNRpRDx1yr8sQfP/YvXbzNvvA5qKOQvfRHMRLGn5/rS2Bj4xSBjHBkrDPTPpvfugbyJ2vZqcLWfLEwOLX+Jl09LXwrMg5RMAd+GLwU4k28nJnG+hzMKbfh24j8BBgC4JERNv0iY2AAAAABJRU5ErkJggg=="></a><div class="tctip-main-box"><h1 class="tctip-title">喜欢请打赏</h1><div class="tctip-body-box"><div class="tctip-icon-box"><ul class="not-full"><li class="tctip-current"><a class="" href="javascript:">支付宝<img src="data:image/png;base64,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" alt="支付宝"></a></li><li class=""><a class="" href="javascript:">微信<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAVFSURBVEhLtVZrTJNXGH7BC0oLxhjMfsxE4xJ3z24xcf7YssmPZWZuxphtWba/259ll8zM6EJMxA0dZsoMm5q5LVkWF10krlIKRe6XcmuFCuMu0KICgoAUpPDsOd93OmopKM49zfP2nPN953m+876n56vMgteyRZqsDvEmTEhjAvh9f7ys6U3oleaEVKm1JmmHCFQlrpfmRJu08Oa/9eSGB0Bl3kY2W/qlPuEL7aZRH7deGq2t4ks0b4wm8F+pFtRD/UuWg9qVcFtzjcF6XpyTVtKiGe36PVCVrt3w2SrisbxqpFY91aVI0sQdC6kTk5449peE9ZdGmXMXdqhVW7OFnTzjSTwRrIsxTJ5p3oxd/r04deM3ZN204czQOWT0/4Cdne9jZcMaSK16gGUUo2CkRjSqveNJuCZSZx0XNzv/kimtETzV+ALODp7D5PQk5kL7eCc+69mNxXXMTN1izqX5HVpzMshUs1EXxmrBtradGJgc1PJ3R9aQDYnu1XxgVQaah+tFozKXWoYQq2KwqekVBKYCWhLoHb+qW3ciEAygb2JA94A/B89jUc1y6sTP6M1HqWFQrF6OJdWJqByp1lLAcf9PSCpKwpGeTD1iIjgdxHbvu1hd9jDqR716FPig40OIizUPac5HqWZQrIzBlqY3tISJY70/IrYsDt/6juoRE8r4tabtWOFaZdQ5BMdQPqSCxq5F1GTdQ9rRKFUMiuWCr7r3a4kZdN32YZqfSEzx0z3hQ+GNEnzffRzpVzJwqOsIXrycjNV1a7kQbjb1EFXcrCGPcIqLwcWLpYLDvgwte3d4hhuQ2n4Qx3tOoXbEjasT1zEavGVko29yAGcGziH58uuQMppXsvYubjrDS1MqaKpYLPiyI0XLzo+CG0XY07oPrWPteiQ6VJ7SfIeZTR48FfytV9Aw5CflDIolMdjsTjZnzIPWW23Y3ZKC4eCI0W+71YGW0TajHYI/0IuG4ZlNl9pziPpceTnrHvKTMgaDyxFbuAw5/U59e3Skdx6Fe8RjtKenp/FI+dNYU7IB48FxY0zhTc/bkNyl6An4jf4U79vofplZ5fEb8pNShhCLYvF4+XO4Pt5vTIjENdYxreOw7pnI9J/AUV8mxaf0CHC2LwspnQcwFhzTI8B3PccgBVx1KVetvKSEIZz5gk2VLzGFs+vnHr6EzK4Turcw2AfyIMyoFHOjKR8pYghnMZ/IITjl+1VPmYFv3I+T3T/r3sJwoS+HK+YmK6Kx8pFChnBeXMITaR1uTt6EZ6geO2vew46ad7C/OQ37mg/gI+8nWmph+LojnXVnqkM+UsAQzvzFeLJiI1KaUpGYy4M/hzczA5JtMt65Ck0jLVru3jDGc/2x0uchTp5oIR+5yBBJJ2mnkZMv+juumWVIdm3FRPC2lp0faud/7N1l6oVrST7DLNLA4BzXuPKtlW+hc/SKlp8b6W0ZEJtaBN9a4TpGUCtcEE3zh3LXYq83BeX9legL9Bu/5aGJIdQOuvF712mjfbL7F529sPm51klh8OsOJG+BzOGL/y9BjM2KNXkb8Gj+s1jnfAJx2SshWfwXU7ARexr3weJMoj53s5qj6ptn9dHY8o2xvZWxY4FUc4x5FLVz42TzZFLfDv5e1bjq2xYhxsEXRGhOGc9ru8UmcoH/8B3xw8YWDxd9YFQbUrfViktpnGPdYf6vtls+l3IOGOn7n6iM1evQbj0tKRJrGivYLWlSyAslpEqT/QFRGaq6qoXZrTbJXblCO4Yh27pN8iznebOf7alZIvfD7PgRLqRKciyfyh+y1DQS+Qc7LndRdtdxOQAAAABJRU5ErkJggg==" alt="微信"></a></li></ul></div><div class="tctip-qr-detail"><div class="tctip-qr-box"><p class="tctip-qr-title">扫描二维码打赏</p><div class="tctip-qr-code"><img src="zfb.bmp"></div><p class="tctip-qr-desc">支付宝打赏</p></div></div></div><p class="tctip-footer"><a href="https://github.com/greedying/tctip" target="_top">了解更多</a></p></div></div>
+    
+<!--done-->
+<div id="home">
+<div id="header">
+	<div id="blogTitle">
+        <a id="lnkBlogLogo" href="https://www.cnblogs.com/mlgjb/"><img id="blogLogo" src="logo.gif" alt="返回主页"></a>		
+		
+<!--done-->
+<h1><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/mlgjb/">哦摩西罗伊</a>
+</h1>
+<h2>
+不忘初心，方得始终
+</h2>
+
+
+
+
+		
+	</div><!--end: blogTitle 博客的标题和副标题 -->
+	<div id="navigator">
+		
+<ul id="navList">
+<li><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+<li>
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/mlgjb/">
+首页</a>
+</li>
+<li>
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+<li>
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/%E5%93%A6%E6%91%A9%E8%A5%BF%E7%BD%97%E4%BC%8A">
+联系</a></li>
+<li>
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/mlgjb/rss/">
+订阅</a>
+<!--<partial name="./Shared/_XmlLink.cshtml" model="Model" /></li>--></li>
+<li>
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+
+		<div class="blogStats">
+			
+			<span id="stats_post_count">随笔 - 
+301&nbsp; </span>
+<span id="stats_article_count">文章 - 
+0&nbsp; </span>
+<span id="stats-comment_count">评论 - 
+13</span>
+
+			
+		</div><!--end: blogStats -->
+	</div><!--end: navigator 博客导航栏 -->
+</div><!--end: header 头部 -->
+
+<div id="main">
+	<div id="mainContent">
+	<div class="forFlow">
+		<div id="post_detail">
+    <!--done-->
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/mlgjb/p/8243690.html">P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <h1 class="dc_h1fontsizable">1、内容概述</h1>
+<p><br>在现实Internet网络环境中，大多数计算机主机都位于防火墙或NAT之后，只有少部分主机能够直接接入Internet。很多时候，我们希望网络中的两台主机能够直接进行通信，即所谓的P2P通信，而不需要其他公共服务器的中转。由于主机可能位于防火墙或NAT之后，在进行P2P通信之前，我们需要进行检测以确认它们之间能否进行P2P通信以及如何通信。这种技术通常称为NAT穿透（NAT Traversal）。最常见的NAT穿透是基于UDP的技术，如<a href="https://tools.ietf.org/html/rfc3489" target="_top">RFC3489</a>中定义的STUN协议。<br><br>STUN，首先在<a href="https://tools.ietf.org/html/rfc3489" target="_top">RFC3489</a>中定义，作为一个完整的NAT穿透解决方案，英文全称是Simple Traversal of UDP Through NATs，即简单的用UDP穿透NAT。<br><br>在新的RFC5389修订中把STUN协议定位于为穿透NAT提供工具，而不是一个完整的解决方案，英文全称是Session Traversal Utilities for NAT，即NAT会话穿透效用。<a href="https://tools.ietf.org/html/rfc5389" target="_top">RFC5389</a>与<a href="https://tools.ietf.org/html/rfc3489" target="_top">RFC3489</a>除了名称变化外，最大的区别是支持TCP穿透。<br><br>TURN，首先在<a href="https://tools.ietf.org/html/rfc5766" target="_top">RFC5766</a>中定义，英文全称是Traversal Using Relays around NAT:Relay Extensions to Session Traversal Utilities for NAT，即使用中继穿透NAT:STUN的扩展。简单的说，TURN与STURN的共同点都是通过修改应用层中的私网地址达到NAT穿透的效果，异同点是TURN是通过两方通讯的“中间人”方式实现穿透。<br><br>ICE跟STUN和TURN不一样，ICE不是一种协议，而是一个框架（Framework），它整合了STUN和TURN。</p>
+<h1 class="dc_h1fontsizable">2、STUN详解</h1>
+<p>
+<br>了解STUN之前，我们需要了解NAT的种类。<br><br>NAT对待UDP的实现方式有4种，分别如下：<br><br></p>
+<ul>
+<li><span style="color: sienna;">Full Cone NAT：</span><br><span style="color: gray;">完全锥形NAT，所有从同一个内网IP和端口号发送过来的请求都会被映射成同一个外网IP和端口号，并且任何一个外网主机都可以通过这个映射的外网IP和端口号向这台内网主机发送包。</span></li>
+<li><span style="color: sienna;">Restricted Cone NAT：</span><br><span style="color: gray;">限制锥形NAT，它也是所有从同一个内网IP和端口号发送过来的请求都会被映射成同一个外网IP和端口号。与完全锥形不同的是，外网主机只能够向先前已经向它发送过数据包的内网主机发送包。</span></li>
+<li><span style="color: sienna;">Port Restricted Cone NAT：</span><br><span style="color: gray;">端口限制锥形NAT，与限制锥形NAT很相似，只不过它包括端口号。也就是说，一台IP地址X和端口P的外网主机想给内网主机发送包，必须是这台内网主机先前已经给这个IP地址X和端口P发送过数据包。</span></li>
+<li><span style="color: sienna;">Symmetric NAT：</span><br><span style="color: gray;">对称NAT，所有从同一个内网IP和端口号发送到一个特定的目的IP和端口号的请求，都会被映射到同一个IP和端口号。如果同一台主机使用相同的源地址和端口号发送包，但是发往不同的目的地，NAT将会使用不同的映射。此外，只有收到数据的外网主机才可以反过来向内网主机发送包。</span></li>
+
+
+</ul>
+<p>&nbsp;</p>
+<h2 class="dc_h2head">2.1 RFC3489/STUN</h2>
+<p>
+<br>STUN（Simple Traversal of User Datagram Protocol Through Network Address Translators），即简单的用UDP穿透NAT，是个轻量级的协议，是基于UDP的完整的穿透NAT的解决方案。它允许应用程序发现它们与公共互联网之间存在的NAT和防火墙及其他类型。它也可以让应用程序确定NAT分配给它们的公网IP地址和端口号。STUN是一种Client/Server的协议，也是一种Request/Response的协议，默认端口号是3478。（<a href="https://tools.ietf.org/html/rfc3489" target="_top">IETF官方文档RFC3489/STUN点此进入</a>）<br><br></p>
+<h3 class="dc_h3">2.1.1&nbsp;报文结构</h3>
+<p>
+<br>【Ø&nbsp;&nbsp;消息头】<br><br>所有的STUN消息都包含20个字节的消息头，包括16位的消息类型，16位的消息长度和128位的事务ID。<br><br>&lt;ignore_js_op&gt;<img id="aimg_1497" class="zoom" title="P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解_a.png" src="112409m1f0zv1t36x1jfbf.png" alt="P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解_a.png" width="532">&nbsp;<br><br>消息类型许可的值如下：<br><br></p>
+<ul>
+<li>0x0001：捆绑请求</li>
+<li>0x0101：捆绑响应</li>
+<li>0x0111：捆绑错误响应</li>
+<li>0x0002：共享私密请求</li>
+<li>0x0102：共享私密响应</li>
+<li>0x0112：共享私密错误响应</li>
+
+
+</ul>
+<p>
+<br>消息长度，是消息大小的字节数，但不包括20字节的头部。事务ID，128位的标识符，用于随机请求和响应，请求与其相应的所有响应具有相同的标识符。<br><br>【Ø&nbsp;&nbsp;消息属性】<br><br>消息头之后是0或多个属性，每个属性进行TLV编码，包括16位的属性类型、16位的属性长度和变长属性值。<br><br>&lt;ignore_js_op&gt;<img id="aimg_1498" class="zoom" title="P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解_b.png" src="112409kqyke5fxgkccfwqv.png" alt="P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解_b.png" width="554">&nbsp;<br><br>属性类型定义如下：<br><br></p>
+<ul>
+<li><span style="color: sienna;">MAPPED-ADDRESS：</span>MAPPED-ADDRESS属性表示映射过的IP地址和端口。它包括8位的地址族，16位的端口号及长度固定的IP地址。</li>
+<li><span style="color: sienna;">RESPONSE-ADDRESS：</span>RESPONSE-ADDRESS属性表示响应的目的地址</li>
+<li><span style="color: sienna;">CHASNGE-REQUEST：</span>客户使用32位的CHANGE-REQUEST属性来请求服务器使用不同的地址或端口号来发送响应。</li>
+<li><span style="color: sienna;">SOURCE-ADDRESS：</span>SOURCE-ADDRESS属性出现在捆绑响应中，它表示服务器发送响应的源IP地址和端口。</li>
+<li><span style="color: sienna;">CHANGED-ADDRESS：</span>如果捆绑请求的CHANGE-REQUEST属性中的“改变IP”和“改变端口”标志设置了，则CHANGED-ADDRESS属性表示响应发出的IP地址和端口号。</li>
+<li><span style="color: sienna;">USERNAME：</span>USERNAME属性用于消息的完整性检查，用于消息完整性检查中标识共享私密。USERNAME通常出现在共享私密响应中，与PASSWORD一起。当使用消息完整性检查时，可有选择地出现在捆绑请求中。</li>
+<li><span style="color: sienna;">PASSWORD：</span>PASSWORD属性用在共享私密响应中，与USERNAME一起。PASSWORD的值是变长的，用作共享私密，它的长度必须是4字节的倍数，以保证属性与边界对齐。</li>
+<li><span style="color: sienna;">MESSAGE-INTEGRITY：</span>MESSAGE-INTEGRITY属性包含STUN消息的HMAC-SHA1，它可以出现在捆绑请求或捆绑响应中；MESSAGE-INTEGRITY属性必须是任何STUN消息的最后一个属性。它的内容决定了HMAC输入的Key值。</li>
+<li><span style="color: sienna;">ERROR-CODE：</span>ERROR-CODE属性出现在捆绑错误响应或共享私密错误响应中。它的响应号数值范围从100到699。</li>
+<li><span style="color: sienna;">UNKNOWN-ATTRIBUTES：</span>UNKNOWN-ATTRIBUTES属性只存在于其ERROR-CODE属性中的响应号为420的捆绑错误响应或共享私密错误响应中。</li>
+<li><span style="color: sienna;">REFLECTED-FROM：</span>REFLECTED-FROM属性只存在于其对应的捆绑请求包含RESPONSE-ADDRESS属性的捆绑响应中。属性包含请求发出的源IP地址，它的目的是提供跟踪能力，这样STUN就不能被用作DOS攻击的反射器。</li>
+
+
+</ul>
+<p>
+<br>具体的ERROR-CODE（响应号），与它们缺省的原因语句一起，目前定义如下：<br><br></p>
+<ul>
+<li><span style="color: sienna;">400（错误请求）：</span>请求变形了。客户在修改先前的尝试前不应该重试该请求。</li>
+<li><span style="color: sienna;">401（未授权）：</span>捆绑请求没有包含MESSAGE-INTERITY属性。</li>
+<li><span style="color: sienna;">420（未知属性）：</span>服务器不认识请求中的强制属性。</li>
+<li><span style="color: sienna;">430（过期资格）：</span>捆绑请求没有包含MESSAGE-INTEGRITY属性，但它使用过期</li>
+<li>的共享私密。客户应该获得新的共享私密并再次重试。</li>
+<li><span style="color: sienna;">431（完整性检查失败）：</span>捆绑请求包含MESSAGE-INTEGRITY属性，但HMAC验</li>
+<li>证失败。这可能是潜在攻击的表现，或者客户端实现错误</li>
+<li><span style="color: sienna;">432（丢失用户名）：</span>捆绑请求包含MESSAGE-INTEGRITY属性，但没有</li>
+<li>USERNAME属性。完整性检查中两项都必须存在。</li>
+<li><span style="color: sienna;">433（使用TLS）：</span>共享私密请求已经通过TLS（Transport Layer Security，即安全</li>
+<li>传输层协议）发送，但没有在TLS上收到。</li>
+<li><span style="color: sienna;">500（服务器错误）：</span>服务器遇到临时错误，客户应该再次尝试。</li>
+<li><span style="color: sienna;">600（全局失败）：</span>服务器拒绝完成请求，客户不应该重试。</li>
+
+
+</ul>
+<p>
+<br>属性空间分为可选部分与强制部分，值超过0x7fff的属性是可选的，即客户或服务器即使不认识该属性也能够处理该消息；值小于或等于0x7fff的属性是强制理解的，即除非理解该属性，否则客户或服务器就不能处理该消息。<br><br></p>
+<h3 class="dc_h3">2.1.2实现原理</h3>
+<p>
+<br>&lt;ignore_js_op&gt;<img id="aimg_1499" class="zoom" title="P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解_c.jpg" src="112611tggg98eyyezpuqys.jpg" alt="P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解_c.jpg" width="354">&nbsp;<br><br>STUN协议的完整交互过程如上，下面我们来介绍具体实现步骤。<br><br>一般情况下，客户会配置STUN服务器提供者的域名，该域名被解析为IP地址和SRV过程的端口号。服务器名是“stun”，使用UDP协议发送捆绑请求，使用TCP协议发送共享私密请求。STUN协议的缺省端口号为3478。<br><br>若要提供完整性检查，STUN在客户和服务器间使用128位的共享私密，作为在捆绑请求和捆绑响应中的密匙。<br><br>首先，客户通过发现过程获得它将与之建立TCP连接的IP地址和端口号。客户打开该地址和端口的连接，开始TLS协商，验证服务器的标识。客户发送共享私密请求。该请求没有属性，只有头。服务器生成响应。<br><br>客户会在该连接上生成多个请求，但在获得用户名和密码后关闭该连接。<br><br>服务器收到共享私密请求，验证从TLS连接上到达的该请求；如果不是通过TLS收到的请求，则生成共享私密错误响应，并设置ERROR-CODE属性为响应号433；这里区分两种情况：若通过TCP收到请求，则错误响应通过收到请求的相同连接发送；若通过UDP收到请求，则错误响应发送回请求送出的源IP和端口。<br><br>服务器检查请求中的任何属性，当其中有不理解的小于或等于0x7fff的值，则生成共享私密错误响应，设置ERROR-CODE属性为响应号420,并包括UNKNOWN-ATTRIBUTE属性，列出它不理解的小于或等于0x7fff的属性的值。该错误响应通过TLS连接发送。<br><br>若请求正确，服务器创建共享私密响应，包含与请求中相同的事务ID，并包含USERNAME和PASSWORD属性。用户名在10分钟内有效。<br><br>共享私密响应通过与收到请求的相同的TLS连接发送，服务器保持连接打开状态，由客户关闭它。<br><br>接着，客户发送捆绑请求，携带的属性包括：</p>
+<ul>
+<li>可选属性：RESPONSE-ADDRESS属性和CHANGE-REQUEST属性；</li>
+<li>强制属性：MESSAGE-INTEGRITY属性和USERNAME属性。</li>
+
+
+</ul>
+<p>
+<br>客户发送捆绑请求，通过客户重传来提供可靠性。客户开始用100ms的间隔重传，每次重传间隔加倍，直至1.6秒。之间间隔1.6秒的重传继续，直到收到响应或总共已经发送了9次。因此，若9500ms后，还未收到响应，客户认为传输已经失败。<br><br>服务器检查捆绑请求的MESSAGE-INTEGRITY属性，不存在则生成捆绑错误响应，设置ERROR-CODE属性为响应号401；若存在，计算请求的HMACKey值。<br><br>服务器检查USERNAME属性，不存在则生成捆绑错误响应，设置ERROR-CODE属性为响应号432；若存在，但不认识该USERNAME的共享私密（例如，它超时了），生成捆绑错误响应，设置ERROR-CODE属性为响应号430。<br><br>若服务器知道该共享私密，但所计算的HMAC与请求的不同，生成捆绑错误响应，设置ERROR-CODE属性为响应号431。<br><br>假设消息完整性检查通过了，服务器检查请求中的任何属性的值，若遇到不理解的小于或等于0x7fff的值，生成捆绑错误响应，设置ERROR-CODE属性为响应号420，该响应包含UNKNOWN-ATTRIBUTE属性，并列出不理解的小于或等于0x7fff的属性。<br><br>若请求正确，服务器生成单个捆绑响应，包含与捆绑请求相同的事务ID。服务器在捆绑响应中加入MAPPED-ADDRESS属性，该属性的IP地址和端口号为捆绑请求的源IP地址和端口号。<br><br>捆绑响应的源地址和端口号取决于捆绑请求中CHANGE-REQUEST属性的值及捆绑请求收到的地址和端口号相关。总结如下：<br><br>&lt;ignore_js_op&gt;<img id="aimg_1500" class="zoom" title="P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解_d.png" src="112735tq1uhlhhll11qiux.png" alt="P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解_d.png" width="637">&nbsp;<br><br>服务器在捆绑响应中加入SOURCE-ADDRESS属性，包含用于发送捆绑响应的源地址和端口号；加入CHANGED-ADDRESS属性，包含源IP地址和端口号。<br><br>如果捆绑请求中包含了USERNAME和MESSAGE-INTEGRITY属性，则服务器在捆绑响应中加入MESSAGE-INTEGRITY属性。<br><br>如果捆绑请求包含RESPONSE-ADDRESS属性，则服务器在捆绑响应中加入REFLECTED-FROM属性：如果捆绑请求使用从共享私密请求获得的用户名进行认证，则REFLECTED-FROM属性包含共享私密请求到达的源IP地址和端口号；若请求中的用户名不是使用共享私密分配的，则REFLECTED-FROM属性包含获得该用户名的实体的源IP地址和端口号；若请求中没有用户名，且服务器愿意处理该请求，则REFLECTED-FROM属性包含请求发出的源IP地址和端口号。<br><br>服务器不会重传响应，可靠性通过客户周期性地重发请求来保障，每个请求都会触发服务器进行响应。<br><br>客户端判断响应的类型是捆绑错误响应还是捆绑响应。捆绑错误响应通常在请求发送的源地址和端口收到；捆绑响应通常在请求中的RESPONSE-ADDRESS属性的地址和端口收到，若没有该属性，则捆绑响应将在请求发送的源地址和端口号收到。<br><br></p>
+<ul>
+<li>若是捆绑错误响应，客户检查响应中的ERROR-CODE属性的响应号：400至499之间的未知属性按属性400处理，500至599之间的未知属性按500处理，600至699之间的未知属性按600处理。任何100和399之间的响应都会使请求重传中止，但其他则忽略；若客户收到响应的属性类型大于0x7fff，则忽略该属性，若小于或等于0x7fff，则请求重传停止，并忽略整个响应；</li>
+<li>若是捆绑响应，客户检查响应的MESSAGE-INTEGRITY属性：如果不存在，客户在请求中加入MESSAGE-INTEGRITY属性，并放弃该响应；如果存在，客户计算响应的HMAC。如果计算出的HMAC与响应中的不同，则放弃该响应，并警告客户可能受到了攻击；若计算出的HMAC与响应中的匹配，则过程继续；</li>
+<li>不论收到捆绑响应还是捆绑错误响应，都将中止该请求的重传。客户在第一次响应后继续监听捆绑请求的响应10秒钟，如果这期间它收到任何消息类型不同的响应或不同的MAPPED-ADDRESS属性，它将警告用户可能受到攻击；并且，如果客户收到的捆绑响应次数超过它发送的捆绑请求数的两倍，它将警告用户可能受到攻击；若捆绑响应经过认证，上述攻击并未导致客户丢弃MAPPED-ADDRESS，则客户可以使用该MAPPED-ADDRESS和SOURCE-ADDRESS属性。</li>
+
+
+</ul>
+<p>&nbsp;</p>
+<h3 class="dc_h3">2.1.3STUN功能举例</h3>
+<p>
+<br>客户通过带外方式获得STUN服务器信息后，就打开对应的地址和端口的连接，并开始与STUN服务器进行TLS协商。一旦打开了连接，客户就通过TCP协议发送共享私密请求，服务器生成共享私密响应。STUN在客户和服务器间使用共享私密，用作捆绑请求和捆绑响应中的密匙。之后，客户使用UDP协议向STUN服务器发送捆绑请求，当捆绑请求消息到达服务器的时候，它可能经过了一个或者多个NAT。结果是STUN服务器收到的捆绑请求消息的源IP地址被映射成最靠近STUN服务器的NAT的IP地址，STUN服务器把这个源IP地址和端口号复制到一个捆绑响应消息中，发送回拥有这个IP地址和端口号的客户端。<br><br>当STUN客户端收到捆绑响应消息之后，它会将自己发送捆绑请求时绑定的本地IP地址和端口号同捆绑响应消息中的IP地址和端口号进行比较，如果不匹配，就表示客户端正处于一个或者多个NAT的前面。<br><br>在Full-Cone NAT的情况下，在捆绑响应消息中的IP地址和端口是属于公网的，公网上的任何主机都可以使用这个IP地址和端口号向这个应用程序发送数据包，应用程序只需要在刚才发送捆绑请求的IP地址和端口上监听即可。<br><br>当然，客户可能并不在一个Full-Cone NAT的前面，实际上，它并不知道自己在一个什么类型的NAT的前面。为了确定NAT的类型，客户端使用附加的捆绑请求。具体过程是很灵活的，但一般都会像下面这样工作：客户端再发送一个捆绑请求，这次发往另一个IP地址，但是使用的是跟上一次同一个源IP地址和源端口号，如果返回的数据包里面的IP地址和端口号和第一次返回的数据包中的不同，客户端就会知道它是在一个对称NAT的前面。客户端为了确认自己是否在一个完全锥形NAT的前面，客户端可以发送一个带有标志的捆绑请求，这个标志告诉服务器使用另一个IP地址和端口发送捆绑响应。换句话说，如果客户端使X/Y的IP地址端口对向A/B的IP地址端口对发送捆绑请求，服务器就会使用源IP地址和源端口号为C/D的地址端口对向X/Y发送捆绑响应。如果客户端收到了这个响应，它就知道它是在一个Full-Cone NAT前面。<br><br>STUN协议允许客户端请求服务器从收到捆绑请求的IP地址往回发捆绑响应，但是要使用不同的端口号。这可以用来检查客户端是否在Port Restricted Cone NAT的前面还是在Restricted Cone NAT的前面。</p>
+<h2 class="dc_h2">2.2 RFC5389/STUN</h2>
+<p>
+<br>STUN协议在RFC5389中被重新命名为Session Traversal Utilities for NAT，即NAT会话穿透效用。在这里，NAT会话穿透效用被定位为一个用于其他解决NAT穿透问题协议的协议。它可以用于终端设备检查由NAT分配给终端的IP地址和端口号。同时，它也被用来检查两个终端之间的连接性，好比是一种维持NAT绑定表项的保活协议。STUN可以用于多种NAT类型，并不需要它们提供特殊的行为。<br><br>STUN本身不再是一种完整的NAT穿透解决方案，它相当于是一种NAT穿透解决方案中的工具。这是与RFC3489/STUN版本相比最重要的改变。<br><br></p>
+<h3 class="dc_h3">2.2.1STUN用途</h3>
+<p>
+<br>目前定义了三种STUN用途：<br><br></p>
+<ul>
+<li>Interactive Connectivity Establishment（ICE）[MMUSIC-ICE]，交互式连接建立</li>
+<li>Client-initiated connections for SIP [SIP-OUTBOUND]，用于SIP的客户端初始化连接</li>
+<li>NAT Behavior Discovery [BEHAVE-NAT]，NAT行为发现</li>
+
+
+</ul>
+<p>&nbsp;</p>
+<h3 class="dc_h3">2.2.2报文结构</h3>
+<p>
+<br>【Ø&nbsp;&nbsp;消息头】<br><br>STUN消息头为20字节，后面紧跟0或多个属性。STUN头部包含一STUN消息类型、magic cookie、事务ID和消息长度。<br><br>&lt;ignore_js_op&gt;<img id="aimg_1505" class="zoom" title="P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解_1.png" src="114036v0l0xcxjj6l6lc94.png" alt="P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解_1.png" width="530">&nbsp;<br><br>每个STUN消息的最高位前2位必须为0。当STUN协议为多个协议多路复用时若使用的是同一个端口，这可以用于与其他协议区分STUN数据包。消息类型确定消息的类别（如请求、成功回应、失败回应、标志）。虽然这里有四种消息类型，但可以分为2类事务：请求/响应事务、标志事务。<br><br>消息类型字段可进一步划分为下面结构：<br><br>&lt;ignore_js_op&gt;<img id="aimg_1502" class="zoom" title="P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解_c.png" src="113902e1ci02g21bks8cmf.png" alt="P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解_c.png" width="254">&nbsp;<br><br>消息类型定义如下：<br><br></p>
+<ul>
+<li>0b00，表示请求</li>
+<li>0b01，表示标志</li>
+<li>0b10，表示成功响应</li>
+<li>0b11，表示错误响应</li>
+
+
+</ul>
+<p>
+<br>魔术字域必须包含固定的值0x2112A442。在RFC3489中，该域是事务ID的一部分。配置魔术字允许服务器检测客户是否理解某些在改进的版本中增加的属性。另外，还可用于STUN多路复用时与其他协议的包进行区分。<br><br>96位的事务ID用于唯一的识别STUN事务。对于请求/响应事务，事务ID由STUN客户端来选择；对于标志事务，由代理（代理指支持STUN的客户端或服务器）来选择并发送。它主要服务于与请求相关的响应，因此它也扮演着一个帮助阻止确定类型的攻击的角色。服务器使用事务ID来唯一的标识出所有客户端的每一个事务。事务ID本身必须是唯一的，并且随机的从0到2的96-1次方中选择。重新发送相同的请求时，也必须使用新的事务ID。成功或错误响应必须携带与相对应的请求相同的事务ID。<br><br>消息长度字段不包括20字节的STUN头部。所有的STUN属性必须填充为4字节的倍数。消息长度字段的最后2位总是为0，这为区分STUN包与其他协议的包提供了另外一种方法。<br><br>【Ø&nbsp;&nbsp;消息属性】<br><br>STUN头之后是0或多个属性。每个属性都采用TLV编码，16位的类型、16位的长度及可变长度的值。每个STUN属性必须是4字节边界对齐。<br><br>&lt;ignore_js_op&gt;<img id="aimg_1504" class="zoom" title="P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解_2.png" src="114019vcfzuicfi6vumdfz.png" alt="P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解_2.png" width="533">&nbsp;<br><br>属性空间被划分为2个范围。属性的类型值在0x0000到0x7fff是强制理解属性，这意味着除非STUN代理能够理解这些属性，否则将不能正常处理包含该属性的消息；属性的类型值在0x8000到0xffff范围是可选理解属性，这意味着如果STUN代理不能理解它们的话这些属性可以被忽略。<br><br>STUN属性类型集由IANA维护，具体定义详见<a href="https://tools.ietf.org/html/rfc5389" target="_top">IETF官方文档 RFC5389</a>。</p>
+<h2 class="dc_h2">2.3 RFC5389与RFC3489的区别</h2>
+<p>
+<br>RFC5389与RFC3489的不同点如下：<br><br></p>
+<ul>
+<li>去掉STUN是一种完整的NAT穿透方案的概念，现在是一种用于提供NAT穿透解决方案的工具。因而，协议的名称变为NAT会话穿透效用；</li>
+<li>定义了STUN的用途；</li>
+<li>去掉了STUN关于NAT类型检测和绑定生命期发现的用法，去掉了RESPONSE-ADDRESS、CHANGED-ADDRESS、CHANGE-REQUEST、SOURCE-ADDRESS和REFLECTED-FROM属性；</li>
+<li>增加了一个固定的32位的魔术字字段，事务ID字段减少了32位长度；</li>
+<li>增加了XOR-MAPPED-ADDRESS属性，若魔术字在捆绑请求中出现时，该属性包括在捆绑响应中。否则，RFC3489中的行为是保留的（换句话说，捆绑响应中包括MAPPED-ADDRESS）；</li>
+<li>介绍了消息类型字段的正式结构，带有一对明确的位来标识Request、Response、Error-Response或Indication消息。因此，消息类型字段被划分为类别和方法两部分；</li>
+<li>明确的指出了STUN的最高2位是0b00，当用于ICE时可以简单的与RTP包区分开来；</li>
+<li>增加指纹属性来提供一种明确的方法来检测当STUN协议多路复用时，STUN与其他协议之间的差异；</li>
+<li>增加支持IPv6，IPv4客户端可以获取一个IPv6映射地址，反之亦然；</li>
+<li>增加一个long-term-credential-based认证机制；</li>
+<li>增加了SOFTWARE、REALM、NONCE和ALTERNATE-SERVER属性；</li>
+<li>去掉了共享密匙方法，因此PASSWORD属性也去掉了；</li>
+<li>去掉了使用连续10秒侦听STUN响应来识别一个攻击的做法；</li>
+<li>改变事务计时器来增加TCP友好性；</li>
+<li>去掉了STUN例子如集中分离控制和媒体面，代替的，在使用STUN协议时提供了更多的信息；</li>
+<li>定义了一类填充机制来改变长度属性的说明；</li>
+<li>REALM、SERVER、原因语句和NONCE限制在127个字符，USERNAME限制在513个字节以内；</li>
+<li>为TCP和TLS改变了DNS SRV规程，UDP仍然和以前保持一致。</li>
+
+
+</ul>
+<p>
+<br>IETF官文档，详见：<a href="https://tools.ietf.org/html/rfc5389" target="_top">RFC5389</a>、<a href="https://tools.ietf.org/html/rfc3489" target="_top">RFC3489</a>。</p>
+<h2 class="dc_h2">2.4 新特性介绍</h2>
+<p>&nbsp;</p>
+<h3 class="dc_h3">2.4.1指纹机制</h3>
+<p>
+<br>FINGERPRINT机制是一种可选的用于其他协议多路复用STUN时发送给相同的传输地址时区分STUN数据包的机制，该机制不支持与RFC3489相兼容。<br><br>在一些用途中，基于相同的传输地址时多个协议会多路复用STUN消息，例如RTP协议。STUN消息必须首先和应用报文分离开。目前，在STUN报头中有3种固定的字段可以用于该目的。尽管如此，在一些案例中，三种固定字段仍然不能充分的区别开。<br><br>当扩展的指纹机制被使用时，STUN代理在发送给其他STUN代理的消息中包括FINGERPRINT属性。当其他STUN代理收到时，除基本的检查之外，还将检查是否包含FINGERPRINT属性及它是否包含正确的值，至此，它将相信这是一个STUN消息。指纹机制帮助STUN代理检查其他协议那些看起来像是STUN消息的消息。<br><br></p>
+<h3 class="dc_h3">2.4.2通过DNS发现服务器机制</h3>
+<p>
+<br>STUN客户端可以使用DNS来发现STUN服务器的IP地址和端口。客户端必须知道服务器的域名。<br><br>当客户端希望找出服务器在公网上的位置就采用捆绑请求/响应事务，SRV（资源记录表）中服务器名称是“stun”。当通过TLS会话采用捆绑请求/响应事务，SRV中服务器名称为“stuns”。STUN用户可以定义额外的DNS资源记录服务名称。<br><br>STUN请求的默认端口是3478，用于TCP和UDP。STUN在TLS上的默认端口是5349。服务器能够在TLS上运行STUN与STUN在TCP上时使用相同的端口，只有服务器软件支持决定初始消息是否是TLS或STUN消息。<br><br>如果SRV中没有记录可查，客户端执行A或AAAA记录查找域名。结果将会是1张IP地址表，每一个都可以使用TCP或UDP采用默认端口号连接。通常要求使用TLS，客户端使用STUN在TLS上的默认端口号连接其中一个IP地址。<br><br></p>
+<h3 class="dc_h3">2.4.3认证和消息完整性机制</h3>
+<p>
+<br><span style="color: sienna;">短期证书机制</span><br>短期证书机制假设在STUN事务之前，客户端和服务器已经使用了其他协议来交换了证书，以username和password形式。这个证书是有时间限制的。例如，在ICE用途中，两个终端使用带外方式交换信息来对username和password达成一致，并在媒体会话期间使用。这个证书被用来进行消息完整性检查，用于每个请求和多个响应中。与长期证书机制相比，没有挑战和响应方式，因此，这种证书的时间限制特性的优点是可以阻止重播。<br><br><span style="color: sienna;">长期证书机制</span><br>长期证书机制依赖于一个长期证书，username和password在客户端和服务器中是共用的。这个证书从它提供给 用户开始将一直是有效的，直到该用户不再是该系统的用户。这本质上是一个提供给用户username和password的传统的登入方式。&nbsp; &nbsp;&nbsp;<br><br>客户端初始发送一个请求，没有提供任何证书和任何完整性检测。服务器拒绝这个请求，并提供给用户一个范围（用于指导用户或代理选择username和password）和一个nonce。这个nonce提供重放保护。它是一个cookie，由服务器选择，以这样一种方式来标示有效时间或客户端身份是有效的。客户端重试这个请求，这次包括它的username和realm和服务器提供的nonce来回应。服务器确认这个nonce和检查这个message integrity。如果它们匹配，请求则通过认证。如果这个nonce不再有效，即过期了，服务器就拒绝该请求，并提供一个新的nonce。<br><br>在随后的到同一服务器的请求，客户端重新使用这个nonce、username和realm，和先前使用的password。这样，随后的请求不会被拒绝直到这个nonce变成无效的。需要注意的是，长期证书机制不能用来保护Indications，由于Indications不能被改变，因此，使用Indications时要么使用短期证书，要么就省略认证和消息完整性。因为长期证书机制对离线字典攻击敏感，部署的时候应该使用很难猜测的密码。<br><br></p>
+<h3 class="dc_h3">2.4.4备份服务器机制</h3>
+<p>
+<br>服务器使用增强的重定向功能将一个客户端转向另一个服务器，通过回应一个错误响应号为300（尝试备份）的错误响应。服务器在错误响应中携带一个ALTERNATE-SERVER属性。<br><br>客户端收到错误响应号为300的错误响应后，在该响应中查找ALTERNATE-SERVER属性。若找到一个，客户端就会将当前的事务作废，并重新尝试发送请求到该属性中列出的服务器。请求报文若已经通过认证，则必须使用与先前发送给执行重定向操作的服务器同样的证书。如果客户端在最后5分钟里已经重试发送请求时已经重定向到了一个服务器，它必须忽略重定向操作并将当前的事务作废，这是为了防止无限的重定向循环。</p>
+<h2 class="dc_h2">2.5 RFC5389与RFC3489的兼容</h2>
+<p>
+<br>在RFC3489中：<br><br></p>
+<ul>
+<li>UDP是唯一支持的传输协议</li>
+<li>RFC5389中的魔术字字段是<a href="https://tools.ietf.org/html/rfc3489" target="_top">RFC3489</a>中事务ID的一部分，事务ID长128位</li>
+<li>没有XOR-MAPPED-ADDRESS属性，绑定方法是使用MAPPED-ADDRESS属性代替</li>
+<li>有3个需要强制理解的属性，分别是：RESPONSE-ADDRESS、CHANGE-REQUEST、CHANGED-ADDRESS属性，而RFC5389中不再支持这些属性。</li>
+
+
+</ul>
+<p>&nbsp;</p>
+<h3 class="dc_h3">2.5.1客户端处理的改变</h3>
+<p>
+<br>客户端想要与<a href="https://tools.ietf.org/html/rfc3489" target="_top">RFC3489</a>的服务器互操作，应发送一个使用绑定方法的请求消息，不包含任何消息，使用UDP协议发送给服务器。如果成功，将收到服务器发回的包含MAPPED-ADDRESS属性而不是XOR-MAPPED-ADDRESS属性的成功响应。客户端试图与基于RFC3489的应用服务器互操作必须准备好接收任意一个属性。此外，客户端必须忽略任何在响应中出现的保留的强制理解的属性。<a href="https://tools.ietf.org/html/rfc3489" target="_top">RFC3489</a>中规定保留属性中的0x0002、0x0004、0x0005和0x000B可能出现在绑定响应中。<br><br></p>
+<h3 class="dc_h3">2.5.2服务器处理的改变</h3>
+<p>
+<br>服务器能够察觉由<a href="https://tools.ietf.org/html/rfc3489" target="_top">RFC3489</a>中的客户端发送的携带有不正确的魔术字的捆绑请求消息。当服务器察觉到<a href="https://tools.ietf.org/html/rfc3489" target="_top">RFC3489</a>中的客户端，它应该将捆绑请消息中魔术字域中的值拷贝到捆绑响应中的魔术字字段中，并且插入一个MAPPED-ADDRESS属性代替XOR-MAPPED-ADDRESS属性。<br><br>客户端在极少的环境下可能包括RESPONSE-ADDRESS或CHANGE-REQUEST属性中的一个。在这些情况下，服务器把这些属性看做是一个不认识的强制理解的属性，并回应一个错误响应。<a href="https://tools.ietf.org/html/rfc3489" target="_top">RFC3489</a>版本中的STUN缺少魔术字和指纹属性这两种能够高可靠性的正确标识其他协议多路复用时的STUN消息。因此，STUN执行与<a href="https://tools.ietf.org/html/rfc3489" target="_top">RFC3489</a>兼容时不应该被用于多个协议。</p>
+<h1 class="dc_h1fontsizable">3、TURN详解</h1>
+<p>&nbsp;</p>
+<h2 class="dc_h2head">3.1 RFC5766/TURN</h2>
+<p>
+<br>TURN，在<a href="https://tools.ietf.org/html/rfc5766" target="_top">RFC5766</a>中定义，英文全称Traversal Using Relays around NAT（TURN）：Relay Extensions to Session Traversal Utilities for NAT（STUN），即使用中继穿透NAT：STUN的中继扩展。简单的说，TURN与STUN的共同点都是通过修改应用层中的私网地址达到NAT穿透的效果，异同点是TURN是通过两方通讯的“中间人”方式实现穿透。<br><br>如果一个主机位于NAT的后面，在某些情况下它不能够与其他主机点对点直接连接。在这些情况下，它需要使用中间网点提供的中继连接服务。TURN协议就是用来允许主机控制中继的操作并且使用中继与对端交换数据。TURN与其他中继控制协议不同的是它能够允许一个客户端使用一个中继地址与多个对端连接。<br><br>TURN协议被设计为ICE的一部分，用于NAT穿越，虽然如此，它也可以在没有ICE的地方单独使用。</p>
+<h2 class="dc_h2">3.2 操作概述</h2>
+<p>
+<br>&lt;ignore_js_op&gt;<img id="aimg_1506" class="zoom" title="P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解_1.jpg" src="115151bn2gxe2p96x612x2.jpg" alt="P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解_1.jpg" width="553">&nbsp;<br><br>在一个典型组网中，一个TURN客户端连接在一个私有网络中，通过一个或多个NAT来连接到公网。在公网中有一个TURN服务器。在因特网的别处有一个或多个对端是这个TURN客户端希望通讯的。这些对端也有可能是在一个或多个NAT的后面。该客户端使用服务器作为一个中继来发送数据包 到这些对端去，并且从这些对端接收数据包。<br><br>客户端通过一个IP地址和端口的组合来与服务器建立会话。客户端使用TURN命令在服务器上创建和操作一个ALLOCATION。一旦这个allocation创建好了，客户端能够在数据发往哪个对端的指示下发送应用数据到这个服务器，服务器将中继这些数据到合适的对端。客户端发送的应用数据包含在TURN消息中，服务器将数据提取出来，并以UDP数据包方式发送给对端。反向上，对端以UDP数据包方式发送应用数据到这个allocation提供的中继传输地址。因为TURN消息总是包含客户端与哪些对端通讯的指示，客户端能够使用单一的allocation来与多个对端通讯。</p>
+<h2 class="dc_h2">3.3 术语</h2>
+<p>&nbsp;</p>
+<ul>
+<li><span style="color: sienna;">TURN client：</span>遵循RFC5766的STUN客户端。</li>
+<li><span style="color: sienna;">TURN server：</span>遵循RFC5766的STUN服务器。</li>
+<li><span style="color: sienna;">Peer：</span>TURN客户端希望连接的主机。TURN服务器为TURN客户端和它的对端中继流量，但Peer并不与TURN服务器使用TURN协议进行交互，它接收从TURN服务器发送过来的数据，并向TURN服务器发送数据。</li>
+<li><span style="color: sienna;">Transport Address：</span>IP地址与端口号的组合。</li>
+<li><span style="color: sienna;">Host Transport Address：</span>客户端或对端的传输地址。</li>
+<li><span style="color: sienna;">Server-Reflexive Transport Address：</span>NAT公网侧的传输地址，该地址由NAT分配，相当于一个特定的主机传输地址。</li>
+<li><span style="color: sienna;">Relayed Transport Address：</span>TURN服务器上的传输地址，用于客户端和对端中继数据。</li>
+<li><span style="color: sienna;">TURN Server Transport Address：</span>TURN服务器上的传输地址，用于客户端发送STUN消息给服务器。</li>
+<li><span style="color: sienna;">Peer Transport Address：</span>服务器看到的对端的传输地址，当对端是在NAT后面，则是对端的服务器反射传输地址。</li>
+<li><span style="color: sienna;">Allocation：</span>通过Allocate请求将中继传输地址提供给客户端，除了中继状态外，还有许可和超时定时器等。</li>
+<li><span style="color: sienna;">5-tuple：</span>五元组，包括客户端IP地址和端口，服务器IP地址和端口和传输协议（包括UDP、TCP、TLS）的组合。</li>
+<li><span style="color: sienna;">Channel：</span>通道号与对端传输地址的关联，一旦一个通道号与一个对端的传输地址绑定，客户端和服务器就能够利用带宽效应更大的通道数据消息来交换数据。</li>
+<li><span style="color: sienna;">Permission：</span>一个对端允许使用它的IP地址和传输协议来发送数据到TURN服务器，服务器只为从对端发来的并且匹配一个已经存在的许可的流量中继到相应的客户端。</li>
+<li><span style="color: sienna;">Realm：</span>服务器内用于描述服务器或内容的一个字符串，这个realm告诉客户端哪些用户名和密码的组合可用于认证请求。</li>
+<li><span style="color: sienna;">Nonce：</span>服务器随机选择的一个字符串，包含在报文摘要中。为了防止中继攻击，服务器应该有规律的改变这个nonce。</li>
+
+
+</ul>
+<p>
+<br><span style="color: gray;">具体协议细节，详见IETF官方文档：</span><a href="https://tools.ietf.org/html/rfc5766" target="_top">RFC5766</a>.</p>
+<h2 class="dc_h2">3.4 协议交互过程详细举例</h2>
+<p>
+<br>以上图为例进行讲解，每个消息中，多个属性包含在消息中并显示它们的值。为了方便阅读，值以人们可读的格式来显示。<br><br>&lt;ignore_js_op&gt;<img id="aimg_1507" class="zoom" title="P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解_2.jpg" src="115958r41hgy1uht78nazu.jpg" alt="P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解_2.jpg" width="554">&nbsp;<br><br>客户端使用10.1.1.2:49271作为传输地址向服务器的传输地址发送Allocate请求。客户端随机选择一个96位的事务ID。该Allocate请求消息包括SOFTWARE属性来提供客户端的软件版本信息；包括LIFETIME属性，指明客户端希望该allocation具有1小时的生命期而非缺省的10分钟；包括REQUESTED-TRANSPORT属性来告诉服务器与对端之间采用UDP协议来传输；包括DONT-FRAGMENT属性因为客户端希望在随后的Send indications中使用DON’T-FRAGMENT属性。<br><br>服务器需要任何请求必须是经过认证的，因此服务器拒绝了该最初的Allocation请求，并且回应了携带有错误响应号为401（未授权）的Allocate错误响应；该响应包括一个REALM属性，指明认证的域；还包括一个NONCE属性和一个SOFTWARE属性。<br><br>客户端收到了错误响应号为401的Allocate错误响应，将重新尝试发送Allocate请求，此时将包括认证属性。客户端在新的请求中重新选择一个新的事务ID。客户端包括一个USERNAME属性，使用从服务器那收到的realm值来帮助它决定使用哪个值；请求还包括REALM和NONCE属性，这两个属性是从收到的错误响应中拷贝出来的。最后，客户端包括一个MESSAGE-INTEGRITY属性。<br><br>服务器收到认证的Allocate请求后，检查每个属性是否正确；然后，产生一个allocation，并给客户端回应Allocate成功响应。服务器在该成功响应中携带一个LIFETIME属性，本例中服务器将客户端请求的1小时生命期减小为20分钟，这是因为这个特定的服务器可能不允许超过20分钟的生命期；该响应包括XOR-RELAYED-ADDRESS属性，值为该allocation的中继传输地址；该响应还包括XOR-MAPPED-ADDRESS属性，值为客户端的server-reflexive地址；该响应也包含一个SOFTWARE属性；最后，包括一个MESSAGE-INTEGRITY属性来证明该响应，确保它的完整性。<br><br>&lt;ignore_js_op&gt;<img id="aimg_1508" class="zoom" title="P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解_3.jpg" src="120031zi6vsrvx24ssg42i.jpg" alt="P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解_3.jpg" width="554">&nbsp;<br><br>接着，客户端为了准备向对端A发送一些应用数据而创建一个permission。这里通过一个CreatePermission请求来做到。该请求携带XOR-PEER-ADDRESS属性包含有确定的请求的IP地址，这里为对端A的地址；需要注意的是，属性中地址的端口号被设置为0在CreatePermission请求中，并且客户端使用的是对端A的server-reflexive地址而不是它的主机地址（私网地址）；客户端在该请求中携带与之前的Allocate请求中一样的username、realm和nonce值，因此该请求被服务器认可。此时在该请求中，客户端没有携带SOFTWARE属性。<br><br>服务器收到该CreatePermission请求，产生一个相应的许可，并以CreatePermission成功响应来回应。该响应中只包含了Transaction-ID和MESSAGE-INTEGRITY属性。<br><br>&lt;ignore_js_op&gt;<img id="aimg_1509" class="zoom" title="P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解_4.jpg" src="120053ks33633olaxnpi4l.jpg" alt="P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解_4.jpg" width="554">&nbsp;<br><br>现在客户端使用Send indication来发送应用数据到对端A。对端的server-reflexive传输地址包含在XOR-PEER-ADDRESS属性中，应用数据包含在DATA属性中。客户端已经在应用层上执行了路径MTU发现功能，因此通过DON’T-FRAGMENT属性来告知服务器当通过UDP方式来向对端发送数据时应设置DF位。Indications不能使用长期证书机制来认证，所以该消息中没有MESSAGE-INTEGRITY属性。<br><br>服务器收到Send indication后，提取出应用数据封装成UDP格式发给对端A；UDP报文的源传输地址为中继传输地址，并设置DF位。<br><br>对端A回应它自己的包含有应用数据的UDP包给服务器。目的地址为服务器的中继传输地址。当服务器收到后，将生成Data indication消息给客户端，携带有XOR-PEER-ADDRESS属性。应用数据包含在DATA属性中。<br><br>&lt;ignore_js_op&gt;<img id="aimg_1510" class="zoom" title="P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解_5.jpg" src="120117zf5gi0ka7fw5o57e.jpg" alt="P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解_5.jpg" width="553">&nbsp;<br><br>客户端现在若要绑定一个通道到对端B，将指定一个空闲的通道号（本例中为0x4000）包含在CHANNEL-NUMBER属性中，对端B的传输地址包含在XOR-PEER-ADDRESS属性中。与以前一样，客户端再次利用上次请求中的username、realm和nonce。<br><br>当服务器收到该请求后，服务器绑定这个对端的通道号，为对端B的IP地址安装一个permission，然后给客户端回应一个ChannelBind成功响应消息。<br><br>&lt;ignore_js_op&gt;<img id="aimg_1511" class="zoom" title="P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解_6.jpg" src="120134g98040e74ziwfiwz.jpg" alt="P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解_6.jpg" width="554">&nbsp;<br><br>客户端现在发送一个ChannelData消息给服务器，携带有发送给对端B的数据。这个消息不是一个STUN消息，因此没有事务ID。它之有3个字段：通道号、数据、数据长度；服务器收到后，检查通道号后发现当前已经绑定了，就以UDP方式发送数据给对端B。<br><br>接着，对端B发送UDP数据包回应给服务器的中继传输地址。服务器收到后，回应给客户端ChannelData消息，包含UDP数据包中的数据。服务器知道是给哪个客户端发送ChannelData消息，这是因为收到的UDP数据包中的目的地址（即服务器的中继传输地址），并且知道使用的是哪个通道号，这是因为通道已经与相应的传输地址绑定了。<br><br>&lt;ignore_js_op&gt;<img id="aimg_1512" class="zoom" title="P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解_7.jpg" src="120157sixfnelrqciqexgd.jpg" alt="P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解_7.jpg" width="554">&nbsp;<br><br>有时候，20分钟的生命期已经到了，客户端需要刷新allocation。此时通过发送Refresh请求来进行。该请求包含最后一次使用的username、realm和nonce，还包含SOFTWARE属性。当服务器收到这个Refresh请求时，它注意到这个nonce值已经超期了，则给客户端回应一个错误响应号为438（过期Nonce）的Refresh错误响应，并提供一个新的nonce值。可护端将重试该请求，此时携带新的nonce值。若第二次尝试被接受，服务器将回应一个成功响应。需要注意的是，此时客户端在请求中没有携带LIFETIME属性，所以服务器刷新客户端的allocation时采用缺省的10分钟生命期。</p>
+<h1 class="dc_h1fontsizable">4、ICE简明介绍</h1>
+<p>&nbsp;</p>
+<h2 class="dc_h2head">4.1 简介</h2>
+<p>
+<br>ICE的全称Interactive Connectivity Establishment（互动式连接建立），由IETF的MMUSIC工作组开发出来的，它所提供的是一种框架，使各种NAT穿透技术可以实现统一。ICE跟STUN和TURN不一样，ICE不是一种协议，而是一个框架（Framework），它整合了STUN和TURN。</p>
+<h2 class="dc_h2">4.2 应用模型</h2>
+<p>
+<br>&lt;ignore_js_op&gt;<img id="aimg_1513" class="zoom" title="P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解_a.png" src="120427sj60zrara770aql5.png" alt="P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解_a.png" width="753">&nbsp;<br><br>如上图所示，如果A想与B通信，那么其过程如下：<br><br></p>
+<ul>
+<li>1）A收集所有的IP地址，并找出其中可以从STUN服务器和TURN服务器收到流量的地址；</li>
+<li>2）A向STUN服务器发送一份地址列表，然后按照排序的地址列表向B发送启动信息，目的是实现节点间的通信；</li>
+<li>3）B向启动信息中的每一个地址发送一条STUN请求；</li>
+<li>4）A将第一条接收到的STUN请求的回复信息发送给B；</li>
+<li>5）B接到STUN回复后，从中找出那些可在A和B之间实现通信的地址；</li>
+<li>6）利用列表中的排序列最高的地址进一步的设备间通信。</li>
+
+
+</ul>
+<p>
+<br>由于该技术是建立在多种NAT穿透协议的基础之上，并且提供了一个统一的框架，所以ICE具备了所有这些技术的优点，同时还避免了任何单个协议可能存在的缺陷。因此，ICE可以实现在未知网络拓扑结构中实现的设备互连，而且不需要进行对手配置。另外，由于该技术不需要为VoIP流量手动打开防火墙，所以也不会产生潜在的安全隐患。</p>
+<h1 class="dc_h1fontsizable">5、本文总结</h1>
+<p>
+<br>在现实Internet网络环境中，大多数计算机主机都位于防火墙或NAT之后，只有少部分主机能够直接接入Internet。很多时候，我们希望网络中的两台主机能够直接进行通信（即所谓的P2P通信），而不需要其它公共服务器的中转。由于主机可能位于防火墙或NAT之后，在进行P2P通信之前，我们需要进行检测以确认它们之间能否进行P2P通信以及如何通信。这种技术通常被称为NAT穿透（NAT Traversal）。<br><br>RFC3489中定义的STUN，即简单地用UDP穿过NAT（STUN）是个轻量级的协议。它允许应用发现它们与公共互联网之间存在的NAT和防火墙及其他类型。它还为应用提供判断NAT给它们分配的公共网际协议（IP）地址。STUN可工作在许多现存NAT上，并且不需要它们做任何特别的行为。它允许广泛的各类的应用穿越现存的NAT设施。<br><br>RFC5389中对STUN协议进行了修订，将其定位于为穿透NAT提供工具，即NAT会话穿透效用是一个用于其他解决NAT穿透问题协议的协议。它可以用于终端设备检查由NAT分配给终端的IP地址和端口号。同时，它也被用来检查两个终端之间的连接性，好比是一种维持NAT绑定表项的保活协议。STUN本身并不是一种完整的NAT穿透解决方案。它相当于是一种NAT穿透解决方案中的工具。这是与先前的版本相比最重要的改变。之前的RFC3489中定义的STUN是一个完整的穿透NAT解决方案。此外，最大的区别是支持TCP穿透。<br><br>RFC5766中对STUN协议再次进行了扩展，即中继穿透NAT：STUN的扩展。TURN与STUN的共同点都是通过修改应用层中的私网地址达到NAT穿透的效用，异同点是TUN采用了两方通讯的“中间人”方式实现穿透，突破了原先STUN协议无法在两台主机不能够点对点直接连接下提供作用的限制。<br><br>技术无止境，NAT穿透技术仍在不断更新中，这里只对STUN/TURN协议作了简单的介绍，具体细节请参考<a href="https://tools.ietf.org/html/rfc3489" target="_top">RFC3489</a>/<a href="https://tools.ietf.org/html/rfc5389" target="_top">5389</a>/<a href="https://tools.ietf.org/html/rfc5766" target="_top">5766</a>。</p>
+<p>&nbsp;</p>
+<p>原文传送门：<a href="http://www.52im.net/thread-557-1-1.html">请点击</a></p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block"><div id="BlogPostCategory">
+    分类: 
+            <a href="https://www.cnblogs.com/mlgjb/category/1125136.html" target="_top">计算机网络</a></div>
+
+
+    <div id="blog_post_info">
+<div id="green_channel">
+        <a href="javascript:void(0);" id="green_channel_digg" onclick="DiggIt(8243690,cb_blogId,1);green_channel_success(this,'谢谢推荐！');">好文要顶</a>
+        <a id="green_channel_follow" onclick="follow('7c4fc4f0-c741-e611-9fc1-ac853d9f53cc');" href="javascript:void(0);">关注我</a>
+    <a id="green_channel_favorite" onclick="AddToWz(cb_entryId);return false;" href="javascript:void(0);">收藏该文</a>
+    <a id="green_channel_weibo" href="javascript:void(0);" title="分享至新浪微博" onclick="ShareToTsina()"><img src="icon_weibo_24.png" alt=""></a>
+    <a id="green_channel_wechat" href="javascript:void(0);" title="分享至微信" onclick="shareOnWechat()"><img src="wechat.png" alt=""></a>
+</div>
+<div id="author_profile">
+    <div id="author_profile_info" class="author_profile_info">
+            <a href="https://home.cnblogs.com/u/mlgjb/" target="_top"><img src="20160704171901.png" class="author_avatar" alt=""></a>
+        <div id="author_profile_detail" class="author_profile_info">
+            <a href="https://home.cnblogs.com/u/mlgjb/">哦摩西罗伊</a><br>
+            <a href="https://home.cnblogs.com/u/mlgjb/followees/">关注 - 3</a><br>
+            <a href="https://home.cnblogs.com/u/mlgjb/followers/">粉丝 - 25</a>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div id="author_profile_honor"></div>
+    <div id="author_profile_follow">
+                <a href="javascript:void(0);" onclick="follow('7c4fc4f0-c741-e611-9fc1-ac853d9f53cc');return false;">+加关注</a>
+    </div>
+</div>
+<div id="div_digg">
+    <div class="diggit" onclick="votePost(8243690,'Digg')">
+        <span class="diggnum" id="digg_count">0</span>
+    </div>
+    <div class="buryit" onclick="votePost(8243690,'Bury')">
+        <span class="burynum" id="bury_count">0</span>
+    </div>
+    <div class="clear"></div>
+    <div class="diggword" id="digg_tips">
+    </div>
+</div>
+
+</div>
+    <div class="clear"></div>
+    <div id="post_next_prev">
+
+    <a href="https://www.cnblogs.com/mlgjb/p/8243664.html" class="p_n_p_prefix">« </a> 上一篇：    <a href="https://www.cnblogs.com/mlgjb/p/8243664.html" title="发布于 2018-01-08 17:12">P2P技术详解(二)：P2P中的NAT穿越(打洞)方案详解</a>
+    <br>
+    <a href="https://www.cnblogs.com/mlgjb/p/8243995.html" class="p_n_p_prefix">» </a> 下一篇：    <a href="https://www.cnblogs.com/mlgjb/p/8243995.html" title="发布于 2018-01-08 18:04">无限制高速下载百度网盘大文件方法</a>
+
+</div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2018-01-08 17:15</span>&nbsp;<a href="https://www.cnblogs.com/mlgjb/">哦摩西罗伊</a> 阅读(<span id="post_view_count">10035</span>) 评论(<span id="post_comment_count">0</span>) <a href="https://i.cnblogs.com/EditPosts.aspx?postid=8243690" rel="nofollow"> 编辑</a> <a href="javascript:void(0)" onclick="AddToWz(8243690); return false;">收藏</a>
+</div>
+        </div>
+	    
+	    
+    </div><!--end: topics 文章、评论容器-->
+</div>
+
+
+<a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"><div class="login_tips">
+    注册用户登录后才能发表评论，请 
+    <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return login('commentform');">登录</a>
+     或 
+    <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return register();">注册</a>，
+    <a href="https://www.cnblogs.com/">访问</a> 网站首页。
+</div></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"><a href="http://www.ucancode.com/index.htm" target="_top" onclick="ga('send', 'event', 'Link', 'click', 'T2-工控')">【推荐】超50万C++/C#源码: 大型实时仿真组态图形源码</a><br><a href="http://click.aliyun.com/m/1000074461/" target="_top" onclick="ga('send', 'event', 'Link', 'click', 'T2-阿里云')">【活动】阿里云910会员节多款云产品满减活动火热进行中</a><br><a href="https://www.ctyun.cn/activity/#/enterprise2?hmsr=%E5%8D%9A%E5%AE%A2%E5%9B%AD-0901-0%E5%85%83%E4%B8%8A%E4%BA%91&amp;hmpl=&amp;hmcu=&amp;hmkw=&amp;hmci=" target="_top" onclick="ga('send', 'event', 'Link', 'click', 'T2-天翼云')">【推荐】新手上天翼云，数十款云产品、新一代主机0元体验</a><br><a href="http://clickc.admaster.com.cn/c/a131574,b3595115,c1705,i0,m101,8a1,8b3,h" target="_top" onclick="ga('send', 'event', 'Link', 'click', 'T2-华为云微认证')">【推荐】零基础轻松玩转华为云产品，获壕礼加返百元大礼</a><br><a href="http://clickc.admaster.com.cn/c/a131575,b3595121,c1705,i0,m101,8a1,8b3,h" target="_top" onclick="ga('send', 'event', 'Link', 'click', 'T2-华为文字')">【推荐】华为云文字识别资源包重磅上市，1元万次限时抢购</a><br></div>
+    <div id="opt_under_post"></div>
+    
+    
+    
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height: 250px; width: 300px;" data-google-query-id="CMHhydvjxeQCFQKUvQodYN8AYw"><div id="google_ads_iframe_/1090369/C1_0__container__" style="border: 0pt none;"><iframe id="google_ads_iframe_/1090369/C1_0" title="3rd party ad content" name="google_ads_iframe_/1090369/C1_0" scrolling="no" marginwidth="0" marginheight="0" style="border: 0px none; vertical-align: bottom;" srcdoc="" data-google-container-id="1" data-load-complete="true" src="index_1.html" width="300" height="250" frameborder="0"></iframe></div></div>
+    </div>
+    <div id="under_post_news"><div class="recomm-block"><b>相关博文：</b><br>·  <a title="P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解" href="https://www.cnblogs.com/zhiji6/p/10495165.html" target="_top" onclick="clickRecomItmem(10495165)">P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解</a><br>·  <a title="STUN和TURN技术浅析" href="https://www.cnblogs.com/albert1017/p/3441001.html" target="_top" onclick="clickRecomItmem(3441001)">STUN和TURN技术浅析</a><br>·  <a title="STUN和TURN技术浅析" href="https://www.cnblogs.com/x_wukong/p/5759863.html" target="_top" onclick="clickRecomItmem(5759863)">STUN和TURN技术浅析</a><br>·  <a title="NAT and Traversal NAT（TURN/STUN/ICE）" href="https://www.cnblogs.com/whyandinside/archive/2010/12/08/1900492.html" target="_top" onclick="clickRecomItmem(1900492)">NAT and Traversal NAT（TURN/STUN/ICE）</a><br>·  <a title="STUN,TURN,ICE介绍" href="https://www.cnblogs.com/cnhk19/p/9460041.html" target="_top" onclick="clickRecomItmem(9460041)">STUN,TURN,ICE介绍</a><br></div></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height: 60px; width: 468px;" data-google-query-id="CP_NyNvjxeQCFQKUvQodYN8AYw">
+            
+        <div id="google_ads_iframe_/1090369/C2_0__container__" style="border: 0pt none;"><iframe id="google_ads_iframe_/1090369/C2_0" title="3rd party ad content" name="google_ads_iframe_/1090369/C2_0" scrolling="no" marginwidth="0" marginheight="0" style="border: 0px none; vertical-align: bottom;" srcdoc="" data-google-container-id="2" data-load-complete="true" src="index_2.html" width="468" height="60" frameborder="0"></iframe></div></div>
+    </div>
+    <div id="under_post_kb">
+<div class="itnews c_ad_block">
+    <b>最新 IT 新闻</b>:
+    <br>
+ ·              <a href="https://news.cnblogs.com/n/636825/" target="_top">临床试验显示高剂量维生素 D 无助于强化骨质</a>
+            <br>
+ ·              <a href="https://news.cnblogs.com/n/636824/" target="_top">NASA发布超高分辨率的月球3D模型</a>
+            <br>
+ ·              <a href="https://news.cnblogs.com/n/636823/" target="_top">年内上市悬了？报道称软银要求WeWork搁置IPO计划</a>
+            <br>
+ ·              <a href="https://news.cnblogs.com/n/636822/" target="_top">依图夺冠世界级声纹识别竞赛！智能语音战场又破一城</a>
+            <br>
+ ·              <a href="https://news.cnblogs.com/n/636821/" target="_top">GitHub 升级到 Rails 6.0</a>
+            <br>
+    » <a href="https://news.cnblogs.com/" title="IT 新闻" target="_top">更多新闻...</a>
+</div></div>
+    <div id="HistoryToday" class="c_ad_block">
+<b>历史上的今天：</b>
+<br>
+
+2018-01-08    <a href="https://www.cnblogs.com/mlgjb/p/8243664.html">P2P技术详解(二)：P2P中的NAT穿越(打洞)方案详解</a>
+    <br>
+2018-01-08    <a href="https://www.cnblogs.com/mlgjb/p/8243646.html">P2P技术详解(一)：NAT详解——详细原理、P2P简介</a>
+    <br>
+2018-01-08    <a href="https://www.cnblogs.com/mlgjb/p/8243612.html">P2P技术概要</a>
+    <br>
+2018-01-08    <a href="https://www.cnblogs.com/mlgjb/p/8241773.html">进程详解</a>
+    <br>
+2018-01-08    <a href="https://www.cnblogs.com/mlgjb/p/8241718.html">进程的基本概念</a>
+    <br>
+</div>
+    
+</div>
+	</div><!--end: forFlow -->
+	</div><!--end: mainContent 主体内容容器-->
+
+	<div id="sideBar">
+		<div id="sideBarMain">
+			
+<div id="sidebar_news" class="newsItem"><!--done-->
+<h3 class="catListTitle">公告</h3>
+
+<div id="blog-news">
+    
+    <div id="profile_block">
+        昵称：
+        <a href="https://home.cnblogs.com/u/mlgjb/">
+            哦摩西罗伊
+        </a>
+        <br>
+        园龄：
+        <a href="https://home.cnblogs.com/u/mlgjb/" title="入园时间：2016-07-04">
+            3年2个月
+        </a>
+        <br>
+        粉丝：
+        <a href="https://home.cnblogs.com/u/mlgjb/followers/">
+            25
+        </a>
+        <br>
+        关注：
+        <a href="https://home.cnblogs.com/u/mlgjb/followees/">
+            3
+        </a>
+        <div id="p_b_follow">
+<a href="javascript:void(0)" onclick="follow('7c4fc4f0-c741-e611-9fc1-ac853d9f53cc')">+加关注</a></div>
+        
+    </div>
+</div>
+
+</div>
+
+			<div id="blog-calendar" style="">
+
+<table id="blogCalendar" class="Cal" title="Calendar" cellspacing="0" cellpadding="0" border="0">
+    <tbody>
+        <tr>
+            <td colspan="7">
+                <table class="CalTitle" cellspacing="0" border="0">
+                    <tbody>
+                        <tr>
+                            <td class="CalNextPrev">
+                                <a href="https://www.cnblogs.com/mlgjb/p/2019/08/10">&lt;</a>
+                            </td>
+                            <td align="center">2019年9月</td>
+                            <td class="CalNextPrev" align="right">
+                                <a href="https://www.cnblogs.com/mlgjb/p/2019/10/10">&gt;</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+                    <th class="CalDayHeader" abbr="日" scope="col" align="center">日</th>
+                    <th class="CalDayHeader" abbr="一" scope="col" align="center">一</th>
+                    <th class="CalDayHeader" abbr="二" scope="col" align="center">二</th>
+                    <th class="CalDayHeader" abbr="三" scope="col" align="center">三</th>
+                    <th class="CalDayHeader" abbr="四" scope="col" align="center">四</th>
+                    <th class="CalDayHeader" abbr="五" scope="col" align="center">五</th>
+                    <th class="CalDayHeader" abbr="六" scope="col" align="center">六</th>
+        </tr>
+            <tr>
+                        <td class="CalWeekendDay" align="center">
+                            1
+                        </td>
+                        <td class="" align="center">
+                            2
+                        </td>
+                        <td class="" align="center">
+                            3
+                        </td>
+                        <td class="" align="center">
+                            4
+                        </td>
+                        <td class="" align="center">
+                            5
+                        </td>
+                        <td class="" align="center">
+                            6
+                        </td>
+                    <td class="CalWeekendDay" align="center">
+                        7
+                    </td>
+            </tr>
+                <tr>
+                        <td class="CalWeekendDay" align="center">
+                            8
+                        </td>
+                            <td class="" align="center">
+                                9
+                            </td>
+                            <td class="CalTodayDay" align="center">
+                                10
+                            </td>
+                            <td class="" align="center">
+                                11
+                            </td>
+                            <td class="" align="center">
+                                12
+                            </td>
+                            <td class="" align="center">
+                                13
+                            </td>
+                        <td class="CalWeekendDay" align="center">
+                            14
+                        </td>
+                </tr>
+                <tr>
+                        <td class="CalWeekendDay" align="center">
+                            15
+                        </td>
+                            <td class="" align="center">
+                                16
+                            </td>
+                            <td class="" align="center">
+                                17
+                            </td>
+                            <td class="" align="center">
+                                18
+                            </td>
+                            <td class="" align="center">
+                                19
+                            </td>
+                            <td class="" align="center">
+                                20
+                            </td>
+                        <td class="CalWeekendDay" align="center">
+                            21
+                        </td>
+                </tr>
+                <tr>
+                        <td class="CalWeekendDay" align="center">
+                            22
+                        </td>
+                            <td class="" align="center">
+                                23
+                            </td>
+                            <td class="" align="center">
+                                24
+                            </td>
+                            <td class="" align="center">
+                                25
+                            </td>
+                            <td class="" align="center">
+                                26
+                            </td>
+                            <td class="" align="center">
+                                27
+                            </td>
+                        <td class="CalWeekendDay" align="center">
+                            28
+                        </td>
+                </tr>
+                <tr>
+                        <td class="CalWeekendDay" align="center">
+                            29
+                        </td>
+                            <td class="" align="center">
+                                30
+                            </td>
+                            <td class="CalOtherMonthDay" align="center">
+                                1
+                            </td>
+                            <td class="CalOtherMonthDay" align="center">
+                                2
+                            </td>
+                            <td class="CalOtherMonthDay" align="center">
+                                3
+                            </td>
+                            <td class="CalOtherMonthDay" align="center">
+                                4
+                            </td>
+                        <td class="CalOtherMonthDay" align="center">
+                            5
+                        </td>
+                </tr>
+                <tr>
+                        <td class="CalOtherMonthDay" align="center">
+                            6
+                        </td>
+                            <td class="CalOtherMonthDay" align="center">
+                                7
+                            </td>
+                            <td class="CalOtherMonthDay" align="center">
+                                8
+                            </td>
+                            <td class="CalOtherMonthDay" align="center">
+                                9
+                            </td>
+                            <td class="CalOtherMonthDay" align="center">
+                                10
+                            </td>
+                            <td class="CalOtherMonthDay" align="center">
+                                11
+                            </td>
+                        <td class="CalOtherMonthDay" align="center">
+                            12
+                        </td>
+                </tr>
+    </tbody>
+</table></div>
+			
+			<div id="leftcontentcontainer">
+				<div id="blog-sidecolumn">
+
+<!-- 搜索 -->
+<div id="sidebar_search" class="sidebar-block">
+    <div id="sidebar_search" class="mySearch">
+        <h3 class="catListTitle">搜索</h3>
+        <div id="sidebar_search_box">
+            <div id="widget_my_zzk" class="div_my_zzk">
+                <input id="q" onkeydown="return zzk_go_enter(event);" class="input_my_zzk" value="" type="text">&nbsp;<input onclick="zzk_go()" value="找找看" id="btnZzk" class="btn_my_zzk" type="button">
+            </div>
+            <div id="widget_my_google" class="div_my_zzk">
+                <input name="google_q" id="google_q" onkeydown="return google_go_enter(event);" class="input_my_zzk" value="" type="text">&nbsp;<input onclick="google_go()" value="谷歌搜索" class="btn_my_zzk" type="button">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 常用链接 -->
+<div id="sidebar_shortcut" class="sidebar-block">
+    <div class="catListLink">
+<h3 class="catListTitle">
+常用链接
+</h3>
+<ul>
+		<li>
+
+<a href="https://www.cnblogs.com/mlgjb/p/" title="我的博客的随笔列表">我的随笔</a>
+</li>
+		<li>
+
+<a href="https://www.cnblogs.com/mlgjb/MyComments.html" title="我的发表过的评论列表">我的评论</a>
+</li>
+		<li>
+
+<a href="https://www.cnblogs.com/mlgjb/OtherPosts.html" title="我评论过的随笔列表">我的参与</a>
+</li>
+		<li>
+
+<a href="https://www.cnblogs.com/mlgjb/RecentComments.html" title="我的博客的评论列表">最新评论</a>
+</li>
+		<li>
+
+<a href="https://www.cnblogs.com/mlgjb/tag/" title="我的博客的标签列表">我的标签</a>
+</li>
+
+</ul>
+<div id="itemListLin_con" style="display: none;">
+<ul>
+
+</ul>
+</div>
+</div>
+
+
+</div>
+
+<!-- 最新随笔 -->
+
+
+
+<!-- 我的标签 -->
+<div id="sidebar_toptags" class="sidebar-block">
+    
+</div>
+
+<!-- 积分与排名 -->
+
+
+<!-- 随笔分类、随笔档案、文章分类、新闻分类、相册、链接 -->
+<div id="sidebar_categories">
+    
+        <div id="sidebar_postcategory" class="catListPostCategory sidebar-block">
+            <h3 class="catListTitle">
+                
+
+随笔分类
+
+
+
+            </h3>
+
+
+            <ul>
+
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/category/1128879.html" rel="" target="">
+    C/C++(29)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/category/1128883.html" rel="" target="">
+    HTML(5)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/category/1131420.html" rel="" target="">
+    Java(2)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/category/852640.html" rel="" target="">
+    Linux(26)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/category/1515505.html" rel="" target="">
+    NLP(2)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/category/1117615.html" rel="" target="">
+    Python(46)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/category/1129837.html" rel="" target="">
+    Web Crawler(2)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/category/1132055.html" rel="" target="">
+    编译原理(1)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/category/1131372.html" rel="" target="">
+    操作系统基础(10)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/category/1199453.html" rel="" target="">
+    汇编语言
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/category/1419304.html" rel="" target="">
+    机器学习与深度学习(4)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/category/1124155.html" rel="" target="">
+    计算机基础(30)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/category/1269977.html" rel="" target="">
+    计算机实用技巧(44)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/category/1132724.html" rel="" target="">
+    计算机图像(3)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/category/1125136.html" rel="" target="">
+    计算机网络(19)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/category/1130134.html" rel="" target="">
+    计算机组成原理(8)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/category/852638.html" rel="" target="">
+    数据结构与算法(9)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/category/1128882.html" rel="" target="">
+    数据库(9)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/category/1132164.html" rel="" target="">
+    学习生活中的感悟与技巧总结(17)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/category/853177.html" rel="" target="">
+    应用软件的调试及使用（IDE、office、ps等）(15)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/category/976057.html" rel="" target="">
+    浙大PAT练习题(33)
+</a>
+ 
+
+                        </li>
+
+            </ul>
+
+
+        </div>
+        <div id="sidebar_postarchive" class="catListPostArchive sidebar-block">
+            <h3 class="catListTitle">
+                
+
+随笔档案
+
+
+
+            </h3>
+
+
+            <ul>
+
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/archive/2019/08.html" rel="" target="">
+    2019年8月(4)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/archive/2019/07.html" rel="" target="">
+    2019年7月(10)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/archive/2019/06.html" rel="" target="">
+    2019年6月(2)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/archive/2019/05.html" rel="" target="">
+    2019年5月(5)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/archive/2019/04.html" rel="" target="">
+    2019年4月(9)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/archive/2019/03.html" rel="" target="">
+    2019年3月(10)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/archive/2019/02.html" rel="" target="">
+    2019年2月(3)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/archive/2019/01.html" rel="" target="">
+    2019年1月(2)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/archive/2018/12.html" rel="" target="">
+    2018年12月(4)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/archive/2018/11.html" rel="" target="">
+    2018年11月(4)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/archive/2018/10.html" rel="" target="">
+    2018年10月(7)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/archive/2018/09.html" rel="" target="">
+    2018年9月(2)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/archive/2018/08.html" rel="" target="">
+    2018年8月(6)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/archive/2018/07.html" rel="" target="">
+    2018年7月(8)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/archive/2018/06.html" rel="" target="">
+    2018年6月(2)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/archive/2018/05.html" rel="" target="">
+    2018年5月(8)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/archive/2018/04.html" rel="" target="">
+    2018年4月(31)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/archive/2018/03.html" rel="" target="">
+    2018年3月(29)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/archive/2018/02.html" rel="" target="">
+    2018年2月(6)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/archive/2018/01.html" rel="" target="">
+    2018年1月(26)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/archive/2017/12.html" rel="" target="">
+    2017年12月(58)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/archive/2017/11.html" rel="" target="">
+    2017年11月(12)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/archive/2017/10.html" rel="" target="">
+    2017年10月(8)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/archive/2017/05.html" rel="" target="">
+    2017年5月(6)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/archive/2017/04.html" rel="" target="">
+    2017年4月(27)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/archive/2017/03.html" rel="" target="">
+    2017年3月(6)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/archive/2016/08.html" rel="" target="">
+    2016年8月(1)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/archive/2016/07.html" rel="" target="">
+    2016年7月(5)
+</a>
+ 
+
+                        </li>
+
+            </ul>
+
+
+        </div>
+        <div id="sidebar_articlecategory" class="catListArticleCategory sidebar-block">
+            <h3 class="catListTitle">
+                
+
+文章分类
+
+
+
+            </h3>
+
+
+            <ul>
+
+                        <li>
+                            
+<a href="https://www.cnblogs.com/mlgjb/category/935512.html" rel="" target="">
+    操作系统
+</a>
+ 
+
+                        </li>
+
+            </ul>
+
+
+        </div>
+
+</div>
+
+<!-- 最新评论 -->
+<div id="sidebar_recentcomments" class="sidebar-block">
+    <div class="catListComment">
+<h3 class="catListTitle">最新评论</h3>
+
+	<div class="RecentCommentBlock">
+        <ul>
+                    <li class="recent_comment_title"><a href="https://www.cnblogs.com/mlgjb/p/8794659.html#4329286">1. Re:数据库一般不用来存储图片</a></li>
+                    <li class="recent_comment_body">所以数据库和阿里云到底是什么关系呢？</li>
+                    <li class="recent_comment_author">--康溟</li>
+                    <li class="recent_comment_title"><a href="https://www.cnblogs.com/mlgjb/p/9025565.html#4317639">2. Re:删除腾讯游戏助手自动生成的文件aow_drv.log</a></li>
+                    <li class="recent_comment_body">你这个创建的是文件夹，这个产生的日志文件是个log文件</li>
+                    <li class="recent_comment_author">--迷路的索大</li>
+                    <li class="recent_comment_title"><a href="https://www.cnblogs.com/mlgjb/p/7899534.html#4312205">3. Re:Python中byte与str</a></li>
+                    <li class="recent_comment_body">将str和bytes相互转换时的encode，decode和将utf-8和unicode相互转换时的encode，decode是一回事吗？另外，Unicode是用在str还是unicode里呢？...</li>
+                    <li class="recent_comment_author">--creazyloser</li>
+                    <li class="recent_comment_title"><a href="https://www.cnblogs.com/mlgjb/p/7899534.html#4252106">4. Re:Python中byte与str</a></li>
+                    <li class="recent_comment_body">图片 我去 太魔鬼了</li>
+                    <li class="recent_comment_author">--终究被人遗忘</li>
+                    <li class="recent_comment_title"><a href="https://www.cnblogs.com/mlgjb/p/10651311.html#4237449">5. Re:学会查阅文献资料</a></li>
+                    <li class="recent_comment_body">没毛病<br>人人以为人人都会用百度，但实际上百分之八十的人并不会使用搜索引擎</li>
+                    <li class="recent_comment_author">--Rokid</li>
+        </ul>
+    </div>
+</div>
+
+
+</div>
+
+
+
+<!-- 阅读排行榜 -->
+<div id="sidebar_topviewedposts" class="sidebar-block">
+    <div class="catListView">
+<h3 class="catListTitle">阅读排行榜</h3>
+	<div id="TopViewPostsBlock">
+        <ul style="word-break: break-all;">
+                    <li>
+                        <a href="https://www.cnblogs.com/mlgjb/p/8022280.html">
+                            1. Windows10下安装python（配置环境变量）(31201)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/mlgjb/p/7879813.html">
+                            2. python中str常用操作(21313)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/mlgjb/p/7892130.html">
+                            3. Python与C的简单比较(Python3.0)(18019)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/mlgjb/p/7976561.html">
+                            4. Python3中无法导入ssl模块的解决办法(15181)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/mlgjb/p/7899534.html">
+                            5. Python中byte与str(15049)
+                        </a>
+                    </li>
+        </ul>
+    </div>
+</div>
+
+
+</div>
+
+<!-- 评论排行榜 -->
+<div id="sidebar_topcommentedposts" class="sidebar-block">
+    <div class="catListFeedback">
+<h3 class="catListTitle">评论排行榜</h3>
+	<div id="TopFeedbackPostsBlock">
+        <ul style="word-break: break-all;">
+                    <li>
+                        <a href="https://www.cnblogs.com/mlgjb/p/9144575.html">
+                            1. 在Windows系统上搭建aria2下载器(2)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/mlgjb/p/7899534.html">
+                            2. Python中byte与str(2)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/mlgjb/p/8588028.html">
+                            3. 深入了解Windows句柄到底是什么(2)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/mlgjb/p/10651311.html">
+                            4. 学会查阅文献资料(1)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/mlgjb/p/9747315.html">
+                            5. linux下中文文件名乱码解决(1)
+                        </a>
+                    </li>
+        </ul>
+    </div>
+</div>
+
+
+</div>
+
+<!-- 推荐排行榜 -->
+<div id="sidebar_topdiggedposts" class="sidebar-block">
+    
+<div id="topdigg_posts_wrap">
+    <div class="catListView">
+        <h3 class="catListTitle">推荐排行榜</h3>
+        <div id="TopDiggPostsBlock">
+            <ul style="word-break: break-all;">
+                        <li>
+                            <a href="https://www.cnblogs.com/mlgjb/p/7991903.html">
+                                1. 缓冲区(buffer)与缓存(cache)(6)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/mlgjb/p/7966593.html">
+                                2. 源程序与目标程序(1)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/mlgjb/p/9025565.html">
+                                3. 删除腾讯游戏助手自动生成的文件aow_drv.log(1)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/mlgjb/p/8821340.html">
+                                4. C++中引用（&amp;）的用法和应用实例(1)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/mlgjb/p/8794659.html">
+                                5. 数据库一般不用来存储图片(1)
+                            </a>
+                        </li>
+            </ul>
+        </div>
+    </div>
+</div>
+</div></div>
+                    
+			</div>
+			
+		</div><!--end: sideBarMain -->
+	</div><!--end: sideBar 侧边栏容器 -->
+	<div class="clear"></div>
+	</div><!--end: main -->
+	<div class="clear"></div>
+	<div id="footer">
+		<!--done-->
+Copyright © 2019 哦摩西罗伊
+<br><span id="poweredby">Powered by .NET Core 3.0.0-preview9-19423-09 on Linux</span>
+
+
+
+	</div><!--end: footer -->
+</div><!--end: home 自定义的最大容器 -->
+
+
+    
+
+
+</body>
+</html>

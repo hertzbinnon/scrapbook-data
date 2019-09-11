@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="origin">
+    <meta property="og:description" content="上一篇文章中介绍了P2P通信协议中打洞的标准协议STUN以及classic STUN,然而在面对个别NAT的时候打洞还是会失败.为了保证在最差情况下对等端之间的
+通信还能建立,我们就需要引进中继的方">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <title>P2P通信标准协议(二)之TURN - 有价值炮灰 - 博客园</title>
+    
+    
+    
+    
+    
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/pannengzhi/rss">
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/pannengzhi/rsd.xml">
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/pannengzhi/wlwmanifest.xml">
+    
+    
+    
+    
+    
+    
+<link rel="preload" href="https://adservice.google.com/adsid/integrator.js?domain=www.cnblogs.com">
+<link media="all" href="index.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+    <a name="top"></a>
+    
+    
+<!--done-->
+<div id="home">
+<div id="header">
+	<div id="blogTitle">
+        <a id="lnkBlogLogo" href="https://www.cnblogs.com/pannengzhi/"><img id="blogLogo" src="logo.gif" alt="返回主页"></a>		
+		
+<!--done-->
+<h1><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/pannengzhi/">有价值炮灰</a>
+</h1>
+<h2>
+<i>我的主页: <a href="https://evilpan.com/">evilpan.com</a></i>
+</h2><h2>Practice,Practice, and Practice</h2>
+
+
+
+
+
+		
+	</div><!--end: blogTitle 博客的标题和副标题 -->
+	<div id="navigator">
+		
+<ul id="navList">
+<li><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+<li>
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/pannengzhi/">
+首页</a>
+</li>
+<li>
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+<li>
+</li>
+<li>
+
+<!--<partial name="./Shared/_XmlLink.cshtml" model="Model" /></li>--></li>
+<li>
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+
+		<div class="blogStats">
+			
+			<span id="stats_post_count">随笔 - 
+39&nbsp; </span>
+<span id="stats_article_count">文章 - 
+1&nbsp; </span>
+<span id="stats-comment_count">评论 - 
+53</span>
+
+			
+		</div><!--end: blogStats -->
+	</div><!--end: navigator 博客导航栏 -->
+</div><!--end: header 头部 -->
+
+<div id="main">
+	<div id="mainContent">
+	<div class="forFlow">
+		<div id="post_detail">
+    <!--done-->
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/pannengzhi/p/5048965.html">P2P通信标准协议(二)之TURN</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body cnblogs-markdown">
+    <p>上一篇<a href="http://www.cnblogs.com/pannengzhi/p/5041546.html">P2P通信标准协议(一)</a>介绍了在NAT上进行端口绑定的通用规则，应用程序可以根据这个协议来设计网络以外的通信。<br>
+但是，<a href="http://www.rfc-editor.org/info/rfc5389">STUN/RFC5389</a>协议里能处理的也只有市面上大多数的<code>Cone NAT</code>（关于NAT类型可以参照<a href="http://www.cnblogs.com/pannengzhi/p/4800526.html">P2P通信原理与实现</a>），<br>
+对于<code>Symmetric NAT</code>，传统的P2P打洞方法是不适用的。因此为了保证通信能够建立，我们可以在没办法的情况下用保证成功的中继方法（Relaying），<br>
+虽然使用中继会对服务器负担加重，而且也算不上P2P，但是至少保证了最坏情况下信道的通畅，从而不至于受NAT类型的限制。<a href="http://www.rfc-editor.org/info/rfc5766">TURN/RFC5766</a>就是为此目的而进行的拓展。</p>
+<h2 id="turn简介">TURN简介</h2>
+<p>TURN的全称为Traversal Using Relays around NAT，是STUN/RFC5389的一个拓展，主要添加了Relay功能。如果终端在NAT之后，<br>
+那么在特定的情景下，有可能使得终端无法和其对等端（peer）进行直接的通信，这时就需要公网的服务器作为一个中继，<br>
+对来往的数据进行转发。这个转发的协议就被定义为TURN。TURN和其他中继协议的不同之处在于，它允许客户端使用同一个中继地址（relay address）<br>
+与多个不同的peer进行通信。</p>
+<p>使用TURN协议的客户端必须能够通过中继地址和对等端进行通讯，并且能够得知每个peer的的IP地址和端口（确切地说，应该是peer的服务器反射地址）。<br>
+而这些行为如何完成，是不在TURN协议范围之内的。其中一个可用的方式是客户端通过email来告知对等端信息，<br>
+另一种方式是客户端使用一些指定的协议，如“introduction” 或 “rendezvous”，详见<a href="http://www.rfc-editor.org/info/rfc5128">RFC5128</a></p>
+<p>如果TURN使用于ICE协议中，relay地址会作为一个候选，由ICE在多个候选中进行评估，选取最合适的通讯地址。一般来说中继的优先级都是最低的。<br>
+TURN协议被设计为ICE协议(Interactive Connectivity Establishment)的一部分，而且也强烈建议用户在他们的程序里使用ICE，但是也可以独立于ICE的运行。<br>
+值得一提的是，TURN协议本身是STUN的一个拓展，因此绝大部分TURN报文都是STUN类型的，作为STUN的一个拓展，TURN增加了新的方法（method）和属性（attribute）。<br>
+因此阅读本章时最好先了解一下<a href="http://www.cnblogs.com/pannengzhi/p/5041546.html">STUN协议</a>。</p>
+<h2 id="操作概述">操作概述</h2>
+<p>在典型的情况下，TURN客户端连接到内网中，并且通过一个或者多个NAT到达公网，TURN服务器架设在公网中，不同的客户端以TURN服务器为中继和其他peer进行通信，如下图所示：</p>
+<pre><code class="hljs ruby">                                        Peer A
+                                        Server-Reflexive    +---------+
+                                        Transport Address   <span class="hljs-params">|         |</span>
+                                        <span class="hljs-number">192.0</span>.<span class="hljs-number">2.150</span><span class="hljs-symbol">:</span><span class="hljs-number">32102</span>   <span class="hljs-params">|         |</span>
+                                            <span class="hljs-params">|              /|</span>         <span class="hljs-params">|
+                          TURN              |</span>            / ^<span class="hljs-params">|  Peer A |</span>
+    Client’s              Server            <span class="hljs-params">|           /  |</span><span class="hljs-params">|         |</span>
+    Host Transport        Transport         <span class="hljs-params">|         //   |</span><span class="hljs-params">|         |</span>
+    Address               Address           <span class="hljs-params">|       //     |</span>+---------+
+   <span class="hljs-number">10.1</span>.<span class="hljs-number">1.2</span><span class="hljs-symbol">:</span><span class="hljs-number">49721</span>       <span class="hljs-number">192.0</span>.<span class="hljs-number">2.15</span><span class="hljs-symbol">:</span><span class="hljs-number">3478</span>     <span class="hljs-params">|+-+  //     Peer A
+            |</span>               <span class="hljs-params">|               |</span><span class="hljs-params">|N|</span> /       Host Transport
+            <span class="hljs-params">|   +-+         |</span>               <span class="hljs-params">||</span>A<span class="hljs-params">|/        Address
+            |</span>   <span class="hljs-params">| |</span>         <span class="hljs-params">|               v|</span>T<span class="hljs-params">|     192.168.100.2:49582
+            |</span>   <span class="hljs-params">| |</span>         <span class="hljs-params">|               /+-+
+ +---------+|</span>   <span class="hljs-params">| |</span>         <span class="hljs-params">|+---------+   /              +---------+
+ |</span>         <span class="hljs-params">||</span>   <span class="hljs-params">|N|</span>         <span class="hljs-params">||</span>         <span class="hljs-params">| //               |</span>         <span class="hljs-params">|
+ |</span> TURN    <span class="hljs-params">|v   |</span> <span class="hljs-params">|         v|</span> TURN    <span class="hljs-params">|/                 |</span>         <span class="hljs-params">|
+ |</span> Client  <span class="hljs-params">|----|</span>A<span class="hljs-params">|----------|</span> Server  <span class="hljs-params">|------------------|</span>  Peer B <span class="hljs-params">|
+ |</span>         <span class="hljs-params">|    |</span> <span class="hljs-params">|^         |</span>         <span class="hljs-params">|^                ^|</span>         <span class="hljs-params">|
+ |</span>         <span class="hljs-params">|    |</span>T<span class="hljs-params">||</span>         <span class="hljs-params">|         |</span><span class="hljs-params">|                |</span><span class="hljs-params">|         |</span>
+ +---------+    <span class="hljs-params">| |</span><span class="hljs-params">|         +---------+|</span>                <span class="hljs-params">|+---------+
+                |</span> <span class="hljs-params">||</span>                    <span class="hljs-params">|                |</span>
+                <span class="hljs-params">| |</span><span class="hljs-params">|                    |</span>                <span class="hljs-params">|
+                +-+|</span>                    <span class="hljs-params">|                |</span>
+                   <span class="hljs-params">|                    |</span>                <span class="hljs-params">|
+                   |</span>                    <span class="hljs-params">|                |</span>
+             Client’s                   <span class="hljs-params">|            Peer B
+             Server-Reflexive    Relayed             Transport
+             Transport Address   Transport Address   Address
+             192.0.2.1:7000      192.0.2.15:50000     192.0.2.210:49191</span></code></pre>
+<p>在上图中，左边的TURN Client是位于NAT后面的一个客户端（内网地址是10.1.1.2:49721），连接公网的TURN服务器（默认端口3478）后，<br>
+服务器会得到一个Client的<code>反射地址</code>（Reflexive Transport Address, 即NAT分配的公网IP和端口）192.0.2.1:7000，<br>
+此时Client会通过TURN命令创建或管理<code>ALLOCATION</code>，allocation是服务器上的一个数据结构，包含了中继地址的信息。<br>
+服务器随后会给Client分配一个中继地址，即图中的192.0.2.15:50000，另外两个对等端若要通过TURN协议和Client进行通信，<br>
+可以直接往中继地址收发数据即可，TURN服务器会把发往指定中继地址的数据转发到对应的Client，这里是其反射地址。</p>
+<p>Server上的每一个allocation都唯一对应一个client，并且只有一个中继地址，因此当数据包到达某个中继地址时，服务器总是知道应该将其转发到什么地方。<br>
+但值得一提的是，一个Client可能在同一时间在一个Server上会有多个allocation，这和上述规则是并不矛盾的。</p>
+<h2 id="传输">传输</h2>
+<p>在协议中,TURN服务器与peer之间的连接都是基于UDP的,但是服务器和客户端之间可以通过其他各种连接来传输STUN报文,<br>
+比如TCP/UDP/TLS-over-TCP. 客户端之间通过中继传输数据时候,如果用了TCP,也会在服务端转换为UDP,因此建议客户端使用<br>
+UDP来进行传输. 至于为什么要支持TCP,那是因为一部分防火墙会完全阻挡UDP数据,而对于三次握手的TCP数据则不做隔离.</p>
+<h2 id="分配allocations">分配(Allocations)</h2>
+<p>要在服务器端获得一个中继分配,客户端须使用分配事务. 客户端发送分配请求(Allocate request)到服务器,然后服务器<br>
+返回分配成功响应,并包含了分配的地址.客户端可以在属性字段描述其想要的分配类型(比如生命周期).由于中继数据实现了<br>
+安全传输,服务器会要求对客户端进行验证,主要使用STUN的<code>long-term credential mechanism</code>.</p>
+<p>一旦中继传输地址分配好,客户端必须要将其保活.通常的方法是发送刷新请求(Refresh request)到服务端.这在TURN<br>
+中是一个标准的方法.刷新频率取决于分配的生命期,默认为10分钟.客户端也可以在刷新请求里指定一个更长的生命期,<br>
+而服务器会返回一个实际上分配的时间. 当客户端想中指通信时,可以发送一个生命期为0的刷新请求.</p>
+<p>服务器和客户端都保存有一个成为五元组(5-TUPLE)的信息,比如对于客户端来说,五元组包括客户端本地地址/端口,服务器地址/端口,<br>
+和传输协议;服务器也是类似,只不过将客户端的地址变为其反射地址,因为那才是服务器所见到的. 服务器和客户端在分配<br>
+请求中都带有5-TUPLE信息,并且也在接下来的信息传输中使用,因此彼此都知道哪一次分配对应哪一次传输.</p>
+<pre><code class="hljs haskell"><span class="hljs-type">TURN</span>                                 <span class="hljs-type">TURN</span>           <span class="hljs-type">Peer</span>          <span class="hljs-type">Peer</span>
+<span class="hljs-title">client</span>                               server          <span class="hljs-type">A</span>             <span class="hljs-type">B</span>
+  |<span class="hljs-comment">-- Allocate request ---------------&gt;|             |             |</span>
+  |                                    |             |             |
+  |&lt;-<span class="hljs-comment">-------------- Allocate failure --|             |             |</span>
+  |                 (<span class="hljs-number">401</span> <span class="hljs-type">Unauthorized</span>) |             |             |
+  |                                    |             |             |
+  |<span class="hljs-comment">-- Allocate request ---------------&gt;|             |             |</span>
+  |                                    |             |             |
+  |&lt;-<span class="hljs-comment">--------- Allocate success resp --|             |             |</span>
+  |            (<span class="hljs-number">192.0</span><span class="hljs-number">.2</span><span class="hljs-number">.15</span>:<span class="hljs-number">50000</span>)      |             |             |
+  //                                   //            //            //
+  |                                    |             |             |
+  |<span class="hljs-comment">-- Refresh request ----------------&gt;|             |             |</span>
+  |                                    |             |             |
+  |&lt;-<span class="hljs-comment">---------- Refresh success resp --|             |             |</span>
+  |                                    |             |             |</code></pre>
+<p>如上图所示,客户端首先发送Allocate请求,但是没带验证信息,因此STUN服务器会返回error response,客户端收到错误后加上<br>
+所需的验证信息再次请求,才能进行成功的分配.</p>
+<h2 id="发送机制send-mechanism">发送机制(Send Mechanism)</h2>
+<p>client和peer之间有两种方法通过TURN server交换应用信息,第一种是使用<code>Send</code>和<code>Data</code>方法(method),第二种是使用<br>
+通道(channels),两种方法都通过某种方式告知服务器哪个peer应该接收数据,以及服务器告知client数据来自哪个peer.</p>
+<p>Send Mechanism使用了Send和Data指令(Indication).其中Send指令用来把数据从client发送到server,而Data指令用来把数据从<br>
+server发送到client.当使用Send指令时,客户端发送一个Send Indication到服务端,其中包含:</p>
+<ul>
+<li>XOR-PEER-ADDRESS属性,指定对等端的(服务器反射)地址.</li>
+<li>DATA属性,包含要传给对等端的信息.</li>
+</ul>
+<p>当服务器收到Send Indication之后,会将DATA部分的数据解析出来,并将其以UDP的格式转发到对应的端点去,并且在封装<br>
+数据包的时候把client的中继地址作为源地址.从而从对等端发送到中继地址的数据也会被服务器转发到client上.<br>
+值得一提的是,Send/Data Indication是不支持验证的,因为长效验证机制不支持对indication的验证,因此为了防止攻击,<br>
+TURN要求client在给对等端发送indication之前先安装一个到对等端的许可(permission),如下图所示,client到Peer B<br>
+没有安装许可,导致其indication数据包将被服务器丢弃,对于peer B也是同样:</p>
+<pre><code class="hljs ruby">TURN                                 TURN           Peer          Peer
+client                               server          A             B
+  <span class="hljs-params">|                                    |</span>             <span class="hljs-params">|             |</span>
+  <span class="hljs-params">|-- CreatePermission req (Peer A) --&gt;|</span>             <span class="hljs-params">|             |</span>
+  <span class="hljs-params">|&lt;-- CreatePermission success resp --|</span>             <span class="hljs-params">|             |</span>
+  <span class="hljs-params">|                                    |</span>             <span class="hljs-params">|             |</span>
+  <span class="hljs-params">|--- Send ind (Peer A)--------------&gt;|</span>             <span class="hljs-params">|             |</span>
+  <span class="hljs-params">|                                    |</span>=== data ===&gt;<span class="hljs-params">|             |</span>
+  <span class="hljs-params">|                                    |</span>             <span class="hljs-params">|             |</span>
+  <span class="hljs-params">|                                    |</span>&lt;== data ====<span class="hljs-params">|             |</span>
+  <span class="hljs-params">|&lt;-------------- Data ind (Peer A) --|</span>             <span class="hljs-params">|             |</span>
+  <span class="hljs-params">|                                    |</span>             <span class="hljs-params">|             |</span>
+  <span class="hljs-params">|                                    |</span>             <span class="hljs-params">|             |</span>
+  <span class="hljs-params">|--- Send ind (Peer B)--------------&gt;|</span>             <span class="hljs-params">|             |</span>
+  <span class="hljs-params">|                                    |</span> dropped     <span class="hljs-params">|             |</span>
+  <span class="hljs-params">|                                    |</span>             <span class="hljs-params">|             |</span>
+  <span class="hljs-params">|                                    |</span>&lt;== data ==================<span class="hljs-params">|
+  |</span>                            dropped <span class="hljs-params">|             |</span>             <span class="hljs-params">|
+  |</span>                                    <span class="hljs-params">|             |</span>             <span class="hljs-params">|</span></code></pre>
+<p>TURN支持两种方式来创建许可,一种是发送<code>CreatePermission request</code></p>
+<h2 id="信道机制channels">信道机制(Channels)</h2>
+<p>对于一些应用程序,比如VOIP(Voice over IP),在Send/Data Indication中多加的36字节格式信息会加重客户端和服务端<br>
+之间的带宽压力.为改善这种情况,TURN提供了第二种方法来让client和peer交互数据.该方法使用另一种数据包格式,<br>
+即<code>ChannelData message</code>,信道数据报文. ChannelData message不使用STUN头部,而使用一个4字节的头部,包含了<br>
+一个称之为信道号的值(channel number).每一个使用中的信道号都与一个特定的peer绑定,即作为对等端地址的一个记号.</p>
+<p>要将一个信道与对等端绑定,客户端首先发送一个信道绑定请求(ChannelBind Request)到服务器,并且指定一个未绑定的信道号以及对等端的地址信息.<br>
+绑定后client和server都能通过ChannelData message来发送和转发数据.信道绑定默认持续10分钟,并且可以通过重新发送<br>
+ChannelBind Request来刷新持续时间.和Allocation不同的是,并没有直接删除绑定的方法,只能等待其超时自动失效.</p>
+<pre><code class="hljs ruby">TURN                                 TURN           Peer          Peer
+client                               server          A             B
+  <span class="hljs-params">|                                    |</span>             <span class="hljs-params">|             |</span>
+  <span class="hljs-params">|-- ChannelBind req ----------------&gt;|</span>             <span class="hljs-params">|             |</span>
+  <span class="hljs-params">| (Peer A to 0x4001)                 |</span>             <span class="hljs-params">|             |</span>
+  <span class="hljs-params">|                                    |</span>             <span class="hljs-params">|             |</span>
+  <span class="hljs-params">|&lt;---------- ChannelBind succ resp --|</span>             <span class="hljs-params">|             |</span>
+  <span class="hljs-params">|                                    |</span>             <span class="hljs-params">|             |</span>
+  <span class="hljs-params">|-- [0x4001] data ------------------&gt;|</span>             <span class="hljs-params">|             |</span>
+  <span class="hljs-params">|                                    |</span>=== data ===&gt;<span class="hljs-params">|             |</span>
+  <span class="hljs-params">|                                    |</span>             <span class="hljs-params">|             |</span>
+  <span class="hljs-params">|                                    |</span>&lt;== data ====<span class="hljs-params">|             |</span>
+  <span class="hljs-params">|&lt;------------------ [0x4001] data --|</span>             <span class="hljs-params">|             |</span>
+  <span class="hljs-params">|                                    |</span>             <span class="hljs-params">|             |</span>
+  <span class="hljs-params">|--- Send ind (Peer A)--------------&gt;|</span>             <span class="hljs-params">|             |</span>
+  <span class="hljs-params">|                                    |</span>=== data ===&gt;<span class="hljs-params">|             |</span>
+  <span class="hljs-params">|                                    |</span>             <span class="hljs-params">|             |</span>
+  <span class="hljs-params">|                                    |</span>&lt;== data ====<span class="hljs-params">|             |</span>
+  <span class="hljs-params">|&lt;------------------ [0x4001] data --|</span>             <span class="hljs-params">|             |</span>
+  <span class="hljs-params">|                                    |</span>             <span class="hljs-params">|             |</span></code></pre>
+<p>上图中0x4001为信道号,即ChannelData message的头部中头2字节,值得一提的是信道号的选取有如下要求:</p>
+<ul>
+<li>0x0000-0x3FFF : 这一段的值<strong>不能</strong>用来作为信道号</li>
+<li>0x4000-0x7FFF : 这一段是可以作为信道号的值,一共有16383种不同值在目前来看是足够用的</li>
+<li>0x8000-0xFFFF : 这一段是保留值,留给以后使用</li>
+</ul>
+<p>还是那句老话,关于协议具体的细节可以去翻阅RFC5766的草稿,其中每个属性以及其格式都介绍得很详细.</p>
+<h2 id="实例">实例</h2>
+<p>在上一章也提到过,因为RFC是标准协议,因此实现上往往有良好的兼容性和拓展性.现存的开源P2P应用程序,<br>
+如果按照标准来设计,可以很容易与之对接.其中比较著名的就是<a href="http://www.pjsip.org/">PJSIP</a>,PJSIP是一个开源的多媒体<br>
+通信库,实现了许多标准协议,如SIP, SDP, RTP, STUN, TURN 和 ICE. 当然我们也能自己实现.比如GitHub<br>
+上的<a href="https://github.com/pannzh/TurnServer">TurnServer</a>就是其中一个对TURN服务端的实现.下面在局域网环境下对TURN数据包进行<br>
+简要分析.首先有如下机器情况:</p>
+<ul>
+<li>TurnServer运行在192.168.1.110,使用默认端口3478,采用用户名和密码验证,其中用户名为pannzh,密码123456</li>
+<li>TurnClient运行在192.168.1.106,为了方便,令peer也在192.168.1.106运行,端口为59593</li>
+</ul>
+<p>这里使用wireshark来抓包分析,关于wireshark的简介可以参照我之前的文章<a href="http://jekyll.pppan.net/2015/11/01/mitm-detail-1/">细说中间人攻击(一)</a>,<br>
+首先TurnClient发送Allocation请求:</p>
+<p><img src="676200-20151215174927974-1034938319.png" alt="allocation"></p>
+<p>可以看到第一次requst被服务器拒绝,因为后者要求nonce验证信息,服务器的返回中包含了nonce信息,<br>
+除此之外还包含了ERROR-CODE,SOFTWARE,FINGERPRINT属性.</p>
+<p><img src="676200-20151215175003490-1297619329.png" alt="error-nonce"></p>
+<p>在下一次request请求中,客户端加上了收到的nonce,以及USERNAME和REALM等属性,再次发送到TurnServer:</p>
+<p><img src="676200-20151215175602021-535679996.png" alt="allocation2"></p>
+<p>服务器接收到了正确的allocation请求,于是返回succcess response,可以看到在返回中带有默认的lifetime为1800秒,<br>
+XOR-MAPPED-ADDRESS以及XOR-RELAY-ADDRESS等属性:</p>
+<p><img src="676200-20151215175610084-1282226767.png" alt="allocation-success"></p>
+<p>前文也说过,若要和peer进行通信,必须先创建一个许可,因此Client向服务器发送CreatePermission请求,其中携带了peer的信息:</p>
+<p><img src="676200-20151215182343865-1798236094.png" alt="createpermission"></p>
+<p>服务器如果通过验证,就会返回success response,随后Client可以通过上文说到的两种方法与Peer进行通讯,比如下面的Send indication方法:</p>
+<p><img src="676200-20151215183008271-1668251906.png" alt="send-indication"></p>
+<p>通过对TurnServer发送indication告知数据的接收方以及数据内容让TurnServer进行转发,从而间接地向对等端发送DATA.<br>
+而从对等端来看,就是收到一个从client的relay地址192.168.1.110:65315到目的地址192.168.1.106:59593(即peer地址)的UDP数据包.</p>
+<h2 id="后记">后记</h2>
+<p>本来打算这篇介绍完TURN和ICE的,不过后来发现内容实在有点多,即便是只粗略介绍.因此只能把ICE协议的介绍留在下一篇来说了.<br>
+TURN协议因为是STUN的拓展,当然也沿袭了STUN的工具性质,只为穿越NAT提供方法,而不作为P2P通信的完整解决方案.一个比较适合<br>
+研究的TurnServer源代码我也放到了<a href="https://github.com/pannzh/TurnServer">这里</a>,,而客户端的实现则根据每个人的具体需求而不同,因此不再赘述.</p>
+
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+<div id="EntryTag">
+    标签: 
+            <a href="https://www.cnblogs.com/pannengzhi/tag/P2P/">P2P</a>,             <a href="https://www.cnblogs.com/pannengzhi/tag/TURN/">TURN</a></div>
+
+    <div id="blog_post_info">
+<div id="green_channel">
+        <a href="javascript:void(0);" id="green_channel_digg" onclick="DiggIt(5048965,cb_blogId,1);green_channel_success(this,'谢谢推荐！');">好文要顶</a>
+        <a id="green_channel_follow" onclick="follow('f52cfd6d-bd44-e411-b908-9dcfd8948a71');" href="javascript:void(0);">关注我</a>
+    <a id="green_channel_favorite" onclick="AddToWz(cb_entryId);return false;" href="javascript:void(0);">收藏该文</a>
+    <a id="green_channel_weibo" href="javascript:void(0);" title="分享至新浪微博" onclick="ShareToTsina()"><img src="icon_weibo_24.png" alt=""></a>
+    <a id="green_channel_wechat" href="javascript:void(0);" title="分享至微信" onclick="shareOnWechat()"><img src="wechat.png" alt=""></a>
+</div>
+<div id="author_profile">
+    <div id="author_profile_info" class="author_profile_info">
+        <div id="author_profile_detail" class="author_profile_info">
+            <a href="https://home.cnblogs.com/u/pannengzhi/">有价值炮灰</a><br>
+            <a href="https://home.cnblogs.com/u/pannengzhi/followees/">关注 - 1</a><br>
+            <a href="https://home.cnblogs.com/u/pannengzhi/followers/">粉丝 - 67</a>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div id="author_profile_honor"></div>
+    <div id="author_profile_follow">
+                <a href="javascript:void(0);" onclick="follow('f52cfd6d-bd44-e411-b908-9dcfd8948a71');return false;">+加关注</a>
+    </div>
+</div>
+<div id="div_digg">
+    <div class="diggit" onclick="votePost(5048965,'Digg')">
+        <span class="diggnum" id="digg_count">4</span>
+    </div>
+    <div class="buryit" onclick="votePost(5048965,'Bury')">
+        <span class="burynum" id="bury_count">0</span>
+    </div>
+    <div class="clear"></div>
+    <div class="diggword" id="digg_tips">
+    </div>
+</div>
+
+</div>
+    <div class="clear"></div>
+    <div id="post_next_prev">
+
+    <a href="https://www.cnblogs.com/pannengzhi/p/5041546.html" class="p_n_p_prefix">« </a> 上一篇：    <a href="https://www.cnblogs.com/pannengzhi/p/5041546.html" title="发布于 2015-12-12 17:31">P2P通信标准协议(一)之STUN</a>
+    <br>
+    <a href="https://www.cnblogs.com/pannengzhi/p/5061674.html" class="p_n_p_prefix">» </a> 下一篇：    <a href="https://www.cnblogs.com/pannengzhi/p/5061674.html" title="发布于 2015-12-20 20:13">P2P通信标准协议(三)之ICE</a>
+
+</div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2015-12-15 19:27</span>&nbsp;<a href="https://www.cnblogs.com/pannengzhi/">有价值炮灰</a> 阅读(<span id="post_view_count">6203</span>) 评论(<span id="post_comment_count">1</span>) <a href="https://i.cnblogs.com/EditPosts.aspx?postid=5048965" rel="nofollow"> 编辑</a> <a href="javascript:void(0)" onclick="AddToWz(5048965); return false;">收藏</a>
+</div>
+        </div>
+	    
+	    
+    </div><!--end: topics 文章、评论容器-->
+</div>
+
+
+<a name="!comments"></a>
+<div id="blog-comments-placeholder">
+
+<div id="comment_pager_top">
+    
+</div>
+
+<br>
+<div class="feedback_area_title">评论列表</div>
+<div class="feedbackNoItems"><div class="feedbackNoItems"></div></div>	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;
+
+<span class="comment_actions">
+    
+    
+    
+    
+</span>
+
+
+				</div>
+				
+<a href="#3327955" class="layer">#1楼</a>
+<a name="3327955" id="comment_anchor_3327955"></a>
+
+        <span id="comment-maxId" style="display: none;">3327955</span>
+        <span id="comment-maxDate" style="display: none;">12/16/2015 9:39:46 AM</span>
+ 
+<span class="comment_date">2015-12-16 09:39</span>
+
+ 
+
+            <a id="a_comment_author_3327955" href="https://home.cnblogs.com/u/83630/" target="_top">xwy</a>
+
+			</div>
+			<div class="feedbackCon">
+				
+<div id="comment_body_3327955" class="blog_comment_body">
+    顶一下
+</div>
+        <div class="comment_vote">
+            <a href="javascript:void(0);" class="comment_digg" onclick="return voteComment('3327955', 'Digg', this);">
+                支持(0)
+            </a>
+            <a href="javascript:void(0);" class="comment_burry" onclick="return voteComment('3327955', 'Bury', this);">
+                反对(0)
+            </a>
+        </div>
+        
+
+			</div>
+		</div>
+
+<div id="comment_pager_bottom">
+    
+</div>
+
+
+</div>
+
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container"><div class="login_tips">
+    注册用户登录后才能发表评论，请 
+    <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return login('commentform');">登录</a>
+     或 
+    <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return register();">注册</a>，
+    <a href="https://www.cnblogs.com/">访问</a> 网站首页。
+</div></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"><a href="http://www.ucancode.com/index.htm" target="_top" onclick="ga('send', 'event', 'Link', 'click', 'T2-工控')">【推荐】超50万C++/C#源码: 大型实时仿真组态图形源码</a><br><a href="http://click.aliyun.com/m/1000074461/" target="_top" onclick="ga('send', 'event', 'Link', 'click', 'T2-阿里云')">【活动】阿里云910会员节多款云产品满减活动火热进行中</a><br><a href="https://www.ctyun.cn/activity/#/enterprise2?hmsr=%E5%8D%9A%E5%AE%A2%E5%9B%AD-0901-0%E5%85%83%E4%B8%8A%E4%BA%91&amp;hmpl=&amp;hmcu=&amp;hmkw=&amp;hmci=" target="_top" onclick="ga('send', 'event', 'Link', 'click', 'T2-天翼云')">【推荐】新手上天翼云，数十款云产品、新一代主机0元体验</a><br><a href="http://clickc.admaster.com.cn/c/a131574,b3595115,c1705,i0,m101,8a1,8b3,h" target="_top" onclick="ga('send', 'event', 'Link', 'click', 'T2-华为云微认证')">【推荐】零基础轻松玩转华为云产品，获壕礼加返百元大礼</a><br><a href="http://clickc.admaster.com.cn/c/a131575,b3595121,c1705,i0,m101,8a1,8b3,h" target="_top" onclick="ga('send', 'event', 'Link', 'click', 'T2-华为文字')">【推荐】华为云文字识别资源包重磅上市，1元万次限时抢购</a><br></div>
+    <div id="opt_under_post"></div>
+    
+    
+    
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height: 250px; width: 300px;" data-google-query-id="CIn20tnjxeQCFQHFvQodY_ANLg"><div id="google_ads_iframe_/1090369/C1_0__container__" style="border: 0pt none;"><iframe id="google_ads_iframe_/1090369/C1_0" title="3rd party ad content" name="google_ads_iframe_/1090369/C1_0" scrolling="no" marginwidth="0" marginheight="0" style="border: 0px none; vertical-align: bottom;" srcdoc="" data-google-container-id="1" data-load-complete="true" src="index_1.html" width="300" height="250" frameborder="0"></iframe></div></div>
+    </div>
+    <div id="under_post_news"><div class="recomm-block"><b>相关博文：</b><br>·  <a title="P2P通信标准协议(一)之STUN" href="https://www.cnblogs.com/pannengzhi/p/5041546.html" target="_top" onclick="clickRecomItmem(5041546)">P2P通信标准协议(一)之STUN</a><br>·  <a title="STUN/TURN/ICE协议在P2P SIP中的应用（二）" href="https://www.cnblogs.com/ishangs/p/3816689.html" target="_top" onclick="clickRecomItmem(3816689)">STUN/TURN/ICE协议在P2P SIP中的应用（二）</a><br>·  <a title="P2P通信标准协议(三)之ICE" href="https://www.cnblogs.com/pannengzhi/p/5061674.html" target="_top" onclick="clickRecomItmem(5061674)">P2P通信标准协议(三)之ICE</a><br>·  <a title="turn协议的工作原理" href="https://www.cnblogs.com/zhiji6/p/10494808.html" target="_top" onclick="clickRecomItmem(10494808)">turn协议的工作原理</a><br>·  <a title="NAT and Traversal NAT（TURN/STUN/ICE）" href="https://www.cnblogs.com/whyandinside/archive/2010/12/08/1900492.html" target="_top" onclick="clickRecomItmem(1900492)">NAT and Traversal NAT（TURN/STUN/ICE）</a><br></div></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height: 60px; width: 468px;" data-google-query-id="CKHn0dnjxeQCFQHFvQodY_ANLg">
+            
+        <div id="google_ads_iframe_/1090369/C2_0__container__" style="border: 0pt none;"><iframe id="google_ads_iframe_/1090369/C2_0" title="3rd party ad content" name="google_ads_iframe_/1090369/C2_0" scrolling="no" marginwidth="0" marginheight="0" style="border: 0px none; vertical-align: bottom;" srcdoc="" data-google-container-id="2" data-load-complete="true" src="index_2.html" width="468" height="60" frameborder="0"></iframe></div></div>
+    </div>
+    <div id="under_post_kb">
+<div class="itnews c_ad_block">
+    <b>最新 IT 新闻</b>:
+    <br>
+ ·              <a href="https://news.cnblogs.com/n/636827/" target="_top">荣耀首度公开5G实验室 宣布Vera30支持双模5G全网通</a>
+            <br>
+ ·              <a href="https://news.cnblogs.com/n/636826/" target="_top">北大数学“黄金一代”：四位获“科学界奥斯卡”，三位任教MIT</a>
+            <br>
+ ·              <a href="https://news.cnblogs.com/n/636825/" target="_top">临床试验显示高剂量维生素 D 无助于强化骨质</a>
+            <br>
+ ·              <a href="https://news.cnblogs.com/n/636824/" target="_top">NASA发布超高分辨率的月球3D模型</a>
+            <br>
+ ·              <a href="https://news.cnblogs.com/n/636823/" target="_top">年内上市悬了？报道称软银要求WeWork搁置IPO计划</a>
+            <br>
+    » <a href="https://news.cnblogs.com/" title="IT 新闻" target="_top">更多新闻...</a>
+</div></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    
+</div>
+	</div><!--end: forFlow -->
+	</div><!--end: mainContent 主体内容容器-->
+
+	<div id="sideBar">
+		<div id="sideBarMain">
+			
+
+
+			<div id="blog-calendar" style="display: none;"></div>
+			
+			<div id="leftcontentcontainer">
+				<div id="blog-sidecolumn">
+
+<!-- 搜索 -->
+<div id="sidebar_search" class="sidebar-block">
+    <div id="sidebar_search" class="mySearch">
+        <h3 class="catListTitle">搜索</h3>
+        <div id="sidebar_search_box">
+            
+            <div id="widget_my_google" class="div_my_zzk">
+                <input name="google_q" id="google_q" onkeydown="return google_go_enter(event);" class="input_my_zzk" value="" type="text">&nbsp;<input onclick="google_go()" value="谷歌搜索" class="btn_my_zzk" type="button">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 常用链接 -->
+
+
+<!-- 最新随笔 -->
+
+
+
+<!-- 我的标签 -->
+<div id="sidebar_toptags" class="sidebar-block">
+    <div class="catListTag">
+<h3 class="catListTitle">我的标签</h3>
+<ul>
+
+        <li>
+            <a href="https://www.cnblogs.com/pannengzhi/tag/Linux/">Linux</a>(11)
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/pannengzhi/tag/%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8/">信息安全</a>(11)
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/pannengzhi/tag/P2P/">P2P</a>(5)
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/pannengzhi/tag/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">网络编程</a>(4)
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/pannengzhi/tag/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/">逆向工程</a>(3)
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/pannengzhi/tag/MISC/">MISC</a>(2)
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/pannengzhi/tag/Nginx/">Nginx</a>(1)
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/pannengzhi/tag/Linux%20Vim/">Linux Vim</a>(1)
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/pannengzhi/tag/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/">软件工程</a>(1)
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/pannengzhi/tag/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>(1)
+        </li>
+            <li>
+                <a href="https://www.cnblogs.com/pannengzhi/tag/">更多</a>
+            </li>
+
+</ul>
+</div>
+
+
+</div>
+
+<!-- 积分与排名 -->
+
+
+<!-- 随笔分类、随笔档案、文章分类、新闻分类、相册、链接 -->
+<div id="sidebar_categories">
+    
+
+</div>
+
+<!-- 最新评论 -->
+<div id="sidebar_recentcomments" class="sidebar-block">
+    <div class="catListComment">
+<h3 class="catListTitle">最新评论</h3>
+
+	<div class="RecentCommentBlock">
+        <ul>
+                    <li class="recent_comment_title"><a href="https://www.cnblogs.com/pannengzhi/p/2017-06-04-nginx-log-analysis.html#4290383">1. Re:Nginx日志分析</a></li>
+                    <li class="recent_comment_body">请问这些正则能单独提取出来吗，我用的不是py语言</li>
+                    <li class="recent_comment_author">--别来无恙_duang</li>
+                    <li class="recent_comment_title"><a href="https://www.cnblogs.com/pannengzhi/p/5041546.html#4082995">2. Re:P2P通信标准协议(一)之STUN</a></li>
+                    <li class="recent_comment_body">0b01表示indication请问一下，现实当中这个的用法是什么，能不能举个例子我个人的理解是 request以后另一方response 而等待response is期间需要知道request的状态...</li>
+                    <li class="recent_comment_author">--小眼睛老鼠</li>
+                    <li class="recent_comment_title"><a href="http://www.cnblogs.com/pannengzhi/p/5678495.html#4006205">3. Re:Unicode,GBK和UTF8</a></li>
+                    <li class="recent_comment_body">mark一下</li>
+                    <li class="recent_comment_author">--smallwangtoumusk</li>
+                    <li class="recent_comment_title"><a href="http://www.cnblogs.com/pannengzhi/p/2017-06-04-nginx-log-analysis.html#3982245">4. Re:Nginx日志分析</a></li>
+                    <li class="recent_comment_body">请问，怎么和geoip结合起来</li>
+                    <li class="recent_comment_author">--IT屌丝南</li>
+                    <li class="recent_comment_title"><a href="http://www.cnblogs.com/pannengzhi/p/4800526.html#3955204">5. Re:P2P通信原理与实现(C++)</a></li>
+                    <li class="recent_comment_body">请教博主，Bittorrent 客户端需要NAT Traversal技术的支持么？  如果要，支持 NAT Traversal 的Bittorrent 客户端有哪些？谢谢。</li>
+                    <li class="recent_comment_author">--lijuncn</li>
+        </ul>
+    </div>
+</div>
+
+
+</div>
+
+
+
+<!-- 阅读排行榜 -->
+<div id="sidebar_topviewedposts" class="sidebar-block">
+    <div class="catListView">
+<h3 class="catListTitle">阅读排行榜</h3>
+	<div id="TopViewPostsBlock">
+        <ul style="word-break: break-all;">
+                    <li>
+                        <a href="https://www.cnblogs.com/pannengzhi/p/4800526.html">
+                            1. P2P通信原理与实现(C++)(21848)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/pannengzhi/p/5041546.html">
+                            2. P2P通信标准协议(一)之STUN(15262)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/pannengzhi/p/5203467.html">
+                            3. Linux Hook 笔记(13644)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/pannengzhi/p/5061674.html">
+                            4. P2P通信标准协议(三)之ICE(11861)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/pannengzhi/p/2017-09-23-web-file-disclosure.html">
+                            5. WEB中的敏感文件泄漏(10180)
+                        </a>
+                    </li>
+        </ul>
+    </div>
+</div>
+
+
+</div>
+
+<!-- 评论排行榜 -->
+<div id="sidebar_topcommentedposts" class="sidebar-block">
+    <div class="catListFeedback">
+<h3 class="catListTitle">评论排行榜</h3>
+	<div id="TopFeedbackPostsBlock">
+        <ul style="word-break: break-all;">
+                    <li>
+                        <a href="https://www.cnblogs.com/pannengzhi/p/4800526.html">
+                            1. P2P通信原理与实现(C++)(6)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/pannengzhi/p/5721128.html">
+                            2. 和杀毒软件愉快玩耍的日子(6)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/pannengzhi/p/4838971.html">
+                            3. ARP欺骗与中间人攻击(5)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/pannengzhi/p/5678495.html">
+                            4. Unicode,GBK和UTF8(4)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/pannengzhi/p/6262076.html">
+                            5. 关于DNS,你应该知道这些(4)
+                        </a>
+                    </li>
+        </ul>
+    </div>
+</div>
+
+
+</div>
+
+<!-- 推荐排行榜 -->
+<div id="sidebar_topdiggedposts" class="sidebar-block">
+    
+<div id="topdigg_posts_wrap">
+    <div class="catListView">
+        <h3 class="catListTitle">推荐排行榜</h3>
+        <div id="TopDiggPostsBlock">
+            <ul style="word-break: break-all;">
+                        <li>
+                            <a href="https://www.cnblogs.com/pannengzhi/p/windows-self-check.html">
+                                1. 快速自检电脑是否被黑客入侵过(Windows版)(14)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/pannengzhi/p/5721128.html">
+                                2. 和杀毒软件愉快玩耍的日子(10)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/pannengzhi/p/4927707.html">
+                                3. 记一次被中间人攻击的经历(8)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/pannengzhi/p/4849280.html">
+                                4. 再谈中间人攻击(5)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/pannengzhi/p/5048965.html">
+                                5. P2P通信标准协议(二)之TURN(4)
+                            </a>
+                        </li>
+            </ul>
+        </div>
+    </div>
+</div>
+</div></div>
+                    
+			</div>
+			
+		</div><!--end: sideBarMain -->
+	</div><!--end: sideBar 侧边栏容器 -->
+	<div class="clear"></div>
+	</div><!--end: main -->
+	<div class="clear"></div>
+	<div id="footer">
+		<!--done-->
+Copyright © 2019 有价值炮灰
+<br><span id="poweredby">Powered by .NET Core 3.0.0-preview9-19423-09 on Linux</span>
+
+
+
+	</div><!--end: footer -->
+</div><!--end: home 自定义的最大容器 -->
+
+
+    <div id="page_end_html">
+        <a style="display: none;" href="https://evilpan.com/">blog</a>
+    </div>
+
+
+</body>
+</html>
